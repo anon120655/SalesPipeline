@@ -42,7 +42,7 @@ var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
 //options.UseSqlServer(SalesPipelineContext));
 
 builder.Services.AddDbContext<SalesPipelineContext>(options =>
-	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.6.15-MariaDB", ServerType.MariaDb), x => x.UseNetTopologySuite()));
+	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.11.6-MariaDB", ServerType.MariaDb), x => x.UseNetTopologySuite()));
 
 builder.Services.Configure<AppSettings>(appSettings);
 
