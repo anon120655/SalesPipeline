@@ -1,0 +1,153 @@
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Helpers;
+using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Shares;
+
+namespace SalesPipeline.API.Controllers
+{
+	//[Authorizes]
+	[ApiVersion(1.0)]
+	[ApiController]
+	[Route("v{version:apiVersion}/[controller]")]
+	public class ProcessSaleController : ControllerBase
+	{
+		private IRepositoryWrapper _repo;
+		private readonly AppSettings _appSet;
+
+		public ProcessSaleController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		{
+			_repo = repo;
+			_appSet = appSet.Value;
+		}
+
+		/// <summary>
+		/// ข้อมูลฟอร์มกระบวนการขาย ById
+		/// </summary>
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.GetById(id);
+
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// แก้ไขฟอร์มกระบวนการขาย
+		/// </summary>
+		[HttpPut("Update")]
+		public async Task<IActionResult> Update(ProcessSaleCustom model)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.Update(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลฟอร์มกระบวนการขายทั้งหมด
+		/// </summary>
+		[HttpGet("GetProcessSales")]
+		public async Task<IActionResult> GetProcessSales([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetProcessSales(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// เพิ่มกระบวนการขาย
+		/// </summary>
+		[HttpPost("CreateReply")]
+		public async Task<IActionResult> CreateReply(ProcessSale_ReplyCustom model)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.CreateReply(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+		
+		/// <summary>
+		/// แก้ไขกระบวนการขาย
+		/// </summary>
+		[HttpPut("UpdateReply")]
+		public async Task<IActionResult> UpdateReply(ProcessSale_ReplyCustom model)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.UpdateReply(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลกระบวนการขาย ById
+		/// </summary>
+		[HttpGet("GetReplyById")]
+		public async Task<IActionResult> GetReplyById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.GetReplyById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลกระบวนการขายทั้งหมด
+		/// </summary>
+		[HttpGet("GetReplys")]
+		public async Task<IActionResult> GetReplys([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetReplys(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+	}
+}

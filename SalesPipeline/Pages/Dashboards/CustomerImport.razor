@@ -1,0 +1,97 @@
+﻿@page "/dashboard/customerimport"
+
+<PageTitle>ข้อมูลลูกค้านำเข้าทั้งหมด</PageTitle>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 my-2">
+			<div class="box_content">
+				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="p-2"><img src="/image/icon/monitor128x.png" width="55" /></div>
+					<div class="p-2">
+						<p class="back_topic">ข้อมูล <span class="back_topic_active">ลูกค้านำเข้าทั้งหมด</span></p>
+						<p class="back_topic_dim">ส่วนงานธุรกิจสินเชื่อ</p>
+					</div>
+				</div>
+				<div class="row mt-3 filter_s">
+					<div class="col">
+						<label class="form-label">ชื่อลูกค้า</label>
+						<div class="input-group mw_10r">
+							<input class="form-control" type="search" placeholder="">
+							<span class="input-group-append ms-0">
+								<button class="btn rounded-start-0 border border-start-0" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+					<div class="col">
+						<label class="form-label">ชื่อผู้ติดต่อ</label>
+						<div class="input-group mw_10r">
+							<input class="form-control" type="search" placeholder="">
+							<span class="input-group-append ms-0">
+								<button class="btn rounded-start-0 border border-start-0" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+					<div class="col">
+						<label class="form-label">ประเภทธุรกิจ</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col">
+						<label class="form-label">กิจการสาขาภาค</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col">
+						<label class="form-label">ศูนย์สาขา</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col">
+						<label class="form-label">จังหวัด</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col">
+						<label class="form-label">สถานะ</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col">
+						@* <label class="form-label">____</label> *@
+						<button type="button" class="btn btn-info text-white mw_6r">
+							<i class="fa fa-search fa-xs"></i> ค้นหา
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Inject] protected IJSRuntime _jsRuntimes { get; set; } = null!;
+
+	string? _errorMessage = null;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+
+			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+			StateHasChanged();
+			firstRender = false;
+		}
+	}
+
+}

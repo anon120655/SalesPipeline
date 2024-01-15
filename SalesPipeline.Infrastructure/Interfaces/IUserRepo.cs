@@ -1,0 +1,26 @@
+﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Shares;
+
+namespace SalesPipeline.Infrastructure.Interfaces
+{
+	public interface IUserRepo
+	{
+		Task<UserCustom> Validate(UserCustom model, bool isThrow = false);
+		Task<List<UserCustom>> ValidateUpload(List<UserCustom> model);
+		Task<UserCustom> Create(UserCustom model);
+		Task<UserCustom> Update(UserCustom model);
+		Task DeleteById(UpdateModel model);
+		Task UpdateStatusById(UpdateModel model);
+		Task<UserCustom> GetById(int id);
+		Task<bool> UserExists(string employeeid);
+		Task<PaginationView<List<UserCustom>>> GetUsers(UserFilter model);
+		Task<List<User_LevelCustom>> GetLevels(allFilter model);
+		Task<User_RoleCustom> CreateRole(User_RoleCustom model);
+		Task<User_RoleCustom> UpdateRole(User_RoleCustom model);
+		Task DeleteRoleById(UpdateModel model);
+		Task UpdateIsModifyRoleById(UpdateModel model);
+		Task<User_RoleCustom> GetRoleById(int id);
+		Task<PaginationView<List<User_RoleCustom>>> GetRoles(allFilter model);
+		Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model);
+	}
+}

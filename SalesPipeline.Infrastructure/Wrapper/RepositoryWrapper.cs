@@ -1,0 +1,102 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Context;
+using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Interfaces;
+using SalesPipeline.Infrastructure.Repositorys;
+using SalesPipeline.Utils;
+
+namespace SalesPipeline.Infrastructure.Wrapper
+{
+	public class RepositoryWrapper : IRepositoryWrapper
+	{
+		private IDbContextTransaction transaction = null!;
+		private readonly IHttpContextAccessor _accessor;
+		private readonly HttpClient _httpClient;
+		private readonly IMapper _mapper;
+		private readonly IJwtUtils _jwtUtils;
+		private bool _isDisposed;
+
+		public SalesPipelineContext Context { get; }
+		public IRepositoryBase _db { get; }
+		public ILoggerRepo Logger { get; }
+		public IAuthorizes Authorizes { get; }
+		public INotifys Notifys { get; }
+		public IFileRepository Files { get; }
+		public IMaster Master { get; }
+		public IMasterDivBranch MasterDivBranch { get; }
+		public IMasterDivLoan MasterDivLoan { get; }
+		public IMasterLoanTypes MasterLoanTypes { get; }
+		public IMasterReasonReturns MasterReasonReturn { get; }
+		public IMasterSLAOperations MasterSLAOperation { get; }
+		public IMasterYields MasterYield { get; }
+		public IMasterChains MasterChain { get; }
+		public IProcessSales ProcessSale { get; }
+		public IUserRepo User { get; }
+		public ICustomers Customer { get; }
+		public ISystemRepo System { get; }
+
+		public RepositoryWrapper(SalesPipelineContext _context, IOptions<AppSettings> settings, IMapper mapper,
+													IHttpContextAccessor accessor, HttpClient httpClient, IJwtUtils jwtUtils)
+		{
+			Context = _context;
+			_accessor = accessor;
+			_mapper = mapper;
+			_httpClient = httpClient;
+			_jwtUtils = jwtUtils;
+
+			_db = new RepositoryBase(this);
+			Logger = new LoggerRepo(this, _db, settings);
+			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
+			Notifys = new Notifys(this, _db, settings);
+			Files = new FileRepository(this, _db, settings, _mapper);
+			Master = new Master(this, _db, settings, _mapper);
+			MasterDivBranch = new MasterDivBranch(this, _db, settings, _mapper);
+			MasterDivLoan = new MasterDivLoan(this, _db, settings, _mapper);
+			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
+			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);
+			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);
+			MasterYield = new MasterYields(this, _db, settings, _mapper);
+			MasterChain = new MasterChains(this, _db, settings, _mapper);
+			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
+			User = new UserRepo(this, _db, settings, _mapper);
+			Customer = new Customers(this, _db, settings, _mapper);
+			System = new SystemRepo(this, _db, settings, _mapper);
+		}
+
+		public IDbContextTransaction BeginTransaction()
+		{
+			transaction = Context.Database.BeginTransaction();
+			return transaction;
+		}
+
+		public void Commit()
+		{
+			transaction.Commit();
+		}
+
+		//Dispose
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_isDisposed)
+				return;
+
+			if (disposing)
+			{
+				Context.Dispose();
+
+				_isDisposed = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+	}
+}

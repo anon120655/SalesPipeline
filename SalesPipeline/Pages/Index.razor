@@ -1,0 +1,173 @@
+﻿@page "/"
+
+<PageTitle>หน้าหลัก</PageTitle>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xl-12">
+			<Button Color="ButtonColor.Success" @onclick="() => ClickSuccess()">Success</Button>
+			<Button Color="ButtonColor.Warning" @onclick="() => ClickDanger()">Warning</Button>
+			<Button Color="ButtonColor.Info" @onclick="OnShowConfirm">Confirm Model</Button>
+			<Button Color="ButtonColor.Info" @onclick="OnShowConfirm2">Confirm Model2</Button>
+			<Button Color="ButtonColor.Success" @onclick="OnShowComplete">Success Model</Button>
+			<Button Color="ButtonColor.Danger" @onclick="OnShowFailed">Failed Model</Button>
+		</div>
+	</div>
+</div>
+
+<section class="h-100 gradient-form">
+	<div class="container h-100">
+		<div class="row d-flex justify-content-center align-items-center h-75">
+			<div class="col-xl-10">
+				<div class="rounded-3">
+					<div class="row g-0">
+						<div class="col-lg-12">
+							<div class="mx-md-4">
+								<div class="text-center fw-bold">
+									<img src="/image/logo/logo_bacc.png" width="140" />
+									<h2 class="text-warning mt-5">ยินดีต้อนรับ</h2>
+									<small class="mt-1 mb-5 pb-3 text-secondary">LAST UPDATE @_appSet.Value.SiteUpdate</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<Modal @ref="modalConfirm"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<i class="fa-solid fa-circle-check fs_5r text-primary"></i>
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">กรุณากด ยืนยัน เพื่อ.....</h4>
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideConfirm">กลับ</Button>
+				</div>
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideConfirm">ยืนยัน</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+<Modal @ref="modalComplete"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<i class="fa-solid fa-circle-check fs_5r text-primary"></i>
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">เสร็จสิ้นการ...........</h4>
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideComplete">เสร็จสิ้น</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+<Modal @ref="modalFailed"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<i class="fa-solid fa-circle-xmark fs_5r text-danger"></i>
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">การ...........ไม่สำเร็จ</h4>
+			<h4 class="fw-bold">กรุณาตรวจสอบใหม่อีกครั้ง</h4>
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideFailed">กลับ</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+<ModalConfirm @ref="modalConfirmChild"
+			  CallbackConfirm="Confirm" />
+
+
+@code {
+	ModalConfirm modalConfirmChild = default!;
+
+	[Parameter]
+	public EventCallback CallbackOnShowConfirm { get; set; }
+
+	private Modal modalConfirm = default!;
+	private async Task OnShowConfirm()
+	{
+		await modalConfirm.ShowAsync();
+	}
+
+	private async Task OnHideConfirm()
+	{
+		await modalConfirm.HideAsync();
+	}
+
+	protected async Task OnShowConfirm2()
+	{
+		await modalConfirmChild.OnShowConfirm("123","AAA");
+	}
+
+	public async Task Confirm(string id)
+	{
+		await modalConfirmChild.OnHideConfirm();
+		_utilsViewModel.AlertSuccess();
+	}
+
+	private Modal modalComplete = default!;
+	private async Task OnShowComplete()
+	{
+		await modalComplete.ShowAsync();
+	}
+
+	private async Task OnHideComplete()
+	{
+		await modalComplete.HideAsync();
+	}
+
+	private Modal modalFailed = default!;
+	private async Task OnShowFailed()
+	{
+		await modalFailed.ShowAsync();
+	}
+
+	private async Task OnHideFailed()
+	{
+		await modalFailed.HideAsync();
+	}
+
+	private void ClickSuccess()
+	{
+		_utilsViewModel.AlertSuccess();
+	}
+
+	private void ClickDanger()
+	{
+		_utilsViewModel.AlertWarning("แจ้งเตือนเกิดข้อผิดพลาด");
+	}
+
+
+
+}

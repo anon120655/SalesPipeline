@@ -1,0 +1,201 @@
+﻿
+<div id="layoutSidenav_navBack">
+	<nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+		<div class="row my-2">
+			<i class="fa-solid fa-user text-white fs_5r"></i>
+		</div>
+		<div class="sb-sidenav-menu p-2">
+			<Animate Animation="Animations.FadeRight" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.1)">
+				<div class="nav bg_menu_admin" id="navbarSupportedContentBack">
+					<ul class="list-unstyled ps-0">
+						<li class="mb-1 col_show_bg">
+							<button class="nav-link btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#1-collapse" aria-expanded="@(collapseMenuSetting ? "true" : "false")">
+								<div class="">
+									<i class="fa-solid fa-sliders me-2"></i>
+									<span>ตั้งค่า</span>
+									<div class="sb-sidenav-collapse-arrow allow_right"><i class="fas fa-angle-down"></i></div>
+								</div>
+							</button>
+							<div class="collapse @(collapseMenuSetting ? "show" : "")" id="1-collapse" aria-labelledby="headingTwo">
+								<ul class="btn-toggle-nav list-unstyled fw-normal small">
+									<li class="">
+										<button class="nav-link btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#3-collapse" aria-expanded="false">
+											<div class="">
+												<i class="fa-solid fa-table-cells-large me-2"></i>
+												<span>ฝ่ายงาน</span>
+												<div class="sb-sidenav-collapse-arrow allow_right"><i class="fas fa-angle-down"></i></div>
+											</div>
+										</button>
+										<div class="collapse" id="3-collapse" aria-labelledby="headingOne">
+											<ul class="btn-toggle-nav list-unstyled fw-normal small">
+												<li>
+													<NavLink Match="NavLinkMatch.Prefix" href="/setting/branch" class="nav-link nav_click h_two">
+														<i class="fa-solid fa-table-cells-large me-2"></i> ฝ่ายกิจการสาขา
+													</NavLink>
+												</li>
+												<li>
+													<NavLink Match="NavLinkMatch.Prefix" href="/setting/businesscenter" class="nav-link nav_click rounded-bottom h_two">
+														<i class="fa-solid fa-table-cells-large me-2"></i> ศูนย์ธุรกิจสินเชื่อ
+													</NavLink>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/setting/productchain" class="nav-link nav_click">
+											<i class="fa-solid fa-table-cells-large me-2"></i> ผลผลิตและห่วงโซ่
+										</NavLink>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/setting/typeloan" class="nav-link nav_click">
+											<i class="fa-solid fa-table-cells-large me-2"></i> ประเภทสินเชื่อ
+										</NavLink>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/setting/reasonreturnreject" class="nav-link nav_click">
+											<i class="fa-solid fa-table-cells-large me-2"></i> เหตุผลการส่งคืนและปฏิเสธสินเชื่อ
+										</NavLink>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/setting/processingtimesla" class="nav-link nav_click">
+											<i class="fa-solid fa-table-cells-large me-2"></i> ระยะเวลาการดำเนินการ (SLA)
+										</NavLink>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/setting/processsales" class="nav-link nav_click rounded-bottom">
+											<i class="fa-solid fa-table-cells-large me-2"></i> กระบวนการขาย
+										</NavLink>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="mb-1 col_show_bg">
+							<button class="nav-link btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#userloan-collapse" aria-expanded="@(collapseMenuUserLoan ? "true" : "false")">
+								<div class="">
+									<i class="fa-solid fa-user-gear me-2"></i>
+									<span>จัดการระบบผู้ใช้งาน</span>
+									<div class="sb-sidenav-collapse-arrow allow_right"><i class="fas fa-angle-down"></i></div>
+								</div>
+							</button>
+							<div class="collapse @(collapseMenuUserLoan ? "show" : "")" id="userloan-collapse" aria-labelledby="headingOne">
+								<ul class="btn-toggle-nav list-unstyled fw-normal small">
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/loans/permission" class="nav-link nav_click">
+											<i class="fa-solid fa-table-cells-large me-2"></i> ระบบสิทธิ์การเข้าถึง
+										</NavLink>
+									</li>
+									<li>
+										<NavLink Match="NavLinkMatch.Prefix" href="/loans/user" class="nav-link nav_click rounded-bottom">
+											<i class="fa-solid fa-table-cells-large me-2"></i> ระบบผู้ใช้งาน
+										</NavLink>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.Prefix" href="/dashboard" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-solid fa-chart-line me-2"></i>
+									<span>รายงาน (Dashboard)</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/assignmanager" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>มอบหมายผู้จัดการศูนย์</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/assignloan" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>มอบหมายพนักงานธุกิจสินเชื่อ</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/returnedbranch" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>รายการที่สาขาภาคส่งคืน</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/customerstarget" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>ข้อมูลและสถานะลูกค้า</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/approvaltarget" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>อนุมัติกลุ่มเป้าหมาย</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/approvalrequest" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>อนุมัติคำขอสินเชื่อ</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/historyassign" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>ประวัติการมอบหมาย</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/workloadoverdue" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>รายการที่มีภาระงานเกินกำหนด</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/returnedcenter" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-rectangle-list me-2"></i>
+									<span>รายการที่ผู้จัดการศูนย์ส่งคืน</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.All" href="/managesystem" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-solid fa-gears me-2"></i>
+									<span>จัดการระบบ</span>
+								</div>
+							</NavLink>
+						</li>
+						<li class="mb-1">
+							<NavLink Match="NavLinkMatch.Prefix" href="/branch/user" class="nav-link btn btn-toggle rounded nav_click">
+								<div class="">
+									<i class="fa-regular fa-user me-2"></i>
+									<span>จัดการ User</span>
+								</div>
+							</NavLink>
+						</li>
+					</ul>
+				</div>
+			</Animate>
+		</div>
+		<div class="sb-sidenav-footer text-center text-white-50">
+			RM Sales Tracking
+		</div>
+	</nav>
+</div>
+
+

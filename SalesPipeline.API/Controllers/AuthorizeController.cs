@@ -1,0 +1,57 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SalesPipeline.Utils.Resources.Authorizes.Auths;
+using SalesPipeline.Utils.Resources.Shares;
+using Asp.Versioning;
+using SalesPipeline.Infrastructure.Helpers;
+using SalesPipeline.Infrastructure.Wrapper;
+
+namespace SalesPipeline.API.Controllers
+{
+	[ApiVersion(1.0)]
+	[ApiController]
+	[Route("v{version:apiVersion}/[controller]")]
+	public class AuthorizeController : ControllerBase
+	{
+		private IRepositoryWrapper _repo;
+
+		public AuthorizeController(IRepositoryWrapper repo)
+		{
+			_repo = repo;
+		}
+
+		[AllowAnonymous]
+		[HttpPost("Authenticate")]
+		public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+		{
+			try
+			{
+				var response = await _repo.Authorizes.Authenticate(model);
+				
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpGet("ExpireToken")]
+		public IActionResult ExpireToken([FromQuery] string token)
+		{
+			try
+			{
+				var response = _repo.Authorizes.ExpireToken(token);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+
+	}
+}

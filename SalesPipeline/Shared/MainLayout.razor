@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.AspNetCore.Http.Features;
+@using System.Timers;
+
+@inherits LayoutComponentBase
+@implements IAsyncDisposable
+
+<PageTitle>SalesPipeline</PageTitle>
+
+<CascadingValue Value="isAuthorize">
+	<CascadingValue Value="UserInfo">
+		<CascadingValue Value="MenuItem">
+			@if (isAuthorize == true && UserInfo.Id > 0 && MenuItem.Count > 0)
+			{
+				<div class="back_layout">
+					<NavTop />
+					<div id="layoutSidenavBack">
+						<NavLeft />
+						@* <NavLeftBackUp /> *@
+						<div id="layoutSidenav_contentBack">
+							<main class="pt-2">
+								@Body
+							</main>
+						</div>
+					</div>
+				</div>
+			}
+		</CascadingValue>
+	</CascadingValue>
+</CascadingValue>
+
+<Toasts class="p-4" AutoHide="true" Delay="1500" Placement="ToastsPlacement.TopCenter" />
+
+<Modal @ref="modalConfirmLogout"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   OnHiding="WantContinue"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<i class="fa-solid fa-circle-check fs_5r text-primary"></i>
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">
+				ท่านไม่ได้ใช้งานในระยะเวลาที่กำหนด <br />
+				ระบบจะปิดใน <span class="text-danger">@counterDate</span>
+			</h4>
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick=WantContinue>ต้องการใช้งานต่อ</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+
+<input type="hidden" id="baseUriApi" value="@baseUriApi" />
+
+

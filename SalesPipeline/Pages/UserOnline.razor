@@ -1,0 +1,153 @@
+﻿@page "/useronline"
+
+@using Microsoft.AspNetCore.Http.Features;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.AspNetCore.WebUtilities;
+
+@layout MainLayoutBlank
+
+<div class="container-xxl mt-3">
+	<div class="row">
+		<div class="col-12 col-xl">
+		</div>
+		<div class="col-12 col-xl-10">
+			<div class="row row_title_back d-flex align-items-center">
+				<div class="col">
+					<h4 class="back_title mt-1">
+						User Online <span class="text-primary">@(UserOnlineModels?.Count ?? 0)</span>
+					</h4>
+				</div>
+				<div class="col col-sm-3 text-end d-none d-sm-block">
+					<Button Type="ButtonType.Button" Class="btn btn-secondary text-white" @onclick=ResetUserOnline>
+						Reset Online
+					</Button>
+				</div>
+			</div>
+			<div class="row p-2">
+				<div class="col-12 box_group">
+					<div class="table-responsive">
+						<table class="table table-striped table_list m-0">
+							<thead class="table-primary">
+								<tr>
+									<th class="mw_15r"></th>
+									<th class="mw_10r">Online Date</th>
+									<th class="mw_10r">IP Address</th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (UserOnlineModels == null)
+								{
+									<tr class="text-center align-middle">
+										<td colspan="100">
+											<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+										</td>
+									</tr>
+								}
+								else if (UserOnlineModels.Count == 0)
+								{
+									<tr class="text-center align-middle">
+										<td colspan="100">
+											<em>ไม่พบข้อมูล</em>
+										</td>
+									</tr>
+								}
+								else
+								{
+									foreach (var item in UserOnlineModels.OrderByDescending(x => x.OnlineDate))
+									{
+										<tr>
+											<td class="text-start">
+												<div class="row d-flex align-items-center">
+													<div class="col-3 maxw_5r">
+														<div class="image-row">
+															<img src="@item.ImgUrl" />
+														</div>
+													</div>
+													<div class="col tb_card">
+														<p class="tb_card_title text-primary">@GeneralUtils.EmptyTo(item.FullName)</p>
+													</div>
+												</div>
+											</td>
+											<td>@GeneralUtils.getFullThaiShot(item.OnlineDate) @GeneralUtils.DateToTimeString(item.OnlineDate,isSecond:true)</td>
+											<td>@GeneralUtils.EmptyTo(item.Ipaddress)</td>
+										</tr>
+									}
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-xl">
+		</div>
+	</div>
+</div>
+
+@code {
+	[Inject] protected IHttpContextAccessor _accessor { get; set; } = null!;
+
+	protected HubConnection _hubUserConnection { get; set; } = null!;
+	protected List<UserOnlineModel>? UserOnlineModels;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			try
+			{
+				if (_hubUserConnection == null)
+				{
+					var _hubUrlWeb = _appSet.Value.baseUriWeb?.TrimEnd('/') + SignalRUtls.HubUserUrl;
+					_hubUserConnection = new HubConnectionBuilder().WithUrl(_hubUrlWeb).Build();
+				}
+
+				if (_hubUserConnection.State == HubConnectionState.Disconnected)
+				{
+					await _hubUserConnection.StartAsync();
+				}
+
+				if (_hubUserConnection != null)
+				{
+					var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+
+					_hubUserConnection.On<List<UserOnlineModel>>(SignalRUtls.ReceiveUserOnline, SignalRUpdateUserToModel);
+
+					await _hubUserConnection.SendAsync(SignalRUtls.GetUserOnline);
+
+				}
+			}
+			catch
+			{
+			}
+
+			firstRender = false;
+		}
+	}
+
+	//ข้อมูลที่ Return จาก SignalR นำมา Update to Model และ Update UI
+	private async Task SignalRUpdateUserToModel(List<UserOnlineModel> users)
+	{
+		UserOnlineModels = users;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async Task ResetUserOnline()
+	{
+		await _hubUserConnection.SendAsync(SignalRUtls.ResetUserOnline);
+	}
+
+
+	public async ValueTask DisposeAsync()
+	{
+		if (_hubUserConnection is not null && UserInfo is not null)
+		{
+			await _hubUserConnection.SendAsync(SignalRUtls.RemoveUserOnline, new UserOnlineModel()
+				{
+					Id = UserInfo.Id
+				});
+		}
+	}
+
+
+}

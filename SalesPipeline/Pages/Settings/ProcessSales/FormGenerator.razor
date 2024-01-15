@@ -1,0 +1,184 @@
+﻿@page "/setting/processsales/formgenerator/create/{id:guid}"
+@page "/setting/processsales/formgenerator/update/{id_reply:guid}"
+
+<PageTitle>Form Generator</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 my-2">
+			<div class="box_content">
+				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="p-2">
+						<a href="/setting/processsales"><img src="/image/icon/assign_user128x.png" width="55" /></a>
+					</div>
+					<div class="p-2">
+						<p class="back_topic"><span class="back_topic_active">Form Generator</span></p>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col-12">
+						<div class="bg-header text-white rounded-1 p-2">
+							<h5 class="px-2">@formModel.ProcessSaleName</h5>
+						</div>
+					</div>
+				</div>
+				<div class="row mt-3">
+					@if (formModel.ProcessSale_Reply_Sections?.Count > 0)
+					{
+						var replySaleSections = formModel.ProcessSale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+						foreach (var saleSections in replySaleSections)
+						{
+							<div class="col-12">
+
+								<div class="row">
+									<div class="col-12">
+										<div class="row mb-3">
+											<div class="col-12">
+												<h6 class="px-2">@saleSections.Name</h6>
+											</div>
+										</div>
+									</div>
+
+									@if (saleSections.ProcessSale_Reply_Section_Items?.Count > 0)
+									{
+										var replyItems = saleSections.ProcessSale_Reply_Section_Items?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+										foreach (var item in replyItems)
+										{
+											var replyItemValues = item.ProcessSale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+											<div class="col-12 col-xl-10">
+												<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+													<div class="row my-2">
+														<div class="col-12">
+															<div class="">
+																<h5 class="px-2">@item.ItemLabel</h5>
+															</div>
+														</div>
+													</div>
+													@if (item.ItemType == FieldTypes.ShortAnswer)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	<input @bind="item_option.ReplyValue" type="text" class="form-control" placeholder="">
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.Multiplechoice)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															bool isCheck = false;
+															bool.TryParse(item_option.ReplyValue, out isCheck);
+
+															<div class="row mb-3">
+																<div class="col-12">
+																	<div class="form-check d-flex align-items-center">
+																		<input class="form-check-input me-2" type="checkbox"
+																			   checked=@isCheck
+																			   @onchange="((e)=> OnCheckBox(e,saleSections.PSaleSectionId,item.PSaleSectionItemId,item_option.PSaleSectionItemOptionId))">
+																		@item_option.OptionLabel
+																	</div>
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.Dropdown)
+													{
+														if (replyItemValues.Count > 0)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	<select @onchange="((e)=> OnDropdown(e,saleSections.PSaleSectionId,item.PSaleSectionItemId))" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+																		<option value="">เลือก</option>
+																		@foreach (var item_option in replyItemValues)
+																		{
+																			<option value="@item_option.PSaleSectionItemOptionId" selected="@(item_option.ReplyValue?.ToLower() == "true")">@item_option.OptionLabel</option>
+																		}
+																	</select>
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.Fileupload)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	@if (!item_option.bClearInput)
+																	{
+																		<InputFile class="form-control" OnChange="((e)=>OnFileuploadChanged(e,item_option))" />
+																	}
+																</div>
+																<div class="col-12">
+																	@if (!String.IsNullOrEmpty(item_option.errorMessage))
+																	{
+																		<p class="text-danger">@item_option.errorMessage</p>
+																	}
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.Date)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	<input @bind="item_option.ReplyDate" type="date" class="form-control">
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.Time)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	<input @bind="item_option.ReplyTime" type="time" class="form-control">
+																</div>
+															</div>
+														}
+													}
+												</div>
+											</div>
+										}
+									}
+
+								</div>
+							</div>
+						}
+					}
+
+				</div>
+				<div class="my-4 text-center">
+					<div class="d-flex bd-highlight align-items-center justify-content-center">
+						<div class="p-2 bd-highlight">
+							<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+								กลับ
+							</Button>
+						</div>
+						<div class="p-2 bd-highlight">
+							<Button @onclick=Save Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

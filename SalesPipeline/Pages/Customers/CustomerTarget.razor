@@ -1,0 +1,180 @@
+﻿@page "/customer/target"
+
+<PageTitle>ข้อมูลลูกค้าเป้าหมาย</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">ข้อมูล <span class="back_topic_active">ข้อมูลลูกค้าเป้าหมาย</span></p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">ชื่อลูกค้า</label>
+							<div class="input-group mw_10r">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ชื่อผู้ติดต่อ</label>
+							<div class="input-group mw_10r">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">กิจการสาขาภาค</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ศูนย์สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สถานะ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+						<div class="col mb-2 mt-3">
+							<Dropdown Class="w-100">
+								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+								<DropdownMenu>
+									<DropdownItem To="/customer/target/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+									<DropdownItem To="/customer/target/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">ลำดับที่</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">ผู้ติดต่อ</th>
+											<th class="text-center">ห่วงโซ่</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">กิจการสาขาภาค</th>
+											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สถานะ</th>
+											<th class="text-center">จัดการ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+											int SequenceNo = 0;
+											foreach (var item in Items)
+											{
+												bool status = item.Status == StatusModel.Active;
+
+												<tr>
+													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													<td class="text-center">@item.EmployeeName</td>
+													<td class="">@item.ContactName</td>
+													<td class="text-center">@item.ValueChain</td>
+													<td class="text-center">@item.BusinessType</td>
+													<td class="text-center">-</td>
+													<td class="text-center">-</td>
+													<td class="text-center">@item.ProvinceId</td>
+													<td class="text-center">
+														<p class="fw-bold">-</p>
+													</td>
+													<td class="text-center">
+														<a href="/customer/target/update/@item.Id">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.EmployeeName))'>ลบ</a>
+													</td>
+												</tr>
+												SequenceNo++;
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+
+
+
+

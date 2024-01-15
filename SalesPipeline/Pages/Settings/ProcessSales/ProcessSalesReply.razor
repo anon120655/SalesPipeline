@@ -1,0 +1,84 @@
+﻿@page "/setting/processsales/reply"
+
+<PageTitle>Reply</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/setting/processsales"><img src="/image/icon/assign_user128x.png" width="55" /></a>
+							</div>
+						<div class="p-2">
+							<p class="back_topic"><span class="back_topic_active">Reply</span></p>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">ผู้บันทึก</th>
+											<th class="text-center">วันที่สร้าง</th>
+											<th class="text-center">วันที่แก้ไข</th>
+											<th class="text-center">กระบวนการขาย</th>
+											<th class="text-center">ดู/แก้ไข</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="">@item.CreateByName</td>
+													<td class="">@item.CreateDate</td>
+													<td class="">@item.UpdateDate</td>
+													<td class="">@item.ProcessSaleName</td>
+													<td class="text-center">
+														<a href="/setting/processsales/reply/@item.Id">View</a> /
+														<a href="/setting/processsales/formgenerator/update/@item.Id">แก้ไข</a>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+
+

@@ -1,0 +1,26 @@
+﻿
+/*max-width: ..px คือ เมื่อความกว้างมากกว่า ..px*/
+/*min-width: ..px คือ เมื่อความกว้างน้อยกว่า ..px*/
+
+/*col-xl*/
+@media (min-width: 1200px) {
+	#elm_targetsales {
+		max-width: 21%;
+	}
+
+	.funnel_outer ul li div p.step_val {
+		left: 93% !important;
+	}
+}
+/*col-lg*/
+@media (max-width: 1200px) and (min-width: 992px) {
+}
+/*col-md*/
+@media (max-width: 992px) and (min-width: 768px) {
+}
+/*col-xs*/
+@media (max-width: 576px) {
+	.funnel_outer ul li div p.step_val {
+		left: 88% !important;
+	}
+}

@@ -1,0 +1,159 @@
+﻿@page "/setting/processsales/reply/{id:guid}"
+
+<PageTitle>Reply</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	var replySections = formModel.ProcessSale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/setting/processsales"><img src="/image/icon/assign_user128x.png" width="55" /></a>
+						</div>
+						<div class="p-2">
+							<p class="back_topic"><span class="back_topic_active">Reply</span></p>
+						</div>
+					</div>
+					<div class="px-0">
+						<div class="row mt-3">
+							<div class="col-12">
+								<div class="bg-header text-white rounded-1 p-2">
+									<h5 class="px-2">@formModel.ProcessSaleName</h5>
+								</div>
+							</div>
+						</div>
+
+						<div class="row mt-3">
+							@if (replySections.Count > 0)
+							{
+								foreach (var replySection in replySections)
+								{
+									<div class="col-12">
+										<div class="row">
+											<div class="col-12">
+												<div class="row mb-3">
+													<div class="col-12">
+														<h6 class="px-2">@replySection.Name</h6>
+													</div>
+												</div>
+											</div>
+											@foreach (var item in replySection.ProcessSale_Reply_Section_Items ?? new())
+											{
+												var replyItemValues = item.ProcessSale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+												<div class="col-12 col-xl-10">
+													<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+														<div class="row my-2">
+															<div class="col-12">
+																<div class="">
+																	<h5 class="">@item.ItemLabel</h5>
+																</div>
+															</div>
+														</div>
+														@if (item.ItemType == FieldTypes.ShortAnswer)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="row mb-3">
+																	<div class="col-12">
+																		<p class="text-primary">@item_option.ReplyValue</p>
+																	</div>
+																</div>
+															}
+														}
+														else if (item.ItemType == FieldTypes.Multiplechoice)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																bool isCheck = false;
+																bool.TryParse(item_option.ReplyValue, out isCheck);
+
+																if (isCheck)
+																{
+																	<div class="row mb-3">
+																		<div class="col-12">
+																			<p class="text-primary">@item_option.OptionLabel</p>
+																		</div>
+																	</div>
+																}
+															}
+														}
+														else if (item.ItemType == FieldTypes.Dropdown)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	@foreach (var item_option in replyItemValues)
+																	{
+																		bool isCheck = false;
+																		bool.TryParse(item_option.ReplyValue, out isCheck);
+
+																		if (isCheck)
+																		{
+																			<div class="row mb-3">
+																				<div class="col-12">
+																					<p class="text-primary">@item_option.OptionLabel</p>
+																				</div>
+																			</div>
+																		}
+																	}
+																</div>
+															</div>
+														}
+														else if (item.ItemType == FieldTypes.Fileupload)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="row mb-3">
+																	<div class="col-12">
+																		<a href="@item_option.FileUrl" class="text-primary" target="_blank">Show</a>
+																	</div>
+																</div>
+															}
+														}
+														else if (item.ItemType == FieldTypes.Date)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="row mb-3">
+																	<div class="col-12">
+																		<p class="text-primary">@item_option.ReplyDate</p>
+																	</div>
+																</div>
+															}
+														}
+														else if (item.ItemType == FieldTypes.Time)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="row mb-3">
+																	<div class="col-12">
+																		<p class="text-primary">@item_option.ReplyTime</p>
+																	</div>
+																</div>
+															}
+														}
+													</div>
+												</div>
+											}
+										</div>
+									</div>
+								}
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+

@@ -1,0 +1,183 @@
+﻿@page "/loans/permission/create"
+@page "/loans/permission/update/{id:int}"
+
+<PageTitle>ระบบสิทธิ์การเข้าถึง</PageTitle>
+
+<link href="/css/tree_level.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
+						<div class="p-2">
+							<p class="back_topic_active">ระบบสิทธิ์การเข้าถึง</p>
+						</div>
+					</div>
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+						<DataAnnotationsValidator />
+						<div class="row mt-5">
+							<div class="col-12">
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสหน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.Code" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Code)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อหน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.Name" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Name)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รายละเอียดหน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.Description" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Description)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">อนุญาติให้แก้ไข<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<Switch @bind-Value="formModel.IsModify" />
+									</div>
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="row mb-3">
+									<div class="col-12">
+										<p class="back_topic_active ms-3">รายการเมนู</p>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-12 col-xl-1"></div>
+									<div class="col-12 col-xl-6">
+										<div>
+											<ul class="tree">
+												@if (LookUp?.MenuItem?.Count > 0)
+												{
+													foreach (var item in LookUp.MenuItem.Where(x => x.ParentNumber == 0))
+													{
+														User_PermissionCustom _permission = formModel.User_Permissions?.FirstOrDefault(x => x.MenuNumber == item.MenuNumber) ?? new User_PermissionCustom();
+
+														var menuLevel2 = MenuItem.Where(x => x.ParentNumber == item.MenuNumber).ToList();
+														if (menuLevel2.Count == 0)
+														{
+															<li class="mb-1">
+																<a>
+																	<input class="cb_circle" type="checkbox" checked=@_permission.IsView
+																		   id="@item.MenuNumber"
+																		   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
+
+																	<span class="ms-2">	@item.Name</span>
+																</a>
+															</li>
+														}
+														else
+														{
+															<li class="mb-1">
+																<a>
+																	<input class="cb_circle" type="checkbox" checked=@_permission.IsView
+																		   id="@item.MenuNumber"
+																		   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
+
+																	<span class="ms-2">	@item.Name</span>
+																</a>
+																<ul class="ul_dot_none">
+																	@foreach (var iteml2 in menuLevel2)
+																	{
+																		User_PermissionCustom _permission2 = formModel.User_Permissions?.FirstOrDefault(x => x.MenuNumber == iteml2.MenuNumber) ?? new User_PermissionCustom();
+
+																		var menuLevel3 = MenuItem.Where(x => x.ParentNumber == iteml2.MenuNumber).ToList();
+																		if (menuLevel3.Count == 0)
+																		{
+																			<li class="mb-1">
+																				<a>
+																					<input class="cb_circle" type="checkbox" checked=@_permission2.IsView
+																						   id="@iteml2.MenuNumber"
+																						   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
+
+																					<span class="ms-2">	@iteml2.Name</span>
+																				</a>
+																			</li>
+																		}
+																		else
+																		{
+																			<li class="mb-1">
+																				<a>
+																					<input class="cb_circle" type="checkbox" checked=@_permission2.IsView
+																						   id="@iteml2.MenuNumber"
+																						   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
+
+																					<span class="ms-2">	@iteml2.Name</span>
+																				</a>
+																				<ul class="ul_dot_none">
+																					@foreach (var iteml3 in menuLevel3)
+																					{
+																						User_PermissionCustom _permission3 = formModel.User_Permissions?.FirstOrDefault(x => x.MenuNumber == iteml3.MenuNumber) ?? new User_PermissionCustom();
+
+																						<li class="mb-1">
+																							<a>
+																								<input class="cb_circle" type="checkbox" checked=@_permission3.IsView
+																									   id="@iteml3.MenuNumber"
+																									   value="@iteml3.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml3.MenuNumber,1))" />
+
+																								<span class="ms-2">	@iteml3.Name</span>
+																							</a>
+																						</li>
+																					}
+																				</ul>
+																			</li>
+																		}
+																	}
+																</ul>
+															</li>
+														}
+
+													}
+												}
+											</ul>
+										</div>
+									</div>
+									<div class="col-12 col-xl-4"></div>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										บันทึก
+									</Button>
+								</div>
+							</div>
+						</div>
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

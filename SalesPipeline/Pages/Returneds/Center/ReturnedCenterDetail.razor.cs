@@ -1,0 +1,33 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+
+namespace SalesPipeline.Pages.Returneds.Center
+{
+	public partial class ReturnedCenterDetail
+	{
+		[Parameter]
+		public Guid id { get; set; }
+
+		string? _errorMessage = null;
+		private User_PermissionCustom _permission = new();
+
+		protected override async Task OnInitializedAsync()
+		{
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedCenter) ?? new User_PermissionCustom();
+			StateHasChanged();
+
+		}
+
+		protected async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if (firstRender)
+			{
+				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				StateHasChanged();
+				firstRender = false;
+			}
+		}
+	}
+}

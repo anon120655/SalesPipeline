@@ -1,0 +1,430 @@
+﻿@page "/customer/target/create"
+@page "/customer/target/update/{id:guid}"
+
+<PageTitle>รายการลูกค้า</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
+						<div class="p-2">
+							<p class="back_topic_active">เพิ่มรายการลูกค้า</p>
+						</div>
+					</div>
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+						<DataAnnotationsValidator />
+						<div class="row my-3">
+							<div class="col-12">
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันที่เข้ามาติดต่อ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.DateContact" type="date" class="form-control">
+										<ValidationMessage For="@(() => formModel.DateContact)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
+									<div class="col-12 col-md-7 col-xl-3">
+										<select @bind="formModel.ContactChannelId" class="form-select">
+											<option value="">เลือก</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.ContactChannelId)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.BranchId" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.BranchId)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ProvincialOffice" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ProvincialOffice)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.EmployeeName" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.EmployeeName)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.EmployeeId" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.EmployeeId)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ติดต่อ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ContactName" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ContactName)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ContactTel" type="tel" class="form-control">
+										<ValidationMessage For="@(() => formModel.ContactTel)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						@* ข้อมูลบริษัท *@
+						<div class="row my-3">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลบริษัท</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อบริษัท</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.CompanyName" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.CompanyName)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เลขทะเบียนนิติบุคคล</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.JuristicPersonRegNumber" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.JuristicPersonRegNumber)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทกิจการ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.BusinessType" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.BusinessType)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.BusinessSize" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.BusinessSize)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.MainProduction" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.MainProduction)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ValueChain" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ValueChain)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.CompanyEmail" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.CompanyEmail)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.CompanyTel" type="tel" class="form-control">
+										<ValidationMessage For="@(() => formModel.CompanyTel)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ParentCompanyGroup" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ParentCompanyGroup)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						@* ที่ตั้งกิจการ *@
+						<div class="row my-3">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ที่ตั้งกิจการ</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.HouseNo" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.HouseNo)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.VillageNo" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.VillageNo)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<select @bind="formModel.ProvinceId" class="form-select">
+											<option value="">เลือก</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.ProvinceId)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<select @bind="formModel.AmphurId" class="form-select">
+											<option value="">เลือก</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.AmphurId)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<select @bind="formModel.TambolId" class="form-select">
+											<option value="">เลือก</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.TambolId)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสไปรษณีย์</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ZipCode" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ZipCode)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						@* กรรมการบริษัท *@
+						<div class="row">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">กรรมการบริษัท</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								@if (formModel.Customer_Committees != null && formModel.Customer_Committees.Count > 0)
+								{
+									int index = 1;
+									foreach (var item in formModel.Customer_Committees)
+									{
+										Guid ID = item.Id;
+
+										<div class="form-group row mb-3">
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index</label>
+											<div class="col-12 col-md-7 col-xl-8">
+												<input @bind="item.Name" type="text" class="form-control">
+											</div>
+											<div class="col-12 col-md-11 col-xl-1 d-flex align-items-center justify-content-end justify-content-xl-start  mt-2 mt-xl-0">
+												<Button @onclick="async () => await RemoveCommittee(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
+													<i class="fa-regular fa-trash-can"></i>
+												</Button>
+											</div>
+										</div>
+										index++;
+									}
+								}
+
+								<div class="row mb-3">
+									<div class="col-sm-10 text-end">
+										<Button @onclick="async () => await InsertCommittee()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+											<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
+										</Button>
+									</div>
+								</div>
+							</div>
+						</div>
+						@* ผู้ถือหุ้น *@
+						<div class="row">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ผู้ถือหุ้น</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันประชุมผู้ถือหุ้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ShareholderMeetDay" type="date" class="form-control">
+									</div>
+								</div>
+								@if (formModel.Customer_Shareholders != null && formModel.Customer_Shareholders.Count > 0)
+								{
+									int index = 1;
+									foreach (var item in formModel.Customer_Shareholders)
+									{
+										Guid ID = item.Id;
+
+										<div class="d-flex justify-content-center"><hr class="w-50"></div>
+										<div class="form-group row mb-3">
+											<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผู้ถือหุ้น คนที่ @index</label>
+											<div class="col-6 col-md-7 col-xl-8 text-end">
+												<Button @onclick="async () => await RemoveShareholder(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
+													<i class="fa-regular fa-trash-can"></i>
+												</Button>
+											</div>
+										</div>
+										<div class="form-group row mb-3">
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @bind="item.Name" type="text" class="form-control">
+											</div>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @bind="item.Nationality" type="text" class="form-control">
+											</div>
+										</div>
+										<div class="form-group row mb-3">
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @bind="item.Proportion" type="text" class="form-control">
+											</div>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @bind="item.NumberShareholder" type="text" class="form-control">
+											</div>
+										</div>
+										<div class="form-group row mb-3">
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">มูลค่าหุ้นทั้งหมด</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @bind="item.TotalShareValue" type="text" class="form-control">
+											</div>
+										</div>										
+										index++;
+									}
+								}
+								<div class="row mb-3">
+									<div class="col-sm-10 text-end">
+										<Button @onclick="async () => await InsertShareholder()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+											<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
+										</Button>
+									</div>
+								</div>
+							</div>
+						</div>
+						@* ข้อมูลทางการเงิน *@
+						<div class="row my-3">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลทางการเงิน</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.RegisteredCapital" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.RegisteredCapital)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Credit Score</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.CreditScore" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ZipCode)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ปีงบประมาณ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.FiscalYear" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.FiscalYear)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันเดือนปีงบการเงิน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.StatementDate" type="date" class="form-control">
+										<ValidationMessage For="@(() => formModel.StatementDate)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้า</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccReceivable" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccReceivable)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccRecProceedsNet" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccRecProceedsNet)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินค้าคงเหลือ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.Inventories" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Inventories)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.Nationality" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Nationality)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.Proportion" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Proportion)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.NumberShareholder" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.NumberShareholder)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.NameShareholder" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.NameShareholder)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										บันทึก
+									</Button>
+								</div>
+							</div>
+						</div>
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+	<MessageError errorMessage="@_errorMessage" />
+
+}
+else
+{
+	<NotPermissionPage />
+}
+

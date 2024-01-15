@@ -1,0 +1,106 @@
+﻿@page "/setting/sla"
+
+<PageTitle>SLA การดำเนินการ</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+<link href="/css/switch.css" rel="stylesheet" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">ตั้งค่า <span class="back_topic_active">SLA การดำเนินการ</span></p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s d-flex justify-content-end">
+						<div class="col mb-2 mt-3">
+							<Dropdown Class="w-100">
+								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+								<DropdownMenu>
+									<DropdownItem To="/setting/sla/create" Type="ButtonType.Link">เพิ่ม</DropdownItem>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">หัวข้อการให้บริการ</th>
+											<th class="text-center">วัน</th>
+											<th class="text-center">จัดการ</th>
+											<th class="text-center">การใช้งาน</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												bool status = item.Status == StatusModel.Active;
+
+												<tr>
+													<td class="">@item.Name</td>
+													<td class="">@item.Day</td>
+													<td class="text-center">
+														<a href="/setting/sla/update/@item.Id">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
+													</td>
+													<td class="text-center">
+														<label class="switch">
+															<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
+															<span class="slider round"></span>
+														</label>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
+}
+else
+{
+	<NotPermissionPage />
+}

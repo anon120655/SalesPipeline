@@ -1,0 +1,107 @@
+﻿@page "/signin"
+
+@layout MainLayoutBlank
+
+@using Microsoft.AspNetCore.Http.Features;
+
+<section class="h-100 gradient-form" style="background-color: #eee;">
+	<div class="container py-5 h-100">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-xl-10">
+				<div class="card rounded-3">
+					<div class="row g-0">
+						<div class="col-lg-6">
+							<div class="card-body p-md-5 mx-md-4">
+								<div class="text-center fw-bold mt-5">
+									<NavLink href="/">
+										<img src="/image/logo/logo_bacc.png" width="155" />
+									</NavLink>
+									<h4 class="mt-5 mb-5 pb-3">BACC RM SALE</h4>
+									<h2 class="mt-5 mb-5 pb-3 text-primary">BACK - OFFICE</h2>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6 d-flex justify-content-center align-items-center bg_blue_navy">
+							<div class="text-white px-3 py-4 p-md-5 mx-md-4">
+								<EditForm Model="@loginModel" OnValidSubmit="SubmitLogin" class="bg-white p-5">
+									<DataAnnotationsValidator />
+									<div class="form-outline mb-4">
+										<label class="form-label text-black" for="">Username (E-mail)</label>
+										<input type="text" @bind="@loginModel.Username" class="form-control" placeholder="" />
+										<ValidationMessage For="@(() => loginModel.Username)" />
+									</div>
+									<div class="form-outline mb-4">
+										<label class="form-label text-black" for="">Password</label>
+										<input type="password" @bind="@loginModel.Password" class="form-control" />
+										<ValidationMessage For="@(() => loginModel.Password)" />
+									</div>
+									<div class="text-center pt-1 mb-5 pb-1">
+										<Button Color="ButtonColor.Primary"
+												Type="ButtonType.Submit"
+												Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100">
+											@if (isLoading)
+											{
+												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											}
+											SIGN IN
+										</Button>
+									</div>
+									@if (_errorMessage is not null)
+									{
+										<div class="alert alert-danger alert-dismissible" role="alert">
+											<p class="text-red">@_errorMessage</p>
+										</div>
+									}
+								</EditForm>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+@if (isLoading)
+{
+	<div id="divLoadingBlank"></div>
+}
+
+@code {
+	[Inject] protected IHttpContextAccessor _accessor { get; set; } = null!;
+
+	string? _errorMessage = null;
+	bool isLoading = false;
+	LoginRequestModel loginModel = new LoginRequestModel();
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await _authorizeViewModel.LogoutAsync();
+	}
+
+	//protected override async Task OnInitializedAsync()
+	//{
+	//	await _authApi.LogoutAsync();
+	//}
+
+	protected async Task SubmitLogin()
+	{
+		var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+
+		isLoading = true;
+		await Task.Delay(100);
+		// loginModel.IPAddress = $"{remoteIpAddress}";
+		var authenticate = await _authorizeViewModel.LoginAsync(loginModel);
+		if (authenticate.Status)
+		{
+			_Navs.NavigateTo("/");
+		}
+		else
+		{
+			isLoading = false;
+			_errorMessage = authenticate.errorMessage;
+		}
+
+	}
+
+
+}

@@ -1,0 +1,172 @@
+﻿@page "/setting/processsales/update2/{id:guid}"
+
+<PageTitle>ตั้งค่ากระบวนการขาย</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	@* var saleItems = formModel.ProcessSaleItems?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/setting/processsales"><img src="/image/icon/assign_user128x.png" width="55" /></a>
+						</div>
+						<div class="p-2">
+							<p class="back_topic">ตั้งค่า <span class="back_topic_active">กระบวนการขาย</span></p>
+						</div>
+					</div>
+					<div class="px-0">
+						<div class="row mt-3">
+							<div class="col-12">
+								<div class="bg-header text-white rounded-1 p-2">
+									<h5 class="px-2">@formModel.Name</h5>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-3">
+							@if (saleItems.Count() > 0)
+							{
+								int index = 1;
+								foreach (var item in saleItems)
+								{
+									var itemOptions = item.ProcessSaleItemOptions?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+
+									<div class="col-12 col-xl-10">
+										<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+											<div class="row my-2">
+												<div class="col-12 col-sm-8 col-xl-7 mb-3 mb-xl-0">
+													<div class="row mb-3">
+														<div class="col-12">
+															<input @bind="item.ItemLabel" type="text" class="form-control" placeholder="คำถาม">
+														</div>
+													</div>
+												</div>
+												<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
+													<select @onchange="async (e) => await OnItemTypes(e,item.Id)" class="form-select" value="@item.ItemType">
+														<option value="@FieldTypes.ShortAnswer">@PropertiesMain.PerFieldType(FieldTypes.ShortAnswer).Name</option>
+														<option value="@FieldTypes.Multiplechoice">@PropertiesMain.PerFieldType(FieldTypes.Multiplechoice).Name</option>
+														<option value="@FieldTypes.Dropdown">@PropertiesMain.PerFieldType(FieldTypes.Dropdown).Name</option>
+														<option value="@FieldTypes.Fileupload">@PropertiesMain.PerFieldType(FieldTypes.Fileupload).Name</option>
+														<option value="@FieldTypes.Date">@PropertiesMain.PerFieldType(FieldTypes.Date).Name</option>
+														<option value="@FieldTypes.Time">@PropertiesMain.PerFieldType(FieldTypes.Time).Name</option>
+													</select>
+												</div>
+											</div>
+											@if (item.ItemType == FieldTypes.ShortAnswer)
+											{
+												<div class="row mb-3">
+													<div class="col-12 col-sm-8 col-xl-7">
+														<input type="text" class="form-control" placeholder="text" disabled>
+													</div>
+												</div>
+											}
+											else if (item.ItemType == FieldTypes.Multiplechoice || item.ItemType == FieldTypes.Dropdown)
+											{
+												if (itemOptions.Count > 0)
+												{
+													int indexType = 1;
+													foreach (var item_option in itemOptions)
+													{
+														<div class="row mb-3">
+															<div class="col-12 col-sm-8 col-xl-7">
+																<input @bind="item_option.OptionLabel" type="text" class="form-control" placeholder="ตัวเลือก @indexType">
+															</div>
+															<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
+																@if (itemOptions.Count > 1)
+																{
+																	<Button @onclick="async () => await RemoveItemOption(item.Id,item_option.Id)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
+																		<i class="fa-regular fa-trash-can"></i>
+																	</Button>
+																}
+																@if (itemOptions.Count == indexType)
+																{
+																	<Button @onclick="async () => await InsertItemOption(item.Id)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="ms-2">
+																		<i class="fa-solid fa-circle-plus"></i>
+																	</Button>
+																}
+															</div>
+														</div>
+														indexType++;
+													}
+												}
+											}
+											else if (item.ItemType == FieldTypes.Fileupload)
+											{
+												<div class="row mb-3">
+													<div class="col-12 col-sm-8 col-xl-7">
+														<input type="file" class="form-control" disabled>
+													</div>
+												</div>
+											}
+											else if (item.ItemType == FieldTypes.Date)
+											{
+												<div class="row mb-3">
+													<div class="col-12 col-sm-8 col-xl-7">
+														<input type="date" class="form-control" disabled>
+													</div>
+												</div>
+											}
+											else if (item.ItemType == FieldTypes.Time)
+											{
+												<div class="row mb-3">
+													<div class="col-12 col-sm-8 col-xl-7">
+														<input type="time" class="form-control" disabled>
+													</div>
+												</div>
+											}
+										</div>
+									</div>
+									<div class="col-12 col-xl-2">
+										<div class="mb-3 text-end text-xl-start">
+											@if (saleItems.Count > 1)
+											{
+												<Button @onclick="async () => await RemoveItem(item.Id)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+													<i class="fa-regular fa-trash-can"></i>
+												</Button>
+											}
+
+											@if (saleItems.Count == index)
+											{
+												<Button @onclick="async () => await InsertItem()" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
+													<i class="fa-solid fa-circle-plus"></i>
+												</Button>
+											}
+										</div>
+									</div>
+									index++;
+								}
+							}
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Save Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										บันทึก
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> *@
+}
+else
+{
+	<NotPermissionPage />
+}

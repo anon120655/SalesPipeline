@@ -1,0 +1,136 @@
+﻿@page "/systems/sla"
+
+<PageTitle>จัดการระบบ SLA</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/systems"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
+						</div>
+						<div class="p-2">
+							<p class="back_topic">จัดการระบบ <span class="back_topic_active">SLA</span></p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
+						<div class="col text-end">
+							<Button @onclick="(async()=> await OnShowSLA())" Color="ButtonColor.Primary" Class="mw_6r">
+								<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+							</Button>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">สถานะ</th>
+											<th class="text-center">จำนวนวัน</th>
+											<th class="text-center">แก้ไข</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.StatusSlaId</td>
+													<td class="">@item.NumberDays</td>
+													<td class="text-center">
+														<a class="text-action" role="button" @onclick="(async()=> await OnShowSLA(item.Id))">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.StatusSlaId.ToString()))'>ลบ</a>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<Modal @ref="modalSLA"
+		   Title="เพิ่มการจัดการ SLA"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModel" OnValidSubmit="Save">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">สถานะดำเนินงาน</label>
+							<div class="col-7">
+								<select @bind="formModel.StatusSlaId" class="form-select">
+									<option value="">เลือก</option>
+									<option value="5f500e0f-dbbb-4f44-8050-9b91ed98beb7">ติดต่อ</option>
+									<option value="fdc3b32e-c457-4979-9fa5-c9b6c6c102d6">เข้าพบ</option>
+								</select>
+								<ValidationMessage For="@(() => formModel.StatusSlaId)" />
+							</div>
+						</div>
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">จำนวนวัน</label>
+							<div class="col-7">
+								<input @bind="formModel.NumberDays" type="number" class="form-control">
+								<ValidationMessage For="@(() => formModel.NumberDays)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideSLA">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

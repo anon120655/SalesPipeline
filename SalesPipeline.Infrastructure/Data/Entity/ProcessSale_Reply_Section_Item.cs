@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SalesPipeline.Infrastructure.Data.Entity;
+
+public partial class ProcessSale_Reply_Section_Item
+{
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
+    /// </summary>
+    public short Status { get; set; }
+
+    public Guid PSaleReplySectionId { get; set; }
+
+    public Guid PSaleSectionItemId { get; set; }
+
+    public string? ItemLabel { get; set; }
+
+    public string? ItemType { get; set; }
+
+    public virtual ProcessSale_Reply_Section PSaleReplySection { get; set; } = null!;
+
+    public virtual ProcessSale_Section_Item PSaleSectionItem { get; set; } = null!;
+
+    public virtual ICollection<ProcessSale_Reply_Section_ItemValue> ProcessSale_Reply_Section_ItemValues { get; set; } = new List<ProcessSale_Reply_Section_ItemValue>();
+}

@@ -1,0 +1,120 @@
+﻿
+@using Microsoft.AspNetCore.WebUtilities
+
+@inject IOptions<AppSettings> _appSet
+
+<div class="row mt-3 mb-1 fs_0_85r d-flex align-items-center">
+	<div class="col-12 col-lg-4 d-none d-md-inline-block">
+		<div class="d-flex flex-row bd-highlight align-items-center">
+			<div class="px-2 bd-highlight">
+				แสดง <span class="">@(DisplayItems)</span> จากทั้งหมด <span class="">@(TotalItems)</span>
+			</div>
+			<div class="px-2 bd-highlight">
+				@* <select class="form-select form-select-sm w-100 fw-bold" @onchange="SelectPagesize">
+					<option value="10" selected>10</option>
+					<option value="25">25</option>
+					<option value="50">50</option>
+					<option value="100">100</option>
+					@if (_appSet.Value.ServerSite == ServerSites.DEV)
+					{
+						<option value="300">300</option>
+						<option value="500">500</option>
+					}
+				</select> *@
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-8 d-flex justify-content-end">
+		@if (Pager != null && Pager.EndPage > 1)
+		{
+			<ul class="pagination_b">
+				@if (Pager.CurrentPage > 1)
+				{
+					int tempCurrentPage = (Pager.CurrentPage - 1);
+					<li>
+						<a href="@(Pager.UrlAction)" @onclick="(async ()=> await SelectCurrentPage(1))">
+							หน้าแรก
+						</a>
+					</li>
+					<li>
+						<a href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
+							<img src="/image/icon/left-anticon@2x.png" width="8" />
+						</a>
+					</li>
+				}
+
+				@for (int page = Pager.StartPage; page <= Pager.EndPage; page++)
+				{
+					int tempint = page;
+					<li class="@(page == Pager.CurrentPage ? "active" : "")">
+						<a class="@(page == Pager.CurrentPage ? "circle" : "")" href="@(Pager.UrlAction)?page=@(page+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempint))">@(page)</a>
+					</li>
+				}
+
+				@if (Pager.CurrentPage < Pager.TotalPages)
+				{
+					int tempCurrentPage = (Pager.CurrentPage + 1);
+					int tempTotalPages = Pager.TotalPages;
+					<li>
+						<a href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
+							<img src="/image/icon/right-anticon-copy@2x.png" width="8" />
+						</a>
+					</li>
+					<li>
+						<a href="@(Pager.UrlAction)?page=@(tempTotalPages+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempTotalPages))">
+							หน้าสุดท้าย
+						</a>
+					</li>
+				}
+			</ul>
+		}
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public int DisplayItems { get; set; }
+	[Parameter]
+	public int TotalItems { get; set; }
+	[Parameter]
+	public Pager? Pager { get; set; }
+	[Parameter]
+	public EventCallback<string> OnSelectedPage { get; set; }
+	[Parameter]
+	public string? ParameterAll { get; set; }
+	[Parameter]
+	public string? WSelectPage { get; set; } = "50";
+
+	private async Task SelectCurrentPage(int pageItem)
+	{
+		if (ParameterAll != null)
+		{
+			await OnSelectedPage.InvokeAsync($"page={pageItem}{ParameterAll}");
+		}
+		else
+		{
+			await OnSelectedPage.InvokeAsync($"page={pageItem}");
+		}
+	}
+
+	[Parameter]
+	public EventCallback<int> OnShowOnPage { get; set; }
+	private async Task SelectPagesize(ChangeEventArgs e)
+	{
+		if (e.Value != null)
+		{
+			var status = e.Value.ToString();
+			if (int.TryParse(status, out int _pagesize))
+			{
+				if (Pager != null)
+				{
+					_Navs.NavigateTo($"{Pager.UrlAction}?page=1&pagesize={_pagesize}");
+				}
+				await OnShowOnPage.InvokeAsync(_pagesize);
+			}
+
+		}
+	}
+
+
+}

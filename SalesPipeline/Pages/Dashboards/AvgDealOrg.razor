@@ -1,0 +1,141 @@
+﻿@page "/dashboard/avgdealorg"
+
+<PageTitle>ดีลโดยเฉลี่ยต่อองค์กร</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
+						</div>
+						<div class="p-2">
+							<p class="back_topic">รายงาน <span class="back_topic_active">ดีลโดยเฉลี่ยต่อองค์กร</span></p>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12 col-xl"></div>
+						<div class="col-12 col-xl-7">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">จำนวนดีล</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="text-center">การเกษตร</td>
+											<td class="text-center">60</td>
+										</tr>
+										<tr>
+											<td class="text-center">ค้าขาย</td>
+											<td class="text-center">23</td>
+										</tr>
+										<tr>
+											<td class="text-center">แปรรูปผลไม้</td>
+											<td class="text-center">16</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-12 col-xl"></div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">กิจการสาขาภาค</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ศูนย์สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สถานะ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row mt-3 filter_s">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">ลำดับที่</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">ผู้ติดต่อ</th>
+											<th class="text-center">ห่วงโซ่</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">สาขาภาค</th>
+											<th class="text-center">จัดหวัด</th>
+											<th class="text-center">ผู้ดูแล</th>
+											<th class="text-center">สถานะ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@for (int i = 1; i < 6; i++)
+										{
+											<tr>
+												<td class="text-center">@(i)</td>
+												<td class="text-center">บริษัท ทดสอบ จำกัด</td>
+												<td class="">ยินดี ทดสอบระบบ</td>
+												<td class="text-center">ภาคกลางตอนบน</td>
+												<td class="text-center">ปทุมธานี</td>
+												<td class="text-center">อื่นๆ	</td>
+												<td class="text-center">ปทุมธานี</td>
+												<td class="">ยินดี ทดสอบระบบ</td>
+												<td class="text-center">
+													สำเร็จ
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+﻿@page "/signout"
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="main_gird col-lg-12">
+			<section class="h-50 gradient-form mb-4">
+				<div class="container-fluid py-2">
+					<div class="row d-flex justify-content-between align-items-center h-50">
+						<div class="col-xl-12 text-center h2 mt-5 ">
+							<em>Loading...</em>
+							<div id="divLoadingBlankFontend"></div>
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Inject] protected NavigationManager _Navs { get; set; } = null!;
+	[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = null!;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await _authorizeViewModel.LogoutAsync();
+		_Navs.NavigateTo("/signin");
+	}
+}

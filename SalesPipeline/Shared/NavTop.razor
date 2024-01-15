@@ -1,0 +1,77 @@
+﻿@inject IOptions<AppSettings> _appSet
+@inject NavigationManager _Nav
+
+<nav class="d-flex align-items-center sb-topnav navbar navbar-expand  bg-header">
+	<!-- Navbar Brand-->
+	<a class="navbar-brand ps-3 text-white" href="/">
+		<img src="/image/logo/logo_bacc.png" width="35" /> <span class="d-none d-md-inline-block">BACC RM SALE</span>
+	</a>
+	<!-- Sidebar Toggle-->
+	<button class="btn btn text-white ms-2 me-4 me-lg-0 sidebarToggleClick" href="#!"><i class="fas fa-bars"></i></button>
+	<!-- Navbar Search-->
+	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+		@if (_appSet.Value.ServerSite != ServerSites.PRO)
+		{
+			<span class="text-white fs_1_1r ms-3 fw-bold">Website Test (@_appSet.Value.ServerSite)</span>
+		}
+	</form>
+	<!-- Navbar-->
+	<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 d-flex justify-content-end align-items-center" style="min-width: 14.1rem;">
+		<li class="nav-item dropdown">
+			<a class="nav-link text-white" id="navbarDropdown" href="#" role="button" aria-expanded="false" data-bs-toggle="dropdown">
+				<div class="row d-flex align-items-center">
+					<div class="col">
+						<i class="fa-regular fa-circle-user fa-lg"></i> UserName
+					</div>
+					<div class="col-2 ps-1 text-end">
+						<img src="/image/icon/angle-down.png" width="18" />
+					</div>
+				</div>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end shadow-sm profile_dropdown_b" aria-labelledby="navbarDropdown">
+				<li>
+					<a @onclick="(()=> Logout())" class="dropdown-item" role="button">
+						Log out <img src="/image/icon/logout-anticon@2x.webp" class="mb-1 ms-2" width="20" height="20" />
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</nav>
+
+@code {
+	[CascadingParameter] protected Boolean isAuthorize { get; set; }
+
+	private bool collapseNavMenu = true;
+	private string? CollapseClass => collapseNavMenu ? "collapse" : null;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await Task.Delay(1);
+			StateHasChanged();
+			firstRender = false;
+		}
+
+	}
+
+	private void HandleCollapse(bool? IsClose = true)
+	{
+		collapseNavMenu = IsClose.HasValue && IsClose.Value;
+		StateHasChanged();
+	}
+
+	private void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+		StateHasChanged();
+	}
+
+	protected void Logout()
+	{
+		_Nav.NavigateTo("/signout");
+	}
+
+
+}

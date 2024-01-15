@@ -1,0 +1,125 @@
+﻿@page "/loans/user/create"
+@page "/loans/user/update/{id:int}"
+
+<PageTitle>ระบบผู้ใช้งาน</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
+						<div class="p-2">
+							<p class="back_topic_active">ระบบผู้ใช้งาน</p>
+						</div>
+					</div>
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+						<DataAnnotationsValidator />
+						<div class="row mt-5">
+							<div class="col-12">
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสพนักงาน<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.EmployeeId" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.EmployeeId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อ - สกุล<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.FullName" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.FullName)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">Email<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.Email" type="email" class="form-control">
+										<ValidationMessage For="@(() => formModel.Email)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ตำแหน่ง<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.PositionId" class="form-select">
+											<option value="">เลือก</option>
+											@if (LookUp.Positions?.Count > 0)
+											{
+												foreach (var item in LookUp.Positions)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.PositionId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.LevelId" class="form-select">
+											<option value="">เลือก</option>
+											@if (LookUp.UserLevels?.Count > 0)
+											{
+												foreach (var item in LookUp.UserLevels)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.LevelId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">หน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.RoleId" class="form-select">
+											<option value="">เลือก</option>
+											@if (ItemsUserRole?.Count > 0)
+											{
+												foreach (var item in ItemsUserRole)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.RoleId)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										บันทึก
+									</Button>
+								</div>
+							</div>
+						</div>
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+

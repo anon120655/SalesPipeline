@@ -1,0 +1,106 @@
+﻿@page "/systems"
+
+<PageTitle>จัดการระบบ</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<i class="fa-solid fa-gears text-secondary fs_2r"></i>
+						</div>
+						<div class="p-2">
+							<p class="back_topic_active">จัดการระบบ</p>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">การตั้งค่า</th>
+											<th class="text-center">จัดการ</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="text-start">ลายเซ็นอนุมัติ</td>
+											<td class="text-center">
+												<a @onclick=OnShowSignature class="btn bg-secondary btn-circle">
+													<i class="fa-regular fa-pen-to-square text-white fs_15e"></i>
+												</a>
+											</td>
+										</tr>
+										<tr>
+											<td class="text-start">SLA การติดต่อ</td>
+											<td class="text-center">
+												<a href="/systems/sla" class="btn bg-secondary btn-circle">
+													<i class="fa-regular fa-pen-to-square text-white fs_15e"></i>
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<Modal @ref="modalSignatureApprove"
+		   Title="ลายเซ็นอนุมัติ"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<div class="row mb-4 text-center">
+				<div class="col-12" style="min-height:7rem;">
+					@if (!String.IsNullOrEmpty(formModel.ImgUrl) && formModel.ImgUrl.Contains("data:image"))
+					{
+						<img src="@($"{formModel.ImgUrl}")" width="250" @key=@(_inputFileId) />
+					}
+					else if (!String.IsNullOrEmpty(formModel.ImgUrlv))
+					{
+						<img src="@($"{formModel.ImgUrlv}")" width="250" @key=@(_inputFileId) />
+					}
+					else
+					{
+						<p>Image not found.</p>
+					}
+				</div>
+			</div>
+			<div class="row mb-4 text-center">
+				<div class="col-12">
+					@if (!bClearInputSignatureApprove)
+					{
+						<InputFile accept=".png,.jpg,.jpeg" OnChange="OnSignatureApproveChanged" />
+					}
+				</div>
+			</div>
+			<div class="row my-3 text-center">
+				<div class="d-flex justify-content-evenly align-items-center">
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideSignature">ปิด</Button>
+					</div>
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Save">บันทึก</Button>
+					</div>
+				</div>
+			</div>
+		</BodyTemplate>
+	</Modal>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+

@@ -1,0 +1,238 @@
+﻿@page "/setting/yieldchain"
+
+<PageTitle>ตั้งค่าผลผลิตและห่วงโซ่</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+<link href="/css/switch.css" rel="stylesheet" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">ตั้งค่า <span class="back_topic_active">ผลผลิตและห่วงโซ่</span></p>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12 col-xl-6 border-end">
+							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s d-flex justify-content-end">
+								<div class="col mb-2 mt-3">
+									<Button @onclick="(async()=> await OnShowYield())" Color="ButtonColor.Success" Class="mw_6r">
+										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+									</Button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="table-responsive border-top">
+										<table class="table table_list">
+											<thead>
+												<tr>
+													<th class="text-center">ผลผลิต</th>
+													<th class="text-center">จัดการ</th>
+													<th class="text-center">การใช้งาน</th>
+												</tr>
+											</thead>
+											<tbody>
+												@if (ItemsYield == null)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+														</td>
+													</tr>
+												}
+												else if (ItemsYield.Count == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													foreach (var item in ItemsYield)
+													{
+														bool status = item.Status == StatusModel.Active;
+
+														<tr>
+															<td class="">@item.Name</td>
+															<td class="text-center">
+																<a class="text-action" role="button" @onclick="(async()=> await OnShowYield(item.Id))">แก้ไข</a> /
+																<a class="text-action" role="button" @onclick='(()=> ConfirmDeleteYield(item.Id.ToString(),item.Name))'>ลบ</a>
+															</td>
+															<td class="text-center">
+																<label class="switch">
+																	<input type="checkbox" @oninput="((e)=> StatusYieldChanged(e,item.Id))" checked="@status" />
+																	<span class="slider round"></span>
+																</label>
+															</td>
+														</tr>
+													}
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-12 col-xl-6">
+							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s d-flex justify-content-end">
+								<div class="col mb-2 mt-3">
+									<Button @onclick="(async()=> await OnShowChain())" Color="ButtonColor.Primary" Class="mw_6r">
+										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+									</Button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="table-responsive border-top">
+										<table class="table table_list">
+											<thead>
+												<tr>
+													<th class="text-center">ห่วงโซ่</th>
+													<th class="text-center">จัดการ</th>
+													<th class="text-center">การใช้งาน</th>
+												</tr>
+											</thead>
+											<tbody>
+												@if (ItemsChain == null)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+														</td>
+													</tr>
+												}
+												else if (ItemsChain.Count == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													foreach (var item in ItemsChain)
+													{
+														bool status = item.Status == StatusModel.Active;
+
+														<tr>
+															<td class="">@item.Name</td>
+															<td class="text-center">
+																<a class="text-action" role="button" @onclick="(async()=> await OnShowChain(item.Id))">แก้ไข</a> /
+																<a class="text-action" role="button" @onclick='(()=> ConfirmDeleteChain(item.Id.ToString(),item.Name))'>ลบ</a>
+															</td>
+															<td class="text-center">
+																<label class="switch">
+																	<input type="checkbox" @oninput="((e)=> StatusChainChanged(e,item.Id))" checked="@status" />
+																	<span class="slider round"></span>
+																</label>
+															</td>
+														</tr>
+													}
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<Modal @ref="modalFormYield"
+		   Title="ผลผลิต"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModelYield" OnValidSubmit="SaveYield">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">ผลผลิต</label>
+							<div class="col-7">
+								<input @bind="formModelYield.Name" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModelYield.Name)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideYield">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
+	<Modal @ref="modalFormChain"
+		   Title="ห่วงโซ่"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModelChain" OnValidSubmit="SaveChain">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">ห่วงโซ่</label>
+							<div class="col-7">
+								<input @bind="formModelChain.Name" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModelChain.Name)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideChain">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
+	<ModalConfirm @ref="modalConfirmYield" CallbackConfirm="DeleteYield" />
+	<ModalConfirm @ref="modalConfirmChain" CallbackConfirm="DeleteChain" />
+}
+else
+{
+	<NotPermissionPage />
+}
+

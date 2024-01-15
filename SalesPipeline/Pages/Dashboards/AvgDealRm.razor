@@ -1,0 +1,100 @@
+﻿
+@page "/dashboard/avgdealrm"
+
+<PageTitle>ดีลโดยเฉลี่ยต่อพนักงานขาย</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
+						</div>
+						<div class="p-2">
+							<p class="back_topic">รายงาน <span class="back_topic_active">ดีลโดยเฉลี่ยต่อพนักงานขาย</span></p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">ชื่อหนักงาน</label>
+							<div class="input-group mw_10r">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">กิจการสาขาภาค</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ศูนย์สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12 col-xl"></div>
+						<div class="col-12 col-xl-9">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">รายชื่อพนักงาน</th>
+											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">จำนวนดีล</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="text-center">นาย เอ</td>
+											<td class="text-center">การเกษตร</td>
+											<td class="text-center">60</td>
+										</tr>
+										<tr>
+											<td class="text-center">นาย บี</td>
+											<td class="text-center">การเกษตร</td>
+											<td class="text-center">23</td>
+										</tr>
+										<tr>
+											<td class="text-center">นาย ซี</td>
+											<td class="text-center">การเกษตร</td>
+											<td class="text-center">16</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-12 col-xl"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}

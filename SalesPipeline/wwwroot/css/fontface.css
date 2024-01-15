@@ -1,0 +1,84 @@
+﻿
+@font-face {
+    font-family: 'prompt-light';
+    src: url('../font/prompt/prompt-light.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'prompt-regular';
+    src: url('../font/prompt/prompt-regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'prompt-medium';
+    src: url('../font/prompt/prompt-medium.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'prompt-semibold';
+    src: url('../font/prompt/prompt-semibold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'prompt-bold';
+    src: url('../font/prompt/prompt-bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'prompt-extrabold';
+    src: url('../font/prompt/prompt-extrabold.ttf') format('truetype');
+}
+
+
+@font-face {
+    font-family: 'mitr-regular';
+    src: url('../font/mitr/mitr-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/*@font-face {
+    font-family: 'mitr-extralight';
+    src: url('../font/mitr/mitr-extralight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-light';
+    src: url('../font/mitr/mitr-light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-light2';
+    src: url('../font/mitr/mitr-light2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-regular';
+    src: url('../font/mitr/mitr-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-medium';
+    src: url('../font/mitr/mitr-medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-semibold';
+    src: url('../font/mitr/mitr-semibold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'mitr-bold';
+    src: url('../font/mitr/mitr-bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}*/

@@ -1,0 +1,124 @@
+﻿@page "/assign/loan"
+
+<PageTitle>มอบหมายพนักงานธุรกิจสินเชื่อ</PageTitle>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 my-2">
+			<div class="box_content">
+				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+					<div class="p-2">
+						<p class="back_topic">มอบหมาย <span class="back_topic_active">พนักงานธุรกิจสินเชื่อ</span></p>
+						<p class="back_topic_dim">ฝ่ายกิจการสาขาภาค...</p>
+					</div>
+				</div>
+				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
+					<div class="col mb-2">
+						<label class="form-label">รหัสพนักงาน</label>
+						<div class="input-group mw_10r">
+							<input class="form-control" type="search" placeholder="">
+							<span class="input-group-append ms-0">
+								<button class="btn rounded-start-0 border border-start-0" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+					<div class="col mb-2">
+						<label class="form-label">ชื่อพนักงาน</label>
+						<div class="input-group mw_10r">
+							<input class="form-control" type="search" placeholder="">
+							<span class="input-group-append ms-0">
+								<button class="btn rounded-start-0 border border-start-0" type="button">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</div>
+					</div>
+					<div class="col mb-2">
+						<label class="form-label">จังหวัด</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col mb-2">
+						<label class="form-label">อำเภอ</label>
+						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<option selected>ทั้งหมด</option>
+						</select>
+					</div>
+					<div class="col mb-2 mt-3">
+						<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<i class="fa fa-search fa-xs"></i> ค้นหา
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="table-responsive border-top">
+							<table class="table table_list">
+								<thead>
+									<tr>
+										<th class="text-center">ลำดับที่</th>
+										<th class="text-center">ชื่อ-นามสกุล</th>
+										<th class="text-center">เบอร์ติดต่อ</th>
+										<th class="text-center">จังหวัดที่ดูแล</th>
+										<th class="text-center">อำเภอที่ดูแล</th>
+										<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+										<th class="text-center">จำนวนการมอบหมาย</th>
+										<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+										<th class="text-center">จัดการมอบหมาย</th>
+									</tr>
+								</thead>
+								<tbody>
+									@for (int i = 1; i < 6; i++)
+									{
+										<tr>
+											<td class="text-center">@i</td>
+											<td class="text-center">สมหญิง ใจมั่น</td>
+											<td class="text-center">063-156-4587</td>
+											<td class="text-center">สมุทรสาคร</td>
+											<td class="text-center">เมือง</td>
+											<td class="text-center">25/100</td>
+											<td class="text-center">20</td>
+											<td class="text-center">
+												45/100
+											</td>
+											<td class="text-center">
+												<a href="#">จัดการมอบหมาย</a>
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div>
+					<PaginationMockup></PaginationMockup>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@code {
+	[Inject] protected IJSRuntime _jsRuntimes { get; set; } = null!;
+
+	string? _errorMessage = null;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+
+			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+			StateHasChanged();
+			firstRender = false;
+		}
+	}
+
+}

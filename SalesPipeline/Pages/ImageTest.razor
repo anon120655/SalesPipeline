@@ -1,0 +1,41 @@
+﻿@page "/imagetest/{newv:int?}"
+
+<PageTitle>มอบหมายผู้จัดการศูนย์</PageTitle>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12 my-2">
+			<div class="box_content">
+				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+					<div class="p-2">
+						<p class="back_topic">มอบหมาย <span class="back_topic_active">ผู้จัดการศูนย์</span></p>
+						<p class="back_topic_dim">ฝ่ายกิจการสาขาภาค...</p>
+					</div>
+				</div>
+                <div class="row">
+					@for (int i = 1; i <= 30; i++)
+					{
+						string? path = $"https://localhost:7077/v1/file/v?id=YWxsLzEuanBn";
+						if (newv != null)
+						{
+							path = $"{path}&newv={newv}";
+						}
+
+						<div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+							<img src="@(path)"
+								 class="w-100 shadow-1-strong rounded mb-4"
+								 alt="Boat on Calm Water" />
+						</div>
+					}
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public int? newv { get; set; }
+
+}

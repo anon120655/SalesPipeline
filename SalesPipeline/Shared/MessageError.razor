@@ -1,0 +1,17 @@
+﻿@if (errorMessage is not null)
+{
+    MarkupString errorMsg = (MarkupString)(errorMessage ?? string.Empty);
+
+    <div class="container-xl mb-2">
+        <div class="alert alert-warning mt-3" role="alert">
+            <p class="text-red fw-bold text-break">@($"{DateTime.Now}") @errorMsg</p>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string? errorMessage { get; set; }
+
+}
