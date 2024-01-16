@@ -60,6 +60,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<ProcessSale_Section_ItemOption> ProcessSale_Section_ItemOptions { get; set; }
 
+    public virtual DbSet<Sale> Sales { get; set; }
+
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
     public virtual DbSet<System_Signature> System_Signatures { get; set; }
@@ -697,6 +699,21 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.PSaleSectionItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("processsale_section_itemoption_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>
