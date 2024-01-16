@@ -149,5 +149,24 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Test Error
+		/// </summary>
+		[AllowAnonymous]
+		[HttpGet("TestError")]
+		public async Task<IActionResult> TestError([FromQuery] CustomerFilter model)
+		{
+			try
+			{
+				throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
