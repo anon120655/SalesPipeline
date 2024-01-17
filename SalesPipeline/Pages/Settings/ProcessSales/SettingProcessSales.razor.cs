@@ -32,7 +32,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		protected async Task SetModel()
 		{
-			var data = await _processSaleViewModel.GetProcessSales(new());
+			var data = await _processSaleViewModel.GetList(new());
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

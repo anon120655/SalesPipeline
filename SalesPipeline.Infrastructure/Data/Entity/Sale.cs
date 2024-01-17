@@ -19,4 +19,6 @@ public partial class Sale
     public DateTime UpdateDate { get; set; }
 
     public int UpdateBy { get; set; }
+
+    public Guid CustomerId { get; set; }
 }

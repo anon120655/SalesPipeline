@@ -66,11 +66,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<ProcessSaleCustom>>>> GetProcessSales(allFilter model)
+		public async Task<ResultModel<PaginationView<List<ProcessSaleCustom>>>> GetList(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetProcessSales?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetList?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<ProcessSaleCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<ProcessSaleCustom>>>()
@@ -155,11 +155,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<ProcessSale_ReplyCustom>>>> GetReplys(allFilter model)
+		public async Task<ResultModel<PaginationView<List<ProcessSale_ReplyCustom>>>> GetListReply(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetReplys?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetListReply?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<ProcessSale_ReplyCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<ProcessSale_ReplyCustom>>>()

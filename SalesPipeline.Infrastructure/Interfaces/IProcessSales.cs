@@ -7,10 +7,10 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	{
 		Task<ProcessSaleCustom> GetById(Guid id);
 		Task<ProcessSaleCustom> Update(ProcessSaleCustom model);
-		Task<PaginationView<List<ProcessSaleCustom>>> GetProcessSales(allFilter model);
+		Task<PaginationView<List<ProcessSaleCustom>>> GetList(allFilter model);
 		Task<ProcessSale_ReplyCustom> CreateReply(ProcessSale_ReplyCustom model);
 		Task<ProcessSale_ReplyCustom> UpdateReply(ProcessSale_ReplyCustom model);
 		Task<ProcessSale_ReplyCustom> GetReplyById(Guid id);
-		Task<PaginationView<List<ProcessSale_ReplyCustom>>> GetReplys(allFilter model);
+		Task<PaginationView<List<ProcessSale_ReplyCustom>>> GetListReply(allFilter model);
 	}
 }

@@ -18,6 +18,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<CustomerCustom> GetById(Guid id);
-		Task<PaginationView<List<CustomerCustom>>> GetCustomer(CustomerFilter model);
+		Task<PaginationView<List<CustomerCustom>>> GetList(CustomerFilter model);
 	}
 }

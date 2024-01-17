@@ -39,7 +39,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 
 		protected async Task SetInitManual()
 		{
-			var dataLevels = await _userViewModel.GetLevels(new allFilter() { status = StatusModel.Active });
+			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{
 				LookUp.UserLevels = dataLevels.Data;
@@ -70,7 +70,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 
 		protected async Task SetModel()
 		{
-			var data = await _customerViewModel.GetCustomer(filter);
+			var data = await _customerViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

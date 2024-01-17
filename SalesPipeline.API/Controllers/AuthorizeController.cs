@@ -21,7 +21,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpPost("Authenticate")]
+		[HttpPost]
 		public async Task<IActionResult> Authenticate(AuthenticateRequest model)
 		{
 			try

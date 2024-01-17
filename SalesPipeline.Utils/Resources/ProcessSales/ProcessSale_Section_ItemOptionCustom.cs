@@ -23,6 +23,11 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 
 		public string? DefaultValue { get; set; }
 
+		/// <summary>
+		/// แสดงผลตาม Section
+		/// </summary>
+		public Guid? ShowSectionId { get; set; }
+
 		public virtual ProcessSale_Section_ItemCustom? PSaleSectionItem { get; set; }
 
 	}

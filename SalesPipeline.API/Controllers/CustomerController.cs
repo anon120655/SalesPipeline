@@ -79,7 +79,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ลบข้อมูลลูกค้า
+		/// ข้อมูลลูกค้า ById
 		/// </summary>
 		[HttpDelete("DeleteById")]
 		public async Task<IActionResult> DeleteById([FromQuery] UpdateModel model)
@@ -134,12 +134,12 @@ namespace SalesPipeline.API.Controllers
 		/// ข้อมูลลูกค้าทั้งหมด
 		/// </summary>
 		[AllowAnonymous]
-		[HttpGet("GetCustomer")]
-		public async Task<IActionResult> GetCustomer([FromQuery] CustomerFilter model)
+		[HttpGet("GetList")]
+		public async Task<IActionResult> GetList([FromQuery] CustomerFilter model)
 		{
 			try
 			{
-				var response = await _repo.Customer.GetCustomer(model);
+				var response = await _repo.Customer.GetList(model);
 
 				return Ok(response);
 			}
@@ -152,6 +152,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// Test Error
 		/// </summary>
+		[ApiExplorerSettings(IgnoreApi = true)]
 		[AllowAnonymous]
 		[HttpGet("TestError")]
 		public async Task<IActionResult> TestError([FromQuery] CustomerFilter model)

@@ -143,7 +143,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<System_SLACustom>(query);
 		}
 
-		public async Task<PaginationView<List<System_SLACustom>>> GetSLAs(allFilter model)
+		public async Task<PaginationView<List<System_SLACustom>>> GetListSLA(allFilter model)
 		{
 			var query = _repo.Context.System_SLAs.Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)

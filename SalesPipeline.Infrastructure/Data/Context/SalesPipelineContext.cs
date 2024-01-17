@@ -649,6 +649,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
+            entity.Property(e => e.ShowAlways).HasComment("1=แสดงผลตลอด");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -691,6 +692,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DefaultValue).HasMaxLength(255);
             entity.Property(e => e.OptionLabel).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
+            entity.Property(e => e.ShowSectionId).HasComment("แสดงผลตาม Section");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

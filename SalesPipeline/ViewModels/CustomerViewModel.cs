@@ -123,11 +123,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<CustomerCustom>>>> GetCustomer(CustomerFilter model)
+		public async Task<ResultModel<PaginationView<List<CustomerCustom>>>> GetList(CustomerFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Customer/GetCustomer?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/Customer/GetList?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<CustomerCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<CustomerCustom>>>()

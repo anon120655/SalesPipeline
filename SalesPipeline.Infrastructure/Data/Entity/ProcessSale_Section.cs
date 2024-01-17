@@ -18,6 +18,11 @@ public partial class ProcessSale_Section
 
     public string? Name { get; set; }
 
+    /// <summary>
+    /// 1=แสดงผลตลอด
+    /// </summary>
+    public bool ShowAlways { get; set; }
+
     public virtual ProcessSale ProcessSale { get; set; } = null!;
 
     public virtual ICollection<ProcessSale_Reply_Section> ProcessSale_Reply_Sections { get; set; } = new List<ProcessSale_Reply_Section>();

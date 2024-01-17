@@ -65,12 +65,12 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลฟอร์มกระบวนการขายทั้งหมด
 		/// </summary>
-		[HttpGet("GetProcessSales")]
-		public async Task<IActionResult> GetProcessSales([FromQuery] allFilter model)
+		[HttpGet("GetList")]
+		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.ProcessSale.GetProcessSales(model);
+				var response = await _repo.ProcessSale.GetList(model);
 
 				return Ok(response);
 			}
@@ -134,12 +134,12 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลกระบวนการขายทั้งหมด
 		/// </summary>
-		[HttpGet("GetReplys")]
-		public async Task<IActionResult> GetReplys([FromQuery] allFilter model)
+		[HttpGet("GetListReply")]
+		public async Task<IActionResult> GetListReply([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.ProcessSale.GetReplys(model);
+				var response = await _repo.ProcessSale.GetListReply(model);
 
 				return Ok(response);
 			}

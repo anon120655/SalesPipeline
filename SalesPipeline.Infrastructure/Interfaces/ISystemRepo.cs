@@ -17,6 +17,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<System_SLACustom> UpdateSLA(System_SLACustom model);
 		Task DeleteSLAById(UpdateModel model);
 		Task<System_SLACustom> GetSLAById(Guid id);
-		Task<PaginationView<List<System_SLACustom>>> GetSLAs(allFilter model);
+		Task<PaginationView<List<System_SLACustom>>> GetListSLA(allFilter model);
 	}
 }

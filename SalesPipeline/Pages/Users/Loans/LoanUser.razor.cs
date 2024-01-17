@@ -53,7 +53,7 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataLevels = await _userViewModel.GetLevels(new allFilter() { status = StatusModel.Active });
+			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{
 				LookUp.UserLevels = dataLevels.Data;
@@ -84,7 +84,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected async Task SetModel()
 		{
-			var data = await _userViewModel.GetUsers(filter);
+			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

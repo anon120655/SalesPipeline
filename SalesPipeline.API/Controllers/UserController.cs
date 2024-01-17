@@ -98,12 +98,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetUsers")]
-		public async Task<IActionResult> GetUsers([FromQuery] UserFilter model)
+		[HttpGet("GetList")]
+		public async Task<IActionResult> GetList([FromQuery] UserFilter model)
 		{
 			try
 			{
-				var response = await _repo.User.GetUsers(model);
+				var response = await _repo.User.GetList(model);
 
 				return Ok(response);
 			}
@@ -183,12 +183,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetRoles")]
-		public async Task<IActionResult> GetRoles([FromQuery] allFilter model)
+		[HttpGet("GetListRole")]
+		public async Task<IActionResult> GetListRole([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.User.GetRoles(model);
+				var response = await _repo.User.GetListRole(model);
 
 				return Ok(response);
 			}
@@ -198,12 +198,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetLevels")]
-		public async Task<IActionResult> GetLevels([FromQuery] allFilter model)
+		[HttpGet("GetListLevel")]
+		public async Task<IActionResult> GetListLevel([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.User.GetLevels(model);
+				var response = await _repo.User.GetListLevel(model);
 
 				return Ok(response);
 			}

@@ -20,6 +20,11 @@ public partial class ProcessSale_Section_ItemOption
 
     public string? DefaultValue { get; set; }
 
+    /// <summary>
+    /// แสดงผลตาม Section
+    /// </summary>
+    public Guid? ShowSectionId { get; set; }
+
     public virtual ProcessSale_Section_Item PSaleSectionItem { get; set; } = null!;
 
     public virtual ICollection<ProcessSale_Reply_Section_ItemValue> ProcessSale_Reply_Section_ItemValues { get; set; } = new List<ProcessSale_Reply_Section_ItemValue>();

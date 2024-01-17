@@ -43,7 +43,7 @@ namespace SalesPipeline.Pages.ManageSystems
 
 		protected async Task SetModel()
 		{
-			var data = await _systemViewModel.GetSLAs(new allFilter()
+			var data = await _systemViewModel.GetListSLA(new allFilter()
 			{
 				pagesize = 30
 			});

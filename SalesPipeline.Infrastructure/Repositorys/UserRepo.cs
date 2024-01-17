@@ -162,7 +162,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Users.AnyAsync(x => x.EmployeeId == employeeid);
 		}
 
-		public async Task<PaginationView<List<UserCustom>>> GetUsers(UserFilter model)
+		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
@@ -208,7 +208,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<List<User_LevelCustom>> GetLevels(allFilter model)
+		public async Task<List<User_LevelCustom>> GetListLevel(allFilter model)
 		{
 			var query = _repo.Context.User_Levels.Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.Id)
@@ -364,7 +364,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<User_RoleCustom>(query);
 		}
 
-		public async Task<PaginationView<List<User_RoleCustom>>> GetRoles(allFilter model)
+		public async Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model)
 		{
 			var query = _repo.Context.User_Roles.Where(x => x.Status != StatusModel.Delete)
 												 .Include(x => x.User_Permissions)

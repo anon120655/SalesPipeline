@@ -67,7 +67,7 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataLevels = await _userViewModel.GetLevels(new allFilter() { status = StatusModel.Active });
+			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{
 				LookUp.UserLevels = dataLevels.Data;
@@ -78,7 +78,7 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var data = await _userViewModel.GetRoles(new allFilter() { pagesize = 50, status = StatusModel.Active });
+			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
 			{
 				ItemsUserRole = data.Data?.Items;

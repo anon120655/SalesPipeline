@@ -13,14 +13,14 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateStatusById(UpdateModel model);
 		Task<UserCustom> GetById(int id);
 		Task<bool> UserExists(string employeeid);
-		Task<PaginationView<List<UserCustom>>> GetUsers(UserFilter model);
-		Task<List<User_LevelCustom>> GetLevels(allFilter model);
+		Task<PaginationView<List<UserCustom>>> GetList(UserFilter model);
+		Task<List<User_LevelCustom>> GetListLevel(allFilter model);
 		Task<User_RoleCustom> CreateRole(User_RoleCustom model);
 		Task<User_RoleCustom> UpdateRole(User_RoleCustom model);
 		Task DeleteRoleById(UpdateModel model);
 		Task UpdateIsModifyRoleById(UpdateModel model);
 		Task<User_RoleCustom> GetRoleById(int id);
-		Task<PaginationView<List<User_RoleCustom>>> GetRoles(allFilter model);
+		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model);
 		Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model);
 	}
 }

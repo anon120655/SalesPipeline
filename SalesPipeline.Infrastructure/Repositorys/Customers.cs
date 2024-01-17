@@ -254,7 +254,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<CustomerCustom>(query);
 		}
 
-		public async Task<PaginationView<List<CustomerCustom>>> GetCustomer(CustomerFilter model)
+		public async Task<PaginationView<List<CustomerCustom>>> GetList(CustomerFilter model)
 		{
 			var query = _repo.Context.Customers.Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)

@@ -58,7 +58,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected async Task SetModel()
 		{
-			var data = await _userViewModel.GetRoles(filter);
+			var data = await _userViewModel.GetListRole(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

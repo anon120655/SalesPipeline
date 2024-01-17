@@ -94,6 +94,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								processSaleSection.Status = section.Status;
 								processSaleSection.SequenceNo = section.SequenceNo;
 								processSaleSection.Name = section.Name;
+								processSaleSection.ShowAlways = section.ShowAlways;
 								_db.Update(processSaleSection);
 							}
 							else if (section.Status == StatusModel.Active)
@@ -103,6 +104,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								processSaleSection.ProcessSaleId = processSales.Id;
 								processSaleSection.SequenceNo = section.SequenceNo;
 								processSaleSection.Name = section.Name;
+								processSaleSection.ShowAlways = section.ShowAlways;
 								await _db.InsterAsync(processSaleSection);
 							}
 							await _db.SaveAsync();
@@ -147,6 +149,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											{
 												processSaleSectionItemOption.Status = section_item_option.Status;
 												processSaleSectionItemOption.OptionLabel = section_item_option.OptionLabel;
+												processSaleSectionItemOption.ShowSectionId = section_item_option.ShowSectionId;
 												_db.Update(processSaleSectionItemOption);
 											}
 											else if (section_item_option.Status == StatusModel.Active)
@@ -157,6 +160,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												processSaleSectionItemOption.SequenceNo = section_item_option.SequenceNo;
 												processSaleSectionItemOption.OptionLabel = section_item_option.OptionLabel;
 												processSaleSectionItemOption.DefaultValue = section_item_option.DefaultValue;
+												processSaleSectionItemOption.ShowSectionId = section_item_option.ShowSectionId;
 												await _db.InsterAsync(processSaleSectionItemOption);
 											}
 											await _db.SaveAsync();
@@ -175,7 +179,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<PaginationView<List<ProcessSaleCustom>>> GetProcessSales(allFilter model)
+		public async Task<PaginationView<List<ProcessSaleCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.ProcessSales
 												 .Where(x => x.Status != StatusModel.Delete)
@@ -313,7 +317,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<ProcessSale_ReplyCustom>(query);
 		}
 
-		public async Task<PaginationView<List<ProcessSale_ReplyCustom>>> GetReplys(allFilter model)
+		public async Task<PaginationView<List<ProcessSale_ReplyCustom>>> GetListReply(allFilter model)
 		{
 			var query = _repo.Context.ProcessSale_Replies
 												 .Where(x => x.Status != StatusModel.Delete)

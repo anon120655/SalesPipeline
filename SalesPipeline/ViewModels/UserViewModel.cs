@@ -123,11 +123,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<UserCustom>>>> GetUsers(UserFilter model)
+		public async Task<ResultModel<PaginationView<List<UserCustom>>>> GetList(UserFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/User/GetUsers?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/User/GetList?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<UserCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<UserCustom>>>()
@@ -145,11 +145,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<User_LevelCustom>>> GetLevels(allFilter model)
+		public async Task<ResultModel<List<User_LevelCustom>>> GetListLevel(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/User/GetLevels?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/User/GetListLevel?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<List<User_LevelCustom>>(content);
 
 				return new ResultModel<List<User_LevelCustom>>()
@@ -167,11 +167,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<User_RoleCustom>>>> GetRoles(allFilter model)
+		public async Task<ResultModel<PaginationView<List<User_RoleCustom>>>> GetListRole(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/User/GetRoles?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/User/GetListRole?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<User_RoleCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<User_RoleCustom>>>()

@@ -21,6 +21,11 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 
 		public string? Name { get; set; }
 
+		/// <summary>
+		/// 1=แสดงผลตลอด
+		/// </summary>
+		public bool ShowAlways { get; set; }
+
 		public virtual ProcessSaleCustom? ProcessSale { get; set; }
 
 		public virtual List<ProcessSale_Section_ItemCustom>? ProcessSale_Section_Items { get; set; }

@@ -109,12 +109,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetSLAs")]
-		public async Task<IActionResult> GetSLAs([FromQuery] allFilter model)
+		[HttpGet("GetListSLA")]
+		public async Task<IActionResult> GetListSLA([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.System.GetSLAs(model);
+				var response = await _repo.System.GetListSLA(model);
 
 				return Ok(response);
 			}

@@ -14,6 +14,7 @@ using SalesPipeline.Infrastructure.Data.Mapping;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
+using Asp.Versioning.ApiExplorer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,9 +102,13 @@ builder.Services.AddApiVersioning(options =>
   });
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-//Ignore infinity loop class
 builder.Services.AddControllers()
-.AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+.AddJsonOptions(options => {
+	//Ignore infinity loop class
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+	//Json return normal First Upper 
+	options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
 var app = builder.Build();
 
@@ -131,6 +136,8 @@ app.UseStaticFiles(new StaticFileOptions()
 //	app.UseSwagger();
 //	app.UseSwaggerUI();
 //}
+
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
