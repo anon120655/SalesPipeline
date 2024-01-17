@@ -1,6 +1,6 @@
 ﻿namespace SalesPipeline.Utils
 {
-	public class SaleStatusModel
+	public class StatusSaleModel
 	{
 		/// <summary>
 		/// รอการติดต่อ
