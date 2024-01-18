@@ -190,7 +190,7 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var response = await _httpClient.PostAsJsonAsync($"{_appSet.baseUriApi}/v1/Authorize/Authenticate", model);
+				var response = await _httpClient.PostAsJsonAsync($"{_appSet.baseUriApi}/v1/Authorize", model);
 				if (response.IsSuccessStatusCode && response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null)
 				{
 					var data = JsonConvert.DeserializeObject<LoginResponseModel>(await response.Content.ReadAsStringAsync());
