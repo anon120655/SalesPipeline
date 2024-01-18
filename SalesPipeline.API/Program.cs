@@ -107,7 +107,7 @@ builder.Services.AddControllers()
 	//Ignore infinity loop class
 	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	//Json return normal First Upper 
-	options.JsonSerializerOptions.PropertyNamingPolicy = null;
+	//options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 
 var app = builder.Build();

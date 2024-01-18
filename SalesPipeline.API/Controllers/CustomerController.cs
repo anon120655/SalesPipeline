@@ -133,7 +133,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลลูกค้าทั้งหมด
 		/// </summary>
-		[AllowAnonymous]
+		//[AllowAnonymous]
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] CustomerFilter model)
 		{
@@ -153,7 +153,7 @@ namespace SalesPipeline.API.Controllers
 		/// Test Error
 		/// </summary>
 		[ApiExplorerSettings(IgnoreApi = true)]
-		[AllowAnonymous]
+		//[AllowAnonymous]
 		[HttpGet("TestError")]
 		public async Task<IActionResult> TestError([FromQuery] CustomerFilter model)
 		{
