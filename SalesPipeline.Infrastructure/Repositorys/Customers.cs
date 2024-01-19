@@ -235,39 +235,92 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(customer);
 					await _db.SaveAsync();
 
-					_db.DeleteRange(_repo.Context.Customer_Committees.Where(x => x.Status != StatusModel.Delete && x.CustomerId == model.Id).ToList());
-					_db.DeleteRange(_repo.Context.Customer_Shareholders.Where(x => x.Status != StatusModel.Delete && x.CustomerId == model.Id).ToList());
+					//Update Status To Delete All
+					var customer_Committees = _repo.Context.Customer_Committees.Where(x => x.CustomerId == model.Id).ToList();
+					if (customer_Committees.Count > 0)
+					{
+						foreach (var committ_item in customer_Committees)
+						{
+							committ_item.Status = StatusModel.Delete;
+						}
+						await _db.SaveAsync();
+					}
+					var customer_Shareholders = _repo.Context.Customer_Shareholders.Where(x => x.CustomerId == model.Id).ToList();
+					if (customer_Shareholders.Count > 0)
+					{
+						foreach (var sharehold_item in customer_Shareholders)
+						{
+							sharehold_item.Status = StatusModel.Delete;
+						}
+						await _db.SaveAsync();
+					}
 
 					int indexCommittee = 1;
 					foreach (var item in model.Customer_Committees ?? new())
 					{
-						var customerCommittee = new Data.Entity.Customer_Committee()
+						var customerCommittee = await _repo.Context.Customer_Committees
+															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
+						if (item.Status == StatusModel.Active)
 						{
-							Status = StatusModel.Active,
-							SequenceNo = indexCommittee++,
-							CustomerId = customer.Id,
-							Name = item.Name,
-						};
-						await _db.InsterAsync(customerCommittee);
-						await _db.SaveAsync();
+							int CRUD = CRUDModel.Update;
+
+							if (customerCommittee == null)
+							{
+								CRUD = CRUDModel.Create;
+								customerCommittee = new();
+							}
+							customerCommittee.Status = item.Status;
+							customerCommittee.SequenceNo = indexCommittee++;
+							customerCommittee.CustomerId = customer.Id;
+							customerCommittee.Name = item.Name;
+
+							if (CRUD == CRUDModel.Create)
+							{
+								await _db.InsterAsync(customerCommittee);
+							}
+							else
+							{
+								_db.Update(customerCommittee);
+							}
+							await _db.SaveAsync();
+						}
 					}
 
 					int indexShareholder = 1;
 					foreach (var item in model.Customer_Shareholders ?? new())
 					{
-						var customerShareholder = new Data.Entity.Customer_Shareholder()
+						var customerShareholder = await _repo.Context.Customer_Shareholders
+															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
+
+						if (item.Status == StatusModel.Active)
 						{
-							Status = StatusModel.Active,
-							SequenceNo = indexShareholder++,
-							CustomerId = customer.Id,
-							Name = item.Name,
-							Nationality = item.Nationality,
-							Proportion = item.Proportion,
-							NumberShareholder = item.NumberShareholder,
-							TotalShareValue = item.TotalShareValue,
-						};
-						await _db.InsterAsync(customerShareholder);
-						await _db.SaveAsync();
+							int CRUD = CRUDModel.Update;
+
+							if (customerShareholder == null)
+							{
+								CRUD = CRUDModel.Create;
+								customerShareholder = new();
+							}
+
+							customerShareholder.Status = item.Status;
+							customerShareholder.SequenceNo = indexShareholder++;
+							customerShareholder.CustomerId = customer.Id;
+							customerShareholder.Name = item.Name;
+							customerShareholder.Nationality = item.Nationality;
+							customerShareholder.Proportion = item.Proportion;
+							customerShareholder.NumberShareholder = item.NumberShareholder;
+							customerShareholder.TotalShareValue = item.TotalShareValue;
+
+							if (CRUD == CRUDModel.Create)
+							{
+								await _db.InsterAsync(customerShareholder);
+							}
+							else
+							{
+								_db.Update(customerShareholder);
+							}
+							await _db.SaveAsync();
+						}
 					}
 
 					_transaction.Commit();
@@ -299,8 +352,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<CustomerCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Customers
-				.Include(x => x.Customer_Committees.OrderBy(o => o.SequenceNo))
-				.Include(x => x.Customer_Shareholders.OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Committees.Where(s=>s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Shareholders.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);
 		}

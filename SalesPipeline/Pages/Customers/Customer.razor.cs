@@ -78,7 +78,7 @@ namespace SalesPipeline.Pages.Customers
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/customer/target";
+					Pager.UrlAction = "/customer";
 				}
 			}
 			else

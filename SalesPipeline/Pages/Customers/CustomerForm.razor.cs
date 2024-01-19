@@ -119,7 +119,7 @@ namespace SalesPipeline.Pages.Customers
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/customer/target");
+			_Navs.NavigateTo("/customer");
 		}
 
 		protected async Task InsertCommittee()

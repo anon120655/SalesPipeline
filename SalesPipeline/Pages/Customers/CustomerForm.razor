@@ -447,6 +447,140 @@
 										<ValidationMessage For="@(() => formModel.TradeAccPayForLoansShot)" />
 									</div>
 								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สิน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayTotalLiabilitie" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayTotalLiabilitie)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนสามัญ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.RegisterCapitalOrdinary" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.RegisterCapitalOrdinary)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.RegisterCapitalPaid" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.RegisterCapitalPaid)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สะสม</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ProfitLossAccumulate" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ProfitLossAccumulate)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมส่วนของผู้ถือหุ้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TotalShareholders" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TotalShareholders)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินและส่วนของผู้ถือหุ้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TotalLiabilitieShareholders" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TotalLiabilitieShareholders)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รายได้รวม</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TotalIncome" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TotalIncome)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.CostSales" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.CostSales)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไรขั้นต้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.GrossProfit" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.GrossProfit)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.OperatingExpenses" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.OperatingExpenses)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ProfitLossBeforeDepExp" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ProfitLossBeforeDepExp)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.ProfitLossBeforeInterestTax" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.ProfitLossBeforeInterestTax)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สุทธิ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.NetProfitLoss" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.NetProfitLoss)" />
+									</div>
+								</div>
+
+
+
+							</div>
+						</div>
+						@* การติดต่อและความสนใจ *@
+						<div class="row my-3">
+							<div class="col-12">
+								<div class="row">
+									<div class="col-12 col-xl-6">
+										<div class="row">
+											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">การติดต่อและความสนใจ</label>
+											<div class="col-sm-7"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินเชื่อที่สนใจ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.InterestLoan" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.InterestLoan)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ระบุ</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.InterestLoanSpecify" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.InterestLoanSpecify)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จุดประสงค์การกู้</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.InterestObjectiveLoan" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.InterestObjectiveLoan)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วงเงิน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.InterestCreditLimit" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.InterestCreditLimit)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมายเหตุ</label>
+									<div class="col-12 col-md-7 col-xl-7 mb-3 mb-xl-0">
+										<input @bind="formModel.InterestNote" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.InterestNote)" />
+									</div>
+								</div>
 
 
 
