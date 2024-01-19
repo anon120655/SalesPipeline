@@ -292,8 +292,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-
-
 		[HttpPost("CreateDivBranch")]
 		public async Task<IActionResult> CreateDivBranch(Master_Division_BranchCustom model)
 		{

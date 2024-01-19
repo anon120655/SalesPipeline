@@ -50,6 +50,72 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var contactChannel = await _masterViewModel.GetContactChannel(new allFilter() { status = StatusModel.Active });
+			if (contactChannel != null && contactChannel.Status)
+			{
+				LookUp.ContactChannel = contactChannel.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var businessType = await _masterViewModel.GetBusinessType(new allFilter() { status = StatusModel.Active });
+			if (businessType != null && businessType.Status)
+			{
+				LookUp.BusinessType = businessType.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var businessSize = await _masterViewModel.GetBusinessSize(new allFilter() { status = StatusModel.Active });
+			if (businessSize != null && businessSize.Status)
+			{
+				LookUp.BusinessSize = businessSize.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
+			if (yields != null && yields.Status)
+			{
+				LookUp.Yield = yields.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var chain = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
+			if (chain != null && chain.Status)
+			{
+				LookUp.Chain = chain.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active });
+			if (iSICCode != null && iSICCode.Status)
+			{
+				LookUp.ISICCode = iSICCode.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 		}
 

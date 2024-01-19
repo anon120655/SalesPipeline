@@ -16,6 +16,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_RegionCustom>? Regions { get; set; }
 		public List<Master_BranchCustom>? Branchs { get; set; }
 		public List<User_BranchCustom>? RMUser { get; set; }
+		public List<Master_YieldCustom>? Yield { get; set; }
+		public List<Master_ChainCustom>? Chain { get; set; }
 		public List<Master_Division_BranchCustom>? DivisionBranch { get; set; }
 		public List<Master_Division_LoanCustom>? DivisionLoan { get; set; }
 		public List<Master_BusinessSizeCustom>? BusinessSize { get; set; }

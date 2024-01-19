@@ -1,4 +1,9 @@
-﻿using SalesPipeline.Infrastructure.Interfaces;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Interfaces;
+using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -11,6 +16,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class MasterBusinessType : IMasterBusinessType
 	{
+		private IRepositoryWrapper _repo;
+		private readonly IMapper _mapper;
+		private readonly IRepositoryBase _db;
+		private readonly AppSettings _appSet;
+
+		public MasterBusinessType(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		{
+			_db = db;
+			_repo = repo;
+			_mapper = mapper;
+			_appSet = appSet.Value;
+		}
+
 		public Task<Master_BusinessTypeCustom> Create(Master_BusinessTypeCustom model)
 		{
 			throw new NotImplementedException();
@@ -36,9 +54,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
-		public Task<PaginationView<List<Master_BusinessTypeCustom>>> GetList(allFilter model)
+		public async Task<PaginationView<List<Master_BusinessTypeCustom>>> GetList(allFilter model)
 		{
-			throw new NotImplementedException();
+			var query = _repo.Context.Master_BusinessTypes
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (!String.IsNullOrEmpty(model.val1))
+			{
+				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Master_BusinessTypeCustom>>()
+			{
+				Items = _mapper.Map<List<Master_BusinessTypeCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 	}

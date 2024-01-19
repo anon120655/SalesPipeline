@@ -66,6 +66,11 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);
 			MasterYield = new MasterYields(this, _db, settings, _mapper);
 			MasterChain = new MasterChains(this, _db, settings, _mapper);
+			MasterBusinessSize = new MasterBusinessSize(this, _db, settings, _mapper);
+			MasterBusinessType = new MasterBusinessType(this, _db, settings, _mapper);
+			MasterContactChannel = new MasterContactChannel(this, _db, settings, _mapper);
+			MasterISICCode = new MasterISICCode(this, _db, settings, _mapper);
+			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);
 			Customer = new Customers(this, _db, settings, _mapper);

@@ -59,6 +59,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
 				customer.Master_BusinessSizeId = model.Master_BusinessSizeId;
 				customer.Master_ISICCodeId = model.Master_ISICCodeId;
+				customer.Master_YieldId = model.Master_YieldId;
 				customer.Master_ChainId = model.Master_ChainId;
 				customer.CompanyEmail = model.CompanyEmail;
 				customer.CompanyTel = model.CompanyTel;
@@ -172,6 +173,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
 					customer.Master_BusinessSizeId = model.Master_BusinessSizeId;
 					customer.Master_ISICCodeId = model.Master_ISICCodeId;
+					customer.Master_YieldId = model.Master_YieldId;
 					customer.Master_ChainId = model.Master_ChainId;
 					customer.CompanyEmail = model.CompanyEmail;
 					customer.CompanyTel = model.CompanyTel;
