@@ -23,7 +23,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 			{
 				// not logged in or role not authorized
 				context.Result = new JsonResult(new {
-					StatusCode = StatusCodes.Status401Unauthorized,
+					Status = StatusCodes.Status401Unauthorized,
 					Message = "Unauthorized" 
 				}) 
 				{ 

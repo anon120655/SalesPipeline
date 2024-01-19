@@ -40,6 +40,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// สาขา
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? BranchName { get; set; }
 
 		/// <summary>
@@ -50,6 +51,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อพนักงาน
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? EmployeeName { get; set; }
 
 		/// <summary>
@@ -60,6 +62,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อผู้ติดต่อ
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? ContactName { get; set; }
 
 		/// <summary>

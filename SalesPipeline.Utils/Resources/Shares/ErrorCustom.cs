@@ -9,7 +9,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 {
 	public class ErrorCustom
 	{
-		public int StatusCode { get; set; } = 400; //StatusCodes.Status400BadRequest;
+		public int Status { get; set; } = 400; //StatusCodes.Status400BadRequest;
 		public string? Message { get; set; }
 	}
 }

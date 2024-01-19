@@ -24,12 +24,12 @@ namespace SalesPipeline.Infrastructure.Helpers
 			if (message.StartsWith(GeneralTxt.ErrorTxt))
 			{
 				StatusCode = DefaultStatusCode;
-				error.StatusCode = StatusCodes.Status400BadRequest;
+				error.Status = StatusCodes.Status400BadRequest;
 			}
 			else
 			{
 				StatusCode = StatusCodes.Status500InternalServerError;
-				error.StatusCode = StatusCodes.Status500InternalServerError;
+				error.Status = StatusCodes.Status500InternalServerError;
 			}
 
 			error.Message = GeneralUtils.GetExMessage(ex);
