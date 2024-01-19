@@ -7,7 +7,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
 {
-	public partial class CustomerTargetForm
+	public partial class CustomerForm
 	{
 		[Parameter]
 		public Guid id { get; set; }

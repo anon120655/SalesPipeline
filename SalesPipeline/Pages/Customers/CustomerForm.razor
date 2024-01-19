@@ -1,5 +1,5 @@
-﻿@page "/customer/target/create"
-@page "/customer/target/update/{id:guid}"
+﻿@page "/customer/create"
+@page "/customer/update/{id:guid}"
 
 <PageTitle>รายการลูกค้า</PageTitle>
 
@@ -370,31 +370,86 @@
 										<input @bind="formModel.Inventories" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.Inventories)" />
 									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ</label>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.Nationality" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.Nationality)" />
+										<input @bind="formModel.LoansShort" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.LoansShort)" />
 									</div>
 								</div>
 								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น</label>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์หมุนเวียน</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.Proportion" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.Proportion)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.NumberShareholder" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.NumberShareholder)" />
+										<input @bind="formModel.TotalCurrentAssets" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TotalCurrentAssets)" />
 									</div>
 								</div>
 								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น</label>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะยาว</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.NameShareholder" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.NameShareholder)" />
+										<input @bind="formModel.LoansLong" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.LoansLong)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.LandBuildingEquipment" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.LandBuildingEquipment)" />
 									</div>
 								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ไม่หมุนเวียน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TotalNotCurrentAssets" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TotalNotCurrentAssets)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.AssetsTotal" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.AssetsTotal)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เจ้าหนี้การค้า</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPay" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPay)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayLoansShot" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayLoansShot)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินหมุนเวียน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayTotalCurrentLia" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayTotalCurrentLia)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะยาว</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayLoansLong" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayLoansLong)" />
+									</div>
+								</div>
+								<div class="form-group row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินไม่หมุนเวียน</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayTotalNotCurrentLia" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayTotalNotCurrentLia)" />
+									</div>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ระยะสั้น</label>
+									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+										<input @bind="formModel.TradeAccPayForLoansShot" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.TradeAccPayForLoansShot)" />
+									</div>
+								</div>
+
+
+
 							</div>
 						</div>
 						<div class="my-4 text-center">

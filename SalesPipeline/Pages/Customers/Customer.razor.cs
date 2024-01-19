@@ -7,7 +7,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
 {
-	public partial class CustomerTarget
+	public partial class Customer
     {
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

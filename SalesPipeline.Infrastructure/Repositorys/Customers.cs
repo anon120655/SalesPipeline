@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,49 +52,73 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				var customer = new Data.Entity.Customer()
-				{
-					Status = StatusModel.Active,
-					CreateDate = _dateNow,
-					CreateBy = model.CurrentUserId,
-					UpdateDate = _dateNow,
-					UpdateBy = model.CurrentUserId,
-					DateContact = model.DateContact,
-					ContactChannelId = model.ContactChannelId,
-					BranchId = model.BranchId,
-					ProvincialOffice = model.ProvincialOffice,
-					EmployeeName = model.EmployeeName,
-					EmployeeId = model.EmployeeId,
-					ContactName = model.ContactName,
-					ContactTel = model.ContactTel,
-					CompanyName = model.CompanyName,
-					JuristicPersonRegNumber = model.JuristicPersonRegNumber,
-					BusinessType = model.BusinessType,
-					BusinessSize = model.BusinessSize,
-					MainProduction = model.MainProduction,
-					ValueChain = model.ValueChain,
-					CompanyEmail = model.CompanyEmail,
-					CompanyTel = model.CompanyTel,
-					ParentCompanyGroup = model.ParentCompanyGroup,
-					HouseNo = model.HouseNo,
-					VillageNo = model.VillageNo,
-					ProvinceId = model.ProvinceId,
-					AmphurId = model.AmphurId,
-					TambolId = model.TambolId,
-					ZipCode = model.ZipCode,
-					ShareholderMeetDay = model.ShareholderMeetDay,
-					RegisteredCapital = model.RegisteredCapital,
-					CreditScore = model.CreditScore,
-					FiscalYear = model.FiscalYear,
-					StatementDate = model.StatementDate,
-					TradeAccReceivable = model.TradeAccReceivable,
-					TradeAccRecProceedsNet = model.TradeAccRecProceedsNet,
-					Inventories = model.Inventories,
-					Nationality = model.Nationality,
-					Proportion = model.Proportion,
-					NumberShareholder = model.NumberShareholder,
-					NameShareholder = model.NameShareholder
-				};
+				var customer = new Data.Entity.Customer();
+				customer.Status = StatusModel.Active;
+				customer.CreateDate = _dateNow;
+				customer.CreateBy = model.CurrentUserId;
+				customer.UpdateDate = _dateNow;
+				customer.UpdateBy = model.CurrentUserId;
+				customer.DateContact = model.DateContact;
+				customer.ContactChannelId = model.ContactChannelId;
+				customer.BranchId = model.BranchId;
+				customer.ProvincialOffice = model.ProvincialOffice;
+				customer.EmployeeName = model.EmployeeName;
+				customer.EmployeeId = model.EmployeeId;
+				customer.ContactName = model.ContactName;
+				customer.ContactTel = model.ContactTel;
+				customer.CompanyName = model.CompanyName;
+				customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
+				customer.BusinessType = model.BusinessType;
+				customer.BusinessSize = model.BusinessSize;
+				customer.MainProduction = model.MainProduction;
+				customer.ValueChain = model.ValueChain;
+				customer.CompanyEmail = model.CompanyEmail;
+				customer.CompanyTel = model.CompanyTel;
+				customer.ParentCompanyGroup = model.ParentCompanyGroup;
+				customer.HouseNo = model.HouseNo;
+				customer.VillageNo = model.VillageNo;
+				customer.ProvinceId = model.ProvinceId;
+				customer.AmphurId = model.AmphurId;
+				customer.TambolId = model.TambolId;
+				customer.ZipCode = model.ZipCode;
+				customer.ShareholderMeetDay = model.ShareholderMeetDay;
+				customer.RegisteredCapital = model.RegisteredCapital;
+				customer.CreditScore = model.CreditScore;
+				customer.FiscalYear = model.FiscalYear;
+				customer.StatementDate = model.StatementDate;
+				customer.TradeAccReceivable = model.TradeAccReceivable;
+				customer.TradeAccRecProceedsNet = model.TradeAccRecProceedsNet;
+				customer.Inventories = model.Inventories;
+				customer.LoansShort = model.LoansShort;
+				customer.TotalCurrentAssets = model.TotalCurrentAssets;
+				customer.LoansLong = model.LoansLong;
+				customer.LandBuildingEquipment = model.LandBuildingEquipment;
+				customer.TotalNotCurrentAssets = model.TotalNotCurrentAssets;
+				customer.AssetsTotal = model.AssetsTotal;
+				customer.TradeAccPay = model.TradeAccPay;
+				customer.TradeAccPayLoansShot = model.TradeAccPayLoansShot;
+				customer.TradeAccPayTotalCurrentLia = model.TradeAccPayTotalCurrentLia;
+				customer.TradeAccPayLoansLong = model.TradeAccPayLoansLong;
+				customer.TradeAccPayTotalNotCurrentLia = model.TradeAccPayTotalNotCurrentLia;
+				customer.TradeAccPayForLoansShot = model.TradeAccPayForLoansShot;
+				customer.TradeAccPayTotalLiabilitie = model.TradeAccPayTotalLiabilitie;
+				customer.RegisterCapitalOrdinary = model.RegisterCapitalOrdinary;
+				customer.RegisterCapitalPaid = model.RegisterCapitalPaid;
+				customer.ProfitLossAccumulate = model.ProfitLossAccumulate;
+				customer.TotalShareholders = model.TotalShareholders;
+				customer.TotalLiabilitieShareholders = model.TotalLiabilitieShareholders;
+				customer.TotalIncome = model.TotalIncome;
+				customer.CostSales = model.CostSales;
+				customer.GrossProfit = model.GrossProfit;
+				customer.OperatingExpenses = model.OperatingExpenses;
+				customer.ProfitLossBeforeDepExp = model.ProfitLossBeforeDepExp;
+				customer.ProfitLossBeforeInterestTax = model.ProfitLossBeforeInterestTax;
+				customer.NetProfitLoss = model.NetProfitLoss;
+				customer.InterestLoan = model.InterestLoan;
+				customer.InterestLoanSpecify = model.InterestLoanSpecify;
+				customer.InterestObjectiveLoan = model.InterestObjectiveLoan;
+				customer.InterestCreditLimit = model.InterestCreditLimit;
+				customer.InterestNote = model.InterestNote;
 				await _db.InsterAsync(customer);
 				await _db.SaveAsync();
 
@@ -176,11 +202,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.TradeAccReceivable = model.TradeAccReceivable;
 					customer.TradeAccRecProceedsNet = model.TradeAccRecProceedsNet;
 					customer.Inventories = model.Inventories;
-					customer.Nationality = model.Nationality;
-					customer.Proportion = model.Proportion;
-					customer.NumberShareholder = model.NumberShareholder;
-					customer.NameShareholder = model.NameShareholder;
-
+					customer.LoansShort = model.LoansShort;
+					customer.TotalCurrentAssets = model.TotalCurrentAssets;
+					customer.LoansLong = model.LoansLong;
+					customer.LandBuildingEquipment = model.LandBuildingEquipment;
+					customer.TotalNotCurrentAssets = model.TotalNotCurrentAssets;
+					customer.AssetsTotal = model.AssetsTotal;
+					customer.TradeAccPay = model.TradeAccPay;
+					customer.TradeAccPayLoansShot = model.TradeAccPayLoansShot;
+					customer.TradeAccPayTotalCurrentLia = model.TradeAccPayTotalCurrentLia;
+					customer.TradeAccPayLoansLong = model.TradeAccPayLoansLong;
+					customer.TradeAccPayTotalNotCurrentLia = model.TradeAccPayTotalNotCurrentLia;
+					customer.TradeAccPayForLoansShot = model.TradeAccPayForLoansShot;
+					customer.TradeAccPayTotalLiabilitie = model.TradeAccPayTotalLiabilitie;
+					customer.RegisterCapitalOrdinary = model.RegisterCapitalOrdinary;
+					customer.RegisterCapitalPaid = model.RegisterCapitalPaid;
+					customer.ProfitLossAccumulate = model.ProfitLossAccumulate;
+					customer.TotalShareholders = model.TotalShareholders;
+					customer.TotalLiabilitieShareholders = model.TotalLiabilitieShareholders;
+					customer.TotalIncome = model.TotalIncome;
+					customer.CostSales = model.CostSales;
+					customer.GrossProfit = model.GrossProfit;
+					customer.OperatingExpenses = model.OperatingExpenses;
+					customer.ProfitLossBeforeDepExp = model.ProfitLossBeforeDepExp;
+					customer.ProfitLossBeforeInterestTax = model.ProfitLossBeforeInterestTax;
+					customer.NetProfitLoss = model.NetProfitLoss;
+					customer.InterestLoan = model.InterestLoan;
+					customer.InterestLoanSpecify = model.InterestLoanSpecify;
+					customer.InterestObjectiveLoan = model.InterestObjectiveLoan;
+					customer.InterestCreditLimit = model.InterestCreditLimit;
+					customer.InterestNote = model.InterestNote;
 					_db.Update(customer);
 					await _db.SaveAsync();
 
@@ -248,8 +299,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<CustomerCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Customers
-				.Include(x=>x.Customer_Committees.OrderBy(o=>o.SequenceNo))
-				.Include(x=>x.Customer_Shareholders.OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Committees.OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Shareholders.OrderBy(o => o.SequenceNo))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);
 		}

@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SalesPipeline.Infrastructure.Data.Entity;
+
+/// <summary>
+/// ข้อมูลจังหวัด
+/// </summary>
+public partial class InfoProvince
+{
+    public int id { get; set; }
+
+    public int? AreaHealthID { get; set; }
+
+    public int ProvinceID { get; set; }
+
+    public string ProvinceCode { get; set; } = null!;
+
+    public string ProvinceName { get; set; } = null!;
+
+    public int? RegionID { get; set; }
+}

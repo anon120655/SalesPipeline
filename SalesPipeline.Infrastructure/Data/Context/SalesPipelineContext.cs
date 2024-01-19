@@ -20,6 +20,12 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<FileUpload> FileUploads { get; set; }
 
+    public virtual DbSet<InfoAmphur> InfoAmphurs { get; set; }
+
+    public virtual DbSet<InfoProvince> InfoProvinces { get; set; }
+
+    public virtual DbSet<InfoTambol> InfoTambols { get; set; }
+
     public virtual DbSet<Logging> Loggings { get; set; }
 
     public virtual DbSet<Master_Branch> Master_Branches { get; set; }
@@ -39,6 +45,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Master_Region> Master_Regions { get; set; }
 
     public virtual DbSet<Master_SLAOperation> Master_SLAOperations { get; set; }
+
+    public virtual DbSet<Master_StatusSale> Master_StatusSales { get; set; }
 
     public virtual DbSet<Master_Yield> Master_Yields { get; set; }
 
@@ -61,6 +69,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<ProcessSale_Section_ItemOption> ProcessSale_Section_ItemOptions { get; set; }
 
     public virtual DbSet<Sale> Sales { get; set; }
+
+    public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
@@ -91,6 +101,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.AssetsTotal)
+                .HasPrecision(10, 2)
+                .HasComment("รวมสินทรัพย์");
             entity.Property(e => e.BranchId)
                 .HasComment("สาขา")
                 .HasColumnType("int(11)");
@@ -118,9 +131,14 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ContactTel)
                 .HasMaxLength(255)
                 .HasComment("โทรศัพท์");
+            entity.Property(e => e.CostSales)
+                .HasPrecision(10, 2)
+                .HasComment("ต้นทุนขาย");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.CreditScore).HasMaxLength(255);
+            entity.Property(e => e.CreditScore)
+                .HasMaxLength(255)
+                .HasComment("Credit Score");
             entity.Property(e => e.DateContact)
                 .HasComment("วันที่เข้ามาติดต่อ")
                 .HasColumnType("datetime");
@@ -133,39 +151,75 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.FiscalYear)
                 .HasMaxLength(255)
                 .HasComment("ปีงบประมาณ");
+            entity.Property(e => e.GrossProfit)
+                .HasPrecision(10, 2)
+                .HasComment("กำไรขั้นต้น");
             entity.Property(e => e.HouseNo)
                 .HasMaxLength(255)
                 .HasComment("บ้านเลขที่");
+            entity.Property(e => e.InterestCreditLimit)
+                .HasPrecision(10, 2)
+                .HasComment("วงเงิน");
+            entity.Property(e => e.InterestLoan)
+                .HasMaxLength(255)
+                .HasComment("สินเชื่อที่สนใจ");
+            entity.Property(e => e.InterestLoanSpecify)
+                .HasMaxLength(255)
+                .HasComment("ระบุ");
+            entity.Property(e => e.InterestNote)
+                .HasMaxLength(255)
+                .HasComment("หมายเหตุ");
+            entity.Property(e => e.InterestObjectiveLoan)
+                .HasMaxLength(255)
+                .HasComment("จุดประสงค์การกู้");
             entity.Property(e => e.Inventories)
                 .HasMaxLength(255)
                 .HasComment("สินค้าคงเหลือ");
             entity.Property(e => e.JuristicPersonRegNumber)
                 .HasMaxLength(255)
                 .HasComment("เลขทะเบียนนิติบุคคล");
+            entity.Property(e => e.LandBuildingEquipment)
+                .HasPrecision(10, 2)
+                .HasComment("ที่ดิน อาคาร และอุปกรณ์");
+            entity.Property(e => e.LoansLong)
+                .HasPrecision(10, 2)
+                .HasComment("เงินให้กู้ยืมระยะยาว");
+            entity.Property(e => e.LoansShort)
+                .HasPrecision(10, 2)
+                .HasComment("เงินให้กู้ยืมระยะสั้น");
             entity.Property(e => e.MainProduction)
                 .HasMaxLength(255)
                 .HasComment("ผลผลิตหลัก");
-            entity.Property(e => e.NameShareholder)
-                .HasMaxLength(255)
-                .HasComment("ชื่อผู้ถือหุ้น");
-            entity.Property(e => e.Nationality)
-                .HasMaxLength(255)
-                .HasComment("สัญชาติ");
-            entity.Property(e => e.NumberShareholder)
-                .HasComment("จำนวนหุ้นที่ถือ")
-                .HasColumnType("int(11)");
+            entity.Property(e => e.NetProfitLoss)
+                .HasPrecision(10, 2)
+                .HasComment("กำไร (ขาดทุน) สุทธิ");
+            entity.Property(e => e.OperatingExpenses)
+                .HasPrecision(10, 2)
+                .HasComment("ค่าใช้จ่ายในการดำเนินงาน");
             entity.Property(e => e.ParentCompanyGroup)
                 .HasMaxLength(255)
                 .HasComment("กลุ่มบริษัทแม่");
-            entity.Property(e => e.Proportion)
-                .HasMaxLength(255)
-                .HasComment("สัดส่วนการถือหุ้น");
+            entity.Property(e => e.ProfitLossAccumulate)
+                .HasPrecision(10, 2)
+                .HasComment("กำไร (ขาดทุน) สะสม");
+            entity.Property(e => e.ProfitLossBeforeDepExp)
+                .HasPrecision(10, 2)
+                .HasComment("กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย");
+            entity.Property(e => e.ProfitLossBeforeInterestTax)
+                .HasPrecision(10, 2)
+                .HasComment("กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี");
             entity.Property(e => e.ProvinceId)
                 .HasComment("จังหวัด")
                 .HasColumnType("int(11)");
             entity.Property(e => e.ProvincialOffice)
                 .HasMaxLength(255)
                 .HasComment("สำนักงานจังหวัด (สนจ.)");
+            entity.Property(e => e.RegisterCapitalOrdinary)
+                .HasPrecision(10, 2)
+                .HasComment("ทุนจดทะเบียนสามัญ");
+            entity.Property(e => e.RegisterCapitalPaid)
+                .HasPrecision(10, 2)
+                .HasComment("ทุนจดทะเบียนที่ชำระแล้ว");
             entity.Property(e => e.RegisteredCapital)
                 .HasMaxLength(255)
                 .HasComment("ทุนจดทะเบียน");
@@ -181,6 +235,42 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TambolId)
                 .HasComment("ตำบล")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.TotalCurrentAssets)
+                .HasPrecision(10, 2)
+                .HasComment("รวมสินทรัพย์หมุนเวียน");
+            entity.Property(e => e.TotalIncome)
+                .HasPrecision(10, 2)
+                .HasComment("รายได้รวม");
+            entity.Property(e => e.TotalLiabilitieShareholders)
+                .HasPrecision(10, 2)
+                .HasComment("รวมหนี้สินและส่วนของผู้ถือหุ้น");
+            entity.Property(e => e.TotalNotCurrentAssets)
+                .HasPrecision(10, 2)
+                .HasComment("รวมสินทรัพย์ไม่หมุนเวียน");
+            entity.Property(e => e.TotalShareholders)
+                .HasPrecision(10, 2)
+                .HasComment("รวมส่วนของผู้ถือหุ้น");
+            entity.Property(e => e.TradeAccPay)
+                .HasMaxLength(255)
+                .HasComment("เจ้าหนี้การค้า");
+            entity.Property(e => e.TradeAccPayForLoansShot)
+                .HasPrecision(10, 2)
+                .HasComment("เงินให้กู้ระยะสั้น");
+            entity.Property(e => e.TradeAccPayLoansLong)
+                .HasPrecision(10, 2)
+                .HasComment("เงินกู้ระยะยาว");
+            entity.Property(e => e.TradeAccPayLoansShot)
+                .HasPrecision(10, 2)
+                .HasComment("เงินกู้ระยะสั้น");
+            entity.Property(e => e.TradeAccPayTotalCurrentLia)
+                .HasPrecision(10, 2)
+                .HasComment("รวมหนี้สินหมุนเวียน");
+            entity.Property(e => e.TradeAccPayTotalLiabilitie)
+                .HasPrecision(10, 2)
+                .HasComment("รวมหนี้สิน");
+            entity.Property(e => e.TradeAccPayTotalNotCurrentLia)
+                .HasPrecision(10, 2)
+                .HasComment("รวมหนี้สินไม่หมุนเวียน");
             entity.Property(e => e.TradeAccRecProceedsNet)
                 .HasMaxLength(255)
                 .HasComment("ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ");
@@ -278,6 +368,47 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Url).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<InfoAmphur>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PRIMARY");
+
+            entity.ToTable("InfoAmphur", tb => tb.HasComment("ข้อมูลอำเภอ"));
+
+            entity.Property(e => e.id).HasColumnType("int(11)");
+            entity.Property(e => e.AmphurCode).HasMaxLength(50);
+            entity.Property(e => e.AmphurID).HasColumnType("int(11)");
+            entity.Property(e => e.AmphurName).HasMaxLength(255);
+            entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
+        });
+
+        modelBuilder.Entity<InfoProvince>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PRIMARY");
+
+            entity.ToTable("InfoProvince", tb => tb.HasComment("ข้อมูลจังหวัด"));
+
+            entity.Property(e => e.id).HasColumnType("int(11)");
+            entity.Property(e => e.AreaHealthID).HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceCode).HasMaxLength(50);
+            entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
+            entity.Property(e => e.RegionID).HasColumnType("int(11)");
+        });
+
+        modelBuilder.Entity<InfoTambol>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PRIMARY");
+
+            entity.ToTable("InfoTambol", tb => tb.HasComment("ข้อมูลตำบล"));
+
+            entity.Property(e => e.id).HasColumnType("int(11)");
+            entity.Property(e => e.AmphurID).HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
+            entity.Property(e => e.TambolCode).HasMaxLength(50);
+            entity.Property(e => e.TambolID).HasColumnType("int(11)");
+            entity.Property(e => e.TambolName).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Logging>(entity =>
@@ -474,6 +605,22 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_StatusSale>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_StatusSale", tb => tb.HasComment("สถานะการขาย"));
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
         });
 
         modelBuilder.Entity<Master_Yield>(entity =>
@@ -707,15 +854,34 @@ public partial class SalesPipelineContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Sale");
+            entity.ToTable("Sale", tb => tb.HasComment("การขาย"));
 
+            entity.Property(e => e.CompanyName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อบริษัท");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateByName).HasColumnType("datetime");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Sale_Status>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Status", tb => tb.HasComment("สถานะการขาย"));
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Remark).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.StatusId).HasColumnType("int(11)");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

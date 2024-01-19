@@ -148,6 +148,9 @@ public partial class Customer
     /// </summary>
     public string? RegisteredCapital { get; set; }
 
+    /// <summary>
+    /// Credit Score
+    /// </summary>
     public string? CreditScore { get; set; }
 
     /// <summary>
@@ -176,24 +179,154 @@ public partial class Customer
     public string? Inventories { get; set; }
 
     /// <summary>
-    /// สัญชาติ
+    /// เงินให้กู้ยืมระยะสั้น
     /// </summary>
-    public string? Nationality { get; set; }
+    public decimal? LoansShort { get; set; }
 
     /// <summary>
-    /// สัดส่วนการถือหุ้น
+    /// รวมสินทรัพย์หมุนเวียน
     /// </summary>
-    public string? Proportion { get; set; }
+    public decimal? TotalCurrentAssets { get; set; }
 
     /// <summary>
-    /// จำนวนหุ้นที่ถือ
+    /// เงินให้กู้ยืมระยะยาว
     /// </summary>
-    public int? NumberShareholder { get; set; }
+    public decimal? LoansLong { get; set; }
 
     /// <summary>
-    /// ชื่อผู้ถือหุ้น
+    /// ที่ดิน อาคาร และอุปกรณ์
     /// </summary>
-    public string? NameShareholder { get; set; }
+    public decimal? LandBuildingEquipment { get; set; }
+
+    /// <summary>
+    /// รวมสินทรัพย์ไม่หมุนเวียน
+    /// </summary>
+    public decimal? TotalNotCurrentAssets { get; set; }
+
+    /// <summary>
+    /// รวมสินทรัพย์
+    /// </summary>
+    public decimal? AssetsTotal { get; set; }
+
+    /// <summary>
+    /// เจ้าหนี้การค้า
+    /// </summary>
+    public string? TradeAccPay { get; set; }
+
+    /// <summary>
+    /// เงินกู้ระยะสั้น
+    /// </summary>
+    public decimal? TradeAccPayLoansShot { get; set; }
+
+    /// <summary>
+    /// รวมหนี้สินหมุนเวียน
+    /// </summary>
+    public decimal? TradeAccPayTotalCurrentLia { get; set; }
+
+    /// <summary>
+    /// เงินกู้ระยะยาว
+    /// </summary>
+    public decimal? TradeAccPayLoansLong { get; set; }
+
+    /// <summary>
+    /// รวมหนี้สินไม่หมุนเวียน
+    /// </summary>
+    public decimal? TradeAccPayTotalNotCurrentLia { get; set; }
+
+    /// <summary>
+    /// เงินให้กู้ระยะสั้น
+    /// </summary>
+    public decimal? TradeAccPayForLoansShot { get; set; }
+
+    /// <summary>
+    /// รวมหนี้สิน
+    /// </summary>
+    public decimal? TradeAccPayTotalLiabilitie { get; set; }
+
+    /// <summary>
+    /// ทุนจดทะเบียนสามัญ
+    /// </summary>
+    public decimal? RegisterCapitalOrdinary { get; set; }
+
+    /// <summary>
+    /// ทุนจดทะเบียนที่ชำระแล้ว
+    /// </summary>
+    public decimal? RegisterCapitalPaid { get; set; }
+
+    /// <summary>
+    /// กำไร (ขาดทุน) สะสม
+    /// </summary>
+    public decimal? ProfitLossAccumulate { get; set; }
+
+    /// <summary>
+    /// รวมส่วนของผู้ถือหุ้น
+    /// </summary>
+    public decimal? TotalShareholders { get; set; }
+
+    /// <summary>
+    /// รวมหนี้สินและส่วนของผู้ถือหุ้น
+    /// </summary>
+    public decimal? TotalLiabilitieShareholders { get; set; }
+
+    /// <summary>
+    /// รายได้รวม
+    /// </summary>
+    public decimal? TotalIncome { get; set; }
+
+    /// <summary>
+    /// ต้นทุนขาย
+    /// </summary>
+    public decimal? CostSales { get; set; }
+
+    /// <summary>
+    /// กำไรขั้นต้น
+    /// </summary>
+    public decimal? GrossProfit { get; set; }
+
+    /// <summary>
+    /// ค่าใช้จ่ายในการดำเนินงาน
+    /// </summary>
+    public decimal? OperatingExpenses { get; set; }
+
+    /// <summary>
+    /// กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย
+    /// </summary>
+    public decimal? ProfitLossBeforeDepExp { get; set; }
+
+    /// <summary>
+    /// กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี
+    /// </summary>
+    public decimal? ProfitLossBeforeInterestTax { get; set; }
+
+    /// <summary>
+    /// กำไร (ขาดทุน) สุทธิ
+    /// </summary>
+    public decimal? NetProfitLoss { get; set; }
+
+    /// <summary>
+    /// สินเชื่อที่สนใจ
+    /// </summary>
+    public string? InterestLoan { get; set; }
+
+    /// <summary>
+    /// ระบุ
+    /// </summary>
+    public string? InterestLoanSpecify { get; set; }
+
+    /// <summary>
+    /// จุดประสงค์การกู้
+    /// </summary>
+    public string? InterestObjectiveLoan { get; set; }
+
+    /// <summary>
+    /// วงเงิน
+    /// </summary>
+    public decimal? InterestCreditLimit { get; set; }
+
+    /// <summary>
+    /// หมายเหตุ
+    /// </summary>
+    public string? InterestNote { get; set; }
 
     public virtual ICollection<Customer_Committee> Customer_Committees { get; set; } = new List<Customer_Committee>();
 

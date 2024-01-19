@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
+/// <summary>
+/// การขาย
+/// </summary>
 public partial class Sale
 {
     public Guid Id { get; set; }
@@ -16,9 +19,18 @@ public partial class Sale
 
     public int CreateBy { get; set; }
 
+    public string? CreateByName { get; set; }
+
     public DateTime UpdateDate { get; set; }
 
     public int UpdateBy { get; set; }
 
+    public DateTime? UpdateByName { get; set; }
+
     public Guid CustomerId { get; set; }
+
+    /// <summary>
+    /// ชื่อบริษัท
+    /// </summary>
+    public string? CompanyName { get; set; }
 }
