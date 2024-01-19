@@ -121,7 +121,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_Division_LoanCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_Division_LoanCustom>>> GetLoans(allFilter model)
+		public async Task<PaginationView<List<Master_Division_LoanCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Division_Loans
 												 .Include(x => x.Division_Branchs)

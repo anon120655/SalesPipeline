@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ห่วงโซ่
+/// ช่องทางการติดต่อ
 /// </summary>
-public partial class Master_Chain
+public partial class Master_ContactChannel
 {
     public Guid Id { get; set; }
 

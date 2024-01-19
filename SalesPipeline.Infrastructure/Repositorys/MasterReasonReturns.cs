@@ -110,7 +110,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_ReasonReturnCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_ReasonReturnCustom>>> GetReasonReturns(allFilter model)
+		public async Task<PaginationView<List<Master_ReasonReturnCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_ReasonReturns
 												 .Where(x => x.Status != StatusModel.Delete)

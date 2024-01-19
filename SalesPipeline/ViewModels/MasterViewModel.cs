@@ -4,6 +4,7 @@ using SalesPipeline.Helpers;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
+using System.Net.Http;
 
 namespace SalesPipeline.ViewModels
 {
@@ -17,7 +18,7 @@ namespace SalesPipeline.ViewModels
 		{
 			_httpClient = httpClient;
 			_appSet = appset.Value;
-			_authorizeViewModel = authorizeViewModel;	
+			_authorizeViewModel = authorizeViewModel;
 		}
 
 		public async Task<ResultModel<List<Master_PositionCustom>>> Positions(allFilter parameters)
@@ -101,6 +102,116 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<List<MenuItemCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_BusinessSizeCustom>>>> GetBusinessSize(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBusinessSize?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_BusinessSizeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_BusinessSizeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_BusinessSizeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_BusinessTypeCustom>>>> GetBusinessType(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBusinessType?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_BusinessTypeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_BusinessTypeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_BusinessTypeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_ContactChannelCustom>>>> GetContactChannel(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetContactChannel?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_ContactChannelCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_ContactChannelCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_ContactChannelCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_ISICCodeCustom>>>> GetISICCode(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetISICCode?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_ISICCodeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_ISICCodeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_ISICCodeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_StatusSaleCustom>>>> GetStatusSale(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetStatusSale?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_StatusSaleCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_StatusSaleCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_StatusSaleCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

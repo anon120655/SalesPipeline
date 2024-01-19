@@ -29,19 +29,17 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
 									<div class="col-12 col-md-7 col-xl-3">
-										<select @bind="formModel.ContactChannelId" class="form-select">
+										<select @bind="formModel.Master_ContactChannelId" class="form-select">
 											<option value="">เลือก</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
 										</select>
-										<ValidationMessage For="@(() => formModel.ContactChannelId)" />
+										<ValidationMessage For="@(() => formModel.Master_ContactChannelId)" />
 									</div>
 								</div>
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.BranchId" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.BranchId)" />
+										<input @bind="formModel.BranchName" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.BranchName)" />
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
@@ -101,25 +99,33 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.BusinessType" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.BusinessType)" />
+										<select @bind="formModel.Master_BusinessTypeId" class="form-select">
+											<option value="">เลือก</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_BusinessTypeId)" />
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.BusinessSize" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.BusinessSize)" />
+										<select @bind="formModel.Master_BusinessSizeId" class="form-select">
+											<option value="">เลือก</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_BusinessSizeId)" />
 									</div>
 								</div>
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.MainProduction" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.MainProduction)" />
+										<select @bind="formModel.Master_YieldId" class="form-select">
+											<option value="">เลือก</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_YieldId)" />
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ValueChain" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.ValueChain)" />
+										<select @bind="formModel.Master_ChainId" class="form-select">
+											<option value="">เลือก</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_ChainId)" />
 									</div>
 								</div>
 								<div class="form-group row mb-3">

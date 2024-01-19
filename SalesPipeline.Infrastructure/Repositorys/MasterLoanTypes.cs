@@ -110,7 +110,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_LoanTypeCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_LoanTypeCustom>>> GetLoans(allFilter model)
+		public async Task<PaginationView<List<Master_LoanTypeCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_LoanTypes
 												 .Where(x => x.Status != StatusModel.Delete)

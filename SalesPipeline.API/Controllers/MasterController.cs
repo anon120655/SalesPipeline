@@ -7,7 +7,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
+	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[Route("v{version:apiVersion}/[controller]")]
@@ -18,6 +18,226 @@ namespace SalesPipeline.API.Controllers
 		public MasterController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
+		}
+
+		/// <summary>
+		/// ฝ่ายธุรกิจสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetDivLoans")]
+		public async Task<IActionResult> GetDivLoans([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterDivLoan.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ประเภทสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetLoanType")]
+		public async Task<IActionResult> GetLoanType([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterLoanTypes.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// เหตุผลการส่งคืน
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetReasonReturns")]
+		public async Task<IActionResult> GetReasonReturns([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterReasonReturn.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// SLA การดำเนินการ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetSLAOperations")]
+		public async Task<IActionResult> GetSLAOperations([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterSLAOperation.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ผลผลิต
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetYields")]
+		public async Task<IActionResult> GetYields([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterYield.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ห่วงโซ่
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetChains")]
+		public async Task<IActionResult> GetChains([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterChain.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ขนาดธุรกิจ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetBusinessSize")]
+		public async Task<IActionResult> GetBusinessSize([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterBusinessSize.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ประเภทธุรกิจ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetBusinessType")]
+		public async Task<IActionResult> GetBusinessType([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterBusinessType.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ช่องทางการติดต่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetContactChannel")]
+		public async Task<IActionResult> GetContactChannel([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterContactChannel.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ISICCode
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetISICCode")]
+		public async Task<IActionResult> GetISICCode([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterISICCode.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		///  สถานะการขาย
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetStatusSale")]
+		public async Task<IActionResult> GetStatusSale([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterStatusSale.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
 		}
 
 		[HttpGet("Positions")]
@@ -71,6 +291,8 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
+
+
 
 		[HttpPost("CreateDivBranch")]
 		public async Task<IActionResult> CreateDivBranch(Master_Division_BranchCustom model)
@@ -228,21 +450,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetDivLoans")]
-		public async Task<IActionResult> GetDivLoans([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterDivLoan.GetLoans(model);
-
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		//ประเภทสินเชื่อ
 		[HttpPost("CreateLoanType")]
 		public async Task<IActionResult> CreateLoanType(Master_LoanTypeCustom model)
@@ -307,21 +514,6 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.MasterLoanTypes.GetById(id);
 				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetLoanType")]
-		public async Task<IActionResult> GetLoanType([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterLoanTypes.GetLoans(model);
-
-				return Ok(response);
 			}
 			catch (Exception ex)
 			{
@@ -400,21 +592,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetReasonReturns")]
-		public async Task<IActionResult> GetReasonReturns([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterReasonReturn.GetReasonReturns(model);
-
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		//SLA การดำเนินการ
 		[HttpPost("CreateSLAOpe")]
 		public async Task<IActionResult> CreateSLAOpe(Master_SLAOperationCustom model)
@@ -479,21 +656,6 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.MasterSLAOperation.GetById(id);
 				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetSLAOperations")]
-		public async Task<IActionResult> GetSLAOperations([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterSLAOperation.GetSLAOperations(model);
-
-				return Ok(response);
 			}
 			catch (Exception ex)
 			{
@@ -572,21 +734,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetYields")]
-		public async Task<IActionResult> GetYields([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterYield.GetYields(model);
-
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		//ห่วงโซ่
 		[HttpPost("CreateChain")]
 		public async Task<IActionResult> CreateChain(Master_ChainCustom model)
@@ -651,21 +798,6 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.MasterChain.GetById(id);
 				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetChains")]
-		public async Task<IActionResult> GetChains([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterChain.GetChains(model);
-
-				return Ok(response);
 			}
 			catch (Exception ex)
 			{

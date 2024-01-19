@@ -15,6 +15,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_SLAOperationCustom> GetById(Guid id);
-		Task<PaginationView<List<Master_SLAOperationCustom>>> GetSLAOperations(allFilter model);
+		Task<PaginationView<List<Master_SLAOperationCustom>>> GetList(allFilter model);
 	}
 }

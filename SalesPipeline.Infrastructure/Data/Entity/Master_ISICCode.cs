@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-/// <summary>
-/// ห่วงโซ่
-/// </summary>
-public partial class Master_Chain
+public partial class Master_ISICCode
 {
     public Guid Id { get; set; }
 

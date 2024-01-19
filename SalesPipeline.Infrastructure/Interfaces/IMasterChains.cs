@@ -15,6 +15,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_ChainCustom> GetById(Guid id);
-		Task<PaginationView<List<Master_ChainCustom>>> GetChains(allFilter model);
+		Task<PaginationView<List<Master_ChainCustom>>> GetList(allFilter model);
 	}
 }

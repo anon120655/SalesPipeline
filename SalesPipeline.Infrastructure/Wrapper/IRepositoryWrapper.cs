@@ -30,6 +30,12 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterSLAOperations MasterSLAOperation { get; }
 		IMasterYields MasterYield { get; }
 		IMasterChains MasterChain { get; }
+		IMasterBusinessSize MasterBusinessSize { get; }
+		IMasterBusinessType MasterBusinessType { get; }
+		IMasterContactChannel MasterContactChannel { get; }
+		IMasterISICCode MasterISICCode { get; }
+		IMasterStatusSale MasterStatusSale { get; }
+
 		IProcessSales ProcessSale { get; }
 		IUserRepo User { get; }
 		ICustomers Customer { get; }

@@ -32,13 +32,17 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_SLAOperation, Master_SLAOperationCustom>().ReverseMap();
 			CreateMap<Entity.Master_Yield, Master_YieldCustom>().ReverseMap();
 			CreateMap<Entity.Master_Chain, Master_ChainCustom>().ReverseMap();
+			CreateMap<Entity.Master_BusinessSize, Master_BusinessSizeCustom>().ReverseMap();
+			CreateMap<Entity.Master_BusinessType, Master_BusinessTypeCustom>().ReverseMap();
+			CreateMap<Entity.Master_ContactChannel, Master_ContactChannelCustom>().ReverseMap();
+			CreateMap<Entity.Master_ISICCode, Master_ISICCodeCustom>().ReverseMap();
+			CreateMap<Entity.Master_StatusSale, Master_StatusSaleCustom>().ReverseMap();
 
 			//ProcessSales
 			CreateMap<Entity.ProcessSale, ProcessSaleCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section, ProcessSale_SectionCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section_Item, ProcessSale_Section_ItemCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section_ItemOption, ProcessSale_Section_ItemOptionCustom>().ReverseMap();
-
 			CreateMap<Entity.ProcessSale_Reply, ProcessSale_ReplyCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Reply_Section, ProcessSale_Reply_SectionCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Reply_Section_Item, ProcessSale_Reply_Section_ItemCustom>().ReverseMap();

@@ -113,7 +113,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_SLAOperationCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_SLAOperationCustom>>> GetSLAOperations(allFilter model)
+		public async Task<PaginationView<List<Master_SLAOperationCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_SLAOperations
 												 .Where(x => x.Status != StatusModel.Delete)

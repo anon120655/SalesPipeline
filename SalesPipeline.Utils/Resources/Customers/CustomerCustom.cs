@@ -35,12 +35,12 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ช่องทางการติดต่อ
 		/// </summary>
-		public int? ContactChannelId { get; set; }
+		public Guid? Master_ContactChannelId { get; set; }
 
 		/// <summary>
 		/// สาขา
 		/// </summary>
-		public int? BranchId { get; set; }
+		public string? BranchName { get; set; }
 
 		/// <summary>
 		/// สำนักงานจังหวัด (สนจ.)
@@ -78,24 +78,29 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public string? JuristicPersonRegNumber { get; set; }
 
 		/// <summary>
-		/// ประเภทกิจการ
+		/// ประเภทธุรกิจ
 		/// </summary>
-		public string? BusinessType { get; set; }
+		public Guid? Master_BusinessTypeId { get; set; }
 
 		/// <summary>
 		/// ขนาดธุรกิจ
 		/// </summary>
-		public string? BusinessSize { get; set; }
+		public Guid? Master_BusinessSizeId { get; set; }
+
+		/// <summary>
+		/// ISIC Code
+		/// </summary>
+		public Guid? Master_ISICCodeId { get; set; }
 
 		/// <summary>
 		/// ผลผลิตหลัก
 		/// </summary>
-		public string? MainProduction { get; set; }
+		public Guid? Master_YieldId { get; set; }
 
 		/// <summary>
 		/// ห่วงโซ่คุณค่า 
 		/// </summary>
-		public string? ValueChain { get; set; }
+		public Guid? Master_ChainId { get; set; }
 
 		/// <summary>
 		/// อีเมลบริษัท

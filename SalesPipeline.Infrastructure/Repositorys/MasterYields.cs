@@ -110,7 +110,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_YieldCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_YieldCustom>>> GetYields(allFilter model)
+		public async Task<PaginationView<List<Master_YieldCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Yields
 												 .Where(x => x.Status != StatusModel.Delete)

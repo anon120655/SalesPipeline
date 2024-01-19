@@ -31,12 +31,12 @@ public partial class Customer
     /// <summary>
     /// ช่องทางการติดต่อ
     /// </summary>
-    public int? ContactChannelId { get; set; }
+    public Guid? Master_ContactChannelId { get; set; }
 
     /// <summary>
     /// สาขา
     /// </summary>
-    public int? BranchId { get; set; }
+    public string? BranchName { get; set; }
 
     /// <summary>
     /// สำนักงานจังหวัด (สนจ.)
@@ -74,24 +74,29 @@ public partial class Customer
     public string? JuristicPersonRegNumber { get; set; }
 
     /// <summary>
-    /// ประเภทกิจการ
+    /// ประเภทธุรกิจ
     /// </summary>
-    public string? BusinessType { get; set; }
+    public Guid? Master_BusinessTypeId { get; set; }
 
     /// <summary>
     /// ขนาดธุรกิจ
     /// </summary>
-    public string? BusinessSize { get; set; }
+    public Guid? Master_BusinessSizeId { get; set; }
+
+    /// <summary>
+    /// ISIC Code
+    /// </summary>
+    public Guid? Master_ISICCodeId { get; set; }
 
     /// <summary>
     /// ผลผลิตหลัก
     /// </summary>
-    public string? MainProduction { get; set; }
+    public Guid? Master_YieldId { get; set; }
 
     /// <summary>
     /// ห่วงโซ่คุณค่า 
     /// </summary>
-    public string? ValueChain { get; set; }
+    public Guid? Master_ChainId { get; set; }
 
     /// <summary>
     /// อีเมลบริษัท
@@ -328,7 +333,21 @@ public partial class Customer
     /// </summary>
     public string? InterestNote { get; set; }
 
+    public virtual User CreateByNavigation { get; set; } = null!;
+
     public virtual ICollection<Customer_Committee> Customer_Committees { get; set; } = new List<Customer_Committee>();
 
     public virtual ICollection<Customer_Shareholder> Customer_Shareholders { get; set; } = new List<Customer_Shareholder>();
+
+    public virtual Master_BusinessSize? Master_BusinessSize { get; set; }
+
+    public virtual Master_BusinessType? Master_BusinessType { get; set; }
+
+    public virtual Master_Chain? Master_Chain { get; set; }
+
+    public virtual Master_ContactChannel? Master_ContactChannel { get; set; }
+
+    public virtual Master_ISICCode? Master_ISICCode { get; set; }
+
+    public virtual Master_Yield? Master_Yield { get; set; }
 }

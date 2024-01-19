@@ -45,6 +45,8 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+
     public virtual User_Level? Level { get; set; }
 
     public virtual Master_Position? Position { get; set; }

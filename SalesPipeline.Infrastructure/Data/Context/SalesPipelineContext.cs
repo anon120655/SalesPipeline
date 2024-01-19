@@ -30,11 +30,19 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_Branch> Master_Branches { get; set; }
 
+    public virtual DbSet<Master_BusinessSize> Master_BusinessSizes { get; set; }
+
+    public virtual DbSet<Master_BusinessType> Master_BusinessTypes { get; set; }
+
     public virtual DbSet<Master_Chain> Master_Chains { get; set; }
+
+    public virtual DbSet<Master_ContactChannel> Master_ContactChannels { get; set; }
 
     public virtual DbSet<Master_Division_Branch> Master_Division_Branchs { get; set; }
 
     public virtual DbSet<Master_Division_Loan> Master_Division_Loans { get; set; }
+
+    public virtual DbSet<Master_ISICCode> Master_ISICCodes { get; set; }
 
     public virtual DbSet<Master_LoanType> Master_LoanTypes { get; set; }
 
@@ -98,21 +106,29 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Customer", tb => tb.HasComment("ลูกค้า"));
 
+            entity.HasIndex(e => e.CreateBy, "CreateBy");
+
+            entity.HasIndex(e => e.Master_BusinessSizeId, "Master_BusinessSizeId");
+
+            entity.HasIndex(e => e.Master_BusinessTypeId, "Master_BusinessTypeId");
+
+            entity.HasIndex(e => e.Master_ChainId, "Master_ChainId");
+
+            entity.HasIndex(e => e.Master_ContactChannelId, "Master_ContactChannelId");
+
+            entity.HasIndex(e => e.Master_ISICCodeId, "Master_ISICCodeId");
+
+            entity.HasIndex(e => e.Master_YieldId, "Master_YieldId");
+
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.AssetsTotal)
                 .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์");
-            entity.Property(e => e.BranchId)
-                .HasComment("สาขา")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.BusinessSize)
+            entity.Property(e => e.BranchName)
                 .HasMaxLength(255)
-                .HasComment("ขนาดธุรกิจ");
-            entity.Property(e => e.BusinessType)
-                .HasMaxLength(255)
-                .HasComment("ประเภทกิจการ");
+                .HasComment("สาขา");
             entity.Property(e => e.CompanyEmail)
                 .HasMaxLength(255)
                 .HasComment("อีเมลบริษัท");
@@ -122,9 +138,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CompanyTel)
                 .HasMaxLength(255)
                 .HasComment("โทรศัพท์บริษัท");
-            entity.Property(e => e.ContactChannelId)
-                .HasComment("ช่องทางการติดต่อ")
-                .HasColumnType("int(11)");
             entity.Property(e => e.ContactName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
@@ -187,9 +200,12 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.LoansShort)
                 .HasPrecision(18, 2)
                 .HasComment("เงินให้กู้ยืมระยะสั้น");
-            entity.Property(e => e.MainProduction)
-                .HasMaxLength(255)
-                .HasComment("ผลผลิตหลัก");
+            entity.Property(e => e.Master_BusinessSizeId).HasComment("ขนาดธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_ChainId).HasComment("ห่วงโซ่คุณค่า ");
+            entity.Property(e => e.Master_ContactChannelId).HasComment("ช่องทางการติดต่อ");
+            entity.Property(e => e.Master_ISICCodeId).HasComment("ISIC Code");
+            entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
             entity.Property(e => e.NetProfitLoss)
                 .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) สุทธิ");
@@ -279,15 +295,41 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ลูกหนี้การค้า");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-            entity.Property(e => e.ValueChain)
-                .HasMaxLength(255)
-                .HasComment("ห่วงโซ่คุณค่า ");
             entity.Property(e => e.VillageNo)
                 .HasComment("หมู่ที่")
                 .HasColumnType("int(11)");
             entity.Property(e => e.ZipCode)
                 .HasMaxLength(255)
                 .HasComment("รหัสไปรษณีย์");
+
+            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.CreateBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customer_ibfk_1");
+
+            entity.HasOne(d => d.Master_BusinessSize).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_BusinessSizeId)
+                .HasConstraintName("customer_ibfk_4");
+
+            entity.HasOne(d => d.Master_BusinessType).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_BusinessTypeId)
+                .HasConstraintName("customer_ibfk_3");
+
+            entity.HasOne(d => d.Master_Chain).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_ChainId)
+                .HasConstraintName("customer_ibfk_7");
+
+            entity.HasOne(d => d.Master_ContactChannel).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_ContactChannelId)
+                .HasConstraintName("customer_ibfk_2");
+
+            entity.HasOne(d => d.Master_ISICCode).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_ISICCodeId)
+                .HasConstraintName("customer_ibfk_5");
+
+            entity.HasOne(d => d.Master_Yield).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_YieldId)
+                .HasConstraintName("customer_ibfk_6");
         });
 
         modelBuilder.Entity<Customer_Committee>(entity =>
@@ -457,11 +499,59 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("master_branch_ibfk_1");
         });
 
+        modelBuilder.Entity<Master_BusinessSize>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_BusinessSize", tb => tb.HasComment("ขนาดธุรกิจ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_BusinessType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_BusinessType", tb => tb.HasComment("ประเภทธุรกิจ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<Master_Chain>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("Master_Chain", tb => tb.HasComment("ห่วงโซ่"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_ContactChannel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_ContactChannel", tb => tb.HasComment("ช่องทางการติดต่อ"));
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -518,6 +608,22 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Division_Branchs).WithMany(p => p.Master_Division_Loans)
                 .HasForeignKey(d => d.Division_BranchsId)
                 .HasConstraintName("master_division_loans_ibfk_1");
+        });
+
+        modelBuilder.Entity<Master_ISICCode>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_ISICCode");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Master_LoanType>(entity =>

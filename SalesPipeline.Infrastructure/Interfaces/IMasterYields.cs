@@ -10,6 +10,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_YieldCustom> GetById(Guid id);
-		Task<PaginationView<List<Master_YieldCustom>>> GetYields(allFilter model);
+		Task<PaginationView<List<Master_YieldCustom>>> GetList(allFilter model);
 	}
 }
