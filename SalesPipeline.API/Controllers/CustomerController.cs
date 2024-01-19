@@ -9,12 +9,14 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Loggers;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
+    [Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class CustomerController : ControllerBase
 	{
@@ -48,6 +50,7 @@ namespace SalesPipeline.API.Controllers
 		/// เพิ่มข้อมูลลูกค้า
 		/// </summary>
 		[HttpPost("Create")]
+		[AllowAnonymous]
 		public async Task<IActionResult> Create(CustomerCustom model)
 		{
 			try

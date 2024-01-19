@@ -15,6 +15,8 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Mvc;
+using SalesPipeline.Utils.ValidationModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +47,9 @@ var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
 builder.Services.AddDbContext<SalesPipelineContext>(options =>
 	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.11.6-MariaDB", ServerType.MariaDb), x => x.UseNetTopologySuite()));
 
-builder.Services.Configure<AppSettings>(appSettings);
+builder.Services.Configure<AppSettings>(appSettings); 
+builder.Services.Configure<ApiBehaviorOptions>(options
+	=> options.SuppressModelStateInvalidFilter = true);
 
 // configure DI for application services
 builder.Services.AddSingleton<HttpClient>();
@@ -54,6 +58,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapping));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddScoped<ValidationFilterAttribute>();
 
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
