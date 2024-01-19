@@ -42,7 +42,7 @@ public partial class Customer_Shareholder
     /// <summary>
     /// มูลค่าหุ้นทั้งหมด
     /// </summary>
-    public string? TotalShareValue { get; set; }
+    public decimal? TotalShareValue { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
 }

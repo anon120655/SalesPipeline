@@ -102,7 +102,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.AssetsTotal)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์");
             entity.Property(e => e.BranchId)
                 .HasComment("สาขา")
@@ -132,7 +132,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("โทรศัพท์");
             entity.Property(e => e.CostSales)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("ต้นทุนขาย");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -152,13 +152,13 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ปีงบประมาณ");
             entity.Property(e => e.GrossProfit)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("กำไรขั้นต้น");
             entity.Property(e => e.HouseNo)
                 .HasMaxLength(255)
                 .HasComment("บ้านเลขที่");
             entity.Property(e => e.InterestCreditLimit)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("วงเงิน");
             entity.Property(e => e.InterestLoan)
                 .HasMaxLength(255)
@@ -167,7 +167,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ระบุ");
             entity.Property(e => e.InterestNote)
-                .HasMaxLength(255)
+                .HasMaxLength(1000)
                 .HasComment("หมายเหตุ");
             entity.Property(e => e.InterestObjectiveLoan)
                 .HasMaxLength(255)
@@ -179,34 +179,34 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("เลขทะเบียนนิติบุคคล");
             entity.Property(e => e.LandBuildingEquipment)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("ที่ดิน อาคาร และอุปกรณ์");
             entity.Property(e => e.LoansLong)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("เงินให้กู้ยืมระยะยาว");
             entity.Property(e => e.LoansShort)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("เงินให้กู้ยืมระยะสั้น");
             entity.Property(e => e.MainProduction)
                 .HasMaxLength(255)
                 .HasComment("ผลผลิตหลัก");
             entity.Property(e => e.NetProfitLoss)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) สุทธิ");
             entity.Property(e => e.OperatingExpenses)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("ค่าใช้จ่ายในการดำเนินงาน");
             entity.Property(e => e.ParentCompanyGroup)
                 .HasMaxLength(255)
                 .HasComment("กลุ่มบริษัทแม่");
             entity.Property(e => e.ProfitLossAccumulate)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) สะสม");
             entity.Property(e => e.ProfitLossBeforeDepExp)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย");
             entity.Property(e => e.ProfitLossBeforeInterestTax)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี");
             entity.Property(e => e.ProvinceId)
                 .HasComment("จังหวัด")
@@ -215,10 +215,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("สำนักงานจังหวัด (สนจ.)");
             entity.Property(e => e.RegisterCapitalOrdinary)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("ทุนจดทะเบียนสามัญ");
             entity.Property(e => e.RegisterCapitalPaid)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("ทุนจดทะเบียนที่ชำระแล้ว");
             entity.Property(e => e.RegisteredCapital)
                 .HasMaxLength(255)
@@ -236,40 +236,40 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ตำบล")
                 .HasColumnType("int(11)");
             entity.Property(e => e.TotalCurrentAssets)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์หมุนเวียน");
             entity.Property(e => e.TotalIncome)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รายได้รวม");
             entity.Property(e => e.TotalLiabilitieShareholders)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมหนี้สินและส่วนของผู้ถือหุ้น");
             entity.Property(e => e.TotalNotCurrentAssets)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์ไม่หมุนเวียน");
             entity.Property(e => e.TotalShareholders)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมส่วนของผู้ถือหุ้น");
             entity.Property(e => e.TradeAccPay)
                 .HasMaxLength(255)
                 .HasComment("เจ้าหนี้การค้า");
             entity.Property(e => e.TradeAccPayForLoansShot)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("เงินให้กู้ระยะสั้น");
             entity.Property(e => e.TradeAccPayLoansLong)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("เงินกู้ระยะยาว");
             entity.Property(e => e.TradeAccPayLoansShot)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("เงินกู้ระยะสั้น");
             entity.Property(e => e.TradeAccPayTotalCurrentLia)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมหนี้สินหมุนเวียน");
             entity.Property(e => e.TradeAccPayTotalLiabilitie)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมหนี้สิน");
             entity.Property(e => e.TradeAccPayTotalNotCurrentLia)
-                .HasPrecision(10, 2)
+                .HasPrecision(18, 2)
                 .HasComment("รวมหนี้สินไม่หมุนเวียน");
             entity.Property(e => e.TradeAccRecProceedsNet)
                 .HasMaxLength(255)
@@ -335,7 +335,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.TotalShareValue)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("มูลค่าหุ้นทั้งหมด");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Customer_Shareholders)

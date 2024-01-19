@@ -42,6 +42,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// มูลค่าหุ้นทั้งหมด
 		/// </summary>
-		public string? TotalShareValue { get; set; }
+		public decimal? TotalShareValue { get; set; }
 	}
 }

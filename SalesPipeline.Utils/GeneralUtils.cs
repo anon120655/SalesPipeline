@@ -667,6 +667,49 @@ namespace SalesPipeline.Utils
 				Directory.CreateDirectory(fileInfo.Directory.FullName);
 		}
 
+		public static decimal ToDecimal(object? value)
+		{
+			try
+			{
+				var val = Decimal.Parse(value.ToString());
+				return val;
+			}
+			catch
+			{
+				return 0;
+			}
+		}
+
+		public static bool IsDecimal(decimal value)
+		{
+			try
+			{
+				if ((value % 1) == 0)
+				{
+					return false;
+				}
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public static bool IsDigit(string? value)
+		{
+			try
+			{
+				if (value == null) return false;
+
+				return value.All(Char.IsDigit);
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
 
 	}
 }

@@ -39,6 +39,27 @@ window.scrollToElement = (id) => {
 	}
 }
 
+$(document).on("keypress", ".numberonly", function (e) {
+	return (e.charCode != 8 && e.charCode == 0 || (e.charCode >= 48 && e.charCode <= 57) || e.charCode == 46);
+});
+$(document).on("paste", ".numberonly", function (e) {
+	e.preventDefault();
+	let paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+	this.value = paste.replace(/\D/g, '');
+	this.dispatchEvent(new Event('change'));
+});
+
+function enforceMinMax(el) {
+	if (el.value != "") {
+		if (parseInt(el.value) < parseInt(el.min)) {
+			el.value = el.min;
+		}
+		if (parseInt(el.value) > parseInt(el.max)) {
+			el.value = el.max;
+		}
+	}
+}
+
 function SuccessAlert(text = '<i class="fa-regular fa-circle-check me-2"></i> บันทึกสำเร็จ', delay = 3) {
 	alertify.set('notifier', 'delay', delay);
 	alertify.set('notifier', 'position', 'top-center');
