@@ -9,12 +9,14 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
+	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class ProcessSaleController : ControllerBase
 	{

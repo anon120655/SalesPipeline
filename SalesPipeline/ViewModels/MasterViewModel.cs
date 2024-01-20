@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using System.Net.Http;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.ViewModels
 {
@@ -212,6 +213,72 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<PaginationView<List<Master_StatusSaleCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<InfoProvinceCustom>>> GetProvince()
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetProvince");
+				var dataMap = JsonConvert.DeserializeObject<List<InfoProvinceCustom>>(content);
+
+				return new ResultModel<List<InfoProvinceCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<InfoProvinceCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<InfoAmphurCustom>>> GetAmphur(int provinceID)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetAmphur?provinceID={provinceID}");
+				var dataMap = JsonConvert.DeserializeObject<List<InfoAmphurCustom>>(content);
+
+				return new ResultModel<List<InfoAmphurCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<InfoAmphurCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<InfoTambolCustom>>> GetTambol(int provinceID, int amphurID)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetTambol?provinceID={provinceID}&amphurID={amphurID}");
+				var dataMap = JsonConvert.DeserializeObject<List<InfoTambolCustom>>(content);
+
+				return new ResultModel<List<InfoTambolCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<InfoTambolCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

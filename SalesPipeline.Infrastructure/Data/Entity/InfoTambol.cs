@@ -8,8 +8,6 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// </summary>
 public partial class InfoTambol
 {
-    public int id { get; set; }
-
     public int ProvinceID { get; set; }
 
     public int AmphurID { get; set; }
@@ -19,4 +17,6 @@ public partial class InfoTambol
     public string TambolCode { get; set; } = null!;
 
     public string TambolName { get; set; } = null!;
+
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

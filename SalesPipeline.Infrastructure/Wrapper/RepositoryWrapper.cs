@@ -39,6 +39,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterContactChannel MasterContactChannel { get; }
 		public IMasterISICCode MasterISICCode { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
+		public IThailand Thailand { get; }
 		public IProcessSales ProcessSale { get; }
 		public IUserRepo User { get; }
 		public ICustomers Customer { get; }
@@ -71,6 +72,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterContactChannel = new MasterContactChannel(this, _db, settings, _mapper);
 			MasterISICCode = new MasterISICCode(this, _db, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
+			Thailand = new Thailand(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);
 			Customer = new Customers(this, _db, settings, _mapper);

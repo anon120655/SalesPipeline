@@ -226,10 +226,15 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.ProvinceId" class="form-select">
+										<select @bind="formModel.ProvinceId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
+											@if (LookUp.Province?.Count > 0)
+											{
+												foreach (var item in LookUp.Province)
+												{
+													<option value="@item.ProvinceID">@item.ProvinceName</option>
+												}
+											}
 										</select>
 										<ValidationMessage For="@(() => formModel.ProvinceId)" />
 									</div>

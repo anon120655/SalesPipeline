@@ -10,12 +10,14 @@ using Microsoft.Extensions.Options;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SalesPipeline.Infrastructure.Repositorys;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class UserController : ControllerBase
 	{

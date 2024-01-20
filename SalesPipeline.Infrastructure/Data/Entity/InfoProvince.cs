@@ -8,10 +8,6 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// </summary>
 public partial class InfoProvince
 {
-    public int id { get; set; }
-
-    public int? AreaHealthID { get; set; }
-
     public int ProvinceID { get; set; }
 
     public string ProvinceCode { get; set; } = null!;
@@ -19,4 +15,6 @@ public partial class InfoProvince
     public string ProvinceName { get; set; } = null!;
 
     public int? RegionID { get; set; }
+
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

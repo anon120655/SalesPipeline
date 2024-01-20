@@ -5,11 +5,13 @@ using SalesPipeline.Utils.Resources.Shares;
 using Asp.Versioning;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class AuthorizeController : ControllerBase
 	{

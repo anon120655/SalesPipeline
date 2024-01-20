@@ -106,6 +106,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Customer", tb => tb.HasComment("ลูกค้า"));
 
+            entity.HasIndex(e => e.AmphurId, "AmphurId");
+
             entity.HasIndex(e => e.CreateBy, "CreateBy");
 
             entity.HasIndex(e => e.Master_BusinessSizeId, "Master_BusinessSizeId");
@@ -119,6 +121,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasIndex(e => e.Master_ISICCodeId, "Master_ISICCodeId");
 
             entity.HasIndex(e => e.Master_YieldId, "Master_YieldId");
+
+            entity.HasIndex(e => e.ProvinceId, "ProvinceId");
+
+            entity.HasIndex(e => e.TambolId, "TambolId");
 
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
@@ -302,6 +308,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("รหัสไปรษณีย์");
 
+            entity.HasOne(d => d.Amphur).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.AmphurId)
+                .HasConstraintName("customer_ibfk_9");
+
             entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.CreateBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -330,6 +340,14 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_Yield).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Master_YieldId)
                 .HasConstraintName("customer_ibfk_6");
+
+            entity.HasOne(d => d.Province).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.ProvinceId)
+                .HasConstraintName("customer_ibfk_8");
+
+            entity.HasOne(d => d.Tambol).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.TambolId)
+                .HasConstraintName("customer_ibfk_10");
         });
 
         modelBuilder.Entity<Customer_Committee>(entity =>
@@ -414,42 +432,46 @@ public partial class SalesPipelineContext : DbContext
 
         modelBuilder.Entity<InfoAmphur>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PRIMARY");
+            entity.HasKey(e => e.AmphurID).HasName("PRIMARY");
 
             entity.ToTable("InfoAmphur", tb => tb.HasComment("ข้อมูลอำเภอ"));
 
-            entity.Property(e => e.id).HasColumnType("int(11)");
+            entity.Property(e => e.AmphurID)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
             entity.Property(e => e.AmphurCode).HasMaxLength(50);
-            entity.Property(e => e.AmphurID).HasColumnType("int(11)");
             entity.Property(e => e.AmphurName).HasMaxLength(255);
             entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
         });
 
         modelBuilder.Entity<InfoProvince>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PRIMARY");
+            entity.HasKey(e => e.ProvinceID).HasName("PRIMARY");
 
             entity.ToTable("InfoProvince", tb => tb.HasComment("ข้อมูลจังหวัด"));
 
-            entity.Property(e => e.id).HasColumnType("int(11)");
-            entity.Property(e => e.AreaHealthID).HasColumnType("int(11)");
+            entity.HasIndex(e => e.ProvinceID, "ProvinceID");
+
+            entity.Property(e => e.ProvinceID)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
             entity.Property(e => e.ProvinceCode).HasMaxLength(50);
-            entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
             entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.RegionID).HasColumnType("int(11)");
         });
 
         modelBuilder.Entity<InfoTambol>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PRIMARY");
+            entity.HasKey(e => e.TambolID).HasName("PRIMARY");
 
             entity.ToTable("InfoTambol", tb => tb.HasComment("ข้อมูลตำบล"));
 
-            entity.Property(e => e.id).HasColumnType("int(11)");
+            entity.Property(e => e.TambolID)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
             entity.Property(e => e.AmphurID).HasColumnType("int(11)");
             entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
             entity.Property(e => e.TambolCode).HasMaxLength(50);
-            entity.Property(e => e.TambolID).HasColumnType("int(11)");
             entity.Property(e => e.TambolName).HasMaxLength(255);
         });
 

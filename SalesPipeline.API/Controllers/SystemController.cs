@@ -7,12 +7,14 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class SystemController : ControllerBase
 	{

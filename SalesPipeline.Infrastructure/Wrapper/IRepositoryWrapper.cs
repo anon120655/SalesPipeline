@@ -35,6 +35,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterContactChannel MasterContactChannel { get; }
 		IMasterISICCode MasterISICCode { get; }
 		IMasterStatusSale MasterStatusSale { get; }
+		IThailand Thailand { get; }
 
 		IProcessSales ProcessSale { get; }
 		IUserRepo User { get; }

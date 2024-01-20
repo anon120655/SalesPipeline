@@ -1,5 +1,6 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_ContactChannelCustom>? ContactChannel { get; set; }
 		public List<Master_ISICCodeCustom>? ISICCode { get; set; }
 		public List<Master_StatusSaleCustom>? StatusSale { get; set; }
+		public List<InfoProvinceCustom>? Province { get; set; }
+		public List<InfoAmphurCustom>? Amphur { get; set; }
+		public List<InfoTambolCustom>? Tambol { get; set; }
 	}
 }

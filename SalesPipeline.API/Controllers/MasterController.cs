@@ -4,12 +4,14 @@ using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class MasterController : ControllerBase
 	{
@@ -231,6 +233,66 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var response = await _repo.MasterStatusSale.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		///  จังหวัด
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet("GetProvince")]
+		public async Task<IActionResult> GetProvince()
+		{
+			try
+			{
+				var response = await _repo.Thailand.GetProvince();
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// อำเภอ
+		/// </summary>
+		/// <param name="provinceID"></param>
+		/// <returns></returns>
+		[HttpGet("GetAmphur")]
+		public async Task<IActionResult> GetAmphur([FromQuery] int provinceID)
+		{
+			try
+			{
+				var response = await _repo.Thailand.GetAmphur(provinceID);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ตำบล
+		/// </summary>
+		/// <param name="provinceID"></param>
+		/// <param name="amphurID"></param>
+		/// <returns></returns>
+		[HttpGet("GetTambol")]
+		public async Task<IActionResult> GetTambol([FromQuery] int provinceID, int amphurID)
+		{
+			try
+			{
+				var response = await _repo.Thailand.GetTambol(provinceID, amphurID);
 
 				return Ok(response);
 			}

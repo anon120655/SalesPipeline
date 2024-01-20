@@ -5,12 +5,14 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using Microsoft.AspNetCore.Authorization;
+using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class NotifyController : ControllerBase
 	{

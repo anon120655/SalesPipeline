@@ -23,7 +23,7 @@ namespace SalesPipeline.Pages.Customers
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			await SetInitManual();
+			//await SetInitManual();
 			await SetModel();
 		}
 
@@ -31,6 +31,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (firstRender)
 			{
+				await SetInitManual();
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
 				firstRender = false;
@@ -109,6 +110,17 @@ namespace SalesPipeline.Pages.Customers
 			if (iSICCode != null && iSICCode.Status)
 			{
 				LookUp.ISICCode = iSICCode.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Province = province.Data;
 			}
 			else
 			{

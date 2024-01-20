@@ -333,6 +333,8 @@ public partial class Customer
     /// </summary>
     public string? InterestNote { get; set; }
 
+    public virtual InfoAmphur? Amphur { get; set; }
+
     public virtual User CreateByNavigation { get; set; } = null!;
 
     public virtual ICollection<Customer_Committee> Customer_Committees { get; set; } = new List<Customer_Committee>();
@@ -350,4 +352,8 @@ public partial class Customer
     public virtual Master_ISICCode? Master_ISICCode { get; set; }
 
     public virtual Master_Yield? Master_Yield { get; set; }
+
+    public virtual InfoProvince? Province { get; set; }
+
+    public virtual InfoTambol? Tambol { get; set; }
 }
