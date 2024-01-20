@@ -29,7 +29,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
 									<div class="col-12 col-md-7 col-xl-3">
-										<select @bind="formModel.Master_ContactChannelId" class="form-select">
+										<select @bind="formModel.Master_ContactChannelId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>	
 											@if (LookUp.ContactChannel?.Count > 0)
 											{
@@ -106,7 +106,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessTypeId" class="form-select">
+										<select @bind="formModel.Master_BusinessTypeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.BusinessType?.Count > 0)
 											{
@@ -120,7 +120,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessSizeId" class="form-select">
+										<select @bind="formModel.Master_BusinessSizeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.BusinessSize?.Count > 0)
 											{
@@ -136,7 +136,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ISICCodeId" class="form-select">
+										<select @bind="formModel.Master_ISICCodeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.ISICCode?.Count > 0)
 											{
@@ -152,7 +152,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_YieldId" class="form-select">
+										<select @bind="formModel.Master_YieldId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.Yield?.Count > 0)
 											{
@@ -166,7 +166,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ChainId" class="form-select">
+										<select @bind="formModel.Master_ChainId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.Chain?.Count > 0)
 											{
@@ -240,7 +240,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.AmphurId" class="form-select">
+										<select @bind="formModel.AmphurId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											<option value="1">1</option>
 											<option value="2">2</option>
@@ -251,7 +251,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.TambolId" class="form-select">
+										<select @bind="formModel.TambolId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											<option value="1">1</option>
 											<option value="2">2</option>
