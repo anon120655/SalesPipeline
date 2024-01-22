@@ -50,7 +50,6 @@ namespace SalesPipeline.API.Controllers
 		/// เพิ่มข้อมูลลูกค้า
 		/// </summary>
 		[HttpPost("Create")]
-		[AllowAnonymous]
 		public async Task<IActionResult> Create(CustomerCustom model)
 		{
 			try
@@ -118,7 +117,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ลบข้อมูลลูกค้า ById
 		/// </summary>
-		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
