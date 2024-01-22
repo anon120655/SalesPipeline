@@ -26,8 +26,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_ContactChannelCustom>? ContactChannel { get; set; }
 		public List<Master_ISICCodeCustom>? ISICCode { get; set; }
 		public List<Master_StatusSaleCustom>? StatusSale { get; set; }
-		public List<InfoProvinceCustom>? Province { get; set; }
-		public List<InfoAmphurCustom>? Amphur { get; set; }
-		public List<InfoTambolCustom>? Tambol { get; set; }
+		public List<InfoProvinceCustom>? Provinces { get; set; }
+		public List<InfoAmphurCustom>? Amphurs { get; set; }
+		public List<InfoTambolCustom>? Tambols { get; set; }
 	}
 }

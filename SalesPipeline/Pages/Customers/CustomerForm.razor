@@ -29,7 +29,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
 									<div class="col-12 col-md-7 col-xl-3">
-										<select @bind="formModel.Master_ContactChannelId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_ContactChannelId" id="ContactChannel" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>	
 											@if (LookUp.ContactChannel?.Count > 0)
 											{
@@ -106,7 +106,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessTypeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_BusinessTypeId" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.BusinessType?.Count > 0)
 											{
@@ -120,7 +120,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessSizeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_BusinessSizeId" id="BusinessSize" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.BusinessSize?.Count > 0)
 											{
@@ -136,7 +136,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ISICCodeId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_ISICCodeId" id="ISICCode" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.ISICCode?.Count > 0)
 											{
@@ -152,7 +152,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_YieldId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_YieldId" id="Yield" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.Yield?.Count > 0)
 											{
@@ -166,7 +166,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ChainId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_ChainId" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.Chain?.Count > 0)
 											{
@@ -226,11 +226,11 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.ProvinceId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.ProvinceId" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
-											@if (LookUp.Province?.Count > 0)
+											@if (LookUp.Provinces?.Count > 0)
 											{
-												foreach (var item in LookUp.Province)
+												foreach (var item in LookUp.Provinces)
 												{
 													<option value="@item.ProvinceID">@item.ProvinceName</option>
 												}
@@ -240,10 +240,14 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.AmphurId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
+										<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+											@if (LookUp.Amphurs?.Count > 0)
+											{
+												foreach (var item in LookUp.Amphurs)
+												{
+													<option value="@item.AmphurID">@item.AmphurName</option>
+												}
+											}
 										</select>
 										<ValidationMessage For="@(() => formModel.AmphurId)" />
 									</div>
@@ -251,10 +255,14 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.TambolId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
+										<select @bind="formModel.TambolId" id="Tambol" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+											@if (LookUp.Tambols?.Count > 0)
+											{
+												foreach (var item in LookUp.Tambols)
+												{
+													<option value="@item.TambolID">@item.TambolName</option>
+												}
+											}
 										</select>
 										<ValidationMessage For="@(() => formModel.TambolId)" />
 									</div>

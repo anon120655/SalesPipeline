@@ -4,6 +4,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Customers
 {
@@ -32,7 +33,7 @@ namespace SalesPipeline.Pages.Customers
 			if (firstRender)
 			{
 				await SetInitManual();
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				StateHasChanged();
 				firstRender = false;
 			}
@@ -40,17 +41,6 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task SetInitManual()
 		{
-			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-			if (dataLevels != null && dataLevels.Status)
-			{
-				LookUp.UserLevels = dataLevels.Data;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			var contactChannel = await _masterViewModel.GetContactChannel(new allFilter() { status = StatusModel.Active });
 			if (contactChannel != null && contactChannel.Status)
 			{
@@ -58,7 +48,7 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
-				_errorMessage = dataLevels?.errorMessage;
+				_errorMessage = contactChannel?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -69,7 +59,7 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
-				_errorMessage = dataLevels?.errorMessage;
+				_errorMessage = businessType?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -80,29 +70,7 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
-			if (yields != null && yields.Status)
-			{
-				LookUp.Yield = yields.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var chain = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
-			if (chain != null && chain.Status)
-			{
-				LookUp.Chain = chain.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
+				_errorMessage = businessSize?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -113,22 +81,116 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var province = await _masterViewModel.GetProvince();
-			if (province != null && province.Status)
-			{
-				LookUp.Province = province.Data;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
+				_errorMessage = iSICCode?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
 			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ContactChannel");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessSize");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
+
+
+			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
+			if (yields != null && yields.Status)
+			{
+				LookUp.Yield = yields.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = yields?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var chain = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
+			if (chain != null && chain.Status)
+			{
+				LookUp.Chain = chain.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = chain?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Yield");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
+
+
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+		}
+
+		[JSInvokable]
+		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		{
+			await Task.Delay(1);
+			LookUp.Amphurs = new List<InfoAmphurCustom>();
+			LookUp.Tambols = new List<InfoTambolCustom>();
+			this.StateHasChanged();
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				formModel.ProvinceId = provinceID;
+
+				var amphurs = await _masterViewModel.GetAmphur(provinceID);
+				if (amphurs != null && amphurs.Data?.Count > 0)
+				{
+					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+					LookUp.Amphurs.AddRange(amphurs.Data);
+				}
+
+				this.StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
+			}
+		}
+
+		[JSInvokable]
+		public async Task AmphurChange(string _amphurID, string _amphurName)
+		{
+			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			{
+				LookUp.Tambols = new List<InfoTambolCustom>();
+				this.StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Tambol");
+
+				formModel.AmphurId = amphurID;
+
+				var tambols = await _masterViewModel.GetTambol(formModel.ProvinceId ?? 0, amphurID);
+				if (tambols != null && tambols.Data != null && tambols.Data.Count > 0)
+				{
+					LookUp.Tambols = new List<InfoTambolCustom> { new InfoTambolCustom() { TambolID = 0, TambolName = "--เลือก--" } };
+					LookUp.Tambols.AddRange(tambols.Data);
+				}
+
+				this.StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", "#Tambol");
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "tambolBehalf", 100);
+			}
+		}
+
+		[JSInvokable]
+		public void TambolChange(string _tambolID, string _tambolName)
+		{
+			if (_tambolID != null && int.TryParse(_tambolID, out int tambolID))
+			{
+				formModel.TambolId = tambolID;
+			}
 		}
 
 		protected async Task SetModel()

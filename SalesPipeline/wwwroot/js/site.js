@@ -23,8 +23,39 @@ window.selectPickerRender = () => {
 	$('.selectpicker').selectpicker('render');
 }
 
-window.BootSelectClass = (elm_id) => {
-	$(`.${elm_id}`).selectpicker('setStyle', 'btn_white');
+window.BootSelectId = (id) => {
+	$(`#${id}`).selectpicker('setStyle', 'btn_white');
+}
+
+window.BootSelectClass = (className) => {
+	$(`.${className}`).selectpicker('setStyle', 'btn_white');
+}
+
+window.BootSelectRefreshID = (elm_id, time = 10) => {
+	setTimeout(function () {
+		$(`#${elm_id}`).selectpicker('refresh');
+	}, time)
+}
+
+window.BootSelectEmptyID = (elm_id) => {
+	$(`#${elm_id}`).selectpicker('destroy');
+	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');
+	$(`#${elm_id}`).selectpicker('refresh');
+}
+
+window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName) => {
+	// initialize the specified picker element
+	$(pickerElementName).selectpicker('setStyle', 'btn_white');
+
+	//console.log($(pickerElementName))
+	// setup event to push the selected dropdown value back to c# code
+	$(pickerElementName).on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+		//console.log($(pickerElementName).val(), $(pickerElementName + ' option:selected').text())
+		dotnetHelper.invokeMethodAsync(callbackMethodName, $(pickerElementName).val(), $(pickerElementName + ' option:selected').text())
+			.then(data => {
+
+			});
+	});
 }
 
 window.scrollToElement = (id) => {
