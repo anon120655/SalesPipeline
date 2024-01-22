@@ -132,6 +132,43 @@ namespace SalesPipeline.Pages.Customers
 
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+
+			await SetAddress();
+		}
+
+		protected async Task SetAddress()
+		{
+			if (formModel.ProvinceId.HasValue)
+			{
+				LookUp.Amphurs = new List<InfoAmphurCustom>();
+				this.StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Amphur");
+
+				var amphur = await _masterViewModel.GetAmphur(formModel.ProvinceId.Value);
+				if (amphur != null && amphur.Data != null)
+				{
+					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+					LookUp.Amphurs?.AddRange(amphur.Data);
+					this.StateHasChanged();
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", $"#Amphur");
+
+					if (formModel.AmphurId.HasValue)
+					{
+						LookUp.Tambols = new List<InfoTambolCustom>();
+						this.StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", $"Tambol");
+
+						var tambol = await _masterViewModel.GetTambol(formModel.ProvinceId.Value, formModel.AmphurId.Value);
+						if (tambol != null && tambol.Data != null)
+						{
+							LookUp.Tambols = new List<InfoTambolCustom> { new InfoTambolCustom() { TambolID = 0, TambolName = "--เลือก--" } };
+							LookUp.Tambols?.AddRange(tambol.Data);
+							this.StateHasChanged();
+							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", $"#Tambol");
+						}
+					}
+				}
+			}
 		}
 
 		[JSInvokable]
@@ -141,6 +178,9 @@ namespace SalesPipeline.Pages.Customers
 			LookUp.Amphurs = new List<InfoAmphurCustom>();
 			LookUp.Tambols = new List<InfoTambolCustom>();
 			this.StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Tambol");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
@@ -155,8 +195,8 @@ namespace SalesPipeline.Pages.Customers
 
 				this.StateHasChanged();
 				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 			}
 		}
 
@@ -180,7 +220,7 @@ namespace SalesPipeline.Pages.Customers
 
 				this.StateHasChanged();
 				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", "#Tambol");
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "tambolBehalf", 100);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 			}
 		}
 
@@ -190,6 +230,17 @@ namespace SalesPipeline.Pages.Customers
 			if (_tambolID != null && int.TryParse(_tambolID, out int tambolID))
 			{
 				formModel.TambolId = tambolID;
+
+				if (LookUp.Tambols?.Count > 0)
+				{
+					var tambol = LookUp.Tambols.FirstOrDefault(x=>x.TambolID == tambolID);
+					if (tambol != null)
+					{
+						formModel.ZipCode = tambol.ZipCode;
+						StateHasChanged();
+					}
+				}
+
 			}
 		}
 

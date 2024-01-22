@@ -5,6 +5,8 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +47,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = await _repo.Context.InfoTambols.Where(x => x.ProvinceID == provinceID && x.AmphurID == amphurID).ToListAsync();
 			return query;
 		}
+
+		public async Task MapZipCode(List<InfoTambolCustom> tambolList)
+		{
+			foreach (var item in tambolList)
+			{
+				var query = await _repo.Context.InfoTambols.Where(x => x.TambolCode == item.TambolCode).FirstOrDefaultAsync();
+				if (query != null)
+				{
+					query.ZipCode = item.ZipCode;
+					_db.Update(query);
+					await _db.SaveAsync();
+				}
+			}
+
+		}
+
 
 	}
 }

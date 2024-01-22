@@ -18,5 +18,7 @@ public partial class InfoTambol
 
     public string TambolName { get; set; } = null!;
 
+    public string? ZipCode { get; set; }
+
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

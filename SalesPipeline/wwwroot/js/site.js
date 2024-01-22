@@ -37,6 +37,10 @@ window.BootSelectRefreshID = (elm_id, time = 10) => {
 	}, time)
 }
 
+window.BootSelectDestroy = (elm_id) => {
+	$(`#${elm_id}`).selectpicker('destroy');
+}
+
 window.BootSelectEmptyID = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');

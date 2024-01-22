@@ -17,5 +17,8 @@ namespace SalesPipeline.Utils.Resources.Thailands
 		public string TambolCode { get; set; } = null!;
 
 		public string TambolName { get; set; } = null!;
+
+		public string? ZipCode { get; set; }
+
 	}
 }

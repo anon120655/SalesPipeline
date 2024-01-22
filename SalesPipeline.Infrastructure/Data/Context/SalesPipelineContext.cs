@@ -473,6 +473,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
             entity.Property(e => e.TambolCode).HasMaxLength(50);
             entity.Property(e => e.TambolName).HasMaxLength(255);
+            entity.Property(e => e.ZipCode).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Logging>(entity =>
