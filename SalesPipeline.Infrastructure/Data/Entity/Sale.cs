@@ -47,9 +47,9 @@ public partial class Sale
     public string? StatusSaleName { get; set; }
 
     /// <summary>
-    /// รายละเอียดสถานะการขาย
+    /// รายละเอียดสถานะ
     /// </summary>
-    public string? StatusSaleDescription { get; set; }
+    public string? StatusDescription { get; set; }
 
     /// <summary>
     /// วันที่นัดหมาย

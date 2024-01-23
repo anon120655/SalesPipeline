@@ -103,6 +103,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Status.CreateDate = _dateNow;
 			sale_Status.SaleId = model.SaleId;
 			sale_Status.StatusId = model.StatusId;
+			sale_Status.Description = model.Description;
 
 			await _db.InsterAsync(sale_Status);
 			await _db.SaveAsync();
@@ -123,7 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales.UpdateDate = _dateNow;
 				sales.StatusSaleId = model.StatusId;
 				sales.StatusSaleName = statusSaleName;
-				sales.StatusSaleDescription = statusSaleDescription;
+				sales.StatusDescription = model.Description;
 				_db.Update(sales);
 				await _db.SaveAsync();
 			}

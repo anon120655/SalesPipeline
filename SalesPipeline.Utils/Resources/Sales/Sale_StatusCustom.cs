@@ -22,6 +22,6 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public int StatusId { get; set; }
 
-		public string? Remark { get; set; }
+		public string? Description { get; set; }
 	}
 }

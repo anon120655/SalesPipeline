@@ -21,7 +21,7 @@ public partial class Sale_Status
 
     public int StatusId { get; set; }
 
-    public string? Remark { get; set; }
+    public string? Description { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 
