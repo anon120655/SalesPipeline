@@ -50,9 +50,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
-		public Task<Master_BusinessSizeCustom> GetById(Guid id)
+		public async Task<Master_BusinessSizeCustom> GetById(Guid id)
 		{
-			throw new NotImplementedException();
+			var query = await _repo.Context.Master_BusinessSizes
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Master_BusinessSizeCustom>(query);
 		}
 
 		public async Task<PaginationView<List<Master_BusinessSizeCustom>>> GetList(allFilter model)

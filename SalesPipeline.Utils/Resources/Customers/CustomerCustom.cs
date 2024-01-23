@@ -37,6 +37,8 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// </summary>
 		public Guid? Master_ContactChannelId { get; set; }
 
+		public string? Master_ContactChannelName { get; set; }
+
 		/// <summary>
 		/// สาขา
 		/// </summary>
@@ -85,25 +87,35 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// </summary>
 		public Guid? Master_BusinessTypeId { get; set; }
 
+		public string? Master_BusinessTypeName { get; set; }
+
 		/// <summary>
 		/// ขนาดธุรกิจ
 		/// </summary>
 		public Guid? Master_BusinessSizeId { get; set; }
+
+		public string? Master_BusinessSizeName { get; set; }
 
 		/// <summary>
 		/// ISIC Code
 		/// </summary>
 		public Guid? Master_ISICCodeId { get; set; }
 
+		public string? Master_ISICCodeName { get; set; }
+
 		/// <summary>
 		/// ผลผลิตหลัก
 		/// </summary>
 		public Guid? Master_YieldId { get; set; }
 
+		public string? Master_YieldName { get; set; }
+
 		/// <summary>
 		/// ห่วงโซ่คุณค่า 
 		/// </summary>
 		public Guid? Master_ChainId { get; set; }
+
+		public string? Master_ChainName { get; set; }
 
 		/// <summary>
 		/// อีเมลบริษัท

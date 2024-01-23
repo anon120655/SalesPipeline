@@ -29,7 +29,6 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
-
 		[ApiExplorerSettings(IgnoreApi = true)]
 		[AllowAnonymous]
 		[HttpPost("SaveLog")]

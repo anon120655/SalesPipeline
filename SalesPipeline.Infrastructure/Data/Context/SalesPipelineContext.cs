@@ -490,7 +490,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.ClientIp).HasMaxLength(255);
             entity.Property(e => e.ContentType).HasMaxLength(255);
-            entity.Property(e => e.DeviceInfo).HasMaxLength(255);
+            entity.Property(e => e.DeviceInfo).HasMaxLength(1000);
             entity.Property(e => e.Host).HasMaxLength(100);
             entity.Property(e => e.Method).HasMaxLength(50);
             entity.Property(e => e.Path).HasMaxLength(255);

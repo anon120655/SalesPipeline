@@ -177,6 +177,7 @@ namespace SalesPipeline.Pages.Customers
 			await Task.Delay(1);
 			LookUp.Amphurs = new List<InfoAmphurCustom>();
 			LookUp.Tambols = new List<InfoTambolCustom>();
+			formModel.ZipCode = null;
 			this.StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
@@ -206,6 +207,7 @@ namespace SalesPipeline.Pages.Customers
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
 			{
 				LookUp.Tambols = new List<InfoTambolCustom>();
+				formModel.ZipCode = null;
 				this.StateHasChanged();
 				await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Tambol");
 

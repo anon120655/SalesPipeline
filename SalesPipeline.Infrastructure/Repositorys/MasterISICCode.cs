@@ -49,9 +49,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
-		public Task<Master_ISICCodeCustom> GetById(Guid id)
+		public async Task<Master_ISICCodeCustom> GetById(Guid id)
 		{
-			throw new NotImplementedException();
+			var query = await _repo.Context.Master_ISICCodes
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Master_ISICCodeCustom>(query);
 		}
 
 		public async Task<PaginationView<List<Master_ISICCodeCustom>>> GetList(allFilter model)

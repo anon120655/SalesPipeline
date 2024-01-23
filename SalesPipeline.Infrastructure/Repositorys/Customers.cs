@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -38,6 +39,43 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
+				string? master_ContactChannelName = null;
+				string? master_BusinessTypeName = null;
+				string? master_BusinessSizeName = null;
+				string? master_ISICCodeName = null;
+				string? master_YieldName = null;
+				string? master_ChainName = null;
+				if (model.Master_ContactChannelId.HasValue)
+				{
+					var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
+					if (master != null) master_ContactChannelName = master.Name;
+				}
+				if (model.Master_BusinessTypeId.HasValue)
+				{
+					var master = await _repo.MasterBusinessType.GetById(model.Master_BusinessTypeId.Value);
+					if (master != null) master_BusinessTypeName = master.Name;
+				}
+				if (model.Master_BusinessSizeId.HasValue)
+				{
+					var master = await _repo.MasterBusinessSize.GetById(model.Master_BusinessSizeId.Value);
+					if (master != null) master_BusinessSizeName = master.Name;
+				}
+				if (model.Master_ISICCodeId.HasValue)
+				{
+					var master = await _repo.MasterISICCode.GetById(model.Master_ISICCodeId.Value);
+					if (master != null) master_ISICCodeName = master.Name;
+				}
+				if (model.Master_YieldId.HasValue)
+				{
+					var master = await _repo.MasterYield.GetById(model.Master_YieldId.Value);
+					if (master != null) master_YieldName = master.Name;
+				}
+				if (model.Master_ChainId.HasValue)
+				{
+					var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
+					if (master != null) master_ChainName = master.Name;
+				}
+
 				DateTime _dateNow = DateTime.Now;
 
 				var customer = new Data.Entity.Customer();
@@ -48,6 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.UpdateBy = model.CurrentUserId;
 				customer.DateContact = model.DateContact;
 				customer.Master_ContactChannelId = model.Master_ContactChannelId;
+				customer.Master_ContactChannelName = master_ContactChannelName;				
 				customer.BranchName = model.BranchName;
 				customer.ProvincialOffice = model.ProvincialOffice;
 				customer.EmployeeName = model.EmployeeName;
@@ -57,10 +96,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.CompanyName = model.CompanyName;
 				customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
 				customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
+				customer.Master_BusinessTypeName = master_BusinessTypeName;
 				customer.Master_BusinessSizeId = model.Master_BusinessSizeId;
+				customer.Master_BusinessSizeName = master_BusinessSizeName;
 				customer.Master_ISICCodeId = model.Master_ISICCodeId;
+				customer.Master_ISICCodeName = master_ISICCodeName;
 				customer.Master_YieldId = model.Master_YieldId;
+				customer.Master_YieldName = master_YieldName;
 				customer.Master_ChainId = model.Master_ChainId;
+				customer.Master_ChainName = master_ChainName;
 				customer.CompanyEmail = model.CompanyEmail;
 				customer.CompanyTel = model.CompanyTel;
 				customer.ParentCompanyGroup = model.ParentCompanyGroup;
@@ -158,10 +202,48 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var customer = await _repo.Context.Customers.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
 				if (customer != null)
 				{
+					string? master_ContactChannelName = null;
+					string? master_BusinessTypeName = null;
+					string? master_BusinessSizeName = null;
+					string? master_ISICCodeName = null;
+					string? master_YieldName = null;
+					string? master_ChainName = null;
+					if (model.Master_ContactChannelId.HasValue)
+					{
+						var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
+						if (master != null) master_ContactChannelName = master.Name;
+					}
+					if (model.Master_BusinessTypeId.HasValue)
+					{
+						var master = await _repo.MasterBusinessType.GetById(model.Master_BusinessTypeId.Value);
+						if (master != null) master_BusinessTypeName = master.Name;
+					}
+					if (model.Master_BusinessSizeId.HasValue)
+					{
+						var master = await _repo.MasterBusinessSize.GetById(model.Master_BusinessSizeId.Value);
+						if (master != null) master_BusinessSizeName = master.Name;
+					}
+					if (model.Master_ISICCodeId.HasValue)
+					{
+						var master = await _repo.MasterISICCode.GetById(model.Master_ISICCodeId.Value);
+						if (master != null) master_ISICCodeName = master.Name;
+					}
+					if (model.Master_YieldId.HasValue)
+					{
+						var master = await _repo.MasterYield.GetById(model.Master_YieldId.Value);
+						if (master != null) master_YieldName = master.Name;
+					}
+					if (model.Master_ChainId.HasValue)
+					{
+						var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
+						if (master != null) master_ChainName = master.Name;
+					}
+
 					customer.UpdateDate = _dateNow;
 					customer.UpdateBy = model.CurrentUserId;
 					customer.DateContact = model.DateContact;
 					customer.Master_ContactChannelId = model.Master_ContactChannelId;
+					customer.Master_ContactChannelName = master_ContactChannelName;
 					customer.BranchName = model.BranchName;
 					customer.ProvincialOffice = model.ProvincialOffice;
 					customer.EmployeeName = model.EmployeeName;
@@ -171,10 +253,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.CompanyName = model.CompanyName;
 					customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
 					customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
+					customer.Master_BusinessTypeName = master_BusinessTypeName;
 					customer.Master_BusinessSizeId = model.Master_BusinessSizeId;
+					customer.Master_BusinessSizeName = master_BusinessSizeName;
 					customer.Master_ISICCodeId = model.Master_ISICCodeId;
+					customer.Master_ISICCodeName = master_ISICCodeName;
 					customer.Master_YieldId = model.Master_YieldId;
+					customer.Master_YieldName = master_YieldName;
 					customer.Master_ChainId = model.Master_ChainId;
+					customer.Master_ChainName = master_ChainName;
 					customer.CompanyEmail = model.CompanyEmail;
 					customer.CompanyTel = model.CompanyTel;
 					customer.ParentCompanyGroup = model.ParentCompanyGroup;
@@ -313,18 +400,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					var Sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
-					if (Sales == null)
-					{
-						await _repo.Sales.Create(new()
-						{
-							CreateBy = customer.CreateBy,
-							CreateDate = _dateNow,
-							UpdateBy = customer.CreateBy,
-							UpdateDate = _dateNow,
-							CustomerId = customer.Id,
-						});
-					}
+					//var Sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
+					//if (Sales == null)
+					//{
+					//	await _repo.Sales.Create(new()
+					//	{
+					//		CreateBy = customer.CreateBy,
+					//		CreateDate = _dateNow,
+					//		UpdateBy = customer.CreateBy,
+					//		UpdateDate = _dateNow,
+					//		CustomerId = customer.Id,
+					//	});
+					//}
 
 					_transaction.Commit();
 				}

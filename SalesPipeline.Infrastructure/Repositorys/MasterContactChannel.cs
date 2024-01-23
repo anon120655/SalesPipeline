@@ -49,9 +49,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
-		public Task<Master_ContactChannelCustom> GetById(Guid id)
+		public async Task<Master_ContactChannelCustom> GetById(Guid id)
 		{
-			throw new NotImplementedException();
+			var query = await _repo.Context.Master_ContactChannels
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Master_ContactChannelCustom>(query);
 		}
 
 		public async Task<PaginationView<List<Master_ContactChannelCustom>>> GetList(allFilter model)
