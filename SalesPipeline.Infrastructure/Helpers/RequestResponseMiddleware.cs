@@ -65,23 +65,25 @@ namespace SalesPipeline.Infrastructure.Helpers
 				{
 					if (!String.IsNullOrEmpty(browserinfo.userAgent))
 					{
-						if (browserinfo.OS.IsMatch(browserinfo.userAgent))
-						{
-							device_info = browserinfo.OS.Match(browserinfo.userAgent).Groups[0].Value;
-						}
-						if (browserinfo.userAgent.Length >= 3 && browserinfo.device.IsMatch(browserinfo.userAgent.Substring(0, 4)))
-						{
-							device_info += browserinfo.device.Match(browserinfo.userAgent).Groups[0].Value;
-						}
+						//if (browserinfo.OS.IsMatch(browserinfo.userAgent))
+						//{
+						//	device_info = browserinfo.OS.Match(browserinfo.userAgent).Groups[0].Value;
+						//}
+						//if (browserinfo.userAgent.Length >= 3 && browserinfo.device.IsMatch(browserinfo.userAgent.Substring(0, 4)))
+						//{
+						//	device_info += browserinfo.device.Match(browserinfo.userAgent).Groups[0].Value;
+						//}
 
-						if (!string.IsNullOrEmpty(device_info))
-						{
-							log.DeviceInfo = "Mobile device. " + device_info;
-						}
-						else
-						{
-							log.DeviceInfo = "Desktop device.";
-						}
+						//if (!string.IsNullOrEmpty(device_info))
+						//{
+						//	log.DeviceInfo = "Mobile device. " + device_info;
+						//}
+						//else
+						//{
+						//	log.DeviceInfo = "Desktop device.";
+						//}
+
+						log.DeviceInfo = browserinfo.userAgent;
 					}
 				}
 				catch (Exception ex)
