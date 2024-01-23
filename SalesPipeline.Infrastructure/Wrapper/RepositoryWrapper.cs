@@ -41,6 +41,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterStatusSale MasterStatusSale { get; }
 		public IThailand Thailand { get; }
 		public IProcessSales ProcessSale { get; }
+		public ISales Sales { get; }
 		public IUserRepo User { get; }
 		public ICustomers Customer { get; }
 		public ISystemRepo System { get; }
@@ -74,6 +75,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
+			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);
 			Customer = new Customers(this, _db, settings, _mapper);
 			System = new SystemRepo(this, _db, settings, _mapper);

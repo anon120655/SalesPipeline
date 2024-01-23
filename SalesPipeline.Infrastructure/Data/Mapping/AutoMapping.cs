@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Data.Mapping
@@ -47,6 +48,10 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.ProcessSale_Reply_Section, ProcessSale_Reply_SectionCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Reply_Section_Item, ProcessSale_Reply_Section_ItemCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Reply_Section_ItemValue, ProcessSale_Reply_Section_ItemValueCustom>().ReverseMap();
+
+			//Sale
+			CreateMap<Entity.Sale, SaleCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Status, Sale_StatusCustom>().ReverseMap();
 
 			//Customer
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();

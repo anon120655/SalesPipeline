@@ -313,6 +313,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
+					var Sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
+					if (Sales == null)
+					{
+						await _repo.Sales.Create(new()
+						{
+							CreateBy = customer.CreateBy,
+							CreateDate = _dateNow,
+							UpdateBy = customer.CreateBy,
+							UpdateDate = _dateNow,
+							CustomerId = customer.Id,
+						});
+					}
+
 					_transaction.Commit();
 				}
 
@@ -342,7 +355,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<CustomerCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Customers
-				.Include(x => x.Customer_Committees.Where(s=>s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Committees.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
 				.Include(x => x.Customer_Shareholders.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);

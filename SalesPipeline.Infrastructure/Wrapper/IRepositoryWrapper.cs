@@ -38,6 +38,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IThailand Thailand { get; }
 
 		IProcessSales ProcessSale { get; }
+		ISales Sales { get; }
 		IUserRepo User { get; }
 		ICustomers Customer { get; }
 		ISystemRepo System { get; }
