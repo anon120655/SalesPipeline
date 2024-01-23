@@ -30,22 +30,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<IList<InfoProvince>> GetProvince()
+		public async Task<IList<InfoProvinceCustom>> GetProvince()
 		{
-			var query = await _repo.Context.InfoProvinces.ToListAsync();
-			return query;
+			var query = _repo.Context.InfoProvinces.AsQueryable();
+			return _mapper.Map<IList<InfoProvinceCustom>>(await query.ToListAsync());
 		}
 
-		public async Task<IList<InfoAmphur>> GetAmphur(int provinceID)
+		public async Task<IList<InfoAmphurCustom>> GetAmphur(int provinceID)
 		{
-			var query = await _repo.Context.InfoAmphurs.Where(x => x.ProvinceID == provinceID).ToListAsync();
-			return query;
+			var query = _repo.Context.InfoAmphurs.Where(x => x.ProvinceID == provinceID).AsQueryable();
+			return _mapper.Map<IList<InfoAmphurCustom>>(await query.ToListAsync());
 		}
 
-		public async Task<IList<InfoTambol>> GetTambol(int provinceID, int amphurID)
+		public async Task<IList<InfoTambolCustom>> GetTambol(int provinceID, int amphurID)
 		{
-			var query = await _repo.Context.InfoTambols.Where(x => x.ProvinceID == provinceID && x.AmphurID == amphurID).ToListAsync();
-			return query;
+			var query = _repo.Context.InfoTambols.Where(x => x.ProvinceID == provinceID && x.AmphurID == amphurID).AsQueryable();
+			return _mapper.Map<IList<InfoTambolCustom>>(await query.ToListAsync());
 		}
 
 		public async Task MapZipCode(List<InfoTambolCustom> tambolList)

@@ -33,4 +33,39 @@ public partial class Sale
     /// ชื่อบริษัท
     /// </summary>
     public string? CompanyName { get; set; }
+
+    /// <summary>
+    /// ผู้รับผิดชอบ
+    /// </summary>
+    public string? ResponsibleName { get; set; }
+
+    public int StatusSaleId { get; set; }
+
+    /// <summary>
+    /// สถานะการขาย
+    /// </summary>
+    public string? StatusSaleName { get; set; }
+
+    /// <summary>
+    /// รายละเอียดสถานะการขาย
+    /// </summary>
+    public string? StatusSaleDescription { get; set; }
+
+    /// <summary>
+    /// วันที่นัดหมาย
+    /// </summary>
+    public DateTime? DateAppointment { get; set; }
+
+    /// <summary>
+    /// เปอร์เซ็นโอกาสกู้ผ่าน
+    /// </summary>
+    public int? PercentChanceLoanPass { get; set; }
+
+    public virtual Customer Customer { get; set; } = null!;
+
+    public virtual ICollection<Sale_Reply> Sale_Replies { get; set; } = new List<Sale_Reply>();
+
+    public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
+
+    public virtual Master_StatusSale StatusSale { get; set; } = null!;
 }

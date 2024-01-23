@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class ProcessSale_Reply_Section_ItemValue
+public partial class Sale_Reply_Section_ItemValue
 {
     public Guid Id { get; set; }
 
@@ -12,7 +12,7 @@ public partial class ProcessSale_Reply_Section_ItemValue
     /// </summary>
     public short Status { get; set; }
 
-    public Guid PSaleReplySectionItemId { get; set; }
+    public Guid SaleReplySectionItemId { get; set; }
 
     public Guid PSaleSectionItemOptionId { get; set; }
 
@@ -30,7 +30,7 @@ public partial class ProcessSale_Reply_Section_ItemValue
 
     public virtual FileUpload? File { get; set; }
 
-    public virtual ProcessSale_Reply_Section_Item PSaleReplySectionItem { get; set; } = null!;
-
     public virtual ProcessSale_Section_ItemOption PSaleSectionItemOption { get; set; } = null!;
+
+    public virtual Sale_Reply_Section_Item SaleReplySectionItem { get; set; } = null!;
 }

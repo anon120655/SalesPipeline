@@ -6,7 +6,7 @@
 
 @if (_permission.IsView)
 {
-	var replySections = formModel.ProcessSale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+	var replySections = formModel.Sale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
 	<div class="container-fluid">
 		<div class="row">
@@ -43,9 +43,9 @@
 													</div>
 												</div>
 											</div>
-											@foreach (var item in replySection.ProcessSale_Reply_Section_Items ?? new())
+											@foreach (var item in replySection.Sale_Reply_Section_Items ?? new())
 											{
-												var replyItemValues = item.ProcessSale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+												var replyItemValues = item.Sale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
 												<div class="col-12 col-xl-10">
 													<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">

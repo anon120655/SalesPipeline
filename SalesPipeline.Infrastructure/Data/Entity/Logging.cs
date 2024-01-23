@@ -27,6 +27,8 @@ public partial class Logging
 
     public string? ResponseContentType { get; set; }
 
+    public string? DeviceInfo { get; set; }
+
     public string? ResponseBody { get; set; }
 
     public string? ClientIp { get; set; }

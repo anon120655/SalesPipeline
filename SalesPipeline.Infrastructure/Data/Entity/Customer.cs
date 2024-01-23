@@ -33,6 +33,8 @@ public partial class Customer
     /// </summary>
     public Guid? Master_ContactChannelId { get; set; }
 
+    public string? Master_ContactChannelName { get; set; }
+
     /// <summary>
     /// สาขา
     /// </summary>
@@ -78,25 +80,35 @@ public partial class Customer
     /// </summary>
     public Guid? Master_BusinessTypeId { get; set; }
 
+    public string? Master_BusinessTypeName { get; set; }
+
     /// <summary>
     /// ขนาดธุรกิจ
     /// </summary>
     public Guid? Master_BusinessSizeId { get; set; }
+
+    public string? Master_BusinessSizeName { get; set; }
 
     /// <summary>
     /// ISIC Code
     /// </summary>
     public Guid? Master_ISICCodeId { get; set; }
 
+    public string? Master_ISICCodeName { get; set; }
+
     /// <summary>
     /// ผลผลิตหลัก
     /// </summary>
     public Guid? Master_YieldId { get; set; }
 
+    public string? Master_YieldName { get; set; }
+
     /// <summary>
     /// ห่วงโซ่คุณค่า 
     /// </summary>
     public Guid? Master_ChainId { get; set; }
+
+    public string? Master_ChainName { get; set; }
 
     /// <summary>
     /// อีเมลบริษัท
@@ -354,6 +366,8 @@ public partial class Customer
     public virtual Master_Yield? Master_Yield { get; set; }
 
     public virtual InfoProvince? Province { get; set; }
+
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 
     public virtual InfoTambol? Tambol { get; set; }
 }

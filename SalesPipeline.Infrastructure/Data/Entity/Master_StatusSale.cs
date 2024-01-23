@@ -18,4 +18,10 @@ public partial class Master_StatusSale
     public int SequenceNo { get; set; }
 
     public string? Name { get; set; }
+
+    public string? Description { get; set; }
+
+    public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
+
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }

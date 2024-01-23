@@ -8,12 +8,13 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
+    [Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -86,7 +87,7 @@ namespace SalesPipeline.API.Controllers
 		/// เพิ่มกระบวนการขาย
 		/// </summary>
 		[HttpPost("CreateReply")]
-		public async Task<IActionResult> CreateReply(ProcessSale_ReplyCustom model)
+		public async Task<IActionResult> CreateReply(Sale_ReplyCustom model)
 		{
 			try
 			{
@@ -103,7 +104,7 @@ namespace SalesPipeline.API.Controllers
 		/// แก้ไขกระบวนการขาย
 		/// </summary>
 		[HttpPut("UpdateReply")]
-		public async Task<IActionResult> UpdateReply(ProcessSale_ReplyCustom model)
+		public async Task<IActionResult> UpdateReply(Sale_ReplyCustom model)
 		{
 			try
 			{

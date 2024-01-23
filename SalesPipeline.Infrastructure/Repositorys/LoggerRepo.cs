@@ -61,6 +61,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						RequestBody = _requestBody,
 						ResponseStatus = logs.ResponseStatus,
 						ResponseContentType = logs.ResponseContentType,
+						DeviceInfo = logs.DeviceInfo,
 						ResponseBody = _responseBody,
 						ClientIp = logs.ClientIp,
 						ResponseDate = logs.ResponseDateTimeUtc,

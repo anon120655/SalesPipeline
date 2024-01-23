@@ -10,9 +10,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IThailand
 	{
-		Task<IList<InfoProvince>> GetProvince();
-		Task<IList<InfoAmphur>> GetAmphur(int provinceID);
-		Task<IList<InfoTambol>> GetTambol(int provinceID, int amphurID);
+		Task<IList<InfoProvinceCustom>> GetProvince();
+		Task<IList<InfoAmphurCustom>> GetAmphur(int provinceID);
+		Task<IList<InfoTambolCustom>> GetTambol(int provinceID, int amphurID);
 		Task MapZipCode(List<InfoTambolCustom> tambolList);
 	}
 }

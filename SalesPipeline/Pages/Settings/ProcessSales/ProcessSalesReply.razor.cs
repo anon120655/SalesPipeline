@@ -1,15 +1,15 @@
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Sales;
 
 namespace SalesPipeline.Pages.Settings.ProcessSales
 {
-	public partial class ProcessSalesReply
+    public partial class ProcessSalesReply
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
-		private List<ProcessSale_ReplyCustom>? Items;
+		private List<Sale_ReplyCustom>? Items;
 
 		protected override async Task OnInitializedAsync()
 		{

@@ -6,11 +6,12 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class ProcessSales : IProcessSales
+    public class ProcessSales : IProcessSales
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -206,7 +207,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<ProcessSale_ReplyCustom> CreateReply(ProcessSale_ReplyCustom model)
+		public async Task<Sale_ReplyCustom> CreateReply(Sale_ReplyCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
@@ -222,7 +223,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (processSales != null)
 					_processSaleName = processSales.Name;
 
-				ProcessSale_Reply saleReply = new();
+				Sale_Reply saleReply = new();
 				saleReply.Status = StatusModel.Active;
 				saleReply.CreateDate = _dateNow;
 				saleReply.CreateBy = model.CurrentUserId;
@@ -235,23 +236,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.InsterAsync(saleReply);
 				await _db.SaveAsync();
 
-				if (model.ProcessSale_Reply_Sections?.Count > 0)
+				if (model.Sale_Reply_Sections?.Count > 0)
 				{
-					foreach (var reply_section in model.ProcessSale_Reply_Sections)
+					foreach (var reply_section in model.Sale_Reply_Sections)
 					{
 						if (reply_section.IsSave)
 						{
-							ProcessSale_Reply_Section saleReplySection = new();
+							Sale_Reply_Section saleReplySection = new();
 							saleReplySection.Status = StatusModel.Active;
-							saleReplySection.PSaleReplyId = saleReply.Id;
+							saleReplySection.SaleReplyId = saleReply.Id;
 							saleReplySection.PSaleSectionId = reply_section.PSaleSectionId;
 							saleReplySection.Name = reply_section.Name;
 							await _db.InsterAsync(saleReplySection);
 							await _db.SaveAsync();
 
-							if (reply_section.ProcessSale_Reply_Section_Items?.Count > 0)
+							if (reply_section.Sale_Reply_Section_Items?.Count > 0)
 							{
-								foreach (var reply_section_item in reply_section.ProcessSale_Reply_Section_Items)
+								foreach (var reply_section_item in reply_section.Sale_Reply_Section_Items)
 								{
 									string? _itemLabel = string.Empty;
 									string? _itemType = string.Empty;
@@ -262,22 +263,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										_itemType = processSaleItem.ItemType;
 									}
 
-									ProcessSale_Reply_Section_Item replySectionItem = new();
+									Sale_Reply_Section_Item replySectionItem = new();
 									replySectionItem.Status = StatusModel.Active;
-									replySectionItem.PSaleReplySectionId = saleReplySection.Id;
+									replySectionItem.SaleReplySectionId = saleReplySection.Id;
 									replySectionItem.PSaleSectionItemId = reply_section_item.PSaleSectionItemId;
 									replySectionItem.ItemLabel = _itemLabel;
 									replySectionItem.ItemType = _itemType;
 									await _db.InsterAsync(replySectionItem);
 									await _db.SaveAsync();
 
-									if (reply_section_item.ProcessSale_Reply_Section_ItemValues?.Count > 0)
+									if (reply_section_item.Sale_Reply_Section_ItemValues?.Count > 0)
 									{
-										foreach (var reply_section_value in reply_section_item.ProcessSale_Reply_Section_ItemValues)
+										foreach (var reply_section_value in reply_section_item.Sale_Reply_Section_ItemValues)
 										{
-											ProcessSale_Reply_Section_ItemValue replySectionItemValue = new();
+											Sale_Reply_Section_ItemValue replySectionItemValue = new();
 											replySectionItemValue.Status = StatusModel.Active;
-											replySectionItemValue.PSaleReplySectionItemId = replySectionItem.Id;
+											replySectionItemValue.SaleReplySectionItemId = replySectionItem.Id;
 											replySectionItemValue.PSaleSectionItemOptionId = reply_section_value.PSaleSectionItemOptionId;
 											replySectionItemValue.OptionLabel = reply_section_value.OptionLabel;
 											replySectionItemValue.ReplyValue = reply_section_value.ReplyValue;
@@ -298,28 +299,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_transaction.Commit();
 
-				return _mapper.Map<ProcessSale_ReplyCustom>(saleReply);
+				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
 		}
 
-		public Task<ProcessSale_ReplyCustom> UpdateReply(ProcessSale_ReplyCustom model)
+		public Task<Sale_ReplyCustom> UpdateReply(Sale_ReplyCustom model)
 		{
 			throw new NotImplementedException();
 		}
 
-		public async Task<ProcessSale_ReplyCustom> GetReplyById(Guid id)
+		public async Task<Sale_ReplyCustom> GetReplyById(Guid id)
 		{
-			var query = await _repo.Context.ProcessSale_Replies
-				.Include(x => x.ProcessSale_Reply_Sections).ThenInclude(x => x.ProcessSale_Reply_Section_Items).ThenInclude(x => x.ProcessSale_Reply_Section_ItemValues)
+			var query = await _repo.Context.Sale_Replies
+				.Include(x => x.Sale_Reply_Sections).ThenInclude(x => x.Sale_Reply_Section_Items).ThenInclude(x => x.Sale_Reply_Section_ItemValues)
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<ProcessSale_ReplyCustom>(query);
+			return _mapper.Map<Sale_ReplyCustom>(query);
 		}
 
-		public async Task<PaginationView<List<ProcessSale_ReplyCustom>>> GetListReply(allFilter model)
+		public async Task<PaginationView<List<Sale_ReplyCustom>>> GetListReply(allFilter model)
 		{
-			var query = _repo.Context.ProcessSale_Replies
+			var query = _repo.Context.Sale_Replies
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateBy).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
@@ -337,9 +338,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<ProcessSale_ReplyCustom>>()
+			return new PaginationView<List<Sale_ReplyCustom>>()
 			{
-				Items = _mapper.Map<List<ProcessSale_ReplyCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Sale_ReplyCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}

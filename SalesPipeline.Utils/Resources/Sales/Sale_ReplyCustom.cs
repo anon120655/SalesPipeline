@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalesPipeline.Utils.Resources.ProcessSales
+namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class ProcessSale_ReplyCustom : CommonModel
+    public class Sale_ReplyCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -28,11 +28,13 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 
 		public string? UpdateByName { get; set; }
 
+		public Guid SaleId { get; set; }
+
 		public Guid ProcessSaleId { get; set; }
 
 		public string? ProcessSaleName { get; set; }
 
-		public virtual List<ProcessSale_Reply_SectionCustom>? ProcessSale_Reply_Sections { get; set; }
+		public virtual List<Sale_Reply_SectionCustom>? Sale_Reply_Sections { get; set; }
 
-	}
+    }
 }

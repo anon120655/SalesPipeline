@@ -7,10 +7,11 @@ using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Infrastructure.Data.Mapping
 {
-	public class AutoMapping : Profile
+    public class AutoMapping : Profile
 	{
 		public AutoMapping()
 		{
@@ -39,19 +40,25 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_ISICCode, Master_ISICCodeCustom>().ReverseMap();
 			CreateMap<Entity.Master_StatusSale, Master_StatusSaleCustom>().ReverseMap();
 
+			//Thailand
+			CreateMap<Entity.InfoProvince, InfoProvinceCustom>().ReverseMap();
+			CreateMap<Entity.InfoAmphur, InfoAmphurCustom>().ReverseMap();
+			CreateMap<Entity.InfoTambol, InfoTambolCustom>().ReverseMap();
+
+
 			//ProcessSales
 			CreateMap<Entity.ProcessSale, ProcessSaleCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section, ProcessSale_SectionCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section_Item, ProcessSale_Section_ItemCustom>().ReverseMap();
 			CreateMap<Entity.ProcessSale_Section_ItemOption, ProcessSale_Section_ItemOptionCustom>().ReverseMap();
-			CreateMap<Entity.ProcessSale_Reply, ProcessSale_ReplyCustom>().ReverseMap();
-			CreateMap<Entity.ProcessSale_Reply_Section, ProcessSale_Reply_SectionCustom>().ReverseMap();
-			CreateMap<Entity.ProcessSale_Reply_Section_Item, ProcessSale_Reply_Section_ItemCustom>().ReverseMap();
-			CreateMap<Entity.ProcessSale_Reply_Section_ItemValue, ProcessSale_Reply_Section_ItemValueCustom>().ReverseMap();
 
 			//Sale
 			CreateMap<Entity.Sale, SaleCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Status, Sale_StatusCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Reply, Sale_ReplyCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Reply_Section, Sale_Reply_SectionCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Reply_Section_Item, Sale_Reply_Section_ItemCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Reply_Section_ItemValue, Sale_Reply_Section_ItemValueCustom>().ReverseMap();
 
 			//Customer
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();

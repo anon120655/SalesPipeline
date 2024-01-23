@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class ProcessSale_Reply
+public partial class Sale_Reply
 {
     public Guid Id { get; set; }
 
@@ -24,9 +24,15 @@ public partial class ProcessSale_Reply
 
     public string? UpdateByName { get; set; }
 
+    public Guid SaleId { get; set; }
+
     public Guid ProcessSaleId { get; set; }
 
     public string? ProcessSaleName { get; set; }
 
-    public virtual ICollection<ProcessSale_Reply_Section> ProcessSale_Reply_Sections { get; set; } = new List<ProcessSale_Reply_Section>();
+    public virtual ProcessSale ProcessSale { get; set; } = null!;
+
+    public virtual Sale Sale { get; set; } = null!;
+
+    public virtual ICollection<Sale_Reply_Section> Sale_Reply_Sections { get; set; } = new List<Sale_Reply_Section>();
 }

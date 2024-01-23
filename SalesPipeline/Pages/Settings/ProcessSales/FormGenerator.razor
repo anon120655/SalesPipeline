@@ -25,9 +25,9 @@
 					</div>
 				</div>
 				<div class="row mt-3">
-					@if (formModel.ProcessSale_Reply_Sections?.Count > 0)
+					@if (formModel.Sale_Reply_Sections?.Count > 0)
 					{
-						var replySaleSections = formModel.ProcessSale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+						var replySaleSections = formModel.Sale_Reply_Sections?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
 						foreach (var saleSections in replySaleSections)
 						{
@@ -42,13 +42,13 @@
 										</div>
 									</div>
 
-									@if (saleSections.ProcessSale_Reply_Section_Items?.Count > 0)
+									@if (saleSections.Sale_Reply_Section_Items?.Count > 0)
 									{
-										var replyItems = saleSections.ProcessSale_Reply_Section_Items?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+										var replyItems = saleSections.Sale_Reply_Section_Items?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
 										foreach (var item in replyItems)
 										{
-											var replyItemValues = item.ProcessSale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
+											var replyItemValues = item.Sale_Reply_Section_ItemValues?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
 											<div class="col-12 col-xl-10">
 												<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">

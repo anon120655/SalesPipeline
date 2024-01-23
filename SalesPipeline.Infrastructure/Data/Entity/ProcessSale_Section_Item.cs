@@ -24,7 +24,7 @@ public partial class ProcessSale_Section_Item
 
     public virtual ProcessSale_Section PSaleSection { get; set; } = null!;
 
-    public virtual ICollection<ProcessSale_Reply_Section_Item> ProcessSale_Reply_Section_Items { get; set; } = new List<ProcessSale_Reply_Section_Item>();
-
     public virtual ICollection<ProcessSale_Section_ItemOption> ProcessSale_Section_ItemOptions { get; set; } = new List<ProcessSale_Section_ItemOption>();
+
+    public virtual ICollection<Sale_Reply_Section_Item> Sale_Reply_Section_Items { get; set; } = new List<Sale_Reply_Section_Item>();
 }

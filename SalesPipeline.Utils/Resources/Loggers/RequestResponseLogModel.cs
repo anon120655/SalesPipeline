@@ -30,6 +30,7 @@ namespace SalesPipeline.Utils.Resources.Loggers
         public Dictionary<string, string>? RequestHeaders { get; set; }
         public string? RequestBody { get; set; }
         public string? RequestContentType { get; set; }
+        public string? DeviceInfo { get; set; }
 
 
         public DateTime ResponseDateTimeUtc { get; set; }

@@ -62,14 +62,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<ProcessSale> ProcessSales { get; set; }
 
-    public virtual DbSet<ProcessSale_Reply> ProcessSale_Replies { get; set; }
-
-    public virtual DbSet<ProcessSale_Reply_Section> ProcessSale_Reply_Sections { get; set; }
-
-    public virtual DbSet<ProcessSale_Reply_Section_Item> ProcessSale_Reply_Section_Items { get; set; }
-
-    public virtual DbSet<ProcessSale_Reply_Section_ItemValue> ProcessSale_Reply_Section_ItemValues { get; set; }
-
     public virtual DbSet<ProcessSale_Section> ProcessSale_Sections { get; set; }
 
     public virtual DbSet<ProcessSale_Section_Item> ProcessSale_Section_Items { get; set; }
@@ -77,6 +69,14 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<ProcessSale_Section_ItemOption> ProcessSale_Section_ItemOptions { get; set; }
 
     public virtual DbSet<Sale> Sales { get; set; }
+
+    public virtual DbSet<Sale_Reply> Sale_Replies { get; set; }
+
+    public virtual DbSet<Sale_Reply_Section> Sale_Reply_Sections { get; set; }
+
+    public virtual DbSet<Sale_Reply_Section_Item> Sale_Reply_Section_Items { get; set; }
+
+    public virtual DbSet<Sale_Reply_Section_ItemValue> Sale_Reply_Section_ItemValues { get; set; }
 
     public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
@@ -207,11 +207,17 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(18, 2)
                 .HasComment("เงินให้กู้ยืมระยะสั้น");
             entity.Property(e => e.Master_BusinessSizeId).HasComment("ขนาดธุรกิจ");
+            entity.Property(e => e.Master_BusinessSizeName).HasMaxLength(255);
             entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
             entity.Property(e => e.Master_ChainId).HasComment("ห่วงโซ่คุณค่า ");
+            entity.Property(e => e.Master_ChainName).HasMaxLength(255);
             entity.Property(e => e.Master_ContactChannelId).HasComment("ช่องทางการติดต่อ");
+            entity.Property(e => e.Master_ContactChannelName).HasMaxLength(255);
             entity.Property(e => e.Master_ISICCodeId).HasComment("ISIC Code");
+            entity.Property(e => e.Master_ISICCodeName).HasMaxLength(255);
             entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
+            entity.Property(e => e.Master_YieldName).HasMaxLength(255);
             entity.Property(e => e.NetProfitLoss)
                 .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) สุทธิ");
@@ -484,6 +490,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.ClientIp).HasMaxLength(255);
             entity.Property(e => e.ContentType).HasMaxLength(255);
+            entity.Property(e => e.DeviceInfo).HasMaxLength(255);
             entity.Property(e => e.Host).HasMaxLength(100);
             entity.Property(e => e.Method).HasMaxLength(50);
             entity.Property(e => e.Path).HasMaxLength(255);
@@ -745,6 +752,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnType("int(11)");
+            entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
             entity.Property(e => e.Status)
@@ -804,115 +812,6 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<ProcessSale_Reply>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("ProcessSale_Reply");
-
-            entity.HasIndex(e => e.ProcessSaleId, "ProcessSaleItemId");
-
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
-            entity.Property(e => e.CreateByName).HasMaxLength(255);
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.ProcessSaleName).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateByName).HasMaxLength(255);
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<ProcessSale_Reply_Section>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("ProcessSale_Reply_Section");
-
-            entity.HasIndex(e => e.PSaleReplyId, "PSaleReplyId");
-
-            entity.HasIndex(e => e.PSaleSectionId, "PSaleSectionId");
-
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.PSaleReply).WithMany(p => p.ProcessSale_Reply_Sections)
-                .HasForeignKey(d => d.PSaleReplyId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_ibfk_1");
-
-            entity.HasOne(d => d.PSaleSection).WithMany(p => p.ProcessSale_Reply_Sections)
-                .HasForeignKey(d => d.PSaleSectionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_ibfk_2");
-        });
-
-        modelBuilder.Entity<ProcessSale_Reply_Section_Item>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("ProcessSale_Reply_Section_Item");
-
-            entity.HasIndex(e => e.PSaleReplySectionId, "ProcessSaleReplyId");
-
-            entity.HasIndex(e => e.PSaleSectionItemId, "processsale_answeritem_ibfk_2");
-
-            entity.Property(e => e.ItemLabel).HasMaxLength(255);
-            entity.Property(e => e.ItemType).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.PSaleReplySection).WithMany(p => p.ProcessSale_Reply_Section_Items)
-                .HasForeignKey(d => d.PSaleReplySectionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_item_ibfk_1");
-
-            entity.HasOne(d => d.PSaleSectionItem).WithMany(p => p.ProcessSale_Reply_Section_Items)
-                .HasForeignKey(d => d.PSaleSectionItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_item_ibfk_2");
-        });
-
-        modelBuilder.Entity<ProcessSale_Reply_Section_ItemValue>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("ProcessSale_Reply_Section_ItemValue");
-
-            entity.HasIndex(e => e.FileId, "FileId");
-
-            entity.HasIndex(e => e.PSaleReplySectionItemId, "PSaleReplySectionItemId");
-
-            entity.HasIndex(e => e.PSaleSectionItemOptionId, "PSaleSectionItemOptionId");
-
-            entity.Property(e => e.FileUrl).HasMaxLength(255);
-            entity.Property(e => e.OptionLabel).HasMaxLength(255);
-            entity.Property(e => e.ReplyDate).HasColumnType("datetime");
-            entity.Property(e => e.ReplyTime).HasColumnType("time");
-            entity.Property(e => e.ReplyValue).HasMaxLength(1000);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.File).WithMany(p => p.ProcessSale_Reply_Section_ItemValues)
-                .HasForeignKey(d => d.FileId)
-                .HasConstraintName("processsale_reply_section_itemvalue_ibfk_3");
-
-            entity.HasOne(d => d.PSaleReplySectionItem).WithMany(p => p.ProcessSale_Reply_Section_ItemValues)
-                .HasForeignKey(d => d.PSaleReplySectionItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_itemvalue_ibfk_1");
-
-            entity.HasOne(d => d.PSaleSectionItemOption).WithMany(p => p.ProcessSale_Reply_Section_ItemValues)
-                .HasForeignKey(d => d.PSaleSectionItemOptionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("processsale_reply_section_itemvalue_ibfk_2");
         });
 
         modelBuilder.Entity<ProcessSale_Section>(entity =>
@@ -985,18 +884,169 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale", tb => tb.HasComment("การขาย"));
 
+            entity.HasIndex(e => e.CustomerId, "CustomerId");
+
+            entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
+
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อบริษัท");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DateAppointment)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.PercentChanceLoanPass)
+                .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ResponsibleName)
+                .HasMaxLength(255)
+                .HasComment("ผู้รับผิดชอบ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.StatusSaleDescription)
+                .HasMaxLength(255)
+                .HasComment("รายละเอียดสถานะการขาย");
+            entity.Property(e => e.StatusSaleId).HasColumnType("int(11)");
+            entity.Property(e => e.StatusSaleName)
+                .HasMaxLength(255)
+                .HasComment("สถานะการขาย");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateByName).HasColumnType("datetime");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_ibfk_1");
+
+            entity.HasOne(d => d.StatusSale).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.StatusSaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_ibfk_2");
+        });
+
+        modelBuilder.Entity<Sale_Reply>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Reply");
+
+            entity.HasIndex(e => e.ProcessSaleId, "ProcessSaleItemId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.ProcessSaleName).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateByName).HasColumnType("datetime");
+            entity.Property(e => e.UpdateByName).HasMaxLength(255);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.ProcessSale).WithMany(p => p.Sale_Replies)
+                .HasForeignKey(d => d.ProcessSaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_ibfk_2");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Replies)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Reply_Section>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Reply_Section");
+
+            entity.HasIndex(e => e.SaleReplyId, "PSaleReplyId");
+
+            entity.HasIndex(e => e.PSaleSectionId, "PSaleSectionId");
+
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.PSaleSection).WithMany(p => p.Sale_Reply_Sections)
+                .HasForeignKey(d => d.PSaleSectionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_ibfk_2");
+
+            entity.HasOne(d => d.SaleReply).WithMany(p => p.Sale_Reply_Sections)
+                .HasForeignKey(d => d.SaleReplyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Reply_Section_Item>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Reply_Section_Item");
+
+            entity.HasIndex(e => e.SaleReplySectionId, "ProcessSaleReplyId");
+
+            entity.HasIndex(e => e.PSaleSectionItemId, "processsale_answeritem_ibfk_2");
+
+            entity.Property(e => e.ItemLabel).HasMaxLength(255);
+            entity.Property(e => e.ItemType).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.PSaleSectionItem).WithMany(p => p.Sale_Reply_Section_Items)
+                .HasForeignKey(d => d.PSaleSectionItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_item_ibfk_2");
+
+            entity.HasOne(d => d.SaleReplySection).WithMany(p => p.Sale_Reply_Section_Items)
+                .HasForeignKey(d => d.SaleReplySectionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_item_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Reply_Section_ItemValue>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Reply_Section_ItemValue");
+
+            entity.HasIndex(e => e.FileId, "FileId");
+
+            entity.HasIndex(e => e.SaleReplySectionItemId, "PSaleReplySectionItemId");
+
+            entity.HasIndex(e => e.PSaleSectionItemOptionId, "PSaleSectionItemOptionId");
+
+            entity.Property(e => e.FileUrl).HasMaxLength(255);
+            entity.Property(e => e.OptionLabel).HasMaxLength(255);
+            entity.Property(e => e.ReplyDate).HasColumnType("datetime");
+            entity.Property(e => e.ReplyTime).HasColumnType("time");
+            entity.Property(e => e.ReplyValue).HasMaxLength(1000);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.File).WithMany(p => p.Sale_Reply_Section_ItemValues)
+                .HasForeignKey(d => d.FileId)
+                .HasConstraintName("sale_reply_section_itemvalue_ibfk_3");
+
+            entity.HasOne(d => d.PSaleSectionItemOption).WithMany(p => p.Sale_Reply_Section_ItemValues)
+                .HasForeignKey(d => d.PSaleSectionItemOptionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_itemvalue_ibfk_2");
+
+            entity.HasOne(d => d.SaleReplySectionItem).WithMany(p => p.Sale_Reply_Section_ItemValues)
+                .HasForeignKey(d => d.SaleReplySectionItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_reply_section_itemvalue_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Status>(entity =>
@@ -1005,12 +1055,26 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Status", tb => tb.HasComment("สถานะการขาย"));
 
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.HasIndex(e => e.StatusId, "StatusId");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Remark).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.StatusId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Statuses)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_status_ibfk_1");
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Sale_Statuses)
+                .HasForeignKey(d => d.StatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_status_ibfk_2");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

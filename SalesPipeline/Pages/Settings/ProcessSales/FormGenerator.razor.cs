@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.ProcessSales;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.ProcessSales
 {
-	public partial class FormGenerator
+    public partial class FormGenerator
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -17,7 +17,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
-		private ProcessSale_ReplyCustom formModel = new();
+		private Sale_ReplyCustom formModel = new();
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
@@ -70,15 +70,15 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 						formModel.Status = data.Data.Status;
 						formModel.ProcessSaleId = data.Data.Id;
 						formModel.ProcessSaleName = data.Data.Name;
-						formModel.ProcessSale_Reply_Sections = new();
+						formModel.Sale_Reply_Sections = new();
 
 						foreach (var section in saleSections)
 						{
-							var replySection = new ProcessSale_Reply_SectionCustom();
+							var replySection = new Sale_Reply_SectionCustom();
 							replySection.Status = section.Status;
 							replySection.PSaleSectionId = section.Id;
 							replySection.Name = section.Name;
-							replySection.ProcessSale_Reply_Section_Items = new();
+							replySection.Sale_Reply_Section_Items = new();
 
 							var sectionItems = section.ProcessSale_Section_Items?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 
@@ -86,9 +86,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 							{
 								foreach (var item in sectionItems)
 								{
-									var replyItem = new ProcessSale_Reply_Section_ItemCustom();
+									var replyItem = new Sale_Reply_Section_ItemCustom();
 									replyItem.Status = item.Status;
-									replyItem.PSaleReplySectionId = section.Id;
+									replyItem.SaleReplySectionId = section.Id;
 									replyItem.PSaleSectionItemId = item.Id;
 									replyItem.ItemLabel = item.ItemLabel;
 									replyItem.ItemType = item.ItemType;
@@ -97,11 +97,11 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 									if (itemOptions?.Count > 0)
 									{
-										replyItem.ProcessSale_Reply_Section_ItemValues = new();
+										replyItem.Sale_Reply_Section_ItemValues = new();
 
 										foreach (var item_option in itemOptions)
 										{
-											replyItem.ProcessSale_Reply_Section_ItemValues.Add(new()
+											replyItem.Sale_Reply_Section_ItemValues.Add(new()
 											{
 												Status = item_option.Status,
 												PSaleReplySectionItemId = replyItem.Id,
@@ -112,11 +112,11 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 										}
 									}
 
-									replySection.ProcessSale_Reply_Section_Items.Add(replyItem);
+									replySection.Sale_Reply_Section_Items.Add(replyItem);
 								}
 							}
 
-							formModel.ProcessSale_Reply_Sections.Add(replySection);
+							formModel.Sale_Reply_Sections.Add(replySection);
 						}
 					}
 
@@ -131,13 +131,13 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		protected void OnCheckBox(ChangeEventArgs e, Guid sectionId, Guid saleItemId, Guid itemOptionId)
 		{
-			var section = formModel.ProcessSale_Reply_Sections?.FirstOrDefault(r => r.PSaleSectionId == sectionId);
+			var section = formModel.Sale_Reply_Sections?.FirstOrDefault(r => r.PSaleSectionId == sectionId);
 			if (section != null)
 			{
-				var answerItem = section.ProcessSale_Reply_Section_Items?.FirstOrDefault(r => r.PSaleSectionItemId == saleItemId);
-				if (answerItem != null && answerItem.ProcessSale_Reply_Section_ItemValues != null)
+				var answerItem = section.Sale_Reply_Section_Items?.FirstOrDefault(r => r.PSaleSectionItemId == saleItemId);
+				if (answerItem != null && answerItem.Sale_Reply_Section_ItemValues != null)
 				{
-					var itemOption = answerItem.ProcessSale_Reply_Section_ItemValues.FirstOrDefault(r => r.PSaleSectionItemOptionId == itemOptionId);
+					var itemOption = answerItem.Sale_Reply_Section_ItemValues.FirstOrDefault(r => r.PSaleSectionItemOptionId == itemOptionId);
 					if (itemOption != null)
 					{
 						if (bool.TryParse(e.Value?.ToString(), out bool value))
@@ -151,15 +151,15 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		protected void OnDropdown(ChangeEventArgs e, Guid sectionId, Guid saleItemId)
 		{
-			var section = formModel.ProcessSale_Reply_Sections?.FirstOrDefault(r => r.PSaleSectionId == sectionId);
+			var section = formModel.Sale_Reply_Sections?.FirstOrDefault(r => r.PSaleSectionId == sectionId);
 			if (section != null)
 			{
-				var answerItem = section.ProcessSale_Reply_Section_Items?.FirstOrDefault(r => r.PSaleSectionItemId == saleItemId);
-				if (answerItem != null && answerItem.ProcessSale_Reply_Section_ItemValues != null)
+				var answerItem = section.Sale_Reply_Section_Items?.FirstOrDefault(r => r.PSaleSectionItemId == saleItemId);
+				if (answerItem != null && answerItem.Sale_Reply_Section_ItemValues != null)
 				{
 					if (Guid.TryParse(e.Value?.ToString(), out Guid itemOptionId))
 					{
-						foreach (var item in answerItem.ProcessSale_Reply_Section_ItemValues)
+						foreach (var item in answerItem.Sale_Reply_Section_ItemValues)
 						{
 							item.ReplyValue = item.PSaleSectionItemOptionId == itemOptionId ? true.ToString() : null;
 						}
@@ -175,7 +175,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			ResultModel<ProcessSale_ReplyCustom> response;
+			ResultModel<Sale_ReplyCustom> response;
 
 			if (id_reply != Guid.Empty)
 			{
@@ -205,7 +205,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			_Navs.NavigateTo("/setting/processsales");
 		}
 
-		private async Task OnFileuploadChanged(InputFileChangeEventArgs inputFileChangeEvent, ProcessSale_Reply_Section_ItemValueCustom itemValue)
+		private async Task OnFileuploadChanged(InputFileChangeEventArgs inputFileChangeEvent, Sale_Reply_Section_ItemValueCustom itemValue)
 		{
 			_errorMessage = null;
 			StateHasChanged();
@@ -257,7 +257,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			itemValue._inputFileId = Guid.NewGuid().ToString();
 		}
 
-		private void ClearInputFileMedia(ProcessSale_Reply_Section_ItemValueCustom itemValue)
+		private void ClearInputFileMedia(Sale_Reply_Section_ItemValueCustom itemValue)
 		{
 			_errorMessage = null;
 			StateHasChanged();
