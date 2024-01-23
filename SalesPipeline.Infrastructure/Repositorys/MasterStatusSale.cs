@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -44,9 +45,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
-		public Task<Master_StatusSaleCustom> GetById(Guid id)
+		public async Task<Master_StatusSaleCustom> GetById(int id)
 		{
-			throw new NotImplementedException();
+			var query = await _repo.Context.Master_StatusSales.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<Master_StatusSaleCustom>(query);
 		}
 
 		public Task UpdateStatusById(UpdateModel model)

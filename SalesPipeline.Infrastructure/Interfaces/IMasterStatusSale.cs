@@ -15,7 +15,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Master_StatusSaleCustom> Update(Master_StatusSaleCustom model);
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
-		Task<Master_StatusSaleCustom> GetById(Guid id);
+		Task<Master_StatusSaleCustom> GetById(int id);
 		Task<PaginationView<List<Master_StatusSaleCustom>>> GetList(allFilter model);
 	}
 }

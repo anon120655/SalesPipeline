@@ -914,7 +914,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("สถานะการขาย");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateByName).HasColumnType("datetime");
+            entity.Property(e => e.UpdateByName).HasMaxLength(255);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Sales)

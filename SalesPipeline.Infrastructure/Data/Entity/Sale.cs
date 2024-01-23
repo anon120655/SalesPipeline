@@ -25,7 +25,7 @@ public partial class Sale
 
     public int UpdateBy { get; set; }
 
-    public DateTime? UpdateByName { get; set; }
+    public string? UpdateByName { get; set; }
 
     public Guid CustomerId { get; set; }
 

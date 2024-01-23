@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
@@ -86,7 +87,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.UpdateBy = model.CurrentUserId;
 				customer.DateContact = model.DateContact;
 				customer.Master_ContactChannelId = model.Master_ContactChannelId;
-				customer.Master_ContactChannelName = master_ContactChannelName;				
+				customer.Master_ContactChannelName = master_ContactChannelName;
 				customer.BranchName = model.BranchName;
 				customer.ProvincialOffice = model.ProvincialOffice;
 				customer.EmployeeName = model.EmployeeName;
@@ -186,6 +187,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.InsterAsync(customerShareholder);
 					await _db.SaveAsync();
 				}
+
+				var sale = new SaleCustom()
+				{
+					CurrentUserId = model.CurrentUserId,
+					CreateBy = model.CurrentUserId,
+					CreateDate = _dateNow,
+					UpdateBy = model.CurrentUserId,
+					UpdateDate = _dateNow,
+					CustomerId = customer.Id,
+					StatusSaleId = StatusSaleModel.WaitContact
+				};
+				await _repo.Sales.Create(sale);
 
 				_transaction.Commit();
 
@@ -400,18 +413,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					//var Sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
-					//if (Sales == null)
-					//{
-					//	await _repo.Sales.Create(new()
-					//	{
-					//		CreateBy = customer.CreateBy,
-					//		CreateDate = _dateNow,
-					//		UpdateBy = customer.CreateBy,
-					//		UpdateDate = _dateNow,
-					//		CustomerId = customer.Id,
-					//	});
-					//}
+					var sale = new SaleCustom()
+					{
+						CurrentUserId = model.CurrentUserId,
+						CreateBy = model.CurrentUserId,
+						CreateDate = _dateNow,
+						UpdateBy = model.CurrentUserId,
+						UpdateDate = _dateNow,
+						CustomerId = customer.Id,
+						StatusSaleId = StatusSaleModel.WaitContact
+					};
+
+					var sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
+					if (sales == null)
+					{
+						await _repo.Sales.Create(sale);
+					}
+					else
+					{
+						await _repo.Sales.Update(sale);
+					}
 
 					_transaction.Commit();
 				}

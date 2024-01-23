@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class Sale_StatusCustom
+	public class Sale_StatusCustom 
 	{
 		public Guid Id { get; set; }
 

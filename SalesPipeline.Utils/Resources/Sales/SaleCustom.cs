@@ -27,7 +27,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public int UpdateBy { get; set; }
 
-		public DateTime? UpdateByName { get; set; }
+		public string? UpdateByName { get; set; }
 
 		public Guid CustomerId { get; set; }
 

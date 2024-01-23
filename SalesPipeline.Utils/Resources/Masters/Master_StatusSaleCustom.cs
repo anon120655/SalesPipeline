@@ -18,5 +18,7 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public int SequenceNo { get; set; }
 
 		public string? Name { get; set; }
+
+		public string? Description { get; set; }
 	}
 }
