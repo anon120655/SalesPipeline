@@ -3,6 +3,7 @@ using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
@@ -11,9 +12,9 @@ namespace SalesPipeline.Pages.Customers
     {
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
-		private CustomerFilter filter = new();
+		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<CustomerCustom>? Items;
+		private List<SaleCustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;
@@ -71,7 +72,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task SetModel()
 		{
-			var data = await _customerViewModel.GetList(filter);
+			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

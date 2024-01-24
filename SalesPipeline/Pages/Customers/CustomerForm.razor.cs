@@ -15,16 +15,17 @@ namespace SalesPipeline.Pages.Customers
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private bool isLoadingContent = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private CustomerCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
+			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			//await SetInitManual();
 			await SetModel();
 		}
 
@@ -33,6 +34,7 @@ namespace SalesPipeline.Pages.Customers
 			if (firstRender)
 			{
 				await SetInitManual();
+
 				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				StateHasChanged();
 				firstRender = false;
@@ -91,7 +93,6 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessSize");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
 
-
 			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
 			if (yields != null && yields.Status)
 			{
@@ -114,6 +115,7 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			isLoadingContent = false;
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Yield");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
@@ -134,6 +136,33 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
 
 			await SetAddress();
+		}
+
+		protected async Task SetModel()
+		{
+			if (id != Guid.Empty)
+			{
+				var data = await _customerViewModel.GetById(id);
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+			if (formModel.Customer_Committees == null || formModel.Customer_Committees.Count == 0)
+			{
+				formModel.Customer_Committees = new() { new() { Id = Guid.NewGuid() } };
+			}
+
+			if (formModel.Customer_Shareholders == null || formModel.Customer_Shareholders.Count == 0)
+			{
+				formModel.Customer_Shareholders = new() { new() { Id = Guid.NewGuid() } };
+			}
 		}
 
 		protected async Task SetAddress()
@@ -243,33 +272,6 @@ namespace SalesPipeline.Pages.Customers
 					}
 				}
 
-			}
-		}
-
-		protected async Task SetModel()
-		{
-			if (id != Guid.Empty)
-			{
-				var data = await _customerViewModel.GetById(id);
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-
-			if (formModel.Customer_Committees == null || formModel.Customer_Committees.Count == 0)
-			{
-				formModel.Customer_Committees = new() { new() { Id = Guid.NewGuid() } };
-			}
-
-			if (formModel.Customer_Shareholders == null || formModel.Customer_Shareholders.Count == 0)
-			{
-				formModel.Customer_Shareholders = new() { new() { Id = Guid.NewGuid() } };
 			}
 		}
 

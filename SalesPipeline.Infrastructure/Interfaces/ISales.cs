@@ -1,11 +1,6 @@
-﻿using SalesPipeline.Infrastructure.Data.Entity;
-using SalesPipeline.Utils.Resources.Customers;
+﻿using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
@@ -15,5 +10,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<SaleCustom> Update(SaleCustom model);
 		Task UpdateStatusOnly(Sale_StatusCustom model);
 		Task<SaleCustom> GetById(Guid id);
+		Task<PaginationView<List<SaleCustom>>> GetList(allFilter model);
 	}
 }

@@ -10,722 +10,731 @@
 	<div class="container-xxl">
 		<div class="row">
 			<div class="col-12 my-2">
-				<div class="box_content">
+				<div class="box_content mh_40r">
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
 							<p class="back_topic_active">เพิ่มรายการลูกค้า</p>
 						</div>
 					</div>
-					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
-						<DataAnnotationsValidator />
-						<div class="row my-3">
-							<div class="col-12">
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันที่เข้ามาติดต่อ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.DateContact" type="date" class="form-control">
-										<ValidationMessage For="@(() => formModel.DateContact)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
-									<div class="col-12 col-md-7 col-xl-3">
-										<select @bind="formModel.Master_ContactChannelId" id="ContactChannel" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>	
-											@if (LookUp.ContactChannel?.Count > 0)
-											{
-												foreach (var item in LookUp.ContactChannel)
+					@if (!isLoadingContent)
+					{
+						<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+							<DataAnnotationsValidator />
+							<div class="row my-3">
+								<div class="col-12">
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันที่เข้ามาติดต่อ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.DateContact" type="date" class="form-control">
+											<ValidationMessage For="@(() => formModel.DateContact)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ</label>
+										<div class="col-12 col-md-7 col-xl-3">
+											<select @bind="formModel.Master_ContactChannelId" id="ContactChannel" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.ContactChannel?.Count > 0)
 												{
-													<option value="@item.Id">@item.Name</option>
+													foreach (var item in LookUp.ContactChannel)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
 												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_ContactChannelId)" />
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_ContactChannelId)" />
+										</div>
 									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.BranchName" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.BranchName)" />
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.BranchName" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.BranchName)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ProvincialOffice" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.ProvincialOffice)" />
+										</div>
 									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ProvincialOffice" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.ProvincialOffice)" />
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.EmployeeName" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.EmployeeName)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.EmployeeId" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.EmployeeId)" />
+										</div>
 									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.EmployeeName" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.EmployeeName)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.EmployeeId" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.EmployeeId)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ติดต่อ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ContactName" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.ContactName)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ContactTel" type="tel" class="form-control">
-										<ValidationMessage For="@(() => formModel.ContactTel)" />
-									</div>
-								</div>
-							</div>
-						</div>
-						@* ข้อมูลบริษัท *@
-						<div class="row my-3">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลบริษัท</label>
-											<div class="col-sm-7"></div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ติดต่อ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ContactName" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.ContactName)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ContactTel" type="tel" class="form-control">
+											<ValidationMessage For="@(() => formModel.ContactTel)" />
 										</div>
 									</div>
 								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อบริษัท</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.CompanyName" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.CompanyName)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เลขทะเบียนนิติบุคคล</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.JuristicPersonRegNumber" type="text" class="form-control numberonly">
-										<ValidationMessage For="@(() => formModel.JuristicPersonRegNumber)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessTypeId" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.BusinessType?.Count > 0)
-											{
-												foreach (var item in LookUp.BusinessType)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_BusinessTypeId)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_BusinessSizeId" id="BusinessSize" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.BusinessSize?.Count > 0)
-											{
-												foreach (var item in LookUp.BusinessSize)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_BusinessSizeId)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ISICCodeId" id="ISICCode" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.ISICCode?.Count > 0)
-											{
-												foreach (var item in LookUp.ISICCode)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_ISICCodeId)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_YieldId" id="Yield" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.Yield?.Count > 0)
-											{
-												foreach (var item in LookUp.Yield)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_YieldId)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_ChainId" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.Chain?.Count > 0)
-											{
-												foreach (var item in LookUp.Chain)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_ChainId)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.CompanyEmail" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.CompanyEmail)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.CompanyTel" type="tel" class="form-control">
-										<ValidationMessage For="@(() => formModel.CompanyTel)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ParentCompanyGroup" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.ParentCompanyGroup)" />
-									</div>
-								</div>
 							</div>
-						</div>
-						@* ที่ตั้งกิจการ *@
-						<div class="row my-3">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ที่ตั้งกิจการ</label>
-											<div class="col-sm-7"></div>
+							@* ข้อมูลบริษัท *@
+							<div class="row my-3">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลบริษัท</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อบริษัท</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.CompanyName" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.CompanyName)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เลขทะเบียนนิติบุคคล</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.JuristicPersonRegNumber" type="text" class="form-control numberonly">
+											<ValidationMessage For="@(() => formModel.JuristicPersonRegNumber)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.Master_BusinessTypeId" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.BusinessType?.Count > 0)
+												{
+													foreach (var item in LookUp.BusinessType)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_BusinessTypeId)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.Master_BusinessSizeId" id="BusinessSize" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.BusinessSize?.Count > 0)
+												{
+													foreach (var item in LookUp.BusinessSize)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_BusinessSizeId)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.Master_ISICCodeId" id="ISICCode" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.ISICCode?.Count > 0)
+												{
+													foreach (var item in LookUp.ISICCode)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_ISICCodeId)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.Master_YieldId" id="Yield" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.Yield?.Count > 0)
+												{
+													foreach (var item in LookUp.Yield)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_YieldId)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.Master_ChainId" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.Chain?.Count > 0)
+												{
+													foreach (var item in LookUp.Chain)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.Master_ChainId)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.CompanyEmail" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.CompanyEmail)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.CompanyTel" type="tel" class="form-control">
+											<ValidationMessage For="@(() => formModel.CompanyTel)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ParentCompanyGroup" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.ParentCompanyGroup)" />
 										</div>
 									</div>
 								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.HouseNo" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.HouseNo)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.VillageNo" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.VillageNo)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.ProvinceId" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.Provinces?.Count > 0)
-											{
-												foreach (var item in LookUp.Provinces)
-												{
-													<option value="@item.ProvinceID">@item.ProvinceName</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.ProvinceId)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-											@if (LookUp.Amphurs?.Count > 0)
-											{
-												foreach (var item in LookUp.Amphurs)
-												{
-													<option value="@item.AmphurID">@item.AmphurName</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.AmphurId)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.TambolId" id="Tambol" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-											@if (LookUp.Tambols?.Count > 0)
-											{
-												foreach (var item in LookUp.Tambols)
-												{
-													<option value="@item.TambolID">@item.TambolName</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.TambolId)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสไปรษณีย์</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ZipCode" type="text" class="form-control numberonly" maxlength="5">
-										<ValidationMessage For="@(() => formModel.ZipCode)" />
-									</div>
-								</div>
 							</div>
-						</div>
-						@* กรรมการบริษัท *@
-						<div class="row">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">กรรมการบริษัท</label>
-											<div class="col-sm-7"></div>
+							@* ที่ตั้งกิจการ *@
+							<div class="row my-3">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ที่ตั้งกิจการ</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.HouseNo" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.HouseNo)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.VillageNo" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.VillageNo)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.ProvinceId" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+												<option value="">เลือก</option>
+												@if (LookUp.Provinces?.Count > 0)
+												{
+													foreach (var item in LookUp.Provinces)
+													{
+														<option value="@item.ProvinceID">@item.ProvinceName</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.ProvinceId)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+												@if (LookUp.Amphurs?.Count > 0)
+												{
+													foreach (var item in LookUp.Amphurs)
+													{
+														<option value="@item.AmphurID">@item.AmphurName</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.AmphurId)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<select @bind="formModel.TambolId" id="Tambol" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+												@if (LookUp.Tambols?.Count > 0)
+												{
+													foreach (var item in LookUp.Tambols)
+													{
+														<option value="@item.TambolID">@item.TambolName</option>
+													}
+												}
+											</select>
+											<ValidationMessage For="@(() => formModel.TambolId)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสไปรษณีย์</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ZipCode" type="text" class="form-control numberonly" maxlength="5">
+											<ValidationMessage For="@(() => formModel.ZipCode)" />
 										</div>
 									</div>
 								</div>
-								@if (formModel.Customer_Committees != null && formModel.Customer_Committees.Count > 0)
-								{
-									int index = 1;
-									foreach (var item in formModel.Customer_Committees)
+							</div>
+							@* กรรมการบริษัท *@
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">กรรมการบริษัท</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									@if (formModel.Customer_Committees != null && formModel.Customer_Committees.Count > 0)
 									{
-										Guid ID = item.Id;
-
-										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index</label>
-											<div class="col-12 col-md-7 col-xl-8">
-												<input @bind="item.Name" type="text" class="form-control">
-											</div>
-											<div class="col-12 col-md-11 col-xl-1 d-flex align-items-center justify-content-end justify-content-xl-start  mt-2 mt-xl-0">
-												<Button @onclick="async () => await RemoveCommittee(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
-													<i class="fa-regular fa-trash-can"></i>
-												</Button>
-											</div>
-										</div>
-										index++;
-									}
-								}
-
-								<div class="row mb-3">
-									<div class="col-sm-10 text-end">
-										<Button @onclick="async () => await InsertCommittee()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
-											<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
-										</Button>
-									</div>
-								</div>
-							</div>
-						</div>
-						@* ผู้ถือหุ้น *@
-						<div class="row">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ผู้ถือหุ้น</label>
-											<div class="col-sm-7"></div>
-										</div>
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันประชุมผู้ถือหุ้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.ShareholderMeetDay" type="date" class="form-control">
-									</div>
-								</div>
-								@if (formModel.Customer_Shareholders != null && formModel.Customer_Shareholders.Count > 0)
-								{
-									int index = 1;
-									foreach (var item in formModel.Customer_Shareholders)
-									{
-										Guid ID = item.Id;
-
-										<div class="d-flex justify-content-center"><hr class="w-50"></div>
-										<div class="form-group row mb-3">
-											<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผู้ถือหุ้น คนที่ @index</label>
-											<div class="col-6 col-md-7 col-xl-8 text-end">
-												<Button @onclick="async () => await RemoveShareholder(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
-													<i class="fa-regular fa-trash-can"></i>
-												</Button>
-											</div>
-										</div>
-										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="item.Name" type="text" class="form-control">
-											</div>
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="item.Nationality" type="text" class="form-control">
-											</div>
-										</div>
-										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="item.Proportion" type="text" class="form-control">
-											</div>
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="item.NumberShareholder" type="number" class="form-control">
-											</div>
-										</div>
-										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">มูลค่าหุ้นทั้งหมด</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input type="text" class="form-control"
-													   @onchange="@((ChangeEventArgs e) => item.TotalShareValue = GeneralUtils.ToDecimal(e.Value))"
-													   value="@item.TotalShareValue?.ToString("#,##0.00")">
-											</div>
-										</div>
-										index++;
-									}
-								}
-								<div class="row mb-3">
-									<div class="col-sm-10 text-end">
-										<Button @onclick="async () => await InsertShareholder()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
-											<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
-										</Button>
-									</div>
-								</div>
-							</div>
-						</div>
-						@* ข้อมูลทางการเงิน *@
-						<div class="row my-3">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลทางการเงิน</label>
-											<div class="col-sm-7"></div>
-										</div>
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.RegisteredCapital" type="text" class="form-control numberonly">
-										<ValidationMessage For="@(() => formModel.RegisteredCapital)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Credit Score</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.CreditScore" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.CreditScore)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ปีงบประมาณ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.FiscalYear" type="text" class="form-control numberonly" maxlength="4">
-										<ValidationMessage For="@(() => formModel.FiscalYear)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันเดือนปีงบการเงิน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.StatementDate" type="date" class="form-control">
-										<ValidationMessage For="@(() => formModel.StatementDate)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้า</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.TradeAccReceivable" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.TradeAccReceivable)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.TradeAccRecProceedsNet" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.TradeAccRecProceedsNet)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินค้าคงเหลือ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.Inventories" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.Inventories)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.LoansShort = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.LoansShort?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.LoansShort)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์หมุนเวียน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TotalCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TotalCurrentAssets?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TotalCurrentAssets)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะยาว</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.LoansLong = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.LoansLong?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.LoansLong)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.LandBuildingEquipment" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.LandBuildingEquipment)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ไม่หมุนเวียน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TotalNotCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TotalNotCurrentAssets?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TotalNotCurrentAssets)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.AssetsTotal = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.AssetsTotal?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.AssetsTotal)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เจ้าหนี้การค้า</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.TradeAccPay" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.TradeAccPay)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansShot = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayLoansShot?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayLoansShot)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินหมุนเวียน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalCurrentLia = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayTotalCurrentLia?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayTotalCurrentLia)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะยาว</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansLong = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayLoansLong?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayLoansLong)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินไม่หมุนเวียน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalNotCurrentLia = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayTotalNotCurrentLia?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayTotalNotCurrentLia)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ระยะสั้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayForLoansShot = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayForLoansShot?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayForLoansShot)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สิน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalLiabilitie = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TradeAccPayTotalLiabilitie?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TradeAccPayTotalLiabilitie)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนสามัญ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalOrdinary = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.RegisterCapitalOrdinary?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.RegisterCapitalOrdinary)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalPaid = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.RegisterCapitalPaid?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.RegisterCapitalPaid)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สะสม</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossAccumulate = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.ProfitLossAccumulate?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.ProfitLossAccumulate)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมส่วนของผู้ถือหุ้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TotalShareholders = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TotalShareholders?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TotalShareholders)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินและส่วนของผู้ถือหุ้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TotalLiabilitieShareholders = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TotalLiabilitieShareholders?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TotalLiabilitieShareholders)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รายได้รวม</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.TotalIncome = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.TotalIncome?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.TotalIncome)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.CostSales = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.CostSales?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.CostSales)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไรขั้นต้น</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.GrossProfit = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.GrossProfit?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.GrossProfit)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.OperatingExpenses = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.OperatingExpenses?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.OperatingExpenses)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeDepExp = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.ProfitLossBeforeDepExp?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.ProfitLossBeforeDepExp)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeInterestTax = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.ProfitLossBeforeInterestTax?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.ProfitLossBeforeInterestTax)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สุทธิ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.NetProfitLoss = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.NetProfitLoss?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.NetProfitLoss)" />
-									</div>
-								</div>
-							</div>
-						</div>
-						@* การติดต่อและความสนใจ *@
-						<div class="row my-3">
-							<div class="col-12">
-								<div class="row">
-									<div class="col-12 col-xl-6">
-										<div class="row">
-											<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">การติดต่อและความสนใจ</label>
-											<div class="col-sm-7"></div>
-										</div>
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินเชื่อที่สนใจ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.InterestLoan" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.InterestLoan)" />
-									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ระบุ</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.InterestLoanSpecify" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.InterestLoanSpecify)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จุดประสงค์การกู้</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input @bind="formModel.InterestObjectiveLoan" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.InterestObjectiveLoan)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วงเงิน</label>
-									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<input type="text" class="form-control"
-											   @onchange="@((ChangeEventArgs e) => formModel.InterestCreditLimit = GeneralUtils.ToDecimal(e.Value))"
-											   value="@formModel.InterestCreditLimit?.ToString("#,##0.00")">
-										<ValidationMessage For="@(() => formModel.InterestCreditLimit)" />
-									</div>
-								</div>
-								<div class="form-group row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมายเหตุ</label>
-									<div class="col-12 col-md-7 col-xl-7 mb-3 mb-xl-0">
-										<textarea class="form-control" rows="3" @bind="formModel.InterestNote"></textarea>
-										<ValidationMessage For="@(() => formModel.InterestNote)" />
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="my-4 text-center">
-							<div class="d-flex bd-highlight align-items-center justify-content-center">
-								<div class="p-2 bd-highlight">
-									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-										กลับ
-									</Button>
-								</div>
-								<div class="p-2 bd-highlight">
-									<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
-										@if (isLoading)
+										int index = 1;
+										foreach (var item in formModel.Customer_Committees)
 										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											Guid ID = item.Id;
+
+											<div class="form-group row mb-3">
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index</label>
+												<div class="col-12 col-md-7 col-xl-8">
+													<input @bind="item.Name" type="text" class="form-control">
+												</div>
+												<div class="col-12 col-md-11 col-xl-1 d-flex align-items-center justify-content-end justify-content-xl-start  mt-2 mt-xl-0">
+													<Button @onclick="async () => await RemoveCommittee(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
+														<i class="fa-regular fa-trash-can"></i>
+													</Button>
+												</div>
+											</div>
+											index++;
 										}
-										บันทึก
-									</Button>
+									}
+
+									<div class="row mb-3">
+										<div class="col-sm-10 text-end">
+											<Button @onclick="async () => await InsertCommittee()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+												<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
+											</Button>
+										</div>
+									</div>
 								</div>
 							</div>
+							@* ผู้ถือหุ้น *@
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ผู้ถือหุ้น</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันประชุมผู้ถือหุ้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.ShareholderMeetDay" type="date" class="form-control">
+										</div>
+									</div>
+									@if (formModel.Customer_Shareholders != null && formModel.Customer_Shareholders.Count > 0)
+									{
+										int index = 1;
+										foreach (var item in formModel.Customer_Shareholders)
+										{
+											Guid ID = item.Id;
+
+											<div class="d-flex justify-content-center"><hr class="w-50"></div>
+											<div class="form-group row mb-3">
+												<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผู้ถือหุ้น คนที่ @index</label>
+												<div class="col-6 col-md-7 col-xl-8 text-end">
+													<Button @onclick="async () => await RemoveShareholder(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button">
+														<i class="fa-regular fa-trash-can"></i>
+													</Button>
+												</div>
+											</div>
+											<div class="form-group row mb-3">
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input @bind="item.Name" type="text" class="form-control">
+												</div>
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input @bind="item.Nationality" type="text" class="form-control">
+												</div>
+											</div>
+											<div class="form-group row mb-3">
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input @bind="item.Proportion" type="text" class="form-control">
+												</div>
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input @bind="item.NumberShareholder" type="number" class="form-control">
+												</div>
+											</div>
+											<div class="form-group row mb-3">
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">มูลค่าหุ้นทั้งหมด</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input type="text" class="form-control"
+														   @onchange="@((ChangeEventArgs e) => item.TotalShareValue = GeneralUtils.ToDecimal(e.Value))"
+														   value="@item.TotalShareValue?.ToString("#,##0.00")">
+												</div>
+											</div>
+											index++;
+										}
+									}
+									<div class="row mb-3">
+										<div class="col-sm-10 text-end">
+											<Button @onclick="async () => await InsertShareholder()" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+												<i class="fa-solid fa-plus"></i> เพิ่มรายชื่อ
+											</Button>
+										</div>
+									</div>
+								</div>
+							</div>
+							@* ข้อมูลทางการเงิน *@
+							<div class="row my-3">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">ข้อมูลทางการเงิน</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.RegisteredCapital" type="text" class="form-control numberonly">
+											<ValidationMessage For="@(() => formModel.RegisteredCapital)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Credit Score</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.CreditScore" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.CreditScore)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ปีงบประมาณ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.FiscalYear" type="text" class="form-control numberonly" maxlength="4">
+											<ValidationMessage For="@(() => formModel.FiscalYear)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วันเดือนปีงบการเงิน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.StatementDate" type="date" class="form-control">
+											<ValidationMessage For="@(() => formModel.StatementDate)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้า</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.TradeAccReceivable" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.TradeAccReceivable)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.TradeAccRecProceedsNet" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.TradeAccRecProceedsNet)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินค้าคงเหลือ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.Inventories" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.Inventories)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.LoansShort = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.LoansShort?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.LoansShort)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์หมุนเวียน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TotalCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TotalCurrentAssets?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TotalCurrentAssets)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะยาว</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.LoansLong = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.LoansLong?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.LoansLong)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.LandBuildingEquipment" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.LandBuildingEquipment)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ไม่หมุนเวียน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TotalNotCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TotalNotCurrentAssets?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TotalNotCurrentAssets)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.AssetsTotal = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.AssetsTotal?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.AssetsTotal)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เจ้าหนี้การค้า</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.TradeAccPay" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.TradeAccPay)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansShot = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayLoansShot?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayLoansShot)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินหมุนเวียน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalCurrentLia = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayTotalCurrentLia?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayTotalCurrentLia)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะยาว</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansLong = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayLoansLong?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayLoansLong)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินไม่หมุนเวียน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalNotCurrentLia = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayTotalNotCurrentLia?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayTotalNotCurrentLia)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ระยะสั้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayForLoansShot = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayForLoansShot?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayForLoansShot)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สิน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalLiabilitie = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TradeAccPayTotalLiabilitie?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TradeAccPayTotalLiabilitie)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนสามัญ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalOrdinary = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.RegisterCapitalOrdinary?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.RegisterCapitalOrdinary)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalPaid = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.RegisterCapitalPaid?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.RegisterCapitalPaid)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สะสม</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossAccumulate = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.ProfitLossAccumulate?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.ProfitLossAccumulate)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมส่วนของผู้ถือหุ้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TotalShareholders = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TotalShareholders?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TotalShareholders)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินและส่วนของผู้ถือหุ้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TotalLiabilitieShareholders = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TotalLiabilitieShareholders?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TotalLiabilitieShareholders)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รายได้รวม</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.TotalIncome = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.TotalIncome?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.TotalIncome)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.CostSales = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.CostSales?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.CostSales)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไรขั้นต้น</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.GrossProfit = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.GrossProfit?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.GrossProfit)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.OperatingExpenses = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.OperatingExpenses?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.OperatingExpenses)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeDepExp = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.ProfitLossBeforeDepExp?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.ProfitLossBeforeDepExp)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeInterestTax = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.ProfitLossBeforeInterestTax?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.ProfitLossBeforeInterestTax)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สุทธิ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.NetProfitLoss = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.NetProfitLoss?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.NetProfitLoss)" />
+										</div>
+									</div>
+								</div>
+							</div>
+							@* การติดต่อและความสนใจ *@
+							<div class="row my-3">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-12 col-xl-6">
+											<div class="row">
+												<label class="col-sm-4 col-form-label text-lg-end fw-bold text-decoration-underline">การติดต่อและความสนใจ</label>
+												<div class="col-sm-7"></div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินเชื่อที่สนใจ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.InterestLoan" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.InterestLoan)" />
+										</div>
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ระบุ</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.InterestLoanSpecify" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.InterestLoanSpecify)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จุดประสงค์การกู้</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input @bind="formModel.InterestObjectiveLoan" type="text" class="form-control">
+											<ValidationMessage For="@(() => formModel.InterestObjectiveLoan)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">วงเงิน</label>
+										<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<input type="text" class="form-control"
+												   @onchange="@((ChangeEventArgs e) => formModel.InterestCreditLimit = GeneralUtils.ToDecimal(e.Value))"
+												   value="@formModel.InterestCreditLimit?.ToString("#,##0.00")">
+											<ValidationMessage For="@(() => formModel.InterestCreditLimit)" />
+										</div>
+									</div>
+									<div class="form-group row mb-3">
+										<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">หมายเหตุ</label>
+										<div class="col-12 col-md-7 col-xl-7 mb-3 mb-xl-0">
+											<textarea class="form-control" rows="3" @bind="formModel.InterestNote"></textarea>
+											<ValidationMessage For="@(() => formModel.InterestNote)" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="my-4 text-center">
+								<div class="d-flex bd-highlight align-items-center justify-content-center">
+									<div class="p-2 bd-highlight">
+										<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											กลับ
+										</Button>
+									</div>
+									<div class="p-2 bd-highlight">
+										<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+											@if (isLoading)
+											{
+												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											}
+											บันทึก
+										</Button>
+									</div>
+								</div>
+							</div>
+						</EditForm>
+					}
+					else
+					{
+						<div class="text-center">
+							<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 						</div>
-					</EditForm>
+					}
 				</div>
 			</div>
 		</div>
 	</div>
-	<MessageError errorMessage="@_errorMessage" />
 
+	<MessageError errorMessage="@_errorMessage" />
 }
 else
 {

@@ -359,6 +359,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		//Custom
 		[JsonIgnore]
 		public bool IsSelected { get; set; }
+        public int? StatusSaleId { get; set; }
 
-	}
+    }
 }

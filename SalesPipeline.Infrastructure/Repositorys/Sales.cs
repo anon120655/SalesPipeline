@@ -7,6 +7,7 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,21 +37,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			string? companyName = null;
 			string? currentUserName = null;
-			//string? statusSaleName = null;
-			//string? statusSaleDescription = null;
 
 			var customer = await _repo.Customer.GetById(model.CustomerId);
 			if (customer != null) companyName = customer.CompanyName;
 
 			var user = await _repo.User.GetById(model.CurrentUserId);
 			if (user != null) currentUserName = user.FullName;
-
-			//var masterStatus = await _repo.MasterStatusSale.GetById(model.StatusSaleId);
-			//if (masterStatus != null)
-			//{
-			//	statusSaleName = masterStatus.Name;
-			//	statusSaleDescription = masterStatus.Description;
-			//}
 
 			var sale = new Data.Entity.Sale();
 			sale.Status = StatusModel.Active;
@@ -64,35 +56,69 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.CompanyName = companyName;
 			sale.ResponsibleName = currentUserName;
 			sale.StatusSaleId = model.StatusSaleId;
-			//sale.StatusSaleName = statusSaleName;
-			//sale.StatusSaleDescription = statusSaleDescription;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
 
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
-			//var sale_Status = new Data.Entity.Sale_Status();
-			//sale_Status.Status = StatusModel.Active;
-			//sale_Status.CreateDate = _dateNow;
-			//sale_Status.SaleId  = sale.Id;
-			//sale_Status.StatusId  = model.StatusSaleId;
-
-			//await _db.InsterAsync(sale_Status);
-			//await _db.SaveAsync();
-
-			await UpdateStatusOnly(new()
+			if (model.StatusSaleId != StatusSaleModel.NotStatus)
 			{
-				SaleId = sale.Id,
-				StatusId = model.StatusSaleId
-			});
+				await UpdateStatusOnly(new()
+				{
+					SaleId = sale.Id,
+					StatusId = model.StatusSaleId
+				});
+			}
 
 			return _mapper.Map<SaleCustom>(sale);
 		}
 
-		public Task<SaleCustom> Update(SaleCustom model)
+		public async Task<SaleCustom> Update(SaleCustom model)
 		{
-			throw new NotImplementedException();
+			DateTime _dateNow = DateTime.Now;
+
+			string? companyName = null;
+			string? currentUserName = null;
+
+			var customer = await _repo.Customer.GetById(model.CustomerId);
+			if (customer != null) companyName = customer.CompanyName;
+
+			var user = await _repo.User.GetById(model.CurrentUserId);
+			if (user != null) currentUserName = user.FullName;
+
+			var sale = await _repo.Context.Sales
+				.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+			if (sale != null)
+			{
+				sale.Status = StatusModel.Active;
+				sale.CreateDate = _dateNow;
+				sale.CreateBy = model.CurrentUserId;
+				sale.CreateByName = currentUserName;
+				sale.UpdateDate = _dateNow;
+				sale.UpdateBy = model.CurrentUserId;
+				sale.UpdateByName = currentUserName;
+				sale.CustomerId = model.CustomerId;
+				sale.CompanyName = companyName;
+				sale.ResponsibleName = currentUserName;
+				//sale.StatusSaleId = model.StatusSaleId; //ไม่ต้อง update กรณีแก้ไข
+				sale.DateAppointment = model.DateAppointment;
+				sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
+
+				_db.Update(sale);
+				await _db.SaveAsync();
+
+				if (model.StatusSaleId != StatusSaleModel.NotStatus)
+				{
+					await UpdateStatusOnly(new()
+					{
+						SaleId = sale.Id,
+						StatusId = model.StatusSaleId
+					});
+				}
+
+			}
+			return _mapper.Map<SaleCustom>(sale);
 		}
 
 		public async Task UpdateStatusOnly(Sale_StatusCustom model)
@@ -112,13 +138,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (sales != null)
 			{
 				string? statusSaleName = null;
-				string? statusSaleDescription = null;
 
 				var masterStatus = await _repo.MasterStatusSale.GetById(model.StatusId);
 				if (masterStatus != null)
 				{
 					statusSaleName = masterStatus.Name;
-					statusSaleDescription = masterStatus.Description;
 				}
 
 				sales.UpdateDate = _dateNow;
@@ -137,6 +161,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.StatusSale)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);
+		}
+
+		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
+		{
+			var query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x => x.Customer)
+												 .Include(x => x.Sale_Statuses)
+												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<SaleCustom>>()
+			{
+				Items = _mapper.Map<List<SaleCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 	}

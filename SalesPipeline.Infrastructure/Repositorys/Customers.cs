@@ -188,6 +188,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 
+				int statusSaleId = StatusSaleModel.WaitApprove;
+				if (model.StatusSaleId > 0)
+				{
+					statusSaleId = model.StatusSaleId.Value;
+				}
+
 				var sale = new SaleCustom()
 				{
 					CurrentUserId = model.CurrentUserId,
@@ -196,7 +202,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateBy = model.CurrentUserId,
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
-					StatusSaleId = StatusSaleModel.WaitContact
+					StatusSaleId = statusSaleId
 				};
 				await _repo.Sales.Create(sale);
 
@@ -421,7 +427,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						UpdateBy = model.CurrentUserId,
 						UpdateDate = _dateNow,
 						CustomerId = customer.Id,
-						StatusSaleId = StatusSaleModel.WaitContact
+						StatusSaleId = StatusSaleModel.NotStatus
 					};
 
 					var sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
@@ -431,6 +437,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
+						sale.Id = sales.Id;
 						await _repo.Sales.Update(sale);
 					}
 
@@ -451,6 +458,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query.UpdateBy = model.userid;
 				query.Status = StatusModel.Delete;
 				_db.Update(query);
+				await _db.SaveAsync();
+			}
+
+			var querySales = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.CustomerId == id).FirstOrDefaultAsync();
+			if (querySales != null)
+			{
+				querySales.UpdateDate = DateTime.Now;
+				querySales.UpdateBy = model.userid;
+				querySales.Status = StatusModel.Delete;
+				_db.Update(querySales);
 				await _db.SaveAsync();
 			}
 		}

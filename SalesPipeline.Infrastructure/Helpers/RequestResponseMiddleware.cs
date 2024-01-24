@@ -135,7 +135,11 @@ namespace SalesPipeline.Infrastructure.Helpers
 				LogError(log, exception);
 			}
 
-			await repo.Logger.SaveLog(log);
+			if (log.RequestHost != null && !log.RequestHost.Contains("localhost"))
+			{
+				await repo.Logger.SaveLog(log);
+			}
+
 		}
 
 		private void LogError(RequestResponseLogModel log, Exception exception)

@@ -13,7 +13,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ข้อมูล <span class="back_topic_active">ข้อมูลและสถานะลูกค้า</span></p>
+							<p class="back_topic">ข้อมูลและสถานะลูกค้า</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-auto mt-3 mb-1 filter_s">
@@ -91,15 +91,16 @@
 									<thead>
 										<tr>
 											<th class="text-center">ลำดับที่</th>
+											<th class="text-center">เลขนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">ผู้ติดต่อ</th>
 											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
 											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">สถานะ</th>
-											<th class="text-center">จัดการ</th>
+											<th class="text-center">ผู้รับผิดชอบ</th>
+											<th class="text-center">รายละเอียด</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -129,19 +130,23 @@
 
 												<tr>
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
-													<td class="text-center">@item.EmployeeName</td>
-													<td class="">@item.ContactName</td>
-													<td class="text-center">@item.Master_ChainName</td>
-													<td class="text-center">@item.Master_BusinessTypeName</td>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="">@item.Customer?.Master_ChainName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
 													<td class="text-center">-</td>
 													<td class="text-center">-</td>
 													<td class="text-center">-</td>
+													<td class="text-center"><p class="fw-bold">@item.StatusSaleName</p></td>
 													<td class="text-center">
-														<p class="fw-bold">-</p>
+														@item.ResponsibleName
 													</td>
 													<td class="text-center">
-														<a href="/customer/update/@item.Id">แก้ไข</a> /
-														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.EmployeeName))'>ลบ</a>
+														<a class="btn btn-info btn-circle" href="/customer/view/@item.CustomerId">
+															<i class="fa-solid fa-eye text-white fs_15e"></i>
+														</a> /
+														<a href="/customer/update/@item.CustomerId">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.CustomerId.ToString(),item.CompanyName))'>ลบ</a>
 													</td>
 												</tr>
 												SequenceNo++;

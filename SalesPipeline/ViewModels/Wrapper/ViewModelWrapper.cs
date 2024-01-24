@@ -21,6 +21,7 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected ProcessSaleViewModel _processSaleViewModel { get; set; } = default!;
 		[Inject] protected UserViewModel _userViewModel { get; set; } = default!;
 		[Inject] protected CustomerViewModel _customerViewModel { get; set; } = default!;
+		[Inject] protected SalesViewModel _salesViewModel { get; set; } = default!;
 		[Inject] protected SystemViewModel _systemViewModel { get; set; } = default!;
 		[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = default!;
 	}

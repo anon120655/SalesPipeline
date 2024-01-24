@@ -47,6 +47,7 @@ builder.Services.AddScoped<MasterViewModel>();
 builder.Services.AddScoped<ProcessSaleViewModel>();
 builder.Services.AddScoped<UserViewModel>();
 builder.Services.AddScoped<CustomerViewModel>();
+builder.Services.AddScoped<SalesViewModel>();
 builder.Services.AddScoped<SystemViewModel>();
 
 //StateProvider
