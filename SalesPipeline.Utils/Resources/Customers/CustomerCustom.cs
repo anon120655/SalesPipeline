@@ -186,7 +186,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public string? CreditScore { get; set; }
 
 		/// <summary>
-		/// ปีงบประมาณ
+		/// ปีงบการเงิน
 		/// </summary>
 		public string? FiscalYear { get; set; }
 

@@ -48,7 +48,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ตรวจสอบข้อมูลลูกค้า
 		/// </summary>
-		[AllowAnonymous]
+		//[AllowAnonymous]
 		[HttpGet("VerifyByNumber")]
 		public async Task<IActionResult> VerifyByNumber([FromQuery] string juristicNumber)
 		{
