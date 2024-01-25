@@ -157,7 +157,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<SaleCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Sales
-				.Include(x => x.Customer)
+				.Include(x => x.Customer).ThenInclude(x=>x.Customer_Committees)
+				.Include(x => x.Customer).ThenInclude(x=>x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);

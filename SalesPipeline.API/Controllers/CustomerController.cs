@@ -46,6 +46,26 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// ตรวจสอบข้อมูลลูกค้า
+		/// </summary>
+		[AllowAnonymous]
+		[HttpGet("VerifyByNumber")]
+		public async Task<IActionResult> VerifyByNumber([FromQuery] string juristicNumber)
+		{
+			try
+			{
+				if (juristicNumber.Length != 13) throw new ExceptionCustom("ระบุข้อมูลไม่ถูกต้อง");
+
+				var data = await _repo.Customer.VerifyByNumber(juristicNumber);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		/// เพิ่มข้อมูลลูกค้า
 		/// </summary>
 		[HttpPost("Create")]

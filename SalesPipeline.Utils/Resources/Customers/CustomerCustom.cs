@@ -80,6 +80,8 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// เลขทะเบียนนิติบุคคล
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[MinLength(13, ErrorMessage = "ระบุข้อมูล 13 หลัก")]
 		public string? JuristicPersonRegNumber { get; set; }
 
 		/// <summary>
@@ -365,7 +367,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		//Custom
 		[JsonIgnore]
 		public bool IsSelected { get; set; }
-        public int? StatusSaleId { get; set; }
+		public int? StatusSaleId { get; set; }
 
-    }
+	}
 }

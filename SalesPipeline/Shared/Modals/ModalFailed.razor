@@ -1,0 +1,45 @@
+﻿
+<Modal @ref="modalFailed"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			@((MarkupString)(Icon ?? String.Empty))
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">@((MarkupString)(Content ?? String.Empty))</h4>
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">กลับ</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+@code {
+	public string? Id { get; set; }
+	public string? Icon { get; set; } = "<i class=\"fa-solid fa-circle-xmark fs_5r text-danger\"></i>";
+	public string? Content { get; set; }
+
+	protected Modal modalFailed = default!;
+	public async Task OnShow(string? id, string? txt, string? icon = null)
+	{
+		Id = id;
+		Content = txt;
+		if (icon != null)
+		{
+			Icon = icon;
+		}
+		await modalFailed.ShowAsync();
+	}
+
+	public async Task OnHide()
+	{
+		await modalFailed.HideAsync();
+	}
+
+}

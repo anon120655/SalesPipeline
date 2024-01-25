@@ -192,19 +192,34 @@
 														</div>
 													</div>
 												</div>
-												<div class="form-group row mb-1">
-													<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">xxx : </label>
-													<div class="col-6 col-md-7 col-xl-3">
-														<label class="col-form-label">
-															@formModel.Customer?.HouseNo
-														</label>
-													</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">xxx :</label>
-													<div class="col-6 col-md-7 col-xl-3">
-														<label class="col-form-label">
-															@formModel.Customer?.VillageNo
-														</label>
+												@if (formModel.Customer?.Customer_Committees != null && formModel.Customer?.Customer_Committees.Count > 0)
+												{
+													int index = 1;
+													foreach (var item in formModel.Customer.Customer_Committees)
+													{
+														Guid ID = item.Id;
+														<div class="form-group row mb-1">
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index </label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.Name
+																</label>
+															</div>
+														</div>
+														index++;
+													}
+												}
+												else
+												{
+													<div class="form-group row mb-1">
+														<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end"></label>
+														<div class="col-6 col-md-7 col-xl-3">
+															<label class="col-form-label text-black-50">
+																ไม่พบข้อมูล
+															</label>
+														</div>
 													</div>
-												</div>
+												}
 											</div>
 										</div>
 										@* ผู้ถือหุ้น *@
@@ -219,18 +234,72 @@
 													</div>
 												</div>
 												<div class="form-group row mb-1">
-													<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">xxx : </label>
+													<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วันประชุมผู้ถือหุ้น : </label>
 													<div class="col-6 col-md-7 col-xl-3">
 														<label class="col-form-label">
-															@formModel.Customer?.HouseNo
-														</label>
-													</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">xxx :</label>
-													<div class="col-6 col-md-7 col-xl-3">
-														<label class="col-form-label">
-															@formModel.Customer?.VillageNo
+														@GeneralUtils.getFullThaiShot(formModel.Customer?.ShareholderMeetDay)
 														</label>
 													</div>
 												</div>
+												@if (formModel.Customer?.Customer_Shareholders != null && formModel.Customer?.Customer_Shareholders.Count > 0)
+												{
+													int index = 1;
+													foreach (var item in formModel.Customer.Customer_Shareholders)
+													{
+														Guid ID = item.Id;
+														<div class="form-group row mb-1  text-decoration-underline">
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผู้ถือหุ้น คนที่ @index </label>															
+														</div>
+														<div class="form-group row mb-1">
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น : </label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.Name
+																</label>
+															</div>
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ :</label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.Nationality
+																</label>
+															</div>
+														</div>
+														<div class="form-group row mb-1">
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น : </label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.Proportion
+																</label>
+															</div>
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ :</label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.NumberShareholder
+																</label>
+															</div>
+														</div>
+														<div class="form-group row mb-1">
+															<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">มูลค่าหุ้นทั้งหมด : </label>
+															<div class="col-6 col-md-7 col-xl-3">
+																<label class="col-form-label">
+																	@item.TotalShareValue?.ToString("#,##0.00")
+																</label>
+															</div>
+														</div>
+														index++;
+													}
+												}
+												else
+												{
+													<div class="form-group row mb-1">
+														<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end"></label>
+														<div class="col-6 col-md-7 col-xl-3">
+															<label class="col-form-label text-black-50">
+																ไม่พบข้อมูล
+															</label>
+														</div>
+													</div>
+												}
 											</div>
 										</div>
 										@* ข้อมูลทางการเงิน *@

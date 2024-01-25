@@ -6,7 +6,7 @@
 	   HeaderCssClass="headermodal_default">
 	<BodyTemplate>
 		<div class="row mb-4 text-center">
-			<i class="fa-solid fa-circle-check fs_5r text-primary"></i>
+			@((MarkupString)(Icon ?? String.Empty))
 		</div>
 		<div class="row mb-4 text-center">
 			<h4 class="fw-bold">@((MarkupString)(Content ?? String.Empty))</h4>
@@ -25,21 +25,23 @@
 </Modal>
 
 @code {
-	// [Parameter]
 	public string? Id { get; set; }
-	// [Parameter]
+	public string? Icon { get; set; } = "<i class=\"fa-solid fa-circle-check fs_5r text-primary\"></i>";
 	public string? Content { get; set; }
-	// [Parameter]
 	public int? CountDown { get; set; }
 
 	[Parameter]
 	public EventCallback<string?> CallbackConfirm { get; set; }
 
 	protected Modal modalConfirm = default!;
-	public async Task OnShowConfirm(string? id, string? txt)
+	public async Task OnShowConfirm(string? id, string? txt, string? icon = null)
 	{
 		Id = id;
 		Content = txt;
+		if (icon != null)
+		{
+			Icon = icon;
+		}
 		await modalConfirm.ShowAsync();
 	}
 

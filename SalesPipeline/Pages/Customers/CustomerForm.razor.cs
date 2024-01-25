@@ -1,5 +1,6 @@
 using global::Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
@@ -19,6 +20,9 @@ namespace SalesPipeline.Pages.Customers
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private CustomerCustom formModel = new();
+		private bool IsVerify = false;
+		ModalConfirm modalConfirm = default!;
+		ModalFailed modalFailed = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -264,7 +268,7 @@ namespace SalesPipeline.Pages.Customers
 
 				if (LookUp.Tambols?.Count > 0)
 				{
-					var tambol = LookUp.Tambols.FirstOrDefault(x=>x.TambolID == tambolID);
+					var tambol = LookUp.Tambols.FirstOrDefault(x => x.TambolID == tambolID);
 					if (tambol != null)
 					{
 						formModel.ZipCode = tambol.ZipCode;
@@ -272,6 +276,54 @@ namespace SalesPipeline.Pages.Customers
 					}
 				}
 
+			}
+		}
+
+		protected async Task OnVerify()
+		{
+			_errorMessage = null;
+
+			if (String.IsNullOrEmpty(formModel.JuristicPersonRegNumber) || formModel.JuristicPersonRegNumber.Length != 13)
+			{
+				if (String.IsNullOrEmpty(formModel.JuristicPersonRegNumber))
+				{
+					_errorMessage = "ระบุเลขนิติบุคคล";
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+				else if (formModel.JuristicPersonRegNumber.Length != 13)
+				{
+					_errorMessage = "ระบุเลขนิติบุคคลไม่ถูกต้อง";
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
+			else
+			{
+				var data = await _customerViewModel.VerifyByNumber(formModel.JuristicPersonRegNumber);
+				if (data != null && data.Status && data.Data != null)
+				{
+					if (data.Data.Code == "pass")
+					{
+						IsVerify = true;
+					}
+					else if (data.Data.Code == "duplicate")
+					{
+						await ConfirmProceedModal(formModel.JuristicPersonRegNumber, data.Data.Message, "<i class=\"fa-solid fa-book fs_5r text-primary\"></i>");
+					}
+					else if (data.Data.Code == "proceed")
+					{
+						await FailedModal(formModel.JuristicPersonRegNumber, data.Data.Message);
+					}
+					else
+					{
+						_errorMessage = data.Data.Message;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
 			}
 		}
 
@@ -323,7 +375,8 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.Customer_Committees.Add(new()
 			{
-				Id = Guid.NewGuid()
+				Id = Guid.NewGuid(),
+				Status = StatusModel.Active
 			});
 
 			await Task.Delay(1);
@@ -346,7 +399,8 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.Customer_Shareholders.Add(new()
 			{
-				Id = Guid.NewGuid()
+				Id = Guid.NewGuid(),
+				Status = StatusModel.Active
 			});
 
 			await Task.Delay(1);
@@ -373,6 +427,29 @@ namespace SalesPipeline.Pages.Customers
 		{
 			isLoading = false;
 			StateHasChanged();
+		}
+
+		protected async Task FailedModal(string? id, string? txt)
+		{
+			await modalFailed.OnShow(id, $"{txt}");
+		}
+
+		protected async Task ConfirmProceedModal(string? id, string? txt, string? icon = null)
+		{
+			await modalConfirm.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task ConfirmProceed(string id)
+		{
+			await modalConfirm.OnHideConfirm();
+
+			//var data = await _customerViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			//if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+			//{
+			//	_errorMessage = data?.errorMessage;
+			//	_utilsViewModel.AlertWarning(_errorMessage);
+			//}
+			//await SetModel();
 		}
 
 	}

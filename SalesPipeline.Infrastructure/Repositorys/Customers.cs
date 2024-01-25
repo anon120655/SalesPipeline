@@ -36,6 +36,51 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
+		public async Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber)
+		{
+			string code = "pass";
+			string message = "ผ่าน";
+
+			juristicNumber = juristicNumber.Trim();
+
+			var customers = await _repo.Context.Customers.Include(x => x.Sales).Where(x => x.JuristicPersonRegNumber == juristicNumber).ToListAsync();
+			if (customers != null && customers.Count > 0)
+			{
+				bool isProceed = false;
+				foreach (var item in customers)
+				{
+					if (item.Sales != null)
+					{
+						foreach (var item_sale in item.Sales)
+						{
+							if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
+							{
+								if (!isProceed)
+								{
+									code = "proceed";
+									message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
+									isProceed = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if (!isProceed)
+				{
+					code = "duplicate";
+					message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ต้องการดำเนินการต่อ?";
+				}
+			}
+
+			return new()
+			{
+				Code = code,
+				Message = message
+			};
+		}
+
 		public async Task<CustomerCustom> Create(CustomerCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
@@ -310,7 +355,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.ContactName = model.ContactName;
 					customer.ContactTel = model.ContactTel;
 					customer.CompanyName = model.CompanyName;
-					customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
+					//customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber; //ไม่ต้อง update กรณีแก้ไข
 					customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
 					customer.Master_BusinessTypeName = master_BusinessTypeName;
 					customer.Master_BusinessSizeId = model.Master_BusinessSizeId;
@@ -549,7 +594,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Pager = pager
 			};
 		}
-
 
 	}
 }
