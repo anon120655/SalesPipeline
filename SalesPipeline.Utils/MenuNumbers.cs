@@ -9,6 +9,9 @@
 		//Customer
 		public const int Customers = 150000;
 
+		//อนุมัติคำขอสินเชื่อ
+		public const int ApproveLoan = 170000;
+
 		//จัดการระบบ
 		public const int Systems = 210000;
 

@@ -1,6 +1,7 @@
-﻿@page "/customer/view/{id:guid}"
+﻿
+@page "/approveloan/view/{id:guid}"
 
-<PageTitle>ข้อมูลและสถานะลูกค้า</PageTitle>
+<PageTitle>อนุมัติคำขอสินเชื่อ</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -11,9 +12,9 @@
 			<div class="col-12 my-2">
 				<div class="box_content">
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2"><img src="/image/icon/book.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ข้อมูลและสถานะลูกค้า</p>
+							<p class="back_topic">อนุมัติคำขอสินเชื่อ > จัดการอนุมัติ</p>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -21,12 +22,6 @@
 							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
 								<Tab Title="ข้อมูลลูกค้า" IsActive="true">
 									<Content>
-										<div class="row">
-											<div class="col-12 col-xl-8"></div>
-											<div class="col-12 col-xl-3 text-end">
-												<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.CustomerId">แก้ไขข้อมูล</a>
-											</div>
-										</div>
 										<PartialCustomerInfo formModel="formModel" />										
 									</Content>
 								</Tab>
@@ -70,4 +65,6 @@ else
 {
 	<NotPermissionPage />
 }
+
+
 
