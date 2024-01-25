@@ -67,6 +67,17 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataDepartment = await _masterViewModel.Departments(new allFilter() { status = StatusModel.Active });
+			if (dataDepartment != null && dataDepartment.Status)
+			{
+				LookUp.Departments = dataDepartment.Data;
+			}
+			else
+			{
+				_errorMessage = dataDepartment?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{

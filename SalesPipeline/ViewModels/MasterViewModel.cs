@@ -44,6 +44,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Master_DepartmentCustom>>> Departments(allFilter parameters)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/Departments?{parameters.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<List<Master_DepartmentCustom>>(content);
+
+				return new ResultModel<List<Master_DepartmentCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Master_DepartmentCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<List<Master_RegionCustom>>> Regions(allFilter parameters)
 		{
 			try

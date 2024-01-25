@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Shares;
+﻿using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,6 +27,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public int UpdateBy { get; set; }
 
+		/// <summary>
+		/// รหัสพนักงาน
+		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? EmployeeId { get; set; }
 
@@ -41,18 +45,37 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Email { get; set; }
 
+		/// <summary>
+		/// ฝ่าย
+		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public int? RoleId { get; set; }
+		public int? DepartmentId { get; set; }
 
+		/// <summary>
+		/// ตำแหน่ง
+		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? PositionId { get; set; }
 
+		/// <summary>
+		/// ระดับ
+		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? LevelId { get; set; }
+
+		/// <summary>
+		/// ระดับหน้าที่
+		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public int? RoleId { get; set; }
 
 		public string? PasswordHash { get; set; }
 
 		public sbyte? LoginFail { get; set; }
+
+		public virtual Master_DepartmentCustom? Department { get; set; }
+		public virtual Master_PositionCustom? Position { get; set; }
+		public virtual User_RoleCustom? Role { get; set; }
 
 		//Custom --------------------------------------
 		public bool? IsValidate { get; set; }

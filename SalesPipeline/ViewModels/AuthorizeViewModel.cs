@@ -203,6 +203,20 @@ namespace SalesPipeline.ViewModels
 							var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
 							if (datauserMap != null)
 							{
+								data.DepartmentId = datauserMap.DepartmentId;
+								data.PositionId = datauserMap.PositionId;
+								data.RoleId = datauserMap.RoleId;
+
+								if (datauserMap.Department != null)								
+									data.DepartmentName = datauserMap.Department.Name;
+
+								if (datauserMap.Position != null)
+									data.PositionName = datauserMap.Position.Name;
+
+								if (datauserMap.Role != null)
+									data.RoleName = datauserMap.Role.Name;
+
+
 								var dataRole = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetRoleById?id={datauserMap.RoleId}");
 								if (dataRole.StatusCode == System.Net.HttpStatusCode.OK && dataRole.Content != null)
 								{

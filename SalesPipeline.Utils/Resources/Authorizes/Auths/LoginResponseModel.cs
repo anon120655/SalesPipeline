@@ -19,6 +19,12 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? TitleName { get; set; }
 		public string? FirstName { get; set; }
 		public string? LastName { get; set; }
+		public int? PositionId { get; set; }
+		public string? PositionName { get; set; }
+		public int? DepartmentId { get; set; }
+		public string? DepartmentName { get; set; }
+		public int? RoleId { get; set; }
+		public string? RoleName { get; set; }
 		public string? access_token { get; set; }
 		public string? expires_in { get; set; }
 		public List<User_PermissionCustom> User_Permissions { get; set; }

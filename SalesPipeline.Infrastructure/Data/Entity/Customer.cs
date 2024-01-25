@@ -177,7 +177,7 @@ public partial class Customer
     public string? CreditScore { get; set; }
 
     /// <summary>
-    /// ปีงบประมาณ
+    /// ปีงบการเงิน
     /// </summary>
     public string? FiscalYear { get; set; }
 

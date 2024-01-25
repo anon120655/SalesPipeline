@@ -38,6 +38,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_ContactChannel> Master_ContactChannels { get; set; }
 
+    public virtual DbSet<Master_Department> Master_Departments { get; set; }
+
     public virtual DbSet<Master_Division_Branch> Master_Division_Branchs { get; set; }
 
     public virtual DbSet<Master_Division_Loan> Master_Division_Loans { get; set; }
@@ -170,7 +172,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ชื่อพนักงาน");
             entity.Property(e => e.FiscalYear)
                 .HasMaxLength(255)
-                .HasComment("ปีงบประมาณ");
+                .HasComment("ปีงบการเงิน");
             entity.Property(e => e.GrossProfit)
                 .HasPrecision(18, 2)
                 .HasComment("กำไรขั้นต้น");
@@ -586,6 +588,25 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Master_ContactChannel", tb => tb.HasComment("ช่องทางการติดต่อ"));
 
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Department>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Department", tb => tb.HasComment("ฝ่าย"));
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -1122,6 +1143,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("User", tb => tb.HasComment("ผู้ใช้งาน"));
 
+            entity.HasIndex(e => e.DepartmentId, "DepartmentId");
+
             entity.HasIndex(e => e.LevelId, "LevelId");
 
             entity.HasIndex(e => e.PositionId, "PositionId");
@@ -1133,22 +1156,37 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("int(11)");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DepartmentId)
+                .HasComment("ฝ่าย")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Email).HasMaxLength(255);
-            entity.Property(e => e.EmployeeId).HasMaxLength(10);
+            entity.Property(e => e.EmployeeId)
+                .HasMaxLength(10)
+                .HasComment("รหัสพนักงาน");
             entity.Property(e => e.FirstName).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.LastName).HasMaxLength(255);
-            entity.Property(e => e.LevelId).HasColumnType("int(11)");
+            entity.Property(e => e.LevelId)
+                .HasComment("ระดับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
-            entity.Property(e => e.PositionId).HasColumnType("int(11)");
-            entity.Property(e => e.RoleId).HasColumnType("int(11)");
+            entity.Property(e => e.PositionId)
+                .HasComment("ตำแหน่ง")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.RoleId)
+                .HasComment("ระดับหน้าที่")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.TitleName).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Department).WithMany(p => p.Users)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("user_ibfk_4");
 
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)

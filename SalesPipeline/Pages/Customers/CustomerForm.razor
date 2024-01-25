@@ -565,7 +565,7 @@
 													   value="@formModel.TradeAccPayTotalNotCurrentLia?.ToString("#,##0.00")">
 												<ValidationMessage For="@(() => formModel.TradeAccPayTotalNotCurrentLia)" />
 											</div>
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ระยะสั้น</label>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayForLoansShot = GeneralUtils.ToDecimal(e.Value))"
@@ -768,7 +768,10 @@
 		</div>
 	</div>
 
-	<MessageError errorMessage="@_errorMessage" />
+	@if (id != Guid.Empty || IsVerify)
+	{
+		<MessageError errorMessage="@_errorMessage" />
+	}
 
 	<ModalConfirm @ref="modalConfirm" CallbackConfirm="ConfirmProceed" />
 	<ModalFailed @ref="modalFailed" />

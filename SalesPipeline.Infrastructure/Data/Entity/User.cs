@@ -23,6 +23,9 @@ public partial class User
 
     public int UpdateBy { get; set; }
 
+    /// <summary>
+    /// รหัสพนักงาน
+    /// </summary>
     public string? EmployeeId { get; set; }
 
     public string? TitleName { get; set; }
@@ -35,17 +38,33 @@ public partial class User
 
     public string? Email { get; set; }
 
-    public int? RoleId { get; set; }
+    /// <summary>
+    /// ฝ่าย
+    /// </summary>
+    public int? DepartmentId { get; set; }
 
+    /// <summary>
+    /// ตำแหน่ง
+    /// </summary>
     public int? PositionId { get; set; }
 
+    /// <summary>
+    /// ระดับ
+    /// </summary>
     public int? LevelId { get; set; }
+
+    /// <summary>
+    /// ระดับหน้าที่
+    /// </summary>
+    public int? RoleId { get; set; }
 
     public string? PasswordHash { get; set; }
 
     public short? LoginFail { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+
+    public virtual Master_Department? Department { get; set; }
 
     public virtual User_Level? Level { get; set; }
 

@@ -78,9 +78,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					FirstName = model.FirstNames,
 					LastName = model.LastNames,
 					Email = model.Email,
-					RoleId = model.RoleId,
 					PositionId = model.PositionId,
+					DepartmentId = model.DepartmentId,
 					LevelId = model.LevelId,
+					RoleId = model.RoleId,
 				};
 				await _db.InsterAsync(user);
 				await _db.SaveAsync();
@@ -107,9 +108,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
 					user.Email = model.Email;
-					user.RoleId = model.RoleId;
 					user.PositionId = model.PositionId;
+					user.DepartmentId = model.DepartmentId;
 					user.LevelId = model.LevelId;
+					user.RoleId = model.RoleId;
 					_db.Update(user);
 					await _db.SaveAsync();
 
@@ -153,7 +155,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<UserCustom> GetById(int id)
 		{
-			var query = await _repo.Context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Users
+				.Include(x => x.Department)
+				.Include(x => x.Position)
+				.Include(x => x.Role)
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
 
@@ -164,9 +170,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
-			var query = _repo.Context.Users.Where(x => x.Status != StatusModel.Delete)
-												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-												 .AsQueryable();
+			var query = _repo.Context.Users.Include(x => x.Role)
+											.Where(x => x.Status != StatusModel.Delete)
+											.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+											.AsQueryable();
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
@@ -392,7 +399,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model)
 		{
-			var query = _repo.Context.User_Branches.Include(x=>x.User).Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.User_Branches.Include(x => x.User).Where(x => x.Status != StatusModel.Delete)
 												 .AsQueryable();
 
 			if (model.status.HasValue)

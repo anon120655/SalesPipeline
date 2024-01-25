@@ -24,6 +24,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 
 			//Master
 			CreateMap<Entity.Master_Position, Master_PositionCustom>().ReverseMap();
+			CreateMap<Entity.Master_Department, Master_DepartmentCustom>().ReverseMap();
 			CreateMap<Entity.Master_Region, Master_RegionCustom>().ReverseMap();
 			CreateMap<Entity.Master_Branch, Master_BranchCustom>().ReverseMap();
 			CreateMap<Entity.MenuItem, MenuItemCustom>().ReverseMap();

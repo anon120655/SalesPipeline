@@ -94,7 +94,7 @@
 											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
-											<th class="text-center">Email</th>
+											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ตำแหน่ง</th>
 											<th class="text-center">ระดับ</th>
 											<th class="text-center">วันที่เพิ่ม</th>
@@ -131,7 +131,12 @@
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
-													<td class="text-center">@item.Email</td>
+													<td class="text-center">
+														@if (item.Role != null)
+														{
+															<p>@item.Role.Name</p>
+														}
+													</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
 													<td class="text-center">@GetLevelName(item.LevelId)</td>
 													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
