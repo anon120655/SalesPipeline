@@ -442,14 +442,7 @@ namespace SalesPipeline.Pages.Customers
 		protected async Task ConfirmProceed(string id)
 		{
 			await modalConfirm.OnHideConfirm();
-
-			//var data = await _customerViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
-			//if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			//{
-			//	_errorMessage = data?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
-			//await SetModel();
+			IsVerify = true;
 		}
 
 	}
