@@ -342,6 +342,12 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.CurrentUserId = UserInfo.Id;
 
+			//******** รอเช็ค *********			
+			//Role กิจการสาขาภาค
+			formModel.StatusSaleId = StatusSaleModel.WaitVerifyCenter;
+			//Role ผู้จัดการศูนย์
+			formModel.StatusSaleId = StatusSaleModel.WaitAssign;
+
 			if (id != Guid.Empty)
 			{
 				response = await _customerViewModel.Update(formModel);
