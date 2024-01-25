@@ -48,6 +48,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<IList<InfoTambolCustom>>(await query.ToListAsync());
 		}
 
+		public async Task<InfoProvinceCustom> GetProvinceByid(int id)
+		{
+			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceID == id).FirstOrDefaultAsync();
+			return _mapper.Map<InfoProvinceCustom>(query);
+		}
+
+		public async Task<InfoAmphurCustom> GetAmphurByid(int id)
+		{
+			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurID == id).FirstOrDefaultAsync();
+			return _mapper.Map<InfoAmphurCustom>(query);
+		}
+
+		public async Task<InfoTambolCustom> GetTambolByid(int id)
+		{
+			var query = await _repo.Context.InfoTambols.Where(x => x.TambolID == id).FirstOrDefaultAsync();
+			return _mapper.Map<InfoTambolCustom>(query);
+		}
+
 		public async Task MapZipCode(List<InfoTambolCustom> tambolList)
 		{
 			foreach (var item in tambolList)
@@ -62,7 +80,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 		}
-
 
 	}
 }

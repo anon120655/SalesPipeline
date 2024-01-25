@@ -142,10 +142,9 @@
 														@item.ResponsibleName
 													</td>
 													<td class="text-center">
-														<a class="btn btn-info btn-circle" href="/customer/view/@item.CustomerId">
+														<a class="btn btn-info btn-circle" href="/customer/view/@item.Id">
 															<i class="fa-solid fa-eye text-white fs_15e"></i>
 														</a> /
-														<a href="/customer/update/@item.CustomerId">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.CustomerId.ToString(),item.CompanyName))'>ลบ</a>
 													</td>
 												</tr>

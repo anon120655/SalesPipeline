@@ -46,6 +46,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? master_ISICCodeName = null;
 				string? master_YieldName = null;
 				string? master_ChainName = null;
+				string? provinceName = null;
+				string? amphurName = null;
+				string? tambolName = null;
 				if (model.Master_ContactChannelId.HasValue)
 				{
 					var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
@@ -76,6 +79,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
 					if (master != null) master_ChainName = master.Name;
 				}
+				if (model.ProvinceId.HasValue)
+				{
+					var master = await _repo.Thailand.GetProvinceByid(model.ProvinceId.Value);
+					if (master != null) provinceName = master.ProvinceName;
+				}
+				if (model.AmphurId.HasValue)
+				{
+					var master = await _repo.Thailand.GetAmphurByid(model.AmphurId.Value);
+					if (master != null) amphurName = master.AmphurName;
+				}
+				if (model.TambolId.HasValue)
+				{
+					var master = await _repo.Thailand.GetTambolByid(model.TambolId.Value);
+					if (master != null) tambolName = master.TambolName;
+				}
+
 
 				DateTime _dateNow = DateTime.Now;
 
@@ -112,8 +131,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.HouseNo = model.HouseNo;
 				customer.VillageNo = model.VillageNo;
 				customer.ProvinceId = model.ProvinceId;
+				customer.ProvinceName = provinceName;
 				customer.AmphurId = model.AmphurId;
+				customer.AmphurName = amphurName;
 				customer.TambolId = model.TambolId;
+				customer.TambolName = tambolName;
 				customer.ZipCode = model.ZipCode;
 				customer.ShareholderMeetDay = model.ShareholderMeetDay;
 				customer.RegisteredCapital = model.RegisteredCapital;
@@ -227,6 +249,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					string? master_ISICCodeName = null;
 					string? master_YieldName = null;
 					string? master_ChainName = null;
+					string? provinceName = null;
+					string? amphurName = null;
+					string? tambolName = null;
 					if (model.Master_ContactChannelId.HasValue)
 					{
 						var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
@@ -256,6 +281,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
 						if (master != null) master_ChainName = master.Name;
+					}
+					if (model.ProvinceId.HasValue)
+					{
+						var master = await _repo.Thailand.GetProvinceByid(model.ProvinceId.Value);
+						if (master != null) provinceName = master.ProvinceName;
+					}
+					if (model.AmphurId.HasValue)
+					{
+						var master = await _repo.Thailand.GetAmphurByid(model.AmphurId.Value);
+						if (master != null) amphurName = master.AmphurName;
+					}
+					if (model.TambolId.HasValue)
+					{
+						var master = await _repo.Thailand.GetTambolByid(model.TambolId.Value);
+						if (master != null) tambolName = master.TambolName;
 					}
 
 					customer.UpdateDate = _dateNow;
@@ -287,8 +327,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.HouseNo = model.HouseNo;
 					customer.VillageNo = model.VillageNo;
 					customer.ProvinceId = model.ProvinceId;
+					customer.ProvinceName = provinceName;
 					customer.AmphurId = model.AmphurId;
+					customer.AmphurName = amphurName;
 					customer.TambolId = model.TambolId;
+					customer.TambolName = tambolName;
 					customer.ZipCode = model.ZipCode;
 					customer.ShareholderMeetDay = model.ShareholderMeetDay;
 					customer.RegisteredCapital = model.RegisteredCapital;

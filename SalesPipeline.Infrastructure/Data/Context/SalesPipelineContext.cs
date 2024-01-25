@@ -129,6 +129,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.AmphurName).HasMaxLength(255);
             entity.Property(e => e.AssetsTotal)
                 .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์");
@@ -239,6 +240,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProvinceId)
                 .HasComment("จังหวัด")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.ProvincialOffice)
                 .HasMaxLength(255)
                 .HasComment("สำนักงานจังหวัด (สนจ.)");
@@ -263,6 +265,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TambolId)
                 .HasComment("ตำบล")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.TambolName).HasMaxLength(255);
             entity.Property(e => e.TotalCurrentAssets)
                 .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์หมุนเวียน");

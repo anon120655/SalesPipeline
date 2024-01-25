@@ -21,6 +21,27 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
+		public async Task<ResultModel<SaleCustom>?> GetById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Sales/GetById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<SaleCustom>(content);
+				return new ResultModel<SaleCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<SaleCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<SaleCustom>>>> GetList(allFilter model)
 		{
 			try

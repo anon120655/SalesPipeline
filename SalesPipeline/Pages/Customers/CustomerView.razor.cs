@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
@@ -16,7 +17,7 @@ namespace SalesPipeline.Pages.Customers
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
-		private CustomerCustom formModel = new();
+		private SaleCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -30,7 +31,6 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (firstRender)
 			{
-				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				StateHasChanged();
 				firstRender = false;
 			}
@@ -40,7 +40,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (id != Guid.Empty)
 			{
-				var data = await _customerViewModel.GetById(id);
+				var data = await _salesViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
@@ -50,16 +50,6 @@ namespace SalesPipeline.Pages.Customers
 					_errorMessage = data?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
-			}
-
-			if (formModel.Customer_Committees == null || formModel.Customer_Committees.Count == 0)
-			{
-				formModel.Customer_Committees = new() { new() { Id = Guid.NewGuid() } };
-			}
-
-			if (formModel.Customer_Shareholders == null || formModel.Customer_Shareholders.Count == 0)
-			{
-				formModel.Customer_Shareholders = new() { new() { Id = Guid.NewGuid() } };
 			}
 		}
 

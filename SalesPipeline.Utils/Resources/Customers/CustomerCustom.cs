@@ -147,15 +147,21 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// </summary>
 		public int? ProvinceId { get; set; }
 
+		public string? ProvinceName { get; set; }
+
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
 		public int? AmphurId { get; set; }
 
+		public string? AmphurName { get; set; }
+
 		/// <summary>
 		/// ตำบล
 		/// </summary>
 		public int? TambolId { get; set; }
+
+		public string? TambolName { get; set; }
 
 		/// <summary>
 		/// รหัสไปรษณีย์

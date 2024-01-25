@@ -46,6 +46,23 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ข้อมูลและสถานะลูกค้า ById
+		/// </summary>
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 
 	}
