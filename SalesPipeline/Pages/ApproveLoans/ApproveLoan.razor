@@ -19,7 +19,7 @@
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">การแสดงผล</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<select @onchange="OnSort" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option value="@OrderByModel.ASC">เก่าสุด &#8594 ใหม่สุด</option>
 								<option value="@OrderByModel.DESC">ใหม่สุด &#8594 เก่าสุด</option>
 							</select>

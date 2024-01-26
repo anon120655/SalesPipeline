@@ -23,6 +23,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ApproveLoan) ?? new User_PermissionCustom();
 			StateHasChanged();
 
+			filter.sort = OrderByModel.ASC;
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
