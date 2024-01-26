@@ -49,8 +49,7 @@
 					}
 					else
 					{
-						if (!isLoadingContent)
-						{
+						<div class="@(isLoadingContent ? "d-none":"")">
 							<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
 								<DataAnnotationsValidator />
 								<div class="row my-3">
@@ -754,8 +753,8 @@
 									</div>
 								</div>
 							</EditForm>
-						}
-						else
+						</div>
+						@if (isLoadingContent)
 						{
 							<div class="text-center">
 								<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
