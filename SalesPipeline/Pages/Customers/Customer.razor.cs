@@ -24,7 +24,6 @@ namespace SalesPipeline.Pages.Customers
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			await SetInitManual();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -33,6 +32,8 @@ namespace SalesPipeline.Pages.Customers
 			{
 				await SetModel();
 				StateHasChanged();
+				await SetInitManual();
+				await Task.Delay(10);
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
@@ -52,7 +53,32 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var businessType = await _masterViewModel.GetBusinessType(new allFilter() { status = StatusModel.Active });
+			if (businessType != null && businessType.Status)
+			{
+				LookUp.BusinessType = businessType.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = businessType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var chain = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
+			if (chain != null && chain.Status)
+			{
+				LookUp.Chain = chain.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = chain?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
+			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)

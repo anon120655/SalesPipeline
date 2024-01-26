@@ -13,7 +13,7 @@ namespace SalesPipeline.Utils
 		private static byte[] _sellTokenIV = new byte[] { 115, 31, 49, 175, 126, 221, 141, 16, 91, 181, 203, 40, 198, 201, 123, 10 };
 		private static byte[] _sellTokenKey = new byte[] { 93, 239, 60, 28, 109, 32, 146, 175, 187, 25, 203, 70, 231, 8, 11, 253, 159, 150, 55, 143, 190, 65, 103, 46, 48, 150, 204, 67, 23, 110, 81, 79 };
 
-		static string key { get; set; } = "AESSalesPipeline123456789!";
+		public static string key { get; set; } = "AESSalesPipeline123456789!";
 
 		public static string EncryptAES(string text)
 		{
