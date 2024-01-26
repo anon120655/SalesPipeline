@@ -36,10 +36,8 @@ namespace SalesPipeline.Pages.Customers
 
 		protected override async Task OnParametersSetAsync()
 		{
-			//only do stuff again if the incoming parameter actually changed
 			if (id != Guid.Empty && _internalid != id)
 			{
-				await BootSelectInit();
 				_internalid = id;
 			}
 		}
@@ -146,10 +144,10 @@ namespace SalesPipeline.Pages.Customers
 			}
 
 			StateHasChanged();
+			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
 
-			StateHasChanged();
-			await Task.Delay(100);
+			await Task.Delay(10);
 			await SetAddress();
 		}
 
@@ -186,7 +184,7 @@ namespace SalesPipeline.Pages.Customers
 			{
 				LookUp.Amphurs = new List<InfoAmphurCustom>();
 				StateHasChanged();
-				await Task.Delay(1);
+				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Amphur");
 
 				var amphur = await _masterViewModel.GetAmphur(formModel.ProvinceId.Value);
@@ -195,12 +193,14 @@ namespace SalesPipeline.Pages.Customers
 					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
 					LookUp.Amphurs?.AddRange(amphur.Data);
 					StateHasChanged();
+					await Task.Delay(10);
 					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", $"#Amphur");
 
 					if (formModel.AmphurId.HasValue)
 					{
 						LookUp.Tambols = new List<InfoTambolCustom>();
 						StateHasChanged();
+						await Task.Delay(10);
 						await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", $"Tambol");
 
 						var tambol = await _masterViewModel.GetTambol(formModel.ProvinceId.Value, formModel.AmphurId.Value);
@@ -209,6 +209,7 @@ namespace SalesPipeline.Pages.Customers
 							LookUp.Tambols = new List<InfoTambolCustom> { new InfoTambolCustom() { TambolID = 0, TambolName = "--เลือก--" } };
 							LookUp.Tambols?.AddRange(tambol.Data);
 							StateHasChanged();
+							await Task.Delay(10);
 							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", $"#Tambol");
 						}
 					}
@@ -219,12 +220,10 @@ namespace SalesPipeline.Pages.Customers
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			await Task.Delay(1);
 			LookUp.Amphurs = new List<InfoAmphurCustom>();
 			LookUp.Tambols = new List<InfoTambolCustom>();
 			formModel.ZipCode = null;
 			StateHasChanged();
-			await Task.Delay(1);
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Tambol");
@@ -238,12 +237,12 @@ namespace SalesPipeline.Pages.Customers
 				{
 					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
 					LookUp.Amphurs.AddRange(amphurs.Data);
-				}
 
-				StateHasChanged();
-				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
-				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
+					StateHasChanged();
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
+				}
 			}
 		}
 
@@ -255,6 +254,7 @@ namespace SalesPipeline.Pages.Customers
 				LookUp.Tambols = new List<InfoTambolCustom>();
 				formModel.ZipCode = null;
 				StateHasChanged();
+				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Tambol");
 
 				formModel.AmphurId = amphurID;
@@ -264,11 +264,13 @@ namespace SalesPipeline.Pages.Customers
 				{
 					LookUp.Tambols = new List<InfoTambolCustom> { new InfoTambolCustom() { TambolID = 0, TambolName = "--เลือก--" } };
 					LookUp.Tambols.AddRange(tambols.Data);
+
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", "#Tambol");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 				}
 
-				StateHasChanged();
-				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", "#Tambol");
-				await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 			}
 		}
 
