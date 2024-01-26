@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
@@ -9,7 +10,7 @@ using SalesPipeline.Utils.Resources.Shares;
 namespace SalesPipeline.Pages.Customers
 {
 	public partial class Customer
-    {
+	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
@@ -30,7 +31,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (firstRender)
 			{
-				await SetModel();
+				await SetQuery();
 				StateHasChanged();
 				await SetInitManual();
 				await Task.Delay(10);
@@ -42,7 +43,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task SetInitManual()
 		{
-			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+			var dataLevels = await _userViewModel.GetListLevel(new() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{
 				LookUp.UserLevels = dataLevels.Data;
@@ -53,7 +54,7 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var businessType = await _masterViewModel.GetBusinessType(new allFilter() { status = StatusModel.Active });
+			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
 			if (businessType != null && businessType.Status)
 			{
 				LookUp.BusinessType = businessType.Data?.Items;
@@ -64,7 +65,7 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var chain = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
+			var chain = await _masterViewModel.GetChains(new() { status = StatusModel.Active });
 			if (chain != null && chain.Status)
 			{
 				LookUp.Chain = chain.Data?.Items;
@@ -75,22 +76,44 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var statusSale = await _masterViewModel.GetStatusSale(new() { status = StatusModel.Active, isshow = 1 });
+			if (statusSale != null && statusSale.Status)
+			{
+				LookUp.StatusSale = statusSale.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = statusSale?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "StatusSale");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
 		{
-			string uriQuery = String.Empty;
-
-			uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
 
 			if (parematerAll != null)
 				uriQuery = $"?{parematerAll}";
 
-			//parameters.SetUriQuery(uriQuery);
+			filter.SetUriQuery(uriQuery);
 
 			await SetModel();
 			StateHasChanged();
@@ -149,6 +172,29 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 			await SetModel();
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnStatus(ChangeEventArgs e)
+		{
+			filter.idnumber = null;
+			if (e.Value != null)
+			{
+				if (short.TryParse(e.Value.ToString(), out short _status))
+				{
+					filter.idnumber = _status;
+				}
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
 		}
 
 

@@ -72,6 +72,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
 			}
 
+			if (model.idnumber.HasValue)
+			{
+				query = query.Where(x => x.Id == model.idnumber.Value);
+			}
+
+			if (model.isshow.HasValue)
+			{
+				query = query.Where(x => x.IsShowFilter == model.isshow.Value);
+			}
+
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);

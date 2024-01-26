@@ -22,7 +22,7 @@
 							<div class="input-group">
 								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -68,27 +68,37 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+							<select id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สถานะ</label>
-							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+							<select @onchange="OnStatus" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
+								@if (LookUp.StatusSale?.Count > 0)
+								{
+									foreach (var item in LookUp.StatusSale)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">เริ่มต้น</label>
-							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<input type="date" class="form-control" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สิ้นสุด</label>
-							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<input type="date" class="form-control" value="@(filter.enddate.HasValue ? filter.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
@@ -97,7 +107,7 @@
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>

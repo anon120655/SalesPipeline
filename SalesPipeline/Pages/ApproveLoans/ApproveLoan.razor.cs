@@ -4,6 +4,8 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
+using Microsoft.AspNetCore.Components;
+using NPOI.SS.Formula.Functions;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
@@ -27,24 +29,42 @@ namespace SalesPipeline.Pages.ApproveLoans
 		{
 			if (firstRender)
 			{
-				await SetModel();
+				await SetQuery();
 				StateHasChanged();
+				await SetInitManual();
+				await Task.Delay(10);
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
 		}
 
+		protected async Task SetInitManual()
+		{
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
+		}
+
 		protected async Task SetQuery(string? parematerAll = null)
 		{
-			string uriQuery = String.Empty;
-
-			uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
 
 			if (parematerAll != null)
 				uriQuery = $"?{parematerAll}";
 
-			//parameters.SetUriQuery(uriQuery);
+			filter.SetUriQuery(uriQuery);
 
 			await SetModel();
 			StateHasChanged();
@@ -52,6 +72,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 		protected async Task SetModel()
 		{
+			filter.idnumber = StatusSaleModel.WaitApprove;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -85,6 +106,26 @@ namespace SalesPipeline.Pages.ApproveLoans
 		{
 			await SetQuery(parematerAll);
 			StateHasChanged();
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSort(ChangeEventArgs e)
+		{
+			filter.sort = null;
+			if (e.Value != null)
+			{
+				filter.sort = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
 		}
 
 	}

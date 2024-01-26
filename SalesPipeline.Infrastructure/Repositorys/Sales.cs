@@ -157,8 +157,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<SaleCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Sales
-				.Include(x => x.Customer).ThenInclude(x=>x.Customer_Committees)
-				.Include(x => x.Customer).ThenInclude(x=>x.Customer_Shareholders)
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);
@@ -175,6 +175,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.Status == model.status);
 			}
+
+			if (model.idnumber.HasValue)
+			{
+				query = query.Where(x => x.StatusSaleId == model.idnumber);
+			}
+
+			if (!String.IsNullOrEmpty(model.sort))
+			{
+				if (model.sort == OrderByModel.ASC)
+				{
+					query = query.OrderBy(x=>x.CreateDate);
+				}
+				else if (model.sort == OrderByModel.DESC)
+				{
+					query = query.OrderByDescending(x => x.CreateDate);
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
+				|| x.Customer != null && x.Customer.JuristicPersonRegNumber != null && x.Customer.JuristicPersonRegNumber.Contains(model.searchtxt));
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

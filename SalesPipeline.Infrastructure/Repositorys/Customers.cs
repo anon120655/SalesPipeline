@@ -584,6 +584,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
+				|| x.JuristicPersonRegNumber != null && x.JuristicPersonRegNumber.Contains(model.searchtxt));
+
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);

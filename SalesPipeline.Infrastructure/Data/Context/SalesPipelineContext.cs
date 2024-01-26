@@ -288,7 +288,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("เจ้าหนี้การค้า");
             entity.Property(e => e.TradeAccPayForLoansShot)
                 .HasPrecision(18, 2)
-                .HasComment("เงินให้กู้ระยะสั้น");
+                .HasComment("เงินให้กู้ยืมระยะสั้น");
             entity.Property(e => e.TradeAccPayLoansLong)
                 .HasPrecision(18, 2)
                 .HasComment("เงินกู้ระยะยาว");
@@ -777,6 +777,9 @@ public partial class SalesPipelineContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnType("int(11)");
             entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.IsShowFilter)
+                .HasComment("1=แสดงใน filter")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
             entity.Property(e => e.Status)

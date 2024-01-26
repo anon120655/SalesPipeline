@@ -69,9 +69,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected async Task SetQuery(string? parematerAll = null)
 		{
-			string uriQuery = String.Empty;
-
-			uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
 
 			if (parematerAll != null)
 				uriQuery = $"?{parematerAll}";

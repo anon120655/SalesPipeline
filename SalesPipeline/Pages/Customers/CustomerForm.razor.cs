@@ -131,7 +131,6 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Yield");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
 
-
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
 			{

@@ -20,5 +20,10 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public string? Name { get; set; }
 
 		public string? Description { get; set; }
+
+		/// <summary>
+		/// 1=แสดงใน filter
+		/// </summary>
+		public short? IsShowFilter { get; set; }
 	}
 }

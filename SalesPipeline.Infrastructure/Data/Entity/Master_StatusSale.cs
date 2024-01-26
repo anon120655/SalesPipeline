@@ -21,6 +21,11 @@ public partial class Master_StatusSale
 
     public string? Description { get; set; }
 
+    /// <summary>
+    /// 1=แสดงใน filter
+    /// </summary>
+    public short? IsShowFilter { get; set; }
+
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();

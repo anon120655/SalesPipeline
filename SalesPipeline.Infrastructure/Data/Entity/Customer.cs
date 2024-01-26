@@ -257,7 +257,7 @@ public partial class Customer
     public decimal? TradeAccPayTotalNotCurrentLia { get; set; }
 
     /// <summary>
-    /// เงินให้กู้ระยะสั้น
+    /// เงินให้กู้ยืมระยะสั้น
     /// </summary>
     public decimal? TradeAccPayForLoansShot { get; set; }
 

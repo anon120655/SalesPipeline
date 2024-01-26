@@ -160,14 +160,23 @@ namespace SalesPipeline.Utils
 			}
 		}
 
-		public static DateTime DateNotNullToEn(string datetime, string format = "dd/MM/yyyy", string Culture = "en-US")
+		public static DateTime? DateNotNullToEn(string? datetime, string format = "dd/MM/yyyy", string Culture = "en-US")
 		{
-			var date = DateTime.ParseExact(datetime, format, new CultureInfo(Culture), DateTimeStyles.None);
-			if (date.Year > 2500)
+			try
 			{
-				date = date.AddYears(-543);
+				if (datetime == null) return null;
+
+				var date = DateTime.ParseExact(datetime, format, new CultureInfo(Culture), DateTimeStyles.None);
+				if (date.Year > 2500)
+				{
+					date = date.AddYears(-543);
+				}
+				return date;
 			}
-			return date;
+			catch
+			{
+				return null;
+			}
 		}
 
 		public static DateOnly DateOnlyToEn(string datetime, string format = "dd/MM/yyyy", string Culture = "en-US")

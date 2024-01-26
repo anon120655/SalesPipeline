@@ -13,11 +13,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public Guid id { get; set; }
 		public int? idnumber { get; set; }
 		public short? status { get; set; }
+		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
 		public string? ids { get; set; }
+		public string? sort { get; set; }
+		public DateTime? startdate { get; set; }
+		public DateTime? enddate { get; set; }
 		public List<string?>? Selecteds { get; set; }
 
 		public string SetParameter(bool? isPage = null)
@@ -38,6 +42,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
 
+			if (isshow.HasValue)
+				ParameterAll += $"&isshow={isshow}";
+
 			if (!String.IsNullOrEmpty(searchtxt))
 				ParameterAll += $"&searchtxt={searchtxt}";
 
@@ -50,11 +57,20 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (!String.IsNullOrEmpty(val3))
 				ParameterAll += $"&val3={val3}";
 
+			if (!String.IsNullOrEmpty(sort))
+				ParameterAll += $"&sort={sort}";
+
 			if (Selecteds?.Count > 0)
 			{
 				string joined = string.Join(",", Selecteds);
 				ParameterAll += $"&ids={joined}";
 			}
+
+			if (startdate.HasValue)
+				ParameterAll += $"&startdate={GeneralUtils.DateToStrParameter(startdate)}";
+
+			if (enddate.HasValue)
+				ParameterAll += $"&enddate={GeneralUtils.DateToStrParameter(enddate)}";
 
 			return ParameterAll;
 		}
@@ -69,6 +85,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isshow), out var _isshow))
+				isshow = Convert.ToInt16(_isshow);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(CurrentUserId), out var _CurrentUserId))
 				CurrentUserId = Convert.ToInt32(_CurrentUserId);
@@ -85,6 +104,14 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val3), out var _val3))
 				val3 = _val3;
 
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(sort), out var _sort))
+				sort = _sort;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("startdate", out var _startdate))
+				startdate = GeneralUtils.DateNotNullToEn(_startdate, "yyyy-MM-dd", Culture: "en-US");
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("enddate", out var _enddate))
+				enddate = GeneralUtils.DateNotNullToEn(_enddate, "yyyy-MM-dd", Culture: "en-US");
 		}
 
 
