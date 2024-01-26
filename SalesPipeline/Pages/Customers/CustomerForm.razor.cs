@@ -36,11 +36,13 @@ namespace SalesPipeline.Pages.Customers
 
 		protected override async Task OnParametersSetAsync()
 		{
+			await Task.Delay(1);
 			if (id != Guid.Empty && _internalid != id)
 			{
 				_internalid = id;
 			}
 		}
+		
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)

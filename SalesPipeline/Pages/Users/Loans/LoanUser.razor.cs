@@ -4,6 +4,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Shared.Modals;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Users.Loans
 {

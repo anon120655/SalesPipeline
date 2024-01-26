@@ -30,8 +30,8 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ห่วงโซ่</label>
-							<select id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnChain" value="@filter.chain" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
 								@if (LookUp.Chain?.Count > 0)
 								{
 									foreach (var item in LookUp.Chain)
@@ -43,8 +43,8 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ประเภทธุรกิจ</label>
-							<select id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnBusinessType" value="@filter.businesstype" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
 								@if (LookUp.BusinessType?.Count > 0)
 								{
 									foreach (var item in LookUp.BusinessType)
@@ -57,19 +57,19 @@
 						<div class="col mb-2">
 							<label class="form-label">กิจการสาขาภาค</label>
 							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+								<option value="">ทั้งหมด</option>
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ศูนย์สาขา</label>
 							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+								<option value="">ทั้งหมด</option>
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
 								@if (LookUp.Provinces?.Count > 0)
 								{
 									foreach (var item in LookUp.Provinces)
@@ -81,8 +81,8 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สถานะ</label>
-							<select @onchange="OnStatus" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnStatus" value="@filter.idnumber" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
 								@if (LookUp.StatusSale?.Count > 0)
 								{
 									foreach (var item in LookUp.StatusSale)
@@ -103,7 +103,7 @@
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
 							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+								<option value="">ทั้งหมด</option>
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">

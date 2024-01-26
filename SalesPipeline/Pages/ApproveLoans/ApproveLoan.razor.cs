@@ -6,6 +6,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using Microsoft.AspNetCore.Components;
 using NPOI.SS.Formula.Functions;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
@@ -35,13 +36,14 @@ namespace SalesPipeline.Pages.ApproveLoans
 				await SetInitManual();
 				await Task.Delay(10);
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
 		}
 
 		protected async Task SetInitManual()
 		{
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "DisplaySort");
+
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
 			{
@@ -55,7 +57,10 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 			StateHasChanged();
 			await Task.Delay(10);
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Responsible");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -127,6 +132,60 @@ namespace SalesPipeline.Pages.ApproveLoans
 				StateHasChanged();
 				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 			}
+		}
+
+		[JSInvokable]
+		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		{
+			filter.province = null;
+			filter.amphur = null;
+			LookUp.Amphurs = new();
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				filter.province = provinceID.ToString();
+
+				if (int.TryParse(filter.province,out int id))
+				{
+					var amphurs = await _masterViewModel.GetAmphur(id);
+					if (amphurs != null && amphurs.Data?.Count > 0)
+					{
+						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+						LookUp.Amphurs.AddRange(amphurs.Data);
+
+						StateHasChanged();
+						await Task.Delay(10);
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					}
+					else
+					{
+						_errorMessage = amphurs?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
+				}
+			}
+
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+
+		}
+
+		[JSInvokable]
+		public async Task AmphurChange(string _amphurID, string _amphurName)
+		{
+			filter.amphur = null;
+			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			{
+				filter.amphur = amphurID.ToString();
+			}
+
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 	}

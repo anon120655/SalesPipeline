@@ -185,7 +185,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (model.sort == OrderByModel.ASC)
 				{
-					query = query.OrderBy(x=>x.CreateDate);
+					query = query.OrderBy(x => x.CreateDate);
 				}
 				else if (model.sort == OrderByModel.DESC)
 				{
@@ -193,9 +193,47 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			//ห่วงโซ่
+			if (!String.IsNullOrEmpty(model.chain))
+			{
+				if (Guid.TryParse(model.chain, out Guid id))
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_ChainId == id);
+				}
+			}
+
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id))
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//จังหวัด
+			if (!String.IsNullOrEmpty(model.province))
+			{
+				if (int.TryParse(model.province, out int id))
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == id);
+				}
+			}
+
+			//จังหวัด
+			if (!String.IsNullOrEmpty(model.amphur))
+			{
+				if (int.TryParse(model.amphur, out int id))
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.AmphurId == id);
+				}
+			}
+
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
 				|| x.Customer != null && x.Customer.JuristicPersonRegNumber != null && x.Customer.JuristicPersonRegNumber.Contains(model.searchtxt));
+
+
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

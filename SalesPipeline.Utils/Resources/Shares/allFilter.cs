@@ -15,6 +15,10 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
+		public string? chain { get; set; }
+		public string? businesstype { get; set; }
+		public string? province { get; set; }
+		public string? amphur { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -47,6 +51,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(searchtxt))
 				ParameterAll += $"&searchtxt={searchtxt}";
+
+			if (!String.IsNullOrEmpty(chain))
+				ParameterAll += $"&chain={chain}";
+
+			if (!String.IsNullOrEmpty(businesstype))
+				ParameterAll += $"&businesstype={businesstype}";
+
+			if (!String.IsNullOrEmpty(province))
+				ParameterAll += $"&province={province}";
+
+			if (!String.IsNullOrEmpty(amphur))
+				ParameterAll += $"&amphur={amphur}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -83,6 +99,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(pagesize), out var _pagesize))
 				pagesize = Convert.ToInt32(_pagesize);
 
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(idnumber), out var _idnumber))
+				idnumber = Convert.ToInt16(_idnumber);
+
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);
 
@@ -94,6 +113,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(searchtxt), out var _searchtxt))
 				searchtxt = _searchtxt;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(chain), out var _chain))
+				chain = _chain;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(businesstype), out var _businesstype))
+				businesstype = _businesstype;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(province), out var _province))
+				province = _province;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amphur), out var _amphur))
+				amphur = _amphur;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

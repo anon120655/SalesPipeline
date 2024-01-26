@@ -6,6 +6,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Net.NetworkInformation;
 
 namespace SalesPipeline.Pages.Customers
 {
@@ -190,6 +191,45 @@ namespace SalesPipeline.Pages.Customers
 				{
 					filter.idnumber = _status;
 				}
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
+		}
+
+		protected async Task OnChain(ChangeEventArgs e)
+		{
+			filter.chain = null;
+			if (e.Value != null)
+			{
+				filter.chain = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
+		}
+
+		protected async Task OnBusinessType(ChangeEventArgs e)
+		{
+			filter.businesstype = null;
+			if (e.Value != null)
+			{
+				filter.businesstype = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
+		}
+
+		protected async Task OnProvince(ChangeEventArgs e)
+		{
+			filter.province = null;
+			if (e.Value != null)
+			{
+				filter.province = e.Value.ToString();
 
 				await SetModel();
 				StateHasChanged();
