@@ -17,11 +17,17 @@ public partial class Sale_Status
 
     public DateTime CreateDate { get; set; }
 
+    public int CreateBy { get; set; }
+
+    public string? CreateByName { get; set; }
+
     public Guid SaleId { get; set; }
 
     public int StatusId { get; set; }
 
     public string? Description { get; set; }
+
+    public virtual User CreateByNavigation { get; set; } = null!;
 
     public virtual Sale Sale { get; set; } = null!;
 

@@ -18,6 +18,10 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public DateTime CreateDate { get; set; }
 
+		public int CreateBy { get; set; }
+
+		public string? CreateByName { get; set; }
+
 		public Guid SaleId { get; set; }
 
 		public int StatusId { get; set; }

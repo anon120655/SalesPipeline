@@ -67,7 +67,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await UpdateStatusOnly(new()
 				{
 					SaleId = sale.Id,
-					StatusId = model.StatusSaleId
+					StatusId = model.StatusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
 				});
 			}
 
@@ -113,7 +115,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await UpdateStatusOnly(new()
 					{
 						SaleId = sale.Id,
-						StatusId = model.StatusSaleId
+						StatusId = model.StatusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
 					});
 				}
 
@@ -123,10 +127,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateStatusOnly(Sale_StatusCustom model)
 		{
+			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.SaleId).ToListAsync();
+			if (sale_Statuses != null && sale_Statuses.Count > 0)
+			{
+				foreach (var item in sale_Statuses)
+				{
+					if (item.StatusId == model.StatusId)
+					{
+						throw new ExceptionCustom("Duplicate the process.");
+					}
+
+					if (item.StatusId == StatusSaleModel.NotApprove)
+					{
+						throw new ExceptionCustom("Not approve the process.");
+					}
+
+				}
+			}
+
+			string? currentUserName = model.CreateByName;
+			if (String.IsNullOrEmpty(currentUserName))
+			{
+				var user = await _repo.User.GetById(model.CreateBy);
+				if (user != null) currentUserName = user.FullName;
+			}
+
 			DateTime _dateNow = DateTime.Now;
 			var sale_Status = new Data.Entity.Sale_Status();
 			sale_Status.Status = StatusModel.Active;
 			sale_Status.CreateDate = _dateNow;
+			sale_Status.CreateBy = model.CreateBy;
+			sale_Status.CreateByName = currentUserName;
 			sale_Status.SaleId = model.SaleId;
 			sale_Status.StatusId = model.StatusId;
 			sale_Status.Description = model.Description;

@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 
@@ -63,7 +64,22 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-
+		/// <summary>
+		/// เพิ่มข้อมูลลูกค้า
+		/// </summary>
+		[HttpPost("UpdateStatusOnly")]
+		public async Task<IActionResult> UpdateStatusOnly(Sale_StatusCustom model)
+		{
+			try
+			{
+				await _repo.Sales.UpdateStatusOnly(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 	}
 }

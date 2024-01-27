@@ -14,6 +14,14 @@
 		<div class="row mb-4 text-center">
 			<h4 class="fw-bold">@((MarkupString)(Content ?? String.Empty))</h4>
 		</div>
+		<div class="row mb-4 text-center mx-3 d-flex align-items-center">
+			<div class="col-3">
+				ระบุเหตุผล
+			</div>
+			<div class="col-9">
+				<textarea @bind=NoteTxt class="form-control" rows="3"></textarea>
+			</div>
+		</div>
 		<div class="row my-3 text-center">
 			<div class="d-flex justify-content-evenly align-items-center">
 				<div class="p-2">
@@ -29,12 +37,13 @@
 
 @code {
 	public string? Id { get; set; }
-	public string? Icon { get; set; } = "<i class=\"fa-solid fa-circle-check fs_5r text-primary\"></i>";
+	public string? Icon { get; set; } = "<img src=\"/image/icon/notapprove.png\" width=\"65\" />";
 	public string? Content { get; set; }
 	public int? CountDown { get; set; }
+	public string? NoteTxt { get; set; }
 
 	[Parameter]
-	public EventCallback<string?> CallbackConfirm { get; set; }
+	public EventCallback<SelectModel?> CallbackConfirm { get; set; }
 
 	[Parameter]
 	public EventCallback CallbackModalHidden { get; set; }
@@ -58,7 +67,11 @@
 
 	public async Task Confirm()
 	{
-		await CallbackConfirm.InvokeAsync(Id);
+		await CallbackConfirm.InvokeAsync(new()
+			{
+				ID = Id,
+				Name = NoteTxt
+			});
 	}
 
 	private async Task OnModalHidden()

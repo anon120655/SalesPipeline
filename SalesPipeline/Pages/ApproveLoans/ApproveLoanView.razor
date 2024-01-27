@@ -26,12 +26,12 @@
 										<div class="my-4 text-center">
 											<div class="d-flex bd-highlight align-items-center justify-content-center">
 												<div class="p-2 bd-highlight">
-													<Button  Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+													<Button @onclick="InitShowNotApprove" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 														ไม่อนุมัติ
 													</Button>
 												</div>
 												<div class="p-2 bd-highlight">
-													<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+													<Button @onclick="InitShowConfirmApprove" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 														@if (isLoading)
 														{
 															<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
@@ -78,6 +78,9 @@
 			</div>
 		</div>
 	</div>
+
+	<ModalConfirm @ref="modalConfirmApprove" CallbackConfirm="ConfirmApprove" CallbackModalHidden="OnModalHidden" />
+	<ModalNotApprove @ref="modalNotApprove" CallbackConfirm="NotApproveModal" CallbackModalHidden="OnModalHidden" />
 }
 else
 {

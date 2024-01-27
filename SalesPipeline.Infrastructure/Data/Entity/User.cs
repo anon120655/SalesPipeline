@@ -72,5 +72,7 @@ public partial class User
 
     public virtual User_Role? Role { get; set; }
 
+    public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
+
     public virtual ICollection<User_Branch> User_Branches { get; set; } = new List<User_Branch>();
 }

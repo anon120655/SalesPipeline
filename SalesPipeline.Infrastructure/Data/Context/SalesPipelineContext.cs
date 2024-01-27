@@ -1082,16 +1082,25 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Status", tb => tb.HasComment("สถานะการขาย"));
 
+            entity.HasIndex(e => e.CreateBy, "CreateBy");
+
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.HasIndex(e => e.StatusId, "StatusId");
 
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.StatusId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Sale_Statuses)
+                .HasForeignKey(d => d.CreateBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_status_ibfk_3");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Statuses)
                 .HasForeignKey(d => d.SaleId)
