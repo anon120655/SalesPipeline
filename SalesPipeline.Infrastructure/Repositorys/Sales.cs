@@ -35,14 +35,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			DateTime _dateNow = DateTime.Now;
 
-			string? companyName = null;
-			string? currentUserName = null;
-
-			var customer = await _repo.Customer.GetById(model.CustomerId);
-			if (customer != null) companyName = customer.CompanyName;
-
-			var user = await _repo.User.GetById(model.CurrentUserId);
-			if (user != null) currentUserName = user.FullName;
+			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			var sale = new Data.Entity.Sale();
 			sale.Status = StatusModel.Active;
@@ -80,14 +74,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			DateTime _dateNow = DateTime.Now;
 
-			string? companyName = null;
-			string? currentUserName = null;
-
-			var customer = await _repo.Customer.GetById(model.CustomerId);
-			if (customer != null) companyName = customer.CompanyName;
-
-			var user = await _repo.User.GetById(model.CurrentUserId);
-			if (user != null) currentUserName = user.FullName;
+			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			var sale = await _repo.Context.Sales
 				.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
@@ -148,8 +136,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			string? currentUserName = model.CreateByName;
 			if (String.IsNullOrEmpty(currentUserName))
 			{
-				var user = await _repo.User.GetById(model.CreateBy);
-				if (user != null) currentUserName = user.FullName;
+				currentUserName = await _repo.User.GetFullNameById(model.CreateBy);
 			}
 
 			DateTime _dateNow = DateTime.Now;
@@ -263,8 +250,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
 				|| x.Customer != null && x.Customer.JuristicPersonRegNumber != null && x.Customer.JuristicPersonRegNumber.Contains(model.searchtxt));
-
-
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

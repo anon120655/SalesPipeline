@@ -59,6 +59,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_BusinessSizeCustom>(query);
 		}
 
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Master_BusinessSizes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public async Task<PaginationView<List<Master_BusinessSizeCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_BusinessSizes

@@ -66,6 +66,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<InfoTambolCustom>(query);
 		}
 
+		public async Task<string?> GetProvinceNameByid(int id)
+		{
+			var name = await _repo.Context.InfoProvinces.Where(x => x.ProvinceID == id).Select(x => x.ProvinceName).FirstOrDefaultAsync();
+			return name;
+		}
+
+		public async Task<string?> GetAmphurNameByid(int id)
+		{
+			var name = await _repo.Context.InfoAmphurs.Where(x => x.AmphurID == id).Select(x => x.AmphurName).FirstOrDefaultAsync();
+			return name;
+		}
+
+		public async Task<string?> GetTambolNameByid(int id)
+		{
+			var name = await _repo.Context.InfoTambols.Where(x => x.TambolID == id).Select(x => x.TambolName).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public async Task MapZipCode(List<InfoTambolCustom> tambolList)
 		{
 			foreach (var item in tambolList)

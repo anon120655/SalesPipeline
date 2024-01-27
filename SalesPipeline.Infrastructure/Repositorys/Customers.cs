@@ -94,52 +94,43 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? provinceName = null;
 				string? amphurName = null;
 				string? tambolName = null;
+
 				if (model.Master_ContactChannelId.HasValue)
 				{
-					var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
-					if (master != null) master_ContactChannelName = master.Name;
+					master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
 				}
 				if (model.Master_BusinessTypeId.HasValue)
 				{
-					var master = await _repo.MasterBusinessType.GetById(model.Master_BusinessTypeId.Value);
-					if (master != null) master_BusinessTypeName = master.Name;
+					master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
 				}
 				if (model.Master_BusinessSizeId.HasValue)
 				{
-					var master = await _repo.MasterBusinessSize.GetById(model.Master_BusinessSizeId.Value);
-					if (master != null) master_BusinessSizeName = master.Name;
+					master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
 				}
 				if (model.Master_ISICCodeId.HasValue)
 				{
-					var master = await _repo.MasterISICCode.GetById(model.Master_ISICCodeId.Value);
-					if (master != null) master_ISICCodeName = master.Name;
+					master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
 				}
 				if (model.Master_YieldId.HasValue)
 				{
-					var master = await _repo.MasterYield.GetById(model.Master_YieldId.Value);
-					if (master != null) master_YieldName = master.Name;
+					master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
 				}
 				if (model.Master_ChainId.HasValue)
 				{
-					var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
-					if (master != null) master_ChainName = master.Name;
+					master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
 				}
 				if (model.ProvinceId.HasValue)
 				{
-					var master = await _repo.Thailand.GetProvinceByid(model.ProvinceId.Value);
-					if (master != null) provinceName = master.ProvinceName;
+					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 				}
 				if (model.AmphurId.HasValue)
 				{
-					var master = await _repo.Thailand.GetAmphurByid(model.AmphurId.Value);
-					if (master != null) amphurName = master.AmphurName;
+					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 				}
 				if (model.TambolId.HasValue)
 				{
-					var master = await _repo.Thailand.GetTambolByid(model.TambolId.Value);
-					if (master != null) tambolName = master.TambolName;
+					tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 				}
-
 
 				DateTime _dateNow = DateTime.Now;
 
@@ -297,50 +288,42 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					string? provinceName = null;
 					string? amphurName = null;
 					string? tambolName = null;
+
 					if (model.Master_ContactChannelId.HasValue)
 					{
-						var master = await _repo.MasterContactChannel.GetById(model.Master_ContactChannelId.Value);
-						if (master != null) master_ContactChannelName = master.Name;
+						master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
 					}
 					if (model.Master_BusinessTypeId.HasValue)
 					{
-						var master = await _repo.MasterBusinessType.GetById(model.Master_BusinessTypeId.Value);
-						if (master != null) master_BusinessTypeName = master.Name;
+						master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
 					}
 					if (model.Master_BusinessSizeId.HasValue)
 					{
-						var master = await _repo.MasterBusinessSize.GetById(model.Master_BusinessSizeId.Value);
-						if (master != null) master_BusinessSizeName = master.Name;
+						master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
 					}
 					if (model.Master_ISICCodeId.HasValue)
 					{
-						var master = await _repo.MasterISICCode.GetById(model.Master_ISICCodeId.Value);
-						if (master != null) master_ISICCodeName = master.Name;
+						master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
 					}
 					if (model.Master_YieldId.HasValue)
 					{
-						var master = await _repo.MasterYield.GetById(model.Master_YieldId.Value);
-						if (master != null) master_YieldName = master.Name;
+						master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
 					}
 					if (model.Master_ChainId.HasValue)
 					{
-						var master = await _repo.MasterChain.GetById(model.Master_ChainId.Value);
-						if (master != null) master_ChainName = master.Name;
+						master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
 					}
 					if (model.ProvinceId.HasValue)
 					{
-						var master = await _repo.Thailand.GetProvinceByid(model.ProvinceId.Value);
-						if (master != null) provinceName = master.ProvinceName;
+						provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 					}
 					if (model.AmphurId.HasValue)
 					{
-						var master = await _repo.Thailand.GetAmphurByid(model.AmphurId.Value);
-						if (master != null) amphurName = master.AmphurName;
+						amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 					}
 					if (model.TambolId.HasValue)
 					{
-						var master = await _repo.Thailand.GetTambolByid(model.TambolId.Value);
-						if (master != null) tambolName = master.TambolName;
+						tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 					}
 
 					customer.UpdateDate = _dateNow;
@@ -599,5 +582,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<string?> GetCompanyNameById(Guid id)
+		{
+			var companyName = await _repo.Context.Customers.Where(x => x.Id == id).Select(x => x.CompanyName).FirstOrDefaultAsync();
+			return companyName;
+		}
 	}
 }

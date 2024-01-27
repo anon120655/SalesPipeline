@@ -16,6 +16,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<InfoProvinceCustom> GetProvinceByid(int id);
 		Task<InfoAmphurCustom> GetAmphurByid(int id);
 		Task<InfoTambolCustom> GetTambolByid(int id);
+		Task<string?> GetProvinceNameByid(int id);
+		Task<string?> GetAmphurNameByid(int id);
+		Task<string?> GetTambolNameByid(int id);
 		Task MapZipCode(List<InfoTambolCustom> tambolList);
 	}
 }

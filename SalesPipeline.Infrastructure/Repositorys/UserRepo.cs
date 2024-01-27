@@ -163,6 +163,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<UserCustom>(query);
 		}
 
+		public async Task<string?> GetFullNameById(int id)
+		{
+			var fullName = await _repo.Context.Users.Where(x => x.Id == id).Select(x => x.FullName).FirstOrDefaultAsync();
+			return fullName;
+		}
+
 		public async Task<bool> UserExists(string employeeid)
 		{
 			return await _repo.Context.Users.AnyAsync(x => x.EmployeeId == employeeid);

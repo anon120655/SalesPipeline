@@ -110,6 +110,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_YieldCustom>(query);
 		}
 
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Master_Yields.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public async Task<PaginationView<List<Master_YieldCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Yields
