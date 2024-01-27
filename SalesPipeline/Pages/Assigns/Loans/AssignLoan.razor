@@ -9,8 +9,7 @@
 				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 					<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 					<div class="p-2">
-						<p class="back_topic">มอบหมาย <span class="back_topic_active">พนักงานธุรกิจสินเชื่อ</span></p>
-						<p class="back_topic_dim">ฝ่ายกิจการสาขาภาค...</p>
+						<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
 					</div>
 				</div>
 				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -60,8 +59,8 @@
 							<table class="table table_list">
 								<thead>
 									<tr>
-										<th class="text-center">ลำดับที่</th>
-										<th class="text-center">ชื่อ-นามสกุล</th>
+										<th class="text-center">รหัสพนักงาน</th>
+										<th class="text-center">ชื่อพนักงาน</th>
 										<th class="text-center">เบอร์ติดต่อ</th>
 										<th class="text-center">จังหวัดที่ดูแล</th>
 										<th class="text-center">อำเภอที่ดูแล</th>
@@ -72,7 +71,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									@for (int i = 1; i < 6; i++)
+									@* @for (int i = 1; i < 6; i++)
 									{
 										<tr>
 											<td class="text-center">@i</td>
@@ -89,7 +88,12 @@
 												<a href="#">จัดการมอบหมาย</a>
 											</td>
 										</tr>
-									}
+									} *@
+									<tr class="text-center align-middle">
+										<td colspan="100">
+											<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
