@@ -109,20 +109,4 @@
 
 
 
-@code {
-	[Inject] protected IJSRuntime _jsRuntimes { get; set; } = null!;
 
-	string? _errorMessage = null;
-
-	protected async override Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-
-			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
-			StateHasChanged();
-			firstRender = false;
-		}
-	}
-
-}
