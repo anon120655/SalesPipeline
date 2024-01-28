@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -65,26 +67,40 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
-				var user = new Data.Entity.User()
-				{
-					Id = id,
-					Status = StatusModel.Active,
-					CreateDate = _dateNow,
-					CreateBy = model.CurrentUserId,
-					UpdateDate = _dateNow,
-					UpdateBy = model.CurrentUserId,
-					EmployeeId = model.EmployeeId,
-					FullName = model.FullName,
-					FirstName = model.FirstNames,
-					LastName = model.LastNames,
-					Email = model.Email,
-					PositionId = model.PositionId,
-					DepartmentId = model.DepartmentId,
-					LevelId = model.LevelId,
-					RoleId = model.RoleId,
-				};
+				var user = new Data.Entity.User();
+				user.Id = id;
+				user.Status = StatusModel.Active;
+				user.CreateDate = _dateNow;
+				user.CreateBy = model.CurrentUserId;
+				user.UpdateDate = _dateNow;
+				user.UpdateBy = model.CurrentUserId;
+				user.EmployeeId = model.EmployeeId;
+				user.FullName = model.FullName;
+				user.FirstName = model.FirstNames;
+				user.LastName = model.LastNames;
+				user.Email = model.Email;
+				user.PositionId = model.PositionId;
+				user.DepartmentId = model.DepartmentId;
+				user.LevelId = model.LevelId;
+				user.RoleId = model.RoleId;
 				await _db.InsterAsync(user);
 				await _db.SaveAsync();
+
+				//RM Role Create Default Assignment
+				if (model.RoleId.HasValue)
+				{
+					var code = await GetRoleCodeById(model.RoleId.Value);
+					if (code != null && code.ToUpper().StartsWith(RoleCodes.RM))
+					{
+						var assignment = await _repo.Assignment.Create(new()
+						{
+							UserId = user.Id,
+							EmployeeId = model.EmployeeId,
+							EmployeeName = model.FullName,
+						});
+					}
+				}
+
 
 				_transaction.Commit();
 
@@ -375,6 +391,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									.FirstOrDefaultAsync();
 
 			return _mapper.Map<User_RoleCustom>(query);
+		}
+
+		public async Task<string?> GetRoleCodeById(int id)
+		{
+			var code = await _repo.Context.User_Roles.Where(x => x.Id == id).Select(x => x.Code).FirstOrDefaultAsync();
+			return code;
+		}
+
+		public async Task<User_RoleCustom?> GetRoleByUserId(int id)
+		{
+			var roleId = await _repo.Context.Users.Where(x => x.Id == id).Select(x => x.RoleId).FirstOrDefaultAsync();
+			if (roleId.HasValue)
+			{
+				var user_Roles = await _repo.Context.User_Roles
+										.Where(x => x.Id == roleId)
+										.FirstOrDefaultAsync();
+
+				return _mapper.Map<User_RoleCustom>(user_Roles);
+			}
+
+			return null;
 		}
 
 		public async Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model)

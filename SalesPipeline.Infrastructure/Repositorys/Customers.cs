@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -247,9 +249,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
-				if (model.StatusSaleId > 0)
+				int? assignedUserId = null;
+				string? assignedUserName = null;
+
+				var user = await _repo.User.GetById(model.CurrentUserId);
+				if (user == null) throw new ExceptionCustom("currentUserId required!");
+
+				var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
+				if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
+
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					statusSaleId = model.StatusSaleId.Value;
+					statusSaleId = StatusSaleModel.WaitApprove;
+					assignedUserId = model.CurrentUserId;
+					assignedUserName = user.FullName;
+				}
+				else
+				{
+					if (model.StatusSaleId > 0)
+					{
+						statusSaleId = model.StatusSaleId.Value;
+					}
 				}
 
 				var sale = new SaleCustom()
@@ -260,9 +280,44 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateBy = model.CurrentUserId,
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
-					StatusSaleId = statusSaleId
+					StatusSaleId = statusSaleId,
+					AssignedUserId = assignedUserId,
+					AssignedUserName = assignedUserName
 				};
 				await _repo.Sales.Create(sale);
+
+				//Create with RM Assing yourself
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+				{
+					AssignmentCustom? assignment = null;
+					if (!await _repo.Assignment.CheckUserId(model.CurrentUserId))
+					{
+						assignment = await _repo.Assignment.Create(new()
+						{
+							UserId = model.CurrentUserId,
+							EmployeeId = user.EmployeeId,
+							EmployeeName = user.FullName,
+						});
+					}
+					else
+					{
+						assignment = await _repo.Assignment.GetByUserId(model.CurrentUserId);
+					}
+					if (assignment != null)
+					{
+						var assignmentSale = await _repo.Assignment.CreateSale(new()
+						{
+							CreateBy = model.CurrentUserId,
+							CreateByName = user.FullName,
+							AssignmentId = assignment.Id,
+							SaleId = sale.Id
+						});
+						if (assignmentSale != null)
+						{
+							await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
+						}
+					}
+				}
 
 				_transaction.Commit();
 

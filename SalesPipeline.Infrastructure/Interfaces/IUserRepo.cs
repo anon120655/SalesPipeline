@@ -21,6 +21,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteRoleById(UpdateModel model);
 		Task UpdateIsModifyRoleById(UpdateModel model);
 		Task<User_RoleCustom> GetRoleById(int id);
+		Task<string?> GetRoleCodeById(int id);
+		Task<User_RoleCustom?> GetRoleByUserId(int id);
 		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model);
 		Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model);
 	}

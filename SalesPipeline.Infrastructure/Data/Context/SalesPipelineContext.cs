@@ -12,6 +12,10 @@ public partial class SalesPipelineContext : DbContext
     {
     }
 
+    public virtual DbSet<Assignment> Assignments { get; set; }
+
+    public virtual DbSet<Assignment_Sale> Assignment_Sales { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Customer_Committee> Customer_Committees { get; set; }
@@ -101,6 +105,76 @@ public partial class SalesPipelineContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<Assignment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Assignment", tb => tb.HasComment("พนักงานที่ถูกมอบหมาย"));
+
+            entity.HasIndex(e => e.Status, "Status");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CurrentNumber)
+                .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.EmployeeId)
+                .HasMaxLength(10)
+                .HasComment("รหัสพนักงาน");
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อพนักงานที่ได้รับมอบหมาย");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UserId)
+                .HasComment("พนักงานที่ได้รับมอบหมาย")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Assignments)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("assignment_ibfk_2");
+        });
+
+        modelBuilder.Entity<Assignment_Sale>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Assignment_Sale", tb => tb.HasComment("ลูกค้าที่พนักงานดูแล"));
+
+            entity.HasIndex(e => e.AssignmentId, "AssignmentId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateBy)
+                .HasComment("ผู้มอบหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้มอบหมาย");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.IsActive)
+                .HasComment("1=อยู่ในความรับผิดชอบ 0=ถูกเปลี่ยนผู้รับผิดชอบ")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.SaleId).HasComment("สินเชื่อที่ถูกมอบหมาย");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Assignment).WithMany(p => p.Assignment_Sales)
+                .HasForeignKey(d => d.AssignmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("assignment_sale_ibfk_1");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Assignment_Sales)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("assignment_sale_ibfk_2");
+        });
 
         modelBuilder.Entity<Customer>(entity =>
         {
@@ -915,6 +989,12 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
 
+            entity.Property(e => e.AssignedUserId)
+                .HasComment("พนักงานที่ได้รับมอบหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AssignedUserName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อพนักงานที่ได้รับมอบหมาย");
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อบริษัท");
@@ -927,9 +1007,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.PercentChanceLoanPass)
                 .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
                 .HasColumnType("int(11)");
-            entity.Property(e => e.ResponsibleName)
-                .HasMaxLength(255)
-                .HasComment("ผู้รับผิดชอบ");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

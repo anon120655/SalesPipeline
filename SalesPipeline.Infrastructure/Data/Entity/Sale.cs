@@ -34,11 +34,6 @@ public partial class Sale
     /// </summary>
     public string? CompanyName { get; set; }
 
-    /// <summary>
-    /// ผู้รับผิดชอบ
-    /// </summary>
-    public string? ResponsibleName { get; set; }
-
     public int StatusSaleId { get; set; }
 
     /// <summary>
@@ -60,6 +55,18 @@ public partial class Sale
     /// เปอร์เซ็นโอกาสกู้ผ่าน
     /// </summary>
     public int? PercentChanceLoanPass { get; set; }
+
+    /// <summary>
+    /// พนักงานที่ได้รับมอบหมาย
+    /// </summary>
+    public int? AssignedUserId { get; set; }
+
+    /// <summary>
+    /// ชื่อพนักงานที่ได้รับมอบหมาย
+    /// </summary>
+    public string? AssignedUserName { get; set; }
+
+    public virtual ICollection<Assignment_Sale> Assignment_Sales { get; set; } = new List<Assignment_Sale>();
 
     public virtual Customer Customer { get; set; } = null!;
 

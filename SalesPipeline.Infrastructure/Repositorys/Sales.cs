@@ -48,16 +48,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.UpdateByName = currentUserName;
 			sale.CustomerId = model.CustomerId;
 			sale.CompanyName = companyName;
-			sale.ResponsibleName = currentUserName;
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
 
+			//Default มอบหมายโดยผู้สร้าง กรณี RM สร้างเอง
+			sale.AssignedUserId = model.CurrentUserId;
+			sale.AssignedUserName = currentUserName;
+
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
+			//สร้างจากช่องทางอื่นที่ไม่ใช่ RM
 			if (model.StatusSaleId != StatusSaleModel.NotStatus)
 			{
+				sale.AssignedUserId = null;
+				sale.AssignedUserName = null;
+				_db.Update(sale);
+				await _db.SaveAsync();
+
 				await UpdateStatusOnly(new()
 				{
 					SaleId = sale.Id,
@@ -90,7 +99,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale.UpdateByName = currentUserName;
 				sale.CustomerId = model.CustomerId;
 				sale.CompanyName = companyName;
-				sale.ResponsibleName = currentUserName;
 				//sale.StatusSaleId = model.StatusSaleId; //ไม่ต้อง update กรณีแก้ไข
 				sale.DateAppointment = model.DateAppointment;
 				sale.PercentChanceLoanPass = model.PercentChanceLoanPass;

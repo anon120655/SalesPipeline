@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.ManageSystems;
@@ -69,6 +70,11 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			//Systems
 			CreateMap<Entity.System_Signature, System_SignatureCustom>().ReverseMap();
 			CreateMap<Entity.System_SLA, System_SLACustom>().ReverseMap();
+
+			//Assignment
+			CreateMap<Entity.Assignment, AssignmentCustom>().ReverseMap();
+			CreateMap<Entity.Assignment_Sale, Assignment_SaleCustom>().ReverseMap();
+
 
 		}
 	}

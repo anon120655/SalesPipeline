@@ -36,11 +36,6 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public string? CompanyName { get; set; }
 
-		/// <summary>
-		/// ผู้รับผิดชอบ
-		/// </summary>
-		public string? ResponsibleName { get; set; }
-
 		public int StatusSaleId { get; set; }
 
 		/// <summary>
@@ -62,6 +57,16 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// เปอร์เซ็นโอกาสกู้ผ่าน
 		/// </summary>
 		public int? PercentChanceLoanPass { get; set; }
+
+		/// <summary>
+		/// พนักงานที่ได้รับมอบหมาย
+		/// </summary>
+		public int? AssignedUserId { get; set; }
+
+		/// <summary>
+		/// ชื่อพนักงานที่ได้รับมอบหมาย
+		/// </summary>
+		public string? AssignedUserName { get; set; }
 
 		public virtual CustomerCustom? Customer { get; set; }
 

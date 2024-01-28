@@ -62,6 +62,8 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
+    public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
+
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
     public virtual Master_Department? Department { get; set; }
