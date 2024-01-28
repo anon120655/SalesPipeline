@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BCrypt.Net;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -60,6 +61,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.LoginFail = null;
 					_db.Update(user);
 					await _db.SaveAsync();
+
+					var userRole = await _repo.User.GetRoleByUserId(user.Id);
+					if (userRole == null) throw new ExceptionCustom("user not role.");
+
+					//
+					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+					{
+						if (!await _repo.Assignment.CheckAssignmentByUserId(user.Id))
+						{
+							var assignment = await _repo.Assignment.Create(new()
+							{
+								UserId = user.Id,
+								EmployeeId = user.EmployeeId,
+								EmployeeName = user.FullName,
+							});
+						}
+					}
 				}
 			}
 			catch (Exception ex)

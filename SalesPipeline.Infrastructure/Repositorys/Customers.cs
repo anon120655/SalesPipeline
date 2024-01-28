@@ -290,7 +290,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					AssignmentCustom? assignment = null;
-					if (!await _repo.Assignment.CheckUserId(model.CurrentUserId))
+					if (!await _repo.Assignment.CheckAssignmentByUserId(model.CurrentUserId))
 					{
 						assignment = await _repo.Assignment.Create(new()
 						{

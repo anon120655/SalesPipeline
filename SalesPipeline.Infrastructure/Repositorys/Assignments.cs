@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
-using SalesPipeline.Utils.Resources.Customers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -28,6 +23,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+		}
+
+		public Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
+		{
+			throw new NotImplementedException();
 		}
 
 		public async Task<AssignmentCustom> Create(AssignmentCustom model)
@@ -72,8 +72,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Assignment_SaleCustom>(assignment_Sale);
 		}
 
-
-		public async Task<bool> CheckUserId(int id)
+		public async Task<bool> CheckAssignmentByUserId(int id)
 		{
 			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
 		}
@@ -103,5 +102,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 			}
 		}
+
 	}
 }
