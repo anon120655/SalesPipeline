@@ -642,5 +642,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var companyName = await _repo.Context.Customers.Where(x => x.Id == id).Select(x => x.CompanyName).FirstOrDefaultAsync();
 			return companyName;
 		}
+
 	}
 }
