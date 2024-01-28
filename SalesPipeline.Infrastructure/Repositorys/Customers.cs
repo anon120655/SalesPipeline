@@ -272,7 +272,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				var sale = new SaleCustom()
+				var saleData = new SaleCustom()
 				{
 					CurrentUserId = model.CurrentUserId,
 					CreateBy = model.CurrentUserId,
@@ -284,7 +284,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					AssignedUserId = assignedUserId,
 					AssignedUserName = assignedUserName
 				};
-				await _repo.Sales.Create(sale);
+				var sale = await _repo.Sales.Create(saleData);
 
 				//Create with RM Assing yourself
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))

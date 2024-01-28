@@ -51,30 +51,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
-
-			//Default มอบหมายโดยผู้สร้าง กรณี RM สร้างเอง
-			sale.AssignedUserId = model.CurrentUserId;
-			sale.AssignedUserName = currentUserName;
+			sale.AssignedUserId = model.AssignedUserId;
+			sale.AssignedUserName = model.AssignedUserName;
 
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
-			//สร้างจากช่องทางอื่นที่ไม่ใช่ RM
-			if (model.StatusSaleId != StatusSaleModel.NotStatus)
+			await UpdateStatusOnly(new()
 			{
-				sale.AssignedUserId = null;
-				sale.AssignedUserName = null;
-				_db.Update(sale);
-				await _db.SaveAsync();
-
-				await UpdateStatusOnly(new()
-				{
-					SaleId = sale.Id,
-					StatusId = model.StatusSaleId,
-					CreateBy = model.CurrentUserId,
-					CreateByName = currentUserName,
-				});
-			}
+				SaleId = sale.Id,
+				StatusId = model.StatusSaleId,
+				CreateBy = model.CurrentUserId,
+				CreateByName = currentUserName,
+			});
 
 			return _mapper.Map<SaleCustom>(sale);
 		}
@@ -106,16 +95,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sale);
 				await _db.SaveAsync();
 
-				if (model.StatusSaleId != StatusSaleModel.NotStatus)
-				{
-					await UpdateStatusOnly(new()
-					{
-						SaleId = sale.Id,
-						StatusId = model.StatusSaleId,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-					});
-				}
+				//if (model.StatusSaleId != StatusSaleModel.NotStatus)
+				//{
+				//	await UpdateStatusOnly(new()
+				//	{
+				//		SaleId = sale.Id,
+				//		StatusId = model.StatusSaleId,
+				//		CreateBy = model.CurrentUserId,
+				//		CreateByName = currentUserName,
+				//	});
+				//}
 
 			}
 			return _mapper.Map<SaleCustom>(sale);
