@@ -38,7 +38,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขาที่ดูแล<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.Division_BranchsId" class="form-select">
+										@* <select @bind="formModel.Division_BranchsId" class="form-select">
 											<option value="">เลือก</option>
 											@if (LookUp.DivisionBranch?.Count > 0)
 											{
@@ -48,7 +48,7 @@
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.Division_BranchsId)" />
+										<ValidationMessage For="@(() => formModel.Division_BranchsId)" /> *@
 									</div>
 								</div>
 							</div>

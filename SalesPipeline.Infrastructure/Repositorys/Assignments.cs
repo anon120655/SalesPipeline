@@ -25,9 +25,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
+		public async Task<PaginationView<List<AssignmentCustom>>> GetList(allFilter model)
 		{
-			throw new NotImplementedException();
+			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x => x.Assignment_Sales)
+												 .Include(x => x.User)
+												 .OrderByDescending(x => x.CreateDate)
+												 .AsQueryable();
+			
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<AssignmentCustom>>()
+			{
+				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 		public async Task<AssignmentCustom> Create(AssignmentCustom model)
@@ -81,6 +95,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Assignments
 				.Include(x => x.Assignment_Sales)
+				.Include(x => x.User)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<AssignmentCustom>(query);
 		}

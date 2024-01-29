@@ -315,20 +315,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetUsersRM")]
-		public async Task<IActionResult> GetUsersRM([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.User.GetUsersRM(model);
+		//[HttpGet("GetUsersRM")]
+		//public async Task<IActionResult> GetUsersRM([FromQuery] allFilter model)
+		//{
+		//	try
+		//	{
+		//		var response = await _repo.User.GetUsersRM(model);
 
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
+		//		return Ok(response);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
 
 	}

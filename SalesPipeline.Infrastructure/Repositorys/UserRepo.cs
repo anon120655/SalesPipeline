@@ -79,8 +79,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.FirstName = model.FirstNames;
 				user.LastName = model.LastNames;
 				user.Email = model.Email;
+				user.Tel = model.Tel;
+				user.DivBranchId = model.DivBranchId;
+				user.DivLoanId = model.DivLoanId;
 				user.PositionId = model.PositionId;
-				user.DepartmentId = model.DepartmentId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
 				await _db.InsterAsync(user);
@@ -124,8 +126,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
 					user.Email = model.Email;
+					user.Tel = model.Tel;
+					user.DivBranchId = model.DivBranchId;
+					user.DivLoanId = model.DivLoanId;
 					user.PositionId = model.PositionId;
-					user.DepartmentId = model.DepartmentId;
 					user.LevelId = model.LevelId;
 					user.RoleId = model.RoleId;
 					_db.Update(user);
@@ -172,7 +176,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> GetById(int id)
 		{
 			var query = await _repo.Context.Users
-				.Include(x => x.Department)
+				.Include(x => x.DivLoan)
+				.Include(x => x.DivBranch)
 				.Include(x => x.Position)
 				.Include(x => x.Role)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
@@ -440,32 +445,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model)
-		{
-			var query = _repo.Context.User_Branches.Include(x => x.User).Where(x => x.Status != StatusModel.Delete)
-												 .AsQueryable();
+		//public async Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model)
+		//{
+		//	var query = _repo.Context.User_Branches.Include(x => x.User).Where(x => x.Status != StatusModel.Delete)
+		//										 .AsQueryable();
 
-			if (model.status.HasValue)
-			{
-				query = query.Where(x => x.Status == model.status);
-			}
+		//	if (model.status.HasValue)
+		//	{
+		//		query = query.Where(x => x.Status == model.status);
+		//	}
 
-			if (model.ids != null)
-			{
-				List<string> Ids = model.ids.Split(',').ToList<string>();
-				query = query.Where(x => Ids.Contains(x.BranchId.ToString()));
-			}
+		//	if (model.ids != null)
+		//	{
+		//		List<string> Ids = model.ids.Split(',').ToList<string>();
+		//		query = query.Where(x => Ids.Contains(x.BranchId.ToString()));
+		//	}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+		//	var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+		//	var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<User_BranchCustom>>()
-			{
-				Items = _mapper.Map<List<User_BranchCustom>>(await items.ToListAsync()),
-				Pager = pager
-			};
-		}
+		//	return new PaginationView<List<User_BranchCustom>>()
+		//	{
+		//		Items = _mapper.Map<List<User_BranchCustom>>(await items.ToListAsync()),
+		//		Pager = pager
+		//	};
+		//}
 
 	}
 }

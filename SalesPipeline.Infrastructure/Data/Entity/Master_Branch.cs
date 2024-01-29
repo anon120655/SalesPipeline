@@ -8,7 +8,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// </summary>
 public partial class Master_Branch
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
@@ -29,5 +29,5 @@ public partial class Master_Branch
 
     public virtual Master_Region Region { get; set; } = null!;
 
-    public virtual ICollection<User_Branch> User_Branches { get; set; } = new List<User_Branch>();
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -2,111 +2,142 @@
 
 <PageTitle>มอบหมายพนักงานธุรกิจสินเชื่อ</PageTitle>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-12 my-2">
-			<div class="box_content">
-				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-					<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
-					<div class="p-2">
-						<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
-					</div>
-				</div>
-				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-					<div class="col mb-2">
-						<label class="form-label">รหัสพนักงาน</label>
-						<div class="input-group">
-							<input class="form-control" type="search" placeholder="">
-							<span class="input-group-append ms-0">
-								<button class="btn rounded-start-0 border border-start-0" type="button">
-									<i class="fa fa-search"></i>
-								</button>
-							</span>
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
 						</div>
 					</div>
-					<div class="col mb-2">
-						<label class="form-label">ชื่อพนักงาน</label>
-						<div class="input-group">
-							<input class="form-control" type="search" placeholder="">
-							<span class="input-group-append ms-0">
-								<button class="btn rounded-start-0 border border-start-0" type="button">
-									<i class="fa fa-search"></i>
-								</button>
-							</span>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">รหัสพนักงาน</label>
+							<div class="input-group">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ชื่อพนักงาน</label>
+							<div class="input-group">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">อำเภอ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
 						</div>
 					</div>
-					<div class="col mb-2">
-						<label class="form-label">จังหวัด</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2">
-						<label class="form-label">อำเภอ</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2 mt-3">
-						<button type="button" class="btn btn-primary text-white mw_7r w-100">
-							<i class="fa fa-search fa-xs"></i> ค้นหา
-						</button>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="table-responsive border-top">
-							<table class="table table_list">
-								<thead>
-									<tr>
-										<th class="text-center">รหัสพนักงาน</th>
-										<th class="text-center">ชื่อพนักงาน</th>
-										<th class="text-center">เบอร์ติดต่อ</th>
-										<th class="text-center">จังหวัดที่ดูแล</th>
-										<th class="text-center">อำเภอที่ดูแล</th>
-										<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
-										<th class="text-center">จำนวนการมอบหมาย</th>
-										<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-										<th class="text-center">จัดการมอบหมาย</th>
-									</tr>
-								</thead>
-								<tbody>
-									@* @for (int i = 1; i < 6; i++)
-									{
+					<div class="row">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
 										<tr>
-											<td class="text-center">@i</td>
-											<td class="text-center">สมหญิง ใจมั่น</td>
-											<td class="text-center">063-156-4587</td>
-											<td class="text-center">สมุทรสาคร</td>
-											<td class="text-center">เมือง</td>
-											<td class="text-center">25/100</td>
-											<td class="text-center">20</td>
-											<td class="text-center">
-												45/100
-											</td>
-											<td class="text-center">
-												<a href="#">จัดการมอบหมาย</a>
-											</td>
+											<th class="text-center">รหัสพนักงาน</th>
+											<th class="text-center">ชื่อพนักงาน</th>
+											<th class="text-center">เบอร์ติดต่อ</th>
+											<th class="text-center">จังหวัดที่ดูแล</th>
+											<th class="text-center">อำเภอที่ดูแล</th>
+											<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+											<th class="text-center">จำนวนการมอบหมาย</th>
+											<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											<th class="text-center">จัดการมอบหมาย</th>
 										</tr>
-									} *@
-									<tr class="text-center align-middle">
-										<td colspan="100">
-											<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												bool status = item.Status == StatusModel.Active;
+												<tr>
+													<td class="text-center">@item.EmployeeId</td>
+													<td class="text-center">@item.EmployeeName</td>
+													<td class="text-center">@item.User?.Tel</td>
+													<td class="text-center">-</td>
+													<td class="text-center">-</td>
+													<td class="text-center">@(item.CurrentNumber)/100</td>
+													<td class="text-center">-</td>
+													<td class="text-center">
+														45/100
+													</td>
+													<td class="text-center">
+														<a class="" href="/assign/loan/manage">
+															<img src="/image/icon/ckeckbox.png" width="25" />
+														</a>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div>
-					<PaginationMockup></PaginationMockup>
+					<div>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-
+}
+else
+{
+	<NotPermissionPage />
+}
 
 
 

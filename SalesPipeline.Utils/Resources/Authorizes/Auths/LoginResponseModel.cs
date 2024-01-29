@@ -21,8 +21,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? LastName { get; set; }
 		public int? PositionId { get; set; }
 		public string? PositionName { get; set; }
-		public int? DepartmentId { get; set; }
-		public string? DepartmentName { get; set; }
+		public Guid? DivBranchId { get; set; }
+		public string? DivBranchName { get; set; }
+		public Guid? DivLoanId { get; set; }
+		public string? DivLoanName { get; set; }
 		public int? RoleId { get; set; }
 		public string? RoleName { get; set; }
 		public string? access_token { get; set; }

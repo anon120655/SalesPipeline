@@ -235,7 +235,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			//จังหวัด
+			//อำเภอ
 			if (!String.IsNullOrEmpty(model.amphur))
 			{
 				if (int.TryParse(model.amphur, out int id))

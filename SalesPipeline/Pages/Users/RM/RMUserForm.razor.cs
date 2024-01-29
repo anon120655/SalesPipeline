@@ -4,10 +4,11 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.ViewModels;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.RM
 {
-	public partial class LoanUserForm
+	public partial class RMUserForm
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -142,7 +143,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/loans/user");
+			_Navs.NavigateTo("/rm/user");
 		}
 
 		protected void ShowLoading()

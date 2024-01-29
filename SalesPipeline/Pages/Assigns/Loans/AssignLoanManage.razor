@@ -1,0 +1,107 @@
+﻿<h3>AssignLoanManage</h3>
+@page "/assign/loan/manage"
+
+<PageTitle>มอบหมายพนักงานธุรกิจสินเชื่อ</PageTitle>
+
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">ค้นหาลูกค้า</label>
+							<div class="input-group">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ศูนย์</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">อำเภอ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> จำนวนการมอบหมาย (15/20)
+							</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">เลขนิติบุคคล</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">อำเภอ</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">รายละเอียด</th>
+											<th class="text-center">มอบหมาย/ส่งคืน</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="text-center align-middle">
+											<td colspan="100">
+												<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<PaginationMockup></PaginationMockup>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

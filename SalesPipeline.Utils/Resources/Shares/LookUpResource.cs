@@ -13,7 +13,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 	{
 		public List<MenuItemCustom>? MenuItem { get; set; }
 		public List<Master_PositionCustom>? Positions { get; set; }
-		public List<Master_DepartmentCustom>? Departments { get; set; }
 		public List<User_LevelCustom>? UserLevels { get; set; }
 		public List<Master_RegionCustom>? Regions { get; set; }
 		public List<Master_BranchCustom>? Branchs { get; set; }

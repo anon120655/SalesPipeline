@@ -315,19 +315,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("Departments")]
-		public async Task<IActionResult> Departments([FromQuery] allFilter model)
-		{
-			try
-			{
-				return Ok(await _repo.Master.Departments(model));
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		[HttpGet("Regions")]
 		public async Task<IActionResult> Regions([FromQuery] allFilter model)
 		{

@@ -1,7 +1,8 @@
-﻿@page "/loans/user/create"
-@page "/loans/user/update/{id:int}"
+﻿
+@page "/rm/user/create"
+@page "/rm/user/update/{id:int}"
 
-<PageTitle>ระบบผู้ใช้งาน</PageTitle>
+<PageTitle>จัดการ User</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -14,7 +15,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic_active">ระบบผู้ใช้งาน</p>
+							<p class="back_topic_active">จัดการ User</p>
 						</div>
 					</div>
 					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
@@ -68,17 +69,17 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.DivLoanId" class="form-select">
+										<select @bind="formModel.DivBranchId" class="form-select">
 											<option value="">เลือก</option>
-											@if (LookUp.DivisionLoan?.Count > 0)
+											@if (LookUp.DivisionBranch?.Count > 0)
 											{
-												foreach (var item in LookUp.DivisionLoan)
+												foreach (var item in LookUp.DivisionBranch)
 												{
 													<option value="@item.Id">@item.Name</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.DivLoanId)" />
+										<ValidationMessage For="@(() => formModel.DivBranchId)" />
 									</div>
 								</div>
 								<div class="row mb-3">
@@ -98,19 +99,19 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.RoleId" class="form-select">
+										<select @bind="formModel.BranchId" class="form-select">
 											<option value="">เลือก</option>
-											@if (ItemsUserRole?.Count > 0)
+											@if (LookUp.Branchs?.Count > 0)
 											{
-												foreach (var item in ItemsUserRole)
+												foreach (var item in LookUp.Branchs)
 												{
 													<option value="@item.Id">@item.Name</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.RoleId)" />
+										<ValidationMessage For="@(() => formModel.BranchId)" />
 									</div>
 								</div>
 							</div>
@@ -143,6 +144,7 @@ else
 {
 	<NotPermissionPage />
 }
+
 
 
 

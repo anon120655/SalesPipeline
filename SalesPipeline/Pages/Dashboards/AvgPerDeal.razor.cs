@@ -133,7 +133,7 @@ namespace SalesPipeline.Pages.Dashboards
 					{
 						if (dataBranchs.Data?.Count > 0)
 						{
-							LookUp.Branchs = new() { new() { Id = 0, Name = "ทั้งหมด" } };
+							LookUp.Branchs = new() { new() { Id = Guid.NewGuid(), Name = "ทั้งหมด" } };
 							LookUp.Branchs.AddRange(dataBranchs.Data);
 						}
 					}
@@ -152,83 +152,83 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (valChecked != null)
 			{
-				bool isChecked = (bool)valChecked ? true : false;
+				//bool isChecked = (bool)valChecked ? true : false;
 
-				filterBranchsTitle = "เลือก";
-				LookUp.RMUser = new();
-				filterAvg.RMUser = new();
+				//filterBranchsTitle = "เลือก";
+				//LookUp.RMUser = new();
+				//filterAvg.RMUser = new();
 
-				if (filterAvg.Branchs == null) filterAvg.Branchs = new();
+				//if (filterAvg.Branchs == null) filterAvg.Branchs = new();
 
-				if (model.Id == 0)
-				{
-					filterAvg.Branchs.Clear();
-					if (isChecked)
-					{
-						foreach (var item in LookUp.Branchs ?? new())
-						{
-							filterAvg.Branchs.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
-						}
-					}
-				}
-				else
-				{
-					var data = filterAvg.Branchs.FirstOrDefault(x => x.Value == model.Id.ToString());
-					if (data == null)
-					{
-						filterAvg.Branchs.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
-					}
-					else
-					{
-						filterAvg.Branchs.Remove(data);
-					}
-				}
+				//if (model.Id == 0)
+				//{
+				//	filterAvg.Branchs.Clear();
+				//	if (isChecked)
+				//	{
+				//		foreach (var item in LookUp.Branchs ?? new())
+				//		{
+				//			filterAvg.Branchs.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
+				//		}
+				//	}
+				//}
+				//else
+				//{
+				//	var data = filterAvg.Branchs.FirstOrDefault(x => x.Value == model.Id.ToString());
+				//	if (data == null)
+				//	{
+				//		filterAvg.Branchs.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
+				//	}
+				//	else
+				//	{
+				//		filterAvg.Branchs.Remove(data);
+				//	}
+				//}
 
-				if (filterAvg.Branchs.Count > 0)
-				{
-					var removeAll = filterAvg.Branchs.FirstOrDefault(x => x.Value == "0");
-					if (removeAll != null)
-						filterAvg.Branchs.Remove(removeAll);
+				//if (filterAvg.Branchs.Count > 0)
+				//{
+				//	var removeAll = filterAvg.Branchs.FirstOrDefault(x => x.Value == "0");
+				//	if (removeAll != null)
+				//		filterAvg.Branchs.Remove(removeAll);
 
-					if (filterAvg.Branchs.Count == LookUp.Branchs?.Count(x => x.Id != 0))
-					{
-						filterBranchsTitle = $"ทั้งหมด ({filterAvg.Branchs.Count})";
-						filterAvg.Branchs.Add(new SelectModel() { Value = "0" });
-					}
-					else if (filterAvg.Branchs.Count <= 2)
-					{
-						filterBranchsTitle = string.Join(", ", filterAvg.Branchs.Select(x => x.Name).ToList());
-					}
-					else
-					{
-						filterBranchsTitle = $"เลือก ({filterAvg.Branchs.Count})";
-					}
+				//	if (filterAvg.Branchs.Count == LookUp.Branchs?.Count(x => x.Id != 0))
+				//	{
+				//		filterBranchsTitle = $"ทั้งหมด ({filterAvg.Branchs.Count})";
+				//		filterAvg.Branchs.Add(new SelectModel() { Value = "0" });
+				//	}
+				//	else if (filterAvg.Branchs.Count <= 2)
+				//	{
+				//		filterBranchsTitle = string.Join(", ", filterAvg.Branchs.Select(x => x.Name).ToList());
+				//	}
+				//	else
+				//	{
+				//		filterBranchsTitle = $"เลือก ({filterAvg.Branchs.Count})";
+				//	}
 
-					var dataUsersRM = await _userViewModel.GetUsersRM(new allFilter()
-					{
-						pagesize = 100,
-						status = StatusModel.Active,
-						Selecteds = filterAvg.Branchs.Select(x => x.Value).ToList()
-					});
-					if (dataUsersRM != null && dataUsersRM.Status)
-					{
-						if (dataUsersRM.Data?.Items.Count > 0)
-						{
-							if (dataUsersRM.Data.Items?.Count > 0)
-							{
-								LookUp.RMUser = new() { new() { Id = 0, User = new() { FullName = "ทั้งหมด" } } };
-								LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
-							}
-						}
-					}
-					else
-					{
-						_errorMessage = dataUsersRM?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
-				}
+				//	var dataUsersRM = await _userViewModel.GetUsersRM(new allFilter()
+				//	{
+				//		pagesize = 100,
+				//		status = StatusModel.Active,
+				//		Selecteds = filterAvg.Branchs.Select(x => x.Value).ToList()
+				//	});
+				//	if (dataUsersRM != null && dataUsersRM.Status)
+				//	{
+				//		if (dataUsersRM.Data?.Items.Count > 0)
+				//		{
+				//			if (dataUsersRM.Data.Items?.Count > 0)
+				//			{
+				//				LookUp.RMUser = new() { new() { Id = 0, User = new() { FullName = "ทั้งหมด" } } };
+				//				LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
+				//			}
+				//		}
+				//	}
+				//	else
+				//	{
+				//		_errorMessage = dataUsersRM?.errorMessage;
+				//		_utilsViewModel.AlertWarning(_errorMessage);
+				//	}
+				//}
 
-				StateHasChanged();
+				//StateHasChanged();
 
 			}
 		}

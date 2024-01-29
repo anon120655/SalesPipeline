@@ -45,8 +45,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					UpdateBy = model.CurrentUserId,
 					Code = model.Code,
-					Name = model.Name,
-					Division_BranchsId = model.Division_BranchsId,
+					Name = model.Name
 				};
 				await _db.InsterAsync(masterDivisionLoan);
 				await _db.SaveAsync();
@@ -70,7 +69,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					masterDivisionLoan.UpdateBy = model.CurrentUserId;
 					masterDivisionLoan.Code = model.Code;
 					masterDivisionLoan.Name = model.Name;
-					masterDivisionLoan.Division_BranchsId = model.Division_BranchsId;
 					_db.Update(masterDivisionLoan);
 					await _db.SaveAsync();
 
@@ -124,7 +122,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Master_Division_LoanCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Division_Loans
-												 .Include(x => x.Division_Branchs)
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
@@ -141,11 +138,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.val2))
 			{
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val2));
-			}
-
-			if (!String.IsNullOrEmpty(model.val3))
-			{
-				query = query.Where(x => x.Division_Branchs != null && x.Division_Branchs.Name != null && x.Division_Branchs.Name.Contains(model.val3));
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

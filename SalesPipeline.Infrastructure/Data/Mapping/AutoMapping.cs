@@ -21,11 +21,10 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.User_Level, User_LevelCustom>().ReverseMap();
 			CreateMap<Entity.User_Role, User_RoleCustom>().ReverseMap();
 			CreateMap<Entity.User_Permission, User_PermissionCustom>().ReverseMap();
-			CreateMap<Entity.User_Branch, User_BranchCustom>().ReverseMap();
+			//CreateMap<Entity.User_Branch, User_BranchCustom>().ReverseMap();
 
 			//Master
 			CreateMap<Entity.Master_Position, Master_PositionCustom>().ReverseMap();
-			CreateMap<Entity.Master_Department, Master_DepartmentCustom>().ReverseMap();
 			CreateMap<Entity.Master_Region, Master_RegionCustom>().ReverseMap();
 			CreateMap<Entity.Master_Branch, Master_BranchCustom>().ReverseMap();
 			CreateMap<Entity.MenuItem, MenuItemCustom>().ReverseMap();

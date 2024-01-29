@@ -43,5 +43,7 @@ public partial class Assignment_Sale
 
     public virtual Assignment Assignment { get; set; } = null!;
 
+    public virtual User CreateByNavigation { get; set; } = null!;
+
     public virtual Sale Sale { get; set; } = null!;
 }

@@ -30,10 +30,5 @@ public partial class Master_Division_Loan
 
     public string? Name { get; set; }
 
-    /// <summary>
-    /// สาขาที่ดูแล
-    /// </summary>
-    public Guid? Division_BranchsId { get; set; }
-
-    public virtual Master_Division_Branch? Division_Branchs { get; set; }
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

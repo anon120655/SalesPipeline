@@ -39,9 +39,24 @@ public partial class User
     public string? Email { get; set; }
 
     /// <summary>
-    /// ฝ่าย
+    /// เบอร์โทร
     /// </summary>
-    public int? DepartmentId { get; set; }
+    public string? Tel { get; set; }
+
+    /// <summary>
+    /// สาขา
+    /// </summary>
+    public Guid? BranchId { get; set; }
+
+    /// <summary>
+    /// ฝ่ายงานกิจการสาขา
+    /// </summary>
+    public Guid? DivBranchId { get; set; }
+
+    /// <summary>
+    /// ฝ่ายงานศูนย์ธุรกิจสินเชื่อ
+    /// </summary>
+    public Guid? DivLoanId { get; set; }
 
     /// <summary>
     /// ตำแหน่ง
@@ -62,11 +77,17 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
+    public virtual ICollection<Assignment_Sale> Assignment_Sales { get; set; } = new List<Assignment_Sale>();
+
     public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
+
+    public virtual Master_Branch? Branch { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
-    public virtual Master_Department? Department { get; set; }
+    public virtual Master_Division_Branch? DivBranch { get; set; }
+
+    public virtual Master_Division_Loan? DivLoan { get; set; }
 
     public virtual User_Level? Level { get; set; }
 
@@ -75,6 +96,4 @@ public partial class User
     public virtual User_Role? Role { get; set; }
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
-
-    public virtual ICollection<User_Branch> User_Branches { get; set; } = new List<User_Branch>();
 }

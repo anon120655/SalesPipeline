@@ -46,10 +46,25 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? Email { get; set; }
 
 		/// <summary>
-		/// ฝ่าย
+		/// เบอร์โทร
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public int? DepartmentId { get; set; }
+		public string? Tel { get; set; }
+
+		/// <summary>
+		/// สาขา
+		/// </summary>
+		public Guid? BranchId { get; set; }
+
+		/// <summary>
+		/// ฝ่ายงานกิจการสาขา
+		/// </summary>
+		public Guid? DivBranchId { get; set; }
+
+		/// <summary>
+		/// ฝ่ายงานศูนย์ธุรกิจสินเชื่อ
+		/// </summary>
+		public Guid? DivLoanId { get; set; }
 
 		/// <summary>
 		/// ตำแหน่ง
@@ -73,7 +88,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public sbyte? LoginFail { get; set; }
 
-		public virtual Master_DepartmentCustom? Department { get; set; }
+		public virtual Master_Division_BranchCustom? DivBranch { get; set; }
+		public virtual Master_Division_LoanCustom? DivLoan { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
 
