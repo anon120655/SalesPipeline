@@ -100,9 +100,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<AssignmentCustom>(query);
 		}
 
-		public Task<AssignmentCustom> GetByUserId(int id)
+		public async Task<AssignmentCustom> GetByUserId(int id)
 		{
-			throw new NotImplementedException();
+			var query = await _repo.Context.Assignments
+				.Include(x => x.Assignment_Sales)
+				.Include(x => x.User)
+				.Where(x => x.UserId == id).FirstOrDefaultAsync();
+			return _mapper.Map<AssignmentCustom>(query);
 		}
 
 		public async Task UpdateCurrentNumber(Guid id)
