@@ -75,11 +75,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.UpdateDate = _dateNow;
 				user.UpdateBy = model.CurrentUserId;
 				user.EmployeeId = model.EmployeeId;
-				user.FullName = model.FullName;
+				user.TitleName = model.TitleName;
 				user.FirstName = model.FirstNames;
 				user.LastName = model.LastNames;
+				user.FullName = model.FullName;
 				user.Email = model.Email;
 				user.Tel = model.Tel;
+				user.BranchId = model.BranchId;
 				user.DivBranchId = model.DivBranchId;
 				user.DivLoanId = model.DivLoanId;
 				user.PositionId = model.PositionId;
@@ -122,11 +124,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;
 					user.EmployeeId = model.EmployeeId;
-					user.FullName = model.FullName;
+					user.TitleName = model.TitleName;
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
+					user.FullName = model.FullName;
 					user.Email = model.Email;
 					user.Tel = model.Tel;
+					user.BranchId = model.BranchId;
 					user.DivBranchId = model.DivBranchId;
 					user.DivLoanId = model.DivLoanId;
 					user.PositionId = model.PositionId;
@@ -179,6 +183,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.DivLoan)
 				.Include(x => x.DivBranch)
 				.Include(x => x.Position)
+				.Include(x => x.Branch)
 				.Include(x => x.Role)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
@@ -198,9 +203,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
-											.Where(x => x.Status != StatusModel.Delete)
-											.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-											.AsQueryable();
+										   .Include(x => x.DivLoan)
+										   .Include(x => x.DivBranch)
+										   .Include(x => x.Branch)
+										   .Where(x => x.Status != StatusModel.Delete)
+										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+										   .AsQueryable();
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);

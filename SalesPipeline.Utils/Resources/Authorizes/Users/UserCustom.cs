@@ -88,6 +88,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public sbyte? LoginFail { get; set; }
 
+		public virtual Master_BranchCustom? Branch { get; set; }
 		public virtual Master_Division_BranchCustom? DivBranch { get; set; }
 		public virtual Master_Division_LoanCustom? DivLoan { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }

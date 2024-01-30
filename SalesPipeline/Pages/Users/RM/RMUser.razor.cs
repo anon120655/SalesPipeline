@@ -65,6 +65,17 @@ namespace SalesPipeline.Pages.Users.RM
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
+			if (dataBranchs != null && dataBranchs.Status)
+			{
+				LookUp.Branchs = dataBranchs.Data;
+			}
+			else
+			{
+				_errorMessage = dataBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 		}
 
@@ -117,6 +128,16 @@ namespace SalesPipeline.Pages.Users.RM
 			if (LookUp.UserLevels != null && id.HasValue)
 			{
 				return LookUp.UserLevels.FirstOrDefault(x => x.Id == id)?.Name;
+			}
+
+			return null;
+		}
+
+		protected string? GetBranchName(Guid? id)
+		{
+			if (LookUp.Branchs != null && id.HasValue)
+			{
+				return LookUp.Branchs.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;

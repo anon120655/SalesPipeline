@@ -1,5 +1,4 @@
-﻿
-@page "/rm/user/create"
+﻿@page "/rm/user/create"
 @page "/rm/user/update/{id:int}"
 
 <PageTitle>จัดการ User</PageTitle>
@@ -11,14 +10,20 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 my-2">
-				<div class="box_content">
+				<div class="box_content mh_40r">
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
 							<p class="back_topic_active">จัดการ User</p>
 						</div>
 					</div>
-					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+					@if (isLoadingContent)
+					{
+						<div class="text-center">
+							<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+						</div>
+					}
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save" class="@(isLoadingContent ? "d-none":"")">
 						<DataAnnotationsValidator />
 						<div class="row mt-5">
 							<div class="col-12">
@@ -46,7 +51,7 @@
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label text-lg-end fw-bold">Tel<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.Email" type="email" class="form-control">
+										<input @bind="formModel.Tel" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.Tel)" />
 									</div>
 								</div>

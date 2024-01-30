@@ -44,10 +44,31 @@ var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
 //builder.Services.AddDbContext<SalesPipelineContext>(options =>
 //options.UseSqlServer(SalesPipelineContext));
 
-builder.Services.AddDbContext<SalesPipelineContext>(options =>
-	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.11.6-MariaDB", ServerType.MariaDb), x => x.UseNetTopologySuite()));
+//builder.Services.AddDbContext<SalesPipelineContext>(options =>
+//	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.11.6-MariaDB", ServerType.MariaDb), options => options.UseNetTopologySuite()));
 
-builder.Services.Configure<AppSettings>(appSettings); 
+var autoDetectVersion = ServerVersion.AutoDetect(SalesPipelineContext);
+//builder.Services.AddDbContext<SalesPipelineContext>(options =>
+//	options.UseMySql(SalesPipelineContext,
+//				autoDetectVersion,
+//				options => options.EnableRetryOnFailure(
+//					maxRetryCount: 10,
+//					maxRetryDelay: System.TimeSpan.FromSeconds(60),
+//					errorNumbersToAdd: null
+//					)
+//				));
+
+builder.Services.AddDbContext<SalesPipelineContext>(
+		   dbContextOptions => dbContextOptions
+			   .UseMySql(SalesPipelineContext, autoDetectVersion)
+			   // The following three options help with debugging, but should
+			   // be changed or removed for production.
+			   .LogTo(Console.WriteLine, LogLevel.Information)
+			   .EnableSensitiveDataLogging()
+			   .EnableDetailedErrors()
+	   );
+
+builder.Services.Configure<AppSettings>(appSettings);
 builder.Services.Configure<ApiBehaviorOptions>(options
 	=> options.SuppressModelStateInvalidFilter = true);
 
@@ -108,7 +129,8 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddControllers()
-.AddJsonOptions(options => {
+.AddJsonOptions(options =>
+{
 	//Ignore infinity loop class
 	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 	//Json return normal First Upper 

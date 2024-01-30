@@ -15,6 +15,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		private string? _errorMessage = null;
 		private bool isLoading = false;
+		private bool isLoadingContent = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private List<User_RoleCustom>? ItemsUserRole;
@@ -22,6 +23,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		protected override async Task OnInitializedAsync()
 		{
+			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
@@ -46,6 +48,8 @@ namespace SalesPipeline.Pages.Users.RM
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
+					isLoadingContent = false;
+					StateHasChanged();
 				}
 				else
 				{
@@ -76,6 +80,28 @@ namespace SalesPipeline.Pages.Users.RM
 			else
 			{
 				_errorMessage = dataGetDivLoans?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var dataGetDivBranchs = await _masterViewModel.GetDivBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
+			{
+				LookUp.DivisionBranch = dataGetDivBranchs.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataGetDivBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
+			if (dataBranchs != null && dataBranchs.Status)
+			{
+				LookUp.Branchs = dataBranchs.Data;
+			}
+			else
+			{
+				_errorMessage = dataBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 

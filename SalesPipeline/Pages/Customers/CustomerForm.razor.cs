@@ -362,7 +362,10 @@ namespace SalesPipeline.Pages.Customers
 
 			//******** รอเช็ค *********			
 			//Role กิจการสาขาภาค
-			formModel.StatusSaleId = StatusSaleModel.WaitVerifyCenter;
+			//if (UserInfo.RoleId == RoleCodes.BRANCH)
+			//{
+			//	formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
+			//}
 			//Role ผู้จัดการศูนย์
 			formModel.StatusSaleId = StatusSaleModel.WaitAssign;
 

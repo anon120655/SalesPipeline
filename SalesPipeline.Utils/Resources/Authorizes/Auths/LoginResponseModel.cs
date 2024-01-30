@@ -26,6 +26,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public Guid? DivLoanId { get; set; }
 		public string? DivLoanName { get; set; }
 		public int? RoleId { get; set; }
+		public int? RoleCode { get; set; }
 		public string? RoleName { get; set; }
 		public string? access_token { get; set; }
 		public string? expires_in { get; set; }

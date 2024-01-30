@@ -242,6 +242,18 @@ namespace SalesPipeline.API.Controllers
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
 						statusSaleId = StatusSaleModel.WaitAssign;
 					}
+					else if (rolecode == RoleCodes.LOAN)
+					{
+						currentUserId = 3;
+						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
+						statusSaleId = StatusSaleModel.WaitAssignCenter;
+					}
+					else if (rolecode == RoleCodes.BRANCH)
+					{
+						currentUserId = 4;
+						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
+						statusSaleId = StatusSaleModel.WaitAssignCenter;
+					}
 
 					var random = new Random();
 					int contactChannelRandom = random.Next(contactChannel.Count);

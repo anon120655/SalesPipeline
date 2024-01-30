@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -32,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int expires_in = 1; //days
 
 			//var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-			var user = _repo.Context.Users.SingleOrDefault(x => x.Email == model.Username);
+			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
 
 			// return null if user not found
 			if (user == null) throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
@@ -43,8 +44,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				const short maxLoginFail = 5;
 
-				if (user.LoginFail >= maxLoginFail)				
-					throw new ExceptionCustom($"ท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");				
+				if (user.LoginFail >= maxLoginFail)
+					throw new ExceptionCustom($"ท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
 
 				//string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword("password", hashType: HashType.SHA384);
 				bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.Password, user.PasswordHash, hashType: HashType.SHA384);
@@ -62,11 +63,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(user);
 					await _db.SaveAsync();
 
-					var userRole = await _repo.User.GetRoleByUserId(user.Id);
-					if (userRole == null) throw new ExceptionCustom("user not role.");
+					//var userRole = await _repo.User.GetRoleByUserId(user.Id);
+					//if (userRole == null) throw new ExceptionCustom("user not role.");
+					//if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 
-					//
-					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+					if (user.Role != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{
 						if (!await _repo.Assignment.CheckAssignmentByUserId(user.Id))
 						{

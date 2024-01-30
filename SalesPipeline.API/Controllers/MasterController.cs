@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -341,6 +342,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet("MenuItem")]
 		public async Task<IActionResult> MenuItem([FromQuery] allFilter model)
 		{
