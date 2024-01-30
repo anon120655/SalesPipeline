@@ -14,6 +14,10 @@
 		<div class="row mb-4 text-center">
 			<h4 class="fw-bold">@((MarkupString)(Content ?? String.Empty))</h4>
 		</div>
+		@if (!String.IsNullOrEmpty(_errorMessage))
+		{
+			<MessageError errorMessage="@_errorMessage" />
+		}
 		<div class="row my-3 text-center">
 			<div class="d-flex justify-content-evenly align-items-center">
 				<div class="p-2">
@@ -32,6 +36,9 @@
 	public string? Icon { get; set; } = "<i class=\"fa-solid fa-circle-check fs_5r text-primary\"></i>";
 	public string? Content { get; set; }
 	public int? CountDown { get; set; }
+
+	[Parameter]
+	public string? _errorMessage { get; set; }
 
 	[Parameter]
 	public EventCallback<string?> CallbackConfirm { get; set; }

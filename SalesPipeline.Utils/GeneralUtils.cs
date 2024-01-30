@@ -719,6 +719,19 @@ namespace SalesPipeline.Utils
 			}
 		}
 
+		/// <summary>
+		/// อยู่ระหว่างดำเนินการ
+		/// </summary>
+		/// <param name="statusSaleId"></param>
+		/// <returns></returns>
+		public static bool CheckInProcessSale(int statusSaleId)
+		{
+			if (statusSaleId >= StatusSaleModel.WaitContact && statusSaleId <= StatusSaleModel.CloseSale)
+			{
+				return true;
+			}
+			return false;
+		}
 
 	}
 }

@@ -72,7 +72,13 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				await _repo.Sales.UpdateStatusOnly(model);
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.Sales.UpdateStatusOnly(model);
+
+					_transaction.Commit();
+				}
+
 				return Ok();
 			}
 			catch (Exception ex)

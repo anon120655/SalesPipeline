@@ -79,7 +79,7 @@
 		</div>
 	</div>
 
-	<ModalConfirm @ref="modalConfirmApprove" CallbackConfirm="ConfirmApprove" CallbackModalHidden="OnModalHidden" />
+	<ModalConfirm @ref="modalConfirmApprove" CallbackConfirm="ConfirmApprove" CallbackModalHidden="OnModalHidden" _errorMessage="@_errorMessage" />
 	<ModalNotApprove @ref="modalNotApprove" CallbackConfirm="NotApproveModal" CallbackModalHidden="OnModalHidden" />
 }
 else

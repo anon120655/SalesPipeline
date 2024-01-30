@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -32,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .Include(x => x.User)
 												 .OrderByDescending(x => x.CreateDate)
 												 .AsQueryable();
-			
+
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
@@ -111,14 +112,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateCurrentNumber(Guid id)
 		{
-			var assignment = await _repo.Context.Assignments.Include(x => x.Assignment_Sales.Where(x => x.IsActive == StatusModel.Active)).FirstOrDefaultAsync(x => x.Id == id);
-			if (assignment != null)
+			var assignment_Sales = await _repo.Context.Assignment_Sales
+											  .Include(x => x.Sale)
+											  .Where(x => x.AssignmentId == id && x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
+											  .ToListAsync();
+			if (assignment_Sales.Count > 0)
 			{
-				int currentNumber = assignment.Assignment_Sales.Count();	
-				
-				assignment.CurrentNumber = currentNumber;
-				_db.Update(assignment);
-				await _db.SaveAsync();
+				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
+				if (assignments != null)
+				{
+					assignments.CurrentNumber = assignment_Sales.Count;
+					_db.Update(assignments);
+					await _db.SaveAsync();
+				}
 			}
 		}
 

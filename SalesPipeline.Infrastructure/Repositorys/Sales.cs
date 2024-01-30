@@ -166,6 +166,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales.StatusDescription = model.Description;
 				_db.Update(sales);
 				await _db.SaveAsync();
+
+				//อนุมัติและรอการติดต่อเฉพาะ RM สร้าง
+				if (model.StatusId == StatusSaleModel.WaitContact && sales.AssignedUserId.HasValue)
+				{
+					var assignment = await _repo.Assignment.GetByUserId(sales.AssignedUserId.Value);
+					if (assignment != null)
+					{
+						if (assignment.CurrentNumber >= 100)
+						{
+							throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
+						}
+
+						await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
+					}
+				}
+
 			}
 		}
 
