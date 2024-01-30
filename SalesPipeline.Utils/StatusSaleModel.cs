@@ -19,9 +19,9 @@
 		/// </summary>
 		public const short WaitVerifyBranch = 3;
 		/// <summary>
-		/// รอตรวจสอบ(ศูนย์สาขา)
+		/// รอมอบหมาย(ศูนย์สาขา)
 		/// </summary>
-		public const short WaitVerifyCenter = 4;
+		public const short WaitAssignCenter = 4;
 		/// <summary>
 		/// รอมอบหมาย
 		/// </summary>

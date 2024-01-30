@@ -12,5 +12,19 @@ namespace SalesPipeline.Utils
 		/// RM พนักงานขาย
 		/// </summary>
 		public const string RM = "RM";
+		/// <summary>
+		/// ผู้จัดการศูนย์
+		/// </summary>
+		public const string MANAGERCENTER = "MANAGERCENTER";
+		/// <summary>
+		/// สายงานธุรกิจสินเชื่อ
+		/// </summary>
+		public const string LOAN = "LOAN";
+		/// <summary>
+		/// สายงานกิจการสาขาภาค
+		/// </summary>
+		public const string BRANCH = "BRANCH";
 	}
 }
+
+

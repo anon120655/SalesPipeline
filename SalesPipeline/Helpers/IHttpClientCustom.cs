@@ -122,6 +122,11 @@ namespace SalesPipeline.Helpers
 					}
 				}
 
+				if (responseClient.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+				{
+					throw new ExceptionCustom("Unauthorized!");
+				}
+
 				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)

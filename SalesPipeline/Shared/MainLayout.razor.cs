@@ -78,6 +78,10 @@ namespace SalesPipeline.Shared
 						await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
 					}
 				}
+				else
+				{
+					_Navs.NavigateTo("/signin", true);
+				}
 
 				StateHasChanged();
 				await _jsRuntimes.InvokeAsync<object>("AfterRenderMainLayout");

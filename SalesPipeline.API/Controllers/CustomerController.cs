@@ -176,7 +176,7 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
-		public async Task<IActionResult> CreateTestData([FromQuery] int check, int number, int provinceId, int amphurId, int tambolId)
+		public async Task<IActionResult> CreateTestData([FromQuery] int check, int number, int provinceId, int amphurId, int tambolId, string rolecode)
 		{
 			try
 			{
@@ -225,8 +225,24 @@ namespace SalesPipeline.API.Controllers
 					Chain = MasterChain.Items.Select(x => x.Id).ToList();
 				}
 
+				string? employeeName = null;
+				int currentUserId = 0;
+				int statusSaleId = StatusSaleModel.NotStatus;
+
 				for (int i = 1; i <= number; i++)
 				{
+					if (rolecode == RoleCodes.RM)
+					{
+						currentUserId = 5;
+						employeeName = $"RM_{provinceId}_{i} ทดสอบ";
+					}
+					else if (rolecode == RoleCodes.MANAGERCENTER)
+					{
+						currentUserId = 2;
+						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
+						statusSaleId = StatusSaleModel.WaitAssign;
+					}
+
 					var random = new Random();
 					int contactChannelRandom = random.Next(contactChannel.Count);
 					int businessTypeRandom = random.Next(businessType.Count);
@@ -237,16 +253,17 @@ namespace SalesPipeline.API.Controllers
 
 					var data = await _repo.Customer.Create(new()
 					{
-						CurrentUserId = 5, //RM
+						StatusSaleId = statusSaleId,
+						CurrentUserId = currentUserId, //RM
 						Status = StatusModel.Active,
-						CreateBy = 5,
-						UpdateBy = 5,
+						CreateBy = currentUserId,
+						UpdateBy = currentUserId,
 						DateContact = DateTime.Now.AddDays(i),
 						Master_ContactChannelId = contactChannel[contactChannelRandom],
 						BranchName = $"สาขา_{i}",
 						ProvincialOffice = $"สนจ_{i}",
 						EmployeeId = int.Parse($"50000{i}"),
-						EmployeeName = $"RM_{provinceId}_{i} ทดสอบ",
+						EmployeeName = employeeName,
 						ContactName = $"ผู้ติดต่อ_{i} ทดสอบ",
 						ContactTel = $"08{i.ToString("00000000")}",
 						CompanyName = $"บริษัท {i.ToString("000")}_{provinceId} จำกัด",

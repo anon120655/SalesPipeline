@@ -112,16 +112,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateCurrentNumber(Guid id)
 		{
-			var assignment_Sales = await _repo.Context.Assignment_Sales
+			var currentNumber = await _repo.Context.Assignment_Sales
 											  .Include(x => x.Sale)
 											  .Where(x => x.AssignmentId == id && x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
-											  .ToListAsync();
-			if (assignment_Sales.Count > 0)
+											  .CountAsync();
+			if (currentNumber > 0)
 			{
 				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
 				if (assignments != null)
 				{
-					assignments.CurrentNumber = assignment_Sales.Count;
+					assignments.CurrentNumber = currentNumber;
 					_db.Update(assignments);
 					await _db.SaveAsync();
 				}
