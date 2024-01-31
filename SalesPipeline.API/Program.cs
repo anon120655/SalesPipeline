@@ -61,12 +61,12 @@ var autoDetectVersion = ServerVersion.AutoDetect(SalesPipelineContext);
 builder.Services.AddDbContext<SalesPipelineContext>(
 		   dbContextOptions => dbContextOptions
 			   .UseMySql(SalesPipelineContext, autoDetectVersion)
-			   // The following three options help with debugging, but should
-			   // be changed or removed for production.
 			   .LogTo(Console.WriteLine, LogLevel.Information)
 			   .EnableSensitiveDataLogging()
 			   .EnableDetailedErrors()
 	   );
+
+
 
 builder.Services.Configure<AppSettings>(appSettings);
 builder.Services.Configure<ApiBehaviorOptions>(options

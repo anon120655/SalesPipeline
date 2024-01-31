@@ -47,12 +47,12 @@ namespace SalesPipeline.Shared
 			_hubUserConnection = new HubConnectionBuilder().WithUrl(_hubUrlWeb).Build();
 			await _hubUserConnection.StartAsync();
 
-			var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-			if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
-			{
-				MenuItem = dataMenuItem.Data;
-				StateHasChanged();
-			}
+			//var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+			//if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+			//{
+			//	MenuItem = dataMenuItem.Data;
+			//	StateHasChanged();
+			//}
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -70,6 +70,13 @@ namespace SalesPipeline.Shared
 
 				if (isAuthorize == true)
 				{
+					var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+					if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+					{
+						MenuItem = dataMenuItem.Data;
+						StateHasChanged();
+					}
+
 					UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
 					var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
 					if (_hubUserConnection is not null)

@@ -118,7 +118,14 @@ namespace SalesPipeline.Helpers
 				{
 					if (responseClient.Content != null)
 					{
-						throw new ExceptionCustom("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+						if (responseClient.Content.Contains("EnableRetryOnFailure"))
+						{
+							throw new ExceptionCustom("Retry On Failure.");
+						}
+						else
+						{
+							throw new ExceptionCustom("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+						}
 					}
 				}
 
