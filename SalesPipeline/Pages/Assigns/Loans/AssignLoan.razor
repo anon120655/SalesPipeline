@@ -95,6 +95,8 @@
 										{
 											foreach (var item in Items)
 											{
+												item.CurrentUserId = UserInfo.Id;
+
 												bool status = item.Status == StatusModel.Active;
 												<tr>
 													<td class="text-center">@item.EmployeeId</td>
@@ -130,6 +132,22 @@
 										OnSelectedPage="@OnSelectPage"
 										ParameterAll="@filter?.SetParameter()">
 						</PaginationBack>
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								@if (Items?.Count > 0)
+								{
+									<Button @onclick="Assign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										มอบหมาย
+									</Button>
+								}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

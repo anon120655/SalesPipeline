@@ -111,6 +111,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<AssignmentCustom>>> GetListAutoAssign(allFilter model)
 		{
+			//*************** ต้องเช็ค จังหวัด อำเภอ เพิ่มเติม ****************
+
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales)
 												 .Include(x => x.User)
@@ -122,26 +124,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var items = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
 
 			List<AssignmentCustom> responseItems = new();
-			foreach (var item in items)
+
+			//ลูกค้าที่ยังไม่ถูก assign
+			var sales = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign).ToListAsync();
+			if (sales.Count > 0)
 			{
-				var assignment = _mapper.Map<AssignmentCustom>(item);
-				assignment.Assignment_Sales = new();
-
-				//ลูกค้าที่ยังไม่ถูก assign
-				var sales = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign).ToListAsync();
-
-				foreach (var item_sales in sales)
+				foreach (var item in items)
 				{
-					assignment.Assignment_Sales.Add(new()
-					{
-						AssignmentId = assignment.Id,
-						SaleId = Guid.NewGuid(),
-						IsActive = StatusModel.Active
-					});
-					assignment.NumberAssignment = assignment.Assignment_Sales.Count();
-				}
+					var assignment = _mapper.Map<AssignmentCustom>(item);
+					assignment.Assignment_Sales = new();
 
-				responseItems.Add(assignment);
+					foreach (var item_sales in sales)
+					{
+						assignment.Assignment_Sales.Add(new()
+						{
+							Status = StatusModel.Active,
+							AssignmentId = assignment.Id,
+							SaleId = item_sales.Id,
+							IsActive = StatusModel.Active,
+							IsSelect = true
+						});
+						assignment.NumberAssignment = assignment.Assignment_Sales.Count();
+					}
+
+					responseItems.Add(assignment);
+				}
 			}
 
 			return new PaginationView<List<AssignmentCustom>>()
@@ -153,7 +160,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task Assign(List<AssignmentCustom> model)
 		{
-			throw new NotImplementedException();
+			foreach (var item in model)
+			{
+				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+
+				var sales_select = item.Assignment_Sales?.Where(x => x.IsSelect).ToList();
+
+				if (assignments != null && sales_select?.Count > 0)
+				{
+					foreach (var item_sale in sales_select)
+					{
+						var currentUserName = await _repo.User.GetFullNameById(item.CurrentUserId);
+						var assignedUserName = await _repo.User.GetFullNameById(assignments.UserId);
+
+						var assignmentSale = await CreateSale(new()
+						{
+							CreateBy = item.CurrentUserId,
+							CreateByName = currentUserName,
+							AssignmentId = assignments.Id,
+							SaleId = item_sale.SaleId
+						});
+
+						var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item_sale.SaleId);
+						if (sales != null)
+						{
+							sales.AssignedUserId = assignments.UserId;
+							sales.AssignedUserName = assignedUserName;
+							_db.Update(sales);
+							await _db.SaveAsync();
+						}
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = item_sale.SaleId,
+							StatusId = StatusSaleModel.WaitContact,
+							CreateBy = item.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+					}
+
+					await UpdateCurrentNumber(assignments.Id);
+				}
+
+			}
 		}
 
 	}

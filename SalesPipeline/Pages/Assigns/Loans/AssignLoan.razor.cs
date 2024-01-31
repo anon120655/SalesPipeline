@@ -10,6 +10,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 	public partial class AssignLoan
 	{
 		string? _errorMessage = null;
+		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
@@ -104,6 +105,42 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			StateHasChanged();
 		}
 
+		protected void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		protected void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
+		}
+
+		protected async Task Assign()
+		{
+			_errorMessage = null;
+			ShowLoading();
+
+			if (Items != null)
+			{
+				var response = await _assignmentViewModel.Assign(Items);
+
+				if (response.Status)
+				{
+					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
+
+		}
 
 
 	}

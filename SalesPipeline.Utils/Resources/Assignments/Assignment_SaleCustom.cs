@@ -40,5 +40,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public Guid SaleId { get; set; }
 
 		public string? Description { get; set; }
+
+		//Custom
+		public bool IsSelect { get; set; }
+
 	}
 }
