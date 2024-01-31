@@ -178,6 +178,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
 						}
 
+						if (!await _repo.Assignment.CheckAssignmentSaleById(assignment.Id))
+						{
+							var assignmentSale = await _repo.Assignment.CreateSale(new()
+							{
+								CreateBy = model.CreateBy,
+								CreateByName = currentUserName,
+								AssignmentId = assignment.Id,
+								SaleId = sales.Id
+							});
+						}
+
 						await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
 					}
 				}

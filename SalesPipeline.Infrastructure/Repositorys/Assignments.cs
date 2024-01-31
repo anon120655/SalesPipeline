@@ -73,6 +73,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
 		}
 
+		public async Task<bool> CheckAssignmentSaleById(Guid id)
+		{
+			return await _repo.Context.Assignment_Sales.AnyAsync(x => x.AssignmentId == id);
+		}
+
 		public async Task<AssignmentCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Assignments

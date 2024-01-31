@@ -299,24 +299,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							EmployeeName = user.FullName,
 						});
 					}
-					else
-					{
-						assignment = await _repo.Assignment.GetByUserId(model.CurrentUserId);
-					}
-					if (assignment != null)
-					{
-						var assignmentSale = await _repo.Assignment.CreateSale(new()
-						{
-							CreateBy = model.CurrentUserId,
-							CreateByName = user.FullName,
-							AssignmentId = assignment.Id,
-							SaleId = sale.Id
-						});
-						if (assignmentSale != null)
-						{
-							await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
-						}
-					}
+
+					//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
+					//else
+					//{
+					//	assignment = await _repo.Assignment.GetByUserId(model.CurrentUserId);
+					//}
+					//if (assignment != null)
+					//{
+					//	var assignmentSale = await _repo.Assignment.CreateSale(new()
+					//	{
+					//		CreateBy = model.CurrentUserId,
+					//		CreateByName = user.FullName,
+					//		AssignmentId = assignment.Id,
+					//		SaleId = sale.Id
+					//	});
+					//	if (assignmentSale != null)
+					//	{
+					//		await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
+					//	}
+					//}
 				}
 
 				_transaction.Commit();

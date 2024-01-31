@@ -10,6 +10,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<AssignmentCustom> Create(AssignmentCustom model);
 		Task<Assignment_SaleCustom> CreateSale(Assignment_SaleCustom model);
 		Task<bool> CheckAssignmentByUserId(int id);
+		Task<bool> CheckAssignmentSaleById(Guid id);
 		Task<AssignmentCustom> GetById(Guid id);
 		Task<AssignmentCustom> GetByUserId(int id);
 		Task UpdateCurrentNumber(Guid id);
