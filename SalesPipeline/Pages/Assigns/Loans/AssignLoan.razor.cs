@@ -69,7 +69,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task SetModel()
 		{
-			var data = await _assignmentViewModel.GetList(filter);
+			var data = await _assignmentViewModel.GetListAutoAssign(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

@@ -26,25 +26,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<PaginationView<List<AssignmentCustom>>> GetList(allFilter model)
-		{
-			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.Assignment_Sales)
-												 .Include(x => x.User)
-												 .OrderByDescending(x => x.CreateDate)
-												 .AsQueryable();
-
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
-
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
-
-			return new PaginationView<List<AssignmentCustom>>()
-			{
-				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
-				Pager = pager
-			};
-		}
-
 		public async Task<AssignmentCustom> Create(AssignmentCustom model)
 		{
 			if (string.IsNullOrEmpty(model.EmployeeName))
@@ -126,6 +107,53 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 			}
+		}
+
+		public async Task<PaginationView<List<AssignmentCustom>>> GetListAutoAssign(allFilter model)
+		{
+			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+												 //.Include(x => x.Assignment_Sales)
+												 .Include(x => x.User)
+												 .OrderByDescending(x => x.CreateDate)
+												 .AsQueryable();
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+
+			List<AssignmentCustom> responseItems = new();
+			foreach (var item in items)
+			{
+				var assignment = _mapper.Map<AssignmentCustom>(item);
+				assignment.Assignment_Sales = new();
+
+				//ลูกค้าที่ยังไม่ถูก assign
+				var sales = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign).ToListAsync();
+
+				foreach (var item_sales in sales)
+				{
+					assignment.Assignment_Sales.Add(new()
+					{
+						AssignmentId = assignment.Id,
+						SaleId = Guid.NewGuid(),
+						IsActive = StatusModel.Active
+					});
+					assignment.NumberAssignment = assignment.Assignment_Sales.Count();
+				}
+
+				responseItems.Add(assignment);
+			}
+
+			return new PaginationView<List<AssignmentCustom>>()
+			{
+				Items = responseItems,
+				Pager = pager
+			};
+		}
+
+		public async Task Assign(List<AssignmentCustom> model)
+		{
+			throw new NotImplementedException();
 		}
 
 	}

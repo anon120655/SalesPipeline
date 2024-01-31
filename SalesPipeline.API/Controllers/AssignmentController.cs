@@ -6,6 +6,8 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ValidationModel;
+using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Assignments;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -25,14 +27,33 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
-		[HttpGet("GetList")]
+		[HttpGet("GetListAutoAssign")]
 		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.Assignment.GetList(model);
+				var response = await _repo.Assignment.GetListAutoAssign(model);
 
 				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("Assign")]
+		public async Task<IActionResult> Assign(List<AssignmentCustom> model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.Assignment.Assign(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
 			}
 			catch (Exception ex)
 			{

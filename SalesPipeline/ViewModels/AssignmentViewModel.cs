@@ -21,11 +21,11 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetList(allFilter model)
+		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListAutoAssign(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Assignment/GetList?{model.SetParameter(true)}");
+				var content = await _httpClient.GetAsync($"/v1/Assignment/GetListAutoAssign?{model.SetParameter(true)}");
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<AssignmentCustom>>>()

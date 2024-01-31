@@ -41,7 +41,27 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// </summary>
 		public int? CurrentNumber { get; set; }
 
-		public virtual ICollection<Assignment_SaleCustom>? Assignment_Sales { get; set; }
+		public virtual List<Assignment_SaleCustom>? Assignment_Sales { get; set; }
 		public virtual UserCustom? User { get; set; }
+
+		//Custom
+		/// <summary>
+		/// จำนวนการมอบหมาย
+		/// </summary>
+		public int? NumberAssignment { get; set; }
+		/// <summary>
+		/// ลูกค้าหลังมอบหมาย
+		/// </summary>
+		public int? NumberAfterAssignment
+		{
+			get
+			{
+				if (CurrentNumber.HasValue && NumberAssignment.HasValue)
+				{
+					return CurrentNumber + NumberAssignment;
+				}
+				return CurrentNumber;
+			}
+		}
 	}
 }

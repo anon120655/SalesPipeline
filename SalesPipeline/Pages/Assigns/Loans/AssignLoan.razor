@@ -103,9 +103,11 @@
 													<td class="text-center">-</td>
 													<td class="text-center">-</td>
 													<td class="text-center">@(item.CurrentNumber)/100</td>
-													<td class="text-center">-</td>
 													<td class="text-center">
-														45/100
+														@GeneralUtils.EmptyTo(item.NumberAssignment)
+													</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
 													</td>
 													<td class="text-center">
 														<a class="" href="/assign/loan/manage">
