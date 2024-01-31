@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -28,9 +29,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = false)
+		public async Task Validate(CustomerCustom model, bool isThrow = false)
 		{
-			throw new NotImplementedException();
+			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
+			var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
+			if (customer != null)
+			{
+				throw new ExceptionCustom($"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว");
+			}
 		}
 
 		public Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model)
@@ -42,28 +48,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			string code = "pass";
 			string message = "ผ่าน";
+			string id = "";
 
 			juristicNumber = juristicNumber.Trim();
 
-			var customers = await _repo.Context.Customers.Include(x => x.Sales).Where(x => x.JuristicPersonRegNumber == juristicNumber).ToListAsync();
-			if (customers != null && customers.Count > 0)
+			var customers = await _repo.Context.Customers.Include(x => x.Sales).FirstOrDefaultAsync(x => x.JuristicPersonRegNumber == juristicNumber);
+			if (customers != null)
 			{
 				bool isProceed = false;
-				foreach (var item in customers)
+
+				if (customers.Sales != null)
 				{
-					if (item.Sales != null)
+					foreach (var item_sale in customers.Sales)
 					{
-						foreach (var item_sale in item.Sales)
+						if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
 						{
-							if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
+							if (!isProceed)
 							{
-								if (!isProceed)
-								{
-									code = "proceed";
-									message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
-									isProceed = true;
-									break;
-								}
+								code = "proceed";
+								message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
+								isProceed = true;
+								break;
 							}
 						}
 					}
@@ -73,13 +78,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					code = "duplicate";
 					message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ต้องการดำเนินการต่อ?";
+					id = customers.Id.ToString();
 				}
 			}
 
 			return new()
 			{
 				Code = code,
-				Message = message
+				Message = message,
+				ID = id
 			};
 		}
 
@@ -87,6 +94,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
+				await Validate(model);
+
 				string? master_ContactChannelName = null;
 				string? master_BusinessTypeName = null;
 				string? master_BusinessSizeName = null;
@@ -152,7 +161,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.ContactName = model.ContactName;
 				customer.ContactTel = model.ContactTel;
 				customer.CompanyName = model.CompanyName;
-				customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
+				customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
 				customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
 				customer.Master_BusinessTypeName = master_BusinessTypeName;
 				customer.Master_BusinessSizeId = model.Master_BusinessSizeId;

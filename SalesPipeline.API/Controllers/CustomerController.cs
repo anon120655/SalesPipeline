@@ -139,7 +139,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ลบข้อมูลลูกค้า ById
+		/// ข้อมูลลูกค้า ById
 		/// </summary>
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
@@ -256,6 +256,7 @@ namespace SalesPipeline.API.Controllers
 					}
 
 					var random = new Random();
+					String juristicPersonRegNumber = random.Next(000000000, 999999999).ToString("D12");
 					int contactChannelRandom = random.Next(contactChannel.Count);
 					int businessTypeRandom = random.Next(businessType.Count);
 					int businessSizeRandom = random.Next(businessSize.Count);
@@ -278,8 +279,8 @@ namespace SalesPipeline.API.Controllers
 						EmployeeName = employeeName,
 						ContactName = $"ผู้ติดต่อ_{i} ทดสอบ",
 						ContactTel = $"08{i.ToString("00000000")}",
-						CompanyName = $"บริษัท {i.ToString("000")}_{provinceId} จำกัด",
-						JuristicPersonRegNumber = $"1{i.ToString("000000000000")}",
+						CompanyName = $"บริษัท ทดสอบ_{juristicPersonRegNumber.Substring(8)} จำกัด",
+						JuristicPersonRegNumber = $"1{juristicPersonRegNumber}",
 						Master_BusinessTypeId = businessType[businessTypeRandom],
 						Master_BusinessSizeId = businessSize[businessSizeRandom],
 						Master_ISICCodeId = ISICCode[ISICCodeRandom],

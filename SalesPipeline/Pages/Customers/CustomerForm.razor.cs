@@ -325,11 +325,11 @@ namespace SalesPipeline.Pages.Customers
 					}
 					else if (data.Data.Code == "duplicate")
 					{
-						await ConfirmProceedModal(formModel.JuristicPersonRegNumber, data.Data.Message, "<i class=\"fa-solid fa-book fs_5r text-primary\"></i>");
+						await ConfirmProceedModal(data.Data.ID, data.Data.Message, "<i class=\"fa-solid fa-book fs_5r text-primary\"></i>");
 					}
 					else if (data.Data.Code == "proceed")
 					{
-						await FailedModal(formModel.JuristicPersonRegNumber, data.Data.Message);
+						await FailedModal(data.Data.ID, data.Data.Message);
 					}
 					else
 					{
@@ -456,20 +456,24 @@ namespace SalesPipeline.Pages.Customers
 			StateHasChanged();
 		}
 
-		protected async Task FailedModal(string? id, string? txt)
+		protected async Task FailedModal(string? _id, string? txt)
 		{
-			await modalFailed.OnShow(id, $"{txt}");
+			await modalFailed.OnShow(_id, $"{txt}");
 		}
 
-		protected async Task ConfirmProceedModal(string? id, string? txt, string? icon = null)
+		protected async Task ConfirmProceedModal(string? _id, string? txt, string? icon = null)
 		{
-			await modalConfirm.OnShowConfirm(id, $"{txt}", icon);
+			await modalConfirm.OnShowConfirm(_id, $"{txt}", icon);
 		}
 
-		protected async Task ConfirmProceed(string id)
+		protected async Task ConfirmProceed(string _id)
 		{
 			await modalConfirm.OnHideConfirm();
 			IsVerify = true;
+			id = Guid.Parse(_id);
+
+			await _jsRuntimes.InvokeVoidAsync("ChangeUrl", $"/customer/update/{id}");
+			await SetModel();
 			await BootSelectInit();
 		}
 
