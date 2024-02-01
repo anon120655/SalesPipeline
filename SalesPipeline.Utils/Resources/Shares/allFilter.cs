@@ -12,6 +12,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 	{
 		public Guid id { get; set; }
 		public int? idnumber { get; set; }
+		public int? userid { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
@@ -19,6 +20,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? businesstype { get; set; }
 		public string? province { get; set; }
 		public string? amphur { get; set; }
+		public string? emp_id { get; set; }
+		public string? emp_name { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -63,6 +66,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(amphur))
 				ParameterAll += $"&amphur={amphur}";
+
+			if (!String.IsNullOrEmpty(emp_id))
+				ParameterAll += $"&emp_id={emp_id}";
+
+			if (!String.IsNullOrEmpty(emp_name))
+				ParameterAll += $"&emp_name={emp_name}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -125,6 +134,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amphur), out var _amphur))
 				amphur = _amphur;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(emp_id), out var _emp_id))
+				emp_id = _emp_id;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(emp_name), out var _emp_name))
+				emp_name = _emp_name;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

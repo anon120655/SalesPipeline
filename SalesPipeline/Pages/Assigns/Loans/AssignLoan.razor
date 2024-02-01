@@ -20,9 +20,9 @@
 						<div class="col mb-2">
 							<label class="form-label">รหัสพนักงาน</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -31,9 +31,9 @@
 						<div class="col mb-2">
 							<label class="form-label">ชื่อพนักงาน</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -41,8 +41,15 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
@@ -52,7 +59,7 @@
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -102,7 +109,7 @@
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="text-center">@item.EmployeeName</td>
 													<td class="text-center">@item.User?.Tel</td>
-													<td class="text-center">-</td>
+													<td class="text-center">@item.User?.Branch?.Name</td>
 													<td class="text-center">-</td>
 													<td class="text-center">@(item.CurrentNumber)/100</td>
 													<td class="text-center">

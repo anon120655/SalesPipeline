@@ -56,7 +56,7 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(baseUri + url)
 				{
 					ThrowOnAnyError = false,
-					MaxTimeout = 30000
+					MaxTimeout = 60000
 				};
 
 				if (!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(password))

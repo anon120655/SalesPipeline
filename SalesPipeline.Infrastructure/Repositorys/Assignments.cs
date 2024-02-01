@@ -120,9 +120,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales)
-												 .Include(x => x.User)
+												 .Include(x => x.User).ThenInclude(x=>x.Branch)
 												 .OrderByDescending(x => x.CreateDate)
 												 .AsQueryable();
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
+			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

@@ -27,8 +27,8 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
-		[HttpGet("GetListAutoAssign")]
-		public async Task<IActionResult> GetList([FromQuery] allFilter model)
+		[HttpPost("GetListAutoAssign")]
+		public async Task<IActionResult> GetList(allFilter model)
 		{
 			try
 			{

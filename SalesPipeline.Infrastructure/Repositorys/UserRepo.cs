@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Entity;
@@ -65,6 +67,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
+				string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword("password", hashType: HashType.SHA384);
+
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
 				var user = new Data.Entity.User();
@@ -87,6 +91,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
+				user.PasswordHash = passwordHashGen;
 				await _db.InsterAsync(user);
 				await _db.SaveAsync();
 

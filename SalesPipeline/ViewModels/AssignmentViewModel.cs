@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -25,7 +26,9 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Assignment/GetListAutoAssign?{model.SetParameter(true)}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Assignment/GetListAutoAssign", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<AssignmentCustom>>>()

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
@@ -50,9 +51,21 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -77,7 +90,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/customer";
+					Pager.UrlAction = "/assign/loan";
 				}
 			}
 			else
@@ -140,6 +153,26 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				}
 			}
 
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnProvince(ChangeEventArgs e)
+		{
+			filter.province = null;
+			if (e.Value != null)
+			{
+				filter.province = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
 		}
 
 
