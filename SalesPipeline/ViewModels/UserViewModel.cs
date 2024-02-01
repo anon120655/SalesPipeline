@@ -315,27 +315,6 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<User_BranchCustom>>>> GetUsersRM(allFilter model)
-		{
-			try
-			{
-				var content = await _httpClient.GetAsync($"/v1/User/GetUsersRM?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<User_BranchCustom>>>(content);
-
-				return new ResultModel<PaginationView<List<User_BranchCustom>>>()
-				{
-					Data = dataMap
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResultModel<PaginationView<List<User_BranchCustom>>>
-				{
-					Status = false,
-					errorMessage = GeneralUtils.GetExMessage(ex)
-				};
-			}
-		}
 
 	}
 }

@@ -17,7 +17,8 @@
 
 		//รายการที่ผู้จัดการศูนย์ส่งคืน
 		public const int ReturnedCenter = 200000;
-		
+
+		public const int RMUser = 220000;
 
 		//จัดการระบบผู้ใช้งาน
 		public const int LoanPermission = 230100;

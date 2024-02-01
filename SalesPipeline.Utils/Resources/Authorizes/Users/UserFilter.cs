@@ -6,6 +6,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 	public class UserFilter : PagerFilter
 	{
 		public int id { get; set; }
+		public int? createby { get; set; }
 		public short? status { get; set; }
 		public string? searchtxt { get; set; }
 		public string? employeeid { get; set; }
@@ -26,6 +27,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 			if (id > 0)
 				ParameterAll += $"&id={id}";
+
+			if (createby > 0)
+				ParameterAll += $"&createby={createby}";
 
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
@@ -80,6 +84,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 				if (int.TryParse(_id, out int __id))
 					id = __id;
 			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(createby), out var _createby))
+			{
+				if (int.TryParse(_createby, out int __createby))
+					createby = __createby;
+			}
+
 		}
 
 	}

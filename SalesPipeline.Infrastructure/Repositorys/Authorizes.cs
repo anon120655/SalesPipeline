@@ -42,6 +42,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			try
 			{
+				if (user.Status == StatusModel.InActive)
+					throw new ExceptionCustom($"ท่านถูกปิดการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
+
 				const short maxLoginFail = 5;
 
 				if (user.LoginFail >= maxLoginFail)

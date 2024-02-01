@@ -214,6 +214,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
+			//ผู้ใช้ภายใต้การดูแล
+			if (model.createby.HasValue && model.createby > 0)
+			{
+				query = query.Where(x => x.CreateBy == model.createby.Value);
+			}
+
 			if (!String.IsNullOrEmpty(model.employeeid))
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.employeeid));
 
@@ -453,32 +459,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		//public async Task<PaginationView<List<User_BranchCustom>>> GetUsersRM(allFilter model)
-		//{
-		//	var query = _repo.Context.User_Branches.Include(x => x.User).Where(x => x.Status != StatusModel.Delete)
-		//										 .AsQueryable();
-
-		//	if (model.status.HasValue)
-		//	{
-		//		query = query.Where(x => x.Status == model.status);
-		//	}
-
-		//	if (model.ids != null)
-		//	{
-		//		List<string> Ids = model.ids.Split(',').ToList<string>();
-		//		query = query.Where(x => Ids.Contains(x.BranchId.ToString()));
-		//	}
-
-		//	var pager = new Pager(query.Count(), model.page, model.pagesize, null);
-
-		//	var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
-
-		//	return new PaginationView<List<User_BranchCustom>>()
-		//	{
-		//		Items = _mapper.Map<List<User_BranchCustom>>(await items.ToListAsync()),
-		//		Pager = pager
-		//	};
-		//}
 
 	}
 }

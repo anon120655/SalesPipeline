@@ -92,6 +92,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<User_Level> User_Levels { get; set; }
 
+    public virtual DbSet<User_Loan> User_Loans { get; set; }
+
     public virtual DbSet<User_Permission> User_Permissions { get; set; }
 
     public virtual DbSet<User_Role> User_Roles { get; set; }
@@ -1288,6 +1290,38 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+        });
+
+        modelBuilder.Entity<User_Loan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("User_Loan", tb => tb.HasComment("พนักงานสินเชื่อภายใต้การดูแล"));
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.HasIndex(e => e.UserLoanId, "UserLoanId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UserId)
+                .HasComment("พนักงานที่ดูแล")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.UserLoanId)
+                .HasComment("พนักงานสินเชื่อที่ดูแล")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.User_LoanUsers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_loan_ibfk_1");
+
+            entity.HasOne(d => d.UserLoan).WithMany(p => p.User_LoanUserLoans)
+                .HasForeignKey(d => d.UserLoanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_loan_ibfk_2");
         });
 
         modelBuilder.Entity<User_Permission>(entity =>

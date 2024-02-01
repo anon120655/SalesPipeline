@@ -22,7 +22,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.RMUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
 			await SetInitManual();
@@ -94,6 +94,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		protected async Task SetModel()
 		{
+			filter.createby = UserInfo.Id;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
