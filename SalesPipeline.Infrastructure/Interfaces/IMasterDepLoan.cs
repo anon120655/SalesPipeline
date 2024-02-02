@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
-	public interface IMasterDivLoan
+	public interface IMasterDepLoan
 	{
 		//ฝ่ายธุรกิจสินเชื่อ
-		Task<Master_Division_LoanCustom> Create(Master_Division_LoanCustom model);
-		Task<Master_Division_LoanCustom> Update(Master_Division_LoanCustom model);
+		Task<Master_Department_LoanCustom> Create(Master_Department_LoanCustom model);
+		Task<Master_Department_LoanCustom> Update(Master_Department_LoanCustom model);
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
-		Task<Master_Division_LoanCustom> GetById(Guid id);
-		Task<PaginationView<List<Master_Division_LoanCustom>>> GetList(allFilter model);
+		Task<Master_Department_LoanCustom> GetById(Guid id);
+		Task<PaginationView<List<Master_Department_LoanCustom>>> GetList(allFilter model);
 	}
 }

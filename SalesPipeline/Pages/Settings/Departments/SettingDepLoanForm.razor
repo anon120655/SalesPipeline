@@ -1,7 +1,7 @@
-﻿@page "/setting/div/branch/create"
-@page "/setting/div/branch/update/{id:guid}"
+﻿@page "/setting/dep/loan/create"
+@page "/setting/dep/loan/update/{id:guid}"
 
-<PageTitle>ตั้งค่าฝ่ายงานกิจการสาขา</PageTitle>
+<PageTitle>ตั้งค่าฝ่ายงานศูนย์ธุรกิจสินเชื่อ</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -14,7 +14,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic_active">ตั้งค่าฝ่ายงานกิจการสาขา</p>
+							<p class="back_topic_active">ตั้งค่าฝ่ายงานศูนย์ธุรกิจสินเชื่อ</p>
 						</div>
 					</div>
 					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
@@ -29,10 +29,26 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อฝ่าย<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อศูนย์ธุรกิจ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<input @bind="formModel.Name" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.Name)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขาที่ดูแล<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										@* <select @bind="formModel.Division_BranchsId" class="form-select">
+											<option value="">เลือก</option>
+											@if (LookUp.DivisionBranch?.Count > 0)
+											{
+												foreach (var item in LookUp.DivisionBranch)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.Division_BranchsId)" /> *@
 									</div>
 								</div>
 							</div>
@@ -65,4 +81,3 @@ else
 {
 	<NotPermissionPage />
 }
-

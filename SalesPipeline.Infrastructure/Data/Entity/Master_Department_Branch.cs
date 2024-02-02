@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ฝ่ายธุรกิจสินเชื่อ
+/// ฝ่ายกิจการสาขาภาค
 /// </summary>
-public partial class Master_Division_Loan
+public partial class Master_Department_Branch
 {
     public Guid Id { get; set; }
 
@@ -26,9 +26,11 @@ public partial class Master_Division_Loan
     /// <summary>
     /// รหัส
     /// </summary>
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     public string? Name { get; set; }
+
+    public virtual ICollection<Master_Department_Loan> Master_Department_Loans { get; set; } = new List<Master_Department_Loan>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

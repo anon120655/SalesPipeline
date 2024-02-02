@@ -203,16 +203,16 @@ namespace SalesPipeline.ViewModels
 							var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
 							if (datauserMap != null)
 							{
-								data.DivBranchId = datauserMap.DivBranchId;
-								data.DivLoanId = datauserMap.DivLoanId;
+								data.Master_Department_BranchId = datauserMap.Master_Department_BranchId;
+								//data.DivLoanId = datauserMap.DivLoanId;
 								data.PositionId = datauserMap.PositionId;
 								data.RoleId = datauserMap.RoleId;
 
-								if (datauserMap.DivBranch != null)								
-									data.DivBranchName = datauserMap.DivBranch.Name;
+								if (datauserMap.Master_Department_Branch != null)								
+									data.DivBranchName = datauserMap.Master_Department_Branch.Name;
 
-								if (datauserMap.DivLoan != null)
-									data.DivLoanName = datauserMap.DivLoan.Name;
+								//if (datauserMap.DivLoan != null)
+								//	data.DivLoanName = datauserMap.DivLoan.Name;
 
 								if (datauserMap.Position != null)
 									data.PositionName = datauserMap.Position.Name;

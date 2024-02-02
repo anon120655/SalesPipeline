@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterDivLoan : IMasterDivLoan
+	public class MasterDivLoan : IMasterDepLoan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -31,13 +31,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		//ฝ่ายธุรกิจสินเชื่อ
-		public async Task<Master_Division_LoanCustom> Create(Master_Division_LoanCustom model)
+		public async Task<Master_Department_LoanCustom> Create(Master_Department_LoanCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				var masterDivisionLoan = new Data.Entity.Master_Division_Loan()
+				var masterDivisionLoan = new Data.Entity.Master_Department_Loan()
 				{
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
@@ -52,17 +52,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_transaction.Commit();
 
-				return _mapper.Map<Master_Division_LoanCustom>(masterDivisionLoan);
+				return _mapper.Map<Master_Department_LoanCustom>(masterDivisionLoan);
 			}
 		}
 
-		public async Task<Master_Division_LoanCustom> Update(Master_Division_LoanCustom model)
+		public async Task<Master_Department_LoanCustom> Update(Master_Department_LoanCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				var _dateNow = DateTime.Now;
 
-				var masterDivisionLoan = await _repo.Context.Master_Division_Loans.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				var masterDivisionLoan = await _repo.Context.Master_Department_Loans.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
 				if (masterDivisionLoan != null)
 				{
 					masterDivisionLoan.UpdateDate = _dateNow;
@@ -75,14 +75,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_transaction.Commit();
 				}
 
-				return _mapper.Map<Master_Division_LoanCustom>(masterDivisionLoan);
+				return _mapper.Map<Master_Department_LoanCustom>(masterDivisionLoan);
 			}
 		}
 
 		public async Task DeleteById(UpdateModel model)
 		{
 			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Master_Division_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_Department_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				query.UpdateDate = DateTime.Now;
@@ -99,7 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var _status = parsedValue ? (short)1 : (short)0;
 				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Master_Division_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				var query = await _repo.Context.Master_Department_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 				if (query != null)
 				{
 					query.UpdateBy = model.userid;
@@ -110,18 +110,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Master_Division_LoanCustom> GetById(Guid id)
+		public async Task<Master_Department_LoanCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_Division_Loans
+			var query = await _repo.Context.Master_Department_Loans
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<Master_Division_LoanCustom>(query);
+			return _mapper.Map<Master_Department_LoanCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_Division_LoanCustom>>> GetList(allFilter model)
+		public async Task<PaginationView<List<Master_Department_LoanCustom>>> GetList(allFilter model)
 		{
-			var query = _repo.Context.Master_Division_Loans
+			var query = _repo.Context.Master_Department_Loans
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
@@ -144,9 +144,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Master_Division_LoanCustom>>()
+			return new PaginationView<List<Master_Department_LoanCustom>>()
 			{
-				Items = _mapper.Map<List<Master_Division_LoanCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Master_Department_LoanCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}

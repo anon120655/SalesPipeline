@@ -68,17 +68,17 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.DivLoanId" class="form-select">
+										@* <select @bind="formModel.DivLoanId" class="form-select">
 											<option value="">เลือก</option>
-											@if (LookUp.DivisionLoan?.Count > 0)
+											@if (LookUp.DepartmentLoan?.Count > 0)
 											{
-												foreach (var item in LookUp.DivisionLoan)
+												foreach (var item in LookUp.DepartmentLoan)
 												{
 													<option value="@item.Id">@item.Name</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.DivLoanId)" />
+										<ValidationMessage For="@(() => formModel.DivLoanId)" /> *@
 									</div>
 								</div>
 								<div class="row mb-3">

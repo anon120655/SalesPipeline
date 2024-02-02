@@ -1,14 +1,13 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Masters
 {
-    public class Master_Division_BranchCustom : CommonModel
+	public class Master_Department_LoanCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -26,15 +25,15 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public int UpdateBy { get; set; }
 
 		/// <summary>
-		/// รหัส
+		/// FK ฝ่ายกิจการสาขาภาค
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public string? Code { get; set; }
+		public Guid Master_Department_BranchId { get; set; }
 
 		/// <summary>
-		/// ชื่อฝ่าย
+		/// รหัส
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public string Code { get; set; } = null!;
+
 		public string? Name { get; set; }
-    }
+	}
 }

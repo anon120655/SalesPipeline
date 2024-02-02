@@ -133,14 +133,14 @@
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
 													<td class="text-center">
-														@if (item.DivBranchId != null && item.DivBranch != null)
+														@* @if (item.DivBranchId != null && item.DivBranch != null)
 														{
 															<p>@item.DivBranch.Name</p>
 														}
 														@if (item.DivLoanId != null && item.DivLoan != null)
 														{
 															<p>@item.DivLoan.Name</p>
-														}
+														} *@
 													</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
 													<td class="text-center">@GetLevelName(item.LevelId)</td>

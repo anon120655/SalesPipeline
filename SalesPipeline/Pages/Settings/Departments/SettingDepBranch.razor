@@ -1,6 +1,6 @@
-﻿@page "/setting/div/loan"
+﻿@page "/setting/dep/branch"
 
-<PageTitle>ตั้งค่าฝ่ายงานศูนย์ธุรกิจสินเชื่อ</PageTitle>
+<PageTitle>ตั้งค่าฝ่ายงานกิจการสาขา</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,10 +15,9 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ตั้งค่าฝ่ายงานศูนย์ธุรกิจสินเชื่อ</p>
+							<p class="back_topic">ตั้งค่าฝ่ายงานกิจการสาขา</p>
 						</div>
 					</div>
-
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">รหัส</label>
@@ -32,20 +31,9 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อศูนย์</label>
-							<div class="input-group">
-								<input @bind="filter.val2" class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-						<div class="col mb-2">
 							<label class="form-label">ชื่อฝ่าย</label>
 							<div class="input-group">
-								<input @bind="filter.val3" class="form-control" type="search" placeholder="">
+								<input @bind="filter.val2" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
 									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
@@ -57,8 +45,8 @@
 							<Dropdown Class="w-100">
 								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
 								<DropdownMenu>
-									<DropdownItem To="/setting/div/loan/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-									<DropdownItem To="/setting/div/loan/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+									<DropdownItem To="/setting/div/branch/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+									<DropdownItem To="/setting/div/branch/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
 								</DropdownMenu>
 							</Dropdown>
 						</div>
@@ -70,8 +58,7 @@
 									<thead>
 										<tr>
 											<th class="text-center">รหัส</th>
-											<th class="text-center">ชื่อศูนย์</th>
-											<th class="text-center">ฝ่ายกิจการสาขา</th>
+											<th class="text-center">ชื่อฝ่าย</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">การใช้งาน</th>
 										</tr>
@@ -102,14 +89,8 @@
 												<tr>
 													<td class="text-center">@item.Code</td>
 													<td class="">@item.Name</td>
-													<td class="">
-														@* @if (item.Division_Branchs != null)
-														{
-															<span>@item.Division_Branchs.Name</span>
-														} *@
-													</td>
 													<td class="text-center">
-														<a href="/setting/div/loan/update/@item.Id">แก้ไข</a> /
+														<a href="/setting/div/branch/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
 													</td>
 													<td class="text-center">
@@ -139,9 +120,10 @@
 			</div>
 		</div>
 	</div>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 }
 else
 {
 	<NotPermissionPage />
 }
-

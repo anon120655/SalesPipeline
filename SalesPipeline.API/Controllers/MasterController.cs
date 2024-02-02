@@ -28,12 +28,12 @@ namespace SalesPipeline.API.Controllers
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpGet("GetDivLoans")]
-		public async Task<IActionResult> GetDivLoans([FromQuery] allFilter model)
+		[HttpGet("GetDepLoans")]
+		public async Task<IActionResult> GetDepLoans([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.MasterDivLoan.GetList(model);
+				var response = await _repo.MasterDepLoan.GetList(model);
 
 				return Ok(response);
 			}
@@ -356,12 +356,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPost("CreateDivBranch")]
-		public async Task<IActionResult> CreateDivBranch(Master_Division_BranchCustom model)
+		[HttpPost("CreateDepBranch")]
+		public async Task<IActionResult> CreateDepBranch(Master_Department_BranchCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDivBranch.Create(model);
+				var data = await _repo.MasterDepBranch.Create(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -370,12 +370,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateDivBranch")]
-		public async Task<IActionResult> UpdateDivBranch(Master_Division_BranchCustom model)
+		[HttpPut("UpdateDepBranch")]
+		public async Task<IActionResult> UpdateDepBranch(Master_Department_BranchCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDivBranch.Update(model);
+				var data = await _repo.MasterDepBranch.Update(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -384,12 +384,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpDelete("DeleteDivBranchById")]
-		public async Task<IActionResult> DeleteDivBranchById([FromQuery] UpdateModel model)
+		[HttpDelete("DeleteDepBranchById")]
+		public async Task<IActionResult> DeleteDepBranchById([FromQuery] UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDivBranch.DeleteById(model);
+				await _repo.MasterDepBranch.DeleteById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -398,12 +398,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateStatusDivBranchById")]
-		public async Task<IActionResult> UpdateStatusDivBranchById(UpdateModel model)
+		[HttpPut("UpdateStatusDepBranchById")]
+		public async Task<IActionResult> UpdateStatusDepBranchById(UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDivBranch.UpdateStatusById(model);
+				await _repo.MasterDepBranch.UpdateStatusById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -412,12 +412,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetDivBranchById")]
-		public async Task<IActionResult> GetDivBranchById([FromQuery] Guid id)
+		[HttpGet("GetDepBranchById")]
+		public async Task<IActionResult> GetDepBranchById([FromQuery] Guid id)
 		{
 			try
 			{
-				var data = await _repo.MasterDivBranch.GetById(id);
+				var data = await _repo.MasterDepBranch.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -426,12 +426,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetDivBranchs")]
-		public async Task<IActionResult> GetDivBranchs([FromQuery] allFilter model)
+		[HttpGet("GetDepBranchs")]
+		public async Task<IActionResult> GetDepBranchs([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.MasterDivBranch.GetBranchs(model);
+				var response = await _repo.MasterDepBranch.GetBranchs(model);
 
 				return Ok(response);
 			}
@@ -442,12 +442,12 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		//ฝ่ายธุรกิจสินเชื่อ
-		[HttpPost("CreateDivLoans")]
-		public async Task<IActionResult> CreateDivLoans(Master_Division_LoanCustom model)
+		[HttpPost("CreateDepLoans")]
+		public async Task<IActionResult> CreateDepLoans(Master_Department_LoanCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDivLoan.Create(model);
+				var data = await _repo.MasterDepLoan.Create(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -456,12 +456,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateDivLoans")]
-		public async Task<IActionResult> UpdateDivLoans(Master_Division_LoanCustom model)
+		[HttpPut("UpdateDepLoans")]
+		public async Task<IActionResult> UpdateDepLoans(Master_Department_LoanCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDivLoan.Update(model);
+				var data = await _repo.MasterDepLoan.Update(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -470,12 +470,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpDelete("DeleteDivLoansById")]
-		public async Task<IActionResult> DeleteDivLoansById([FromQuery] UpdateModel model)
+		[HttpDelete("DeleteDepLoansById")]
+		public async Task<IActionResult> DeleteDepLoansById([FromQuery] UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDivLoan.DeleteById(model);
+				await _repo.MasterDepLoan.DeleteById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -484,12 +484,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateStatusDivLoansById")]
-		public async Task<IActionResult> UpdateStatusDivLoansById(UpdateModel model)
+		[HttpPut("UpdateStatusDepLoansById")]
+		public async Task<IActionResult> UpdateStatusDepLoansById(UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDivLoan.UpdateStatusById(model);
+				await _repo.MasterDepLoan.UpdateStatusById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -498,12 +498,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetDivLoansById")]
-		public async Task<IActionResult> GetDivLoansById([FromQuery] Guid id)
+		[HttpGet("GetDepLoansById")]
+		public async Task<IActionResult> GetDepLoansById([FromQuery] Guid id)
 		{
 			try
 			{
-				var data = await _repo.MasterDivLoan.GetById(id);
+				var data = await _repo.MasterDepLoan.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)

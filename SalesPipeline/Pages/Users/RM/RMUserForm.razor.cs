@@ -72,10 +72,10 @@ namespace SalesPipeline.Pages.Users.RM
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivLoans = await _masterViewModel.GetDivLoans(new allFilter() { status = StatusModel.Active });
+			var dataGetDivLoans = await _masterViewModel.GetDepLoans(new allFilter() { status = StatusModel.Active });
 			if (dataGetDivLoans != null && dataGetDivLoans.Status)
 			{
-				LookUp.DivisionLoan = dataGetDivLoans.Data?.Items;
+				LookUp.DepartmentLoan = dataGetDivLoans.Data?.Items;
 			}
 			else
 			{
@@ -83,10 +83,10 @@ namespace SalesPipeline.Pages.Users.RM
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivBranchs = await _masterViewModel.GetDivBranchs(new allFilter() { status = StatusModel.Active });
+			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
 			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{
-				LookUp.DivisionBranch = dataGetDivBranchs.Data?.Items;
+				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;
 			}
 			else
 			{

@@ -49,14 +49,9 @@ public partial class User
     public Guid? BranchId { get; set; }
 
     /// <summary>
-    /// ฝ่ายงานกิจการสาขา
+    /// ฝ่ายงาน
     /// </summary>
-    public Guid? DivBranchId { get; set; }
-
-    /// <summary>
-    /// ฝ่ายงานศูนย์ธุรกิจสินเชื่อ
-    /// </summary>
-    public Guid? DivLoanId { get; set; }
+    public Guid? Master_Department_BranchId { get; set; }
 
     /// <summary>
     /// ตำแหน่ง
@@ -85,11 +80,9 @@ public partial class User
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
-    public virtual Master_Division_Branch? DivBranch { get; set; }
-
-    public virtual Master_Division_Loan? DivLoan { get; set; }
-
     public virtual User_Level? Level { get; set; }
+
+    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
 
     public virtual Master_Position? Position { get; set; }
 

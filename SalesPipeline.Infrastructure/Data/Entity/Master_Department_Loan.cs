@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Master_Division_Branch
+/// <summary>
+/// ศูนย์ธุรกิจสินเชื่อ
+/// </summary>
+public partial class Master_Department_Loan
 {
     public Guid Id { get; set; }
 
@@ -21,11 +24,16 @@ public partial class Master_Division_Branch
     public int UpdateBy { get; set; }
 
     /// <summary>
+    /// FK ฝ่ายกิจการสาขาภาค
+    /// </summary>
+    public Guid Master_Department_BranchId { get; set; }
+
+    /// <summary>
     /// รหัส
     /// </summary>
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
     public string? Name { get; set; }
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual Master_Department_Branch Master_Department_Branch { get; set; } = null!;
 }

@@ -67,14 +67,14 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivLoans = await _masterViewModel.GetDivLoans(new allFilter() { status = StatusModel.Active });
-			if (dataGetDivLoans != null && dataGetDivLoans.Status)
+			var dataGetDepLoans = await _masterViewModel.GetDepLoans(new allFilter() { status = StatusModel.Active });
+			if (dataGetDepLoans != null && dataGetDepLoans.Status)
 			{
-				LookUp.DivisionLoan = dataGetDivLoans.Data?.Items;
+				LookUp.DepartmentLoan = dataGetDepLoans.Data?.Items;
 			}
 			else
 			{
-				_errorMessage = dataGetDivLoans?.errorMessage;
+				_errorMessage = dataGetDepLoans?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 

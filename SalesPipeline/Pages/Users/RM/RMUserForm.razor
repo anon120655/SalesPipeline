@@ -74,7 +74,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.DivBranchId" class="form-select">
+										@* <select @bind="formModel.DivBranchId" class="form-select">
 											<option value="">เลือก</option>
 											@if (LookUp.DivisionBranch?.Count > 0)
 											{
@@ -84,7 +84,7 @@
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.DivBranchId)" />
+										<ValidationMessage For="@(() => formModel.DivBranchId)" /> *@
 									</div>
 								</div>
 								<div class="row mb-3">

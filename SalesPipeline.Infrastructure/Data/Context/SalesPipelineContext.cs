@@ -42,9 +42,9 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_ContactChannel> Master_ContactChannels { get; set; }
 
-    public virtual DbSet<Master_Division_Branch> Master_Division_Branchs { get; set; }
+    public virtual DbSet<Master_Department_Branch> Master_Department_Branches { get; set; }
 
-    public virtual DbSet<Master_Division_Loan> Master_Division_Loans { get; set; }
+    public virtual DbSet<Master_Department_Loan> Master_Department_Loans { get; set; }
 
     public virtual DbSet<Master_ISICCode> Master_ISICCodes { get; set; }
 
@@ -674,9 +674,11 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Master_Division_Branch>(entity =>
+        modelBuilder.Entity<Master_Department_Branch>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Department_Branch", tb => tb.HasComment("ฝ่ายกิจการสาขาภาค"));
 
             entity.Property(e => e.Code)
                 .HasMaxLength(255)
@@ -691,23 +693,31 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Master_Division_Loan>(entity =>
+        modelBuilder.Entity<Master_Department_Loan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable(tb => tb.HasComment("ฝ่ายธุรกิจสินเชื่อ"));
+            entity.ToTable("Master_Department_Loan", tb => tb.HasComment("ศูนย์ธุรกิจสินเชื่อ"));
+
+            entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_BranchId");
 
             entity.Property(e => e.Code)
                 .HasMaxLength(255)
                 .HasComment("รหัส");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("FK ฝ่ายกิจการสาขาภาค");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Master_Department_Loans)
+                .HasForeignKey(d => d.Master_Department_BranchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("master_department_loan_ibfk_1");
         });
 
         modelBuilder.Entity<Master_ISICCode>(entity =>
@@ -1206,11 +1216,9 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.BranchId, "BranchId");
 
-            entity.HasIndex(e => e.DivBranchId, "DivBranchId");
-
-            entity.HasIndex(e => e.DivLoanId, "DivLoanId");
-
             entity.HasIndex(e => e.LevelId, "LevelId");
+
+            entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_Branch");
 
             entity.HasIndex(e => e.PositionId, "PositionId");
 
@@ -1222,8 +1230,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchId).HasComment("สาขา");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.DivBranchId).HasComment("ฝ่ายงานกิจการสาขา");
-            entity.Property(e => e.DivLoanId).HasComment("ฝ่ายงานศูนย์ธุรกิจสินเชื่อ");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.EmployeeId)
                 .HasMaxLength(10)
@@ -1235,6 +1241,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ระดับ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายงาน");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PositionId)
                 .HasComment("ตำแหน่ง")
@@ -1256,17 +1263,13 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.BranchId)
                 .HasConstraintName("user_ibfk_4");
 
-            entity.HasOne(d => d.DivBranch).WithMany(p => p.Users)
-                .HasForeignKey(d => d.DivBranchId)
-                .HasConstraintName("user_ibfk_6");
-
-            entity.HasOne(d => d.DivLoan).WithMany(p => p.Users)
-                .HasForeignKey(d => d.DivLoanId)
-                .HasConstraintName("user_ibfk_5");
-
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)
                 .HasConstraintName("user_ibfk_2");
+
+            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Users)
+                .HasForeignKey(d => d.Master_Department_BranchId)
+                .HasConstraintName("user_ibfk_5");
 
             entity.HasOne(d => d.Position).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PositionId)

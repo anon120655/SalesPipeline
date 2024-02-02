@@ -1,48 +1,29 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
 using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
-using SalesPipeline;
-using SalesPipeline.Shared;
-using SalesPipeline.Shared.Modals;
-using SalesPipeline.ViewModels;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources;
 using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
-using SalesPipeline.Utils.PropertiesModel;
-using BlazorAnimate;
-using BlazorBootstrap;
 
-namespace SalesPipeline.Pages.Settings.Division
+namespace SalesPipeline.Pages.Settings.Departments
 {
-    public partial class SettingDivBranchForm
+	public partial class SettingDepLoanForm
 	{
 		[Parameter]
 		public Guid? id { get; set; }
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private LookUpResource LookUp = new();
 		private User_PermissionCustom _permission = new();
-		private Master_Division_BranchCustom formModel = new();
+		private Master_Department_LoanCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetDivBranch) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetDivLoan) ?? new User_PermissionCustom();
 			StateHasChanged();
 
+			await SetInitManual();
 			await SetModel();
 		}
 
@@ -56,17 +37,26 @@ namespace SalesPipeline.Pages.Settings.Division
 			}
 		}
 
-		protected async Task OnInvalidSubmit()
+		protected async Task SetInitManual()
 		{
-			await Task.Delay(100);
-			await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
+			var dataPosition = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataPosition != null && dataPosition.Status)
+			{
+				LookUp.DepartmentBranch = dataPosition.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataPosition?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+			StateHasChanged();
 		}
 
 		protected async Task SetModel()
 		{
 			if (id.HasValue)
 			{
-				var data = await _masterViewModel.GetDivBranchById(id.Value);
+				var data = await _masterViewModel.GetDepLoansById(id.Value);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
@@ -79,22 +69,28 @@ namespace SalesPipeline.Pages.Settings.Division
 			}
 		}
 
+		protected async Task OnInvalidSubmit()
+		{
+			await Task.Delay(100);
+			await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
+		}
+
 		protected async Task Save()
 		{
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_Division_BranchCustom> response;
+			ResultModel<Master_Department_LoanCustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue)
 			{
-				response = await _masterViewModel.UpdateDivBranch(formModel);
+				response = await _masterViewModel.UpdateDepLoans(formModel);
 			}
 			else
 			{
-				response = await _masterViewModel.CreateDivBranch(formModel);
+				response = await _masterViewModel.CreateDepLoans(formModel);
 			}
 
 			if (response.Status)
@@ -112,7 +108,7 @@ namespace SalesPipeline.Pages.Settings.Division
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/setting/div/branch");
+			_Navs.NavigateTo("/setting/dep/loan");
 		}
 
 		protected void ShowLoading()
@@ -126,6 +122,6 @@ namespace SalesPipeline.Pages.Settings.Division
 			isLoading = false;
 			StateHasChanged();
 		}
-
+	
 	}
 }

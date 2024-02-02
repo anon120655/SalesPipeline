@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterDivBranch : IMasterDivBranch
+	public class MasterDivBranch : IMasterDepBranch
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -31,13 +31,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		//ฝ่ายกิจการสาขา
-		public async Task<Master_Division_BranchCustom> Create(Master_Division_BranchCustom model)
+		public async Task<Master_Department_BranchCustom> Create(Master_Department_BranchCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				var masterDivisionBranch = new Data.Entity.Master_Division_Branch()
+				var masterDivisionBranch = new Data.Entity.Master_Department_Branch()
 				{
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
@@ -52,17 +52,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_transaction.Commit();
 
-				return _mapper.Map<Master_Division_BranchCustom>(masterDivisionBranch);
+				return _mapper.Map<Master_Department_BranchCustom>(masterDivisionBranch);
 			}
 		}
 
-		public async Task<Master_Division_BranchCustom> Update(Master_Division_BranchCustom model)
+		public async Task<Master_Department_BranchCustom> Update(Master_Department_BranchCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				var _dateNow = DateTime.Now;
 
-				var masterDivisionBranch = await _repo.Context.Master_Division_Branchs.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				var masterDivisionBranch = await _repo.Context.Master_Department_Branches.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
 				if (masterDivisionBranch != null)
 				{
 					masterDivisionBranch.UpdateDate = _dateNow;
@@ -75,14 +75,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_transaction.Commit();
 				}
 
-				return _mapper.Map<Master_Division_BranchCustom>(masterDivisionBranch);
+				return _mapper.Map<Master_Department_BranchCustom>(masterDivisionBranch);
 			}
 		}
 
 		public async Task DeleteById(UpdateModel model)
 		{
 			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Master_Division_Branchs.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_Department_Branches.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				query.UpdateDate = DateTime.Now;
@@ -99,7 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var _status = parsedValue ? (short)1 : (short)0;
 				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Master_Division_Branchs.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				var query = await _repo.Context.Master_Department_Branches.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 				if (query != null)
 				{
 					query.UpdateBy = model.userid;
@@ -110,18 +110,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Master_Division_BranchCustom> GetById(Guid id)
+		public async Task<Master_Department_BranchCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_Division_Branchs
+			var query = await _repo.Context.Master_Department_Branches
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<Master_Division_BranchCustom>(query);
+			return _mapper.Map<Master_Department_BranchCustom>(query);
 		}
 
-		public async Task<PaginationView<List<Master_Division_BranchCustom>>> GetBranchs(allFilter model)
+		public async Task<PaginationView<List<Master_Department_BranchCustom>>> GetBranchs(allFilter model)
 		{
-			var query = _repo.Context.Master_Division_Branchs
+			var query = _repo.Context.Master_Department_Branches
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
@@ -144,9 +144,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Master_Division_BranchCustom>>()
+			return new PaginationView<List<Master_Department_BranchCustom>>()
 			{
-				Items = _mapper.Map<List<Master_Division_BranchCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Master_Department_BranchCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}

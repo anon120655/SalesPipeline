@@ -27,8 +27,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public INotifys Notifys { get; }
 		public IFileRepository Files { get; }
 		public IMaster Master { get; }
-		public IMasterDivBranch MasterDivBranch { get; }
-		public IMasterDivLoan MasterDivLoan { get; }
+		public IMasterDepBranch MasterDepBranch { get; }
+		public IMasterDepLoan MasterDepLoan { get; }
 		public IMasterLoanTypes MasterLoanTypes { get; }
 		public IMasterReasonReturns MasterReasonReturn { get; }
 		public IMasterSLAOperations MasterSLAOperation { get; }
@@ -62,8 +62,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Notifys = new Notifys(this, _db, settings);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
-			MasterDivBranch = new MasterDivBranch(this, _db, settings, _mapper);
-			MasterDivLoan = new MasterDivLoan(this, _db, settings, _mapper);
+			MasterDepBranch = new MasterDivBranch(this, _db, settings, _mapper);
+			MasterDepLoan = new MasterDivLoan(this, _db, settings, _mapper);
 			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
 			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);
 			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);

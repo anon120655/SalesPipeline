@@ -86,8 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Email = model.Email;
 				user.Tel = model.Tel;
 				user.BranchId = model.BranchId;
-				user.DivBranchId = model.DivBranchId;
-				user.DivLoanId = model.DivLoanId;
+				user.Master_Department_BranchId = model.Master_Department_BranchId;
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
@@ -136,8 +135,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Email = model.Email;
 					user.Tel = model.Tel;
 					user.BranchId = model.BranchId;
-					user.DivBranchId = model.DivBranchId;
-					user.DivLoanId = model.DivLoanId;
+					user.Master_Department_BranchId = model.Master_Department_BranchId;
 					user.PositionId = model.PositionId;
 					user.LevelId = model.LevelId;
 					user.RoleId = model.RoleId;
@@ -185,8 +183,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> GetById(int id)
 		{
 			var query = await _repo.Context.Users
-				.Include(x => x.DivLoan)
-				.Include(x => x.DivBranch)
+				.Include(x => x.Master_Department_Branch)
 				.Include(x => x.Position)
 				.Include(x => x.Branch)
 				.Include(x => x.Role)
@@ -208,8 +205,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.DivLoan)
-										   .Include(x => x.DivBranch)
+										   .Include(x => x.Master_Department_Branch)
 										   .Include(x => x.Branch)
 										   .Where(x => x.Status != StatusModel.Delete)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)

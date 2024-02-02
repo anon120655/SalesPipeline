@@ -6,24 +6,23 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Settings.Division
+namespace SalesPipeline.Pages.Settings.Departments
 {
-	public partial class SettingDivLoan
+	public partial class SettingDepBranch
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<Master_Division_LoanCustom>? Items;
+		private List<Master_Department_BranchCustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetDivLoan) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetDivBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
-
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -56,14 +55,14 @@ namespace SalesPipeline.Pages.Settings.Division
 
 		protected async Task SetModel()
 		{
-			var data = await _masterViewModel.GetDivLoans(filter);
+			var data = await _masterViewModel.GetDepBranchs(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/setting/div/loan";
+					Pager.UrlAction = "/setting/dep/branch";
 				}
 			}
 			else
@@ -91,7 +90,7 @@ namespace SalesPipeline.Pages.Settings.Division
 		{
 			await modalConfirm.OnHideConfirm();
 
-			var data = await _masterViewModel.DeleteDivLoansById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			var data = await _masterViewModel.DeleteDepBranchById(new UpdateModel() { id = id, userid = UserInfo.Id });
 			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 			{
 				_errorMessage = data?.errorMessage;
@@ -104,7 +103,7 @@ namespace SalesPipeline.Pages.Settings.Division
 		{
 			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
 			{
-				var data = await _masterViewModel.UpdateStatusDivLoansById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+				var data = await _masterViewModel.UpdateStatusDepBranchById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
 				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 				{
 					_errorMessage = data?.errorMessage;
@@ -136,7 +135,6 @@ namespace SalesPipeline.Pages.Settings.Division
 			await SetQuery(parematerAll);
 			StateHasChanged();
 		}
-
 
 
 	}
