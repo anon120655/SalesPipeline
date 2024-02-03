@@ -12,9 +12,9 @@ using NPOI.Util;
 using NPOI.SS.Formula.Functions;
 using BlazorBootstrap;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class LoanUserUploadFile
+	public partial class AdminUserUploadFile
 	{
 		private string? _errorMessage = null;
 		private bool isLoading = false;
@@ -199,7 +199,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/loans/user");
+			_Navs.NavigateTo("/user");
 		}
 
 		protected void ShowLoading()
@@ -236,7 +236,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		private void OnHiddenResult()
 		{
-			_Navs.NavigateTo("/loans/user");
+			Cancel();
 		}
 
 

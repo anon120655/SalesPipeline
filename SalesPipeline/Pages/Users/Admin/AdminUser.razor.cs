@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Components;
-using SalesPipeline.Shared.Modals;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils;
-using SalesPipeline.ViewModels;
+using global::Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Shared.Modals;
+using SalesPipeline.Utils.Resources.Thailands;
 
-namespace SalesPipeline.Pages.Users.RM
+namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class RMUser
+	public partial class AdminUser
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -22,7 +22,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.RMUser) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
 			await SetInitManual();
@@ -65,17 +65,6 @@ namespace SalesPipeline.Pages.Users.RM
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
-			if (dataBranchs != null && dataBranchs.Status)
-			{
-				LookUp.Branchs = dataBranchs.Data;
-			}
-			else
-			{
-				_errorMessage = dataBranchs?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			StateHasChanged();
 		}
 
@@ -94,7 +83,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		protected async Task SetModel()
 		{
-			filter.createby = UserInfo.Id;
+			filter.type = UserTypes.Admin;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -102,7 +91,7 @@ namespace SalesPipeline.Pages.Users.RM
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/rm/user";
+					Pager.UrlAction = "/admin";
 				}
 			}
 			else
@@ -129,16 +118,6 @@ namespace SalesPipeline.Pages.Users.RM
 			if (LookUp.UserLevels != null && id.HasValue)
 			{
 				return LookUp.UserLevels.FirstOrDefault(x => x.Id == id)?.Name;
-			}
-
-			return null;
-		}
-
-		protected string? GetBranchName(Guid? id)
-		{
-			if (LookUp.Branchs != null && id.HasValue)
-			{
-				return LookUp.Branchs.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;
@@ -247,6 +226,7 @@ namespace SalesPipeline.Pages.Users.RM
 			await SetQuery(parematerAll);
 			StateHasChanged();
 		}
+
 
 	}
 }

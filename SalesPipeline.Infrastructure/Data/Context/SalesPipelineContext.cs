@@ -42,6 +42,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_ContactChannel> Master_ContactChannels { get; set; }
 
+    public virtual DbSet<Master_Department> Master_Departments { get; set; }
+
     public virtual DbSet<Master_Department_Branch> Master_Department_Branches { get; set; }
 
     public virtual DbSet<Master_Department_Loan> Master_Department_Loans { get; set; }
@@ -674,6 +676,25 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Master_Department>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Department");
+
+            entity.Property(e => e.Code)
+                .HasMaxLength(255)
+                .HasComment("รหัส");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<Master_Department_Branch>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -767,6 +788,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=Admin 2=User")
+                .HasColumnType("int(11)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
@@ -1241,7 +1265,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ระดับ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
-            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายงาน");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PositionId)
                 .HasComment("ตำแหน่ง")

@@ -1,5 +1,5 @@
-﻿@page "/rm/user/create"
-@page "/rm/user/update/{id:int}"
+﻿@page "/user/create"
+@page "/user/update/{id:int}"
 
 <PageTitle>จัดการ User</PageTitle>
 
@@ -74,17 +74,17 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										@* <select @bind="formModel.DivBranchId" class="form-select">
+										<select @bind="formModel.Master_Department_BranchId" class="form-select">
 											<option value="">เลือก</option>
-											@if (LookUp.DivisionBranch?.Count > 0)
+											@if (LookUp.DepartmentBranch?.Count > 0)
 											{
-												foreach (var item in LookUp.DivisionBranch)
+												foreach (var item in LookUp.DepartmentBranch)
 												{
 													<option value="@item.Id">@item.Name</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.DivBranchId)" /> *@
+										<ValidationMessage For="@(() => formModel.Master_Department_BranchId)" />
 									</div>
 								</div>
 								<div class="row mb-3">

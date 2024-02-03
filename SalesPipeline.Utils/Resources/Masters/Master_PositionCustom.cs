@@ -25,6 +25,11 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		public string? Name { get; set; }
 
+		/// <summary>
+		/// 1=Admin 2=User
+		/// </summary>
+		public int Type { get; set; }
+
 
 	}
 }

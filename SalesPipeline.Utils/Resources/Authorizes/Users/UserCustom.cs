@@ -54,11 +54,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// สาขา
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? BranchId { get; set; }
 
 		/// <summary>
 		/// ฝ่ายกิจการสาขาภาค
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Department_BranchId { get; set; }
 
 		/// <summary>

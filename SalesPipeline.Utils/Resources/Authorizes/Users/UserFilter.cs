@@ -11,6 +11,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? searchtxt { get; set; }
 		public string? employeeid { get; set; }
 		public string? fullname { get; set; }
+		public string? type { get; set; }
 		public string? spositions { get; set; }
 		public List<string?>? PositionsList { get; set; }
 		public string? suserlevels { get; set; }
@@ -42,6 +43,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 			if (!String.IsNullOrEmpty(fullname))
 				ParameterAll += $"&fullname={fullname}";
+
+			if (!String.IsNullOrEmpty(type))
+				ParameterAll += $"&type={type}";
 
 			if (PositionsList != null && PositionsList.Count(x=> !String.IsNullOrEmpty(x)) > 0)
 			{
@@ -78,6 +82,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(fullname), out var _fullname))
 				fullname = _fullname;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(type), out var _type))
+				type = _type;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(id), out var _id))
 			{

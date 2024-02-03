@@ -127,7 +127,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;
-					user.EmployeeId = model.EmployeeId;
+					//user.EmployeeId = model.EmployeeId;
 					user.TitleName = model.TitleName;
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
@@ -207,7 +207,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Master_Department_Branch)
 										   .Include(x => x.Branch)
-										   .Where(x => x.Status != StatusModel.Delete)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
 			if (model.status.HasValue)
@@ -216,9 +216,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//ผู้ใช้ภายใต้การดูแล
-			if (model.createby.HasValue && model.createby > 0)
+			//if (model.createby.HasValue && model.createby > 0)
+			//{
+			//	query = query.Where(x => x.CreateBy == model.createby.Value);
+			//}
+
+			if (!String.IsNullOrEmpty(model.type))
 			{
-				query = query.Where(x => x.CreateBy == model.createby.Value);
+				if (model.type == UserTypes.Admin)
+				{
+					query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
+				}
+				else if (model.type == UserTypes.User)
+				{
+					query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
+				}
 			}
 
 			if (!String.IsNullOrEmpty(model.employeeid))
@@ -436,7 +448,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model)
 		{
-			var query = _repo.Context.User_Roles.Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.User_Roles.Where(x => x.Status != StatusModel.Delete && x.Code != RoleCodes.SUPERADMIN && x.Code != RoleCodes.ADMIN)
 												 .Include(x => x.User_Permissions)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();

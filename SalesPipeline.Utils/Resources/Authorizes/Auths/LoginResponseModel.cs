@@ -22,12 +22,11 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public int? PositionId { get; set; }
 		public string? PositionName { get; set; }
 		public Guid? Master_Department_BranchId { get; set; }
-		public string? DivBranchName { get; set; }
-		public Guid? DivLoanId { get; set; }
-		public string? DivLoanName { get; set; }
+		public string? Master_Department_BranchName { get; set; }
 		public int? RoleId { get; set; }
 		public int? RoleCode { get; set; }
 		public string? RoleName { get; set; }
+		public string? LevelName { get; set; }
 		public string? access_token { get; set; }
 		public string? expires_in { get; set; }
 		public List<User_PermissionCustom> User_Permissions { get; set; }

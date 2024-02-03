@@ -12,11 +12,14 @@
 				<p class="fs_0_9r">@UserInfo.PositionName</p>
 			</div>
 			<div class="col-12">
-				<p class="fs_0_9r">@UserInfo.DivBranchName</p>
+				<p class="fs_0_9r">@UserInfo.Master_Department_BranchName</p>
 			</div>
-			<div class="col-12">
-				<p class="fs_0_9r">@UserInfo.DivLoanName</p>
-			</div>
+			@if (!String.IsNullOrEmpty(UserInfo.LevelName))
+			{
+				<div class="col-12">
+					<p class="fs_0_9r">ระดับ @UserInfo.LevelName</p>
+				</div>
+			}
 		</div>
 		<div class="sb-sidenav-menu p-2">
 			<Animate Animation="Animations.FadeRight" Duration="TimeSpan.FromSeconds(0.5)" Delay="TimeSpan.FromSeconds(0.1)">

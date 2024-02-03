@@ -3,12 +3,9 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-/// <summary>
-/// ตำแหน่ง
-/// </summary>
-public partial class Master_Position
+public partial class Master_Department
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
@@ -23,12 +20,10 @@ public partial class Master_Position
 
     public int UpdateBy { get; set; }
 
-    public string? Name { get; set; }
-
     /// <summary>
-    /// 1=Admin 2=User
+    /// รหัส
     /// </summary>
-    public int Type { get; set; }
+    public string Code { get; set; } = null!;
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public string? Name { get; set; }
 }

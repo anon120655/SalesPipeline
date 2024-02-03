@@ -1,6 +1,6 @@
-﻿@page "/rm/user"
+﻿@page "/admin"
 
-<PageTitle>จัดการ User</PageTitle>
+<PageTitle>ระบบผู้ใช้งาน</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic">จัดการ User</p>
+							<p class="back_topic">ระบบผู้ใช้งาน</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -79,8 +79,8 @@
 							<Dropdown Class="w-100">
 								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
 								<DropdownMenu>
-									<DropdownItem To="/rm/user/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-									<DropdownItem To="/rm/user/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+									<DropdownItem To="/admin/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+									<DropdownItem To="/admin/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
 								</DropdownMenu>
 							</Dropdown>
 						</div>
@@ -94,10 +94,9 @@
 											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
-											<th class="text-center">ฝ่าย</th>
+											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ตำแหน่ง</th>
 											<th class="text-center">ระดับ</th>
-											<th class="text-center">สาขา</th>
 											<th class="text-center">วันที่เพิ่ม</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">การใช้งาน</th>
@@ -133,21 +132,16 @@
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
 													<td class="text-center">
-														@* @if (item.DivBranchId != null && item.DivBranch != null)
+														@if (item.Role != null)
 														{
-															<p>@item.DivBranch.Name</p>
+															<p>@item.Role.Name</p>
 														}
-														@if (item.DivLoanId != null && item.DivLoan != null)
-														{
-															<p>@item.DivLoan.Name</p>
-														} *@
 													</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
 													<td class="text-center">@GetLevelName(item.LevelId)</td>
-													<td class="text-center">@GetBranchName(item.BranchId)</td>
 													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
 													<td class="text-center">
-														<a href="/rm/user/update/@item.Id">แก้ไข</a> /
+														<a href="/admin/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.FullName))'>ลบ</a>
 													</td>
 													<td class="text-center">

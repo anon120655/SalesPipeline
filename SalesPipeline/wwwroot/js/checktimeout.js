@@ -7,10 +7,10 @@ function timeOutCall(dotnethelper) {
 	function resetTimeDelay() {
 		var _path = window.location.pathname;
 		console.log(_path)
-		if (_path == "/loans/user") {
-			console.log('resetTimeDelay...')
-			dotnethelper.invokeMethodAsync("TimerInterval");
-		}
+		//if (_path == "/user") {
+		console.log('resetTimeDelay...')
+		dotnethelper.invokeMethodAsync("TimerInterval");
+		//}
 	}
 }
 
@@ -22,10 +22,10 @@ function initializeinactivitytimer(dotnetHelper) {
 	document.onclick = resetTimer;
 
 	function resetTimer() {
-		var milliseconds = 600000; //600,000 milliseconds = 10 minuts
+		var milliseconds = 600000 * 3; //600000 milliseconds = 10 minuts //600000*3=30 นาที
 		var _path = window.location.pathname;
 		clearTimeout(timer);
-		if (_path == "/loans/user") {
+		if (_path == "/user") {
 			//milliseconds = 10000;
 		}
 		//console.log(milliseconds);

@@ -1,5 +1,5 @@
-﻿@page "/loans/user/create"
-@page "/loans/user/update/{id:int}"
+﻿@page "/admin/create"
+@page "/admin/update/{id:int}"
 
 <PageTitle>ระบบผู้ใช้งาน</PageTitle>
 
@@ -24,7 +24,7 @@
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสพนักงาน<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.EmployeeId" type="text" class="form-control">
+										<input @bind="formModel.EmployeeId" type="text" class="form-control" disabled="@(id.HasValue ? true : false)">
 										<ValidationMessage For="@(() => formModel.EmployeeId)" />
 									</div>
 								</div>
@@ -68,17 +68,25 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										@* <select @bind="formModel.DivLoanId" class="form-select">
+										<select class="form-select">
 											<option value="">เลือก</option>
-											@if (LookUp.DepartmentLoan?.Count > 0)
+										</select>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @onchange="((e) => OnRoles(e.Value,null))" class="form-select" value="@formModel.RoleId">
+											<option value="">เลือก</option>
+											@if (ItemsUserRole?.Count > 0)
 											{
-												foreach (var item in LookUp.DepartmentLoan)
+												foreach (var item in ItemsUserRole)
 												{
 													<option value="@item.Id">@item.Name</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.DivLoanId)" /> *@
+										<ValidationMessage For="@(() => formModel.RoleId)" />
 									</div>
 								</div>
 								<div class="row mb-3">
@@ -95,22 +103,6 @@
 											}
 										</select>
 										<ValidationMessage For="@(() => formModel.LevelId)" />
-									</div>
-								</div>
-								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
-									<div class="col-sm-4">
-										<select @bind="formModel.RoleId" class="form-select">
-											<option value="">เลือก</option>
-											@if (ItemsUserRole?.Count > 0)
-											{
-												foreach (var item in ItemsUserRole)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.RoleId)" />
 									</div>
 								</div>
 							</div>

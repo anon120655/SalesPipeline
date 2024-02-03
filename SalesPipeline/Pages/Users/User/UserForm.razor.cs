@@ -6,9 +6,9 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.ViewModels;
 
-namespace SalesPipeline.Pages.Users.RM
+namespace SalesPipeline.Pages.Users.User
 {
-	public partial class RMUserForm
+	public partial class UserForm
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -57,11 +57,15 @@ namespace SalesPipeline.Pages.Users.RM
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+			else
+			{
+				isLoadingContent = false;
+			}
 		}
 
 		protected async Task SetInitManual()
 		{
-			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active });
+			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active, type = UserTypes.User });
 			if (dataPosition != null && dataPosition.Status)
 			{
 				LookUp.Positions = dataPosition.Data;
@@ -108,7 +112,10 @@ namespace SalesPipeline.Pages.Users.RM
 			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 			if (dataLevels != null && dataLevels.Status)
 			{
-				LookUp.UserLevels = dataLevels.Data;
+				if (dataLevels.Data?.Count > 0)
+				{
+					LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 12).ToList();
+				}
 			}
 			else
 			{
@@ -116,16 +123,6 @@ namespace SalesPipeline.Pages.Users.RM
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
-			if (data != null && data.Status)
-			{
-				ItemsUserRole = data.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
 
 			StateHasChanged();
 		}
@@ -169,7 +166,7 @@ namespace SalesPipeline.Pages.Users.RM
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/rm/user");
+			_Navs.NavigateTo("/user");
 		}
 
 		protected void ShowLoading()

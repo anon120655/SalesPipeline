@@ -9,13 +9,13 @@ namespace SalesPipeline.Utils
 	public class RoleCodes
 	{
 		/// <summary>
-		/// RM พนักงานขาย
+		/// ผู้ดูแลระบบ (SuperAdmin)
 		/// </summary>
-		public const string RM = "RM";
+		public const string SUPERADMIN = "SUPERADMIN";
 		/// <summary>
-		/// ผู้จัดการศูนย์
+		/// ผู้ดูแลระบบ (Admin)
 		/// </summary>
-		public const string MANAGERCENTER = "MANAGERCENTER";
+		public const string ADMIN = "ADMIN";
 		/// <summary>
 		/// สายงานธุรกิจสินเชื่อ
 		/// </summary>
@@ -24,6 +24,14 @@ namespace SalesPipeline.Utils
 		/// สายงานกิจการสาขาภาค
 		/// </summary>
 		public const string BRANCH = "BRANCH";
+		/// <summary>
+		/// ผู้จัดการศูนย์
+		/// </summary>
+		public const string MANAGERCENTER = "MANAGERCENTER";
+		/// <summary>
+		/// RM พนักงานขาย
+		/// </summary>
+		public const string RM = "RM";
 	}
 }
 

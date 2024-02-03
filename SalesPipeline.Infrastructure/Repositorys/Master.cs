@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Crypto;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -36,6 +37,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Where(x => x.Status != StatusModel.Delete)
 				.OrderBy(x => x.Id)
 				.AsQueryable();
+
+			if (int.TryParse(model.type, out int _type))
+			{
+				query = query.Where(x => x.Type == _type);
+			}
 
 			return _mapper.Map<IList<Master_PositionCustom>>(await query.ToListAsync());
 		}

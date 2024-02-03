@@ -1,14 +1,14 @@
-using global::Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
+using Microsoft.AspNetCore.Components;
 using SalesPipeline.Shared.Modals;
-using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils;
+using SalesPipeline.ViewModels;
+using Microsoft.JSInterop;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.User
 {
-	public partial class LoanUser
+	public partial class User
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -22,7 +22,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.RMUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
 			await SetInitManual();
@@ -65,6 +65,17 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
+			if (dataBranchs != null && dataBranchs.Status)
+			{
+				LookUp.Branchs = dataBranchs.Data;
+			}
+			else
+			{
+				_errorMessage = dataBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 		}
 
@@ -83,6 +94,8 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected async Task SetModel()
 		{
+			filter.type = UserTypes.User;
+			filter.createby = UserInfo.Id;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -90,7 +103,7 @@ namespace SalesPipeline.Pages.Users.Loans
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/loans/user";
+					Pager.UrlAction = "/user";
 				}
 			}
 			else
@@ -117,6 +130,16 @@ namespace SalesPipeline.Pages.Users.Loans
 			if (LookUp.UserLevels != null && id.HasValue)
 			{
 				return LookUp.UserLevels.FirstOrDefault(x => x.Id == id)?.Name;
+			}
+
+			return null;
+		}
+
+		protected string? GetBranchName(Guid? id)
+		{
+			if (LookUp.Branchs != null && id.HasValue)
+			{
+				return LookUp.Branchs.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;
@@ -225,7 +248,6 @@ namespace SalesPipeline.Pages.Users.Loans
 			await SetQuery(parematerAll);
 			StateHasChanged();
 		}
-
 
 	}
 }

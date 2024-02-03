@@ -4,9 +4,9 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class LoanPermissionForm
+	public partial class AdminPermissionForm
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -107,7 +107,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected void Cancel()
 		{
-			_Navs.NavigateTo("/loans/permission");
+			_Navs.NavigateTo("/permission");
 		}
 
 		protected void ShowLoading()

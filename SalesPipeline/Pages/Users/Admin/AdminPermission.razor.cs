@@ -5,9 +5,9 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class LoanPermission
+	public partial class AdminPermission
 	{
 		public int? id { get; set; }
 		string? _errorMessage = null;
@@ -65,7 +65,7 @@ namespace SalesPipeline.Pages.Users.Loans
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/loans/permission";
+					Pager.UrlAction = "/permission";
 				}
 			}
 			else

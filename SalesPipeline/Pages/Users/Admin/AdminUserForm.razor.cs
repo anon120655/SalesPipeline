@@ -5,9 +5,9 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 
-namespace SalesPipeline.Pages.Users.Loans
+namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class LoanUserForm
+	public partial class AdminUserForm
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -25,13 +25,13 @@ namespace SalesPipeline.Pages.Users.Loans
 			StateHasChanged();
 
 			await SetInitManual();
-			await SetModel();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
+				await SetModel();
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
@@ -45,6 +45,10 @@ namespace SalesPipeline.Pages.Users.Loans
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
+					if (formModel.RoleId.HasValue)
+					{
+						await OnRoles(formModel.RoleId,formModel.LevelId);
+					}
 				}
 				else
 				{
@@ -56,7 +60,7 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		protected async Task SetInitManual()
 		{
-			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active });
+			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active, type = UserTypes.Admin });
 			if (dataPosition != null && dataPosition.Status)
 			{
 				LookUp.Positions = dataPosition.Data;
@@ -78,21 +82,11 @@ namespace SalesPipeline.Pages.Users.Loans
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-			if (dataLevels != null && dataLevels.Status)
-			{
-				LookUp.UserLevels = dataLevels.Data;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
 
 			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
 			{
-				ItemsUserRole = data.Data?.Items;
+				ItemsUserRole = data.Data?.Items.Where(x => x.Code.Contains(RoleCodes.LOAN)).ToList();
 			}
 			else
 			{
@@ -142,7 +136,44 @@ namespace SalesPipeline.Pages.Users.Loans
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/loans/user");
+			_Navs.NavigateTo("/admin");
+		}
+
+		protected async Task OnRoles(object? val, int? levelId = null)
+		{
+			formModel.RoleId = null;
+			formModel.LevelId = levelId;
+			StateHasChanged();
+
+			if (val != null && int.TryParse(val.ToString(), out int roleid))
+			{
+				formModel.RoleId = roleid;
+				StateHasChanged();
+
+				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+				if (dataLevels != null && dataLevels.Status)
+				{
+					if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+					{
+						if (formModel.RoleId == 3) //สายงานธุรกิจสินเชื่อ 10-12
+						{
+							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+						}
+						else if (formModel.RoleId == 4) //สายงานธุรกิจสินเชื่อ 4-9
+						{
+							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+						}
+
+						StateHasChanged();
+					}
+				}
+				else
+				{
+					_errorMessage = dataLevels?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+			}
 		}
 
 		protected void ShowLoading()

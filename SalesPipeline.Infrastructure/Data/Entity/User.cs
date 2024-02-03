@@ -49,7 +49,7 @@ public partial class User
     public Guid? BranchId { get; set; }
 
     /// <summary>
-    /// ฝ่ายงาน
+    /// ฝ่ายกิจการสาขาภาค
     /// </summary>
     public Guid? Master_Department_BranchId { get; set; }
 

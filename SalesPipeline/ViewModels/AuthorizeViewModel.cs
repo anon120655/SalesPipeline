@@ -209,10 +209,10 @@ namespace SalesPipeline.ViewModels
 								data.RoleId = datauserMap.RoleId;
 
 								if (datauserMap.Master_Department_Branch != null)								
-									data.DivBranchName = datauserMap.Master_Department_Branch.Name;
+									data.Master_Department_BranchName = datauserMap.Master_Department_Branch.Name;
 
-								//if (datauserMap.DivLoan != null)
-								//	data.DivLoanName = datauserMap.DivLoan.Name;
+								if (datauserMap.LevelId != null)
+									data.LevelName = datauserMap.LevelId.ToString();
 
 								if (datauserMap.Position != null)
 									data.PositionName = datauserMap.Position.Name;
