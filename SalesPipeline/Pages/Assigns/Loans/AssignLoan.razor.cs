@@ -83,6 +83,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task SetModel()
 		{
+			filter.pagesize = 100;
 			var data = await _assignmentViewModel.GetListAutoAssign(filter);
 			if (data != null && data.Status)
 			{

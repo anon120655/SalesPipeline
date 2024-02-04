@@ -472,6 +472,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task CreateAssignmentRMAll(allFilter model)
+		{
+			var users = await _repo.Context.Users.Include(x => x.Role)
+										   .Include(x => x.Assignments)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignments.Count == 0)
+										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+										   .ToListAsync();
+			if (users.Count > 0)
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					foreach (var item in users)
+					{
+						var assignment = await _repo.Assignment.Create(new()
+						{
+							UserId = item.Id,
+							EmployeeId = item.EmployeeId,
+							EmployeeName = item.FullName,
+						});
+					}
 
+					_transaction.Commit();
+				}
+			}
+
+		}
 	}
 }

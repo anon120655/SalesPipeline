@@ -8,6 +8,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.ValidationModel;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Assignments;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -28,7 +29,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPost("GetListAutoAssign")]
-		public async Task<IActionResult> GetList(allFilter model)
+		public async Task<IActionResult> GetListAutoAssign(allFilter model)
 		{
 			try
 			{
@@ -42,6 +43,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		//[AllowAnonymous]
 		[HttpPost("Assign")]
 		public async Task<IActionResult> Assign(List<AssignmentCustom> model)
 		{

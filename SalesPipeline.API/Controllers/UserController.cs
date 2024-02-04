@@ -315,6 +315,23 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpGet("CreateAssignmentRMAll")]
+		public async Task<IActionResult> CreateAssignmentRMAll([FromQuery] int check)
+		{
+			try
+			{
+				if (check != 9999) throw new ExceptionCustom("not permission");
+
+				await _repo.User.CreateAssignmentRMAll(new());
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 	}
 }

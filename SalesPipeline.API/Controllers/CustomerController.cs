@@ -233,24 +233,24 @@ namespace SalesPipeline.API.Controllers
 				{
 					if (rolecode == RoleCodes.RM)
 					{
-						currentUserId = 5;
+						currentUserId = 13;
 						employeeName = $"RM_{provinceId}_{i} ทดสอบ";
 					}
 					else if (rolecode == RoleCodes.MANAGERCENTER)
 					{
-						currentUserId = 2;
+						currentUserId = 11;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
 						statusSaleId = StatusSaleModel.WaitAssign;
 					}
 					else if (rolecode == RoleCodes.LOAN)
 					{
-						currentUserId = 3;
+						currentUserId = 5;
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
 						statusSaleId = StatusSaleModel.WaitAssignCenter;
 					}
 					else if (rolecode == RoleCodes.BRANCH)
 					{
-						currentUserId = 4;
+						currentUserId = 9;
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
 						statusSaleId = StatusSaleModel.WaitAssignCenter;
 					}
@@ -343,6 +343,8 @@ namespace SalesPipeline.API.Controllers
 						}
 					});
 				}
+
+				await _repo.User.CreateAssignmentRMAll(new());
 
 				return Ok();
 			}

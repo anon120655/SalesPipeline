@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -116,12 +117,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<AssignmentCustom>>> GetListAutoAssign(allFilter model)
 		{
-			//*************** ต้องเช็ค จังหวัด อำเภอ เพิ่มเติม ****************
+			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
 
+			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales)
-												 .Include(x => x.User).ThenInclude(x=>x.Branch)
-												 .OrderByDescending(x => x.CreateDate)
+												 .Include(x => x.User).ThenInclude(x => x.Branch)
+												 .OrderBy(x => x.CurrentNumber)
 												 .AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -136,33 +138,46 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
-			var items = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+			var userAssignment = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
 
 			List<AssignmentCustom> responseItems = new();
 
-			//ลูกค้าที่ยังไม่ถูก assign
-			var sales = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign).ToListAsync();
-			if (sales.Count > 0)
+			//ลูกค้าที่ยังไม่ถูกมอบหมาย
+			var salesCustomer = await _repo.Context.Sales
+				.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
+				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+				.ToListAsync();
+
+			if (salesCustomer.Count > 0)
 			{
-				foreach (var item in items)
+				//แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
+				var partitionCustomer = GeneralUtils.PartitionList(salesCustomer, userAssignment.Count);
+
+				if (partitionCustomer.Length > 0)
 				{
-					var assignment = _mapper.Map<AssignmentCustom>(item);
-					assignment.Assignment_Sales = new();
-
-					foreach (var item_sales in sales)
+					int index_path = 0;
+					foreach (var item_path in partitionCustomer)
 					{
-						assignment.Assignment_Sales.Add(new()
-						{
-							Status = StatusModel.Active,
-							AssignmentId = assignment.Id,
-							SaleId = item_sales.Id,
-							IsActive = StatusModel.Active,
-							IsSelect = true
-						});
-						assignment.NumberAssignment = assignment.Assignment_Sales.Count();
-					}
+						//มอบหมายให้พนักงานเท่าๆ กัน
+						var assignment = _mapper.Map<AssignmentCustom>(userAssignment[index_path]);
+						assignment.Assignment_Sales = new();
+						assignment.User = null;
 
-					responseItems.Add(assignment);
+						foreach (var item_sales in item_path)
+						{
+							assignment.Assignment_Sales.Add(new()
+							{
+								Status = StatusModel.Active,
+								AssignmentId = assignment.Id,
+								SaleId = item_sales.Id,
+								IsActive = StatusModel.Active,
+								IsSelect = true
+							});
+							assignment.NumberAssignment = assignment.Assignment_Sales.Count();
+						}
+						responseItems.Add(assignment);
+						index_path++;
+					}
 				}
 			}
 
