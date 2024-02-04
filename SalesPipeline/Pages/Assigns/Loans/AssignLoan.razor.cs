@@ -17,9 +17,11 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private LookUpResource LookUp = new();
 		private List<AssignmentCustom>? Items;
 		public Pager? Pager;
+		int stepAssign = StepAssignLoanModel.Home;
 
 		protected override async Task OnInitializedAsync()
 		{
+			stepAssign = StepAssignLoanModel.Home;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignLoan) ?? new User_PermissionCustom();
 			StateHasChanged();
 		}
@@ -174,6 +176,13 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				StateHasChanged();
 				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 			}
+		}
+
+		protected async Task GotoStep(int step)
+		{
+			stepAssign = step;
+			StateHasChanged();
+			await Task.Delay(10);
 		}
 
 

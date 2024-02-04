@@ -176,11 +176,11 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
-		public async Task<IActionResult> CreateTestData([FromQuery] int check, int number, int provinceId, int amphurId, int tambolId, string rolecode)
+		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode)
 		{
 			try
 			{
-				if (check != 9999) throw new ExceptionCustom("not permission");
+				if (check != "$2a$11$GSuWBf34jTzwRsn3pvQnh.BSk6TGAfuYsRSzOn1ZE7CkZrF5EeNKq") throw new ExceptionCustom("not permission");
 
 				var contactChannel = new List<Guid>();
 				var businessType = new List<Guid>();

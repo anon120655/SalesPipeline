@@ -9,154 +9,408 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 my-2">
-				<div class="box_content">
-					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
-						<div class="p-2">
-							<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
-						</div>
-					</div>
-					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-						<div class="col mb-2">
-							<label class="form-label">รหัสพนักงาน</label>
-							<div class="input-group">
-								<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
+				@if (stepAssign == StepAssignLoanModel.Home)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
 							</div>
 						</div>
-						<div class="col mb-2">
-							<label class="form-label">ชื่อพนักงาน</label>
-							<div class="input-group">
-								<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">รหัสพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
 							</div>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">จังหวัด</label>
-							<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option value="">ทั้งหมด</option>
-								@if (LookUp.Provinces?.Count > 0)
-								{
-									foreach (var item in LookUp.Provinces)
+							<div class="col mb-2">
+								<label class="form-label">ชื่อพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
 									{
-										<option value="@item.ProvinceID">@item.ProvinceName</option>
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
 									}
-								}
-							</select>
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">อำเภอ</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
 						</div>
-						<div class="col mb-2">
-							<label class="form-label">อำเภอ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2 mt-3">
-							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
-								<i class="fa fa-search fa-xs"></i> ค้นหา
-							</button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<div class="table-responsive border-top">
-								<table class="table table_list">
-									<thead>
-										<tr>
-											<th class="text-center">รหัสพนักงาน</th>
-											<th class="text-center">ชื่อพนักงาน</th>
-											<th class="text-center">เบอร์ติดต่อ</th>
-											<th class="text-center">จังหวัดที่ดูแล</th>
-											<th class="text-center">อำเภอที่ดูแล</th>
-											<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
-											<th class="text-center">จำนวนการมอบหมาย</th>
-											<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-											<th class="text-center">จัดการมอบหมาย</th>
-										</tr>
-									</thead>
-									<tbody>
-										@if (Items == null)
-										{
-											<tr class="text-center align-middle">
-												<td colspan="100">
-													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-												</td>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">จัดการมอบหมาย</th>
 											</tr>
-										}
-										else if (Items.Count == 0)
-										{
-											<tr class="text-center align-middle">
-												<td colspan="100">
-													<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
-												</td>
-											</tr>
-										}
-										else
-										{
-											foreach (var item in Items)
+										</thead>
+										<tbody>
+											@if (Items == null)
 											{
-												item.CurrentUserId = UserInfo.Id;
-
-												bool status = item.Status == StatusModel.Active;
-												<tr>
-													<td class="text-center">@item.EmployeeId</td>
-													<td class="text-center">@item.EmployeeName</td>
-													<td class="text-center">@item.User?.Tel</td>
-													<td class="text-center">@item.User?.Branch?.Name</td>
-													<td class="text-center">-</td>
-													<td class="text-center">@(item.CurrentNumber)/100</td>
-													<td class="text-center">
-														@GeneralUtils.EmptyTo(item.NumberAssignment)
-													</td>
-													<td class="text-center">
-														@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
-													</td>
-													<td class="text-center">
-														<a class="" href="/assign/loan/manage">
-															<img src="/image/icon/ckeckbox.png" width="25" />
-														</a>
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 													</td>
 												</tr>
 											}
-										}
-									</tbody>
-								</table>
+											else if (Items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in Items)
+												{
+													item.CurrentUserId = UserInfo.Id;
+
+													bool status = item.Status == StatusModel.Active;
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.User?.Tel</td>
+														<td class="text-center">@item.User?.Branch?.Name</td>
+														<td class="text-center">-</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAssignment)
+														</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
+														</td>
+														<td class="text-center">
+															<a class="" @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer))">
+																<img src="/image/icon/ckeckbox.png" width="25" />
+															</a>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									@if (Items?.Count > 0)
+									{
+										<Button @onclick="Assign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											@if (isLoading)
+											{
+												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											}
+											มอบหมาย
+										</Button>
+									}
+								</div>
 							</div>
 						</div>
 					</div>
-					@* <div>
-						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-										TotalItems="@(Pager?.TotalItems ?? 0)"
-										Pager="@Pager"
-										OnShowOnPage="@OnSelectPagesize"
-										OnSelectedPage="@OnSelectPage"
-										ParameterAll="@filter?.SetParameter()">
-						</PaginationBack>
-					</div> *@
-					<div class="my-4 text-center">
-						<div class="d-flex bd-highlight align-items-center justify-content-center">
-							<div class="p-2 bd-highlight">
-								@if (Items?.Count > 0)
-								{
-									<Button @onclick="Assign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+				}
+				else if (stepAssign == StepAssignLoanModel.Customer)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกลูกค้า</p>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">จัดการมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (Items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (Items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in Items)
+												{
+													item.CurrentUserId = UserInfo.Id;
+
+													bool status = item.Status == StatusModel.Active;
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.User?.Tel</td>
+														<td class="text-center">@item.User?.Branch?.Name</td>
+														<td class="text-center">-</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAssignment)
+														</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
+														</td>
+														<td class="text-center">
+															<a class="" href="/assign/loan/manage">
+																<img src="/image/icon/ckeckbox.png" width="25" />
+															</a>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Home))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
 										}
-										มอบหมาย
+										ถัดไป
 									</Button>
-								}
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Assigned)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกผู้รับผิดชอบ</p>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">จัดการมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (Items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (Items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in Items)
+												{
+													item.CurrentUserId = UserInfo.Id;
+
+													bool status = item.Status == StatusModel.Active;
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.User?.Tel</td>
+														<td class="text-center">@item.User?.Branch?.Name</td>
+														<td class="text-center">-</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAssignment)
+														</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
+														</td>
+														<td class="text-center">
+															<a class="" href="/assign/loan/manage">
+																<img src="/image/icon/ckeckbox.png" width="25" />
+															</a>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ถัดไป
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Summary)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปผู้รับผิดชอบและลูกค้า</p>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Home))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ยืนยัน
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
 			</div>
 		</div>
 	</div>
