@@ -82,7 +82,6 @@ namespace SalesPipeline.Pages.Users.Admin
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-
 			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
 			{
@@ -143,6 +142,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			formModel.RoleId = null;
 			formModel.LevelId = levelId;
+			LookUp.UserLevels = new();
 			StateHasChanged();
 
 			if (val != null && int.TryParse(val.ToString(), out int roleid))

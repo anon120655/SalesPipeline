@@ -109,19 +109,30 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-			if (dataLevels != null && dataLevels.Status)
+			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
+			if (data != null && data.Status)
 			{
-				if (dataLevels.Data?.Count > 0)
-				{
-					LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 12).ToList();
-				}
+				ItemsUserRole = data.Data?.Items.Where(x => !x.Code.Contains(RoleCodes.LOAN)).ToList();
 			}
 			else
 			{
-				_errorMessage = dataLevels?.errorMessage;
+				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+
+			//var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+			//if (dataLevels != null && dataLevels.Status)
+			//{
+			//	if (dataLevels.Data?.Count > 0)
+			//	{
+			//		LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 12).ToList();
+			//	}
+			//}
+			//else
+			//{
+			//	_errorMessage = dataLevels?.errorMessage;
+			//	_utilsViewModel.AlertWarning(_errorMessage);
+			//}
 
 
 			StateHasChanged();
@@ -179,6 +190,44 @@ namespace SalesPipeline.Pages.Users.User
 		{
 			isLoading = false;
 			StateHasChanged();
+		}
+
+		protected async Task OnRoles(object? val, int? levelId = null)
+		{
+			formModel.RoleId = null;
+			formModel.LevelId = levelId;
+			LookUp.UserLevels = new();
+			StateHasChanged();
+
+			if (val != null && int.TryParse(val.ToString(), out int roleid))
+			{
+				formModel.RoleId = roleid;
+				StateHasChanged();
+
+				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+				if (dataLevels != null && dataLevels.Status)
+				{
+					if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+					{
+						if (formModel.RoleId == 5) //สายงานกิจการสาขาภาค  10-12
+						{
+							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+						}
+						else if (formModel.RoleId == 6) //สายงานกิจการสาขาภาค  4-9
+						{
+							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+						}
+
+						StateHasChanged();
+					}
+				}
+				else
+				{
+					_errorMessage = dataLevels?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+			}
 		}
 
 	}

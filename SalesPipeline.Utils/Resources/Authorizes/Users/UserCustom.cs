@@ -72,7 +72,6 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// ระดับ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? LevelId { get; set; }
 
 		/// <summary>

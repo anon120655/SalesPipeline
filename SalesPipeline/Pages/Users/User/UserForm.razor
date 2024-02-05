@@ -88,6 +88,22 @@
 									</div>
 								</div>
 								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @onchange="((e) => OnRoles(e.Value,null))" class="form-select" value="@formModel.RoleId">
+											<option value="">เลือก</option>
+											@if (ItemsUserRole?.Count > 0)
+											{
+												foreach (var item in ItemsUserRole)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.RoleId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.LevelId" class="form-select">
