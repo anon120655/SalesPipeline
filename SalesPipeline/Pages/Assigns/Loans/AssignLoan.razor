@@ -121,7 +121,7 @@
 															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
 														</td>
 														<td class="text-center">
-															<a class="" @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer))">
+															<a role="button" @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,item.Id))">
 																<img src="/image/icon/ckeckbox.png" width="25" />
 															</a>
 														</td>
@@ -162,6 +162,8 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Customer)
 				{
+					var _items = Items?.Where(x => x.Id == stepCustomerid).FirstOrDefault();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -169,7 +171,54 @@
 								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกลูกค้า</p>
 							</div>
 						</div>
-						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-2 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">ค้นหาลูกค้า</label>
+								<div class="input-group">
+									<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ประเภทธุรกิจ</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ศูนย์</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">อำเภอ</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
+						</div>
+						<div class="row my-2 mb-3 text-end">
+							<div class="col mb-2">
+								<button type="button" class="btn btn-primary text-white">
+									จำนวนการมอบหมาย (15/20)
+								</button>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col">
@@ -177,19 +226,17 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">รหัสพนักงาน</th>
-												<th class="text-center">ชื่อพนักงาน</th>
-												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">อำเภอที่ดูแล</th>
-												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
-												<th class="text-center">จำนวนการมอบหมาย</th>
-												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-												<th class="text-center">จัดการมอบหมาย</th>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+												<th class="text-center">รายละเอียด</th>
+												<th class="text-center">มอบหมาย/ส่งคืน</th>
 											</tr>
 										</thead>
 										<tbody>
-											@if (Items == null)
+											@if (_items == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -197,38 +244,34 @@
 													</td>
 												</tr>
 											}
-											else if (Items.Count == 0)
+											else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
-														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+														<em>ไม่พบข้อมูล</em>
 													</td>
 												</tr>
 											}
 											else
 											{
-												foreach (var item in Items)
+												foreach (var item in _items.Assignment_Sales)
 												{
-													item.CurrentUserId = UserInfo.Id;
-
 													bool status = item.Status == StatusModel.Active;
 													<tr>
-														<td class="text-center">@item.EmployeeId</td>
-														<td class="text-center">@item.EmployeeName</td>
-														<td class="text-center">@item.User?.Tel</td>
-														<td class="text-center">@item.User?.Branch?.Name</td>
-														<td class="text-center">-</td>
-														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.Sale?.CompanyName</td>
+														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
 														<td class="text-center">
-															@GeneralUtils.EmptyTo(item.NumberAssignment)
-														</td>
-														<td class="text-center">
-															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
-														</td>
-														<td class="text-center">
-															<a class="" href="/assign/loan/manage">
-																<img src="/image/icon/ckeckbox.png" width="25" />
+															<a class="btn btn-info btn-circle" href="">
+																<i class="fa-solid fa-eye text-white fs_15e"></i>
 															</a>
+														</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" value="">
+															</div>
 														</td>
 													</tr>
 												}
@@ -277,6 +320,22 @@
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">ค้นหา</label>
+								<div class="input-group">
+									<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col">

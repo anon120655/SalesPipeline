@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Sales;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,8 +42,11 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public string? Description { get; set; }
 
+		public virtual SaleCustom? Sale { get; set; }
+
 		//Custom
 		public bool IsSelect { get; set; }
+		public bool IsSelectMove { get; set; }
 
 	}
 }

@@ -16,6 +16,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
+		public string? juristicnumber { get; set; }
 		public string? type { get; set; }
 		public string? chain { get; set; }
 		public string? businesstype { get; set; }
@@ -55,6 +56,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(searchtxt))
 				ParameterAll += $"&searchtxt={searchtxt}";
+
+			if (!String.IsNullOrEmpty(juristicnumber))
+				ParameterAll += $"&juristicnumber={juristicnumber}";
 
 			if (!String.IsNullOrEmpty(type))
 				ParameterAll += $"&type={type}";
@@ -127,12 +131,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(searchtxt), out var _searchtxt))
 				searchtxt = _searchtxt;
 
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(juristicnumber), out var _juristicnumber))
+				juristicnumber = _juristicnumber;
+
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(chain), out var _chain))
 				chain = _chain;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(type), out var _type))
 				type = _type;
-			
+
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(businesstype), out var _businesstype))
 				businesstype = _businesstype;
 

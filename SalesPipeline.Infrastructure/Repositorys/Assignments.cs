@@ -121,7 +121,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
-												 //.Include(x => x.Assignment_Sales)
+												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
 												 .Include(x => x.User).ThenInclude(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber)
 												 .AsQueryable();
@@ -144,6 +144,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//ลูกค้าที่ยังไม่ถูกมอบหมาย
 			var salesCustomer = await _repo.Context.Sales
+				.Include(x => x.Customer)
 				.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.ToListAsync();
@@ -171,7 +172,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								AssignmentId = assignment.Id,
 								SaleId = item_sales.Id,
 								IsActive = StatusModel.Active,
-								IsSelect = true
+								IsSelect = true,
+								IsSelectMove = false,
+								Sale = _mapper.Map<SaleCustom>(item_sales)
 							});
 							assignment.NumberAssignment = assignment.Assignment_Sales.Count();
 						}

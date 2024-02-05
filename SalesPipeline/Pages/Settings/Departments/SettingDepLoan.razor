@@ -57,8 +57,8 @@
 							<Dropdown Class="w-100">
 								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
 								<DropdownMenu>
-									<DropdownItem To="/setting/div/loan/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-									<DropdownItem To="/setting/div/loan/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+									<DropdownItem To="/setting/dep/loan/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+									<DropdownItem To="/setting/dep/loan/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
 								</DropdownMenu>
 							</Dropdown>
 						</div>
@@ -109,7 +109,7 @@
 														} *@
 													</td>
 													<td class="text-center">
-														<a href="/setting/div/loan/update/@item.Id">แก้ไข</a> /
+														<a href="/setting/dep/loan/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
 													</td>
 													<td class="text-center">

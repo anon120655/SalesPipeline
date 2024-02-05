@@ -18,6 +18,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private List<AssignmentCustom>? Items;
 		public Pager? Pager;
 		int stepAssign = StepAssignLoanModel.Home;
+		private Guid? stepCustomerid = null;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -178,11 +179,23 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected async Task GotoStep(int step)
+		protected async Task GotoStep(int step, Guid? _id = null)
 		{
+			stepCustomerid = null;
+
+			if (step == StepAssignLoanModel.Customer)
+			{
+				if (Items?.Count > 0)
+				{
+					stepCustomerid = _id;
+				}
+			}
+
 			stepAssign = step;
 			StateHasChanged();
 			await Task.Delay(10);
+
+			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
 
 
