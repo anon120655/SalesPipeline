@@ -49,7 +49,16 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// <summary>
 		/// จำนวนการมอบหมาย
 		/// </summary>
-		public int? NumberAssignment { get; set; }
+		public int? NumberAssignment {
+			get
+			{
+				if (Assignment_Sales != null)
+				{
+					return Assignment_Sales.Count;
+				}
+				return null;
+			}
+		}
 		/// <summary>
 		/// ลูกค้าหลังมอบหมาย
 		/// </summary>

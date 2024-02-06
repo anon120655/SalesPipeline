@@ -168,6 +168,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							assignment.Assignment_Sales.Add(new()
 							{
+								Id = Guid.NewGuid(),
 								Status = StatusModel.Active,
 								AssignmentId = assignment.Id,
 								SaleId = item_sales.Id,
@@ -176,7 +177,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								IsSelectMove = false,
 								Sale = _mapper.Map<SaleCustom>(item_sales)
 							});
-							assignment.NumberAssignment = assignment.Assignment_Sales.Count();
+							//assignment.NumberAssignment = assignment.Assignment_Sales.Count();
 						}
 						responseItems.Add(assignment);
 						index_path++;

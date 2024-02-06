@@ -3,8 +3,10 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq;
 
 namespace SalesPipeline.Pages.Assigns.Loans
 {
@@ -16,8 +18,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private List<AssignmentCustom>? Items;
-		public Pager? Pager;
-		int stepAssign = StepAssignLoanModel.Home;
+		private Pager? Pager;
+		private SaleCustom? formView = null;
+		private int stepAssign = StepAssignLoanModel.Home;
 		private Guid? employeeIdPrevious = null;
 
 		protected override async Task OnInitializedAsync()
@@ -257,8 +260,63 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			if (Items?.Count > 0)
 			{
-				
+				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมาย
+				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
+				if (_itemsAssign != null && _itemsAssign.Assignment_Sales != null)
+				{
+					//_itemsCustomerMove ผู้รับผิดชอบเดิม
+					var _itemsCustomerMove = Items?.Where(x => x.Id == employeeIdPrevious).FirstOrDefault();
+					if (_itemsCustomerMove != null && _itemsCustomerMove.Assignment_Sales != null)
+					{
+						var itemAssign = _itemsCustomerMove.Assignment_Sales.ToList();
+						foreach (var item in itemAssign)
+						{
+							if (item.IsSelectMove)
+							{
+								//เพิ่มข้อมูลลูกค้าจากผู้รับผิดชอบเดิมไปยังผู้รับผิดชอบใหม่
+								if (!_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+								{
+									_itemsAssign.Assignment_Sales.Add(item);
+								}
+								//ลบข้อมูลลูกค้าผู้รับผิดชอบเดิม
+								var _itemsRemove = _itemsCustomerMove.Assignment_Sales.FirstOrDefault(x => x.Id == item.Id);
+								if (_itemsRemove != null)
+								{
+									_itemsCustomerMove.Assignment_Sales.Remove(_itemsRemove);
+								}
+							}
+							else
+							{
+								//เพิ่มข้อมูลลูกค้าไปยังผู้รับผิดชอบเดิม
+								if (!_itemsCustomerMove.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+								{
+									_itemsCustomerMove.Assignment_Sales.Add(item);
+								}
+								//ลบข้อมูลลูกค้าจากผู้รับผิดชอบใหม่
+								var _itemsRemove = _itemsAssign.Assignment_Sales.FirstOrDefault(x => x.Id == item.Id);
+								if (_itemsRemove != null)
+								{
+									_itemsAssign.Assignment_Sales.Remove(_itemsRemove);
+								}
+							}
+						}
+					}
+				}
+
 			}
+		}
+
+		protected void OnViewCustomer(SaleCustom? model)
+		{
+			if (model != null)
+			{
+				formView = model;
+			}
+		}
+
+		protected void OnViewCustomerBack()
+		{
+			formView = null;
 		}
 
 
