@@ -106,7 +106,6 @@
 												{
 													item.CurrentUserId = UserInfo.Id;
 
-													bool status = item.Status == StatusModel.Active;
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
@@ -216,7 +215,7 @@
 						<div class="row my-2 mb-3 text-end">
 							<div class="col mb-2">
 								<button type="button" class="btn btn-primary text-white">
-									จำนวนการมอบหมาย (@(_items?.Assignment_Sales?.Count(x=> x.IsSelectMove))/@(_items?.Assignment_Sales?.Count))
+									จำนวนการมอบหมาย (@(_items?.Assignment_Sales?.Count(x => x.IsSelectMove))/@(_items?.Assignment_Sales?.Count))
 								</button>
 							</div>
 						</div>
@@ -428,6 +427,8 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
+					var _items = Items?.Where(x => x.IsSelectMove).FirstOrDefault();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -435,11 +436,108 @@
 								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปผู้รับผิดชอบและลูกค้า</p>
 							</div>
 						</div>
-						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อผู้รับผิดชอบ</h5>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col">
 								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@_items.EmployeeId</td>
+													<td class="text-center">@_items.EmployeeName</td>
+													<td class="text-center">@_items.User?.Tel</td>
+													<td class="text-center">@_items.User?.Branch?.Name</td>
+													<td class="text-center">-</td>
+													<td class="text-center">@(_items.CurrentNumber)/100</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(_items.NumberAssignment)
+													</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(_items.NumberAfterAssignment)/100
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน xx รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in _items.Assignment_Sales)
+												{
+													<tr>
+														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.Sale?.CompanyName</td>
+														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
