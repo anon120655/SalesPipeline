@@ -477,6 +477,7 @@
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
 					var _items = Items?.Where(x => x.IsSelectMove).FirstOrDefault();
+					var _itemsSale = _items?.Assignment_Sales?.Where(x => x.IsSelectMove).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -539,7 +540,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน xx รายการ</span></h5>
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน @_itemsSale?.Count รายการ</span></h5>
 							</div>
 						</div>
 						<div class="row">
@@ -556,7 +557,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (_items == null)
+											@if (_itemsSale == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -564,7 +565,7 @@
 													</td>
 												</tr>
 											}
-											else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count == 0)
+											else if (_itemsSale == null || _itemsSale.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -574,7 +575,7 @@
 											}
 											else
 											{
-												foreach (var item in _items.Assignment_Sales)
+												foreach (var item in _itemsSale)
 												{
 													<tr>
 														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>

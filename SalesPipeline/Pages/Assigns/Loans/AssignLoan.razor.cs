@@ -184,6 +184,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task GotoStep(int step, Guid? _id = null)
 		{
+			bool isNext = true;
 			if (step == StepAssignLoanModel.Home)
 			{
 				employeeIdPrevious = null;
@@ -195,13 +196,29 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				employeeIdPrevious = _id;
 			}
 
-			if (step == StepAssignLoanModel.Summary)
+			if (step == StepAssignLoanModel.Assigned)
 			{
-				Summary();
+				isNext = CheckSelectCustomer();
+				if (!isNext)
+				{
+					_utilsViewModel.AlertWarning("เลือกลูกค้า");
+				}
+			}
+			else if (step == StepAssignLoanModel.Summary)
+			{
+				isNext = Summary(); 
+				if (!isNext)
+				{
+					_utilsViewModel.AlertWarning("เลือกผู้รับผิดชอบ");
+				}
 			}
 
-			stepAssign = step;
-			StateHasChanged();
+            if (isNext)
+			{
+				stepAssign = step;
+				StateHasChanged();
+			}
+
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
@@ -256,7 +273,17 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected void Summary()
+		protected bool CheckSelectCustomer()
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items.Any(x => x.Id == employeeIdPrevious && x.Assignment_Sales != null && x.Assignment_Sales.Any(s => s.IsSelectMove));
+				return _items;
+			}
+			return false;
+		}
+
+		protected bool Summary()
 		{
 			if (Items?.Count > 0)
 			{
@@ -301,9 +328,15 @@ namespace SalesPipeline.Pages.Assigns.Loans
 							}
 						}
 					}
-				}
 
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
+			return false;
 		}
 
 		protected void OnViewCustomer(SaleCustom? model)

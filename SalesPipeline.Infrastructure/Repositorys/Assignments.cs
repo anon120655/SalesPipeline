@@ -123,7 +123,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
 												 .Include(x => x.User).ThenInclude(x => x.Branch)
-												 .OrderBy(x => x.CurrentNumber)
+												 .OrderBy(x => x.CurrentNumber).ThenBy(x=>x.CreateDate)
 												 .AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -177,7 +177,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								IsSelectMove = false,
 								Sale = _mapper.Map<SaleCustom>(item_sales)
 							});
-							//assignment.NumberAssignment = assignment.Assignment_Sales.Count();
 						}
 						responseItems.Add(assignment);
 						index_path++;
