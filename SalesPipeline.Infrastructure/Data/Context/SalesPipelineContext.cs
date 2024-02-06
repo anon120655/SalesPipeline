@@ -203,6 +203,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Master_ISICCodeId, "Master_ISICCodeId");
 
+            entity.HasIndex(e => e.Master_LoanTypeId, "Master_LoanTypeId");
+
             entity.HasIndex(e => e.Master_YieldId, "Master_YieldId");
 
             entity.HasIndex(e => e.ProvinceId, "ProvinceId");
@@ -300,6 +302,8 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Master_ContactChannelName).HasMaxLength(255);
             entity.Property(e => e.Master_ISICCodeId).HasComment("ISIC Code");
             entity.Property(e => e.Master_ISICCodeName).HasMaxLength(255);
+            entity.Property(e => e.Master_LoanTypeId).HasComment("ประเภทสินเชื่อ");
+            entity.Property(e => e.Master_LoanTypeName).HasMaxLength(255);
             entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
             entity.Property(e => e.Master_YieldName).HasMaxLength(255);
             entity.Property(e => e.NetProfitLoss)
@@ -428,6 +432,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_ISICCode).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Master_ISICCodeId)
                 .HasConstraintName("customer_ibfk_5");
+
+            entity.HasOne(d => d.Master_LoanType).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_LoanTypeId)
+                .HasConstraintName("customer_ibfk_11");
 
             entity.HasOne(d => d.Master_Yield).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Master_YieldId)

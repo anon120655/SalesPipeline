@@ -120,6 +120,13 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public string? Master_ChainName { get; set; }
 
 		/// <summary>
+		/// ประเภทสินเชื่อ
+		/// </summary>
+		public Guid? Master_LoanTypeId { get; set; }
+
+		public string? Master_LoanTypeName { get; set; }
+
+		/// <summary>
 		/// อีเมลบริษัท
 		/// </summary>
 		public string? CompanyEmail { get; set; }

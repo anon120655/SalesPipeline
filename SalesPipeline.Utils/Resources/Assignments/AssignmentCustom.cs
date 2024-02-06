@@ -64,5 +64,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 				return CurrentNumber;
 			}
 		}
+
+		public bool IsSelectMove { get; set; }
 	}
 }

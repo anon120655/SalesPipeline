@@ -162,7 +162,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Customer)
 				{
-					var _items = Items?.Where(x => x.Id == stepCustomerid).FirstOrDefault();
+					var _items = Items?.Where(x => x.Id == employeeIdPrevious).FirstOrDefault();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -216,7 +216,7 @@
 						<div class="row my-2 mb-3 text-end">
 							<div class="col mb-2">
 								<button type="button" class="btn btn-primary text-white">
-									จำนวนการมอบหมาย (15/20)
+									จำนวนการมอบหมาย (@(_items?.Assignment_Sales?.Count(x=> x.IsSelectMove))/@(_items?.Assignment_Sales?.Count))
 								</button>
 							</div>
 						</div>
@@ -256,7 +256,6 @@
 											{
 												foreach (var item in _items.Assignment_Sales)
 												{
-													bool status = item.Status == StatusModel.Active;
 													<tr>
 														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
 														<td class="text-center">@item.Sale?.CompanyName</td>
@@ -270,7 +269,8 @@
 														</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">
-																<input class="form-check-input" type="checkbox" value="">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelectMove"
+																	   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
 															</div>
 														</td>
 													</tr>
@@ -312,6 +312,8 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Assigned)
 				{
+					var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -349,13 +351,11 @@
 												<th class="text-center">จังหวัดที่ดูแล</th>
 												<th class="text-center">อำเภอที่ดูแล</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
-												<th class="text-center">จำนวนการมอบหมาย</th>
-												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-												<th class="text-center">จัดการมอบหมาย</th>
+												<th class="text-center">มอบหมาย</th>
 											</tr>
 										</thead>
 										<tbody>
-											@if (Items == null)
+											@if (_items == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -363,7 +363,7 @@
 													</td>
 												</tr>
 											}
-											else if (Items.Count == 0)
+											else if (_items.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -373,10 +373,8 @@
 											}
 											else
 											{
-												foreach (var item in Items)
+												foreach (var item in _items)
 												{
-													item.CurrentUserId = UserInfo.Id;
-
 													bool status = item.Status == StatusModel.Active;
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
@@ -386,15 +384,10 @@
 														<td class="text-center">-</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
-															@GeneralUtils.EmptyTo(item.NumberAssignment)
-														</td>
-														<td class="text-center">
-															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
-														</td>
-														<td class="text-center">
-															<a class="" href="/assign/loan/manage">
-																<img src="/image/icon/ckeckbox.png" width="25" />
-															</a>
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelectMove"
+																	   @onchange="( (e) => OnCheckEmployee(item,e.Value))">
+															</div>
 														</td>
 													</tr>
 												}

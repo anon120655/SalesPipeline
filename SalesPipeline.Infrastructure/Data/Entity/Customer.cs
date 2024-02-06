@@ -111,6 +111,13 @@ public partial class Customer
     public string? Master_ChainName { get; set; }
 
     /// <summary>
+    /// ประเภทสินเชื่อ
+    /// </summary>
+    public Guid? Master_LoanTypeId { get; set; }
+
+    public string? Master_LoanTypeName { get; set; }
+
+    /// <summary>
     /// อีเมลบริษัท
     /// </summary>
     public string? CompanyEmail { get; set; }
@@ -368,6 +375,8 @@ public partial class Customer
     public virtual Master_ContactChannel? Master_ContactChannel { get; set; }
 
     public virtual Master_ISICCode? Master_ISICCode { get; set; }
+
+    public virtual Master_LoanType? Master_LoanType { get; set; }
 
     public virtual Master_Yield? Master_Yield { get; set; }
 

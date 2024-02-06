@@ -24,4 +24,6 @@ public partial class Master_LoanType
     public int UpdateBy { get; set; }
 
     public string? Name { get; set; }
+
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

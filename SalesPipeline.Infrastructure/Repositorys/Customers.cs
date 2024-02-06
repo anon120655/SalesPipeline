@@ -102,6 +102,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? master_ISICCodeName = null;
 				string? master_YieldName = null;
 				string? master_ChainName = null;
+				string? master_LoanTypeName = null;
 				string? provinceName = null;
 				string? amphurName = null;
 				string? tambolName = null;
@@ -129,6 +130,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.Master_ChainId.HasValue)
 				{
 					master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+				}
+				if (model.Master_LoanTypeId.HasValue)
+				{
+					master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
 				}
 				if (model.ProvinceId.HasValue)
 				{
@@ -171,6 +176,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.Master_YieldId = model.Master_YieldId;
 				customer.Master_YieldName = master_YieldName;
 				customer.Master_ChainId = model.Master_ChainId;
+				customer.Master_LoanTypeId = model.Master_LoanTypeId;
+				customer.Master_LoanTypeName = master_LoanTypeName;
 				customer.Master_ChainName = master_ChainName;
 				customer.CompanyEmail = model.CompanyEmail;
 				customer.CompanyTel = model.CompanyTel;
@@ -351,6 +358,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					string? master_ISICCodeName = null;
 					string? master_YieldName = null;
 					string? master_ChainName = null;
+					string? master_LoanTypeName = null;
 					string? provinceName = null;
 					string? amphurName = null;
 					string? tambolName = null;
@@ -378,6 +386,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (model.Master_ChainId.HasValue)
 					{
 						master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+					}
+					if (model.Master_LoanTypeId.HasValue)
+					{
+						master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
 					}
 					if (model.ProvinceId.HasValue)
 					{
@@ -415,6 +427,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.Master_YieldName = master_YieldName;
 					customer.Master_ChainId = model.Master_ChainId;
 					customer.Master_ChainName = master_ChainName;
+					customer.Master_LoanTypeId = model.Master_LoanTypeId;
+					customer.Master_LoanTypeName = master_LoanTypeName;
 					customer.CompanyEmail = model.CompanyEmail;
 					customer.CompanyTel = model.CompanyTel;
 					customer.ParentCompanyGroup = model.ParentCompanyGroup;

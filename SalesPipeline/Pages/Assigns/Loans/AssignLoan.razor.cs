@@ -18,7 +18,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private List<AssignmentCustom>? Items;
 		public Pager? Pager;
 		int stepAssign = StepAssignLoanModel.Home;
-		private Guid? stepCustomerid = null;
+		private Guid? employeeIdPrevious = null;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -181,21 +181,84 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task GotoStep(int step, Guid? _id = null)
 		{
-			stepCustomerid = null;
-
-			if (step == StepAssignLoanModel.Customer)
+			if (step == StepAssignLoanModel.Home)
 			{
-				if (Items?.Count > 0)
-				{
-					stepCustomerid = _id;
-				}
+				employeeIdPrevious = null;
+				ClearItemsIsSelectAll();
+			}
+
+			if (_id.HasValue)
+			{
+				employeeIdPrevious = _id;
+			}
+
+			if (step == StepAssignLoanModel.Summary)
+			{
+				Summary();
 			}
 
 			stepAssign = step;
 			StateHasChanged();
 			await Task.Delay(10);
-
 			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+		}
+
+		protected void OnCheckCustomer(Assignment_SaleCustom model, object? checkedValue)
+		{
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelectMove = true;
+			}
+			else
+			{
+				model.IsSelectMove = false;
+			}
+		}
+
+		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		{
+			if (Items?.Count > 0)
+			{
+				foreach (var item in Items.Where(x => x.IsSelectMove))
+				{
+					item.IsSelectMove = false;
+				}
+			}
+
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelectMove = true;
+			}
+			else
+			{
+				model.IsSelectMove = false;
+			}
+		}
+
+		protected void ClearItemsIsSelectAll()
+		{
+			if (Items?.Count > 0)
+			{
+				foreach (var item in Items)
+				{
+					item.IsSelectMove = false;
+					if (item.Assignment_Sales?.Count(x => x.IsSelectMove) > 0)
+					{
+						foreach (var item_sale in item.Assignment_Sales.Where(x => x.IsSelectMove))
+						{
+							item_sale.IsSelectMove = false;
+						}
+					}
+				}
+			}
+		}
+
+		protected void Summary()
+		{
+			if (Items?.Count > 0)
+			{
+				
+			}
 		}
 
 

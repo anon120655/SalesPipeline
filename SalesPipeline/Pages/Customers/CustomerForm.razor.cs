@@ -128,10 +128,22 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var loanType = await _masterViewModel.GetLoanType(new allFilter() { status = StatusModel.Active });
+			if (loanType != null && loanType.Status)
+			{
+				LookUp.LoanType = loanType.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = loanType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			isLoadingContent = false;
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Yield");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "LoanType");
 
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
