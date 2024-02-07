@@ -1,5 +1,4 @@
 ﻿
-
 <Modal @ref="modalConfirm"
 	   Title=""
 	   IsVerticallyCentered="true"
@@ -24,7 +23,13 @@
 					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideConfirm">กลับ</Button>
 				</div>
 				<div class="p-2">
-					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Confirm">ยืนยัน</Button>
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Confirm" Disabled="@isLoading">
+						@if (isLoading)
+						{
+							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+						}
+						ยืนยัน
+					</Button>
 				</div>
 			</div>
 		</div>
@@ -39,6 +44,9 @@
 
 	[Parameter]
 	public string? _errorMessage { get; set; }
+
+	[Parameter]
+	public bool isLoading { get; set; }
 
 	[Parameter]
 	public EventCallback<string?> CallbackConfirm { get; set; }

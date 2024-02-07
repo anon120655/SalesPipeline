@@ -169,5 +169,6 @@ namespace SalesPipeline.Pages.ApproveLoans
 				Cancel();
 			}
 		}
+
 	}
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
@@ -22,6 +23,10 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
 		private Guid? employeeIdPrevious = null;
+
+		ModalConfirm modalConfirmAssign = default!;
+		ModalSuccessful modalSuccessfulAssign = default!;
+		private bool IsToClose = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -137,10 +142,39 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			StateHasChanged();
 		}
 
+		protected async Task InitShowConfirmAssign()
+		{
+			await ShowConfirmAssign(null, "กรุณากด ยืนยัน การมอบหมายงาน", "<img src=\"/image/icon/do.png\" width=\"65\" />");
+		}
+
+		protected async Task ShowConfirmAssign(string? id, string? txt, string? icon = null)
+		{
+			IsToClose = false;
+			await modalConfirmAssign.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task ConfirmAssign(string id)
+		{
+			ShowLoading();
+			await Task.Delay(3000);
+			await Assign();
+		}
+
+		protected async Task ShowSuccessfulAssign(string? id, string? txt)
+		{
+			await modalSuccessfulAssign.OnShow(id, $"{txt}");
+		}
+
+		private async Task OnModalHidden()
+		{
+			if (IsToClose)
+			{
+			}
+		}
+
 		protected async Task Assign()
 		{
 			_errorMessage = null;
-			ShowLoading();
 
 			if (Items != null)
 			{
@@ -148,7 +182,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 				if (response.Status)
 				{
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+					IsToClose = true;
+					await modalConfirmAssign.OnHideConfirm();
+					await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
 					await SetModel();
 					HideLoading();
 				}

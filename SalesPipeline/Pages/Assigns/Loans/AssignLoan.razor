@@ -146,11 +146,7 @@
 								<div class="p-2 bd-highlight">
 									@if (Items?.Count > 0)
 									{
-										<Button @onclick="Assign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-											@if (isLoading)
-											{
-												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
-											}
+										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">											
 											มอบหมาย
 										</Button>
 									}
@@ -614,6 +610,9 @@
 			</div>
 		</div>
 	</div>
+
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" _errorMessage="@_errorMessage" />
 }
 else
 {
