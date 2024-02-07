@@ -19,6 +19,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private List<AssignmentCustom>? Items;
+		private List<Assignment_SaleCustom>? Assignment_Sale_Original;
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
@@ -242,21 +243,22 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 			else if (step == StepAssignLoanModel.Summary)
 			{
-				isNext = Summary(); 
+				isNext = Summary();
 				if (!isNext)
 				{
 					_utilsViewModel.AlertWarning("เลือกผู้รับผิดชอบ");
 				}
 			}
 
-            if (isNext)
+			if (isNext)
 			{
 				stepAssign = step;
 				StateHasChanged();
 			}
 
 			await Task.Delay(10);
-			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+			await SetInitManual();
+			//await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
 
 		protected void OnCheckCustomer(Assignment_SaleCustom model, object? checkedValue)
@@ -386,6 +388,54 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		protected void OnViewCustomerBack()
 		{
 			formView = null;
+		}
+
+		protected void SearchStepCustomer(object? businesstype = null)
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
+				//เก็บ object เดิม
+				if (Assignment_Sale_Original == null && _items?.Assignment_Sales != null)
+				{
+					Assignment_Sale_Original = new(_items.Assignment_Sales);
+				}
+				else
+				{
+					//ถ้า object เดิมมีข้อมูลให้นำมายัดใส่ item ที่จะค้นหาก่อนค้นหา
+					if (Assignment_Sale_Original != null && _items != null)
+					{
+						_items.Assignment_Sales = new(Assignment_Sale_Original);
+					}
+				}
+
+				string valSearch = filter.searchtxt ?? string.Empty;
+				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
+				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype))
+				{
+					if (_items != null && _items.Assignment_Sales != null)
+					{
+						if (!String.IsNullOrEmpty(valSearch))
+						{
+							_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
+							&& x.Sale.CompanyName != null
+							&& x.Sale.CompanyName.Contains(valSearch)).ToList();
+						}
+
+						if (Guid.TryParse(valbusinesstype, out Guid businesstypeid))
+						{
+							if (_items != null && _items.Assignment_Sales != null)
+							{
+								_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
+								&& x.Sale.Customer != null
+								&& x.Sale.Customer.Master_BusinessTypeId != null
+								&& x.Sale.Customer.Master_BusinessTypeId == businesstypeid).ToList();
+							}
+						}
+					}
+				}
+
+			}
 		}
 
 

@@ -173,7 +173,7 @@
 									<div class="input-group">
 										<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 										<span class="input-group-append ms-0">
-											<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<button @onclick="(()=> SearchStepCustomer(null))" class="btn rounded-start-0 border border-start-0" type="button">
 												<i class="fa fa-search"></i>
 											</button>
 										</span>
@@ -181,8 +181,15 @@
 								</div>
 								<div class="col mb-2">
 									<label class="form-label">ประเภทธุรกิจ</label>
-									<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-										<option selected>ทั้งหมด</option>
+									<select @onchange="((e) => SearchStepCustomer(e.Value))" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										<option value="">ทั้งหมด</option>
+										@if (LookUp.BusinessType?.Count > 0)
+										{
+											foreach (var item in LookUp.BusinessType)
+											{
+												<option value="@item.Id">@item.Name</option>
+											}
+										}
 									</select>
 								</div>
 								<div class="col mb-2">
@@ -204,7 +211,7 @@
 									</select>
 								</div>
 								<div class="col mb-2 mt-3">
-									<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<button @onclick="SearchStepCustomer" type="button" class="btn btn-primary text-white mw_7r w-100">
 										<i class="fa fa-search fa-xs"></i> ค้นหา
 									</button>
 								</div>
