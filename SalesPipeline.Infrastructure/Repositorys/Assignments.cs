@@ -149,7 +149,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.ToListAsync();
 
-			if (salesCustomer.Count > 0)
+			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
 				//แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
 				var partitionCustomer = GeneralUtils.PartitionList(salesCustomer, userAssignment.Count);
