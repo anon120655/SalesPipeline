@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
@@ -222,6 +223,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		protected async Task GotoStep(int step, Guid? _id = null)
 		{
 			bool isNext = true;
+			ClearSearchCustomer();
+
 			if (step == StepAssignLoanModel.Home)
 			{
 				employeeIdPrevious = null;
@@ -417,24 +420,60 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					{
 						if (!String.IsNullOrEmpty(valSearch))
 						{
-							_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
-							&& x.Sale.CompanyName != null
-							&& x.Sale.CompanyName.Contains(valSearch)).ToList();
+							//_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
+							//&& x.Sale.CompanyName != null
+							//&& x.Sale.CompanyName.Contains(valSearch)).ToList();
+
+							foreach (var item in _items.Assignment_Sales)
+							{
+								if (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
+								{
+									item.IsShow = false;
+								}
+							}
+
 						}
 
 						if (Guid.TryParse(valbusinesstype, out Guid businesstypeid))
 						{
 							if (_items != null && _items.Assignment_Sales != null)
 							{
-								_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
-								&& x.Sale.Customer != null
-								&& x.Sale.Customer.Master_BusinessTypeId != null
-								&& x.Sale.Customer.Master_BusinessTypeId == businesstypeid).ToList();
+								//_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
+								//&& x.Sale.Customer != null
+								//&& x.Sale.Customer.Master_BusinessTypeId != null
+								//&& x.Sale.Customer.Master_BusinessTypeId == businesstypeid).ToList();
+
+								foreach (var item in _items.Assignment_Sales)
+								{
+									if (item.Sale != null
+										&& item.Sale.Customer != null
+										&& item.Sale.Customer.Master_BusinessTypeId != null
+										&& item.Sale.Customer.Master_BusinessTypeId == businesstypeid)
+									{
+										item.IsShow = false;
+									}
+								}
+
 							}
 						}
 					}
 				}
 
+			}
+		}
+
+		protected void ClearSearchCustomer()
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
+				if (_items != null && _items.Assignment_Sales != null)
+				{
+					foreach (var item in _items.Assignment_Sales.Where(x=> !x.IsShow))
+					{
+						item.IsShow = true;
+					}
+				}
 			}
 		}
 

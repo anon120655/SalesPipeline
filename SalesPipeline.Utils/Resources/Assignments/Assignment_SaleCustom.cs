@@ -47,6 +47,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		//Custom
 		public bool IsSelect { get; set; }
 		public bool IsSelectMove { get; set; }
+		public bool IsShow { get; set; } = true;
 
 	}
 }

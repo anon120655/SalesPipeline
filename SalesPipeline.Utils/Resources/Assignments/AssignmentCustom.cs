@@ -75,5 +75,5 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		}
 
 		public bool IsSelectMove { get; set; }
-	}
+    }
 }

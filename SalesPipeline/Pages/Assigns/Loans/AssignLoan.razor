@@ -146,7 +146,7 @@
 								<div class="p-2 bd-highlight">
 									@if (Items?.Count > 0)
 									{
-										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">											
+										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											มอบหมาย
 										</Button>
 									}
@@ -257,7 +257,7 @@
 												}
 												else
 												{
-													foreach (var item in _items.Assignment_Sales)
+													foreach (var item in _items.Assignment_Sales.Where(x => x.IsShow))
 													{
 														<tr>
 															<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
