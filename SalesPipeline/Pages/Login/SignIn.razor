@@ -30,14 +30,14 @@
 											<ValidationMessage For="@(() => loginModel.Password)" />
 										</div>
 										<div class="text-center pt-1 mb-5 pb-1">
-											<Button Color="ButtonColor.Primary"
+											<Button Color="ButtonColor.Info"
 													Type="ButtonType.Submit"
-													Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100">
+													Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100 text-white">
 												@if (isLoading)
 												{
 													<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
 												}
-												Sign In
+												Sign in
 											</Button>
 										</div>
 										@if (_errorMessage is not null)
