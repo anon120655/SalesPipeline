@@ -48,6 +48,10 @@ namespace SalesPipeline.Pages.Users.User
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
+					if (formModel.RoleId.HasValue)
+					{
+						await OnRoles(formModel.RoleId, formModel.LevelId);
+					}
 					isLoadingContent = false;
 					StateHasChanged();
 				}
@@ -119,21 +123,6 @@ namespace SalesPipeline.Pages.Users.User
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
-
-			//var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-			//if (dataLevels != null && dataLevels.Status)
-			//{
-			//	if (dataLevels.Data?.Count > 0)
-			//	{
-			//		LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 12).ToList();
-			//	}
-			//}
-			//else
-			//{
-			//	_errorMessage = dataLevels?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
-
 
 			StateHasChanged();
 		}

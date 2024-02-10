@@ -68,9 +68,17 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select class="form-select">
+										<select @bind="formModel.Master_DepartmentId" class="form-select">
 											<option value="">เลือก</option>
+											@if (LookUp.Departments?.Count > 0)
+											{
+												foreach (var item in LookUp.Departments)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
 										</select>
+										<ValidationMessage For="@(() => formModel.Master_DepartmentId)" />
 									</div>
 								</div>
 								<div class="row mb-3">

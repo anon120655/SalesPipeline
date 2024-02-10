@@ -27,6 +27,11 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public int UpdateBy { get; set; }
 
 		/// <summary>
+		/// Role แรกที่เพิ่มข้อมูล
+		/// </summary>
+		public string? InsertRoleCode { get; set; }
+
+		/// <summary>
 		/// วันที่เข้ามาติดต่อ
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]

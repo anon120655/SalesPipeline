@@ -49,6 +49,11 @@ public partial class User
     public Guid? BranchId { get; set; }
 
     /// <summary>
+    /// ฝ่ายส่วนงานธุรกิจสินเชื่อ
+    /// </summary>
+    public Guid? Master_DepartmentId { get; set; }
+
+    /// <summary>
     /// ฝ่ายกิจการสาขาภาค
     /// </summary>
     public Guid? Master_Department_BranchId { get; set; }
@@ -81,6 +86,8 @@ public partial class User
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
     public virtual User_Level? Level { get; set; }
+
+    public virtual Master_Department? Master_Department { get; set; }
 
     public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
 

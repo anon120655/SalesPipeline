@@ -262,6 +262,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.HouseNo)
                 .HasMaxLength(255)
                 .HasComment("บ้านเลขที่");
+            entity.Property(e => e.InsertRoleCode)
+                .HasMaxLength(50)
+                .HasComment("Role แรกที่เพิ่มข้อมูล");
             entity.Property(e => e.InterestCreditLimit)
                 .HasPrecision(18, 2)
                 .HasComment("วงเงิน");
@@ -1250,6 +1253,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.LevelId, "LevelId");
 
+            entity.HasIndex(e => e.Master_DepartmentId, "Master_DepartmentId");
+
             entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_Branch");
 
             entity.HasIndex(e => e.PositionId, "PositionId");
@@ -1273,6 +1278,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ระดับ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
+            entity.Property(e => e.Master_DepartmentId).HasComment("ฝ่ายส่วนงานธุรกิจสินเชื่อ");
             entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PositionId)
@@ -1298,6 +1304,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)
                 .HasConstraintName("user_ibfk_2");
+
+            entity.HasOne(d => d.Master_Department).WithMany(p => p.Users)
+                .HasForeignKey(d => d.Master_DepartmentId)
+                .HasConstraintName("user_ibfk_6");
 
             entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Master_Department_BranchId)

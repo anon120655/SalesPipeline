@@ -86,6 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Email = model.Email;
 				user.Tel = model.Tel;
 				user.BranchId = model.BranchId;
+				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
@@ -135,6 +136,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Email = model.Email;
 					user.Tel = model.Tel;
 					user.BranchId = model.BranchId;
+					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
 					user.PositionId = model.PositionId;
 					user.LevelId = model.LevelId;

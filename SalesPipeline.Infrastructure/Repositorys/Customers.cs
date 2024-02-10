@@ -148,6 +148,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 				}
 
+				var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
+				if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
+
 				DateTime _dateNow = DateTime.Now;
 
 				var customer = new Data.Entity.Customer();
@@ -156,6 +159,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.CreateBy = model.CurrentUserId;
 				customer.UpdateDate = _dateNow;
 				customer.UpdateBy = model.CurrentUserId;
+				customer.InsertRoleCode = userRole.Code;
 				customer.DateContact = model.DateContact;
 				customer.Master_ContactChannelId = model.Master_ContactChannelId;
 				customer.Master_ContactChannelName = master_ContactChannelName;
@@ -404,8 +408,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 					}
 
+					var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
+					if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
+
 					customer.UpdateDate = _dateNow;
 					customer.UpdateBy = model.CurrentUserId;
+					customer.InsertRoleCode = userRole.Code;
 					customer.DateContact = model.DateContact;
 					customer.Master_ContactChannelId = model.Master_ContactChannelId;
 					customer.Master_ContactChannelName = master_ContactChannelName;

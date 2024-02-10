@@ -24,6 +24,26 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// ฝ่ายส่วนงานธุรกิจสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetDepartments")]
+		public async Task<IActionResult> GetDepartments([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterDepartment.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		/// ฝ่ายธุรกิจสินเชื่อ
 		/// </summary>
 		/// <param name="model"></param>

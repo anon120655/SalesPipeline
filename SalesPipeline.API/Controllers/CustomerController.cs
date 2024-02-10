@@ -271,6 +271,7 @@ namespace SalesPipeline.API.Controllers
 						Status = StatusModel.Active,
 						CreateBy = currentUserId,
 						UpdateBy = currentUserId,
+						InsertRoleCode = rolecode,
 						DateContact = DateTime.Now.AddDays(i),
 						Master_ContactChannelId = contactChannel[contactChannelRandom],
 						BranchName = $"สาขา_{i}",

@@ -24,6 +24,11 @@ public partial class Customer
     public int UpdateBy { get; set; }
 
     /// <summary>
+    /// Role แรกที่เพิ่มข้อมูล
+    /// </summary>
+    public string? InsertRoleCode { get; set; }
+
+    /// <summary>
     /// วันที่เข้ามาติดต่อ
     /// </summary>
     public DateTime? DateContact { get; set; }

@@ -223,6 +223,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		protected async Task GotoStep(int step, Guid? _id = null)
 		{
 			bool isNext = true;
+			ClearSearchAssigned();
 			ClearSearchCustomer();
 
 			if (step == StepAssignLoanModel.Home)
@@ -399,18 +400,18 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			{
 				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
 				//เก็บ object เดิม
-				if (Assignment_Sale_Original == null && _items?.Assignment_Sales != null)
-				{
-					Assignment_Sale_Original = new(_items.Assignment_Sales);
-				}
-				else
-				{
-					//ถ้า object เดิมมีข้อมูลให้นำมายัดใส่ item ที่จะค้นหาก่อนค้นหา
-					if (Assignment_Sale_Original != null && _items != null)
-					{
-						_items.Assignment_Sales = new(Assignment_Sale_Original);
-					}
-				}
+				//if (Assignment_Sale_Original == null && _items?.Assignment_Sales != null)
+				//{
+				//	Assignment_Sale_Original = new(_items.Assignment_Sales);
+				//}
+				//else
+				//{
+				//	//ถ้า object เดิมมีข้อมูลให้นำมายัดใส่ item ที่จะค้นหาก่อนค้นหา
+				//	if (Assignment_Sale_Original != null && _items != null)
+				//	{
+				//		_items.Assignment_Sales = new(Assignment_Sale_Original);
+				//	}
+				//}
 
 				string valSearch = filter.searchtxt ?? string.Empty;
 				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
@@ -418,45 +419,35 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				{
 					if (_items != null && _items.Assignment_Sales != null)
 					{
-						if (!String.IsNullOrEmpty(valSearch))
+						foreach (var item in _items.Assignment_Sales)
 						{
-							//_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
-							//&& x.Sale.CompanyName != null
-							//&& x.Sale.CompanyName.Contains(valSearch)).ToList();
-
-							foreach (var item in _items.Assignment_Sales)
+							Guid businesstypeid = Guid.Empty;
+							if (!String.IsNullOrEmpty(valSearch) && !Guid.TryParse(valbusinesstype, out businesstypeid))
 							{
-								if (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
-								{
-									item.IsShow = false;
-								}
+								item.IsShow = item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch);
 							}
 
-						}
-
-						if (Guid.TryParse(valbusinesstype, out Guid businesstypeid))
-						{
-							if (_items != null && _items.Assignment_Sales != null)
+							if (String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
 							{
-								//_items.Assignment_Sales = _items.Assignment_Sales.Where(x => x.Sale != null
-								//&& x.Sale.Customer != null
-								//&& x.Sale.Customer.Master_BusinessTypeId != null
-								//&& x.Sale.Customer.Master_BusinessTypeId == businesstypeid).ToList();
-
-								foreach (var item in _items.Assignment_Sales)
-								{
-									if (item.Sale != null
+								item.IsShow = item.Sale != null
 										&& item.Sale.Customer != null
 										&& item.Sale.Customer.Master_BusinessTypeId != null
-										&& item.Sale.Customer.Master_BusinessTypeId == businesstypeid)
-									{
-										item.IsShow = false;
-									}
-								}
+										&& item.Sale.Customer.Master_BusinessTypeId == businesstypeid;
+							}
 
+							if (!String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
+							{
+								item.IsShow = (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
+										   && (item.Sale != null && item.Sale.Customer != null && item.Sale.Customer.Master_BusinessTypeId != null && item.Sale.Customer.Master_BusinessTypeId == businesstypeid);
 							}
 						}
+
+
 					}
+				}
+				else
+				{
+					ClearSearchCustomer();
 				}
 
 			}
@@ -464,12 +455,68 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected void ClearSearchCustomer()
 		{
+			filter = new();
 			if (Items?.Count > 0)
 			{
 				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
 				if (_items != null && _items.Assignment_Sales != null)
 				{
-					foreach (var item in _items.Assignment_Sales.Where(x=> !x.IsShow))
+					foreach (var item in _items.Assignment_Sales.Where(x => !x.IsShow))
+					{
+						item.IsShow = true;
+					}
+				}
+			}
+		}
+
+		protected void SearchStepAssigned()
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+
+				if (!String.IsNullOrEmpty(filter.emp_id) || !String.IsNullOrEmpty(filter.emp_name))
+				{
+					if (_items != null)
+					{
+						foreach (var item in _items)
+						{
+							if (!String.IsNullOrEmpty(filter.emp_id) && String.IsNullOrEmpty(filter.emp_name))
+							{
+								item.IsShow = item.EmployeeId != null && item.EmployeeId.Contains(filter.emp_id);
+							}
+
+							if (String.IsNullOrEmpty(filter.emp_id) && !String.IsNullOrEmpty(filter.emp_name))
+							{
+								item.IsShow = item.EmployeeName != null && item.EmployeeName.Contains(filter.emp_name);
+							}
+
+							if (!String.IsNullOrEmpty(filter.emp_id) && !String.IsNullOrEmpty(filter.emp_name))
+							{
+								item.IsShow = (item.EmployeeId != null && item.EmployeeId.Contains(filter.emp_id))
+										   && (item.EmployeeName != null && item.EmployeeName.Contains(filter.emp_name));
+							}
+						}
+
+					}
+				}
+				else
+				{
+					ClearSearchAssigned();
+				}
+
+			}
+		}
+
+		protected void ClearSearchAssigned()
+		{
+			filter = new();
+			if (Items?.Count > 0)
+			{
+				var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+				if (_items != null)
+				{
+					foreach (var item in _items)
 					{
 						item.IsShow = true;
 					}

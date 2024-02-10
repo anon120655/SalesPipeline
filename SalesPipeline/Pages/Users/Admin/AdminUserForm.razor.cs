@@ -71,14 +71,14 @@ namespace SalesPipeline.Pages.Users.Admin
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDepLoans = await _masterViewModel.GetDepLoans(new allFilter() { status = StatusModel.Active });
-			if (dataGetDepLoans != null && dataGetDepLoans.Status)
+			var dataDepartments = await _masterViewModel.GetDepartments(new allFilter() { status = StatusModel.Active });
+			if (dataDepartments != null && dataDepartments.Status)
 			{
-				LookUp.DepartmentLoan = dataGetDepLoans.Data?.Items;
+				LookUp.Departments = dataDepartments.Data?.Items;
 			}
 			else
 			{
-				_errorMessage = dataGetDepLoans?.errorMessage;
+				_errorMessage = dataDepartments?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 

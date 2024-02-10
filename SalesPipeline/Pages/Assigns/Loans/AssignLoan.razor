@@ -133,13 +133,13 @@
 							</div>
 						</div>
 						<div>
-							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
 											TotalItems="@(Pager?.TotalItems ?? 0)"
 											Pager="@Pager"
 											OnShowOnPage="@OnSelectPagesize"
 											OnSelectedPage="@OnSelectPage"
 											ParameterAll="@filter?.SetParameter()">
-							</PaginationBack>
+							</PaginationBack> *@
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
@@ -247,7 +247,7 @@
 														</td>
 													</tr>
 												}
-												else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count == 0)
+												else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count(x => x.IsShow) == 0)
 												{
 													<tr class="text-center align-middle">
 														<td colspan="100">
@@ -285,13 +285,13 @@
 								</div>
 							</div>
 							<div>
-								<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+								@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
 												TotalItems="@(Pager?.TotalItems ?? 0)"
 												Pager="@Pager"
 												OnShowOnPage="@OnSelectPagesize"
 												OnSelectedPage="@OnSelectPage"
 												ParameterAll="@filter?.SetParameter()">
-								</PaginationBack>
+								</PaginationBack> *@
 							</div>
 							<div class="my-4 text-center">
 								<div class="d-flex bd-highlight align-items-center justify-content-center">
@@ -375,18 +375,48 @@
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 							<div class="col mb-2">
-								<label class="form-label">ค้นหา</label>
+								<label class="form-label">รหัสพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+									<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
-										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
 										</button>
 									</span>
 								</div>
 							</div>
+							<div class="col mb-2">
+								<label class="form-label">ชื่อพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">อำเภอ</label>
+								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
 							<div class="col mb-2 mt-3">
-								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+								<button @onclick="SearchStepAssigned" type="button" class="btn btn-primary text-white mw_7r w-100">
 									<i class="fa fa-search fa-xs"></i> ค้นหา
 								</button>
 							</div>
@@ -425,7 +455,7 @@
 											}
 											else
 											{
-												foreach (var item in _items)
+												foreach (var item in _items.Where(x => x.IsShow))
 												{
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
@@ -449,13 +479,13 @@
 							</div>
 						</div>
 						<div>
-							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
 											TotalItems="@(Pager?.TotalItems ?? 0)"
 											Pager="@Pager"
 											OnShowOnPage="@OnSelectPagesize"
 											OnSelectedPage="@OnSelectPage"
 											ParameterAll="@filter?.SetParameter()">
-							</PaginationBack>
+							</PaginationBack> *@
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
