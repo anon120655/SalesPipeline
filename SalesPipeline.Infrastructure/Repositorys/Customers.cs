@@ -275,9 +275,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var user = await _repo.User.GetById(model.CurrentUserId);
 				if (user == null) throw new ExceptionCustom("currentUserId required!");
 
-				var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
-				if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
-
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					statusSaleId = StatusSaleModel.WaitApprove;
