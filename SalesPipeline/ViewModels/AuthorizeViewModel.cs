@@ -218,7 +218,10 @@ namespace SalesPipeline.ViewModels
 									data.PositionName = datauserMap.Position.Name;
 
 								if (datauserMap.Role != null)
+								{
+									data.RoleCode = datauserMap.Role.Code;
 									data.RoleName = datauserMap.Role.Name;
+								}
 
 								var dataRole = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetRoleById?id={datauserMap.RoleId}");
 								if (dataRole.StatusCode == System.Net.HttpStatusCode.OK && dataRole.Content != null)

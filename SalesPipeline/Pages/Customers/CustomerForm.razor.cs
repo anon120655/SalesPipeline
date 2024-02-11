@@ -42,7 +42,7 @@ namespace SalesPipeline.Pages.Customers
 				_internalid = id;
 			}
 		}
-		
+
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
@@ -372,14 +372,18 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			//******** รอเช็ค *********			
-			//Role กิจการสาขาภาค
-			//if (UserInfo.RoleId == RoleCodes.BRANCH)
-			//{
-			//	formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
-			//}
-			//Role ผู้จัดการศูนย์
-			formModel.StatusSaleId = StatusSaleModel.WaitAssign;
+			formModel.StatusSaleId = StatusSaleModel.NotStatus;
+
+			if (UserInfo.RoleCode == RoleCodes.MANAGERCENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+			{
+				//Role ผู้จัดการศูนย์
+				formModel.StatusSaleId = StatusSaleModel.WaitAssign;
+			}
+			else if (UserInfo.RoleCode == RoleCodes.BRANCH)
+			{
+				//Role กิจการสาขาภาค
+				formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
+			}
 
 			if (id != Guid.Empty)
 			{

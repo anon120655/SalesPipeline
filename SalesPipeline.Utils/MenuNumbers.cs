@@ -9,6 +9,9 @@
 		//Customer
 		public const int Customers = 150000;
 
+		//อนุมัติกลุ่มเป้าหมาย
+		public const int ApproveTarget = 160000;
+
 		//อนุมัติคำขอสินเชื่อ
 		public const int ApproveLoan = 170000;
 

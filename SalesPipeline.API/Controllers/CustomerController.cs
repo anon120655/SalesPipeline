@@ -246,7 +246,7 @@ namespace SalesPipeline.API.Controllers
 					{
 						currentUserId = 5;
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
-						statusSaleId = StatusSaleModel.WaitAssignCenter;
+						statusSaleId = StatusSaleModel.WaitVerifyBranch;
 					}
 					else if (rolecode == RoleCodes.BRANCH)
 					{
