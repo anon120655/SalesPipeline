@@ -171,6 +171,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			if (IsToClose)
 			{
+				await Task.Delay(1);
 			}
 		}
 

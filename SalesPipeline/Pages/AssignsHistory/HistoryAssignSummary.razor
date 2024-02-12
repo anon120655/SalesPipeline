@@ -1,0 +1,338 @@
+﻿@page "/historyassign/view/{id:guid}"
+
+<PageTitle>ประวัติการมอบหมาย</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				@if (stepAssign == StepAssignLoanModel.Assigned)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">ประวัติการมอบหมายพนักงานธุรกิจสินเชื่อ > แก้ไขการมอบหมาย</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">ชื่อลูกค้า</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">วันที่</th>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+												<th class="text-center">ผู้รับผิดชอบเดิม</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบใหม่</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">มอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center">
+														<div class="form-check d-flex justify-content-center">
+															<input class="form-check-input" type="checkbox">
+														</div>
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(() => Cancel())" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ยืนยัน
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Summary)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">ประวัติการมอบหมายพนักงานธุรกิจสินเชื่อ > สรุปแก้ไขการมอบหมาย</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">ชื่อลูกค้า</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">วันที่</th>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+												<th class="text-center">ผู้รับผิดชอบเดิม</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบเดิม</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบใหม่</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (1 + 1 == 5)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+													<td class="text-center"></td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										แก้ไข
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
+}
+else
+{
+	<NotPermissionPage />
+}

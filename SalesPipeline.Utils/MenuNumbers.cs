@@ -15,6 +15,9 @@
 		//อนุมัติคำขอสินเชื่อ
 		public const int ApproveLoan = 170000;
 
+		//ประวัติการมอบหมาย
+		public const int HistoryAssign = 180000;
+
 		//จัดการระบบ
 		public const int Systems = 210000;
 

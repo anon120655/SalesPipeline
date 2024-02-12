@@ -159,7 +159,14 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 		protected async Task NotApproveModal(SelectModel model)
 		{
-			await NotApprove(model);
+			if (String.IsNullOrEmpty(model.Name))
+			{
+				_utilsViewModel.AlertWarning("ระบุเหตุผลการไม่อนุมัติ");
+			}
+			else
+			{
+				await NotApprove(model);
+			}
 		}
 
 		private void OnModalHidden()

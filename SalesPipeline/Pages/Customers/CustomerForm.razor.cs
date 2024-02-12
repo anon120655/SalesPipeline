@@ -420,7 +420,7 @@ namespace SalesPipeline.Pages.Customers
 			}
 		}
 
-		public void Cancel()
+		protected void Cancel()
 		{
 			_Navs.NavigateTo("/customer");
 		}
