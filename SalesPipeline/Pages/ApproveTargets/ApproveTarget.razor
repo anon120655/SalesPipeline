@@ -170,8 +170,8 @@
 	</div>
 
 	<ModalConfirm @ref="modalConfirmApprove" CallbackConfirm="ConfirmApprove" isLoading="isLoading" _errorMessage="@_errorMessage" />
-	<ModalSuccessful @ref="modalSuccessfulApprove" _errorMessage="@_errorMessage" />
-	<ModalNotApprove @ref="modalNotApprove" CallbackConfirm="NotApproveModal" />
+	<ModalSuccessful @ref="modalSuccessfulApprove" />
+	<ModalNotApprove @ref="modalNotApprove" CallbackConfirm="NotApproveModal" _errorMessage="@_errorMessage" />
 }
 else
 {

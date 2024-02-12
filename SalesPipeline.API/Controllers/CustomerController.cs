@@ -2,19 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Algorithm;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Loggers;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
-using System.Collections.Generic;
-using System;
-using System.Net.NetworkInformation;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -176,7 +170,7 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
-		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode)
+		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode, int? statusSaleId = null)
 		{
 			try
 			{
@@ -227,7 +221,7 @@ namespace SalesPipeline.API.Controllers
 
 				string? employeeName = null;
 				int currentUserId = 0;
-				int statusSaleId = StatusSaleModel.NotStatus;
+				int _statusSaleId = StatusSaleModel.NotStatus;
 
 				for (int i = 1; i <= number; i++)
 				{
@@ -240,19 +234,24 @@ namespace SalesPipeline.API.Controllers
 					{
 						currentUserId = 11;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
-						statusSaleId = StatusSaleModel.WaitAssign;
+						_statusSaleId = StatusSaleModel.WaitAssign;
 					}
 					else if (rolecode == RoleCodes.LOAN)
 					{
 						currentUserId = 5;
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
-						statusSaleId = StatusSaleModel.WaitVerifyBranch;
+						_statusSaleId = StatusSaleModel.WaitVerifyBranch;
 					}
 					else if (rolecode == RoleCodes.BRANCH)
 					{
 						currentUserId = 9;
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
-						statusSaleId = StatusSaleModel.WaitAssignCenter;
+						_statusSaleId = StatusSaleModel.WaitAssignCenter;
+					}
+
+					if (statusSaleId.HasValue)
+					{
+						_statusSaleId = statusSaleId.Value;
 					}
 
 					var random = new Random();
@@ -266,7 +265,7 @@ namespace SalesPipeline.API.Controllers
 
 					var data = await _repo.Customer.Create(new()
 					{
-						StatusSaleId = statusSaleId,
+						StatusSaleId = _statusSaleId,
 						CurrentUserId = currentUserId, //RM
 						Status = StatusModel.Active,
 						CreateBy = currentUserId,

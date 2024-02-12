@@ -23,11 +23,14 @@
 									<Content>
 										<div class="row">
 											<div class="col-12 col-xl-8"></div>
-											<div class="col-12 col-xl-3 text-end">
-												<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.CustomerId">แก้ไขข้อมูล</a>
-											</div>
+											@if (UserInfo.RoleCode != RoleCodes.BRANCH01)
+											{
+												<div class="col-12 col-xl-3 text-end">
+													<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.CustomerId">แก้ไขข้อมูล</a>
+												</div>
+											}
 										</div>
-										<PartialCustomerInfo formModel="formModel" />										
+										<PartialCustomerInfo formModel="formModel" />
 									</Content>
 								</Tab>
 								<Tab Title="ข้อมูลผู้ติดต่อ">

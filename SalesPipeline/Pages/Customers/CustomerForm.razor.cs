@@ -6,6 +6,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
+using System.Linq;
 
 namespace SalesPipeline.Pages.Customers
 {
@@ -29,6 +30,10 @@ namespace SalesPipeline.Pages.Customers
 		{
 			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
+			if (UserInfo.RoleCode == RoleCodes.BRANCH01)
+			{
+				_permission.IsView = false;
+			}
 			StateHasChanged();
 
 			await SetModel();
@@ -374,15 +379,23 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.StatusSaleId = StatusSaleModel.NotStatus;
 
-			if (UserInfo.RoleCode == RoleCodes.MANAGERCENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+			if (UserInfo.RoleCode != null)
 			{
-				//Role ผู้จัดการศูนย์
-				formModel.StatusSaleId = StatusSaleModel.WaitAssign;
-			}
-			else if (UserInfo.RoleCode == RoleCodes.BRANCH)
-			{
-				//Role กิจการสาขาภาค
-				formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
+				if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
+				{
+					//Role สายงานธุรกิจสินเชื่อ --> รอมอบหมาย
+					formModel.StatusSaleId = StatusSaleModel.WaitAssign;
+				}
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				{
+					//Role กิจการสาขาภาค --> รอมอบหมาย(ศูนย์สาขา)
+					formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
+				}
+				else if (UserInfo.RoleCode == RoleCodes.MANAGERCENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				{
+					//Role ผู้จัดการศูนย์ --> รอมอบหมาย
+					formModel.StatusSaleId = StatusSaleModel.WaitAssign;
+				}
 			}
 
 			if (id != Guid.Empty)

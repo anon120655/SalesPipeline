@@ -82,7 +82,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 
 		protected async Task SetModel()
 		{
-			filter.idnumber = StatusSaleModel.WaitAssignCenter;
+			filter.idnumber = StatusSaleModel.WaitApproveCenter;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -261,10 +261,11 @@ namespace SalesPipeline.Pages.ApproveTargets
 
 			if (Items != null)
 			{
-				List<Sale_StatusCustom> modal = new();
 				var _itemSelected = Items.Where(x => x.IsSelected).ToList();
 				if (_itemSelected.Count > 0)
 				{
+					List<Sale_StatusCustom> modal = new();
+
 					foreach (var item in _itemSelected)
 					{
 						modal.Add(new()
@@ -274,30 +275,31 @@ namespace SalesPipeline.Pages.ApproveTargets
 							CreateBy = UserInfo.Id
 						});
 					}
-				}
 
-				//ผู้จัดการศูนย์สาขาอนุมัติกลุ่มเป้าหมายจากกิจการสาขาภาค ไปรอมอบหมาย
-				var response = await _salesViewModel.UpdateStatusOnlyList(modal);
+					//ผู้จัดการศูนย์สาขาอนุมัติกลุ่มเป้าหมายจากกิจการสาขาภาค ไปรอมอบหมาย
+					var response = await _salesViewModel.UpdateStatusOnlyList(modal);
 
-				if (response.Status)
-				{
-					await modalConfirmApprove.OnHideConfirm();
-					await ShowSuccessfulApprove(null, "เสร็จสิ้นการอนุมัติกลุ่มเป้าหมาย");
-					await SetModel();
-					HideLoading();
-				}
-				else
-				{
-					HideLoading();
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
+					if (response.Status)
+					{
+						await modalConfirmApprove.OnHideConfirm();
+						await ShowSuccessfulApprove(null, "เสร็จสิ้นการอนุมัติกลุ่มเป้าหมาย");
+						await SetModel();
+						HideLoading();
+					}
+					else
+					{
+						HideLoading();
+						_errorMessage = response.errorMessage;
+						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					}
 
+				}
 			}
 		}
 
 		protected async Task InitShowNotApprove()
 		{
+			_errorMessage = null;
 			if (!CheckSelectCustomer())
 			{
 				_utilsViewModel.AlertWarning("เลือกลูกค้า");
@@ -315,35 +317,56 @@ namespace SalesPipeline.Pages.ApproveTargets
 
 		protected async Task NotApproveModal(SelectModel model)
 		{
-			await NotApprove(model);
+			if (String.IsNullOrEmpty(model.Name))
+			{
+				_errorMessage = "ระบุเหตุผลการไม่อนุมัติ";
+			}
+			else
+			{
+				await NotApprove(model);
+			}
 		}
 
 		protected async Task NotApprove(SelectModel model)
 		{
 			_errorMessage = null;
-			ShowLoading();
 
-			//var response = await _salesViewModel.UpdateStatusOnly(new()
-			//{
-			//	SaleId = id,
-			//	StatusId = StatusSaleModel.NotApprove,
-			//	CreateBy = UserInfo.Id,
-			//	Description = model.Name
-			//});
+			if (Items != null)
+			{
+				var _itemSelected = Items.Where(x => x.IsSelected).ToList();
+				if (_itemSelected.Count > 0)
+				{
+					List<Sale_StatusCustom> modal = new();
 
-			//if (response.Status)
-			//{
-			await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-			await modalNotApprove.OnHideConfirm();
-			await SetModel();
-			HideLoading();
-			//}
-			//else
-			//{
-			//	HideLoading();
-			//	_errorMessage = response.errorMessage;
-			//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			//}
+					foreach (var item in _itemSelected)
+					{
+						modal.Add(new()
+						{
+							SaleId = item.Id,
+							StatusId = StatusSaleModel.NotApproveCenter,
+							CreateBy = UserInfo.Id,
+							Description = model.Name
+						});
+					}
+
+					//ผู้จัดการศูนย์สาขาไม่อนุมัติกลุ่มเป้าหมาย
+					var response = await _salesViewModel.UpdateStatusOnlyList(modal);
+
+					if (response.Status)
+					{
+						await modalNotApprove.OnHideConfirm();
+						await SetModel();
+						HideLoading();
+					}
+					else
+					{
+						HideLoading();
+						_errorMessage = response.errorMessage;
+						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					}
+
+				}
+			}
 		}
 
 	}

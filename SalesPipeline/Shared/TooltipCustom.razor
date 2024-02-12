@@ -1,0 +1,59 @@
+﻿
+<style>
+	.tooltip-wrapper {
+		position: relative;
+		display: inline-block;
+		/* border-bottom: 1px dotted #2e75b6; */
+		cursor: text;
+	}
+
+	#spanText {
+		visibility: hidden;
+		position: absolute;
+		width: @(Width)rem;
+		bottom: 100%;
+		margin-left: @(MarginLeft);
+		background-color: #2e75b6;
+		color: #fff;
+		text-align: @(Align);
+		padding: 3px;
+		border-radius: 6px;
+		z-index: 1;
+		font-size: 0.9rem;
+	}
+
+		#spanText::after {
+			content: "";
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: #2e75b6 transparent transparent transparent;
+		}
+
+	.tooltip-wrapper:hover #spanText {
+		visibility: visible;
+	}
+
+	#spanText .content_tool p {
+		margin-bottom: 0 !important;
+	}
+</style>
+
+<div class="tooltip-wrapper">
+
+	<span id="spanText">@((MarkupString)Text)</span>
+
+	@ChildContent
+
+</div>
+
+@code {
+	[Parameter] public RenderFragment ChildContent { get; set; } = null!;
+	[Parameter] public string Text { get; set; } = null!;
+	[Parameter] public string Width { get; set; } = "13";
+	[Parameter] public string Align { get; set; } = "center";
+	[Parameter] public string MarginLeft { get; set; } = "-93px";
+}

@@ -111,15 +111,18 @@
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
-						<div class="col mb-2 mt-3">
-							<Dropdown Class="w-100">
-								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
-								<DropdownMenu>
-									<DropdownItem To="/customer/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-									<DropdownItem To="/customer/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
-								</DropdownMenu>
-							</Dropdown>
-						</div>
+						@if (UserInfo.RoleCode != RoleCodes.BRANCH01)
+						{
+							<div class="col mb-2 mt-3">
+								<Dropdown Class="w-100">
+									<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+									<DropdownMenu>
+										<DropdownItem To="/customer/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+										<DropdownItem To="/customer/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+									</DropdownMenu>
+								</Dropdown>
+							</div>
+						}
 					</div>
 					<div class="row mt-3">
 						<div class="col-12">
@@ -174,15 +177,25 @@
 													<td class="text-center">-</td>
 													<td class="text-center">-</td>
 													<td class="text-center">-</td>
-													<td class="text-center"><p class="fw-bold">@item.StatusSaleName</p></td>
+													<td class="text-center">
+														<p class="form-control-plaintext fw-bold">
+															@item.StatusSaleName
+															@if (!String.IsNullOrEmpty(item.StatusDescription))
+															{
+																<TooltipCustom Width="19" Text="@item.StatusDescription">
+																	<img src="/image/icon/info512.png" width="15" />
+																</TooltipCustom>
+															}
+														</p>
+														</td>
 													<td class="text-center">
 														@GeneralUtils.EmptyTo(item.AssignedUserName)
 													</td>
 													<td class="text-center">
 														<a class="btn btn-info btn-circle" href="/customer/view/@item.Id">
 															<i class="fa-solid fa-eye text-white fs_15e"></i>
-														</a> /
-														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.CustomerId.ToString(),item.CompanyName))'>ลบ</a>
+														</a>
+														@* / <a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.CustomerId.ToString(),item.CompanyName))'>ลบ</a> *@
 													</td>
 												</tr>
 												SequenceNo++;
