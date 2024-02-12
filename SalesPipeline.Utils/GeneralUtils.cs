@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿
 using SalesPipeline.Utils.Resources.Shares;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Cmp;
+using Newtonsoft.Json;
 
 namespace SalesPipeline.Utils
 {

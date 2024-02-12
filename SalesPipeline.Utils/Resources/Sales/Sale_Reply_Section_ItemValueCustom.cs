@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿
 using SalesPipeline.Utils.Resources.ProcessSales;
+using System.Text.Json.Serialization;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {

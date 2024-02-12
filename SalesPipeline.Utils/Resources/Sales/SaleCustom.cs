@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
@@ -71,6 +72,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public virtual CustomerCustom? Customer { get; set; }
 
 		public virtual List<Sale_StatusCustom>? Sale_Statuses { get; set; }
+
+		//Custom
+		public bool IsSelected { get; set; }
 
 	}
 }

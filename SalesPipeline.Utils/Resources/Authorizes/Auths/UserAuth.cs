@@ -1,5 +1,6 @@
 ﻿
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
 
 namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 {

@@ -111,8 +111,6 @@
 											int SequenceNo = 0;
 											foreach (var item in Items)
 											{
-												bool status = item.Status == StatusModel.Active;
-
 												<tr>
 													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
 													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>

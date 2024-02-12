@@ -5,6 +5,8 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Shared.Modals;
 
 namespace SalesPipeline.Pages.ApproveTargets
 {
@@ -17,6 +19,9 @@ namespace SalesPipeline.Pages.ApproveTargets
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
+		ModalConfirm modalConfirmApprove = default!;
+		ModalSuccessful modalSuccessfulApprove = default!;
+		ModalNotApprove modalNotApprove = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -185,6 +190,160 @@ namespace SalesPipeline.Pages.ApproveTargets
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		protected void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
+		}
+
+		protected void OnCheckCustomer(SaleCustom model, object? checkedValue)
+		{
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelected = true;
+			}
+			else
+			{
+				model.IsSelected = false;
+			}
+		}
+
+		protected async Task InitShowConfirmApprove()
+		{
+			if (!CheckSelectCustomer())
+			{
+				_utilsViewModel.AlertWarning("เลือกลูกค้า");
+			}
+			else
+			{
+				await ShowConfirmApprove(null, "กรุณากด ยืนยัน เพื่ออนุมัติ", "<img src=\"/image/icon/do.png\" width=\"65\" />");
+			}
+		}
+
+		protected async Task ShowConfirmApprove(string? id, string? txt, string? icon = null)
+		{
+			await modalConfirmApprove.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task ConfirmApprove(string id)
+		{
+			ShowLoading();
+			await Task.Delay(10);
+			await Approve();
+		}
+
+		protected async Task ShowSuccessfulApprove(string? id, string? txt)
+		{
+			await modalSuccessfulApprove.OnShow(id, $"{txt}");
+		}
+
+		protected bool CheckSelectCustomer()
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items.Any(x => x.IsSelected);
+				return _items;
+			}
+			return false;
+		}
+
+		protected async Task Approve()
+		{
+			_errorMessage = null;
+
+			if (Items != null)
+			{
+				List<Sale_StatusCustom> modal = new();
+				var _itemSelected = Items.Where(x => x.IsSelected).ToList();
+				if (_itemSelected.Count > 0)
+				{
+					foreach (var item in _itemSelected)
+					{
+						modal.Add(new()
+						{
+							SaleId = item.Id,
+							StatusId = StatusSaleModel.WaitAssign,
+							CreateBy = UserInfo.Id
+						});
+					}
+				}
+
+				//ผู้จัดการศูนย์สาขาอนุมัติกลุ่มเป้าหมายจากกิจการสาขาภาค ไปรอมอบหมาย
+				var response = await _salesViewModel.UpdateStatusOnlyList(modal);
+
+				if (response.Status)
+				{
+					await modalConfirmApprove.OnHideConfirm();
+					await ShowSuccessfulApprove(null, "เสร็จสิ้นการอนุมัติกลุ่มเป้าหมาย");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+
+			}
+		}
+
+		protected async Task InitShowNotApprove()
+		{
+			if (!CheckSelectCustomer())
+			{
+				_utilsViewModel.AlertWarning("เลือกลูกค้า");
+			}
+			else
+			{
+				await ShowNotApprove(null, "กรุณาระบุเหตุผลการไม่อนุมัติ", "<img src=\"/image/icon/notapprove.png\" width=\"65\" />");
+			}
+		}
+
+		protected async Task ShowNotApprove(string? id, string? txt, string? icon = null)
+		{
+			await modalNotApprove.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task NotApproveModal(SelectModel model)
+		{
+			await NotApprove(model);
+		}
+
+		protected async Task NotApprove(SelectModel model)
+		{
+			_errorMessage = null;
+			ShowLoading();
+
+			//var response = await _salesViewModel.UpdateStatusOnly(new()
+			//{
+			//	SaleId = id,
+			//	StatusId = StatusSaleModel.NotApprove,
+			//	CreateBy = UserInfo.Id,
+			//	Description = model.Name
+			//});
+
+			//if (response.Status)
+			//{
+			await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+			await modalNotApprove.OnHideConfirm();
+			await SetModel();
+			HideLoading();
+			//}
+			//else
+			//{
+			//	HideLoading();
+			//	_errorMessage = response.errorMessage;
+			//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			//}
 		}
 
 	}

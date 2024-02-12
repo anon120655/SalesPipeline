@@ -20,6 +20,8 @@ using SalesPipeline.Utils.ValidationModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//[JsonIgnore] ใช้ System.Text.Json.Serialization
+
 // Add services to the container.
 
 builder.Services.AddControllers();

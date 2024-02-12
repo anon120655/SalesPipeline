@@ -1,11 +1,12 @@
-﻿using SalesPipeline.Utils.Resources.Shares;
+﻿
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace SalesPipeline.Utils.Resources.Customers
 {
@@ -377,8 +378,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public virtual List<Customer_ShareholderCustom>? Customer_Shareholders { get; set; }
 
 		//Custom
-		[JsonIgnore]
-		public bool IsSelected { get; set; }
 		public int? StatusSaleId { get; set; }
 
 	}

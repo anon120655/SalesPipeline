@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SalesPipeline.API.Controllers
 {
+	[ApiExplorerSettings(IgnoreApi = true)]
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
@@ -28,6 +29,7 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
+		//[AllowAnonymous]
 		[HttpPost("GetListAutoAssign")]
 		public async Task<IActionResult> GetListAutoAssign(allFilter model)
 		{

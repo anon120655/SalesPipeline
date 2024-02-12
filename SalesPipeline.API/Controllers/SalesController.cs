@@ -64,9 +64,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		/// <summary>
-		/// เพิ่มข้อมูลลูกค้า
-		/// </summary>
+		[ApiExplorerSettings(IgnoreApi = true)]
 		[HttpPost("UpdateStatusOnly")]
 		public async Task<IActionResult> UpdateStatusOnly(Sale_StatusCustom model)
 		{
@@ -75,6 +73,30 @@ namespace SalesPipeline.API.Controllers
 				using (var _transaction = _repo.BeginTransaction())
 				{
 					await _repo.Sales.UpdateStatusOnly(model);
+
+					_transaction.Commit();
+				}
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[ApiExplorerSettings(IgnoreApi = true)]
+		[HttpPost("UpdateStatusOnlyList")]
+		public async Task<IActionResult> UpdateStatusOnlyList(List<Sale_StatusCustom> model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					foreach (var item in model)
+					{
+						await _repo.Sales.UpdateStatusOnly(item);
+					}
 
 					_transaction.Commit();
 				}

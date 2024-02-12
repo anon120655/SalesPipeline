@@ -158,7 +158,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		protected async Task ConfirmAssign(string id)
 		{
 			ShowLoading();
-			await Task.Delay(3000);
+			await Task.Delay(10);
 			await Assign();
 		}
 
