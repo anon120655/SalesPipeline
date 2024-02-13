@@ -43,7 +43,7 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">จังหวัด</label>
-								<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
 									@if (LookUp.Provinces?.Count > 0)
 									{
@@ -56,8 +56,14 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">อำเภอ</label>
-								<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-									<option selected>ทั้งหมด</option>
+								<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Amphurs?.Count > 0)
+									{
+										foreach (var item in LookUp.Amphurs)
+										{
+											<option value="@item.AmphurID">@item.AmphurName</option>
+										}
+									}
 								</select>
 							</div>
 							<div class="col mb-2 mt-3">

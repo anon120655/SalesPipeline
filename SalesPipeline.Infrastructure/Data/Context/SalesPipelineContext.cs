@@ -1002,6 +1002,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale", tb => tb.HasComment("การขาย"));
 
+            entity.HasIndex(e => e.AssignedUserId, "AssignedUserId");
+
             entity.HasIndex(e => e.CustomerId, "CustomerId");
 
             entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
@@ -1037,6 +1039,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateByName).HasMaxLength(255);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.AssignedUser).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.AssignedUserId)
+                .HasConstraintName("sale_ibfk_3");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.CustomerId)

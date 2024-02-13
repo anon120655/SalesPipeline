@@ -97,6 +97,8 @@ public partial class User
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+
     public virtual ICollection<User_Loan> User_LoanUserLoans { get; set; } = new List<User_Loan>();
 
     public virtual ICollection<User_Loan> User_LoanUsers { get; set; } = new List<User_Loan>();

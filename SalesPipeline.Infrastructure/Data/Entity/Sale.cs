@@ -66,6 +66,8 @@ public partial class Sale
     /// </summary>
     public string? AssignedUserName { get; set; }
 
+    public virtual User? AssignedUser { get; set; }
+
     public virtual ICollection<Assignment_Sale> Assignment_Sales { get; set; } = new List<Assignment_Sale>();
 
     public virtual Customer Customer { get; set; } = null!;

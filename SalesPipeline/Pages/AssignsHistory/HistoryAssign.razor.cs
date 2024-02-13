@@ -57,7 +57,6 @@ namespace SalesPipeline.Pages.AssignsHistory
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
 
-
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Responsible");
 		}
 

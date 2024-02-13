@@ -6,6 +6,7 @@ using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.AssignsHistory
 {
@@ -40,8 +41,42 @@ namespace SalesPipeline.Pages.AssignsHistory
 		{
 			if (firstRender)
 			{
+				await SetInitManual();
+				await Task.Delay(10);
+
+				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
+		}
+
+		protected async Task SetInitManual()
+		{
+			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
+			if (businessType != null && businessType.Status)
+			{
+				LookUp.BusinessType = businessType.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = businessType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
 		}
 
 		protected async Task SetModel()
@@ -161,7 +196,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมายใหม่
 				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
 				if (_itemsAssign != null)
-				{					
+				{
 					return true;
 				}
 				else
@@ -244,6 +279,64 @@ namespace SalesPipeline.Pages.AssignsHistory
 				}
 			}
 
+		}
+
+		protected async Task SearchStepAssigned()
+		{
+			await SetModelAssigned();
+			StateHasChanged();
+		}
+
+		[JSInvokable]
+		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		{
+			filter.province = null;
+			filter.amphur = null;
+			LookUp.Amphurs = new();
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				filter.province = provinceID.ToString();
+
+				if (int.TryParse(filter.province, out int id))
+				{
+					var amphurs = await _masterViewModel.GetAmphur(id);
+					if (amphurs != null && amphurs.Data?.Count > 0)
+					{
+						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+						LookUp.Amphurs.AddRange(amphurs.Data);
+
+						StateHasChanged();
+						await Task.Delay(10);
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					}
+					else
+					{
+						_errorMessage = amphurs?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
+				}
+			}
+
+			await SetModelAssigned();
+			StateHasChanged();
+
+		}
+
+		[JSInvokable]
+		public async Task AmphurChange(string _amphurID, string _amphurName)
+		{
+			filter.amphur = null;
+			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			{
+				filter.amphur = amphurID.ToString();
+			}
+
+			await SetModelAssigned();
+			StateHasChanged();
 		}
 
 

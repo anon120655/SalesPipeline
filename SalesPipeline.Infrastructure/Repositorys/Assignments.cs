@@ -101,7 +101,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var currentNumber = await _repo.Context.Assignment_Sales
 											  .Include(x => x.Sale)
-											  .Where(x => x.AssignmentId == id && x.IsActive == StatusModel.Active
+											  .Where(x => x.AssignmentId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active
 													&& x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
 											  .CountAsync();
 			if (currentNumber > 0)
@@ -120,6 +120,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
 
+			//รูปแบบการมอบหมายตามเกณฑ์
+			//1. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+			//2. หาลูกค้าที่ยังไม่ถูกมอบหมาย
+			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
+			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
+
 			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
@@ -135,6 +141,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.emp_name))
 			{
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
+			}
+
+			if (!String.IsNullOrEmpty(model.province))
+			{
+				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+			}
+
+			if (!String.IsNullOrEmpty(model.amphur))
+			{
+				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -245,10 +261,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task AssignChange(AssignChangeModel model)
 		{
-			var assignments_sales = await _repo.Context.Assignment_Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == model.Original.Id);
+			var assignments_sales = await _repo.Context.Assignment_Sales
+				.Include(s => s.Assignment)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.IsActive == StatusModel.Active && x.SaleId == model.Original.Id);
+
 			if (assignments_sales == null) throw new ExceptionCustom("Assignments something went wrong!");
+
 			assignments_sales.Status = StatusModel.InActive;
 			assignments_sales.IsActive = StatusModel.InActive;
+			assignments_sales.Assignment.CurrentNumber = assignments_sales.Assignment.CurrentNumber - 1;
 			_db.Update(assignments_sales);
 			await _db.SaveAsync();
 
@@ -259,7 +280,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CreateBy = model.CurrentUserId,
 				CreateByName = currentUserName,
-				AssignmentId = assignments_sales.AssignmentId,
+				AssignmentId = model.New.Id,
 				SaleId = model.Original.Id
 			});
 
@@ -272,7 +293,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 			}
 
-			await UpdateCurrentNumber(assignments_sales.AssignmentId);
+			await UpdateCurrentNumber(model.New.Id);
 
 		}
 
