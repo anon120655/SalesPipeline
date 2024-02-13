@@ -16,5 +16,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateCurrentNumber(Guid id);
 		Task<PaginationView<List<AssignmentCustom>>> GetListAutoAssign(allFilter model);
 		Task Assign(List<AssignmentCustom> model);
+		Task AssignChange(AssignChangeModel model);
 	}
 }

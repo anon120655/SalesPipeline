@@ -101,7 +101,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var currentNumber = await _repo.Context.Assignment_Sales
 											  .Include(x => x.Sale)
-											  .Where(x => x.AssignmentId == id && x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
+											  .Where(x => x.AssignmentId == id && x.IsActive == StatusModel.Active
+													&& x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
 											  .CountAsync();
 			if (currentNumber > 0)
 			{
@@ -240,6 +241,38 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 			}
+		}
+
+		public async Task AssignChange(AssignChangeModel model)
+		{
+			var assignments_sales = await _repo.Context.Assignment_Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == model.Original.Id);
+			if (assignments_sales == null) throw new ExceptionCustom("Assignments something went wrong!");
+			assignments_sales.Status = StatusModel.InActive;
+			assignments_sales.IsActive = StatusModel.InActive;
+			_db.Update(assignments_sales);
+			await _db.SaveAsync();
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var assignedUserName = await _repo.User.GetFullNameById(model.New.UserId);
+
+			var assignmentSale = await CreateSale(new()
+			{
+				CreateBy = model.CurrentUserId,
+				CreateByName = currentUserName,
+				AssignmentId = assignments_sales.AssignmentId,
+				SaleId = model.Original.Id
+			});
+
+			var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Original.Id);
+			if (sales != null)
+			{
+				sales.AssignedUserId = model.New.UserId;
+				sales.AssignedUserName = assignedUserName;
+				_db.Update(sales);
+				await _db.SaveAsync();
+			}
+
+			await UpdateCurrentNumber(assignments_sales.AssignmentId);
 		}
 
 	}

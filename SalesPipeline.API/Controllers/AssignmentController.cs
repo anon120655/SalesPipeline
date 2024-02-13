@@ -65,5 +65,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		//[AllowAnonymous]
+		[HttpPost("AssignChange")]
+		public async Task<IActionResult> AssignChange(AssignChangeModel model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.Assignment.AssignChange(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

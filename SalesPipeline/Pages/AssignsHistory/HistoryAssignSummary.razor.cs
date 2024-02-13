@@ -83,7 +83,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 			bool isNext = true;
 			ClearSearchAssigned();
 
-			if (step == StepAssignLoanModel.Customer)
+			if (step == StepAssignLoanModel.Assigned)
 			{
 
 			}
@@ -187,7 +187,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		{
 			ShowLoading();
 			await Task.Delay(10);
-			await Assign();
+			await AssignChange();
 		}
 
 		protected async Task ShowSuccessfulAssign(string? id, string? txt)
@@ -204,29 +204,45 @@ namespace SalesPipeline.Pages.AssignsHistory
 			}
 		}
 
-		protected async Task Assign()
+		protected async Task AssignChange()
 		{
 			_errorMessage = null;
 
-			//if (Items != null)
-			//{
-			//	var response = await _assignmentViewModel.Assign(Items);
+			if (Items != null && formModel != null)
+			{
+				var _itemsNew = Items.FirstOrDefault(x => x.IsSelectMove);
 
-			//	if (response.Status)
-			//	{
-			IsToClose = true;
-			await modalConfirmAssign.OnHideConfirm();
-			await ShowSuccessfulAssign(null, "เสร็จสิ้นการแก้ไขมอบหมายงาน");
-			//await SetModel();
-			HideLoading();
-			//	}
-			//	else
-			//	{
-			//		HideLoading();
-			//		_errorMessage = response.errorMessage;
-			//		await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			//	}
-			//}
+				if (_itemsNew != null)
+				{
+					AssignChangeModel model = new();
+					model.CurrentUserId = UserInfo.Id;
+					model.Original = formModel;
+					model.New = _itemsNew;
+
+					var response = await _assignmentViewModel.AssignChange(model);
+
+					if (response.Status)
+					{
+						IsToClose = true;
+						await modalConfirmAssign.OnHideConfirm();
+						await ShowSuccessfulAssign(null, "เสร็จสิ้นการแก้ไขมอบหมายงาน");
+						await SetModel();
+						HideLoading();
+					}
+					else
+					{
+						HideLoading();
+						_errorMessage = response.errorMessage;
+						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					}
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
 
 		}
 
