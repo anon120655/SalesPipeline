@@ -57,7 +57,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 			{
 				if (Assignment_Sales != null)
 				{
-					return Assignment_Sales.Count;
+					return Assignment_Sales.Count(x=>x.Status != StatusModel.Delete);
 				}
 				return null;
 			}

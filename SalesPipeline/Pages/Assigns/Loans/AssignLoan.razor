@@ -11,6 +11,8 @@
 			<div class="col-12 my-2">
 				@if (stepAssign == StepAssignLoanModel.Home)
 				{
+					var _items = Items?.Where(x => x.Status != StatusModel.Delete).ToList();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -115,9 +117,9 @@
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
-														<td class="text-center">@item.User?.Tel</td>
-														<td class="text-center">@item.User?.Branch?.Name</td>
-														<td class="text-center">-</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.ProvinceName</td>
+														<td class="text-center">@item.AmphurName</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
 															@GeneralUtils.EmptyTo(item.NumberAssignment)

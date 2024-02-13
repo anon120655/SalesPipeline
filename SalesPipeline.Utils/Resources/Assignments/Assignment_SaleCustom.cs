@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Sales;
+﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Sales;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		//Custom
 		public bool IsSelect { get; set; }
-		public bool IsSelectMove { get; set; }
+		public bool IsSelectMove { get; set; } = false;
 		public bool IsShow { get; set; } = true;
 
 	}
