@@ -273,6 +273,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			await UpdateCurrentNumber(assignments_sales.AssignmentId);
+
 		}
 
 	}
