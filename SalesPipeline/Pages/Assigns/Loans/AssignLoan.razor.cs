@@ -21,12 +21,11 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private List<AssignmentCustom>? Items;
-		private List<Assignment_SaleCustom>? Assignment_Sale_Original;
 		private List<Assignment_SaleCustom>? SaleMoveAssigned;
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
-		private Guid? employeeIdPrevious = null;
+		private Guid? assignmentIdPrevious = null;
 
 		ModalConfirm modalConfirmAssign = default!;
 		ModalSuccessful modalSuccessfulAssign = default!;
@@ -231,36 +230,6 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected async Task Assign()
-		{
-			_errorMessage = null;
-
-			if (Items != null)
-			{
-				ClearDeleteAssigned();
-
-				var aaa = 11;
-
-				//var response = await _assignmentViewModel.Assign(Items);
-
-				//if (response.Status)
-				//{
-				//	IsToClose = true;
-				//	await modalConfirmAssign.OnHideConfirm();
-				//	await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-				//	await SetModel();
-				//	HideLoading();
-				//}
-				//else
-				//{
-				//	HideLoading();
-				//	_errorMessage = response.errorMessage;
-				//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				//}
-			}
-
-		}
-
 		protected async Task Search()
 		{
 			await SetModel();
@@ -268,7 +237,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
-		protected async Task GotoStep(int step, Guid? _id = null)
+		protected async Task GotoStep(int step, Guid? assignmentId = null, bool? back = null)
 		{
 			bool isNext = true;
 			ClearSearchAssigned();
@@ -276,31 +245,48 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			if (step == StepAssignLoanModel.Home)
 			{
-				employeeIdPrevious = null;
+				assignmentIdPrevious = null;
 				SaleMoveAssigned = null;
 				ClearItemsIsSelectAll();
 			}
 
-			if (_id.HasValue)
+			if (assignmentId.HasValue)
 			{
-				employeeIdPrevious = _id;
+				assignmentIdPrevious = assignmentId;
 			}
 
 			if (step == StepAssignLoanModel.Customer)
 			{
-				SaleMoveAssigned = null;
+				//ถ้า SaleMoveAssigned มีค่าแสดงว่าผ่านขั้นตอนการเลือกลูกค้าและไปที่หน้าเลือกผู้รับผิดชอบแล้ว กดย้อนหลับมา
+				if (back == true && SaleMoveAssigned != null)
+				{
+					var _items = Items?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+					if (_items != null && _items.Assignment_Sales != null)
+					{
+						_items.Assignment_Sales.AddRange(SaleMoveAssigned);
+					}
+					SaleMoveAssigned = null;
+				}
 			}
 			else if (step == StepAssignLoanModel.Assigned)
 			{
-				//SetOriginalAssigned();
-				isNext = CheckSelectCustomer();
-				if (!isNext)
+				if (back != true)
 				{
-					_utilsViewModel.AlertWarning("เลือกลูกค้า");
+					isNext = CheckSelectCustomer();
+					if (!isNext)
+					{
+						_utilsViewModel.AlertWarning("เลือกลูกค้า");
+					}
+					else
+					{
+						//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
+						SetDataCustomerMove();
+					}
 				}
 				else
 				{
-					SetDataCustomerMove();
+					//กรณีย้อนกลับจาก Summary ต้องลบกลุ่มลูกค้าที่ถูก move ไปก่อนหน้า
+					ClearDataCustomerMove();
 				}
 			}
 			else if (step == StepAssignLoanModel.Summary)
@@ -320,9 +306,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			await Task.Delay(10);
 			await SetInitManual();
-			//await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
 
+		//2. ลูกค้า
 		protected void OnCheckCustomer(Assignment_SaleCustom model, object? checkedValue)
 		{
 			if (checkedValue != null && (bool)checkedValue)
@@ -335,6 +321,95 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
+		protected void OnViewCustomer(SaleCustom? model)
+		{
+			if (model != null)
+			{
+				formView = model;
+			}
+		}
+
+		protected void OnViewCustomerBack()
+		{
+			formView = null;
+		}
+
+		protected void SearchStepCustomer(object? businesstype = null)
+		{
+			if (Items?.Count > 0)
+			{
+				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+				//เก็บ object เดิม
+				//if (Assignment_Sale_Original == null && _items?.Assignment_Sales != null)
+				//{
+				//	Assignment_Sale_Original = new(_items.Assignment_Sales);
+				//}
+				//else
+				//{
+				//	//ถ้า object เดิมมีข้อมูลให้นำมายัดใส่ item ที่จะค้นหาก่อนค้นหา
+				//	if (Assignment_Sale_Original != null && _items != null)
+				//	{
+				//		_items.Assignment_Sales = new(Assignment_Sale_Original);
+				//	}
+				//}
+
+				string valSearch = filter.searchtxt ?? string.Empty;
+				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
+				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype))
+				{
+					if (_items != null && _items.Assignment_Sales != null)
+					{
+						foreach (var item in _items.Assignment_Sales)
+						{
+							Guid businesstypeid = Guid.Empty;
+							if (!String.IsNullOrEmpty(valSearch) && !Guid.TryParse(valbusinesstype, out businesstypeid))
+							{
+								item.IsShow = item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch);
+							}
+
+							if (String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
+							{
+								item.IsShow = item.Sale != null
+										&& item.Sale.Customer != null
+										&& item.Sale.Customer.Master_BusinessTypeId != null
+										&& item.Sale.Customer.Master_BusinessTypeId == businesstypeid;
+							}
+
+							if (!String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
+							{
+								item.IsShow = (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
+										   && (item.Sale != null && item.Sale.Customer != null && item.Sale.Customer.Master_BusinessTypeId != null && item.Sale.Customer.Master_BusinessTypeId == businesstypeid);
+							}
+						}
+
+
+					}
+				}
+				else
+				{
+					ClearSearchCustomer();
+				}
+
+			}
+		}
+
+		protected void ClearSearchCustomer()
+		{
+			filter = new();
+			if (Items?.Count > 0)
+			{
+				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+				if (_items != null && _items.Assignment_Sales != null)
+				{
+					foreach (var item in _items.Assignment_Sales.Where(x => !x.IsShow))
+					{
+						item.IsShow = true;
+					}
+				}
+			}
+		}
+
+		//3. ผู้รับผิดชอบ
 		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
@@ -352,6 +427,48 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			else
 			{
 				model.IsSelectMove = false;
+			}
+		}
+
+		protected void SetDataCustomerMove()
+		{
+			if (Items?.Count > 0 && SaleMoveAssigned == null)
+			{
+				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+				if (_items != null && _items.Assignment_Sales != null)
+				{
+					var _itemsMove = _items.Assignment_Sales.Where(s => s.IsSelectMove).ToList();
+
+					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
+					if (_itemsMove.Count > 0)
+					{
+						SaleMoveAssigned = new();
+						SaleMoveAssigned = new(_itemsMove);
+					}
+
+					foreach (var item in _itemsMove)
+					{
+						_items.Assignment_Sales.Remove(item);
+					}
+				}
+			}
+		}
+
+		protected void ClearDataCustomerMove()
+		{
+			if (Items?.Count > 0 && SaleMoveAssigned != null)
+			{
+				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
+				if (_itemsAssign != null && _itemsAssign.Assignment_Sales != null)
+				{
+					foreach (var item in SaleMoveAssigned)
+					{
+						if (_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+						{
+							_itemsAssign.Assignment_Sales.Remove(item);
+						}
+					}
+				}
 			}
 		}
 
@@ -377,7 +494,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			if (Items?.Count > 0)
 			{
-				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
+				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
 				if (_items != null && _items.Assignment_Sales != null)
 				{
 					var _itemsCheck = _items.Assignment_Sales.Any(s => s.IsSelectMove);
@@ -387,30 +504,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			return false;
 		}
 
-		protected void SetDataCustomerMove()
-		{
-			if (Items?.Count > 0 && SaleMoveAssigned == null)
-			{
-				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
-				if (_items != null && _items.Assignment_Sales != null)
-				{
-					var _itemsMove = _items.Assignment_Sales.Where(s => s.IsSelectMove).ToList();
-
-					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
-					if (_itemsMove.Count > 0)
-					{
-						SaleMoveAssigned = new();
-						SaleMoveAssigned = new(_itemsMove);
-					}
-
-					foreach (var item in _itemsMove)
-					{
-						_items.Assignment_Sales.Remove(item);
-					}
-				}
-			}
-		}
-
+		//4. สรุปผู้รับผิดชอบและลูกค้าที่ได้รับมอบหมาย
 		protected bool Summary()
 		{
 			if (Items?.Count > 0)
@@ -421,9 +515,14 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				{
 					if (SaleMoveAssigned != null)
 					{
-						_itemsAssign.Assignment_Sales.AddRange(SaleMoveAssigned);
+						foreach (var item in SaleMoveAssigned)
+						{
+							if (!_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+							{
+								_itemsAssign.Assignment_Sales.Add(item);
+							}
+						}
 					}
-
 
 					return true;
 				}
@@ -514,99 +613,11 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		//	return false;
 		//}
 
-		protected void OnViewCustomer(SaleCustom? model)
-		{
-			if (model != null)
-			{
-				formView = model;
-			}
-		}
-
-		protected void OnViewCustomerBack()
-		{
-			formView = null;
-		}
-
-		protected void SearchStepCustomer(object? businesstype = null)
-		{
-			if (Items?.Count > 0)
-			{
-				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
-				//เก็บ object เดิม
-				//if (Assignment_Sale_Original == null && _items?.Assignment_Sales != null)
-				//{
-				//	Assignment_Sale_Original = new(_items.Assignment_Sales);
-				//}
-				//else
-				//{
-				//	//ถ้า object เดิมมีข้อมูลให้นำมายัดใส่ item ที่จะค้นหาก่อนค้นหา
-				//	if (Assignment_Sale_Original != null && _items != null)
-				//	{
-				//		_items.Assignment_Sales = new(Assignment_Sale_Original);
-				//	}
-				//}
-
-				string valSearch = filter.searchtxt ?? string.Empty;
-				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
-				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype))
-				{
-					if (_items != null && _items.Assignment_Sales != null)
-					{
-						foreach (var item in _items.Assignment_Sales)
-						{
-							Guid businesstypeid = Guid.Empty;
-							if (!String.IsNullOrEmpty(valSearch) && !Guid.TryParse(valbusinesstype, out businesstypeid))
-							{
-								item.IsShow = item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch);
-							}
-
-							if (String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
-							{
-								item.IsShow = item.Sale != null
-										&& item.Sale.Customer != null
-										&& item.Sale.Customer.Master_BusinessTypeId != null
-										&& item.Sale.Customer.Master_BusinessTypeId == businesstypeid;
-							}
-
-							if (!String.IsNullOrEmpty(valSearch) && Guid.TryParse(valbusinesstype, out businesstypeid))
-							{
-								item.IsShow = (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
-										   && (item.Sale != null && item.Sale.Customer != null && item.Sale.Customer.Master_BusinessTypeId != null && item.Sale.Customer.Master_BusinessTypeId == businesstypeid);
-							}
-						}
-
-
-					}
-				}
-				else
-				{
-					ClearSearchCustomer();
-				}
-
-			}
-		}
-
-		protected void ClearSearchCustomer()
-		{
-			filter = new();
-			if (Items?.Count > 0)
-			{
-				var _items = Items.FirstOrDefault(x => x.Id == employeeIdPrevious);
-				if (_items != null && _items.Assignment_Sales != null)
-				{
-					foreach (var item in _items.Assignment_Sales.Where(x => !x.IsShow))
-					{
-						item.IsShow = true;
-					}
-				}
-			}
-		}
-
 		protected void SearchStepAssigned()
 		{
 			if (Items?.Count > 0)
 			{
-				var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+				var _items = Items?.Where(x => x.Id != assignmentIdPrevious).ToList();
 
 				if (!String.IsNullOrEmpty(filter.emp_id) || !String.IsNullOrEmpty(filter.emp_name))
 				{
@@ -646,7 +657,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			filter = new();
 			if (Items?.Count > 0)
 			{
-				var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+				var _items = Items?.Where(x => x.Id != assignmentIdPrevious).ToList();
 				if (_items != null)
 				{
 					foreach (var item in _items)
@@ -657,59 +668,35 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected void ClearDeleteAssigned()
+		protected async Task Assign()
 		{
-			if (Items?.Count > 0)
+			_errorMessage = null;
+
+			if (Items != null)
 			{
-				foreach (var item in Items)
-				{
-					if (item.Assignment_Sales != null)
-					{
-						var saleRemove = item.Assignment_Sales.Where(x => x.Status == StatusModel.Delete).ToList();
-						if (saleRemove.Count > 0)
-						{
-							foreach (var item_remove in saleRemove)
-							{
-								item.Assignment_Sales.Remove(item_remove);
-							}
-						}
-					}
-				}
+				//ClearDeleteAssigned();
+
+				var aaa = 11;
+
+				//var response = await _assignmentViewModel.Assign(Items);
+
+				//if (response.Status)
+				//{
+				//	IsToClose = true;
+				//	await modalConfirmAssign.OnHideConfirm();
+				//	await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+				//	await SetModel();
+				//	HideLoading();
+				//}
+				//else
+				//{
+				//	HideLoading();
+				//	_errorMessage = response.errorMessage;
+				//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				//}
 			}
+
 		}
-
-		//protected void SetOriginalAssigned()
-		//{
-		//	if (Items?.Count > 0)
-		//	{
-		//		var _items = Items.Where(x => x.IsSelectMove).FirstOrDefault();
-
-
-		//		var _itemsSale = _items?.Assignment_Sales?.Where(x => x.IsSelectMove).ToList();
-
-		//		foreach (var item in Items)
-		//		{
-		//			if (item.Assignment_Sales != null)
-		//			{
-		//				var saleAdd = item.Assignment_Sales.Where(x => x.Status == StatusModel.Delete || x.IsSelectMove).ToList();
-		//				if (saleAdd.Count > 0)
-		//				{
-		//					foreach (var item_handle in saleAdd)
-		//					{
-		//						if (item_handle.Status == StatusModel.Delete)
-		//						{
-		//							item_handle.Status = StatusModel.Active;
-		//						}
-		//						if (item_handle.AssignmentId != employeeIdPrevious && item_handle.IsSelectMove)
-		//						{
-		//							item.Assignment_Sales.Remove(item_handle);
-		//						}
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
 
 
 	}

@@ -142,12 +142,12 @@
 						</div>
 						<div>
 							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-											TotalItems="@(Pager?.TotalItems ?? 0)"
-											Pager="@Pager"
-											OnShowOnPage="@OnSelectPagesize"
-											OnSelectedPage="@OnSelectPage"
-											ParameterAll="@filter?.SetParameter()">
-							</PaginationBack> *@
+					TotalItems="@(Pager?.TotalItems ?? 0)"
+					Pager="@Pager"
+					OnShowOnPage="@OnSelectPagesize"
+					OnSelectedPage="@OnSelectPage"
+					ParameterAll="@filter?.SetParameter()">
+					</PaginationBack> *@
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
@@ -165,7 +165,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Customer)
 				{
-					var _items = Items?.Where(x => x.Id == employeeIdPrevious).FirstOrDefault();
+					var _items = Items?.Where(x => x.Id == assignmentIdPrevious).FirstOrDefault();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -294,12 +294,12 @@
 							</div>
 							<div>
 								@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-												TotalItems="@(Pager?.TotalItems ?? 0)"
-												Pager="@Pager"
-												OnShowOnPage="@OnSelectPagesize"
-												OnSelectedPage="@OnSelectPage"
-												ParameterAll="@filter?.SetParameter()">
-								</PaginationBack> *@
+						TotalItems="@(Pager?.TotalItems ?? 0)"
+						Pager="@Pager"
+						OnShowOnPage="@OnSelectPagesize"
+						OnSelectedPage="@OnSelectPage"
+						ParameterAll="@filter?.SetParameter()">
+						</PaginationBack> *@
 							</div>
 							<div class="my-4 text-center">
 								<div class="d-flex bd-highlight align-items-center justify-content-center">
@@ -372,7 +372,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Assigned)
 				{
-					var _items = Items?.Where(x => x.Id != employeeIdPrevious).ToList();
+					var _items = Items?.Where(x => x.Id != assignmentIdPrevious).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -488,17 +488,17 @@
 						</div>
 						<div>
 							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-											TotalItems="@(Pager?.TotalItems ?? 0)"
-											Pager="@Pager"
-											OnShowOnPage="@OnSelectPagesize"
-											OnSelectedPage="@OnSelectPage"
-											ParameterAll="@filter?.SetParameter()">
-							</PaginationBack> *@
+					TotalItems="@(Pager?.TotalItems ?? 0)"
+					Pager="@Pager"
+					OnShowOnPage="@OnSelectPagesize"
+					OnSelectedPage="@OnSelectPage"
+					ParameterAll="@filter?.SetParameter()">
+					</PaginationBack> *@
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										กลับ
 									</Button>
 								</div>
@@ -635,7 +635,7 @@
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										กลับ
 									</Button>
 								</div>
