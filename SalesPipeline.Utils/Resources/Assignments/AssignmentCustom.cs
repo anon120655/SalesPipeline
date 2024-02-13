@@ -46,6 +46,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public virtual UserCustom? User { get; set; }
 
 		//Custom
+		public string? Tel { get; set; }
+		public string? ProvinceName { get; set; }
+		public string? AmphurName { get; set; }
 		/// <summary>
 		/// จำนวนการมอบหมาย
 		/// </summary>

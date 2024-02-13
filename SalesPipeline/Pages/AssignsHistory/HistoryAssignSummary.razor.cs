@@ -4,6 +4,7 @@ using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.AssignsHistory
@@ -15,8 +16,11 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private allFilter filter = new();
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
+		private SaleCustom? formModel;
+		private List<AssignmentCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
 
 		ModalConfirm modalConfirmAssign = default!;
@@ -28,6 +32,8 @@ namespace SalesPipeline.Pages.AssignsHistory
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.HistoryAssign) ?? new User_PermissionCustom();
 			StateHasChanged();
 
+			await SetModel();
+			await SetModelAssigned();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -38,9 +44,44 @@ namespace SalesPipeline.Pages.AssignsHistory
 			}
 		}
 
+		protected async Task SetModel()
+		{
+			if (id != Guid.Empty)
+			{
+				var data = await _salesViewModel.GetById(id);
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task SetModelAssigned()
+		{
+			filter.pagesize = 100;
+			var data = await _assignmentViewModel.GetListAutoAssign(filter);
+			if (data != null && data.Status)
+			{
+				Items = data.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+		}
+
 		protected async Task GotoStep(int step)
 		{
 			bool isNext = true;
+			ClearSearchAssigned();
 
 			if (step == StepAssignLoanModel.Customer)
 			{
@@ -48,7 +89,11 @@ namespace SalesPipeline.Pages.AssignsHistory
 			}
 			else if (step == StepAssignLoanModel.Summary)
 			{
-
+				isNext = Summary();
+				if (!isNext)
+				{
+					_utilsViewModel.AlertWarning("เลือกผู้รับผิดชอบใหม่");
+				}
 			}
 
 			if (isNext)
@@ -75,6 +120,56 @@ namespace SalesPipeline.Pages.AssignsHistory
 		protected void Cancel()
 		{
 			_Navs.NavigateTo("/historyassign");
+		}
+
+		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		{
+			if (Items?.Count > 0)
+			{
+				foreach (var item in Items.Where(x => x.IsSelectMove))
+				{
+					item.IsSelectMove = false;
+				}
+			}
+
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelectMove = true;
+			}
+			else
+			{
+				model.IsSelectMove = false;
+			}
+		}
+
+		protected void ClearSearchAssigned()
+		{
+			filter = new();
+			if (Items?.Count > 0)
+			{
+				foreach (var item in Items)
+				{
+					item.IsShow = true;
+				}
+			}
+		}
+
+		protected bool Summary()
+		{
+			if (Items?.Count > 0)
+			{
+				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมายใหม่
+				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
+				if (_itemsAssign != null)
+				{					
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			return false;
 		}
 
 		protected async Task InitShowConfirmAssign()

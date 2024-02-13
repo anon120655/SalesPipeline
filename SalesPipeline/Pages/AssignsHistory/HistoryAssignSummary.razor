@@ -11,6 +11,8 @@
 			<div class="col-12 my-2">
 				@if (stepAssign == StepAssignLoanModel.Assigned)
 				{
+					var _items = Items?.Where(x => x.UserId != formModel?.AssignedUserId).ToList();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -39,7 +41,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (1 + 1 == 5)
+											@if (formModel == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -50,13 +52,13 @@
 											else
 											{
 												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
+													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
+													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@formModel.CompanyName</td>
+													<td class="text-center">-</td>
+													<td class="text-center">-</td>
+													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@formModel.AssignedUserName</td>
 												</tr>
 											}
 										</tbody>
@@ -85,7 +87,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (1 + 1 == 5)
+											@if (_items == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -93,7 +95,7 @@
 													</td>
 												</tr>
 											}
-											else if (1 + 1 == 5)
+											else if (_items.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -103,19 +105,23 @@
 											}
 											else
 											{
-												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center">
-														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox">
-														</div>
-													</td>
-												</tr>
+												foreach (var item in _items)
+												{
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.ProvinceName</td>
+														<td class="text-center">@item.AmphurName</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelectMove"
+																	   @onchange="( (e) => OnCheckEmployee(item,e.Value))">
+															</div>
+														</td>
+													</tr>
+												}
 											}
 										</tbody>
 									</table>
@@ -144,6 +150,9 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
+					var _itemsOriginal = Items?.FirstOrDefault(x => x.UserId == formModel?.AssignedUserId);
+					var _itemsNew = Items?.FirstOrDefault(x => x.IsSelectMove);
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -172,7 +181,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (1 + 1 == 5)
+											@if (formModel == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -183,13 +192,13 @@
 											else
 											{
 												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
+													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
+													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@formModel.CompanyName</td>
+													<td class="text-center">-</td>
+													<td class="text-center">-</td>
+													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@formModel.AssignedUserName</td>
 												</tr>
 											}
 										</tbody>
@@ -218,15 +227,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (1 + 1 == 5)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-													</td>
-												</tr>
-											}
-											else if (1 + 1 == 5)
+											@if (_itemsOriginal == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -237,13 +238,13 @@
 											else
 											{
 												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
+													<td class="text-center">@_itemsOriginal.EmployeeId</td>
+													<td class="text-center">@_itemsOriginal.EmployeeName</td>
+													<td class="text-center">@_itemsOriginal.Tel</td>
+													<td class="text-center">@_itemsOriginal.ProvinceName</td>
+													<td class="text-center">@_itemsOriginal.AmphurName</td>
+													<td class="text-center">@(_itemsOriginal.CurrentNumber)/100</td>
+													<td class="text-center">@(_itemsOriginal.CurrentNumber - 1)/100</td>
 												</tr>
 											}
 										</tbody>
@@ -272,15 +273,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (1 + 1 == 5)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-													</td>
-												</tr>
-											}
-											else if (1 + 1 == 5)
+											@if (_itemsNew == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -291,13 +284,13 @@
 											else
 											{
 												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
+													<td class="text-center">@_itemsNew.EmployeeId</td>
+													<td class="text-center">@_itemsNew.EmployeeName</td>
+													<td class="text-center">@_itemsNew.Tel</td>
+													<td class="text-center">@_itemsNew.ProvinceName</td>
+													<td class="text-center">@_itemsNew.AmphurName</td>
+													<td class="text-center">@(_itemsNew.CurrentNumber)/100</td>
+													<td class="text-center">@(_itemsNew.CurrentNumber + 1)/100</td>
 												</tr>
 											}
 										</tbody>

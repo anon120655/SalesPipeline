@@ -123,7 +123,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
 												 .Include(x => x.User).ThenInclude(x => x.Branch)
-												 .OrderBy(x => x.CurrentNumber).ThenBy(x=>x.CreateDate)
+												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -162,7 +162,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//มอบหมายให้พนักงานเท่าๆ กัน
 						var assignment = _mapper.Map<AssignmentCustom>(userAssignment[index_path]);
 						assignment.Assignment_Sales = new();
-						assignment.User = null;
+						assignment.Tel = assignment.User?.Tel;
+						assignment.ProvinceName = assignment.User?.Branch?.Name;
+						assignment.AmphurName = "-";
 
 						foreach (var item_sales in item_path)
 						{
@@ -178,6 +180,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Sale = _mapper.Map<SaleCustom>(item_sales)
 							});
 						}
+
+						assignment.User = null;
 						responseItems.Add(assignment);
 						index_path++;
 					}
