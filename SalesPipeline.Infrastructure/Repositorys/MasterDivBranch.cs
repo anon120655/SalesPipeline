@@ -119,6 +119,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_Department_BranchCustom>(query);
 		}
 
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Master_Department_Branches.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public async Task<PaginationView<List<Master_Department_BranchCustom>>> GetBranchs(allFilter model)
 		{
 			var query = _repo.Context.Master_Department_Branches

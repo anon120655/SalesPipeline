@@ -223,6 +223,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.StatusSaleId == model.idnumber);
 			}
 
+			if (model.assignuserid.HasValue)
+			{
+				query = query.Where(x => x.AssignedUserId == model.assignuserid);
+			}
+
 			if (!String.IsNullOrEmpty(model.sort))
 			{
 				if (model.sort == OrderByModel.ASC)

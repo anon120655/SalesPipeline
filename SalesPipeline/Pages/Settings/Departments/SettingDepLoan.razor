@@ -102,12 +102,7 @@
 												<tr>
 													<td class="text-center">@item.Code</td>
 													<td class="">@item.Name</td>
-													<td class="">
-														@* @if (item.Division_Branchs != null)
-														{
-															<span>@item.Division_Branchs.Name</span>
-														} *@
-													</td>
+													<td class="">@item.Master_Department_BranchName</td>
 													<td class="text-center">
 														<a href="/setting/dep/loan/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>

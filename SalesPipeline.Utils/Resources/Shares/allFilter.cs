@@ -13,6 +13,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public Guid id { get; set; }
 		public int? idnumber { get; set; }
 		public int? userid { get; set; }
+		public int? assignuserid { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
@@ -47,6 +48,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (idnumber > 0)
 				ParameterAll += $"&idnumber={idnumber}";
+
+			if (assignuserid > 0)
+				ParameterAll += $"&assignuserid={assignuserid}";
 
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
@@ -118,6 +122,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(idnumber), out var _idnumber))
 				idnumber = Convert.ToInt16(_idnumber);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignuserid), out var _assignuserid))
+				assignuserid = Convert.ToInt16(_assignuserid);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);

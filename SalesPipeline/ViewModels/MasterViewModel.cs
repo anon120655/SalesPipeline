@@ -6,6 +6,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using System.Net.Http;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.Resources.Assignments;
 
 namespace SalesPipeline.ViewModels
 {
@@ -103,6 +104,30 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<List<Master_BranchCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListRM(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Assignment/GetListRM", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<AssignmentCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

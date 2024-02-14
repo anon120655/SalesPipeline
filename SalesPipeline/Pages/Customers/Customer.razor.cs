@@ -99,12 +99,24 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var userRM = await _masterViewModel.GetListRM(new allFilter() { status = StatusModel.Active, pagesize = 100 });
+			if (userRM != null && userRM.Status)
+			{
+				LookUp.AssignmentUser = userRM.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = userRM?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "StatusSale");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "AssignmentUser");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -230,6 +242,22 @@ namespace SalesPipeline.Pages.Customers
 			if (e.Value != null)
 			{
 				filter.province = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
+		}
+
+		protected async Task OnAssignmentUser(ChangeEventArgs e)
+		{
+			filter.assignuserid = null;
+			if (e.Value != null)
+			{
+				if (int.TryParse(e.Value.ToString(), out int val))
+				{
+					filter.assignuserid = val;
+				}
 
 				await SetModel();
 				StateHasChanged();

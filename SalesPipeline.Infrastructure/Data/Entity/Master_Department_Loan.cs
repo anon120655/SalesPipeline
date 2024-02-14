@@ -26,7 +26,9 @@ public partial class Master_Department_Loan
     /// <summary>
     /// FK ฝ่ายกิจการสาขาภาค
     /// </summary>
-    public Guid Master_Department_BranchId { get; set; }
+    public Guid? Master_Department_BranchId { get; set; }
+
+    public string? Master_Department_BranchName { get; set; }
 
     /// <summary>
     /// รหัส
@@ -35,5 +37,5 @@ public partial class Master_Department_Loan
 
     public string? Name { get; set; }
 
-    public virtual Master_Department_Branch Master_Department_Branch { get; set; } = null!;
+    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
 }

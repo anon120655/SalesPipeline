@@ -362,6 +362,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetListRM")]
+		public async Task<IActionResult> GetListRM([FromQuery] allFilter model)
+		{
+			try
+			{
+				return Ok(await _repo.Assignment.GetListRM(model));
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[AllowAnonymous]
 		[HttpGet("MenuItem")]
 		public async Task<IActionResult> MenuItem([FromQuery] allFilter model)

@@ -16,6 +16,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_Department_LoanCustom> GetById(Guid id);
+		Task<string?> GetNameById(Guid id);
 		Task<PaginationView<List<Master_Department_LoanCustom>>> GetList(allFilter model);
 	}
 }

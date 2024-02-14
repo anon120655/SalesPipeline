@@ -104,10 +104,29 @@ namespace SalesPipeline.Helpers
 						var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(responseClient.Content);
 						if (dataMap != null && dataMap.Message == null)
 						{
-							var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
-							if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+							if (dataMap.Status == 422)
 							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<Error422Model>(responseClient.Content);
+								if (dataMapErrorDefault != null)
+								{
+									if (dataMapErrorDefault.errors?.Count > 0)
+									{
+										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
+										if (txterror != null)
+										{
+											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+										}
+									}
+								}
 								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+							}
+							else
+							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
+								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+								{
+									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								}
 							}
 						}
 						throw new ExceptionCustom(dataMap?.Message);
@@ -184,10 +203,29 @@ namespace SalesPipeline.Helpers
 						var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(responseClient.Content);
 						if (dataMap != null && dataMap.Message == null)
 						{
-							var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
-							if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+							if (dataMap.Status == 422)
 							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<Error422Model>(responseClient.Content);
+								if (dataMapErrorDefault != null)
+								{
+									if (dataMapErrorDefault.errors?.Count > 0)
+									{
+										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
+										if (txterror != null)
+										{
+											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+										}
+									}
+								}
 								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+							}
+							else
+							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
+								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+								{
+									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								}
 							}
 						}
 						throw new ExceptionCustom(dataMap?.Message);
@@ -248,10 +286,29 @@ namespace SalesPipeline.Helpers
 						var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(responseClient.Content);
 						if (dataMap != null && dataMap.Message == null)
 						{
-							var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
-							if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+							if (dataMap.Status == 422)
 							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<Error422Model>(responseClient.Content);
+								if (dataMapErrorDefault != null)
+								{
+									if (dataMapErrorDefault.errors?.Count > 0)
+									{
+										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
+										if (txterror != null)
+										{
+											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+										}
+									}
+								}
 								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+							}
+							else
+							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
+								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+								{
+									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								}
 							}
 						}
 						throw new ExceptionCustom(dataMap?.Message);
@@ -313,10 +370,29 @@ namespace SalesPipeline.Helpers
 						var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(responseClient.Content);
 						if (dataMap != null && dataMap.Message == null)
 						{
-							var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
-							if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+							if (dataMap.Status == 422)
 							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<Error422Model>(responseClient.Content);
+								if (dataMapErrorDefault != null)
+								{
+									if (dataMapErrorDefault.errors?.Count > 0)
+									{
+										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
+										if (txterror != null)
+										{
+											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+										}
+									}
+								}
 								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+							}
+							else
+							{
+								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
+								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
+								{
+									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								}
 							}
 						}
 						throw new ExceptionCustom(dataMap?.Message);

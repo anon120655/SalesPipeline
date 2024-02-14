@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -37,6 +38,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
+				string? master_DepBranchName = null;
+				if (model.Master_Department_BranchId.HasValue)
+				{
+					master_DepBranchName = await _repo.MasterDepBranch.GetNameById(model.Master_Department_BranchId.Value);
+				}
+
 				var masterDivisionLoan = new Data.Entity.Master_Department_Loan()
 				{
 					Status = StatusModel.Active,
@@ -45,7 +52,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					UpdateBy = model.CurrentUserId,
 					Code = model.Code,
-					Name = model.Name
+					Name = model.Name,
+					Master_Department_BranchId = model.Master_Department_BranchId,
+					Master_Department_BranchName = master_DepBranchName
 				};
 				await _db.InsterAsync(masterDivisionLoan);
 				await _db.SaveAsync();
@@ -65,10 +74,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var masterDivisionLoan = await _repo.Context.Master_Department_Loans.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
 				if (masterDivisionLoan != null)
 				{
+					string? master_DepBranchName = null;
+					if (model.Master_Department_BranchId.HasValue)
+					{
+						master_DepBranchName = await _repo.MasterDepBranch.GetNameById(model.Master_Department_BranchId.Value);
+					}
+
 					masterDivisionLoan.UpdateDate = _dateNow;
 					masterDivisionLoan.UpdateBy = model.CurrentUserId;
 					masterDivisionLoan.Code = model.Code;
 					masterDivisionLoan.Name = model.Name;
+					masterDivisionLoan.Master_Department_BranchId = model.Master_Department_BranchId;
+					masterDivisionLoan.Master_Department_BranchName = master_DepBranchName;
 					_db.Update(masterDivisionLoan);
 					await _db.SaveAsync();
 
@@ -151,5 +168,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Master_Department_Loans.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
 	}
 }

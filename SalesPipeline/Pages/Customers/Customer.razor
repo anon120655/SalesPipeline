@@ -102,8 +102,15 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
-							<select class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+							<select @onchange="OnAssignmentUser" value="@filter.userid" id="AssignmentUser" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
+								@if (LookUp.AssignmentUser?.Count > 0)
+								{
+									foreach (var item in LookUp.AssignmentUser)
+									{
+										<option value="@item.UserId">@item.EmployeeName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">

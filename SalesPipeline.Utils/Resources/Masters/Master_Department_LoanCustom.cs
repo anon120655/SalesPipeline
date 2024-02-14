@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,13 +28,18 @@ namespace SalesPipeline.Utils.Resources.Masters
 		/// <summary>
 		/// FK ฝ่ายกิจการสาขาภาค
 		/// </summary>
-		public Guid Master_Department_BranchId { get; set; }
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public Guid? Master_Department_BranchId { get; set; }
+
+		public string? Master_Department_BranchName { get; set; }
 
 		/// <summary>
 		/// รหัส
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string Code { get; set; } = null!;
 
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
 	}
 }

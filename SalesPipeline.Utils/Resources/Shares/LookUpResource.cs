@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+﻿using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
@@ -17,6 +18,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_RegionCustom>? Regions { get; set; }
 		public List<Master_BranchCustom>? Branchs { get; set; }
 		public List<User_BranchCustom>? RMUser { get; set; }
+		public List<AssignmentCustom>? AssignmentUser { get; set; }
 		public List<Master_YieldCustom>? Yield { get; set; }
 		public List<Master_ChainCustom>? Chain { get; set; }
 		public List<Master_DepartmentCustom>? Departments { get; set; }

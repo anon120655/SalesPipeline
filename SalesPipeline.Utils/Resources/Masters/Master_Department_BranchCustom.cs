@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,8 +28,10 @@ namespace SalesPipeline.Utils.Resources.Masters
 		/// <summary>
 		/// รหัส
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string Code { get; set; } = null!;
 
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
 
 		public virtual ICollection<Master_Department_LoanCustom>? Master_Department_Loans { get; set; }

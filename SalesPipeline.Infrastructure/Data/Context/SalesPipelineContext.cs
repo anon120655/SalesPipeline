@@ -739,6 +739,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Master_Department_BranchId).HasComment("FK ฝ่ายกิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
@@ -748,7 +749,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Master_Department_Loans)
                 .HasForeignKey(d => d.Master_Department_BranchId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("master_department_loan_ibfk_1");
         });
 
