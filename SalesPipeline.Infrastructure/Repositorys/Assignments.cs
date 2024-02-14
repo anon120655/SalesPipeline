@@ -7,6 +7,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -210,6 +211,44 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = responseItems,
 				Pager = pager
 			};
+		}
+
+		public async Task<PaginationView<List<AssignmentCustom>>> GetListRM(allFilter model)
+		{
+			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
+												 .AsQueryable();
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
+			}
+
+			if (!String.IsNullOrEmpty(model.province))
+			{
+				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+			}
+
+			if (!String.IsNullOrEmpty(model.amphur))
+			{
+				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<AssignmentCustom>>()
+			{
+				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+
 		}
 
 		public async Task Assign(List<AssignmentCustom> model)

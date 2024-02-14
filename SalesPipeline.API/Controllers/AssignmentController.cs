@@ -66,6 +66,22 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		//[AllowAnonymous]
+		[HttpPost("GetListRM")]
+		public async Task<IActionResult> GetListRM(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Assignment.GetListRM(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		//[AllowAnonymous]
 		[HttpPost("AssignChange")]
 		public async Task<IActionResult> AssignChange(AssignChangeModel model)
 		{

@@ -674,26 +674,22 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			if (Items != null)
 			{
-				//ClearDeleteAssigned();
+				var response = await _assignmentViewModel.Assign(Items);
 
-				var aaa = 11;
-
-				//var response = await _assignmentViewModel.Assign(Items);
-
-				//if (response.Status)
-				//{
-				//	IsToClose = true;
-				//	await modalConfirmAssign.OnHideConfirm();
-				//	await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-				//	await SetModel();
-				//	HideLoading();
-				//}
-				//else
-				//{
-				//	HideLoading();
-				//	_errorMessage = response.errorMessage;
-				//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				//}
+				if (response.Status)
+				{
+					IsToClose = true;
+					await modalConfirmAssign.OnHideConfirm();
+					await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
 			}
 
 		}

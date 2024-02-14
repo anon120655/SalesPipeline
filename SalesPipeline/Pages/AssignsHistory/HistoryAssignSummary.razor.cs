@@ -99,7 +99,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		protected async Task SetModelAssigned()
 		{
 			filter.pagesize = 100;
-			var data = await _assignmentViewModel.GetListAutoAssign(filter);
+			var data = await _assignmentViewModel.GetListRM(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
