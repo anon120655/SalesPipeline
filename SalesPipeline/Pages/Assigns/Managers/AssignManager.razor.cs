@@ -17,7 +17,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		private List<Guid> ItemsSelected = new();
-		private int stepAssign = StepAssignManagerCenterModel.Home;
+		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
 		int LimitAssign = 10;
 
@@ -149,11 +149,6 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		{
 			bool isNext = true;
 		
-
-			if (step == StepAssignManagerCenterModel.Home)
-			{
-			}
-
 			if (step == StepAssignManagerCenterModel.Customer)
 			{
 				
