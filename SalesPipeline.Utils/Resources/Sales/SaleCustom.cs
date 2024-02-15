@@ -75,6 +75,5 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		//Custom
 		public bool IsSelected { get; set; }
-
 	}
 }

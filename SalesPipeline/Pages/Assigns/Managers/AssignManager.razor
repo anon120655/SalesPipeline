@@ -18,9 +18,9 @@
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
-							<label class="form-label">เลขทะเบียนนิติบุคคล</label>
+							<label class="form-label">เลขนิติบุคคล</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.juristicnumber" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
 									<button class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
@@ -29,9 +29,9 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อลูกค้า</label>
+							<label class="form-label">ค้นหาลูกค้า</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
 									<button class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
@@ -41,19 +41,40 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ประเภทธุรกิจ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.BusinessType?.Count > 0)
+								{
+									foreach (var item in LookUp.BusinessType)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
 							<button type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row my-2 mb-3 text-end">
+						<div class="col mb-2">
+							<button type="button" class="btn btn-primary text-white">
+								จำนวนการมอบหมาย (@(ItemsSelected.Count())/@(LimitAssign))
 							</button>
 						</div>
 					</div>
@@ -66,7 +87,6 @@
 											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">เบอร์โทรศัพท์</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">อำเภอ</th>
@@ -93,20 +113,16 @@
 										}
 										else
 										{
-											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
-											int SequenceNo = 0;
+											int SequenceNo = 1;
 											foreach (var item in Items)
 											{
-												bool status = item.Status == StatusModel.Active;
-
 												<tr>
-													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
-													<td class="text-center">@item.JuristicPersonRegNumber</td>
-													<td class="">@item.EmployeeName</td>
-													<td class="text-center">@item.ContactTel</td>
-													<td class="text-center">ค้าขาย</td>
-													<td class="text-center">@item.ProvinceId</td>
-													<td class="text-center">@item.AmphurId</td>
+													<td class="text-center">@(SequenceNo)</td>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@item.Customer?.ProvinceName</td>
+													<td class="text-center">@item.Customer?.AmphurName</td>
 													<td class="text-center">
 														<a class="btn btn-info btn-circle">
 															<i class="fa-solid fa-eye text-white fs_15e"></i>
@@ -114,7 +130,8 @@
 													</td>
 													<td class="text-center">
 														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox" value="">
+															<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
 														</div>
 													</td>
 												</tr>
@@ -126,7 +143,7 @@
 							</div>
 						</div>
 					</div>
-					<div>
+					@* <div>
 						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
 										TotalItems="@(Pager?.TotalItems ?? 0)"
 										Pager="@Pager"
@@ -134,6 +151,18 @@
 										OnSelectedPage="@OnSelectPage"
 										ParameterAll="@filter?.SetParameter()">
 						</PaginationBack>
+					</div> *@
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								@if (Items?.Count > 0)
+								{
+									<Button @onclick="(() => GotoStep(StepAssignManagerCenterModel.Assigned))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisabled" Class="mw_6r">
+										ถัดไป
+									</Button>
+								}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

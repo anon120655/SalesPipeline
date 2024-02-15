@@ -81,7 +81,7 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สถานะ</label>
-							<select @onchange="OnStatus" value="@filter.idnumber" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+							<select @onchange="OnStatus" value="@filter.statussaleid" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
 								@if (LookUp.StatusSale?.Count > 0)
 								{

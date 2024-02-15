@@ -218,9 +218,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			if (model.idnumber.HasValue)
+			if (model.statussaleid.HasValue)
 			{
-				query = query.Where(x => x.StatusSaleId == model.idnumber);
+				query = query.Where(x => x.StatusSaleId == model.statussaleid);
 			}
 
 			if (model.assignuserid.HasValue)

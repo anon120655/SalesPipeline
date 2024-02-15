@@ -11,7 +11,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 	public class allFilter : PagerFilter
 	{
 		public Guid id { get; set; }
-		public int? idnumber { get; set; }
+		public int? statussaleid { get; set; }
 		public int? userid { get; set; }
 		public int? assignuserid { get; set; }
 		public short? status { get; set; }
@@ -46,8 +46,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (id != Guid.Empty)
 				ParameterAll += $"&id={id}";
 
-			if (idnumber > 0)
-				ParameterAll += $"&idnumber={idnumber}";
+			if (statussaleid > 0)
+				ParameterAll += $"&statussaleid={statussaleid}";
 
 			if (assignuserid > 0)
 				ParameterAll += $"&assignuserid={assignuserid}";
@@ -120,8 +120,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(pagesize), out var _pagesize))
 				pagesize = Convert.ToInt32(_pagesize);
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(idnumber), out var _idnumber))
-				idnumber = Convert.ToInt16(_idnumber);
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(statussaleid), out var _statussaleid))
+				statussaleid = Convert.ToInt16(_statussaleid);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignuserid), out var _assignuserid))
 				assignuserid = Convert.ToInt16(_assignuserid);

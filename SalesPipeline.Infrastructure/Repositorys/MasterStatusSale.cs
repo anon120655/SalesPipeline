@@ -72,9 +72,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
 			}
 
-			if (model.idnumber.HasValue)
+			if (model.statussaleid.HasValue)
 			{
-				query = query.Where(x => x.Id == model.idnumber.Value);
+				query = query.Where(x => x.Id == model.statussaleid.Value);
 			}
 
 			if (model.isshow.HasValue)

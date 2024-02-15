@@ -75,7 +75,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		protected async Task SetModel()
 		{
-			filter.idnumber = StatusSaleModel.WaitContact;
+			filter.statussaleid = StatusSaleModel.WaitContact;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

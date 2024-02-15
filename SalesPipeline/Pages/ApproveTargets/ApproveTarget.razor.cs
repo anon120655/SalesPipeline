@@ -82,7 +82,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 
 		protected async Task SetModel()
 		{
-			filter.idnumber = StatusSaleModel.WaitApproveCenter;
+			filter.statussaleid = StatusSaleModel.WaitApproveCenter;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

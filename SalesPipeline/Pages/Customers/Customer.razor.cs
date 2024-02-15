@@ -196,12 +196,12 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task OnStatus(ChangeEventArgs e)
 		{
-			filter.idnumber = null;
+			filter.statussaleid = null;
 			if (e.Value != null)
 			{
 				if (short.TryParse(e.Value.ToString(), out short _status))
 				{
-					filter.idnumber = _status;
+					filter.statussaleid = _status;
 				}
 
 				await SetModel();
