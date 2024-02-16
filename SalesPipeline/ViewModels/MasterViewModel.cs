@@ -111,23 +111,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListRM(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Assignment_RMCustom>>>> GetListRM(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Assignment/GetListRM", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/GetListRM", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_RMCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

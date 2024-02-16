@@ -101,7 +101,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var code = await GetRoleCodeById(model.RoleId.Value);
 					if (code != null && code.ToUpper().StartsWith(RoleCodes.RM))
 					{
-						var assignment = await _repo.Assignment.Create(new()
+						var assignment = await _repo.AssignmentRM.Create(new()
 						{
 							UserId = user.Id,
 							EmployeeId = model.EmployeeId,
@@ -487,7 +487,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					foreach (var item in users)
 					{
-						var assignment = await _repo.Assignment.Create(new()
+						var assignment = await _repo.AssignmentRM.Create(new()
 						{
 							UserId = item.Id,
 							EmployeeId = item.EmployeeId,

@@ -13,14 +13,14 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Assignments : IAssignments
+	public class AssignmentRM : IAssignmentRM
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public Assignments(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public AssignmentRM(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
@@ -28,96 +28,104 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<AssignmentCustom> Create(AssignmentCustom model)
+		public async Task<Assignment_RMCustom> Create(Assignment_RMCustom model)
 		{
 			if (string.IsNullOrEmpty(model.EmployeeName))
 			{
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
 			}
 
-			var assignment = new Data.Entity.Assignment();
-			assignment.Status = StatusModel.Active;
-			assignment.CreateDate = DateTime.Now;
-			assignment.UserId = model.UserId;
-			assignment.EmployeeId = model.EmployeeId;
-			assignment.EmployeeName = model.EmployeeName;
-			assignment.CurrentNumber = model.CurrentNumber ?? 0;
-			await _db.InsterAsync(assignment);
+			var assignment_RM = new Data.Entity.Assignment_RM();
+			assignment_RM.Status = StatusModel.Active;
+			assignment_RM.CreateDate = DateTime.Now;
+			assignment_RM.UserId = model.UserId;
+			assignment_RM.EmployeeId = model.EmployeeId;
+			assignment_RM.EmployeeName = model.EmployeeName;
+			assignment_RM.CurrentNumber = model.CurrentNumber ?? 0;
+			await _db.InsterAsync(assignment_RM);
 			await _db.SaveAsync();
 
-			return _mapper.Map<AssignmentCustom>(assignment);
+			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
 
-		public async Task<Assignment_SaleCustom> CreateSale(Assignment_SaleCustom model)
+		public async Task<Assignment_RM_SaleCustom> CreateSale(Assignment_RM_SaleCustom model)
 		{
 			if (string.IsNullOrEmpty(model.CreateByName))
 			{
 				model.CreateByName = await _repo.User.GetFullNameById(model.CreateBy);
 			}
 
-			var assignment_Sale = new Data.Entity.Assignment_Sale();
-			assignment_Sale.Status = StatusModel.Active;
-			assignment_Sale.CreateDate = DateTime.Now;
-			assignment_Sale.CreateBy = model.CreateBy;
-			assignment_Sale.CreateByName = model.CreateByName;
-			assignment_Sale.AssignmentId = model.AssignmentId;
-			assignment_Sale.IsActive = StatusModel.Active;
-			assignment_Sale.SaleId = model.SaleId;
-			assignment_Sale.Description = model.Description;
-			await _db.InsterAsync(assignment_Sale);
+			var assignment_RM_Sale = new Data.Entity.Assignment_RM_Sale();
+			assignment_RM_Sale.Status = StatusModel.Active;
+			assignment_RM_Sale.CreateDate = DateTime.Now;
+			assignment_RM_Sale.CreateBy = model.CreateBy;
+			assignment_RM_Sale.CreateByName = model.CreateByName;
+			assignment_RM_Sale.AssignmentRMId = model.AssignmentRMId;
+			assignment_RM_Sale.IsActive = StatusModel.Active;
+			assignment_RM_Sale.SaleId = model.SaleId;
+			assignment_RM_Sale.Description = model.Description;
+			await _db.InsterAsync(assignment_RM_Sale);
 			await _db.SaveAsync();
 
-			return _mapper.Map<Assignment_SaleCustom>(assignment_Sale);
+			return _mapper.Map<Assignment_RM_SaleCustom>(assignment_RM_Sale);
 		}
 
 		public async Task<bool> CheckAssignmentByUserId(int id)
 		{
-			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
+			return await _repo.Context.Assignment_RMs.AnyAsync(x => x.UserId == id);
 		}
 
 		public async Task<bool> CheckAssignmentSaleById(Guid id)
 		{
-			return await _repo.Context.Assignment_Sales.AnyAsync(x => x.AssignmentId == id);
+			return await _repo.Context.Assignment_RM_Sales.AnyAsync(x => x.AssignmentRMId == id);
 		}
 
-		public async Task<AssignmentCustom> GetById(Guid id)
+		public async Task<Assignment_RMCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Assignments
-				.Include(x => x.Assignment_Sales)
+			var query = await _repo.Context.Assignment_RMs
+				.Include(x => x.Assignment_RM_Sales)
 				.Include(x => x.User)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
-			return _mapper.Map<AssignmentCustom>(query);
+			return _mapper.Map<Assignment_RMCustom>(query);
 		}
 
-		public async Task<AssignmentCustom> GetByUserId(int id)
+		public async Task<Assignment_RMCustom> GetByUserId(int id)
 		{
-			var query = await _repo.Context.Assignments
-				.Include(x => x.Assignment_Sales)
+			var query = await _repo.Context.Assignment_RMs
+				.Include(x => x.Assignment_RM_Sales)
 				.Include(x => x.User)
 				.Where(x => x.UserId == id).FirstOrDefaultAsync();
-			return _mapper.Map<AssignmentCustom>(query);
+			return _mapper.Map<Assignment_RMCustom>(query);
 		}
 
 		public async Task UpdateCurrentNumber(Guid id)
 		{
-			var currentNumber = await _repo.Context.Assignment_Sales
+			var currentNumber = await _repo.Context.Assignment_RM_Sales
 											  .Include(x => x.Sale)
-											  .Where(x => x.AssignmentId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active
+											  .Where(x => x.AssignmentRMId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active
 													&& x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
 											  .CountAsync();
 			if (currentNumber > 0)
 			{
-				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
-				if (assignments != null)
+				var assignment_RMs = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Id == id);
+				if (assignment_RMs != null)
 				{
-					assignments.CurrentNumber = currentNumber;
-					_db.Update(assignments);
+					assignment_RMs.CurrentNumber = currentNumber;
+					_db.Update(assignment_RMs);
 					await _db.SaveAsync();
 				}
+				//**** ต้อง update ผู้จัดการศูนย์ด้วย
+				//var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
+				//if (assignments != null)
+				//{
+				//	assignments.CurrentNumber = currentNumber;
+				//	_db.Update(assignments);
+				//	await _db.SaveAsync();
+				//}
 			}
 		}
 
-		public async Task<PaginationView<List<AssignmentCustom>>> GetListAutoAssign(allFilter model)
+		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model)
 		{
 			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
 
@@ -128,7 +136,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
 
 			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
-			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
 												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
 												 .Include(x => x.User).ThenInclude(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
@@ -158,7 +166,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var userAssignment = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
 
-			List<AssignmentCustom> responseItems = new();
+			List<Assignment_RMCustom> responseItems = new();
 
 			//ลูกค้าที่ยังไม่ถูกมอบหมาย
 			var salesCustomer = await _repo.Context.Sales
@@ -178,19 +186,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var item_path in partitionCustomer)
 					{
 						//มอบหมายให้พนักงานเท่าๆ กัน
-						var assignment = _mapper.Map<AssignmentCustom>(userAssignment[index_path]);
-						assignment.Assignment_Sales = new();
-						assignment.Tel = assignment.User?.Tel;
-						assignment.ProvinceName = assignment.User?.Branch?.Name;
-						assignment.AmphurName = "-";
+						var assignment_RM = _mapper.Map<Assignment_RMCustom>(userAssignment[index_path]);
+						assignment_RM.Assignment_RM_Sales = new();
+						assignment_RM.Tel = assignment_RM.User?.Tel;
+						assignment_RM.ProvinceName = assignment_RM.User?.Branch?.Name;
+						assignment_RM.AmphurName = "-";
 
 						foreach (var item_sales in item_path)
 						{
-							assignment.Assignment_Sales.Add(new()
+							assignment_RM.Assignment_RM_Sales.Add(new()
 							{
 								Id = Guid.NewGuid(),
 								Status = StatusModel.Active,
-								AssignmentId = assignment.Id,
+								AssignmentRMId = assignment_RM.Id,
 								SaleId = item_sales.Id,
 								IsActive = StatusModel.Active,
 								IsSelect = true,
@@ -199,23 +207,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							});
 						}
 
-						assignment.User = null;
-						responseItems.Add(assignment);
+						assignment_RM.User = null;
+						responseItems.Add(assignment_RM);
 						index_path++;
 					}
 				}
 			}
 
-			return new PaginationView<List<AssignmentCustom>>()
+			return new PaginationView<List<Assignment_RMCustom>>()
 			{
 				Items = responseItems,
 				Pager = pager
 			};
 		}
 
-		public async Task<PaginationView<List<AssignmentCustom>>> GetListRM(allFilter model)
+		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListRM(allFilter model)
 		{
-			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
@@ -243,41 +251,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<AssignmentCustom>>()
+			return new PaginationView<List<Assignment_RMCustom>>()
 			{
-				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Assignment_RMCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 
 		}
 
-		public async Task Assign(List<AssignmentCustom> model)
+		public async Task Assign(List<Assignment_RMCustom> model)
 		{
 			foreach (var item in model)
 			{
-				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+				var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
 
-				var sales_select = item.Assignment_Sales?.Where(x => x.IsSelect).ToList();
+				var sales_select = item.Assignment_RM_Sales?.Where(x => x.IsSelect).ToList();
 
-				if (assignments != null && sales_select?.Count > 0)
+				if (assignment_RM != null && sales_select?.Count > 0)
 				{
 					foreach (var item_sale in sales_select)
 					{
 						var currentUserName = await _repo.User.GetFullNameById(item.CurrentUserId);
-						var assignedUserName = await _repo.User.GetFullNameById(assignments.UserId);
+						var assignedUserName = await _repo.User.GetFullNameById(assignment_RM.UserId);
 
-						var assignmentSale = await CreateSale(new()
+						var assignmentRMSale = await CreateSale(new()
 						{
 							CreateBy = item.CurrentUserId,
 							CreateByName = currentUserName,
-							AssignmentId = assignments.Id,
+							AssignmentRMId = assignment_RM.Id,
 							SaleId = item_sale.SaleId
 						});
 
 						var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item_sale.SaleId);
 						if (sales != null)
 						{
-							sales.AssignedUserId = assignments.UserId;
+							sales.AssignedUserId = assignment_RM.UserId;
 							sales.AssignedUserName = assignedUserName;
 							_db.Update(sales);
 							await _db.SaveAsync();
@@ -292,7 +300,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						});
 					}
 
-					await UpdateCurrentNumber(assignments.Id);
+					await UpdateCurrentNumber(assignment_RM.Id);
 				}
 
 			}
@@ -300,16 +308,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task AssignChange(AssignChangeModel model)
 		{
-			var assignments_sales = await _repo.Context.Assignment_Sales
-				.Include(s => s.Assignment)
+			var assignments_RM_sales = await _repo.Context.Assignment_RM_Sales
+				.Include(s => s.AssignmentRM)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.IsActive == StatusModel.Active && x.SaleId == model.Original.Id);
 
-			if (assignments_sales == null) throw new ExceptionCustom("Assignments something went wrong!");
+			if (assignments_RM_sales == null) throw new ExceptionCustom("Assignment_RM something went wrong!");
 
-			assignments_sales.Status = StatusModel.InActive;
-			assignments_sales.IsActive = StatusModel.InActive;
-			assignments_sales.Assignment.CurrentNumber = assignments_sales.Assignment.CurrentNumber - 1;
-			_db.Update(assignments_sales);
+			assignments_RM_sales.Status = StatusModel.InActive;
+			assignments_RM_sales.IsActive = StatusModel.InActive;
+			assignments_RM_sales.AssignmentRM.CurrentNumber = assignments_RM_sales.AssignmentRM.CurrentNumber - 1;
+			_db.Update(assignments_RM_sales);
 			await _db.SaveAsync();
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
@@ -319,7 +327,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CreateBy = model.CurrentUserId,
 				CreateByName = currentUserName,
-				AssignmentId = model.New.Id,
+				AssignmentRMId = model.New.Id,
 				SaleId = model.Original.Id
 			});
 

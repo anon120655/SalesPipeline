@@ -21,7 +21,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
-		private List<AssignmentCustom>? Items;
+		private List<Assignment_RMCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
 
 		ModalConfirm modalConfirmAssign = default!;
@@ -99,7 +99,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		protected async Task SetModelAssigned()
 		{
 			filter.pagesize = 100;
-			var data = await _assignmentViewModel.GetListRM(filter);
+			var data = await _assignmentRMViewModel.GetListRM(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -157,7 +157,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 			_Navs.NavigateTo("/historyassign");
 		}
 
-		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{
@@ -254,7 +254,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 					model.Original = formModel;
 					model.New = _itemsNew;
 
-					var response = await _assignmentViewModel.AssignChange(model);
+					var response = await _assignmentRMViewModel.AssignChange(model);
 
 					if (response.Status)
 					{

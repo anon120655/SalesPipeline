@@ -22,7 +22,7 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected UserViewModel _userViewModel { get; set; } = default!;
 		[Inject] protected CustomerViewModel _customerViewModel { get; set; } = default!;
 		[Inject] protected SalesViewModel _salesViewModel { get; set; } = default!;
-		[Inject] protected AssignmentViewModel _assignmentViewModel { get; set; } = default!;
+		[Inject] protected AssignmentRMViewModel _assignmentRMViewModel { get; set; } = default!;
 		[Inject] protected SystemViewModel _systemViewModel { get; set; } = default!;
 		[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = default!;
 	}

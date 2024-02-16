@@ -234,7 +234,7 @@
 							<div class="row my-2 mb-3 text-end">
 								<div class="col mb-2">
 									<button type="button" class="btn btn-primary text-white">
-										จำนวนการมอบหมาย (@(_items?.Assignment_Sales?.Count(x => x.IsSelectMove))/@(_items?.Assignment_Sales?.Count))
+										จำนวนการมอบหมาย (@(_items?.Assignment_RM_Sales?.Count(x => x.IsSelectMove))/@(_items?.Assignment_RM_Sales?.Count))
 									</button>
 								</div>
 							</div>
@@ -262,7 +262,7 @@
 														</td>
 													</tr>
 												}
-												else if (_items.Assignment_Sales == null || _items.Assignment_Sales.Count(x => x.IsShow) == 0)
+												else if (_items.Assignment_RM_Sales == null || _items.Assignment_RM_Sales.Count(x => x.IsShow) == 0)
 												{
 													<tr class="text-center align-middle">
 														<td colspan="100">
@@ -272,7 +272,7 @@
 												}
 												else
 												{
-													foreach (var item in _items.Assignment_Sales.Where(x => x.IsShow))
+													foreach (var item in _items.Assignment_RM_Sales.Where(x => x.IsShow))
 													{
 														<tr>
 															<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
@@ -531,7 +531,7 @@
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
 					var _items = Items?.Where(x => x.IsSelectMove).FirstOrDefault();
-					var _itemsSale = _items?.Assignment_Sales?.Where(x => x.IsSelectMove).ToList();
+					var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">

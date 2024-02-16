@@ -6,7 +6,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// <summary>
 /// ลูกค้าที่พนักงานดูแล
 /// </summary>
-public partial class Assignment_Sale
+public partial class Assignment_RM_Sale
 {
     public Guid Id { get; set; }
 
@@ -27,7 +27,7 @@ public partial class Assignment_Sale
     /// </summary>
     public string? CreateByName { get; set; }
 
-    public Guid AssignmentId { get; set; }
+    public Guid AssignmentRMId { get; set; }
 
     /// <summary>
     /// 1=อยู่ในความรับผิดชอบ 0=ถูกเปลี่ยนผู้รับผิดชอบ
@@ -41,7 +41,7 @@ public partial class Assignment_Sale
 
     public string? Description { get; set; }
 
-    public virtual Assignment Assignment { get; set; } = null!;
+    public virtual Assignment_RM AssignmentRM { get; set; } = null!;
 
     public virtual User CreateByNavigation { get; set; } = null!;
 

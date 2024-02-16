@@ -170,7 +170,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//อนุมัติและรอการติดต่อเฉพาะ RM สร้าง
 				if (model.StatusId == StatusSaleModel.WaitContact && sales.AssignedUserId.HasValue)
 				{
-					var assignment = await _repo.Assignment.GetByUserId(sales.AssignedUserId.Value);
+					var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssignedUserId.Value);
 					if (assignment != null)
 					{
 						if (assignment.CurrentNumber >= 100)
@@ -178,18 +178,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
 						}
 
-						if (!await _repo.Assignment.CheckAssignmentSaleById(assignment.Id))
+						if (!await _repo.AssignmentRM.CheckAssignmentSaleById(assignment.Id))
 						{
-							var assignmentSale = await _repo.Assignment.CreateSale(new()
+							var assignmentSale = await _repo.AssignmentRM.CreateSale(new()
 							{
 								CreateBy = model.CreateBy,
 								CreateByName = currentUserName,
-								AssignmentId = assignment.Id,
+								AssignmentRMId = assignment.Id,
 								SaleId = sales.Id
 							});
 						}
 
-						await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
+						await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
 					}
 				}
 

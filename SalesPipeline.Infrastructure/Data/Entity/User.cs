@@ -77,7 +77,9 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
-    public virtual ICollection<Assignment_Sale> Assignment_Sales { get; set; } = new List<Assignment_Sale>();
+    public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
+
+    public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
 
     public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
 
@@ -95,9 +97,11 @@ public partial class User
 
     public virtual User_Role? Role { get; set; }
 
-    public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
+    public virtual ICollection<Sale> SaleAssignedCenterUsers { get; set; } = new List<Sale>();
 
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    public virtual ICollection<Sale> SaleAssignedUsers { get; set; } = new List<Sale>();
+
+    public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
     public virtual ICollection<User_Loan> User_LoanUserLoans { get; set; } = new List<User_Loan>();
 

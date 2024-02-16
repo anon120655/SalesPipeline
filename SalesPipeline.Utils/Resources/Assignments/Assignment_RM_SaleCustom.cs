@@ -12,7 +12,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 	/// <summary>
 	/// ลูกค้าที่พนักงานดูแล
 	/// </summary>
-	public class Assignment_SaleCustom
+	public class Assignment_RM_SaleCustom
 	{
 		public Guid Id { get; set; }
 
@@ -33,7 +33,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// </summary>
 		public string? CreateByName { get; set; }
 
-		public Guid AssignmentId { get; set; }
+		public Guid AssignmentRMId { get; set; }
 
 		/// <summary>
 		/// 1=อยู่ในความรับผิดชอบ 0=ถูกเปลี่ยนผู้รับผิดชอบ
@@ -43,6 +43,8 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public Guid SaleId { get; set; }
 
 		public string? Description { get; set; }
+
+		public virtual Assignment_RMCustom? AssignmentRM { get; set; }
 
 		public virtual SaleCustom? Sale { get; set; }
 

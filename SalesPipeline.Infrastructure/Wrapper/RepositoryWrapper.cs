@@ -41,7 +41,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterISICCode MasterISICCode { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
 		public IThailand Thailand { get; }
-		public IAssignments Assignment { get; }
+		public IAssignmentRM AssignmentRM { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -77,7 +77,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterISICCode = new MasterISICCode(this, _db, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
-			Assignment = new Assignments(this, _db, settings, _mapper);
+			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

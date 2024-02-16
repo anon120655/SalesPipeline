@@ -72,9 +72,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (user.Role != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{
-						if (!await _repo.Assignment.CheckAssignmentByUserId(user.Id))
+						if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
 						{
-							var assignment = await _repo.Assignment.Create(new()
+							var assignment = await _repo.AssignmentRM.Create(new()
 							{
 								UserId = user.Id,
 								EmployeeId = user.EmployeeId,

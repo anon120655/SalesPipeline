@@ -306,10 +306,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//Create with RM Assing yourself
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					AssignmentCustom? assignment = null;
-					if (!await _repo.Assignment.CheckAssignmentByUserId(model.CurrentUserId))
+					Assignment_RMCustom? assignment = null;
+					if (!await _repo.AssignmentRM.CheckAssignmentByUserId(model.CurrentUserId))
 					{
-						assignment = await _repo.Assignment.Create(new()
+						assignment = await _repo.AssignmentRM.Create(new()
 						{
 							UserId = model.CurrentUserId,
 							EmployeeId = user.EmployeeId,

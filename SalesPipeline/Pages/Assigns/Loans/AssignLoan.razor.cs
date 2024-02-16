@@ -20,8 +20,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<AssignmentCustom>? Items;
-		private List<Assignment_SaleCustom>? SaleMoveAssigned;
+		private List<Assignment_RMCustom>? Items;
+		private List<Assignment_RM_SaleCustom>? SaleMoveAssigned;
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
@@ -98,7 +98,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		protected async Task SetModel()
 		{
 			filter.pagesize = 100;
-			var data = await _assignmentViewModel.GetListAutoAssign(filter);
+			var data = await _assignmentRMViewModel.GetListAutoAssign(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -261,9 +261,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				if (back == true && SaleMoveAssigned != null)
 				{
 					var _items = Items?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-					if (_items != null && _items.Assignment_Sales != null)
+					if (_items != null && _items.Assignment_RM_Sales != null)
 					{
-						_items.Assignment_Sales.AddRange(SaleMoveAssigned);
+						_items.Assignment_RM_Sales.AddRange(SaleMoveAssigned);
 					}
 					SaleMoveAssigned = null;
 				}
@@ -309,7 +309,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		}
 
 		//2. ลูกค้า
-		protected void OnCheckCustomer(Assignment_SaleCustom model, object? checkedValue)
+		protected void OnCheckCustomer(Assignment_RM_SaleCustom model, object? checkedValue)
 		{
 			if (checkedValue != null && (bool)checkedValue)
 			{
@@ -357,9 +357,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
 				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype))
 				{
-					if (_items != null && _items.Assignment_Sales != null)
+					if (_items != null && _items.Assignment_RM_Sales != null)
 					{
-						foreach (var item in _items.Assignment_Sales)
+						foreach (var item in _items.Assignment_RM_Sales)
 						{
 							Guid businesstypeid = Guid.Empty;
 							if (!String.IsNullOrEmpty(valSearch) && !Guid.TryParse(valbusinesstype, out businesstypeid))
@@ -399,9 +399,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (Items?.Count > 0)
 			{
 				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-				if (_items != null && _items.Assignment_Sales != null)
+				if (_items != null && _items.Assignment_RM_Sales != null)
 				{
-					foreach (var item in _items.Assignment_Sales.Where(x => !x.IsShow))
+					foreach (var item in _items.Assignment_RM_Sales.Where(x => !x.IsShow))
 					{
 						item.IsShow = true;
 					}
@@ -410,7 +410,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		}
 
 		//3. ผู้รับผิดชอบ
-		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{
@@ -435,9 +435,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (Items?.Count > 0 && SaleMoveAssigned == null)
 			{
 				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-				if (_items != null && _items.Assignment_Sales != null)
+				if (_items != null && _items.Assignment_RM_Sales != null)
 				{
-					var _itemsMove = _items.Assignment_Sales.Where(s => s.IsSelectMove).ToList();
+					var _itemsMove = _items.Assignment_RM_Sales.Where(s => s.IsSelectMove).ToList();
 
 					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
 					if (_itemsMove.Count > 0)
@@ -448,7 +448,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 					foreach (var item in _itemsMove)
 					{
-						_items.Assignment_Sales.Remove(item);
+						_items.Assignment_RM_Sales.Remove(item);
 					}
 				}
 			}
@@ -459,13 +459,13 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (Items?.Count > 0 && SaleMoveAssigned != null)
 			{
 				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
-				if (_itemsAssign != null && _itemsAssign.Assignment_Sales != null)
+				if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
 				{
 					foreach (var item in SaleMoveAssigned)
 					{
-						if (_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+						if (_itemsAssign.Assignment_RM_Sales.Select(x => x.Id).Contains(item.Id))
 						{
-							_itemsAssign.Assignment_Sales.Remove(item);
+							_itemsAssign.Assignment_RM_Sales.Remove(item);
 						}
 					}
 				}
@@ -479,9 +479,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				foreach (var item in Items)
 				{
 					item.IsSelectMove = false;
-					if (item.Assignment_Sales?.Count(x => x.IsSelectMove) > 0)
+					if (item.Assignment_RM_Sales?.Count(x => x.IsSelectMove) > 0)
 					{
-						foreach (var item_sale in item.Assignment_Sales.Where(x => x.IsSelectMove))
+						foreach (var item_sale in item.Assignment_RM_Sales.Where(x => x.IsSelectMove))
 						{
 							item_sale.IsSelectMove = false;
 						}
@@ -495,9 +495,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (Items?.Count > 0)
 			{
 				var _items = Items.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-				if (_items != null && _items.Assignment_Sales != null)
+				if (_items != null && _items.Assignment_RM_Sales != null)
 				{
-					var _itemsCheck = _items.Assignment_Sales.Any(s => s.IsSelectMove);
+					var _itemsCheck = _items.Assignment_RM_Sales.Any(s => s.IsSelectMove);
 					return _itemsCheck;
 				}
 			}
@@ -511,15 +511,15 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมาย
 				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
-				if (_itemsAssign != null && _itemsAssign.Assignment_Sales != null)
+				if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
 				{
 					if (SaleMoveAssigned != null)
 					{
 						foreach (var item in SaleMoveAssigned)
 						{
-							if (!_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
+							if (!_itemsAssign.Assignment_RM_Sales.Select(x => x.Id).Contains(item.Id))
 							{
-								_itemsAssign.Assignment_Sales.Add(item);
+								_itemsAssign.Assignment_RM_Sales.Add(item);
 							}
 						}
 					}
@@ -674,7 +674,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			if (Items != null)
 			{
-				var response = await _assignmentViewModel.Assign(Items);
+				var response = await _assignmentRMViewModel.Assign(Items);
 
 				if (response.Status)
 				{

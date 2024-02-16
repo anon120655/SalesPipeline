@@ -11,6 +11,6 @@ namespace SalesPipeline.Utils.Resources.Assignments
 	public class AssignChangeModel : CommonModel
 	{
 		public SaleCustom Original { get; set; } = null!;
-		public AssignmentCustom New { get; set; } = null!;
+		public Assignment_RMCustom New { get; set; } = null!;
 	}
 }

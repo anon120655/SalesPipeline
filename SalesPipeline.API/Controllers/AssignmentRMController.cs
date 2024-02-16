@@ -18,12 +18,12 @@ namespace SalesPipeline.API.Controllers
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
-	public class AssignmentController : Controller
+	public class AssignmentRMController : Controller
 	{
 		private IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
 
-		public AssignmentController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public AssignmentRMController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
 		{
 			_repo = repo;
 			_appSet = appSet.Value;
@@ -35,7 +35,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = await _repo.Assignment.GetListAutoAssign(model);
+				var response = await _repo.AssignmentRM.GetListAutoAssign(model);
 
 				return Ok(response);
 			}
@@ -47,13 +47,13 @@ namespace SalesPipeline.API.Controllers
 
 		//[AllowAnonymous]
 		[HttpPost("Assign")]
-		public async Task<IActionResult> Assign(List<AssignmentCustom> model)
+		public async Task<IActionResult> Assign(List<Assignment_RMCustom> model)
 		{
 			try
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Assignment.Assign(model);
+					await _repo.AssignmentRM.Assign(model);
 
 					_transaction.Commit();
 				}
@@ -71,7 +71,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = await _repo.Assignment.GetListRM(model);
+				var response = await _repo.AssignmentRM.GetListRM(model);
 
 				return Ok(response);
 			}
@@ -89,7 +89,7 @@ namespace SalesPipeline.API.Controllers
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Assignment.AssignChange(model);
+					await _repo.AssignmentRM.AssignChange(model);
 
 					_transaction.Commit();
 				}

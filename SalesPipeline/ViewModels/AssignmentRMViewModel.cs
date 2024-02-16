@@ -9,36 +9,36 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.ViewModels
 {
-	public class AssignmentViewModel
+	public class AssignmentRMViewModel
 	{
 		private readonly IHttpClientCustom _httpClient;
 		private readonly AppSettings _appSet;
 		private readonly AuthorizeViewModel _authorizeViewModel;
 
-		public AssignmentViewModel(IHttpClientCustom httpClient, IOptions<AppSettings> appset, AuthorizeViewModel authorizeViewModel)
+		public AssignmentRMViewModel(IHttpClientCustom httpClient, IOptions<AppSettings> appset, AuthorizeViewModel authorizeViewModel)
 		{
 			_httpClient = httpClient;
 			_appSet = appset.Value;
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListAutoAssign(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Assignment_RMCustom>>>> GetListAutoAssign(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Assignment/GetListAutoAssign", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/GetListAutoAssign", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_RMCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -46,13 +46,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Boolean>> Assign(List<AssignmentCustom> model)
+		public async Task<ResultModel<Boolean>> Assign(List<Assignment_RMCustom> model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Assignment/Assign", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/Assign", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{
@@ -69,23 +69,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListRM(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Assignment_RMCustom>>>> GetListRM(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Assignment/GetListRM", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/GetListRM", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_RMCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>
+				return new ResultModel<PaginationView<List<Assignment_RMCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -99,7 +99,7 @@ namespace SalesPipeline.ViewModels
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Assignment/AssignChange", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/AssignChange", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{

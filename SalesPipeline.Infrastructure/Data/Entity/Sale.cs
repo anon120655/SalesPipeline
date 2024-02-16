@@ -57,6 +57,16 @@ public partial class Sale
     public int? PercentChanceLoanPass { get; set; }
 
     /// <summary>
+    /// ผู้จัดการศูนย์ที่ดูแล
+    /// </summary>
+    public int? AssignedCenterUserId { get; set; }
+
+    /// <summary>
+    /// ชื่อผู้จัดการศูนย์ที่ดูแล
+    /// </summary>
+    public string? AssignedCenterUserName { get; set; }
+
+    /// <summary>
     /// พนักงานที่ได้รับมอบหมาย
     /// </summary>
     public int? AssignedUserId { get; set; }
@@ -66,9 +76,11 @@ public partial class Sale
     /// </summary>
     public string? AssignedUserName { get; set; }
 
+    public virtual User? AssignedCenterUser { get; set; }
+
     public virtual User? AssignedUser { get; set; }
 
-    public virtual ICollection<Assignment_Sale> Assignment_Sales { get; set; } = new List<Assignment_Sale>();
+    public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 
     public virtual Customer Customer { get; set; } = null!;
 

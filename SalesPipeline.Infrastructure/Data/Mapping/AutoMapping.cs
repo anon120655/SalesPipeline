@@ -76,7 +76,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 
 			//Assignment
 			CreateMap<Entity.Assignment, AssignmentCustom>().ReverseMap();
-			CreateMap<Entity.Assignment_Sale, Assignment_SaleCustom>().ReverseMap();
+			CreateMap<Entity.Assignment_RM, Assignment_RMCustom>().ReverseMap();
+			CreateMap<Entity.Assignment_RM_Sale, Assignment_RM_SaleCustom>().ReverseMap();
 
 
 		}

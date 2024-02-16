@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Assignment
+/// <summary>
+/// พนักงานที่ถูกมอบหมาย
+/// </summary>
+public partial class Assignment_RM
 {
     public Guid Id { get; set; }
 
@@ -14,44 +17,31 @@ public partial class Assignment
 
     public DateTime CreateDate { get; set; }
 
-    /// <summary>
-    /// รหัสศูนย์
-    /// </summary>
-    public string? Code { get; set; }
+    public Guid AssignmentId { get; set; }
 
     /// <summary>
-    /// ศูนย์สาขา
-    /// </summary>
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย
+    /// พนักงานที่ได้รับมอบหมาย
     /// </summary>
     public int UserId { get; set; }
 
     /// <summary>
-    /// รหัสพนักงานผู้จัดการศูนย์
+    /// รหัสพนักงาน
     /// </summary>
     public string? EmployeeId { get; set; }
 
     /// <summary>
-    /// ชื่อผู้จัดการศูนย์
+    /// ชื่อพนักงานที่ได้รับมอบหมาย
     /// </summary>
     public string? EmployeeName { get; set; }
-
-    public string? Tel { get; set; }
-
-    /// <summary>
-    /// จำนวนพนง.สินเชื่อ
-    /// </summary>
-    public int? RMNumber { get; set; }
 
     /// <summary>
     /// จำนวนลูกค้าปัจจุบันที่ดูแล
     /// </summary>
     public int? CurrentNumber { get; set; }
 
-    public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
+    public virtual Assignment Assignment { get; set; } = null!;
+
+    public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 
     public virtual User User { get; set; } = null!;
 }

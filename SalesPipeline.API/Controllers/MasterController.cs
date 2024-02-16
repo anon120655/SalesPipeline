@@ -367,7 +367,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				return Ok(await _repo.Assignment.GetListRM(model));
+				return Ok(await _repo.AssignmentRM.GetListRM(model));
 			}
 			catch (Exception ex)
 			{
