@@ -459,23 +459,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		//ฝ่ายธุรกิจสินเชื่อ
-		public async Task<ResultModel<Master_Department_LoanCustom>> CreateDepLoans(Master_Department_LoanCustom model)
+		//ศูนย์ธุรกิจสินเชื่อ
+		public async Task<ResultModel<Master_Department_CenterCustom>> CreateDepCenter(Master_Department_CenterCustom model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Master/CreateDepLoans", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Master_Department_LoanCustom>(content);
-				return new ResultModel<Master_Department_LoanCustom>()
+				var content = await _httpClient.PostAsync($"/v1/Master/CreateDepCenter", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Department_CenterCustom>(content);
+				return new ResultModel<Master_Department_CenterCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Master_Department_LoanCustom>
+				return new ResultModel<Master_Department_CenterCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -483,22 +483,22 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Master_Department_LoanCustom>> UpdateDepLoans(Master_Department_LoanCustom model)
+		public async Task<ResultModel<Master_Department_CenterCustom>> UpdateDepCenter(Master_Department_CenterCustom model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PutAsync($"/v1/Master/UpdateDepLoans", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Master_Department_LoanCustom>(content);
-				return new ResultModel<Master_Department_LoanCustom>()
+				var content = await _httpClient.PutAsync($"/v1/Master/UpdateDepCenter", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Department_CenterCustom>(content);
+				return new ResultModel<Master_Department_CenterCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Master_Department_LoanCustom>
+				return new ResultModel<Master_Department_CenterCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -506,11 +506,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<bool>?> DeleteDepLoansById(UpdateModel model)
+		public async Task<ResultModel<bool>?> DeleteDepCenterById(UpdateModel model)
 		{
 			try
 			{
-				await _httpClient.DeleteAsync($"/v1/Master/DeleteDepLoansById?{model.SetParameter(true)}");
+				await _httpClient.DeleteAsync($"/v1/Master/DeleteDepCenterById?{model.SetParameter(true)}");
 				return new ResultModel<bool>();
 			}
 			catch (Exception ex)
@@ -523,13 +523,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<bool>?> UpdateStatusDepLoansById(UpdateModel model)
+		public async Task<ResultModel<bool>?> UpdateStatusDepCenterById(UpdateModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				await _httpClient.PutAsync($"/v1/Master/UpdateStatusDepLoansById", dataJson, token: tokenJwt);
+				await _httpClient.PutAsync($"/v1/Master/UpdateStatusDepCenterById", dataJson, token: tokenJwt);
 				return new ResultModel<bool>();
 			}
 			catch (Exception ex)
@@ -542,20 +542,20 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Master_Department_LoanCustom>?> GetDepLoansById(Guid id)
+		public async Task<ResultModel<Master_Department_CenterCustom>?> GetDepCenterById(Guid id)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Master/GetDepLoansById?id={id}");
-				var dataMap = JsonConvert.DeserializeObject<Master_Department_LoanCustom>(content);
-				return new ResultModel<Master_Department_LoanCustom>()
+				var content = await _httpClient.GetAsync($"/v1/Master/GetDepCenterById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Master_Department_CenterCustom>(content);
+				return new ResultModel<Master_Department_CenterCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Master_Department_LoanCustom>
+				return new ResultModel<Master_Department_CenterCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -563,21 +563,21 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<Master_Department_LoanCustom>>>> GetDepLoans(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Master_Department_CenterCustom>>>> GetDepCenter(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Master/GetDepLoans?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Department_LoanCustom>>>(content);
+				var content = await _httpClient.GetAsync($"/v1/Master/GetDepCenter?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Department_CenterCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<Master_Department_LoanCustom>>>()
+				return new ResultModel<PaginationView<List<Master_Department_CenterCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<Master_Department_LoanCustom>>>
+				return new ResultModel<PaginationView<List<Master_Department_CenterCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

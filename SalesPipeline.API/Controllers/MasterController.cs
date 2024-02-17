@@ -48,12 +48,12 @@ namespace SalesPipeline.API.Controllers
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpGet("GetDepLoans")]
-		public async Task<IActionResult> GetDepLoans([FromQuery] allFilter model)
+		[HttpGet("GetDepCenter")]
+		public async Task<IActionResult> GetDepCenter([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.MasterDepLoan.GetList(model);
+				var response = await _repo.MasterDepCenter.GetList(model);
 
 				return Ok(response);
 			}
@@ -264,12 +264,11 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// จังหวัด
+		///  จังหวัด
 		/// </summary>
-		/// <param name="department_BranchId"></param>
 		/// <returns></returns>
 		[HttpGet("GetProvince")]
-		public async Task<IActionResult> GetProvince(Guid? department_BranchId = null)
+		public async Task<IActionResult> GetProvince([FromQuery] Guid? department_BranchId = null)
 		{
 			try
 			{
@@ -390,6 +389,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		//ฝ่ายกิจการสาขา
 		[HttpPost("CreateDepBranch")]
 		public async Task<IActionResult> CreateDepBranch(Master_Department_BranchCustom model)
 		{
@@ -475,13 +475,13 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		//ฝ่ายธุรกิจสินเชื่อ
-		[HttpPost("CreateDepLoans")]
-		public async Task<IActionResult> CreateDepLoans(Master_Department_LoanCustom model)
+		//ศูนย์ธุรกิจสินเชื่อ
+		[HttpPost("CreateDepCenter")]
+		public async Task<IActionResult> CreateDepCenter(Master_Department_CenterCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDepLoan.Create(model);
+				var data = await _repo.MasterDepCenter.Create(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -490,12 +490,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateDepLoans")]
-		public async Task<IActionResult> UpdateDepLoans(Master_Department_LoanCustom model)
+		[HttpPut("UpdateDepCenter")]
+		public async Task<IActionResult> UpdateDepCenter(Master_Department_CenterCustom model)
 		{
 			try
 			{
-				var data = await _repo.MasterDepLoan.Update(model);
+				var data = await _repo.MasterDepCenter.Update(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -504,12 +504,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpDelete("DeleteDepLoansById")]
-		public async Task<IActionResult> DeleteDepLoansById([FromQuery] UpdateModel model)
+		[HttpDelete("DeleteDepCenterById")]
+		public async Task<IActionResult> DeleteDepCenterById([FromQuery] UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDepLoan.DeleteById(model);
+				await _repo.MasterDepCenter.DeleteById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -518,12 +518,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateStatusDepLoansById")]
-		public async Task<IActionResult> UpdateStatusDepLoansById(UpdateModel model)
+		[HttpPut("UpdateStatusDepCenterById")]
+		public async Task<IActionResult> UpdateStatusDepCenterById(UpdateModel model)
 		{
 			try
 			{
-				await _repo.MasterDepLoan.UpdateStatusById(model);
+				await _repo.MasterDepCenter.UpdateStatusById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -532,12 +532,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetDepLoansById")]
-		public async Task<IActionResult> GetDepLoansById([FromQuery] Guid id)
+		[HttpGet("GetDepCenterById")]
+		public async Task<IActionResult> GetDepCenterById([FromQuery] Guid id)
 		{
 			try
 			{
-				var data = await _repo.MasterDepLoan.GetById(id);
+				var data = await _repo.MasterDepCenter.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)

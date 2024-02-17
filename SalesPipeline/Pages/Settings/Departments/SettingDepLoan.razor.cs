@@ -14,7 +14,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<Master_Department_LoanCustom>? Items;
+		private List<Master_Department_CenterCustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;
@@ -56,7 +56,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 
 		protected async Task SetModel()
 		{
-			var data = await _masterViewModel.GetDepLoans(filter);
+			var data = await _masterViewModel.GetDepCenter(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -91,7 +91,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		{
 			await modalConfirm.OnHideConfirm();
 
-			var data = await _masterViewModel.DeleteDepLoansById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			var data = await _masterViewModel.DeleteDepCenterById(new UpdateModel() { id = id, userid = UserInfo.Id });
 			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 			{
 				_errorMessage = data?.errorMessage;
@@ -104,7 +104,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		{
 			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
 			{
-				var data = await _masterViewModel.UpdateStatusDepLoansById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+				var data = await _masterViewModel.UpdateStatusDepCenterById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
 				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 				{
 					_errorMessage = data?.errorMessage;

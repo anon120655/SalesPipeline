@@ -1,5 +1,6 @@
 ﻿using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationAtt;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -65,11 +66,19 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// ฝ่ายกิจการสาขาภาค
 		/// </summary>
+		[UserAtt(FieldName = "Master_Department_BranchId")]
 		public Guid? Master_Department_BranchId { get; set; }
+
+		/// <summary>
+		/// ศูนย์ธุรกิจสินเชื่อ
+		/// </summary>
+		[UserAtt(FieldName = "Master_Department_CenterId")]
+		public Guid? Master_Department_CenterId { get; set; }
 
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
+		[UserAtt( FieldName = "ProvinceId")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -77,6 +86,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
+		[UserAtt(FieldName = "AmphurId")]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -90,12 +100,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// ระดับ
 		/// </summary>
+		[UserAtt(FieldName = "LevelId")]
 		public int? LevelId { get; set; }
 
 		/// <summary>
 		/// ระดับหน้าที่
 		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? RoleId { get; set; }
 
 		public string? PasswordHash { get; set; }

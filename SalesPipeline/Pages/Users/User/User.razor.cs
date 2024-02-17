@@ -65,14 +65,14 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
-			if (dataBranchs != null && dataBranchs.Status)
+			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{
-				LookUp.Branchs = dataBranchs.Data;
+				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;
 			}
 			else
 			{
-				_errorMessage = dataBranchs?.errorMessage;
+				_errorMessage = dataGetDivBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -120,6 +120,16 @@ namespace SalesPipeline.Pages.Users.User
 			if (LookUp.Positions != null && id.HasValue)
 			{
 				return LookUp.Positions.FirstOrDefault(x => x.Id == id)?.Name;
+			}
+
+			return null;
+		}
+
+		protected string? GetDepartmentBranchName(Guid? id)
+		{
+			if (LookUp.DepartmentBranch != null && id.HasValue)
+			{
+				return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;

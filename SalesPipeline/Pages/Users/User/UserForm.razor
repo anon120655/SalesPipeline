@@ -87,10 +87,10 @@
 										<ValidationMessage For="@(() => formModel.RoleId)" />
 									</div>
 								</div>
-								<div class="row mb-3">
+								<div class="row mb-3 @(LookUp.UserLevels == null || LookUp.UserLevels?.Count == 0 ? "d-none":"")">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.LevelId" class="form-select">
+										<select @bind="formModel.LevelId" class="selectpickerdefault">
 											<option value="">เลือก</option>
 											@if (LookUp.UserLevels?.Count > 0)
 											{
@@ -103,7 +103,23 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
-								<div class="row mb-3">
+								<div class="row mb-3 @(formModel.RoleId != 7 ? "d-none":"" )">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.Master_Department_CenterId" class="selectpickerdefault">
+											<option value="">เลือก</option>
+											@if (LookUp.DepartmentCenter?.Count > 0)
+											{
+												foreach (var item in LookUp.DepartmentCenter)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_Department_CenterId)" />
+									</div>
+								</div>
+								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
@@ -119,8 +135,8 @@
 										<ValidationMessage For="@(() => formModel.Master_Department_BranchId)" />
 									</div>
 								</div>
-								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">จังหวัด<span class="text-danger">*</span></label>
+								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">จังหวัด</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.ProvinceId" id="Province" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 											@if (LookUp.Provinces?.Count > 0)
@@ -134,8 +150,8 @@
 										<ValidationMessage For="@(() => formModel.ProvinceId)" />
 									</div>
 								</div>
-								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">อำเภอ<span class="text-danger">*</span></label>
+								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">อำเภอ</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 											@if (LookUp.Amphurs?.Count > 0)
@@ -149,22 +165,6 @@
 										<ValidationMessage For="@(() => formModel.AmphurId)" />
 									</div>
 								</div>
-								@* <div class="row mb-3">
-							<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา<span class="text-danger">*</span></label>
-							<div class="col-sm-4">
-							<select @bind="formModel.BranchId" class="form-select">
-							<option value="">เลือก</option>
-							@if (LookUp.Branchs?.Count > 0)
-							{
-							foreach (var item in LookUp.Branchs)
-							{
-							<option value="@item.Id">@item.Name</option>
-							}
-							}
-							</select>
-							<ValidationMessage For="@(() => formModel.BranchId)" />
-							</div>
-							</div> *@
 							</div>
 						</div>
 						<div class="my-4 text-center">

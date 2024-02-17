@@ -29,7 +29,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMaster Master { get; }
 		public IMasterDepBranch MasterDepBranch { get; }
 		public IMasterDepartment MasterDepartment { get; }
-		public IMasterDepLoan MasterDepLoan { get; }
+		public IMasterDepCenter MasterDepCenter { get; }
 		public IMasterLoanTypes MasterLoanTypes { get; }
 		public IMasterReasonReturns MasterReasonReturn { get; }
 		public IMasterSLAOperations MasterSLAOperation { get; }
@@ -65,7 +65,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Master = new Master(this, _db, settings, _mapper);
 			MasterDepBranch = new MasterDepBranch(this, _db, settings, _mapper);
 			MasterDepartment = new MasterDepartment(this, _db, settings, _mapper);
-			MasterDepLoan = new MasterDepLoan(this, _db, settings, _mapper);
+			MasterDepCenter = new MasterDepCenter(this, _db, settings, _mapper);
 			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
 			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);
 			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);

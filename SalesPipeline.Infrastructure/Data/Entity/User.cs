@@ -59,6 +59,11 @@ public partial class User
     public Guid? Master_Department_BranchId { get; set; }
 
     /// <summary>
+    /// ศูนย์ธุรกิจสินเชื่อ
+    /// </summary>
+    public Guid? Master_Department_CenterId { get; set; }
+
+    /// <summary>
     /// จังหวัด
     /// </summary>
     public int? ProvinceId { get; set; }
@@ -106,6 +111,8 @@ public partial class User
     public virtual Master_Department? Master_Department { get; set; }
 
     public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
+
+    public virtual Master_Department_Center? Master_Department_Center { get; set; }
 
     public virtual Master_Position? Position { get; set; }
 

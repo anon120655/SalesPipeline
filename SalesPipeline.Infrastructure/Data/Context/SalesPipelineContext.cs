@@ -48,7 +48,7 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_Department_Branch> Master_Department_Branches { get; set; }
 
-    public virtual DbSet<Master_Department_Loan> Master_Department_Loans { get; set; }
+    public virtual DbSet<Master_Department_Center> Master_Department_Centers { get; set; }
 
     public virtual DbSet<Master_ISICCode> Master_ISICCodes { get; set; }
 
@@ -774,11 +774,11 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Master_Department_Loan>(entity =>
+        modelBuilder.Entity<Master_Department_Center>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Master_Department_Loan", tb => tb.HasComment("ศูนย์ธุรกิจสินเชื่อ"));
+            entity.ToTable("Master_Department_Center", tb => tb.HasComment("ศูนย์ธุรกิจสินเชื่อ"));
 
             entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_BranchId");
 
@@ -796,9 +796,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Master_Department_Loans)
+            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Master_Department_Centers)
                 .HasForeignKey(d => d.Master_Department_BranchId)
-                .HasConstraintName("master_department_loan_ibfk_1");
+                .HasConstraintName("master_department_center_ibfk_1");
         });
 
         modelBuilder.Entity<Master_ISICCode>(entity =>
@@ -1324,6 +1324,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_Branch");
 
+            entity.HasIndex(e => e.Master_Department_CenterId, "Master_Department__CenterId");
+
             entity.HasIndex(e => e.PositionId, "PositionId");
 
             entity.HasIndex(e => e.RoleId, "RoleId");
@@ -1351,6 +1353,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
             entity.Property(e => e.Master_DepartmentId).HasComment("ฝ่ายส่วนงานธุรกิจสินเชื่อ");
             entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_CenterId).HasComment("ศูนย์ธุรกิจสินเชื่อ");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PositionId)
                 .HasComment("ตำแหน่ง")
@@ -1387,6 +1390,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Master_Department_BranchId)
                 .HasConstraintName("user_ibfk_5");
+
+            entity.HasOne(d => d.Master_Department_Center).WithMany(p => p.Users)
+                .HasForeignKey(d => d.Master_Department_CenterId)
+                .HasConstraintName("user_ibfk_7");
 
             entity.HasOne(d => d.Position).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PositionId)

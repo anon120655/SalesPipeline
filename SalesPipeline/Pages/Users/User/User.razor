@@ -96,6 +96,7 @@
 											<th class="text-center">ชื่อ-สกุล</th>
 											<th class="text-center">ฝ่าย</th>
 											<th class="text-center">ตำแหน่ง</th>
+											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ระดับ</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">วันที่เพิ่ม</th>
@@ -132,19 +133,11 @@
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
-													<td class="text-center">
-														@* @if (item.DivBranchId != null && item.DivBranch != null)
-														{
-															<p>@item.DivBranch.Name</p>
-														}
-														@if (item.DivLoanId != null && item.DivLoan != null)
-														{
-															<p>@item.DivLoan.Name</p>
-														} *@
-													</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(GetDepartmentBranchName(item.Master_Department_BranchId))</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
-													<td class="text-center">@GetLevelName(item.LevelId)</td>
-													<td class="text-center">@item.ProvinceName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Role?.Name)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(GetLevelName(item.LevelId))</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
 													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
 													<td class="text-center">
 														<a href="/user/update/@item.Id">แก้ไข</a> /

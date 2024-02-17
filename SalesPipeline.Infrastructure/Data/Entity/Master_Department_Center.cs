@@ -6,7 +6,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// <summary>
 /// ศูนย์ธุรกิจสินเชื่อ
 /// </summary>
-public partial class Master_Department_Loan
+public partial class Master_Department_Center
 {
     public Guid Id { get; set; }
 
@@ -38,4 +38,6 @@ public partial class Master_Department_Loan
     public string? Name { get; set; }
 
     public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

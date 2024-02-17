@@ -54,10 +54,10 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivLoans = await _masterViewModel.GetDepLoans(new allFilter() { status = StatusModel.Active });
+			var dataGetDivLoans = await _masterViewModel.GetDepCenter(new allFilter() { status = StatusModel.Active });
 			if (dataGetDivLoans != null && dataGetDivLoans.Status)
 			{
-				LookUp.DepartmentLoan = dataGetDivLoans.Data?.Items;
+				LookUp.DepartmentCenter = dataGetDivLoans.Data?.Items;
 			}
 			else
 			{

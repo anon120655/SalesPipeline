@@ -34,6 +34,6 @@ namespace SalesPipeline.Utils.Resources.Masters
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
 
-		public virtual ICollection<Master_Department_LoanCustom>? Master_Department_Loans { get; set; }
+		public virtual ICollection<Master_Department_CenterCustom>? Master_Department_Loans { get; set; }
 	}
 }

@@ -16,7 +16,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		private bool isLoading = false;
 		private LookUpResource LookUp = new();
 		private User_PermissionCustom _permission = new();
-		private Master_Department_LoanCustom formModel = new();
+		private Master_Department_CenterCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -56,7 +56,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		{
 			if (id.HasValue)
 			{
-				var data = await _masterViewModel.GetDepLoansById(id.Value);
+				var data = await _masterViewModel.GetDepCenterById(id.Value);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
@@ -80,17 +80,17 @@ namespace SalesPipeline.Pages.Settings.Departments
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_Department_LoanCustom> response;
+			ResultModel<Master_Department_CenterCustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue)
 			{
-				response = await _masterViewModel.UpdateDepLoans(formModel);
+				response = await _masterViewModel.UpdateDepCenter(formModel);
 			}
 			else
 			{
-				response = await _masterViewModel.CreateDepLoans(formModel);
+				response = await _masterViewModel.CreateDepCenter(formModel);
 			}
 
 			if (response.Status)
