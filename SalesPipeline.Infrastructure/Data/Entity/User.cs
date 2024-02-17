@@ -59,6 +59,20 @@ public partial class User
     public Guid? Master_Department_BranchId { get; set; }
 
     /// <summary>
+    /// จังหวัด
+    /// </summary>
+    public int? ProvinceId { get; set; }
+
+    public string? ProvinceName { get; set; }
+
+    /// <summary>
+    /// อำเภอ
+    /// </summary>
+    public int? AmphurId { get; set; }
+
+    public string? AmphurName { get; set; }
+
+    /// <summary>
     /// ตำแหน่ง
     /// </summary>
     public int? PositionId { get; set; }
@@ -102,8 +116,4 @@ public partial class User
     public virtual ICollection<Sale> SaleAssignedUsers { get; set; } = new List<Sale>();
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
-
-    public virtual ICollection<User_Loan> User_LoanUserLoans { get; set; } = new List<User_Loan>();
-
-    public virtual ICollection<User_Loan> User_LoanUsers { get; set; } = new List<User_Loan>();
 }

@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterDivLoan : IMasterDepLoan
+	public class MasterDepLoan : IMasterDepLoan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public MasterDivLoan(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterDepLoan(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;

@@ -71,6 +71,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
+				string? provinceName = null;
+				string? amphurName = null;
+				if (model.ProvinceId.HasValue)
+				{
+					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+				}
+				if (model.AmphurId.HasValue)
+				{
+					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+				}
+
 				var user = new Data.Entity.User();
 				user.Id = id;
 				user.Status = StatusModel.Active;
@@ -88,6 +99,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.BranchId = model.BranchId;
 				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
+				user.ProvinceId = model.ProvinceId;
+				user.ProvinceName = provinceName;
+				user.AmphurId = model.AmphurId;
+				user.AmphurName = amphurName;
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
@@ -123,6 +138,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
+				string? provinceName = null;
+				string? amphurName = null;
+				if (model.ProvinceId.HasValue)
+				{
+					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+				}
+				if (model.AmphurId.HasValue)
+				{
+					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+				}
+
+
 				var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
@@ -138,6 +165,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.BranchId = model.BranchId;
 					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
+					user.ProvinceId = model.ProvinceId;
+					user.ProvinceName = provinceName;
+					user.AmphurId = model.AmphurId;
+					user.AmphurName = amphurName;
 					user.PositionId = model.PositionId;
 					user.LevelId = model.LevelId;
 					user.RoleId = model.RoleId;

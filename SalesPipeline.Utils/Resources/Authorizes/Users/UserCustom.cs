@@ -68,6 +68,20 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public Guid? Master_Department_BranchId { get; set; }
 
 		/// <summary>
+		/// จังหวัด
+		/// </summary>
+		public int? ProvinceId { get; set; }
+
+		public string? ProvinceName { get; set; }
+
+		/// <summary>
+		/// อำเภอ
+		/// </summary>
+		public int? AmphurId { get; set; }
+
+		public string? AmphurName { get; set; }
+
+		/// <summary>
 		/// ตำแหน่ง
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]

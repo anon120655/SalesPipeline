@@ -30,9 +30,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<IList<InfoProvinceCustom>> GetProvince()
+		public async Task<IList<InfoProvinceCustom>> GetProvince(Guid? department_BranchId = null)
 		{
 			var query = _repo.Context.InfoProvinces.AsQueryable();
+
+			if (department_BranchId.HasValue)
+			{
+				query = query.Where(x=>x.Master_Department_BranchId == department_BranchId);
+			}
+
 			return _mapper.Map<IList<InfoProvinceCustom>>(await query.ToListAsync());
 		}
 

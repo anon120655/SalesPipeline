@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterDivBranch : IMasterDepBranch
+	public class MasterDepBranch : IMasterDepBranch
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public MasterDivBranch(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterDepBranch(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
@@ -129,7 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Master_Department_Branches
 												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 			if (model.status.HasValue)
 			{

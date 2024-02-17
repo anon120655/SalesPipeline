@@ -16,5 +16,10 @@ public partial class InfoProvince
 
     public int? RegionID { get; set; }
 
+    /// <summary>
+    /// ฝ่ายกิจการสาขาภาค
+    /// </summary>
+    public Guid? Master_Department_BranchId { get; set; }
+
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 }

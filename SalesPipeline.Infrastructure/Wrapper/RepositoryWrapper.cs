@@ -63,9 +63,9 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Notifys = new Notifys(this, _db, settings);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
-			MasterDepBranch = new MasterDivBranch(this, _db, settings, _mapper);
+			MasterDepBranch = new MasterDepBranch(this, _db, settings, _mapper);
 			MasterDepartment = new MasterDepartment(this, _db, settings, _mapper);
-			MasterDepLoan = new MasterDivLoan(this, _db, settings, _mapper);
+			MasterDepLoan = new MasterDepLoan(this, _db, settings, _mapper);
 			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
 			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);
 			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);

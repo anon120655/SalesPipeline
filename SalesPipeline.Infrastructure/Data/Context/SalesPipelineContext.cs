@@ -96,8 +96,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<User_Level> User_Levels { get; set; }
 
-    public virtual DbSet<User_Loan> User_Loans { get; set; }
-
     public virtual DbSet<User_Permission> User_Permissions { get; set; }
 
     public virtual DbSet<User_Role> User_Roles { get; set; }
@@ -161,6 +159,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
+            entity.Property(e => e.AssignmentId).HasComment("ชื่อผู้จัดการศูนย์ที่ดูแล");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CurrentNumber)
                 .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
@@ -180,7 +179,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Assignment).WithMany(p => p.Assignment_RMs)
                 .HasForeignKey(d => d.AssignmentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("assignment_rm_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_RMs)
@@ -608,6 +606,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProvinceID)
                 .ValueGeneratedNever()
                 .HasColumnType("int(11)");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
             entity.Property(e => e.ProvinceCode).HasMaxLength(50);
             entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.RegionID).HasColumnType("int(11)");
@@ -1332,6 +1331,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnType("int(11)");
+            entity.Property(e => e.AmphurId)
+                .HasComment("อำเภอ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AmphurName).HasMaxLength(255);
             entity.Property(e => e.BranchId).HasComment("สาขา");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -1352,6 +1355,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.PositionId)
                 .HasComment("ตำแหน่ง")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceId)
+                .HasComment("จังหวัด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.RoleId)
                 .HasComment("ระดับหน้าที่")
                 .HasColumnType("int(11)");
@@ -1403,38 +1410,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
-        });
-
-        modelBuilder.Entity<User_Loan>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("User_Loan", tb => tb.HasComment("พนักงานสินเชื่อภายใต้การดูแล"));
-
-            entity.HasIndex(e => e.UserId, "UserId");
-
-            entity.HasIndex(e => e.UserLoanId, "UserLoanId");
-
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-            entity.Property(e => e.UserId)
-                .HasComment("พนักงานที่ดูแล")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.UserLoanId)
-                .HasComment("พนักงานสินเชื่อที่ดูแล")
-                .HasColumnType("int(11)");
-
-            entity.HasOne(d => d.User).WithMany(p => p.User_LoanUsers)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("user_loan_ibfk_1");
-
-            entity.HasOne(d => d.UserLoan).WithMany(p => p.User_LoanUserLoans)
-                .HasForeignKey(d => d.UserLoanId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("user_loan_ibfk_2");
         });
 
         modelBuilder.Entity<User_Permission>(entity =>

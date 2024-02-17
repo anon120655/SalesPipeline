@@ -269,6 +269,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
+				int? assignedCenterUserId = null;
+				string? assignedCenterUserName = null;
 				int? assignedUserId = null;
 				string? assignedUserName = null;
 
@@ -298,6 +300,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
+					AssignedCenterUserId = assignedCenterUserId,
+					AssignedCenterUserName = assignedCenterUserName,
 					AssignedUserId = assignedUserId,
 					AssignedUserName = assignedUserName
 				};
@@ -306,10 +310,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//Create with RM Assing yourself
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					Assignment_RMCustom? assignment = null;
+					Assignment_RMCustom? assignment_RM = null;
 					if (!await _repo.AssignmentRM.CheckAssignmentByUserId(model.CurrentUserId))
 					{
-						assignment = await _repo.AssignmentRM.Create(new()
+						assignment_RM = await _repo.AssignmentRM.Create(new()
 						{
 							UserId = model.CurrentUserId,
 							EmployeeId = user.EmployeeId,

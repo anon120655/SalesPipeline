@@ -52,7 +52,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ตำแหน่ง<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.PositionId" class="form-select">
+										<select @bind="formModel.PositionId" class="selectpickerdefault">
 											<option value="">เลือก</option>
 											@if (LookUp.Positions?.Count > 0)
 											{
@@ -68,7 +68,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.Master_DepartmentId" class="form-select">
+										<select @bind="formModel.Master_DepartmentId" class="selectpickerdefault">
 											<option value="">เลือก</option>
 											@if (LookUp.Departments?.Count > 0)
 											{
@@ -84,7 +84,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @onchange="((e) => OnRoles(e.Value,null))" class="form-select" value="@formModel.RoleId">
+										<select @onchange="((e) => OnRoles(e.Value,null))" class="selectpickerdefault" value="@formModel.RoleId">
 											<option value="">เลือก</option>
 											@if (ItemsUserRole?.Count > 0)
 											{
@@ -100,7 +100,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.LevelId" class="form-select">
+										<select @bind="formModel.LevelId" class="selectpickerdefault">
 											<option value="">เลือก</option>
 											@if (LookUp.UserLevels?.Count > 0)
 											{

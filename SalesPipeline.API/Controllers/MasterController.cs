@@ -264,15 +264,16 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		///  จังหวัด
+		/// จังหวัด
 		/// </summary>
+		/// <param name="department_BranchId"></param>
 		/// <returns></returns>
 		[HttpGet("GetProvince")]
-		public async Task<IActionResult> GetProvince()
+		public async Task<IActionResult> GetProvince(Guid? department_BranchId = null)
 		{
 			try
 			{
-				var response = await _repo.Thailand.GetProvince();
+				var response = await _repo.Thailand.GetProvince(department_BranchId);
 
 				return Ok(response);
 			}

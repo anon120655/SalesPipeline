@@ -22,7 +22,10 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public DateTime CreateDate { get; set; }
 
-		public Guid AssignmentId { get; set; }
+		/// <summary>
+		/// ชื่อผู้จัดการศูนย์ที่ดูแล
+		/// </summary>
+		public Guid? AssignmentId { get; set; }
 
 		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย

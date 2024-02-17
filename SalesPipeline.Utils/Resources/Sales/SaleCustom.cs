@@ -60,6 +60,16 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? PercentChanceLoanPass { get; set; }
 
 		/// <summary>
+		/// ผู้จัดการศูนย์ที่ดูแล
+		/// </summary>
+		public int? AssignedCenterUserId { get; set; }
+
+		/// <summary>
+		/// ชื่อผู้จัดการศูนย์ที่ดูแล
+		/// </summary>
+		public string? AssignedCenterUserName { get; set; }
+
+		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย
 		/// </summary>
 		public int? AssignedUserId { get; set; }

@@ -10,7 +10,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IThailand
 	{
-		Task<IList<InfoProvinceCustom>> GetProvince();
+		Task<IList<InfoProvinceCustom>> GetProvince(Guid? department_BranchId = null);
 		Task<IList<InfoAmphurCustom>> GetAmphur(int provinceID);
 		Task<IList<InfoTambolCustom>> GetTambol(int provinceID, int amphurID);
 		Task<InfoProvinceCustom> GetProvinceByid(int id);

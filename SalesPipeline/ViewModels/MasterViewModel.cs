@@ -267,11 +267,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<InfoProvinceCustom>>> GetProvince()
+		public async Task<ResultModel<List<InfoProvinceCustom>>> GetProvince(Guid? department_BranchId = null)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Master/GetProvince");
+				var content = await _httpClient.GetAsync($"/v1/Master/GetProvince?department_BranchId={department_BranchId}");
 				var dataMap = JsonConvert.DeserializeObject<List<InfoProvinceCustom>>(content);
 
 				return new ResultModel<List<InfoProvinceCustom>>()

@@ -51,6 +51,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
+			sale.AssignedCenterUserId = model.AssignedCenterUserId;
+			sale.AssignedCenterUserName = model.AssignedCenterUserName;
 			sale.AssignedUserId = model.AssignedUserId;
 			sale.AssignedUserName = model.AssignedUserName;
 
