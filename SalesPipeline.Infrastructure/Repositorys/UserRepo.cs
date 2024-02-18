@@ -550,7 +550,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (usersCenter.Count > 0)
 			{
+				foreach (var item_center in usersCenter)
+				{
+					var department_Centers = await _repo.Context.Master_Department_Centers.FirstOrDefaultAsync(x=>x.Id == item_center.Master_Department_CenterId);
+					if (department_Centers != null)
+					{
 
+					}
+				}
 			}
 
 			//var users = await _repo.Context.Users.Include(x => x.Role)
