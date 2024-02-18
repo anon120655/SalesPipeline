@@ -356,7 +356,7 @@ namespace SalesPipeline.API.Controllers
 					}, modelSale);
 				}
 
-				await _repo.User.CreateAssignmentRMAll(new());
+				await _repo.User.CreateAssignmentAll(new());
 
 				return Ok();
 			}

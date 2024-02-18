@@ -24,6 +24,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<string?> GetRoleCodeById(int id);
 		Task<User_RoleCustom?> GetRoleByUserId(int id);
 		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model);
-		Task CreateAssignmentRMAll(allFilter model);
+		Task CreateAssignmentAll(allFilter model);
 	}
 }
