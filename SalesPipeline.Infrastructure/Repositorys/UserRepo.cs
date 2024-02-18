@@ -553,12 +553,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					foreach (var item in users)
 					{
-						var assignment = await _repo.AssignmentRM.Create(new()
+						if (!await _repo.AssignmentRM.CheckAssignmentByUserId(item.Id))
 						{
-							UserId = item.Id,
-							EmployeeId = item.EmployeeId,
-							EmployeeName = item.FullName,
-						});
+							var assignment = await _repo.AssignmentRM.Create(new()
+							{
+								UserId = item.Id,
+								EmployeeId = item.EmployeeId,
+								EmployeeName = item.FullName,
+							});
+						}
+
 					}
 
 					_transaction.Commit();

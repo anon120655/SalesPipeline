@@ -282,24 +282,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assignedUserId = model.CurrentUserId;
 					assignedUserName = user.FullName;
-
-					if (modelSale != null && modelSale.AssignedCenterUserId.HasValue)
-					{
-						var userCenter = await _repo.User.GetById(modelSale.AssignedCenterUserId.Value);
-						if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
-						if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
-
-						var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
-						if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
-
-						if (user.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
-						{
-							throw new ExceptionCustom("assignedCenter not correct!");
-						}
-
-						assignedCenterUserId = modelSale.AssignedCenterUserId;
-						assignedCenterUserName = userCenter.FullName;
-					}
 				}
 				else
 				{
@@ -309,9 +291,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				
+				if (modelSale != null && modelSale.AssignedCenterUserId.HasValue)
+				{
+					var userCenter = await _repo.User.GetById(modelSale.AssignedCenterUserId.Value);
+					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
+					if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
 
-				
+					var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
+					if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
+
+					//พนักงาน RM สร้าง ต้องเช็คกิจการสาขาภาคว่าตรงกับผู้จัดการศูนย์ที่ดูแลอยู่หรือป่าว
+					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+					{
+						if (user.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+						{
+							throw new ExceptionCustom("assignedCenter not correct!");
+						}
+					}
+
+					assignedCenterUserId = modelSale.AssignedCenterUserId;
+					assignedCenterUserName = userCenter.FullName;
+				}
+
 
 				var saleData = new SaleCustom()
 				{
@@ -332,16 +333,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//Create with RM Assing yourself
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					Assignment_RMCustom? assignment_RM = null;
-					if (!await _repo.AssignmentRM.CheckAssignmentByUserId(model.CurrentUserId))
-					{
-						assignment_RM = await _repo.AssignmentRM.Create(new()
-						{
-							UserId = model.CurrentUserId,
-							EmployeeId = user.EmployeeId,
-							EmployeeName = user.FullName,
-						});
-					}
+					//*************** เปลี่ยนไปสร้างตอน CreateAssignmentRMAll
+					//Assignment_RMCustom? assignment_RM = null;
+					//if (!await _repo.AssignmentRM.CheckAssignmentByUserId(model.CurrentUserId))
+					//{
+					//	assignment_RM = await _repo.AssignmentRM.Create(new()
+					//	{
+					//		UserId = model.CurrentUserId,
+					//		EmployeeId = user.EmployeeId,
+					//		EmployeeName = user.FullName,
+					//	});
+					//}
 
 					//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
 					//else

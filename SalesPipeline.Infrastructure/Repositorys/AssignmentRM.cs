@@ -30,6 +30,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Assignment_RMCustom> Create(Assignment_RMCustom model)
 		{
+			if (await _repo.AssignmentRM.CheckAssignmentByUserId(model.UserId))
+				throw new ExceptionCustom("assignmentRM duplicate user");
+
 			if (string.IsNullOrEmpty(model.EmployeeName))
 			{
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
