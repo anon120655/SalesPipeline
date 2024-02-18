@@ -133,7 +133,16 @@
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
-													<td class="text-center">@GeneralUtils.EmptyTo(GetDepartmentBranchName(item.Master_Department_BranchId))</td>
+													<td class="text-center">
+														@if (item.Master_Department_BranchId.HasValue)
+														{
+															@GeneralUtils.EmptyTo(GetDepartmentBranchName(item.Master_Department_BranchId))
+														}
+														else if (item.Master_Department_CenterId.HasValue)
+														{
+															@GeneralUtils.EmptyTo(GetDepartmentCenterName(item.Master_Department_CenterId))
+														}
+													</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Role?.Name)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(GetLevelName(item.LevelId))</td>

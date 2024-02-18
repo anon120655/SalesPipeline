@@ -240,8 +240,8 @@ namespace SalesPipeline.Pages.Users.User
 
 		protected async Task OnRoles(object? val, int? levelId = null)
 		{
-			formModel.RoleId = null;
 			formModel.LevelId = levelId;
+			formModel.RoleId = null;
 			LookUp.UserLevels = new();
 			StateHasChanged();
 

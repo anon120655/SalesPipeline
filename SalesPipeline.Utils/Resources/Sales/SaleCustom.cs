@@ -1,4 +1,6 @@
-﻿using SalesPipeline.Utils.Resources.Customers;
+﻿using NPOI.SS.Formula;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -80,6 +82,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? AssignedUserName { get; set; }
 
 		public virtual CustomerCustom? Customer { get; set; }
+
+		public virtual UserCustom? AssignedCenterUser { get; set; }
 
 		public virtual List<Sale_StatusCustom>? Sale_Statuses { get; set; }
 

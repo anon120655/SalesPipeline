@@ -181,9 +181,17 @@
 													<td class="text-center">@item.CompanyName</td>
 													<td class="">@item.Customer?.Master_ChainName</td>
 													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">-</td>
-													<td class="text-center">-</td>
-													<td class="text-center">-</td>
+													@if (item.AssignedCenterUser != null)
+													{
+														<td class="text-center">@item.AssignedCenterUser.Master_Department_Center?.Master_Department_BranchName</td>
+														<td class="text-center">@item.AssignedCenterUser.Master_Department_Center?.Name</td>
+													}
+													else
+													{
+														<td class="text-center">-</td>
+														<td class="text-center">-</td>
+													}
+													<td class="text-center">@item.Customer?.ProvinceName</td>
 													<td class="text-center">
 														<p class="form-control-plaintext fw-bold">
 															@item.StatusSaleName

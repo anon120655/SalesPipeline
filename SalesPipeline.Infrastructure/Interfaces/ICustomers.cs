@@ -1,5 +1,6 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task Validate(CustomerCustom model, bool isThrow = false);
 		Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model);
 		Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber);
-		Task<CustomerCustom> Create(CustomerCustom model);
+		Task<CustomerCustom> Create(CustomerCustom model, SaleCustom? modelSale = null);
 		Task<CustomerCustom> Update(CustomerCustom model);
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);

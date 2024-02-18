@@ -78,6 +78,11 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 		protected async Task SetModel()
 		{
+			if (UserInfo.RoleCode != RoleCodes.SUPERADMIN)
+			{
+				filter.assigncenter = UserInfo.Id;
+			}
+
 			filter.statussaleid = StatusSaleModel.WaitApprove;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

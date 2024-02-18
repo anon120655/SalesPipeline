@@ -13,7 +13,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public Guid id { get; set; }
 		public int? statussaleid { get; set; }
 		public int? userid { get; set; }
-		public int? assignuserid { get; set; }
+		public int? assigncenter { get; set; }
+		public int? assignrm { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? searchtxt { get; set; }
@@ -49,8 +50,11 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (statussaleid > 0)
 				ParameterAll += $"&statussaleid={statussaleid}";
 
-			if (assignuserid > 0)
-				ParameterAll += $"&assignuserid={assignuserid}";
+			if (assigncenter > 0)
+				ParameterAll += $"&assigncenter={assigncenter}";
+
+			if (assignrm > 0)
+				ParameterAll += $"&assignrm={assignrm}";
 
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
@@ -123,8 +127,11 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(statussaleid), out var _statussaleid))
 				statussaleid = Convert.ToInt16(_statussaleid);
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignuserid), out var _assignuserid))
-				assignuserid = Convert.ToInt16(_assignuserid);
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assigncenter), out var _assigncenter))
+				assigncenter = Convert.ToInt16(_assigncenter);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignrm), out var _assignrm))
+				assignrm = Convert.ToInt16(_assignrm);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);

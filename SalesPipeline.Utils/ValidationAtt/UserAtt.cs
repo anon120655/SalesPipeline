@@ -26,7 +26,7 @@ namespace SalesPipeline.Utils.ValidationAtt
 					if (model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 7 || model.RoleId == 8)
 					{
 						//ฝ่ายกิจการสาขาภาค
-						if (FieldName == "Master_Department_BranchId" && value == null)
+						if (FieldName == "Master_Department_BranchId" && model.RoleId != 7 && value == null)
 						{
 							return resultValidate;
 						}

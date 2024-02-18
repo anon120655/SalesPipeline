@@ -32,22 +32,51 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
-			if (model.ValidateError == null) model.ValidateError = new();
+			if (model.Id == 0)
+			{
+				if (model.ValidateError == null) model.ValidateError = new();
 
-			if (model.EmployeeId != null && await UserExists(model.EmployeeId))
-			{
-				errorMessage = $"มีรหัสพนักงาน {model.EmployeeId} อยู่แล้ว";
-				model.IsValidate = false;
-				model.ValidateError.Add(errorMessage);
-				if (isThrow) throw new ExceptionCustom(errorMessage);
+				if (model.EmployeeId != null && await UserExists(model.EmployeeId))
+				{
+					errorMessage = $"มีรหัสพนักงาน {model.EmployeeId} อยู่แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+				if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
+				{
+					errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
 			}
-			if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
+
+			string? roleCode = null;
+			if (model.RoleId.HasValue)
 			{
-				errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
-				model.IsValidate = false;
-				model.ValidateError.Add(errorMessage);
-				if (isThrow) throw new ExceptionCustom(errorMessage);
+				roleCode = await GetRoleCodeById(model.RoleId.Value);
+				if (roleCode != null)
+				{
+					if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
+					{
+						model.Master_Department_CenterId = null;
+					}
+					else if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER))
+					{
+						model.LevelId = null;
+						model.Master_Department_BranchId = null;
+						model.ProvinceId = null;
+						model.AmphurId = null;
+					}
+					else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+					{
+						model.LevelId = null;
+						model.Master_Department_CenterId = null;
+					}
+				}
 			}
+
 			return model;
 		}
 
@@ -63,6 +92,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> Create(UserCustom model)
 		{
 			await Validate(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
@@ -99,6 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.BranchId = model.BranchId;
 				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
+				user.Master_Department_CenterId = model.Master_Department_CenterId;
 				user.ProvinceId = model.ProvinceId;
 				user.ProvinceName = provinceName;
 				user.AmphurId = model.AmphurId;
@@ -113,8 +144,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//RM Role Create Default Assignment
 				if (model.RoleId.HasValue)
 				{
-					var code = await GetRoleCodeById(model.RoleId.Value);
-					if (code != null && code.ToUpper().StartsWith(RoleCodes.RM))
+					var roleCode = await GetRoleCodeById(model.RoleId.Value);
+					if (roleCode != null && roleCode.ToUpper().StartsWith(RoleCodes.RM))
 					{
 						var assignment = await _repo.AssignmentRM.Create(new()
 						{
@@ -134,6 +165,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<UserCustom> Update(UserCustom model)
 		{
+			await Validate(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
@@ -148,7 +181,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 				}
-
 
 				var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
@@ -165,6 +197,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.BranchId = model.BranchId;
 					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
+					user.Master_Department_CenterId = model.Master_Department_CenterId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
 					user.AmphurId = model.AmphurId;
@@ -217,6 +250,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Users
 				.Include(x => x.Master_Department_Branch)
+				.Include(x => x.Master_Department_Center)
 				.Include(x => x.Position)
 				.Include(x => x.Branch)
 				.Include(x => x.Role)
@@ -239,6 +273,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Master_Department_Branch)
+										   .Include(x => x.Master_Department_Center)
 										   .Include(x => x.Branch)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)

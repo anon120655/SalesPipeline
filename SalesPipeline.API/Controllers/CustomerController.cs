@@ -7,6 +7,7 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Loggers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 
@@ -170,11 +171,12 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
-		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode, int? statusSaleId = null)
+		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode, int? statusSaleId = null, int? assignedCenterUserId = null)
 		{
 			try
 			{
-				if (check != "$2a$11$GSuWBf34jTzwRsn3pvQnh.BSk6TGAfuYsRSzOn1ZE7CkZrF5EeNKq") throw new ExceptionCustom("not permission");
+				//if (check != "$2a$11$GSuWBf34jTzwRsn3pvQnh.BSk6TGAfuYsRSzOn1ZE7CkZrF5EeNKq") throw new ExceptionCustom("not permission");
+				if (check != "9999") throw new ExceptionCustom("not permission");
 
 				var contactChannel = new List<Guid>();
 				var businessType = new List<Guid>();
@@ -223,6 +225,8 @@ namespace SalesPipeline.API.Controllers
 				int currentUserId = 0;
 				int _statusSaleId = StatusSaleModel.NotStatus;
 
+				SaleCustom? modelSale = null;
+
 				for (int i = 1; i <= number; i++)
 				{
 					if (rolecode == RoleCodes.RM)
@@ -247,6 +251,14 @@ namespace SalesPipeline.API.Controllers
 						currentUserId = 9;
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
+					}
+
+					if ((rolecode == RoleCodes.RM || rolecode == RoleCodes.MANAGERCENTER) && assignedCenterUserId.HasValue)
+					{
+						modelSale = new()
+						{
+							AssignedCenterUserId = assignedCenterUserId.Value,
+						};
 					}
 
 					if (statusSaleId.HasValue)
@@ -341,7 +353,7 @@ namespace SalesPipeline.API.Controllers
 							new() { Name = $"ผู้ถือหุ้น_1" , Nationality="ไทย", Proportion = "40%", NumberShareholder = 40 ,TotalShareValue = 400000 },
 							new() { Name = $"ผู้ถือหุ้น_2" , Nationality="ไทย", Proportion = "60%", NumberShareholder = 60 ,TotalShareValue = 600000 }
 						}
-					});
+					}, modelSale);
 				}
 
 				await _repo.User.CreateAssignmentRMAll(new());

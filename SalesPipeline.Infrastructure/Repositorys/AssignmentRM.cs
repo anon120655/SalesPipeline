@@ -135,12 +135,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
 			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
 
+			Guid? assignmentId = null;
+			if (model.assigncenter.HasValue)
+			{
+				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
+				if (assignments != null)
+				{
+					assignmentId = assignments.Id;
+				}
+			}
+
 			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
-												 //.Include(x => x.Assignment_Sales).ThenInclude(x => x.Sale).ThenInclude(x => x.Customer)
 												 .Include(x => x.User).ThenInclude(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
+
+			if (assignmentId.HasValue)
+			{
+				query = query.Where(x=>x.AssignmentId == assignmentId);
+			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{

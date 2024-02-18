@@ -210,11 +210,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
 		{
-			var query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.Customer)
-												 .Include(x => x.Sale_Statuses)
-												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-												 .AsQueryable();
+			IQueryable<Sale> query;
+			string? roleCode = null;
+			if (model.assigncenter.HasValue)
+			{
+				roleCode = await _repo.User.GetRoleCodeById(model.assigncenter.Value);
+			}
+
+			if (roleCode != null && roleCode.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
+													.Include(x => x.Customer)
+													.Include(x => x.Sale_Statuses)
+													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+													.AsQueryable();
+			}
+			else
+			{
+				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
+													.Include(x => x.Customer)
+													.Include(x => x.AssignedCenterUser).ThenInclude(s => s.Master_Department_Center)
+													.Include(x => x.Sale_Statuses)
+													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+													.AsQueryable();
+			}
+
+
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
@@ -225,9 +246,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.StatusSaleId == model.statussaleid);
 			}
 
-			if (model.assignuserid.HasValue)
+			if (model.assigncenter.HasValue)
 			{
-				query = query.Where(x => x.AssignedUserId == model.assignuserid);
+				query = query.Where(x => x.AssignedCenterUserId == model.assigncenter);
+			}
+
+			if (model.assignrm.HasValue)
+			{
+				query = query.Where(x => x.AssignedUserId == model.assignrm);
 			}
 
 			if (!String.IsNullOrEmpty(model.sort))

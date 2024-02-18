@@ -90,7 +90,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<CustomerCustom> Create(CustomerCustom model)
+		public async Task<CustomerCustom> Create(CustomerCustom model, SaleCustom? modelSale = null)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
@@ -282,6 +282,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assignedUserId = model.CurrentUserId;
 					assignedUserName = user.FullName;
+
+					if (modelSale != null && modelSale.AssignedCenterUserId.HasValue)
+					{
+						var userCenter = await _repo.User.GetById(modelSale.AssignedCenterUserId.Value);
+						if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
+						if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
+
+						var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
+						if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
+
+						if (user.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+						{
+							throw new ExceptionCustom("assignedCenter not correct!");
+						}
+
+						assignedCenterUserId = modelSale.AssignedCenterUserId;
+						assignedCenterUserName = userCenter.FullName;
+					}
 				}
 				else
 				{
@@ -290,6 +308,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						statusSaleId = model.StatusSaleId.Value;
 					}
 				}
+
+				
+
+				
 
 				var saleData = new SaleCustom()
 				{

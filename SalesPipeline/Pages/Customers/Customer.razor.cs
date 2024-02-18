@@ -251,12 +251,12 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task OnAssignmentUser(ChangeEventArgs e)
 		{
-			filter.assignuserid = null;
+			filter.assignrm = null;
 			if (e.Value != null)
 			{
 				if (int.TryParse(e.Value.ToString(), out int val))
 				{
-					filter.assignuserid = val;
+					filter.assignrm = val;
 				}
 
 				await SetModel();

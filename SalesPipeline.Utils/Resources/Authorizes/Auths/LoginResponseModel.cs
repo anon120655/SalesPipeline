@@ -23,6 +23,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? PositionName { get; set; }
 		public Guid? Master_Department_BranchId { get; set; }
 		public string? Master_Department_BranchName { get; set; }
+		public Guid? Master_Department_CenterId { get; set; }
+		public string? Master_Department_CenterName { get; set; }
 		public int? RoleId { get; set; }
 		public string? RoleCode { get; set; }
 		public string? RoleName { get; set; }

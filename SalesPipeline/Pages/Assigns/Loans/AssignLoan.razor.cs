@@ -97,6 +97,25 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task SetModel()
 		{
+			if (UserInfo.RoleCode != null)
+			{
+				if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
+				{
+				}
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				{
+				}
+				else if (UserInfo.RoleCode == RoleCodes.MANAGERCENTER)
+				{
+					filter.assigncenter = UserInfo.Id;
+				}
+				else if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				{
+					filter.assigncenter = null;
+					filter.assignrm = null;
+				}
+			}
+
 			filter.pagesize = 100;
 			var data = await _assignmentRMViewModel.GetListAutoAssign(filter);
 			if (data != null && data.Status)
