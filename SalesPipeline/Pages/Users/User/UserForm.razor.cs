@@ -169,6 +169,11 @@ namespace SalesPipeline.Pages.Users.User
 				}
 			}
 
+			if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
+			{
+				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x=>x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
+			}
+
 			if (department_BranchId.HasValue)
 			{
 				LookUp.Provinces = new();
@@ -217,7 +222,7 @@ namespace SalesPipeline.Pages.Users.User
 			await SetInitManual();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
-		
+
 		protected async Task OnInvalidSubmit()
 		{
 			await Task.Delay(100);
@@ -307,6 +312,19 @@ namespace SalesPipeline.Pages.Users.User
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 
+			}
+		}
+
+		protected void OnDepartment_Center(object? val)
+		{
+			formModel.Master_Department_CenterId = null;
+			StateHasChanged();
+
+			if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
+			{
+				formModel.Master_Department_CenterId = department_CenterId;
+				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
+				StateHasChanged();
 			}
 		}
 

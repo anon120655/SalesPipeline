@@ -303,9 +303,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//พนักงาน RM สร้าง ต้องเช็คกิจการสาขาภาคว่าตรงกับผู้จัดการศูนย์ที่ดูแลอยู่หรือป่าว
 					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{
-						if (user.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+						var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
+						if (assignmentRM == null || assignmentRM.Assignment == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM!");
+						if (assignmentRM.Assignment.User?.Master_Department_Center != null)
 						{
-							throw new ExceptionCustom("assignedCenter not correct!");
+							if (assignmentRM.Assignment.User.Master_Department_Center.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+							{
+								throw new ExceptionCustom("assignedCenter not correct!");
+							}
 						}
 					}
 

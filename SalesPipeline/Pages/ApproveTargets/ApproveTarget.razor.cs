@@ -82,7 +82,12 @@ namespace SalesPipeline.Pages.ApproveTargets
 
 		protected async Task SetModel()
 		{
-			filter.statussaleid = StatusSaleModel.WaitApproveCenter;
+			if (UserInfo.RoleCode != RoleCodes.SUPERADMIN)
+			{
+				filter.assigncenter = UserInfo.Id;
+			}
+
+			filter.statussaleid = StatusSaleModel.WaitApprove;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -271,12 +276,12 @@ namespace SalesPipeline.Pages.ApproveTargets
 						modal.Add(new()
 						{
 							SaleId = item.Id,
-							StatusId = StatusSaleModel.WaitAssign,
+							StatusId = StatusSaleModel.WaitContact,
 							CreateBy = UserInfo.Id
 						});
 					}
 
-					//ผู้จัดการศูนย์สาขาอนุมัติกลุ่มเป้าหมายจากกิจการสาขาภาค ไปรอมอบหมาย
+					//ผู้จัดการศูนย์สาขาอนุมัติกลุ่มเป้าหมายจากพนักงานสินเชื่อ ไปรอการติดต่อ
 					var response = await _salesViewModel.UpdateStatusOnlyList(modal);
 
 					if (response.Status)
@@ -343,7 +348,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 						modal.Add(new()
 						{
 							SaleId = item.Id,
-							StatusId = StatusSaleModel.NotApproveCenter,
+							StatusId = StatusSaleModel.NotApprove,
 							CreateBy = UserInfo.Id,
 							Description = model.Name
 						});
