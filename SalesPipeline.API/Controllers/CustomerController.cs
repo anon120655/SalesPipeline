@@ -85,6 +85,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// แก้ไขข้อมูลลูกค้า
 		/// </summary>
+		//[AllowAnonymous]
 		[HttpPut("Update")]
 		public async Task<IActionResult> Update(CustomerCustom model)
 		{

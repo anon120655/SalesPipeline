@@ -87,6 +87,17 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var userCenter = await _masterViewModel.GetListCenter(new allFilter() { status = StatusModel.Active, pagesize = 100 });
+			if (userCenter != null && userCenter.Status)
+			{
+				LookUp.AssignmentCenter = userCenter.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = userCenter?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
 			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{

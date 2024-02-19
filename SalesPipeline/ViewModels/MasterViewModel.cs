@@ -111,6 +111,30 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListCenter(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentCenter/GetListCenter", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<AssignmentCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Assignment_RMCustom>>>> GetListRM(allFilter model)
 		{
 			try

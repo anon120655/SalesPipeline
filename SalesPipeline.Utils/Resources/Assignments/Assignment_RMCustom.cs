@@ -25,7 +25,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// <summary>
 		/// ชื่อผู้จัดการศูนย์ที่ดูแล
 		/// </summary>
-		public Guid? AssignmentId { get; set; }
+		public Guid AssignmentId { get; set; }
 
 		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย

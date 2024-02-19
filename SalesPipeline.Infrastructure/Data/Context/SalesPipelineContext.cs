@@ -179,6 +179,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Assignment).WithMany(p => p.Assignment_RMs)
                 .HasForeignKey(d => d.AssignmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("assignment_rm_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_RMs)
@@ -1316,6 +1317,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("User", tb => tb.HasComment("ผู้ใช้งาน"));
 
+            entity.HasIndex(e => e.AssignmentId, "AssignmentId");
+
             entity.HasIndex(e => e.BranchId, "BranchId");
 
             entity.HasIndex(e => e.LevelId, "LevelId");
@@ -1337,6 +1340,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.AmphurName).HasMaxLength(255);
+            entity.Property(e => e.AssignmentId).HasComment("ผู้จัดการศูนย์ที่ดูแล พนักงาน RM");
             entity.Property(e => e.BranchId).HasComment("สาขา");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -1374,6 +1378,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TitleName).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Assignment).WithMany(p => p.Users)
+                .HasForeignKey(d => d.AssignmentId)
+                .HasConstraintName("user_ibfk_8");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Users)
                 .HasForeignKey(d => d.BranchId)

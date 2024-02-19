@@ -130,6 +130,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
 				user.Master_Department_CenterId = model.Master_Department_CenterId;
+				user.AssignmentId = model.AssignmentId;
 				user.ProvinceId = model.ProvinceId;
 				user.ProvinceName = provinceName;
 				user.AmphurId = model.AmphurId;
@@ -145,14 +146,40 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.RoleId.HasValue)
 				{
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
-					if (roleCode != null && roleCode.ToUpper().StartsWith(RoleCodes.RM))
+					if (roleCode != null)
 					{
-						var assignment = await _repo.AssignmentRM.Create(new()
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER) && user.Master_Department_CenterId.HasValue)
 						{
-							UserId = user.Id,
-							EmployeeId = model.EmployeeId,
-							EmployeeName = model.FullName,
-						});
+							var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
+							if (depCenter != null)
+							{
+								var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+								{
+									Code = depCenter.Code,
+									Name = depCenter.Name,
+									UserId = user.Id,
+									EmployeeId = model.EmployeeId,
+									EmployeeName = model.FullName,
+									Tel = model.Tel,
+									RMNumber = 0,
+									CurrentNumber = 0
+								});
+							}
+						}
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
+						{
+							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+							{
+								var assignment = await _repo.AssignmentRM.Create(new()
+								{
+									AssignmentId = model.AssignmentId.Value,
+									UserId = user.Id,
+									EmployeeId = model.EmployeeId,
+									EmployeeName = model.FullName,
+								});
+							}
+						}
 					}
 				}
 
@@ -198,6 +225,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
 					user.Master_Department_CenterId = model.Master_Department_CenterId;
+					user.AssignmentId = model.AssignmentId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
 					user.AmphurId = model.AmphurId;
@@ -207,6 +235,51 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.RoleId = model.RoleId;
 					_db.Update(user);
 					await _db.SaveAsync();
+
+					//RM Role Create Default Assignment
+					if (model.RoleId.HasValue)
+					{
+						var roleCode = await GetRoleCodeById(model.RoleId.Value);
+						if (roleCode != null)
+						{
+							if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER) && user.Master_Department_CenterId.HasValue)
+							{
+								var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
+								if (depCenter != null)
+								{
+									if (!await _repo.AssignmentCenter.CheckAssignmentByUserId(user.Id))
+									{
+										var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+										{
+											Code = depCenter.Code,
+											Name = depCenter.Name,
+											UserId = user.Id,
+											EmployeeId = model.EmployeeId,
+											EmployeeName = model.FullName,
+											Tel = user.Tel,
+											RMNumber = 0,
+											CurrentNumber = 0
+										});
+									}
+								}
+							}
+							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
+							{
+								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+								{
+									var assignment = await _repo.AssignmentRM.Create(new()
+									{
+										AssignmentId = model.AssignmentId.Value,
+										UserId = user.Id,
+										EmployeeId = model.EmployeeId,
+										EmployeeName = model.FullName,
+									});
+
+								}
+							}
+						}
+					}
 
 					_transaction.Commit();
 				}
@@ -544,7 +617,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignments)
-										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.MANAGERCENTER && x.Assignments.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_CenterId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MANAGERCENTER && x.Assignments.Count == 0)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .ToListAsync();
 
@@ -552,40 +625,43 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				foreach (var item_center in usersCenter)
 				{
-					var department_Centers = await _repo.Context.Master_Department_Centers.FirstOrDefaultAsync(x=>x.Id == item_center.Master_Department_CenterId);
-					if (department_Centers != null)
+					if (item_center.Master_Department_CenterId.HasValue)
 					{
+						var depCenter = await _repo.MasterDepCenter.GetById(item_center.Master_Department_CenterId.Value);
+						if (depCenter != null)
+						{
+							int rMNumber = 0;
+							int currentNumber = 0;
 
+							//var usersRM = await _repo.Context.Users.Where(x => x.Status != StatusModel.Delete
+							//&& x.Master_Department_BranchId == depCenter.Master_Department_BranchId
+							//&& x.RoleId == 8).ToListAsync();
+							//if (usersRM.Count > 0)
+							//{
+							//	rMNumber = usersRM.Count;
+
+							//	var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete && usersRM.Select(s => s.Id).Contains(x.UserId)).ToListAsync();
+							//	if (assignment_RM.Count > 0)
+							//	{
+							//		currentNumber = assignment_RM.Sum(x => x.CurrentNumber) ?? 0;
+							//	}
+							//}
+
+							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+							{
+								Code = depCenter.Code,
+								Name = depCenter.Name,
+								UserId = item_center.Id,
+								EmployeeId = item_center.EmployeeId,
+								EmployeeName = item_center.FullName,
+								RMNumber = rMNumber,
+								CurrentNumber = currentNumber
+							});
+						}
 					}
+
 				}
 			}
-
-			//var users = await _repo.Context.Users.Include(x => x.Role)
-			//							   .Include(x => x.Assignments)
-			//							   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignments.Count == 0)
-			//							   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-			//							   .ToListAsync();
-			//if (users.Count > 0)
-			//{
-			//	using (var _transaction = _repo.BeginTransaction())
-			//	{
-			//		foreach (var item in users)
-			//		{
-			//			if (!await _repo.AssignmentRM.CheckAssignmentByUserId(item.Id))
-			//			{
-			//				var assignment = await _repo.AssignmentRM.Create(new()
-			//				{
-			//					UserId = item.Id,
-			//					EmployeeId = item.EmployeeId,
-			//					EmployeeName = item.FullName,
-			//				});
-			//			}
-
-			//		}
-
-			//		_transaction.Commit();
-			//	}
-			//}
 
 		}
 	}

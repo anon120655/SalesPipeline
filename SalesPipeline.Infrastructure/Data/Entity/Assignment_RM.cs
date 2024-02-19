@@ -20,7 +20,7 @@ public partial class Assignment_RM
     /// <summary>
     /// ชื่อผู้จัดการศูนย์ที่ดูแล
     /// </summary>
-    public Guid? AssignmentId { get; set; }
+    public Guid AssignmentId { get; set; }
 
     /// <summary>
     /// พนักงานที่ได้รับมอบหมาย
@@ -42,7 +42,7 @@ public partial class Assignment_RM
     /// </summary>
     public int? CurrentNumber { get; set; }
 
-    public virtual Assignment? Assignment { get; set; }
+    public virtual Assignment Assignment { get; set; } = null!;
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 

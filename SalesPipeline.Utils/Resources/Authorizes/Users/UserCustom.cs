@@ -76,6 +76,12 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public Guid? Master_Department_CenterId { get; set; }
 
 		/// <summary>
+		/// ผู้จัดการศูนย์ที่ดูแล พนักงาน RM
+		/// </summary>
+		[UserAtt(FieldName = "AssignmentId")]
+		public Guid? AssignmentId { get; set; }
+
+		/// <summary>
 		/// จังหวัด
 		/// </summary>
 		[UserAtt( FieldName = "ProvinceId")]

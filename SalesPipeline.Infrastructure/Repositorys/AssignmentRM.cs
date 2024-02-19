@@ -41,12 +41,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_RM = new Data.Entity.Assignment_RM();
 			assignment_RM.Status = StatusModel.Active;
 			assignment_RM.CreateDate = DateTime.Now;
+			assignment_RM.AssignmentId = model.AssignmentId;
 			assignment_RM.UserId = model.UserId;
 			assignment_RM.EmployeeId = model.EmployeeId;
 			assignment_RM.EmployeeName = model.EmployeeName;
 			assignment_RM.CurrentNumber = model.CurrentNumber ?? 0;
 			await _db.InsterAsync(assignment_RM);
 			await _db.SaveAsync();
+
+			//**** update ผู้จัดการศูนย์
+			await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId);
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
@@ -116,15 +120,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					assignment_RMs.CurrentNumber = currentNumber;
 					_db.Update(assignment_RMs);
 					await _db.SaveAsync();
+
+					//**** update ผู้จัดการศูนย์
+					await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.AssignmentId);
+
 				}
-				//**** ต้อง update ผู้จัดการศูนย์ด้วย
-				//var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
-				//if (assignments != null)
-				//{
-				//	assignments.CurrentNumber = currentNumber;
-				//	_db.Update(assignments);
-				//	await _db.SaveAsync();
-				//}
 			}
 		}
 
@@ -361,5 +361,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public async Task CreateAssignmentRMAll(allFilter model)
+		{
+			//var users = await _repo.Context.Users.Include(x => x.Role)
+			//							   .Include(x => x.Assignments)
+			//							   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignments.Count == 0)
+			//							   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+			//							   .ToListAsync();
+			//if (users.Count > 0)
+			//{
+			//	using (var _transaction = _repo.BeginTransaction())
+			//	{
+			//		foreach (var item in users)
+			//		{
+			//			if (!await _repo.AssignmentRM.CheckAssignmentByUserId(item.Id))
+			//			{
+			//				var assignment = await _repo.AssignmentRM.Create(new()
+			//				{
+			//					UserId = item.Id,
+			//					EmployeeId = item.EmployeeId,
+			//					EmployeeName = item.FullName,
+			//				});
+			//			}
+
+			//		}
+
+			//		_transaction.Commit();
+			//	}
+			//}
+
+		}
 	}
 }
