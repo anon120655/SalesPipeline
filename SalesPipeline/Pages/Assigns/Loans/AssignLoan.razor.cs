@@ -99,17 +99,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			if (UserInfo.RoleCode != null)
 			{
-				if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
-				{
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
-				{
-				}
-				else if (UserInfo.RoleCode == RoleCodes.MANAGERCENTER)
-				{
-					filter.assigncenter = UserInfo.Id;
-				}
-				else if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				filter.assigncenter = UserInfo.Id;
+
+				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
 				{
 					filter.assigncenter = null;
 					filter.assignrm = null;

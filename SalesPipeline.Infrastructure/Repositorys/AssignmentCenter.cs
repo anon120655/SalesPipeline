@@ -34,6 +34,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
 		}
 
+		public async Task<AssignmentCustom> GetById(Guid id)
+		{
+			var query = await _repo.Context.Assignments
+				.Where(x => x.Id == id)
+				.Include(x => x.User).ThenInclude(x=>x.Master_Department_Center)
+				.FirstOrDefaultAsync();
+			return _mapper.Map<AssignmentCustom>(query);
+		}
+
 		public async Task<AssignmentCustom> GetByUserId(int id)
 		{
 			var query = await _repo.Context.Assignments

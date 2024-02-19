@@ -11,6 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IAssignmentCenter
 	{
 		Task<bool> CheckAssignmentByUserId(int id);
+		Task<AssignmentCustom> GetById(Guid id);
 		Task<AssignmentCustom> GetByUserId(int id);
 		Task<AssignmentCustom> Create(AssignmentCustom model);
 		Task<PaginationView<List<AssignmentCustom>>> GetListCenter(allFilter model);

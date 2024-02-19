@@ -49,6 +49,7 @@ builder.Services.AddScoped<ProcessSaleViewModel>();
 builder.Services.AddScoped<UserViewModel>();
 builder.Services.AddScoped<CustomerViewModel>();
 builder.Services.AddScoped<SalesViewModel>();
+builder.Services.AddScoped<AssignmentCenterViewModel>();
 builder.Services.AddScoped<AssignmentRMViewModel>();
 builder.Services.AddScoped<SystemViewModel>();
 

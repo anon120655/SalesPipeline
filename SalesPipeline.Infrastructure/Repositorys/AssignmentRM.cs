@@ -84,7 +84,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<bool> CheckAssignmentSaleById(Guid id)
 		{
-			return await _repo.Context.Assignment_RM_Sales.AnyAsync(x => x.AssignmentRMId == id);
+			return await _repo.Context.Assignment_RM_Sales.AnyAsync(x => x.SaleId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active);
 		}
 
 		public async Task<Assignment_RMCustom> GetById(Guid id)
@@ -99,6 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Assignment_RMCustom> GetByUserId(int id)
 		{
 			var query = await _repo.Context.Assignment_RMs
+				.Include(x => x.Assignment)
 				.Include(x => x.Assignment_RM_Sales)
 				.Include(x => x.User)
 				.Where(x => x.UserId == id).FirstOrDefaultAsync();
@@ -138,13 +139,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
 			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
 
-			Guid? assignmentId = null;
+			Guid? assignmentCenterId = null;
+			int? assignmentCenterUserId = null;
 			if (model.assigncenter.HasValue)
 			{
 				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
 				if (assignments != null)
 				{
-					assignmentId = assignments.Id;
+					assignmentCenterId = assignments.Id;
+					assignmentCenterUserId = assignments.UserId;
 				}
 			}
 
@@ -154,9 +157,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			if (assignmentId.HasValue)
+			if (assignmentCenterId.HasValue)
 			{
-				query = query.Where(x=>x.AssignmentId == assignmentId);
+				query = query.Where(x => x.AssignmentId == assignmentCenterId);
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -186,11 +189,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			List<Assignment_RMCustom> responseItems = new();
 
 			//ลูกค้าที่ยังไม่ถูกมอบหมาย
-			var salesCustomer = await _repo.Context.Sales
+			var salesQuery = _repo.Context.Sales
 				.Include(x => x.Customer)
 				.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-				.ToListAsync();
+				.AsQueryable();
+
+			if (assignmentCenterUserId.HasValue)
+			{
+				salesQuery = salesQuery.Where(x => x.AssignedCenterUserId == assignmentCenterUserId.Value);
+			}
+
+			var salesCustomer = await salesQuery.ToListAsync();
 
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
@@ -206,8 +216,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var assignment_RM = _mapper.Map<Assignment_RMCustom>(userAssignment[index_path]);
 						assignment_RM.Assignment_RM_Sales = new();
 						assignment_RM.Tel = assignment_RM.User?.Tel;
-						assignment_RM.ProvinceName = assignment_RM.User?.Branch?.Name;
-						assignment_RM.AmphurName = "-";
+						assignment_RM.ProvinceName = assignment_RM.User?.ProvinceName;
+						assignment_RM.AmphurName = assignment_RM.User?.AmphurName;
 
 						foreach (var item_sales in item_path)
 						{
@@ -241,8 +251,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListRM(allFilter model)
 		{
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x => x.User)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
+
+			if (model.assigncenter.HasValue)
+			{
+				var assignment = await _repo.AssignmentCenter.GetByUserId(model.assigncenter.Value);
+				if (assignment != null)
+				{
+					query = query.Where(x => x.AssignmentId == assignment.Id);
+				}
+			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{

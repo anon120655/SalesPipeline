@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,5 +56,6 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public int? CurrentNumber { get; set; }
 
 		public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
+		public virtual UserCustom? User { get; set; }
 	}
 }

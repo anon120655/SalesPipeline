@@ -179,6 +179,7 @@ namespace SalesPipeline.API.Controllers
 				//if (check != "$2a$11$GSuWBf34jTzwRsn3pvQnh.BSk6TGAfuYsRSzOn1ZE7CkZrF5EeNKq") throw new ExceptionCustom("not permission");
 				if (check != "9999") throw new ExceptionCustom("not permission");
 
+
 				var contactChannel = new List<Guid>();
 				var businessType = new List<Guid>();
 				var businessSize = new List<Guid>();
@@ -234,12 +235,30 @@ namespace SalesPipeline.API.Controllers
 					{
 						currentUserId = 13;
 						employeeName = $"RM_{provinceId}_{i} ทดสอบ";
+
+						var checkAssignmentRM = await _repo.AssignmentRM.CheckAssignmentByUserId(currentUserId);
+						if (!checkAssignmentRM)
+						{
+							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
+						}
 					}
 					else if (rolecode == RoleCodes.MANAGERCENTER)
 					{
-						currentUserId = 11;
+						currentUserId = 12;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssign;
+
+						if (!assignedCenterUserId.HasValue)
+						{
+							throw new ExceptionCustom($"ไม่พบข้อมูล assignedCenterUserId");
+						}
+						currentUserId = assignedCenterUserId.Value;
+
+						var checkAssignmentCenter = await _repo.AssignmentCenter.CheckAssignmentByUserId(currentUserId);
+						if (!checkAssignmentCenter)
+						{
+							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentCenter currentUserId={currentUserId}");
+						}
 					}
 					else if (rolecode == RoleCodes.LOAN)
 					{
@@ -254,7 +273,19 @@ namespace SalesPipeline.API.Controllers
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
 					}
 
-					if ((rolecode == RoleCodes.RM || rolecode == RoleCodes.MANAGERCENTER) && assignedCenterUserId.HasValue)
+					if (rolecode == RoleCodes.RM)
+					{
+						var assignmentRM = await _repo.AssignmentRM.GetByUserId(currentUserId);
+						if (assignmentRM == null || assignmentRM.Assignment == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
+
+						modelSale = new()
+						{
+							AssignedUserId = currentUserId,
+							AssignedCenterUserId = assignmentRM.Assignment.UserId
+						};
+					}
+
+					if (rolecode == RoleCodes.MANAGERCENTER && assignedCenterUserId.HasValue)
 					{
 						modelSale = new()
 						{
@@ -357,7 +388,7 @@ namespace SalesPipeline.API.Controllers
 					}, modelSale);
 				}
 
-				await _repo.User.CreateAssignmentAll(new());
+				//await _repo.User.CreateAssignmentAll(new());
 
 				return Ok();
 			}

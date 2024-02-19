@@ -55,8 +55,8 @@
 													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
 													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
 													<td class="text-center">@formModel.CompanyName</td>
-													<td class="text-center">-</td>
-													<td class="text-center">-</td>
+													<td class="text-center">@formModel.Customer?.ProvinceName</td>
+													<td class="text-center">@formModel.Customer?.AmphurName</td>
 													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
 													<td class="text-center">@formModel.AssignedUserName</td>
 												</tr>
@@ -164,9 +164,9 @@
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
-														<td class="text-center">@item.Tel</td>
-														<td class="text-center">@item.ProvinceName</td>
-														<td class="text-center">@item.AmphurName</td>
+														<td class="text-center">@item.User?.Tel</td>
+														<td class="text-center">@item.User?.ProvinceName</td>
+														<td class="text-center">@item.User?.AmphurName</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">
@@ -249,8 +249,8 @@
 													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
 													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
 													<td class="text-center">@formModel.CompanyName</td>
-													<td class="text-center">-</td>
-													<td class="text-center">-</td>
+													<td class="text-center">@formModel.Customer?.ProvinceName</td>
+													<td class="text-center">@formModel.Customer?.AmphurName</td>
 													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
 													<td class="text-center">@formModel.AssignedUserName</td>
 												</tr>
@@ -262,7 +262,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">เลือกผู้รับผิดชอบเดิม</h5>
+								<h5 class="fw-bold">ผู้รับผิดชอบเดิม</h5>
 							</div>
 						</div>
 						<div class="row">
@@ -294,9 +294,9 @@
 												<tr>
 													<td class="text-center">@_itemsOriginal.EmployeeId</td>
 													<td class="text-center">@_itemsOriginal.EmployeeName</td>
-													<td class="text-center">@_itemsOriginal.Tel</td>
-													<td class="text-center">@_itemsOriginal.ProvinceName</td>
-													<td class="text-center">@_itemsOriginal.AmphurName</td>
+													<td class="text-center">@_itemsOriginal.User?.Tel</td>
+													<td class="text-center">@_itemsOriginal.User?.ProvinceName</td>
+													<td class="text-center">@_itemsOriginal.User?.AmphurName</td>
 													<td class="text-center">@(_itemsOriginal.CurrentNumber)/100</td>
 													<td class="text-center">@(_itemsOriginal.CurrentNumber - 1)/100</td>
 												</tr>
@@ -308,7 +308,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">เลือกผู้รับผิดชอบใหม่</h5>
+								<h5 class="fw-bold">ผู้รับผิดชอบใหม่</h5>
 							</div>
 						</div>
 						<div class="row">
@@ -340,9 +340,9 @@
 												<tr>
 													<td class="text-center">@_itemsNew.EmployeeId</td>
 													<td class="text-center">@_itemsNew.EmployeeName</td>
-													<td class="text-center">@_itemsNew.Tel</td>
-													<td class="text-center">@_itemsNew.ProvinceName</td>
-													<td class="text-center">@_itemsNew.AmphurName</td>
+													<td class="text-center">@_itemsNew.User?.Tel</td>
+													<td class="text-center">@_itemsNew.User?.ProvinceName</td>
+													<td class="text-center">@_itemsNew.User?.AmphurName</td>
 													<td class="text-center">@(_itemsNew.CurrentNumber)/100</td>
 													<td class="text-center">@(_itemsNew.CurrentNumber + 1)/100</td>
 												</tr>

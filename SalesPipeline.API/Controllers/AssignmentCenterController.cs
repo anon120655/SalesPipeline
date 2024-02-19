@@ -27,6 +27,20 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.AssignmentCenter.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[AllowAnonymous]
 		[HttpPost("GetListCenter")]
 		public async Task<IActionResult> GetListCenter(allFilter model)

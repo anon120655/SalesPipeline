@@ -78,7 +78,7 @@
 										{
 											@* ป้องกันกรณีได้รับ role นั้นๆ แล้วมีการมอบหมายหน้าที่ต่างๆ ไว้แล้ว **ต้องเช็คเพิ่มว่าถ้ามีการมอบหมายต้องแก้ไขไม่ได้ *@
 											var roleCustom = ItemsUserRole.FirstOrDefault(x => x.Id == formModel.RoleId);
-											<input type="text" class="form-control" value="@roleCustom?.Name" disabled>
+											<input type="text" readonly class="form-control-plaintext" value="@roleCustom?.Name">
 										}
 										else
 										{
@@ -112,10 +112,10 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(formModel.RoleId != 8 ? "d-none":"" )">
+								<div class="row mb-3 @(formModel.RoleId == 8 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ผู้จัดการศูนย์ที่ดูแล<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.AssignmentId" class="selectpickerdefault">
+										<select @bind="formModel.AssignmentId" id="Assignment" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.AssignmentCenter?.Count > 0)
 											{
@@ -128,7 +128,7 @@
 										<ValidationMessage For="@(() => formModel.AssignmentId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(formModel.RoleId != 7 ? "d-none":"" )">
+								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.Master_Department_CenterId" class="selectpickerdefault">
@@ -144,7 +144,15 @@
 										<ValidationMessage For="@(() => formModel.Master_Department_CenterId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+
+								<div class="row mb-3 @(formModel.RoleId == 7 || formModel.RoleId == 8 ? "":"d-none" )">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขาที่ดูแล</label>
+									<div class="col-sm-4">
+										<input type="text" readonly class="form-control-plaintext" value="@department_BranchName">
+									</div>
+								</div>
+
+								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 || formModel.RoleId == 8 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">

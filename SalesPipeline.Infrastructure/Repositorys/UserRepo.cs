@@ -61,9 +61,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
 					{
 						model.Master_Department_CenterId = null;
+						model.AssignmentId = null;
 					}
 					else if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER))
 					{
+						model.AssignmentId = null;
 						model.LevelId = null;
 						model.Master_Department_BranchId = null;
 						model.ProvinceId = null;
@@ -72,6 +74,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 					{
 						model.LevelId = null;
+						model.Master_Department_BranchId = null;
 						model.Master_Department_CenterId = null;
 					}
 				}
@@ -647,16 +650,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							//	}
 							//}
 
-							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-							{
-								Code = depCenter.Code,
-								Name = depCenter.Name,
-								UserId = item_center.Id,
-								EmployeeId = item_center.EmployeeId,
-								EmployeeName = item_center.FullName,
-								RMNumber = rMNumber,
-								CurrentNumber = currentNumber
-							});
+							//var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+							//{
+							//	Code = depCenter.Code,
+							//	Name = depCenter.Name,
+							//	UserId = item_center.Id,
+							//	EmployeeId = item_center.EmployeeId,
+							//	EmployeeName = item_center.FullName,
+							//	RMNumber = rMNumber,
+							//	CurrentNumber = currentNumber
+							//});
 						}
 					}
 

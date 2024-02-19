@@ -98,6 +98,16 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		protected async Task SetModelAssigned()
 		{
+			if (UserInfo.RoleCode != null)
+			{
+				filter.assigncenter = UserInfo.Id;
+				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				{
+					filter.assigncenter = null;
+					filter.assignrm = null;
+				}
+			}
+
 			filter.pagesize = 100;
 			var data = await _assignmentRMViewModel.GetListRM(filter);
 			if (data != null && data.Status)

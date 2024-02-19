@@ -21,6 +21,7 @@ namespace SalesPipeline.Pages.Users.User
 		private LookUpResource LookUp = new();
 		private List<User_RoleCustom>? ItemsUserRole;
 		private UserCustom formModel = new();
+		private string? department_BranchName = null;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -111,6 +112,7 @@ namespace SalesPipeline.Pages.Users.User
 
 			StateHasChanged();
 			await Task.Delay(1);
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepartmentBranch", "#DepartmentBranch");
 
 			await Task.Delay(1);
@@ -147,19 +149,39 @@ namespace SalesPipeline.Pages.Users.User
 
 		protected async Task SetAddress()
 		{
+			Guid? department_BranchId = null;
+			department_BranchName = null;
+
 			if (formModel.Master_Department_BranchId.HasValue)
+			{
+				department_BranchId = formModel.Master_Department_BranchId.Value;
+			}
+			else if (formModel.AssignmentId.HasValue) //RM
+			{
+				var dataassignmentCenter = await _assignmentCenterViewModel.GetById(formModel.AssignmentId.Value);
+				if (dataassignmentCenter != null && dataassignmentCenter.Status)
+				{
+					if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
+					{
+						department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
+						department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
+					}
+				}
+			}
+
+			if (department_BranchId.HasValue)
 			{
 				LookUp.Provinces = new();
 				StateHasChanged();
 				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Province");
 
-				var dataProvince = await _masterViewModel.GetProvince(formModel.Master_Department_BranchId);
+				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
 				if (dataProvince != null && dataProvince.Status)
 				{
 					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
 					{
-						LookUp.Provinces = new () { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
@@ -195,6 +217,7 @@ namespace SalesPipeline.Pages.Users.User
 			await SetInitManual();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
+		
 		protected async Task OnInvalidSubmit()
 		{
 			await Task.Delay(100);
@@ -288,6 +311,62 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
+		public async Task OnAssignment(string _id, string _name)
+		{
+			formModel.AssignmentId = null;
+			formModel.ProvinceId = null;
+			formModel.AmphurId = null;
+			LookUp.Provinces = new();
+			LookUp.Amphurs = new();
+			department_BranchName = null;
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+
+			if (_id != null && Guid.TryParse(_id, out Guid assignmentid))
+			{
+				formModel.AssignmentId = assignmentid;
+				StateHasChanged();
+
+				var dataassignmentCenter = await _assignmentCenterViewModel.GetById(assignmentid);
+				if (dataassignmentCenter != null && dataassignmentCenter.Status)
+				{
+					if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
+					{
+						var department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
+						department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
+
+						var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+						if (dataProvince != null && dataProvince.Status)
+						{
+							if (dataProvince.Data != null && dataProvince.Data.Count > 0)
+							{
+								LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+								LookUp.Provinces.AddRange(dataProvince.Data);
+								StateHasChanged();
+								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+								await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
+								await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+							}
+						}
+						else
+						{
+							_errorMessage = dataProvince?.errorMessage;
+							_utilsViewModel.AlertWarning(_errorMessage);
+						}
+					}
+				}
+				else
+				{
+					_errorMessage = dataassignmentCenter?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+			}
+		}
+
+		[JSInvokable]
 		public async Task OnDepartmentBranch(string _id, string _name)
 		{
 			formModel.ProvinceId = null;
@@ -349,6 +428,11 @@ namespace SalesPipeline.Pages.Users.User
 			}
 		}
 
+		[JSInvokable]
+		public async Task AmphurChange(string _provinceID, string _provinceName)
+		{
+			await Task.Delay(100);
+		}
 
 
 

@@ -180,7 +180,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
 						}
 
-						if (!await _repo.AssignmentRM.CheckAssignmentSaleById(assignment.Id))
+						if (!await _repo.AssignmentRM.CheckAssignmentSaleById(sales.Id))
 						{
 							var assignmentSale = await _repo.AssignmentRM.CreateSale(new()
 							{
@@ -214,7 +214,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			string? roleCode = null;
 			if (model.assigncenter.HasValue)
 			{
-				roleCode = await _repo.User.GetRoleCodeById(model.assigncenter.Value);
+				var roleList = await _repo.User.GetRoleByUserId(model.assigncenter.Value);
+				if (roleList != null)
+				{
+					roleCode = roleList.Code;
+				}
 			}
 
 			if (roleCode != null && roleCode.ToUpper().StartsWith(RoleCodes.RM))

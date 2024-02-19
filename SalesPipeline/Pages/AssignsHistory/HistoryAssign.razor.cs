@@ -75,6 +75,16 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		protected async Task SetModel()
 		{
+			if (UserInfo.RoleCode != null)
+			{
+				filter.assigncenter = UserInfo.Id;
+				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				{
+					filter.assigncenter = null;
+					filter.assignrm = null;
+				}
+			}
+
 			filter.statussaleid = StatusSaleModel.WaitContact;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
