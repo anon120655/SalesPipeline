@@ -131,7 +131,7 @@
 								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @onchange="((e) => OnDepartment_Center(e.Value))" class="selectpickerdefault">
+										<select @onchange="((e) => OnDepartment_Center(e.Value))" class="selectpickerdefault" value="@formModel.Master_Department_CenterId">
 											<option value="">เลือก</option>
 											@if (LookUp.DepartmentCenter?.Count > 0)
 											{

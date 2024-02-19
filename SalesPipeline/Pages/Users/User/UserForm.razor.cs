@@ -152,7 +152,7 @@ namespace SalesPipeline.Pages.Users.User
 			Guid? department_BranchId = null;
 			department_BranchName = null;
 
-			if (formModel.Master_Department_BranchId.HasValue)
+			if (formModel.Master_Department_BranchId.HasValue && !formModel.AssignmentId.HasValue)
 			{
 				department_BranchId = formModel.Master_Department_BranchId.Value;
 			}
@@ -317,14 +317,21 @@ namespace SalesPipeline.Pages.Users.User
 
 		protected void OnDepartment_Center(object? val)
 		{
+			department_BranchName = null;
 			formModel.Master_Department_CenterId = null;
+			formModel.Master_Department_BranchId = null;
 			StateHasChanged();
 
 			if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
 			{
 				formModel.Master_Department_CenterId = department_CenterId;
-				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
-				StateHasChanged();
+				var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
+				if (departmentCenter != null)
+				{
+					department_BranchName = departmentCenter.Master_Department_BranchName;
+					formModel.Master_Department_BranchId = departmentCenter.Master_Department_BranchId;
+					StateHasChanged();
+				}
 			}
 		}
 
@@ -332,6 +339,8 @@ namespace SalesPipeline.Pages.Users.User
 		public async Task OnAssignment(string _id, string _name)
 		{
 			formModel.AssignmentId = null;
+			formModel.Master_Department_CenterId = null;
+			formModel.Master_Department_BranchId = null;
 			formModel.ProvinceId = null;
 			formModel.AmphurId = null;
 			LookUp.Provinces = new();
@@ -352,10 +361,11 @@ namespace SalesPipeline.Pages.Users.User
 				{
 					if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
 					{
-						var department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
+						formModel.Master_Department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
+						formModel.Master_Department_CenterId = dataassignmentCenter.Data.User.Master_Department_Center.Id;
 						department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
 
-						var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+						var dataProvince = await _masterViewModel.GetProvince(formModel.Master_Department_BranchId);
 						if (dataProvince != null && dataProvince.Status)
 						{
 							if (dataProvince.Data != null && dataProvince.Data.Count > 0)
