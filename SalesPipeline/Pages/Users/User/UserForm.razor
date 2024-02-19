@@ -74,16 +74,25 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @onchange="((e) => OnRoles(e.Value,null))" class="selectpickerdefault" value="@formModel.RoleId">
-											<option value="">เลือก</option>
-											@if (ItemsUserRole?.Count > 0)
-											{
-												foreach (var item in ItemsUserRole)
+										@if (formModel.Id > 0 && ItemsUserRole?.Count > 0)
+										{
+											@* ป้องกันกรณีได้รับ role นั้นๆ แล้วมีการมอบหมายหน้าที่ต่างๆ ไว้แล้ว **ต้องเช็คเพิ่มว่าถ้ามีการมอบหมายต้องแก้ไขไม่ได้ *@
+											var roleCustom = ItemsUserRole.FirstOrDefault(x => x.Id == formModel.RoleId);
+											<input type="text" class="form-control" value="@roleCustom?.Name" disabled>
+										}
+										else
+										{
+											<select @onchange="((e) => OnRoles(e.Value,null))" class="selectpickerdefault" value="@formModel.RoleId">
+												<option value="">เลือก</option>
+												@if (ItemsUserRole?.Count > 0)
 												{
-													<option value="@item.Id">@item.Name</option>
+													foreach (var item in ItemsUserRole)
+													{
+														<option value="@item.Id">@item.Name</option>
+													}
 												}
-											}
-										</select>
+											</select>
+										}
 										<ValidationMessage For="@(() => formModel.RoleId)" />
 									</div>
 								</div>
