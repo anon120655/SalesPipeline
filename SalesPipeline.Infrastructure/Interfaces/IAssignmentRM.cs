@@ -12,7 +12,12 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Assignment_RM_SaleCustom> CreateSale(Assignment_RM_SaleCustom model);
 		Task<bool> CheckAssignmentByUserId(int id);
 		Task<bool> CheckAssignmentSaleById(Guid id);
-		Task<Assignment_RMCustom> GetAssignmentOnlyByUserId(int id);
+		/// <summary>
+		/// ใช้กรณีดึงไปเช็คก่อน update เพราะถ้าดึง GetByUserId ปกติจะมีการ join ทำให้บางฟิลด์ไม่ update
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		Task<bool> GetAssignmentOnlyByUserId(int id);
 		Task<Assignment_RMCustom> GetById(Guid id);
 		Task<Assignment_RMCustom> GetByUserId(int id);
 		Task UpdateCurrentNumber(Guid id);

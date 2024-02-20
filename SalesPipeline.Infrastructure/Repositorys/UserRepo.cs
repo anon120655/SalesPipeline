@@ -246,6 +246,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								{
 									throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
 								}
+								else
+								{
+									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssignedUserId == model.Id);
+									if (salesCount > 0)
+									{
+										throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
+									}
+								}
 							}
 						}
 					}
@@ -317,8 +325,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								EmployeeName = model.FullName
 							};
 
-							var checkAssignment = await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id);
-							if (checkAssignment == null)
+							if (!await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id))
 							{
 								await _repo.AssignmentRM.Create(assignmentRMModel);
 							}

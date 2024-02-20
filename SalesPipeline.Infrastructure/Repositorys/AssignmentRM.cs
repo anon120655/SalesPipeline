@@ -117,10 +117,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		//ใช้กรณีดึงไปเช็คก่อน update เพราะถ้าดึง GetByUserId ปกติจะมีการ join ทำให้บางฟิลด์ไม่ update
-		public async Task<Assignment_RMCustom> GetAssignmentOnlyByUserId(int id)
+		public async Task<bool> GetAssignmentOnlyByUserId(int id)
 		{
-			var query = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.UserId == id);
-			return _mapper.Map<Assignment_RMCustom>(query);
+			return await _repo.Context.Assignment_RMs.AnyAsync(x => x.UserId == id);
 		}
 
 		public async Task<Assignment_RMCustom> GetById(Guid id)
