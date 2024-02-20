@@ -8,6 +8,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -281,19 +282,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
 							if (depCenter != null)
 							{
-								if (!await _repo.AssignmentCenter.CheckAssignmentByUserId(user.Id))
+								AssignmentCustom assignmentCenterModel = new()
 								{
-									var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-									{
-										Code = depCenter.Code,
-										Name = depCenter.Name,
-										UserId = user.Id,
-										EmployeeId = model.EmployeeId,
-										EmployeeName = model.FullName,
-										Tel = user.Tel,
-										RMNumber = 0,
-										CurrentNumber = 0
-									});
+									Code = depCenter.Code,
+									Name = depCenter.Name,
+									UserId = user.Id,
+									EmployeeId = model.EmployeeId,
+									EmployeeName = model.FullName,
+									Tel = user.Tel,
+									RMNumber = 0,
+									CurrentNumber = 0
+								};
+
+								var checkAssignment = await _repo.AssignmentCenter.GetByUserId(user.Id);
+								if (checkAssignment == null)
+								{
+									var assignmentCenter = await _repo.AssignmentCenter.Create(assignmentCenterModel);
+								}
+								else
+								{
+									assignmentCenterModel.Id = checkAssignment.Id;
+									var assignmentCenter = await _repo.AssignmentCenter.Update(assignmentCenterModel);
 								}
 							}
 						}
