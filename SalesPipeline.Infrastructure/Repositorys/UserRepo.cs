@@ -297,28 +297,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								var checkAssignment = await _repo.AssignmentCenter.GetByUserId(user.Id);
 								if (checkAssignment == null)
 								{
-									var assignmentCenter = await _repo.AssignmentCenter.Create(assignmentCenterModel);
+									await _repo.AssignmentCenter.Create(assignmentCenterModel);
 								}
 								else
 								{
 									assignmentCenterModel.Id = checkAssignment.Id;
-									var assignmentCenter = await _repo.AssignmentCenter.Update(assignmentCenterModel);
+									await _repo.AssignmentCenter.Update(assignmentCenterModel);
 								}
 							}
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
 						{
 							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+							Assignment_RMCustom assignmentRMModel = new()
 							{
-								var assignment = await _repo.AssignmentRM.Create(new()
-								{
-									AssignmentId = model.AssignmentId.Value,
-									UserId = user.Id,
-									EmployeeId = model.EmployeeId,
-									EmployeeName = model.FullName,
-								});
+								AssignmentId = model.AssignmentId.Value,
+								UserId = user.Id,
+								EmployeeId = model.EmployeeId,
+								EmployeeName = model.FullName
+							};
 
+							var checkAssignment = await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id);
+							if (checkAssignment == null)
+							{
+								await _repo.AssignmentRM.Create(assignmentRMModel);
+							}
+							else
+							{
+								await _repo.AssignmentRM.Update(assignmentRMModel);
 							}
 						}
 					}

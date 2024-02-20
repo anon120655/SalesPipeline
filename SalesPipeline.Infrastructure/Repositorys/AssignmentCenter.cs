@@ -39,7 +39,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Assignments
 				.Where(x => x.Id == id)
-				.Include(x => x.User).ThenInclude(x=>x.Master_Department_Center)
+				.Include(x => x.User).ThenInclude(x => x.Master_Department_Center)
 				.FirstOrDefaultAsync();
 			return _mapper.Map<AssignmentCustom>(query);
 		}
@@ -89,8 +89,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				assignment.EmployeeId = model.EmployeeId;
 				assignment.EmployeeName = model.EmployeeName;
 				assignment.Tel = model.Tel;
-				assignment.RMNumber = model.RMNumber ?? 0;
-				assignment.CurrentNumber = model.CurrentNumber ?? 0;
 				_db.Update(assignment);
 				await _db.SaveAsync();
 			}
@@ -139,17 +137,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_RMs = await _repo.Context.Assignment_RMs
 											  .Where(x => x.AssignmentId == id && x.Status == StatusModel.Active)
 											  .ToListAsync();
-			if (assignment_RMs.Count > 0)
+
+			int countRm = assignment_RMs.Count;
+
+			var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
+			if (assignments != null)
 			{
-				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
-				if (assignments != null)
-				{
-					assignments.RMNumber = assignment_RMs.Count;
-					assignments.CurrentNumber = assignment_RMs.Sum(x=>x.CurrentNumber);
-					_db.Update(assignments);
-					await _db.SaveAsync();
-				}
+				assignments.RMNumber = countRm;
+				assignments.CurrentNumber = assignment_RMs.Sum(x => x.CurrentNumber);
+				_db.Update(assignments);
+				await _db.SaveAsync();
 			}
+
 		}
 
 		public async Task CreateAssignmentCenterAll(allFilter model)

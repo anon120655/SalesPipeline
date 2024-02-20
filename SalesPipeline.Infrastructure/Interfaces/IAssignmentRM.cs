@@ -8,9 +8,11 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IAssignmentRM
 	{
 		Task<Assignment_RMCustom> Create(Assignment_RMCustom model);
+		Task<Assignment_RMCustom> Update(Assignment_RMCustom model);
 		Task<Assignment_RM_SaleCustom> CreateSale(Assignment_RM_SaleCustom model);
 		Task<bool> CheckAssignmentByUserId(int id);
 		Task<bool> CheckAssignmentSaleById(Guid id);
+		Task<Assignment_RMCustom> GetAssignmentOnlyByUserId(int id);
 		Task<Assignment_RMCustom> GetById(Guid id);
 		Task<Assignment_RMCustom> GetByUserId(int id);
 		Task UpdateCurrentNumber(Guid id);

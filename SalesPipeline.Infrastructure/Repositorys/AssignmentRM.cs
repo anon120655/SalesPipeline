@@ -10,6 +10,7 @@ using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -55,6 +56,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
 
+		public async Task<Assignment_RMCustom> Update(Assignment_RMCustom model)
+		{
+			Guid? assignmentIdOriginal = null;
+			var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
+			if (assignment_RM != null)
+			{
+				if (assignment_RM.AssignmentId != model.AssignmentId)
+				{
+					assignmentIdOriginal = assignment_RM.AssignmentId;
+				}
+				assignment_RM.AssignmentId = model.AssignmentId;
+				//assignment_RM.UserId = model.UserId;
+				assignment_RM.EmployeeId = model.EmployeeId;
+				assignment_RM.EmployeeName = model.EmployeeName;
+				_db.Update(assignment_RM);
+				await _db.SaveAsync();
+			}
+
+			//**** มีการเปลี่ยนศูนย์ที่รับผิดชอบ  update ผู้จัดการศูนย์ 
+			if (assignmentIdOriginal.HasValue)
+			{
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId);
+				await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentIdOriginal.Value);
+			}
+
+			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
+		}
+
 		public async Task<Assignment_RM_SaleCustom> CreateSale(Assignment_RM_SaleCustom model)
 		{
 			if (string.IsNullOrEmpty(model.CreateByName))
@@ -85,6 +114,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<bool> CheckAssignmentSaleById(Guid id)
 		{
 			return await _repo.Context.Assignment_RM_Sales.AnyAsync(x => x.SaleId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active);
+		}
+
+		//ใช้กรณีดึงไปเช็คก่อน update เพราะถ้าดึง GetByUserId ปกติจะมีการ join ทำให้บางฟิลด์ไม่ update
+		public async Task<Assignment_RMCustom> GetAssignmentOnlyByUserId(int id)
+		{
+			var query = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.UserId == id);
+			return _mapper.Map<Assignment_RMCustom>(query);
 		}
 
 		public async Task<Assignment_RMCustom> GetById(Guid id)
@@ -411,5 +447,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//}
 
 		}
+
 	}
 }

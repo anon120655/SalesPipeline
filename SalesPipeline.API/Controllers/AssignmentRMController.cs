@@ -101,5 +101,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost("Update")]
+		public async Task<IActionResult> Update(Assignment_RMCustom model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentRM.Update(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
