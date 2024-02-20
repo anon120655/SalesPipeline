@@ -997,7 +997,7 @@
 
 	.alertify-notifier .ajs-message {
 		position: relative;
-		width: 260px;
+		width: 25rem;
 		max-height: 0;
 		padding: 0;
 		opacity: 0;
@@ -1009,6 +1009,7 @@
 		-webkit-transition-timing-function: linear;
 		transition-timing-function: linear;
 		border-radius: 0.6rem;
+		text-align: center;
 	}
 
 		.alertify-notifier .ajs-message.ajs-visible {

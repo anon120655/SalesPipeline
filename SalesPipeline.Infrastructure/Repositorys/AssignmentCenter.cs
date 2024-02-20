@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -74,6 +75,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment);
 			await _db.SaveAsync();
 
+			return _mapper.Map<AssignmentCustom>(assignment);
+		}
+
+		public async Task<AssignmentCustom> Update(AssignmentCustom model)
+		{
+			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
+			if (assignment != null)
+			{
+				assignment.Code = model.Code;
+				assignment.Name = model.Name;
+				assignment.UserId = model.UserId;
+				assignment.EmployeeId = model.EmployeeId;
+				assignment.EmployeeName = model.EmployeeName;
+				assignment.Tel = model.Tel;
+				assignment.RMNumber = model.RMNumber ?? 0;
+				assignment.CurrentNumber = model.CurrentNumber ?? 0;
+				_db.Update(assignment);
+				await _db.SaveAsync();
+			}
 			return _mapper.Map<AssignmentCustom>(assignment);
 		}
 

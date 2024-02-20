@@ -229,16 +229,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (model.Master_Department_CenterId != user.Master_Department_CenterId)
 							{
-								//****** รอเช็คเงื่อนไขเพิ่มเติม
-								throw new ExceptionCustom("ไม่สามารถเปลี่ยนศูนย์ที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
+								var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+								if (assignments != null && assignments.RMNumber > 0)
+								{
+									throw new ExceptionCustom("ไม่สามารถเปลี่ยนศูนย์ที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
+								}
 							}
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
 							if (model.AssignmentId != user.AssignmentId)
 							{
-								//****** รอเช็คเงื่อนไขเพิ่มเติม
-								throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
+								var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+								if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
+								{
+									throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
+								}
 							}
 						}
 					}
