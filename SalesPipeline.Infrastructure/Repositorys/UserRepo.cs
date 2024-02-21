@@ -67,7 +67,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					model.Master_Department_CenterId = null;
 					model.AssignmentId = null;
 				}
-				else if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER))
+				else if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
 					model.AssignmentId = null;
 					model.LevelId = null;
@@ -154,7 +154,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER) && user.Master_Department_CenterId.HasValue)
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER) && user.Master_Department_CenterId.HasValue)
 						{
 							var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
 							if (depCenter != null)
@@ -227,7 +227,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					if (roleCode != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER))
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 						{
 							if (model.Master_Department_CenterId != user.Master_Department_CenterId)
 							{
@@ -296,7 +296,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//RM Role Create Default Assignment
 					if (roleCode != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MANAGERCENTER) && user.Master_Department_CenterId.HasValue)
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER) && user.Master_Department_CenterId.HasValue)
 						{
 							var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
 							if (depCenter != null)
@@ -423,12 +423,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			//ผู้ใช้ภายใต้การดูแล
-			//if (model.createby.HasValue && model.createby > 0)
-			//{
-			//	query = query.Where(x => x.CreateBy == model.createby.Value);
-			//}
-
 			if (!String.IsNullOrEmpty(model.type))
 			{
 				if (model.type == UserTypes.Admin)
@@ -440,6 +434,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
 				}
 			}
+
+			if (!String.IsNullOrEmpty(model.employeeid))
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.employeeid));
 
 			if (!String.IsNullOrEmpty(model.employeeid))
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.employeeid));

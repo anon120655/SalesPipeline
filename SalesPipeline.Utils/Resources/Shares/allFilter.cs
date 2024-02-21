@@ -26,6 +26,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? amphur { get; set; }
 		public string? emp_id { get; set; }
 		public string? emp_name { get; set; }
+		public string? assignmentid { get; set; }
+		public string? mcenter_code { get; set; }
+		public string? mcenter_name { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -88,6 +91,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(emp_name))
 				ParameterAll += $"&emp_name={emp_name}";
+
+			if (!String.IsNullOrEmpty(assignmentid))
+				ParameterAll += $"&assignmentid={assignmentid}";
+
+			if (!String.IsNullOrEmpty(mcenter_code))
+				ParameterAll += $"&mcenter_code={mcenter_code}";
+
+			if (!String.IsNullOrEmpty(mcenter_name))
+				ParameterAll += $"&mcenter_name={mcenter_name}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -168,6 +180,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(emp_name), out var _emp_name))
 				emp_name = _emp_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignmentid), out var _assignmentid))
+				assignmentid = _assignmentid;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(mcenter_code), out var _mcenter_code))
+				mcenter_code = _mcenter_code;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(mcenter_name), out var _mcenter_name))
+				mcenter_name = _mcenter_name;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

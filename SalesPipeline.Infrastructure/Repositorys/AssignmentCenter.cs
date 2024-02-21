@@ -101,6 +101,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
+			if (!String.IsNullOrEmpty(model.assignmentid))
+			{
+				if (Guid.TryParse(model.assignmentid, out Guid assignmentid))
+				{
+					query = query.Where(x => x.Id == assignmentid);
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.mcenter_code))
+			{
+				query = query.Where(x => x.Code != null && x.Code.Contains(model.mcenter_code));
+			}
+
+			if (!String.IsNullOrEmpty(model.mcenter_name))
+			{
+				query = query.Where(x => x.Name != null && x.Name.Contains(model.mcenter_name));
+			}
+
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
@@ -113,12 +131,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!String.IsNullOrEmpty(model.province))
 			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+				if (int.TryParse(model.province, out var province))
+				{
+					query = query.Where(x => x.User != null && x.User.ProvinceId == province);
+				}
 			}
 
 			if (!String.IsNullOrEmpty(model.amphur))
 			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+				if (int.TryParse(model.amphur, out var amphur))
+				{
+					query = query.Where(x => x.User != null && x.User.AmphurId == amphur);
+				}
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -155,7 +179,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignments)
-										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_CenterId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MANAGERCENTER && x.Assignments.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_CenterId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignments.Count == 0)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .ToListAsync();
 
@@ -178,6 +202,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								UserId = item_center.Id,
 								EmployeeId = item_center.EmployeeId,
 								EmployeeName = item_center.FullName,
+								Tel = item_center.Tel,
 								RMNumber = rMNumber,
 								CurrentNumber = currentNumber
 							});

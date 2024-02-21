@@ -260,6 +260,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.AssignedUserId == model.assignrm);
 			}
 
+			if (!String.IsNullOrEmpty(model.juristicnumber))
+			{
+				query = query.Where(x => x.Customer != null
+				&& x.Customer.JuristicPersonRegNumber != null
+				&& x.Customer.JuristicPersonRegNumber.Contains(model.juristicnumber));
+			}
+
 			if (!String.IsNullOrEmpty(model.sort))
 			{
 				if (model.sort == OrderByModel.ASC)

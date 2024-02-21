@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,5 +58,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
 		public virtual UserCustom? User { get; set; }
+
+		//Custom
+		public bool IsSelected { get; set; } = false;
+
 	}
 }

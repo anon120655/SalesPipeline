@@ -242,7 +242,7 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
 						}
 					}
-					else if (rolecode == RoleCodes.MANAGERCENTER)
+					else if (rolecode == RoleCodes.MCENTER)
 					{
 						currentUserId = 12;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
@@ -285,7 +285,7 @@ namespace SalesPipeline.API.Controllers
 						};
 					}
 
-					if (rolecode == RoleCodes.MANAGERCENTER && assignedCenterUserId.HasValue)
+					if (rolecode == RoleCodes.MCENTER && assignedCenterUserId.HasValue)
 					{
 						modelSale = new()
 						{

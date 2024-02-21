@@ -43,7 +43,7 @@ namespace SalesPipeline.Utils
 		/// <summary>
 		/// ผู้จัดการศูนย์
 		/// </summary>
-		public const string MANAGERCENTER = "MANAGERCENTER";
+		public const string MCENTER = "MCENTER";
 		/// <summary>
 		/// RM พนักงานขาย
 		/// </summary>

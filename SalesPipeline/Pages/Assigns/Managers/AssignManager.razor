@@ -18,154 +18,204 @@
 								<p class="back_topic">มอบหมายผู้จัดการศูนย์</p>
 							</div>
 						</div>
-						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-							<div class="col mb-2">
-								<label class="form-label">เลขนิติบุคคล</label>
-								<div class="input-group">
-									<input @bind="filter.juristicnumber" class="form-control" type="search" placeholder="">
-									<span class="input-group-append ms-0">
-										<button class="btn rounded-start-0 border border-start-0" type="button">
-											<i class="fa fa-search"></i>
-										</button>
-									</span>
+						<div class="@(formView != null ? "d-none" : "")">
+							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+								<div class="col mb-2">
+									<label class="form-label">เลขนิติบุคคล</label>
+									<div class="input-group">
+										<input @bind="filter.juristicnumber" class="form-control" type="search" placeholder="">
+										<span class="input-group-append ms-0">
+											<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">ค้นหาลูกค้า</label>
+									<div class="input-group">
+										<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+										<span class="input-group-append ms-0">
+											<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">ประเภทธุรกิจ</label>
+									<select id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										<option value="">ทั้งหมด</option>
+										@if (LookUp.BusinessType?.Count > 0)
+										{
+											foreach (var item in LookUp.BusinessType)
+											{
+												<option value="@item.Id">@item.Name</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">จังหวัด</label>
+									<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+										<option value="">ทั้งหมด</option>
+										@if (LookUp.Provinces?.Count > 0)
+										{
+											foreach (var item in LookUp.Provinces)
+											{
+												<option value="@item.ProvinceID">@item.ProvinceName</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="col mb-2 mt-3">
+									<button @onclick="((e) => Search())" type="button" class="btn btn-primary text-white mw_7r w-100">
+										<i class="fa fa-search fa-xs"></i> ค้นหา
+									</button>
 								</div>
 							</div>
-							<div class="col mb-2">
-								<label class="form-label">ค้นหาลูกค้า</label>
-								<div class="input-group">
-									<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
-									<span class="input-group-append ms-0">
-										<button class="btn rounded-start-0 border border-start-0" type="button">
-											<i class="fa fa-search"></i>
-										</button>
-									</span>
+							<div class="row my-2 mb-3 text-end">
+								<div class="col mb-2">
+									<button type="button" class="btn btn-primary text-white">
+										จำนวนการมอบหมาย (@(ItemsSelected.Count())/@(LimitAssign))
+									</button>
 								</div>
 							</div>
-							<div class="col mb-2">
-								<label class="form-label">ประเภทธุรกิจ</label>
-								<select id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-									<option value="">ทั้งหมด</option>
-									@if (LookUp.BusinessType?.Count > 0)
-									{
-										foreach (var item in LookUp.BusinessType)
-										{
-											<option value="@item.Id">@item.Name</option>
-										}
-									}
-								</select>
-							</div>
-							<div class="col mb-2">
-								<label class="form-label">จังหวัด</label>
-								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
-									<option value="">ทั้งหมด</option>
-									@if (LookUp.Provinces?.Count > 0)
-									{
-										foreach (var item in LookUp.Provinces)
-										{
-											<option value="@item.ProvinceID">@item.ProvinceName</option>
-										}
-									}
-								</select>
-							</div>
-							<div class="col mb-2 mt-3">
-								<button type="button" class="btn btn-primary text-white mw_7r w-100">
-									<i class="fa fa-search fa-xs"></i> ค้นหา
-								</button>
-							</div>
-						</div>
-						<div class="row my-2 mb-3 text-end">
-							<div class="col mb-2">
-								<button type="button" class="btn btn-primary text-white">
-									จำนวนการมอบหมาย (@(ItemsSelected.Count())/@(LimitAssign))
-								</button>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<div class="table-responsive border-top">
-									<table class="table table_list">
-										<thead>
-											<tr>
-												<th class="text-center">ลำดับที่</th>
-												<th class="text-center">เลขทะเบียนนิติบุคคล</th>
-												<th class="text-center">ชื่อลูกค้า</th>
-												<th class="text-center">ประเภทธุรกิจ</th>
-												<th class="text-center">จังหวัด</th>
-												<th class="text-center">อำเภอ</th>
-												<th class="text-center">รายละเอียด</th>
-												<th class="text-center">มอบหมาย</th>
-											</tr>
-										</thead>
-										<tbody>
-											@if (Items == null)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-													</td>
+							<div class="row">
+								<div class="col">
+									<div class="table-responsive border-top">
+										<table class="table table_list">
+											<thead>
+												<tr>
+													<th class="text-center">ลำดับที่</th>
+													<th class="text-center">เลขทะเบียนนิติบุคคล</th>
+													<th class="text-center">ชื่อลูกค้า</th>
+													<th class="text-center">ประเภทธุรกิจ</th>
+													<th class="text-center">จังหวัด</th>
+													<th class="text-center">อำเภอ</th>
+													<th class="text-center">รายละเอียด</th>
+													<th class="text-center">มอบหมาย</th>
 												</tr>
-											}
-											else if (Items.Count == 0)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<em>ไม่พบข้อมูล</em>
-													</td>
-												</tr>
-											}
-											else
-											{
-												int SequenceNo = 1;
-												foreach (var item in Items)
+											</thead>
+											<tbody>
+												@if (Items == null)
 												{
-													<tr>
-														<td class="text-center">@(SequenceNo)</td>
-														<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
-														<td class="text-center">@item.CompanyName</td>
-														<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-														<td class="text-center">@item.Customer?.ProvinceName</td>
-														<td class="text-center">@item.Customer?.AmphurName</td>
-														<td class="text-center">
-															<a class="btn btn-info btn-circle">
-																<i class="fa-solid fa-eye text-white fs_15e"></i>
-															</a>
-														</td>
-														<td class="text-center">
-															<div class="form-check d-flex justify-content-center">
-																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
-																	   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
-															</div>
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 														</td>
 													</tr>
-													SequenceNo++;
 												}
-											}
-										</tbody>
-									</table>
+												else if (Items.Count == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													int SequenceNo = 1;
+													foreach (var item in Items)
+													{
+														<tr>
+															<td class="text-center">@(SequenceNo)</td>
+															<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+															<td class="text-center">@item.CompanyName</td>
+															<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+															<td class="text-center">@item.Customer?.ProvinceName</td>
+															<td class="text-center">@item.Customer?.AmphurName</td>
+															<td class="text-center">
+																<a @onclick="(() => OnViewCustomer(item))" class="btn btn-info btn-circle">
+																	<i class="fa-solid fa-eye text-white fs_15e"></i>
+																</a>
+															</td>
+															<td class="text-center">
+																<div class="form-check d-flex justify-content-center">
+																	<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																		   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
+																</div>
+															</td>
+														</tr>
+														SequenceNo++;
+													}
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							@* <div>
+					<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+					TotalItems="@(Pager?.TotalItems ?? 0)"
+					Pager="@Pager"
+					OnShowOnPage="@OnSelectPagesize"
+					OnSelectedPage="@OnSelectPage"
+					ParameterAll="@filter?.SetParameter()">
+					</PaginationBack>
+					</div> *@
+							<div class="my-4 text-center">
+								<div class="d-flex bd-highlight align-items-center justify-content-center">
+									<div class="p-2 bd-highlight">
+										@if (Items?.Count > 0)
+										{
+											<Button @onclick="(() => GotoStep(StepAssignManagerCenterModel.Assigned))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisabled" Class="mw_6r">
+												ถัดไป
+											</Button>
+										}
+									</div>
 								</div>
 							</div>
 						</div>
-						@* <div>
-				<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-				TotalItems="@(Pager?.TotalItems ?? 0)"
-				Pager="@Pager"
-				OnShowOnPage="@OnSelectPagesize"
-				OnSelectedPage="@OnSelectPage"
-				ParameterAll="@filter?.SetParameter()">
-				</PaginationBack>
-				</div> *@
-						<div class="my-4 text-center">
-							<div class="d-flex bd-highlight align-items-center justify-content-center">
-								<div class="p-2 bd-highlight">
-									@if (Items?.Count > 0)
-									{
-										<Button @onclick="(() => GotoStep(StepAssignManagerCenterModel.Assigned))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisabled" Class="mw_6r">
-											ถัดไป
-										</Button>
-									}
+						@if (formView != null)
+						{
+							<div class="row mt-3">
+								<div class="col-12 tabs_elm">
+									<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
+										<Tab Title="ข้อมูลลูกค้า" IsActive="true">
+											<Content>
+												<div class="row">
+													<div class="col-12 col-xl-8"></div>
+													<div class="col-12 col-xl-3 text-end">
+														<a class="btn btn-primary mw_6r" @onclick=OnViewCustomerBack>กลับ</a>
+													</div>
+												</div>
+												<PartialCustomerInfo formModel="formView" />
+											</Content>
+										</Tab>
+										<Tab Title="ข้อมูลผู้ติดต่อ">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="เอกสาร">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="ประวัติการติดต่อ">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="คู่ค้า">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+									</Tabs>
 								</div>
 							</div>
-						</div>
+						}
 					</div>
 				}
 				else if (stepAssign == StepAssignManagerCenterModel.Assigned)
@@ -181,9 +231,9 @@
 							<div class="col mb-2">
 								<label class="form-label">รหัสศูนย์</label>
 								<div class="input-group">
-									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<input @bind="filter.mcenter_code" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
-										<button class="btn rounded-start-0 border border-start-0" type="button">
+										<button @onclick="((e) => SearchAssignment())" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
 										</button>
 									</span>
@@ -192,9 +242,9 @@
 							<div class="col mb-2">
 								<label class="form-label">ศูนย์สาขา</label>
 								<div class="input-group">
-									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<input @bind="filter.mcenter_name" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
-										<button class="btn rounded-start-0 border border-start-0" type="button">
+										<button @onclick="((e) => SearchAssignment())" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
 										</button>
 									</span>
@@ -202,12 +252,19 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">ชื่อผู้จัดการศูนย์</label>
-								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<select @onchange="((e) => OnAssignment(e.Value))" id="Assignment" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
+									@if (LookUp.AssignmentCenter?.Count > 0)
+									{
+										foreach (var item in LookUp.AssignmentCenter)
+										{
+											<option value="@item.Id">@item.EmployeeName</option>
+										}
+									}
 								</select>
 							</div>
 							<div class="col mb-2 mt-3">
-								<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<button @onclick="((e) => SearchAssignment())" type="button" class="btn btn-primary text-white mw_7r w-100">
 									<i class="fa fa-search fa-xs"></i> ค้นหา
 								</button>
 							</div>
@@ -229,7 +286,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (false)
+											@if (ItemsAssignment == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -237,7 +294,7 @@
 													</td>
 												</tr>
 											}
-											else if (true)
+											else if (ItemsAssignment.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -247,20 +304,25 @@
 											}
 											else
 											{
-												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center">
-														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox">
-														</div>
-													</td>
-												</tr>
+												foreach (var item in ItemsAssignment)
+												{
+													int NumberAfterAssignment = (item.CurrentNumber + ItemsSelected.Count) ?? 0;
+													<tr>
+														<td class="text-center">@item.Code</td>
+														<td class="text-center">@item.Name</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.RMNumber</td>
+														<td class="text-center">@item.CurrentNumber</td>
+														<td class="text-center">@NumberAfterAssignment</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																	   @onchange="( (e) => OnCheckEmployee(item,e.Value))">
+															</div>
+														</td>
+													</tr>
+												}
 											}
 										</tbody>
 									</table>
@@ -284,7 +346,7 @@
 									</Button>
 								</div>
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignManagerCenterModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  GotoStep(StepAssignManagerCenterModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisabledAssignment" Class="mw_6r">
 										@if (isLoading)
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
@@ -298,6 +360,8 @@
 				}
 				else if (stepAssign == StepAssignManagerCenterModel.Summary)
 				{
+					var _items = ItemsAssignmentSelected.FirstOrDefault();
+
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -326,32 +390,25 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (false)
+											@if (_items == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
-														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-													</td>
-												</tr>
-											}
-											else if (true)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+														<em>ไม่พบข้อมูล</em>
 													</td>
 												</tr>
 											}
 											else
 											{
+												int NumberAfterAssignment = (_items.CurrentNumber + ItemsSelected.Count) ?? 0;
 												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
+													<td class="text-center">@_items.Code</td>
+													<td class="text-center">@_items.Name</td>
+													<td class="text-center">@_items.EmployeeName</td>
+													<td class="text-center">@_items.Tel</td>
+													<td class="text-center">@_items.RMNumber</td>
+													<td class="text-center">@(_items.CurrentNumber)/100</td>
+													<td class="text-center">@NumberAfterAssignment</td>
 												</tr>
 											}
 										</tbody>
@@ -372,13 +429,13 @@
 											<tr>
 												<th class="text-center">เลขนิติบุคคล</th>
 												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
 												<th class="text-center">จังหวัด</th>
 												<th class="text-center">อำเภอ</th>
-												<th class="text-center">ประเภทธุรกิจ</th>
 											</tr>
 										</thead>
 										<tbody>
-											@if (false)
+											@if (ItemsSelected == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -386,7 +443,7 @@
 													</td>
 												</tr>
 											}
-											else if (true)
+											else if (ItemsSelected.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -396,13 +453,16 @@
 											}
 											else
 											{
-												<tr>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-													<td class="text-center"></td>
-												</tr>
+												foreach (var item in ItemsSelected)
+												{
+													<tr>
+														<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.CompanyName</td>
+														<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+														<td class="text-center">@item.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Customer?.AmphurName</td>
+													</tr>
+												}
 											}
 										</tbody>
 									</table>
@@ -432,6 +492,8 @@
 			</div>
 		</div>
 	</div>
+
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
 }
 else
 {

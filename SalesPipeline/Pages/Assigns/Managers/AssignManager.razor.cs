@@ -1,4 +1,5 @@
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
@@ -12,14 +13,19 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		string? _errorMessage = null;
 		private bool isLoading = false;
 		private bool isDisabled = true;
+		private bool isDisabledAssignment = true;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
+		private SaleCustom? formView = null;
 		private List<SaleCustom>? Items;
-		private List<Guid> ItemsSelected = new();
+		private List<SaleCustom> ItemsSelected = new();
+		private List<AssignmentCustom>? ItemsAssignment;
+		private List<AssignmentCustom> ItemsAssignmentSelected = new();
 		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
 		int LimitAssign = 10;
+		ModalSuccessful modalSuccessfulAssign = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -55,6 +61,17 @@ namespace SalesPipeline.Pages.Assigns.Managers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var userCenter = await _masterViewModel.GetListCenter(new allFilter() { status = StatusModel.Active, pagesize = 100 });
+			if (userCenter != null && userCenter.Status)
+			{
+				LookUp.AssignmentCenter = userCenter.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = userCenter?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
 			if (businessType != null && businessType.Status)
 			{
@@ -79,6 +96,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 
 			StateHasChanged();
 
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Assignment");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
 		}
@@ -108,7 +126,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 				{
 					foreach (var item in Items)
 					{
-						if (ItemsSelected.Contains(item.Id))
+						if (ItemsSelected.Select(x => x.Id).Contains(item.Id))
 						{
 							item.IsSelected = true;
 						}
@@ -129,6 +147,59 @@ namespace SalesPipeline.Pages.Assigns.Managers
 			StateHasChanged();
 		}
 
+		protected async Task SetModelAssignment()
+		{
+			filter.pagesize = 100;
+			var data = await _assignmentCenterViewModel.GetListCenter(filter);
+			if (data != null && data.Status)
+			{
+				ItemsAssignment = data.Data?.Items;
+				if (ItemsAssignment != null && ItemsAssignmentSelected.Count > 0)
+				{
+					foreach (var item in ItemsAssignment)
+					{
+						if (ItemsAssignmentSelected.Select(x => x.Id).Contains(item.Id))
+						{
+							item.IsSelected = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+		}
+
+		protected async Task SearchAssignment()
+		{
+			await SetModelAssignment();
+			StateHasChanged();
+		}
+
+		protected async Task OnAssignment(object? val)
+		{
+			filter.assignmentid = null;
+			StateHasChanged();
+
+			if (val != null && Guid.TryParse(val.ToString(), out Guid _id))
+			{
+				filter.assignmentid = _id.ToString();
+			}
+
+			await SetModelAssignment();
+			StateHasChanged();
+		}
+
 		protected async Task OnSelectPagesize(int _number)
 		{
 			Items = null;
@@ -145,20 +216,33 @@ namespace SalesPipeline.Pages.Assigns.Managers
 			StateHasChanged();
 		}
 
+		protected void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		protected void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
+		}
+
 		protected async Task GotoStep(int step, Guid? assignmentId = null, bool? back = null)
 		{
 			bool isNext = true;
-		
+
 			if (step == StepAssignManagerCenterModel.Customer)
 			{
-				
+
 			}
 			else if (step == StepAssignManagerCenterModel.Assigned)
 			{
-				
+				await SetModelAssignment();
 			}
 			else if (step == StepAssignManagerCenterModel.Summary)
 			{
+				isNext = Summary();
 				if (!isNext)
 				{
 					_utilsViewModel.AlertWarning("เลือกผู้รับผิดชอบ");
@@ -187,16 +271,90 @@ namespace SalesPipeline.Pages.Assigns.Managers
 				else
 				{
 					model.IsSelected = true;
-					ItemsSelected.Add(model.Id);
+					ItemsSelected.Add(model);
 				}
 			}
 			else
 			{
 				model.IsSelected = false;
-				ItemsSelected.Remove(model.Id);
+				ItemsSelected.Remove(model);
 			}
 
 			isDisabled = ItemsSelected.Count == 0;
+		}
+
+		protected void OnViewCustomer(SaleCustom? model)
+		{
+			if (model != null)
+			{
+				formView = model;
+			}
+		}
+
+		protected void OnViewCustomerBack()
+		{
+			formView = null;
+		}
+
+		//เลือกผู้รับผิดชอบ
+		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		{
+			if (ItemsAssignment?.Count > 0)
+			{
+				foreach (var item in ItemsAssignment.Where(x => x.IsSelected))
+				{
+					item.IsSelected = false;
+				}
+			}
+
+			ItemsAssignmentSelected = new();
+
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelected = true;
+				ItemsAssignmentSelected.Add(model);
+			}
+
+			isDisabledAssignment = ItemsAssignmentSelected.Count == 0;
+		}
+
+		//สรุปผู้รับผิดชอบและผู้จัดการศูนย์ที่ได้รับมอบหมาย
+		protected bool Summary()
+		{
+			if (ItemsSelected.Count > 0 && ItemsAssignmentSelected.Count > 0)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		protected async Task Assign()
+		{
+			_errorMessage = null;
+
+			if (Items != null)
+			{
+				var response = await _assignmentCenterViewModel.Assign(Items);
+
+				if (response.Status)
+				{
+					await modalSuccessfulAssign.OnShow(null, "เสร็จสิ้นการมอบหมายงาน");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
+
+		}
+
+		private async Task OnModalHidden()
+		{
+			await Task.Delay(1);
 		}
 
 	}
