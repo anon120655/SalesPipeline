@@ -477,7 +477,7 @@
 									</Button>
 								</div>
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignManagerCenterModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  Assign())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>

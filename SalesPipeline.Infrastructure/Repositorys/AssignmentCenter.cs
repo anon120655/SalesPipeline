@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -154,6 +155,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task Assign(AssignCenterModel model)
+		{
+			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
+			if (assignment != null)
+			{
+				//assignment.RMNumber = model.RMNumber ?? 0;
+				//assignment.CurrentNumber = model.CurrentNumber ?? 0;
+
+				foreach (var item in model.Sales)
+				{
+					//var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
+					//if (sales != null)
+					//{
+					//}
+				}
+				_db.Update(assignment);
+				await _db.SaveAsync();
+			}
+
+
+			throw new NotImplementedException();
 		}
 
 		public async Task UpdateCurrentNumber(Guid id)

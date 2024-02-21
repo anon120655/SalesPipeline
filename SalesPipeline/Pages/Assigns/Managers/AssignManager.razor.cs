@@ -22,10 +22,12 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		private List<SaleCustom> ItemsSelected = new();
 		private List<AssignmentCustom>? ItemsAssignment;
 		private List<AssignmentCustom> ItemsAssignmentSelected = new();
+		private AssignCenterModel AssignModel = new();
 		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
 		int LimitAssign = 10;
 		ModalSuccessful modalSuccessfulAssign = default!;
+		private bool IsToClose = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -234,7 +236,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 
 			if (step == StepAssignManagerCenterModel.Customer)
 			{
-
+				await SetModel();
 			}
 			else if (step == StepAssignManagerCenterModel.Assigned)
 			{
@@ -323,6 +325,8 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		{
 			if (ItemsSelected.Count > 0 && ItemsAssignmentSelected.Count > 0)
 			{
+				AssignModel.Assign = ItemsAssignmentSelected.FirstOrDefault() ?? new();
+				AssignModel.Sales = ItemsSelected;
 				return true;
 			}
 			return false;
@@ -331,15 +335,18 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		protected async Task Assign()
 		{
 			_errorMessage = null;
+			ShowLoading();
+
+			AssignModel.CurrentUserId = UserInfo.Id;
 
 			if (Items != null)
 			{
-				var response = await _assignmentCenterViewModel.Assign(Items);
+				var response = await _assignmentCenterViewModel.Assign(AssignModel);
 
 				if (response.Status)
 				{
+					IsToClose = true;
 					await modalSuccessfulAssign.OnShow(null, "เสร็จสิ้นการมอบหมายงาน");
-					await SetModel();
 					HideLoading();
 				}
 				else
@@ -354,7 +361,14 @@ namespace SalesPipeline.Pages.Assigns.Managers
 
 		private async Task OnModalHidden()
 		{
-			await Task.Delay(1);
+			if (IsToClose)
+			{
+				isDisabled = true;
+				isDisabledAssignment = true;
+				ItemsSelected = new();
+				ItemsAssignmentSelected = new();
+				await GotoStep(StepAssignManagerCenterModel.Customer);
+			}
 		}
 
 	}

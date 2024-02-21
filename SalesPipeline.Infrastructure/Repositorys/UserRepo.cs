@@ -259,7 +259,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								}
 								else
 								{
-									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssignedUserId == model.Id);
+									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
 									if (salesCount > 0)
 									{
 										throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");

@@ -280,8 +280,8 @@ namespace SalesPipeline.API.Controllers
 
 						modelSale = new()
 						{
-							AssignedUserId = currentUserId,
-							AssignedCenterUserId = assignmentRM.Assignment.UserId
+							AssUserId = currentUserId,
+							AssCenterUserId = assignmentRM.Assignment.UserId
 						};
 					}
 
@@ -289,7 +289,7 @@ namespace SalesPipeline.API.Controllers
 					{
 						modelSale = new()
 						{
-							AssignedCenterUserId = assignedCenterUserId.Value,
+							AssCenterUserId = assignedCenterUserId.Value,
 						};
 					}
 

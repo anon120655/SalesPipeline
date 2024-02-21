@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 
@@ -50,6 +51,26 @@ namespace SalesPipeline.API.Controllers
 				var response = await _repo.AssignmentCenter.GetListCenter(model);
 
 				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		//[AllowAnonymous]
+		[HttpPost("Assign")]
+		public async Task<IActionResult> Assign(AssignCenterModel model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentCenter.Assign(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
 			}
 			catch (Exception ex)
 			{

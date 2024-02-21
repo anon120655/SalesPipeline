@@ -226,13 +226,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//ลูกค้าที่ยังไม่ถูกมอบหมาย
 			var salesQuery = _repo.Context.Sales
 				.Include(x => x.Customer)
-				.Where(x => x.Status != StatusModel.Delete && !x.AssignedUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
+				.Where(x => x.Status != StatusModel.Delete && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.AsQueryable();
 
 			if (assignmentCenterUserId.HasValue)
 			{
-				salesQuery = salesQuery.Where(x => x.AssignedCenterUserId == assignmentCenterUserId.Value);
+				salesQuery = salesQuery.Where(x => x.AssCenterUserId == assignmentCenterUserId.Value);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
@@ -344,7 +344,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var item_sale in sales_select)
 					{
 						var currentUserName = await _repo.User.GetFullNameById(item.CurrentUserId);
-						var assignedUserName = await _repo.User.GetFullNameById(assignment_RM.UserId);
+						var assUserName = await _repo.User.GetFullNameById(assignment_RM.UserId);
 
 						var assignmentRMSale = await CreateSale(new()
 						{
@@ -357,8 +357,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item_sale.SaleId);
 						if (sales != null)
 						{
-							sales.AssignedUserId = assignment_RM.UserId;
-							sales.AssignedUserName = assignedUserName;
+							sales.AssUserId = assignment_RM.UserId;
+							sales.AssUserName = assUserName;
 							_db.Update(sales);
 							await _db.SaveAsync();
 						}
@@ -393,7 +393,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
-			var assignedUserName = await _repo.User.GetFullNameById(model.New.UserId);
+			var assUserName = await _repo.User.GetFullNameById(model.New.UserId);
 
 			var assignmentSale = await CreateSale(new()
 			{
@@ -406,44 +406,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Original.Id);
 			if (sales != null)
 			{
-				sales.AssignedUserId = model.New.UserId;
-				sales.AssignedUserName = assignedUserName;
+				sales.AssUserId = model.New.UserId;
+				sales.AssUserName = assUserName;
 				_db.Update(sales);
 				await _db.SaveAsync();
 			}
 
 			await UpdateCurrentNumber(model.New.Id);
-
-		}
-
-		public async Task CreateAssignmentRMAll(allFilter model)
-		{
-			//var users = await _repo.Context.Users.Include(x => x.Role)
-			//							   .Include(x => x.Assignments)
-			//							   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignments.Count == 0)
-			//							   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-			//							   .ToListAsync();
-			//if (users.Count > 0)
-			//{
-			//	using (var _transaction = _repo.BeginTransaction())
-			//	{
-			//		foreach (var item in users)
-			//		{
-			//			if (!await _repo.AssignmentRM.CheckAssignmentByUserId(item.Id))
-			//			{
-			//				var assignment = await _repo.AssignmentRM.Create(new()
-			//				{
-			//					UserId = item.Id,
-			//					EmployeeId = item.EmployeeId,
-			//					EmployeeName = item.FullName,
-			//				});
-			//			}
-
-			//		}
-
-			//		_transaction.Commit();
-			//	}
-			//}
 
 		}
 

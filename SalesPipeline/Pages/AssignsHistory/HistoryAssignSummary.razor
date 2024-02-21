@@ -11,7 +11,7 @@
 			<div class="col-12 my-2">
 				@if (stepAssign == StepAssignLoanModel.Assigned)
 				{
-					var _items = Items?.Where(x => x.UserId != formModel?.AssignedUserId).ToList();
+					var _items = Items?.Where(x => x.UserId != formModel?.AssUserId).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -58,7 +58,7 @@
 													<td class="text-center">@formModel.Customer?.ProvinceName</td>
 													<td class="text-center">@formModel.Customer?.AmphurName</td>
 													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@formModel.AssignedUserName</td>
+													<td class="text-center">@formModel.AssUserName</td>
 												</tr>
 											}
 										</tbody>
@@ -204,7 +204,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
-					var _itemsOriginal = Items?.FirstOrDefault(x => x.UserId == formModel?.AssignedUserId);
+					var _itemsOriginal = Items?.FirstOrDefault(x => x.UserId == formModel?.AssUserId);
 					var _itemsNew = Items?.FirstOrDefault(x => x.IsSelectMove);
 
 					<div class="box_content">
@@ -252,7 +252,7 @@
 													<td class="text-center">@formModel.Customer?.ProvinceName</td>
 													<td class="text-center">@formModel.Customer?.AmphurName</td>
 													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@formModel.AssignedUserName</td>
+													<td class="text-center">@formModel.AssUserName</td>
 												</tr>
 											}
 										</tbody>

@@ -273,10 +273,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
-				int? assignedCenterUserId = null;
-				string? assignedCenterUserName = null;
-				int? assignedUserId = null;
-				string? assignedUserName = null;
+				int? assCenterUserId = null;
+				string? assCenterUserName = null;
+				int? assUserId = null;
+				string? assUserName = null;
 
 				var user = await _repo.User.GetById(model.CurrentUserId);
 				if (user == null) throw new ExceptionCustom("currentUserId required!");
@@ -284,8 +284,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					statusSaleId = StatusSaleModel.WaitApprove;
-					assignedUserId = model.CurrentUserId;
-					assignedUserName = user.FullName;
+					assUserId = model.CurrentUserId;
+					assUserName = user.FullName;
 				}
 				else
 				{
@@ -295,9 +295,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				if (modelSale != null && modelSale.AssignedCenterUserId.HasValue)
+				if (modelSale != null && modelSale.AssCenterUserId.HasValue)
 				{
-					var userCenter = await _repo.User.GetById(modelSale.AssignedCenterUserId.Value);
+					var userCenter = await _repo.User.GetById(modelSale.AssCenterUserId.Value);
 					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
 					if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
 
@@ -318,8 +318,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					assignedCenterUserId = modelSale.AssignedCenterUserId;
-					assignedCenterUserName = userCenter.FullName;
+					assCenterUserId = modelSale.AssCenterUserId;
+					assCenterUserName = userCenter.FullName;
 				}
 
 
@@ -332,10 +332,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
-					AssignedCenterUserId = assignedCenterUserId,
-					AssignedCenterUserName = assignedCenterUserName,
-					AssignedUserId = assignedUserId,
-					AssignedUserName = assignedUserName
+					AssCenterUserId = assCenterUserId,
+					AssCenterUserName = assCenterUserName,
+					AssUserId = assUserId,
+					AssUserName = assUserName
 				};
 				var sale = await _repo.Sales.Create(saleData);
 

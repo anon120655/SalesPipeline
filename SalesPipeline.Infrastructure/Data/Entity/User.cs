@@ -118,9 +118,9 @@ public partial class User
 
     public virtual User_Role? Role { get; set; }
 
-    public virtual ICollection<Sale> SaleAssignedCenterUsers { get; set; } = new List<Sale>();
+    public virtual ICollection<Sale> SaleAssCenterUsers { get; set; } = new List<Sale>();
 
-    public virtual ICollection<Sale> SaleAssignedUsers { get; set; } = new List<Sale>();
+    public virtual ICollection<Sale> SaleAssUsers { get; set; } = new List<Sale>();
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 }

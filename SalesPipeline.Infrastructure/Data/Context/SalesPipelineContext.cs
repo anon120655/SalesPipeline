@@ -1052,24 +1052,30 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale", tb => tb.HasComment("การขาย"));
 
-            entity.HasIndex(e => e.AssignedCenterUserId, "AssignedCenterUserId");
+            entity.HasIndex(e => e.AssCenterUserId, "AssignedCenterUserId");
 
-            entity.HasIndex(e => e.AssignedUserId, "AssignedUserId");
+            entity.HasIndex(e => e.AssUserId, "AssignedUserId");
 
             entity.HasIndex(e => e.CustomerId, "CustomerId");
 
             entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
 
-            entity.Property(e => e.AssignedCenterUserId)
+            entity.Property(e => e.AssCenterCreateBy)
+                .HasComment("ผู้มอบหมายผู้จัดการศูนย์")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AssCenterDate)
+                .HasComment("วันที่มอบหมายผู้จัดการศูนย์")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AssCenterUserId)
                 .HasComment("ผู้จัดการศูนย์ที่ดูแล")
                 .HasColumnType("int(11)");
-            entity.Property(e => e.AssignedCenterUserName)
+            entity.Property(e => e.AssCenterUserName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้จัดการศูนย์ที่ดูแล");
-            entity.Property(e => e.AssignedUserId)
+            entity.Property(e => e.AssUserId)
                 .HasComment("พนักงานที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
-            entity.Property(e => e.AssignedUserName)
+            entity.Property(e => e.AssUserName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อพนักงานที่ได้รับมอบหมาย");
             entity.Property(e => e.CompanyName)
@@ -1098,12 +1104,12 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateByName).HasMaxLength(255);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
-            entity.HasOne(d => d.AssignedCenterUser).WithMany(p => p.SaleAssignedCenterUsers)
-                .HasForeignKey(d => d.AssignedCenterUserId)
+            entity.HasOne(d => d.AssCenterUser).WithMany(p => p.SaleAssCenterUsers)
+                .HasForeignKey(d => d.AssCenterUserId)
                 .HasConstraintName("sale_ibfk_3");
 
-            entity.HasOne(d => d.AssignedUser).WithMany(p => p.SaleAssignedUsers)
-                .HasForeignKey(d => d.AssignedUserId)
+            entity.HasOne(d => d.AssUser).WithMany(p => p.SaleAssUsers)
+                .HasForeignKey(d => d.AssUserId)
                 .HasConstraintName("sale_ibfk_4");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Sales)

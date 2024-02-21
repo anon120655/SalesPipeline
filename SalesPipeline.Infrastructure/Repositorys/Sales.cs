@@ -51,10 +51,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
-			sale.AssignedCenterUserId = model.AssignedCenterUserId;
-			sale.AssignedCenterUserName = model.AssignedCenterUserName;
-			sale.AssignedUserId = model.AssignedUserId;
-			sale.AssignedUserName = model.AssignedUserName;
+			sale.AssCenterUserId = model.AssCenterUserId;
+			sale.AssCenterUserName = model.AssCenterUserName;
+			if (model.AssCenterUserId.HasValue)
+			{
+				sale.AssCenterCreateBy = model.CurrentUserId;
+				sale.AssCenterDate = _dateNow;
+			}
+			sale.AssUserId = model.AssUserId;
+			sale.AssUserName = model.AssUserName;
 
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
@@ -170,9 +175,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 
 				//อนุมัติและรอการติดต่อเฉพาะ RM สร้าง
-				if (model.StatusId == StatusSaleModel.WaitContact && sales.AssignedUserId.HasValue)
+				if (model.StatusId == StatusSaleModel.WaitContact && sales.AssUserId.HasValue)
 				{
-					var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssignedUserId.Value);
+					var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssUserId.Value);
 					if (assignment != null)
 					{
 						if (assignment.CurrentNumber >= 100)
@@ -233,7 +238,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													.Include(x => x.Customer)
-													.Include(x => x.AssignedCenterUser).ThenInclude(s => s.Master_Department_Center)
+													.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Department_Center)
 													.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();
@@ -252,12 +257,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.assigncenter.HasValue)
 			{
-				query = query.Where(x => x.AssignedCenterUserId == model.assigncenter);
+				query = query.Where(x => x.AssCenterUserId == model.assigncenter);
 			}
 
 			if (model.assignrm.HasValue)
 			{
-				query = query.Where(x => x.AssignedUserId == model.assignrm);
+				query = query.Where(x => x.AssUserId == model.assignrm);
 			}
 
 			if (!String.IsNullOrEmpty(model.juristicnumber))
