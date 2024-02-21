@@ -64,11 +64,6 @@ public partial class User
     public Guid? Master_Department_CenterId { get; set; }
 
     /// <summary>
-    /// ผู้จัดการศูนย์ที่ดูแล พนักงาน RM
-    /// </summary>
-    public Guid? AssignmentId { get; set; }
-
-    /// <summary>
     /// จังหวัด
     /// </summary>
     public int? ProvinceId { get; set; }
@@ -100,8 +95,6 @@ public partial class User
     public string? PasswordHash { get; set; }
 
     public short? LoginFail { get; set; }
-
-    public virtual Assignment? Assignment { get; set; }
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 

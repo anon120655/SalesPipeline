@@ -315,23 +315,5 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[HttpGet("CreateAssignmentAll")]
-		public async Task<IActionResult> CreateAssignmentAll([FromQuery] int check)
-		{
-			try
-			{
-				if (check != 9999) throw new ExceptionCustom("not permission");
-
-				await _repo.User.CreateAssignmentAll(new());
-
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 	}
 }

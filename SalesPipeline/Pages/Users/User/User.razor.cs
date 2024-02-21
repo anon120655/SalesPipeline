@@ -37,6 +37,8 @@ namespace SalesPipeline.Pages.Users.User
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
+				await _assignmentCenterViewModel.CreateAssignmentCenterAll();
+
 				firstRender = false;
 			}
 		}
@@ -122,8 +124,8 @@ namespace SalesPipeline.Pages.Users.User
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
-
 			StateHasChanged();
+
 		}
 
 		protected string? GetPositionName(int? id)

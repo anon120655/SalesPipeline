@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Masters;
+﻿using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationAtt;
 using System;
@@ -78,13 +79,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// ผู้จัดการศูนย์ที่ดูแล พนักงาน RM
 		/// </summary>
-		[UserAtt(FieldName = "AssignmentId")]
-		public Guid? AssignmentId { get; set; }
+		//[UserAtt(FieldName = "AssignmentId")]
+		//public Guid? AssignmentId { get; set; }
 
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[UserAtt( FieldName = "ProvinceId")]
+		[UserAtt(FieldName = "ProvinceId")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -124,6 +125,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
+		public virtual ICollection<Assignment_RMCustom>? Assignment_RMs { get; set; }
+
 
 		//Custom --------------------------------------
 		public bool? IsValidate { get; set; }
@@ -163,6 +166,32 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 				return string.Empty;
 			}
 		}
+
+		[UserAtt(FieldName = "AssignmentId")]
+		public Guid? AssignmentId { get; set; }
+
+  //      private Guid? _AssignmentId;
+		//[UserAtt(FieldName = "AssignmentId")]
+		//public Guid? AssignmentId
+		//{
+		//	get
+		//	{
+		//		if (Assignment_RMs?.Count > 0)
+		//		{
+		//			var response = Assignment_RMs.FirstOrDefault();
+		//			if (response != null)
+		//			{
+		//				return response.AssignmentId;
+		//			}
+		//		}
+		//		return _AssignmentId;
+		//	}
+		//	set
+		//	{
+		//		_AssignmentId = value;				
+		//	}
+		//}
+
 
 	}
 }

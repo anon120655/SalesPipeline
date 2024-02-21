@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.GeometriesGraph;
 using NetTopologySuite.Index.HPRtree;
 using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
@@ -11,6 +12,7 @@ using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -92,6 +94,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<CustomerCustom> Create(CustomerCustom model, SaleCustom? modelSale = null)
 		{
+			//string strJson = JsonSerializer.Serialize<CustomerCustom>(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				await Validate(model);
@@ -379,6 +383,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<CustomerCustom> Update(CustomerCustom model)
 		{
+			string strJson = JsonSerializer.Serialize<CustomerCustom>(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				var _dateNow = DateTime.Now;

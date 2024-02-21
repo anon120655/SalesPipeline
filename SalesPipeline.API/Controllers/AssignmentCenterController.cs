@@ -57,5 +57,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("CreateAssignmentCenterAll")]
+		public async Task<IActionResult> CreateAssignmentCenterAll()
+		{
+			try
+			{
+				await _repo.AssignmentCenter.CreateAssignmentCenterAll(new());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

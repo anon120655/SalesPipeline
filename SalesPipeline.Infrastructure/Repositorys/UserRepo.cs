@@ -136,7 +136,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
 				user.Master_Department_CenterId = model.Master_Department_CenterId;
-				user.AssignmentId = model.AssignmentId;
+				//user.AssignmentId = model.AssignmentId;
 				user.ProvinceId = model.ProvinceId;
 				user.ProvinceName = provinceName;
 				user.AmphurId = model.AmphurId;
@@ -221,7 +221,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					roleCode = await GetRoleCodeById(model.RoleId.Value);
 				}
 
-				var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
+				var user = await _repo.Context.Users.Include(x=>x.Assignment_RMs.Where(x=> x.Status != StatusModel.Delete))
+					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
 					if (roleCode != null)
@@ -239,7 +240,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
-							if (model.AssignmentId != user.AssignmentId)
+							Guid? _AssignmentId = null;
+							if (user.Assignment_RMs?.Count > 0)
+							{
+								var response = user.Assignment_RMs.FirstOrDefault();
+								if (response != null)
+								{
+									_AssignmentId = response.AssignmentId;
+								}
+							}
+
+							if (model.AssignmentId != _AssignmentId)
 							{
 								var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
@@ -271,7 +282,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
 					user.Master_Department_CenterId = model.Master_Department_CenterId;
-					user.AssignmentId = model.AssignmentId;
+					//user.AssignmentId = model.AssignmentId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
 					user.AmphurId = model.AmphurId;
@@ -380,8 +391,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Master_Department_Branch)
 				.Include(x => x.Master_Department_Center)
 				.Include(x => x.Position)
-				.Include(x => x.Branch)
+				//.Include(x => x.Branch)
 				.Include(x => x.Role)
+				.Include(x => x.Assignment_RMs.Where(x => x.Status == StatusModel.Active))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
@@ -402,7 +414,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Master_Department_Branch)
 										   .Include(x => x.Master_Department_Center)
-										   .Include(x => x.Branch)
+										   //.Include(x => x.Branch)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
@@ -668,56 +680,5 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task CreateAssignmentAll(allFilter model)
-		{
-			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.Assignments)
-										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_CenterId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MANAGERCENTER && x.Assignments.Count == 0)
-										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-										   .ToListAsync();
-
-			if (usersCenter.Count > 0)
-			{
-				foreach (var item_center in usersCenter)
-				{
-					if (item_center.Master_Department_CenterId.HasValue)
-					{
-						var depCenter = await _repo.MasterDepCenter.GetById(item_center.Master_Department_CenterId.Value);
-						if (depCenter != null)
-						{
-							int rMNumber = 0;
-							int currentNumber = 0;
-
-							//var usersRM = await _repo.Context.Users.Where(x => x.Status != StatusModel.Delete
-							//&& x.Master_Department_BranchId == depCenter.Master_Department_BranchId
-							//&& x.RoleId == 8).ToListAsync();
-							//if (usersRM.Count > 0)
-							//{
-							//	rMNumber = usersRM.Count;
-
-							//	var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete && usersRM.Select(s => s.Id).Contains(x.UserId)).ToListAsync();
-							//	if (assignment_RM.Count > 0)
-							//	{
-							//		currentNumber = assignment_RM.Sum(x => x.CurrentNumber) ?? 0;
-							//	}
-							//}
-
-							//var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-							//{
-							//	Code = depCenter.Code,
-							//	Name = depCenter.Name,
-							//	UserId = item_center.Id,
-							//	EmployeeId = item_center.EmployeeId,
-							//	EmployeeName = item_center.FullName,
-							//	RMNumber = rMNumber,
-							//	CurrentNumber = currentNumber
-							//});
-						}
-					}
-
-				}
-			}
-
-		}
 	}
 }

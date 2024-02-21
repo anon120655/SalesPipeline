@@ -18,7 +18,7 @@ public partial class Assignment_RM
     public DateTime CreateDate { get; set; }
 
     /// <summary>
-    /// ชื่อผู้จัดการศูนย์ที่ดูแล
+    /// ผู้จัดการศูนย์ที่ดูแล
     /// </summary>
     public Guid AssignmentId { get; set; }
 

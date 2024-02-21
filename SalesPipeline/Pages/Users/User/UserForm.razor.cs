@@ -133,6 +133,14 @@ namespace SalesPipeline.Pages.Users.User
 					{
 						await OnRoles(formModel.RoleId, formModel.LevelId);
 					}
+					if (formModel.Assignment_RMs?.Count > 0)
+					{
+						var response = formModel.Assignment_RMs.FirstOrDefault();
+						if (response != null)
+						{
+							formModel.AssignmentId = response.AssignmentId;
+						}
+					}
 					StateHasChanged();
 				}
 				else
@@ -171,7 +179,7 @@ namespace SalesPipeline.Pages.Users.User
 
 			if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
 			{
-				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x=>x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
+				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
 			}
 
 			if (department_BranchId.HasValue)
