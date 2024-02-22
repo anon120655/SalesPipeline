@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Notifications;
+using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +11,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface INotifys
 	{
 		Task LineNotify(string msg);
+		Task<PaginationView<List<NotificationCustom>>> GetList(NotiFilter model);
+		Task UpdateRead(List<Guid> model);
+
 	}
 }

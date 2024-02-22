@@ -114,6 +114,10 @@ public partial class User
 
     public virtual Master_Department_Center? Master_Department_Center { get; set; }
 
+    public virtual ICollection<Notification> NotificationFromUsers { get; set; } = new List<Notification>();
+
+    public virtual ICollection<Notification> NotificationToUsers { get; set; } = new List<Notification>();
+
     public virtual Master_Position? Position { get; set; }
 
     public virtual User_Role? Role { get; set; }

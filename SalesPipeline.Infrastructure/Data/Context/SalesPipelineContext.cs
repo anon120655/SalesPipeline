@@ -68,6 +68,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<MenuItem> MenuItems { get; set; }
 
+    public virtual DbSet<Notification> Notifications { get; set; }
+
     public virtual DbSet<ProcessSale> ProcessSales { get; set; }
 
     public virtual DbSet<ProcessSale_Section> ProcessSale_Sections { get; set; }
@@ -963,6 +965,52 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Notification");
+
+            entity.HasIndex(e => e.FromUserId, "FromUserId");
+
+            entity.HasIndex(e => e.ToUserId, "ToUserId");
+
+            entity.Property(e => e.ActionId).HasColumnType("int(11)");
+            entity.Property(e => e.ActionName1).HasMaxLength(255);
+            entity.Property(e => e.ActionName2).HasMaxLength(255);
+            entity.Property(e => e.ActionName3).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.EventId).HasColumnType("int(11)");
+            entity.Property(e => e.FromUserId)
+                .HasComment("FK รหัสผู้ใช้ ที่สร้างการแจ้งเตือน")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.FromUserName).HasMaxLength(255);
+            entity.Property(e => e.IsRead)
+                .HasComment("0=ยังไม่ได้อ่าน ,1=อ่านแล้ว")
+                .HasColumnType("smallint(1)");
+            entity.Property(e => e.ReadDate)
+                .HasComment("วันที่อ่าน")
+                .HasColumnType("datetime");
+            entity.Property(e => e.RedirectUrl).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.ToUserId)
+                .HasComment("FK รหัสผู้ใช้ ที่จะได้รับการแจ้งเตือน")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ToUserName).HasMaxLength(255);
+
+            entity.HasOne(d => d.FromUser).WithMany(p => p.NotificationFromUsers)
+                .HasForeignKey(d => d.FromUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("notification_ibfk_1");
+
+            entity.HasOne(d => d.ToUser).WithMany(p => p.NotificationToUsers)
+                .HasForeignKey(d => d.ToUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("notification_ibfk_2");
         });
 
         modelBuilder.Entity<ProcessSale>(entity =>

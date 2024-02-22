@@ -61,7 +61,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			_db = new RepositoryBase(this);
 			Logger = new LoggerRepo(this, _db, settings);
 			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
-			Notifys = new Notifys(this, _db, settings);
+			Notifys = new Notifys(this, _db, settings, _mapper);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
 			MasterDepBranch = new MasterDepBranch(this, _db, settings, _mapper);
@@ -79,7 +79,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
 			AssignmentCenter = new AssignmentCenter(this, _db, settings, _mapper);
-			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);
+			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);			
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

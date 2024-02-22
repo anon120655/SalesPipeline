@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Notifications;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -77,6 +78,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Assignment_RM, Assignment_RMCustom>().ReverseMap();
 			CreateMap<Entity.Assignment_RM_Sale, Assignment_RM_SaleCustom>().ReverseMap();
 
+			//Notification
+			CreateMap<Entity.Notification, NotificationCustom>().ReverseMap();
 
 		}
 	}
