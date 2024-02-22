@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -162,22 +163,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
 			if (assignment != null)
 			{
-				//assignment.RMNumber = model.RMNumber ?? 0;
-				//assignment.CurrentNumber = model.CurrentNumber ?? 0;
-
+				var salesCount = 0;
 				foreach (var item in model.Sales)
 				{
-					//var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
-					//if (sales != null)
-					//{
-					//}
+					var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+					if (sales != null)
+					{
+						if (sales.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sales.CompanyName}");
+
+						sales.AssCenterUserId = model.Assign.UserId;
+						sales.AssCenterUserName = assignment.EmployeeName;
+						sales.AssCenterCreateBy = model.CurrentUserId;
+						sales.AssCenterDate = DateTime.Now;
+						_db.Update(sales);
+						await _db.SaveAsync();
+
+						salesCount++;
+					}
 				}
+
+				assignment.CurrentNumber = assignment.CurrentNumber + salesCount;
 				_db.Update(assignment);
 				await _db.SaveAsync();
 			}
-
-
-			throw new NotImplementedException();
 		}
 
 		public async Task UpdateCurrentNumber(Guid id)
