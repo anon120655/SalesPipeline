@@ -339,41 +339,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				};
 				var sale = await _repo.Sales.Create(saleData);
 
-				//Create with RM Assing yourself
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (assCenterUserId.HasValue)
 				{
-					//*************** เปลี่ยนไปสร้างตอน CreateAssignmentRMAll
-					//Assignment_RMCustom? assignment_RM = null;
-					//if (!await _repo.AssignmentRM.CheckAssignmentByUserId(model.CurrentUserId))
-					//{
-					//	assignment_RM = await _repo.AssignmentRM.Create(new()
-					//	{
-					//		UserId = model.CurrentUserId,
-					//		EmployeeId = user.EmployeeId,
-					//		EmployeeName = user.FullName,
-					//	});
-					//}
-
-					//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
-					//else
-					//{
-					//	assignment = await _repo.Assignment.GetByUserId(model.CurrentUserId);
-					//}
-					//if (assignment != null)
-					//{
-					//	var assignmentSale = await _repo.Assignment.CreateSale(new()
-					//	{
-					//		CreateBy = model.CurrentUserId,
-					//		CreateByName = user.FullName,
-					//		AssignmentId = assignment.Id,
-					//		SaleId = sale.Id
-					//	});
-					//	if (assignmentSale != null)
-					//	{
-					//		await _repo.Assignment.UpdateCurrentNumber(assignment.Id);
-					//	}
-					//}
+					var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(assCenterUserId.Value);
+					if (assignmentCenter != null)
+					{
+						await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentCenter.Id);
+					}
 				}
+
+				//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
 
 				_transaction.Commit();
 

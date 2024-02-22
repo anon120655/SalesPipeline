@@ -192,7 +192,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (assignments != null)
 			{
 				assignments.RMNumber = countRm;
-				assignments.CurrentNumber = assignment_RMs.Sum(x => x.CurrentNumber);
+				//assignments.CurrentNumber = assignment_RMs.Sum(x => x.CurrentNumber);
+
+				var sales = await _repo.Context.Sales
+												  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
+												  .ToListAsync();
+
+				assignments.CurrentNumber = sales.Count;
 				_db.Update(assignments);
 				await _db.SaveAsync();
 			}
