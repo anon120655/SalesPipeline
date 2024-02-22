@@ -33,6 +33,8 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลฟอร์มกระบวนการขาย ById
 		/// </summary>
+		/// 
+		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{

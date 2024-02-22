@@ -21,6 +21,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? juristicnumber { get; set; }
 		public string? type { get; set; }
 		public string? chain { get; set; }
+		public string? isiccode { get; set; }		
 		public string? businesstype { get; set; }
 		public string? province { get; set; }
 		public string? amphur { get; set; }
@@ -76,6 +77,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(chain))
 				ParameterAll += $"&chain={chain}";
+
+			if (!String.IsNullOrEmpty(isiccode))
+				ParameterAll += $"&isiccode={isiccode}";
 
 			if (!String.IsNullOrEmpty(businesstype))
 				ParameterAll += $"&businesstype={businesstype}";
@@ -162,6 +166,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(chain), out var _chain))
 				chain = _chain;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isiccode), out var _isiccode))
+				isiccode = _isiccode;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(type), out var _type))
 				type = _type;

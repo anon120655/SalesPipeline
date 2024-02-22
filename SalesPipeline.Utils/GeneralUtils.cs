@@ -614,7 +614,7 @@ namespace SalesPipeline.Utils
 				await upload.FileData.CopyToAsync(fileStream);
 			}
 			var parametere = Securitys.Base64StringEncode(path);
-			response.UploadUrl = $"{_appSet.baseUriApi}/api/v1/file/v?id={parametere}";
+			response.UploadUrl = $"{_appSet.baseUriApi}/v1/file/v?id={parametere}";
 
 			return response;
 		}

@@ -166,17 +166,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var salesCount = 0;
 				foreach (var item in model.Sales)
 				{
-					var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
-					if (sales != null)
+					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+					if (sale != null)
 					{
-						if (sales.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sales.CompanyName}");
+						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
-						sales.AssCenterUserId = model.Assign.UserId;
-						sales.AssCenterUserName = assignment.EmployeeName;
-						sales.AssCenterCreateBy = model.CurrentUserId;
-						sales.AssCenterDate = DateTime.Now;
-						_db.Update(sales);
+						sale.AssCenterUserId = model.Assign.UserId;
+						sale.AssCenterUserName = assignment.EmployeeName;
+						sale.AssCenterCreateBy = model.CurrentUserId;
+						sale.AssCenterDate = DateTime.Now;
+						_db.Update(sale);
 						await _db.SaveAsync();
+
+						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = sale.Id,
+							StatusId = StatusSaleModel.WaitAssign,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+						});
 
 						salesCount++;
 					}
@@ -185,6 +195,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				assignment.CurrentNumber = assignment.CurrentNumber + salesCount;
 				_db.Update(assignment);
 				await _db.SaveAsync();
+
 			}
 		}
 
