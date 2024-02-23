@@ -11,7 +11,7 @@
 			<div class="col-12 my-2">
 				@if (stepAssign == StepAssignLoanModel.Home)
 				{
-					var _items = Items?.Where(x => x.Status != StatusModel.Delete).ToList();
+					@* var _items = Items?.Where(x => x.Status != StatusModel.Delete).ToList(); *@
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -24,7 +24,7 @@
 							<div class="col mb-2">
 								<label class="form-label">รหัสพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
+									<input @bind="filterRM.emp_id" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -35,7 +35,7 @@
 							<div class="col mb-2">
 								<label class="form-label">ชื่อพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<input @bind="filterRM.emp_name" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -45,7 +45,7 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">จังหวัด</label>
-								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<select value="@filterRM.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
 									@if (LookUp.Provinces?.Count > 0)
 									{
@@ -92,7 +92,7 @@
 											</tr>
 										</thead>
 										<tbody>
-											@if (Items == null)
+											@if (ItemsRM == null)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -100,7 +100,7 @@
 													</td>
 												</tr>
 											}
-											else if (Items.Count == 0)
+											else if (ItemsRM.Count == 0)
 											{
 												<tr class="text-center align-middle">
 													<td colspan="100">
@@ -110,7 +110,8 @@
 											}
 											else
 											{
-												foreach (var item in Items)
+
+												foreach (var item in ItemsRM)
 												{
 													item.CurrentUserId = UserInfo.Id;
 
@@ -141,18 +142,18 @@
 							</div>
 						</div>
 						<div>
-							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-					TotalItems="@(Pager?.TotalItems ?? 0)"
-					Pager="@Pager"
-					OnShowOnPage="@OnSelectPagesize"
-					OnSelectedPage="@OnSelectPage"
-					ParameterAll="@filter?.SetParameter()">
-					</PaginationBack> *@
+							<PaginationBack DisplayItems="@(ItemsRM?.Count ?? 0)"
+											TotalItems="@(PagerRM?.TotalItems ?? 0)"
+											Pager="@PagerRM"
+											OnShowOnPage="@OnSelectPagesizeRM"
+											OnSelectedPage="@OnSelectPageRM"
+											ParameterAll="@filterRM?.SetParameter()">
+							</PaginationBack>
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
 								<div class="p-2 bd-highlight">
-									@if (Items?.Count > 0)
+									@if (ItemsRM?.Count > 0)
 									{
 										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											มอบหมาย
@@ -165,7 +166,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Customer)
 				{
-					var _items = Items?.Where(x => x.Id == assignmentIdPrevious).FirstOrDefault();
+					var _items = ItemsRM?.Where(x => x.Id == assignmentIdPrevious).FirstOrDefault();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -179,7 +180,7 @@
 								<div class="col mb-2">
 									<label class="form-label">ค้นหาลูกค้า</label>
 									<div class="input-group">
-										<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+										<input @bind="filterRM.searchtxt" class="form-control" type="search" placeholder="">
 										<span class="input-group-append ms-0">
 											<button @onclick="(()=> SearchStepCustomer(null))" class="btn rounded-start-0 border border-start-0" type="button">
 												<i class="fa fa-search"></i>
@@ -202,7 +203,7 @@
 								</div>
 								<div class="col mb-2">
 									<label class="form-label">จังหวัด</label>
-									<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+									<select value="@filterRM.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 										<option value="">ทั้งหมด</option>
 										@if (LookUp.Provinces?.Count > 0)
 										{
@@ -379,7 +380,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Assigned)
 				{
-					var _items = Items?.Where(x => x.Id != assignmentIdPrevious).ToList();
+					var _items = ItemsRM?.Where(x => x.Id != assignmentIdPrevious).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -392,7 +393,7 @@
 							<div class="col mb-2">
 								<label class="form-label">รหัสพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
+									<input @bind="filterRM.emp_id" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -403,7 +404,7 @@
 							<div class="col mb-2">
 								<label class="form-label">ชื่อพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<input @bind="filterRM.emp_name" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -413,7 +414,7 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">จังหวัด</label>
-								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<select value="@filterRM.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
 									@if (LookUp.Provinces?.Count > 0)
 									{
@@ -500,13 +501,13 @@
 							</div>
 						</div>
 						<div>
-							@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-					TotalItems="@(Pager?.TotalItems ?? 0)"
-					Pager="@Pager"
-					OnShowOnPage="@OnSelectPagesize"
-					OnSelectedPage="@OnSelectPage"
-					ParameterAll="@filter?.SetParameter()">
-					</PaginationBack> *@
+							<PaginationBack DisplayItems="@(ItemsRM?.Count ?? 0)"
+											TotalItems="@(PagerRM?.TotalItems ?? 0)"
+											Pager="@PagerRM"
+											OnShowOnPage="@OnSelectPagesizeRM"
+											OnSelectedPage="@OnSelectPageRM"
+											ParameterAll="@filterRM?.SetParameter()">
+							</PaginationBack>
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
@@ -530,7 +531,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
-					var _items = Items?.Where(x => x.IsSelectMove).FirstOrDefault();
+					var _items = ItemsRM?.Where(x => x.IsSelectMove).FirstOrDefault();
 					var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList();
 
 					<div class="box_content">

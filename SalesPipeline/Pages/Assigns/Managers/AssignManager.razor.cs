@@ -25,7 +25,7 @@ namespace SalesPipeline.Pages.Assigns.Managers
 		private AssignCenterModel AssignModel = new();
 		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
-		int LimitAssign = 10;
+		private int LimitAssign = 10;
 		ModalSuccessful modalSuccessfulAssign = default!;
 		private bool IsToClose = false;
 

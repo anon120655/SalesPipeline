@@ -260,6 +260,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								Id = Guid.NewGuid(),
 								Status = StatusModel.Active,
+								CreateDate = DateTime.Now.AddSeconds(1),
 								AssignmentRMId = assignment_RM.Id,
 								SaleId = item_sales.Id,
 								IsActive = StatusModel.Active,
@@ -268,6 +269,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Sale = _mapper.Map<SaleCustom>(item_sales)
 							});
 						}
+
+						assignment_RM.Assignment_RM_Sales = assignment_RM.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
 
 						assignment_RM.User = null;
 						responseItems.Add(assignment_RM);
