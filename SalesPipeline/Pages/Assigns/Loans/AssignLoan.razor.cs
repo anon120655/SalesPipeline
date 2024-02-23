@@ -163,6 +163,11 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRM.emp_name)).ToList();
 				}
 
+				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
+				{
+					ItemsRM = ItemsRM.Where(x => x.Id != assignmentIdPrevious).ToList();
+				}
+
 				PagerRM = new Pager(ItemsRM.Count(), filterRM.page, filterRM.pagesize, null);
 				if (PagerRM != null)
 				{
@@ -341,6 +346,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					{
 						//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
 						SetDataCustomerMove();
+						SetModelRM();
 					}
 				}
 				else
