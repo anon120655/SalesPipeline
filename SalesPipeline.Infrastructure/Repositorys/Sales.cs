@@ -284,6 +284,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			//ISICCode
+			if (!String.IsNullOrEmpty(model.isiccode))
+			{
+				if (Guid.TryParse(model.isiccode, out Guid id))
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_ISICCodeId == id);
+				}
+			}
+
 			//ห่วงโซ่
 			if (!String.IsNullOrEmpty(model.chain))
 			{

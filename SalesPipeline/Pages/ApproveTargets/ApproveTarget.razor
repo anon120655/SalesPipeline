@@ -19,151 +19,207 @@
 						</div>
 					</div>
 
-					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-						<div class="col mb-2">
-							<label class="form-label">การแสดงผล</label>
-							<select @onchange="OnSort" id="DisplaySort" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option value="@OrderByModel.ASC">เก่าสุด &#8594 ใหม่สุด</option>
-								<option value="@OrderByModel.DESC">ใหม่สุด &#8594 เก่าสุด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ค้นหาลูกค้า</label>
-							<div class="input-group">
-								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
+					<div class="@(formView != null ? "d-none" : "")">
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">การแสดงผล</label>
+								<select @onchange="OnSort" id="DisplaySort" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									<option value="@OrderByModel.ASC">เก่าสุด &#8594 ใหม่สุด</option>
+									<option value="@OrderByModel.DESC">ใหม่สุด &#8594 เก่าสุด</option>
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ค้นหาลูกค้า</label>
+								<div class="input-group">
+									<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">อำเภอ</label>
+								<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Amphurs?.Count > 0)
+									{
+										foreach (var item in LookUp.Amphurs)
+										{
+											<option value="@item.AmphurID">@item.AmphurName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ผู้ขออนุมัติ</label>
+								<select id="Responsible" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+									<option selected>ทั้งหมด</option>
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
 							</div>
 						</div>
-						<div class="col mb-2">
-							<label class="form-label">จังหวัด</label>
-							<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
-								<option value="">ทั้งหมด</option>
-								@if (LookUp.Provinces?.Count > 0)
-								{
-									foreach (var item in LookUp.Provinces)
-									{
-										<option value="@item.ProvinceID">@item.ProvinceName</option>
-									}
-								}
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">อำเภอ</label>
-							<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								@if (LookUp.Amphurs?.Count > 0)
-								{
-									foreach (var item in LookUp.Amphurs)
-									{
-										<option value="@item.AmphurID">@item.AmphurName</option>
-									}
-								}
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ผู้ขออนุมัติ</label>
-							<select id="Responsible" class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2 mt-3">
-							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
-								<i class="fa fa-search fa-xs"></i> ค้นหา
-							</button>
-						</div>
-					</div>
-					<div class="row mt-3">
-						<div class="col-12">
-							<div class="table-responsive border-top">
-								<table class="table table_list">
-									<thead>
-										<tr>
-											<th class="text-center">วันที่</th>
-											<th class="text-center">เลขนิติบุคคล</th>
-											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">จังหวัด</th>
-											<th class="text-center">อำเภอ</th>
-											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">ผู้ขออนุมัติ</th>
-											<th class="text-center">จัดการอนุมัติ</th>
-										</tr>
-									</thead>
-									<tbody>
-										@if (Items == null)
-										{
-											<tr class="text-center align-middle">
-												<td colspan="100">
-													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
-												</td>
+						<div class="row mt-3">
+							<div class="col-12">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">วันที่</th>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+												<th class="text-center">ผู้ขออนุมัติ</th>
+												<th class="text-center">รายละเอียด</th>
+												<th class="text-center">จัดการอนุมัติ</th>
 											</tr>
-										}
-										else if (Items.Count == 0)
-										{
-											<tr class="text-center align-middle">
-												<td colspan="100">
-													<em>ไม่พบข้อมูล</em>
-												</td>
-											</tr>
-										}
-										else
-										{
-											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
-											int SequenceNo = 0;
-											foreach (var item in Items)
+										</thead>
+										<tbody>
+											@if (Items == null)
 											{
-												<tr>
-													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
-													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
-													<td class="text-center">@item.CompanyName</td>
-													<td class="text-center">@item.Customer?.ProvinceName</td>
-													<td class="text-center">@item.Customer?.AmphurName</td>
-													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@item.AssUserName</td>
-													<td class="text-center">
-														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
-																   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
-														</div>
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 													</td>
 												</tr>
-												SequenceNo++;
 											}
-										}
-									</tbody>
-								</table>
+											else if (Items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+												int SequenceNo = 0;
+												foreach (var item in Items)
+												{
+													<tr>
+														<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
+														<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.CompanyName</td>
+														<td class="text-center">@item.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Customer?.AmphurName</td>
+														<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+														<td class="text-center">@item.AssUserName</td>
+														<td class="text-center">
+															<a @onclick="(() => OnViewCustomer(item))" class="btn btn-info btn-circle">
+																<i class="fa-solid fa-eye text-white fs_15e"></i>
+															</a>
+														</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																	   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
+															</div>
+														</td>
+													</tr>
+													SequenceNo++;
+												}
+											}
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
+						@if (Items?.Count > 0)
+						{
+							<div class="my-4 text-center">
+								<div class="d-flex bd-highlight align-items-center justify-content-center">
+									<div class="p-2 bd-highlight">
+										<Button @onclick="InitShowNotApprove" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											ไม่อนุมัติ
+										</Button>
+									</div>
+									<div class="p-2 bd-highlight">
+										<Button @onclick="InitShowConfirmApprove" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											@if (isLoading)
+											{
+												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											}
+											อนุมัติ
+										</Button>
+									</div>
+								</div>
+							</div>
+						}
 					</div>
-					<div>
-						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-										TotalItems="@(Pager?.TotalItems ?? 0)"
-										Pager="@Pager"
-										OnShowOnPage="@OnSelectPagesize"
-										OnSelectedPage="@OnSelectPage"
-										ParameterAll="@filter?.SetParameter()">
-						</PaginationBack>
-					</div>
-					@if (Items?.Count > 0)
+					@if (formView != null)
 					{
-						<div class="my-4 text-center">
-							<div class="d-flex bd-highlight align-items-center justify-content-center">
-								<div class="p-2 bd-highlight">
-									<Button @onclick="InitShowNotApprove" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-										ไม่อนุมัติ
-									</Button>
-								</div>
-								<div class="p-2 bd-highlight">
-									<Button @onclick="InitShowConfirmApprove" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-										@if (isLoading)
-										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
-										}
-										อนุมัติ
-									</Button>
-								</div>
+						<div class="row mt-3">
+							<div class="col-12 tabs_elm">
+								<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
+									<Tab Title="ข้อมูลลูกค้า" IsActive="true">
+										<Content>
+											<div class="row">
+												<div class="col-12 col-xl-8"></div>
+												<div class="col-12 col-xl-3 text-end">
+													<a class="btn btn-primary mw_6r" @onclick=OnViewCustomerBack>กลับ</a>
+												</div>
+											</div>
+											<PartialCustomerInfo formModel="formView" />
+										</Content>
+									</Tab>
+									<Tab Title="ข้อมูลผู้ติดต่อ">
+										<Content>
+											<div class="d-flex align-items-center justify-content-center mh_10r">
+												<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+											</div>
+										</Content>
+									</Tab>
+									<Tab Title="เอกสาร">
+										<Content>
+											<div class="d-flex align-items-center justify-content-center mh_10r">
+												<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+											</div>
+										</Content>
+									</Tab>
+									<Tab Title="ประวัติการติดต่อ">
+										<Content>
+											<div class="d-flex align-items-center justify-content-center mh_10r">
+												<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+											</div>
+										</Content>
+									</Tab>
+									<Tab Title="คู่ค้า">
+										<Content>
+											<div class="d-flex align-items-center justify-content-center mh_10r">
+												<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+											</div>
+										</Content>
+									</Tab>
+								</Tabs>
 							</div>
 						</div>
 					}

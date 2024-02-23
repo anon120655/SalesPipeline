@@ -21,7 +21,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private List<Assignment_RMCustom>? Items;
+		private List<Assignment_RMCustom> ItemsSelected = new();
 		private List<Assignment_RM_SaleCustom>? SaleMoveAssigned;
+		private List<Assignment_RM_SaleCustom> SaleMoveAssignedSelected = new();
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;

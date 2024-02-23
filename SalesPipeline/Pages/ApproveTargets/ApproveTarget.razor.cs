@@ -19,6 +19,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
+		private SaleCustom? formView = null;
 		ModalConfirm modalConfirmApprove = default!;
 		ModalSuccessful modalSuccessfulApprove = default!;
 		ModalNotApprove modalNotApprove = default!;
@@ -219,6 +220,19 @@ namespace SalesPipeline.Pages.ApproveTargets
 			{
 				model.IsSelected = false;
 			}
+		}
+
+		protected void OnViewCustomer(SaleCustom? model)
+		{
+			if (model != null)
+			{
+				formView = model;
+			}
+		}
+
+		protected void OnViewCustomerBack()
+		{
+			formView = null;
 		}
 
 		protected async Task InitShowConfirmApprove()

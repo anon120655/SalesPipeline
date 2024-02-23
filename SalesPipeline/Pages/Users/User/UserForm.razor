@@ -184,7 +184,7 @@
 									</div>
 								</div>
 								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">อำเภอ</label>
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 											@if (LookUp.Amphurs?.Count > 0)
