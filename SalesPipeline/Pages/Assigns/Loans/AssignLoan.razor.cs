@@ -28,6 +28,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private List<Assignment_RMCustom>? ItemsRMNew;
 		private Pager? PagerRMNew;
 		private List<Assignment_RM_SaleCustom>? SaleMoveAssigned;
+		//IsSelectNewAssign ใช้เช็คตอนกด back กลับจากหน้า Summary
+		private Guid? IsSelectNewAssign = null;
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
@@ -181,6 +183,16 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRM.emp_name)).ToList();
 				}
 
+				if (!String.IsNullOrEmpty(filterRM.province))
+				{
+					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province)).ToList();
+				}
+
+				if (!String.IsNullOrEmpty(filterRM.amphur))
+				{
+					ItemsRM = ItemsRM.Where(x => x.AmphurName != null && x.AmphurName.Contains(filterRM.amphur)).ToList();
+				}
+
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
 				{
 					ItemsRM = ItemsRM.Where(x => x.Id != assignmentIdPrevious).ToList();
@@ -204,6 +216,20 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);
 				//ItemsRMNew = new(ItemsAll);
 
+				if (IsSelectNewAssign.HasValue && IsSelectNewAssign != Guid.Empty)
+				{
+					var isSelect = ItemsRMNew.FirstOrDefault(x => x.Id == IsSelectNewAssign);
+					if (isSelect != null)
+					{
+						isSelect.IsSelect = true;
+					}
+				}
+
+				if (assignmentIdPrevious.HasValue)
+				{
+					ItemsRMNew = ItemsRMNew.Where(x => x.Id != assignmentIdPrevious).ToList();
+				}
+
 				if (!String.IsNullOrEmpty(filterRMNew.emp_id))
 				{
 					ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(filterRMNew.emp_id)).ToList();
@@ -214,9 +240,14 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRMNew.emp_name)).ToList();
 				}
 
-				if (assignmentIdPrevious.HasValue)
+				if (!String.IsNullOrEmpty(filterRMNew.province))
 				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.Id != assignmentIdPrevious).ToList();
+					ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province)).ToList();
+				}
+
+				if (!String.IsNullOrEmpty(filterRMNew.amphur))
+				{
+					ItemsRMNew = ItemsRMNew.Where(x => x.AmphurName != null && x.AmphurName.Contains(filterRMNew.amphur)).ToList();
 				}
 
 				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
@@ -233,22 +264,29 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			filter.province = null;
-			filter.amphur = null;
+			filterRM.province = null;
+			filterRM.amphur = null;
+			filterRMNew.province = null;
+			filterRMNew.amphur = null;
 			LookUp.Amphurs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
-				filter.province = provinceID.ToString();
+				filterRM.province = provinceID.ToString();
+				filterRMNew.province = provinceID.ToString();
 
-				if (int.TryParse(filter.province, out int id))
+				if (int.TryParse(filterRM.province, out int id))
 				{
+					//เปลี่ยนเป็น name เพื่อเช็คใน Items
+					filterRM.province = _provinceName;
+					filterRMNew.province = _provinceName;
+
 					var amphurs = await _masterViewModel.GetAmphur(id);
 					if (amphurs != null && amphurs.Data?.Count > 0)
 					{
-						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--ทั้งหมด--" } };
 						LookUp.Amphurs.AddRange(amphurs.Data);
 
 						StateHasChanged();
@@ -264,24 +302,56 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				}
 			}
 
-			await SetModel();
+			if (stepAssign == StepAssignLoanModel.Home)
+			{
+				SetModelRM();
+			}
+			else if (stepAssign == StepAssignLoanModel.Customer)
+			{
+				SearchStepCustomer();
+			}
+			else if (stepAssign == StepAssignLoanModel.Assigned)
+			{
+				SetModelRMNew();
+			}
 			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 
 		}
 
 		[JSInvokable]
 		public async Task AmphurChange(string _amphurID, string _amphurName)
 		{
-			filter.amphur = null;
+			await Task.Delay(1);
+			filterRM.amphur = null;
+			filterRMNew.amphur = null;
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
 			{
-				filter.amphur = amphurID.ToString();
+				if (amphurID != 0)
+				{
+					//เปลี่ยนเป็น name เพื่อเช็คใน Items
+					filterRM.amphur = _amphurName;
+					filterRMNew.amphur = _amphurName;
+				}
+				else
+				{
+					filterRM.amphur = null;
+					filterRMNew.amphur = null;
+				}
 			}
 
-			await SetModel();
+			if (stepAssign == StepAssignLoanModel.Home)
+			{
+				SetModelRM();
+			}
+			else if (stepAssign == StepAssignLoanModel.Customer)
+			{
+				SearchStepCustomer();
+			}
+			else if (stepAssign == StepAssignLoanModel.Assigned)
+			{
+				SetModelRMNew();
+			}
 			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 		protected async Task OnSelectPageRM(string parematerAll)
@@ -339,18 +409,23 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected async Task Search()
+		protected async Task SearchRM()
 		{
 			SetModelRM();
 			StateHasChanged();
 			await Task.Delay(1);
-			//_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task SearchRMNew()
+		{
+			SetModelRMNew();
+			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async Task GotoStep(int step, Guid? assignmentId = null, bool? back = null)
 		{
 			bool isNext = true;
-			ClearSearchAssigned();
 			ClearSearchCustomer();
 
 			if (step == StepAssignLoanModel.Home)
@@ -367,57 +442,26 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			if (step == StepAssignLoanModel.Customer)
 			{
-				//ถ้า SaleMoveAssigned มีค่าแสดงว่าผ่านขั้นตอนการเลือกลูกค้าและไปที่หน้าเลือกผู้รับผิดชอบแล้ว กดย้อนหลับมา
-				if (back == true && SaleMoveAssigned != null)
-				{
-					//var _items = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-					//if (_items != null && _items.Assignment_RM_Sales != null)
-					//{
-					//	_items.Assignment_RM_Sales.AddRange(SaleMoveAssigned);
-					//	_items.Assignment_RM_Sales = _items.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
-					//}
-					//SaleMoveAssigned = null;
-				}
+
 			}
 			else if (step == StepAssignLoanModel.Assigned)
 			{
-				if (back != true)
+				isNext = CheckSelectCustomer();
+				if (!isNext)
 				{
-					isNext = CheckSelectCustomer();
-					if (!isNext)
-					{
-						_utilsViewModel.AlertWarning("เลือกลูกค้า");
-					}
-					else
-					{
-						//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
-						//SetDataCustomerMove();
-						//SetModelRM();
-
-						SetModelRMNew();
-
-						var _itemsMain = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-						if (_itemsMain != null && _itemsMain.Assignment_RM_Sales != null)
-						{
-							var _itemsMove = _itemsMain.Assignment_RM_Sales.Where(s => s.IsSelectMove).ToList();
-							if (_itemsMove.Count > 0)
-							{
-								//ก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned ใช้แสดงตอน Sammary
-								SaleMoveAssigned = new();
-								SaleMoveAssigned = new(_itemsMove);
-							}
-						}
-					}
+					_utilsViewModel.AlertWarning("เลือกลูกค้า");
 				}
 				else
 				{
-					//กรณีย้อนกลับจาก Summary ต้องลบกลุ่มลูกค้าที่ถูก move ไปก่อนหน้า
-					//ClearDataCustomerMove();
+					//set model ผู้รับผิดชอบใหม่  ใช้แสดงตอนเลือกผู้รับผิดชอบ Assigned
+					SetModelRMNew();
+
+					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned ใช้แสดงตอน Sammary
+					KeepSaleMove();
 				}
 			}
 			else if (step == StepAssignLoanModel.Summary)
 			{
-				//SetDataCustomerMove();
 				isNext = Summary();
 				if (!isNext)
 				{
@@ -430,6 +474,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				assignmentIdPrevious = null;
 				SaleMoveAssigned = null;
 				ClearItemsIsSelectAll();
+				SetModelRM();
 				step = StepAssignLoanModel.Home;
 			}
 
@@ -477,7 +522,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 				string valSearch = filterRM.searchtxt ?? string.Empty;
 				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
-				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype))
+				string valProvince = filterRM.province ?? string.Empty;
+				string valAmphur = filterRM.amphur ?? string.Empty;
+				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype) || !String.IsNullOrEmpty(valProvince) || !String.IsNullOrEmpty(valAmphur))
 				{
 					if (_items != null && _items.Assignment_RM_Sales != null)
 					{
@@ -502,6 +549,23 @@ namespace SalesPipeline.Pages.Assigns.Loans
 								item.IsShow = (item.Sale != null && item.Sale.CompanyName != null && item.Sale.CompanyName.Contains(valSearch))
 										   && (item.Sale != null && item.Sale.Customer != null && item.Sale.Customer.Master_BusinessTypeId != null && item.Sale.Customer.Master_BusinessTypeId == businesstypeid);
 							}
+
+							if (!String.IsNullOrEmpty(valProvince))
+							{
+								item.IsShow = item.Sale != null
+										&& item.Sale.Customer != null
+										&& item.Sale.Customer.ProvinceName != null
+										&& item.Sale.Customer.ProvinceName.Contains(valProvince);
+							}
+
+							if (!String.IsNullOrEmpty(valAmphur))
+							{
+								item.IsShow = item.Sale != null
+										&& item.Sale.Customer != null
+										&& item.Sale.Customer.AmphurName != null
+										&& item.Sale.Customer.AmphurName.Contains(valAmphur);
+							}
+
 						}
 
 
@@ -531,24 +595,41 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
+		protected void KeepSaleMove()
+		{
+			var _itemsMain = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+			if (_itemsMain != null && _itemsMain.Assignment_RM_Sales != null)
+			{
+				var _itemsMove = _itemsMain.Assignment_RM_Sales.Where(s => s.IsSelectMove).ToList();
+				if (_itemsMove.Count > 0)
+				{
+					//ก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned ใช้แสดงตอน Sammary
+					SaleMoveAssigned = new();
+					SaleMoveAssigned = new(_itemsMove);
+				}
+			}
+		}
+
 		//3. ผู้รับผิดชอบ
 		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
 		{
 			if (ItemsRMNew?.Count > 0)
 			{
-				foreach (var item in ItemsRMNew.Where(x => x.IsSelectMove))
+				foreach (var item in ItemsRMNew.Where(x => x.IsSelect))
 				{
-					item.IsSelectMove = false;
+					item.IsSelect = false;
 				}
 			}
 
 			if (checkedValue != null && (bool)checkedValue)
 			{
-				model.IsSelectMove = true;
+				model.IsSelect = true;
+				IsSelectNewAssign = model.Id;
 			}
 			else
 			{
-				model.IsSelectMove = false;
+				model.IsSelect = false;
+				IsSelectNewAssign = null;
 			}
 		}
 
@@ -556,7 +637,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			if (ItemsRM?.Count > 0 && SaleMoveAssigned != null)
 			{
-				var _itemsAssign = ItemsRM.Where(x => x.IsSelectMove).FirstOrDefault();
+				var _itemsAssign = ItemsRM.Where(x => x.IsSelect).FirstOrDefault();
 				if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
 				{
 					foreach (var item in SaleMoveAssigned)
@@ -572,11 +653,11 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected void ClearItemsIsSelectAll()
 		{
-			if (ItemsRM?.Count > 0)
+			if (ItemsAll?.Count > 0)
 			{
-				foreach (var item in ItemsRM)
+				foreach (var item in ItemsAll)
 				{
-					item.IsSelectMove = false;
+					item.IsSelect = false;
 					if (item.Assignment_RM_Sales?.Count(x => x.IsSelectMove) > 0)
 					{
 						foreach (var item_sale in item.Assignment_RM_Sales.Where(x => x.IsSelectMove))
@@ -608,7 +689,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (ItemsRMNew?.Count > 0)
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมาย
-				var _itemsAssign = ItemsRMNew.Where(x => x.IsSelectMove).FirstOrDefault();
+				var _itemsAssign = ItemsRMNew.Where(x => x.IsSelect).FirstOrDefault();
 				if (_itemsAssign != null)
 				{
 					return true;
@@ -621,61 +702,6 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			return false;
 		}
 
-		protected void SearchStepAssigned()
-		{
-			if (ItemsRM?.Count > 0)
-			{
-				var _items = ItemsRM?.Where(x => x.Id != assignmentIdPrevious).ToList();
-
-				if (!String.IsNullOrEmpty(filterRMNew.emp_id) || !String.IsNullOrEmpty(filterRMNew.emp_name))
-				{
-					if (_items != null)
-					{
-						foreach (var item in _items)
-						{
-							if (!String.IsNullOrEmpty(filterRMNew.emp_id) && String.IsNullOrEmpty(filterRMNew.emp_name))
-							{
-								item.IsShow = item.EmployeeId != null && item.EmployeeId.Contains(filterRMNew.emp_id);
-							}
-
-							if (String.IsNullOrEmpty(filterRMNew.emp_id) && !String.IsNullOrEmpty(filterRMNew.emp_name))
-							{
-								item.IsShow = item.EmployeeName != null && item.EmployeeName.Contains(filterRMNew.emp_name);
-							}
-
-							if (!String.IsNullOrEmpty(filterRMNew.emp_id) && !String.IsNullOrEmpty(filterRMNew.emp_name))
-							{
-								item.IsShow = (item.EmployeeId != null && item.EmployeeId.Contains(filterRMNew.emp_id))
-										   && (item.EmployeeName != null && item.EmployeeName.Contains(filterRMNew.emp_name));
-							}
-						}
-
-					}
-				}
-				else
-				{
-					ClearSearchAssigned();
-				}
-
-			}
-		}
-
-		protected void ClearSearchAssigned()
-		{
-			filter = new();
-			if (ItemsRM?.Count > 0)
-			{
-				var _items = ItemsRM?.Where(x => x.Id != assignmentIdPrevious).ToList();
-				if (_items != null)
-				{
-					foreach (var item in _items)
-					{
-						item.IsShow = true;
-					}
-				}
-			}
-		}
-
 		//5. เพิ่มลูกค้าไปผู้รับผิดชอบใหม่ ลบลูกค้าผู้ับผิดชอบเดิม ใน model หลัก
 		protected void SetDataCustomerMove()
 		{
@@ -684,7 +710,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				//ผู้รับผิดชอบเดิม
 				var _itemsRemove = ItemsAll.FirstOrDefault(x => x.Id == assignmentIdPrevious);
 				//ผู้รับผิดชอบใหม่
-				var _itemsRMNew = ItemsRMNew.FirstOrDefault(x => x.IsSelectMove);
+				var _itemsRMNew = ItemsRMNew.FirstOrDefault(x => x.IsSelect);
 
 				if (_itemsRMNew != null && _itemsRemove != null && _itemsRemove.Assignment_RM_Sales != null)
 				{
@@ -707,9 +733,6 @@ namespace SalesPipeline.Pages.Assigns.Loans
 								_itemsRemove.Assignment_RM_Sales.Remove(_itemsRemoveCheck);
 							}
 						}
-
-						//ทำสำเนาจาก model หลัก ไปยัง ItemsRM เพื่อแสดงผลในหน้า home
-						ItemsRM = GeneralUtils.DeepCopyJson(ItemsAll);
 					}
 				}
 			}

@@ -93,7 +93,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public virtual CustomerCustom? Customer { get; set; }
 
-		public virtual UserCustom? AssignedCenterUser { get; set; }
+		public virtual UserCustom? AssCenterUser { get; set; }
 
 		public virtual List<Sale_StatusCustom>? Sale_Statuses { get; set; }
 

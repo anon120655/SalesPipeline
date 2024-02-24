@@ -171,19 +171,19 @@ namespace SalesPipeline.Pages.AssignsHistory
 		{
 			if (Items?.Count > 0)
 			{
-				foreach (var item in Items.Where(x => x.IsSelectMove))
+				foreach (var item in Items.Where(x => x.IsSelect))
 				{
-					item.IsSelectMove = false;
+					item.IsSelect = false;
 				}
 			}
 
 			if (checkedValue != null && (bool)checkedValue)
 			{
-				model.IsSelectMove = true;
+				model.IsSelect = true;
 			}
 			else
 			{
-				model.IsSelectMove = false;
+				model.IsSelect = false;
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 			if (Items?.Count > 0)
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมายใหม่
-				var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
+				var _itemsAssign = Items.Where(x => x.IsSelect).FirstOrDefault();
 				if (_itemsAssign != null)
 				{
 					return true;
@@ -255,7 +255,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 			if (Items != null && formModel != null)
 			{
-				var _itemsNew = Items.FirstOrDefault(x => x.IsSelectMove);
+				var _itemsNew = Items.FirstOrDefault(x => x.IsSelect);
 
 				if (_itemsNew != null)
 				{
