@@ -532,7 +532,14 @@
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
 					var _items = ItemsRM?.Where(x => x.IsSelectMove).FirstOrDefault();
-					var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList();
+					@* var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList(); *@
+
+					List<Assignment_RM_SaleCustom>? _itemsSale = null;
+					var _itemsMain = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+					if (_itemsMain != null && _itemsMain.Assignment_RM_Sales != null)
+					{
+						_itemsSale = _itemsMain.Assignment_RM_Sales.Where(s => s.IsSelectMove).ToList();
+					}
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -654,7 +661,7 @@
 									</Button>
 								</div>
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Home))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Confirm))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>

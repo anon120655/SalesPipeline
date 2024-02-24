@@ -24,5 +24,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// สรุปผู้รับผิดชอบและลูกค้าที่ได้รับมอบหมาย
 		/// </summary>
 		public const int Summary = 4;
+		/// <summary>
+		/// กด Confirm
+		/// </summary>
+		public const int Confirm = 5;
 	}
 }

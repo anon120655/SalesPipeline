@@ -324,13 +324,13 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				//ถ้า SaleMoveAssigned มีค่าแสดงว่าผ่านขั้นตอนการเลือกลูกค้าและไปที่หน้าเลือกผู้รับผิดชอบแล้ว กดย้อนหลับมา
 				if (back == true && SaleMoveAssigned != null)
 				{
-					var _items = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-					if (_items != null && _items.Assignment_RM_Sales != null)
-					{
-						_items.Assignment_RM_Sales.AddRange(SaleMoveAssigned);
-						_items.Assignment_RM_Sales = _items.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
-					}
-					SaleMoveAssigned = null;
+					//var _items = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
+					//if (_items != null && _items.Assignment_RM_Sales != null)
+					//{
+					//	_items.Assignment_RM_Sales.AddRange(SaleMoveAssigned);
+					//	_items.Assignment_RM_Sales = _items.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
+					//}
+					//SaleMoveAssigned = null;
 				}
 			}
 			else if (step == StepAssignLoanModel.Assigned)
@@ -345,8 +345,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					else
 					{
 						//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
-						SetDataCustomerMove();
-						SetModelRM();
+						//SetDataCustomerMove();
+						//SetModelRM();
 					}
 				}
 				else
@@ -357,11 +357,20 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 			else if (step == StepAssignLoanModel.Summary)
 			{
+				//SetDataCustomerMove();
 				isNext = Summary();
 				if (!isNext)
 				{
 					_utilsViewModel.AlertWarning("เลือกผู้รับผิดชอบ");
 				}
+			}
+			else if (step == StepAssignLoanModel.Confirm)
+			{
+				SetDataCustomerMove();
+				assignmentIdPrevious = null;
+				SaleMoveAssigned = null;
+				ClearItemsIsSelectAll();
+				step = StepAssignLoanModel.Home;
 			}
 
 			if (isNext)
@@ -498,7 +507,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected void SetDataCustomerMove()
 		{
-			if (ItemsRM?.Count > 0 && SaleMoveAssigned == null)
+			if (ItemsRM?.Count > 0)
 			{
 				var _items = ItemsRM.FirstOrDefault(x => x.Id == assignmentIdPrevious);
 				if (_items != null && _items.Assignment_RM_Sales != null)
@@ -508,8 +517,21 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned และ move ตอนเลือกผู้รับผิดชอบ
 					if (_itemsMove.Count > 0)
 					{
-						SaleMoveAssigned = new();
-						SaleMoveAssigned = new(_itemsMove);
+						//SaleMoveAssigned = new();
+						//SaleMoveAssigned = new(_itemsMove);
+
+
+						var _itemsAssign = ItemsRM.Where(x => x.IsSelectMove).FirstOrDefault();
+						if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
+						{
+							foreach (var item in _itemsMove)
+							{
+								if (!_itemsAssign.Assignment_RM_Sales.Select(x => x.Id).Contains(item.Id))
+								{
+									_itemsAssign.Assignment_RM_Sales.Add(item);
+								}
+							}
+						}
 					}
 
 					foreach (var item in _itemsMove)
@@ -576,108 +598,31 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (ItemsRM?.Count > 0)
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมาย
-				var _itemsAssign = ItemsRM.Where(x => x.IsSelectMove).FirstOrDefault();
-				if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
-				{
-					if (SaleMoveAssigned != null)
-					{
-						foreach (var item in SaleMoveAssigned)
-						{
-							if (!_itemsAssign.Assignment_RM_Sales.Select(x => x.Id).Contains(item.Id))
-							{
-								_itemsAssign.Assignment_RM_Sales.Add(item);
-							}
-						}
-					}
+				//var _itemsAssign = ItemsRM.Where(x => x.IsSelectMove).FirstOrDefault();
+				//if (_itemsAssign != null && _itemsAssign.Assignment_RM_Sales != null)
+				//{
+				//	if (SaleMoveAssigned != null)
+				//	{
+				//		foreach (var item in SaleMoveAssigned)
+				//		{
+				//			if (!_itemsAssign.Assignment_RM_Sales.Select(x => x.Id).Contains(item.Id))
+				//			{
+				//				_itemsAssign.Assignment_RM_Sales.Add(item);
+				//			}
+				//		}
+				//	}
 
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				//	return true;
+				//}
+				//else
+				//{
+				//	return false;
+				//}
+
+				return true;
 			}
 			return false;
 		}
-
-		//protected bool Summary()
-		//{
-		//	if (Items?.Count > 0)
-		//	{
-		//		//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมาย
-		//		var _itemsAssign = Items.Where(x => x.IsSelectMove).FirstOrDefault();
-		//		if (_itemsAssign != null && _itemsAssign.Assignment_Sales != null)
-		//		{
-		//			//_itemsCustomerMove ผู้รับผิดชอบเดิม
-		//			var _itemsCustomerMove = Items?.Where(x => x.Id == employeeIdPrevious).FirstOrDefault();
-		//			if (_itemsCustomerMove != null && _itemsCustomerMove.Assignment_Sales != null)
-		//			{
-		//				var itemAssign = _itemsCustomerMove.Assignment_Sales.ToList();
-		//				foreach (var item in itemAssign)
-		//				{
-		//					if (item.IsSelectMove)
-		//					{
-		//						//เพิ่มข้อมูลลูกค้าจากผู้รับผิดชอบเดิมไปยังผู้รับผิดชอบใหม่
-		//						if (!_itemsAssign.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
-		//						{
-		//							//_itemsAssign.Assignment_Sales.Add(item);
-		//							_itemsAssign.Assignment_Sales.Add(new()
-		//							{
-		//								Id = item.Id,
-		//								Status = item.Status,
-		//								CreateDate = item.CreateDate,
-		//								CreateBy = item.CreateBy,
-		//								CreateByName = item.CreateByName,
-		//								AssignmentId = item.AssignmentId,
-		//								IsActive = item.IsActive,
-		//								SaleId = item.SaleId,
-		//								Description = item.Description,
-		//								Sale = item.Sale,
-		//								IsSelect = item.IsSelect,
-		//								IsSelectMove = item.IsSelectMove,
-		//								IsShow = item.IsShow
-		//							});
-		//						}
-		//						//ลบข้อมูลลูกค้าผู้รับผิดชอบเดิม
-		//						var _itemsRemove = _itemsCustomerMove.Assignment_Sales.FirstOrDefault(x => x.Id == item.Id);
-		//						if (_itemsRemove != null)
-		//						{
-		//							_itemsRemove.Status = StatusModel.Delete;
-		//							//_itemsCustomerMove.Assignment_Sales.Remove(_itemsRemove);
-		//						}
-		//					}
-		//					else
-		//					{
-		//						//เพิ่มข้อมูลลูกค้าไปยังผู้รับผิดชอบเดิม
-		//						var _itemsAdd = _itemsCustomerMove.Assignment_Sales.FirstOrDefault(x => x.Id == item.Id);
-		//						if (_itemsAdd != null)
-		//						{
-		//							_itemsAdd.Status = StatusModel.Active;
-		//						}
-		//						//if (!_itemsCustomerMove.Assignment_Sales.Select(x => x.Id).Contains(item.Id))
-		//						//{
-		//						//	_itemsCustomerMove.Assignment_Sales.Add(item);
-		//						//}
-		//						//ลบข้อมูลลูกค้าจากผู้รับผิดชอบใหม่
-		//						var _itemsRemove = _itemsAssign.Assignment_Sales.FirstOrDefault(x => x.Id == item.Id);
-		//						if (_itemsRemove != null)
-		//						{
-		//							_itemsRemove.Status = StatusModel.Delete;
-		//							//_itemsAssign.Assignment_Sales.Remove(_itemsRemove);
-		//						}
-		//					}
-		//				}
-		//			}
-
-		//			return true;
-		//		}
-		//		else
-		//		{
-		//			return false;
-		//		}
-		//	}
-		//	return false;
-		//}
 
 		protected void SearchStepAssigned()
 		{
