@@ -145,7 +145,6 @@
 							<PaginationBack DisplayItems="@(ItemsRM?.Count ?? 0)"
 											TotalItems="@(PagerRM?.TotalItems ?? 0)"
 											Pager="@PagerRM"
-											OnShowOnPage="@OnSelectPagesizeRM"
 											OnSelectedPage="@OnSelectPageRM"
 											ParameterAll="@filterRM?.SetParameter()">
 							</PaginationBack>
@@ -380,7 +379,7 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Assigned)
 				{
-					var _items = ItemsRM?.Where(x => x.Id != assignmentIdPrevious).ToList();
+					var _items = ItemsRMNew?.Where(x => x.Id != assignmentIdPrevious).ToList();
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
@@ -393,7 +392,7 @@
 							<div class="col mb-2">
 								<label class="form-label">รหัสพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filterRM.emp_id" class="form-control" type="search" placeholder="">
+									<input @bind="filterRMNew.emp_id" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -404,7 +403,7 @@
 							<div class="col mb-2">
 								<label class="form-label">ชื่อพนักงาน</label>
 								<div class="input-group">
-									<input @bind="filterRM.emp_name" class="form-control" type="search" placeholder="">
+									<input @bind="filterRMNew.emp_name" class="form-control" type="search" placeholder="">
 									<span class="input-group-append ms-0">
 										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
 											<i class="fa fa-search"></i>
@@ -414,7 +413,7 @@
 							</div>
 							<div class="col mb-2">
 								<label class="form-label">จังหวัด</label>
-								<select value="@filterRM.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<select value="@filterRMNew.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
 									@if (LookUp.Provinces?.Count > 0)
 									{
@@ -501,12 +500,11 @@
 							</div>
 						</div>
 						<div>
-							<PaginationBack DisplayItems="@(ItemsRM?.Count ?? 0)"
-											TotalItems="@(PagerRM?.TotalItems ?? 0)"
-											Pager="@PagerRM"
-											OnShowOnPage="@OnSelectPagesizeRM"
-											OnSelectedPage="@OnSelectPageRM"
-											ParameterAll="@filterRM?.SetParameter()">
+							<PaginationBack DisplayItems="@(ItemsRMNew?.Count ?? 0)"
+											TotalItems="@(PagerRMNew?.TotalItems ?? 0)"
+											Pager="@PagerRMNew"
+											OnSelectedPage="@OnSelectPageRMNew"
+											ParameterAll="@filterRMNew?.SetParameter()">
 							</PaginationBack>
 						</div>
 						<div class="my-4 text-center">
@@ -531,14 +529,13 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
-					var _items = ItemsRM?.Where(x => x.IsSelectMove).FirstOrDefault();
+					var _items = ItemsRMNew?.Where(x => x.IsSelectMove).FirstOrDefault();
 					@* var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList(); *@
 
 					List<Assignment_RM_SaleCustom>? _itemsSale = null;
-					var _itemsMain = ItemsRM?.FirstOrDefault(x => x.Id == assignmentIdPrevious);
-					if (_itemsMain != null && _itemsMain.Assignment_RM_Sales != null)
+					if (SaleMoveAssigned != null)
 					{
-						_itemsSale = _itemsMain.Assignment_RM_Sales.Where(s => s.IsSelectMove).ToList();
+						_itemsSale = SaleMoveAssigned;
 					}
 
 					<div class="box_content">
@@ -588,10 +585,10 @@
 													<td class="text-center">@_items.AmphurName</td>
 													<td class="text-center">@(_items.CurrentNumber)/100</td>
 													<td class="text-center">
-														@GeneralUtils.EmptyTo(_items.NumberAssignment)
+														@GeneralUtils.EmptyTo(_items.NumberAssignment + _itemsSale?.Count)
 													</td>
 													<td class="text-center">
-														@GeneralUtils.EmptyTo(_items.NumberAfterAssignment)/100
+														@GeneralUtils.EmptyTo(_items.NumberAfterAssignment + _itemsSale?.Count)/100
 													</td>
 												</tr>
 											}

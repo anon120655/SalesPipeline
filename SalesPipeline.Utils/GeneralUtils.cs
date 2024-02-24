@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Cmp;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace SalesPipeline.Utils
 {
@@ -760,6 +761,23 @@ namespace SalesPipeline.Utils
 			}
 
 			return partitions;
+		}
+		
+		public static T DeepCopyJson<T>(this T input)
+		{
+			var serialized = JsonConvert.SerializeObject(input);
+			return JsonConvert.DeserializeObject<T>(serialized);
+		}
+
+		public static T DeepCopyStream<T>(T input)
+		{
+			using var stream = new MemoryStream();
+
+			var serializer = new DataContractSerializer(typeof(T));
+			serializer.WriteObject(stream, input);
+			stream.Position = 0;
+
+			return (T)serializer.ReadObject(stream);
 		}
 
 	}
