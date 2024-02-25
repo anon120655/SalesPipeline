@@ -1,0 +1,94 @@
+﻿
+<Modal @ref="modalConfirm"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   OnHidden="OnModalHidden"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="container-lg" style="max-width:90%">
+			<div class="row mb-4 text-center">
+				<div class="col-12">
+					<h2 class="text-primary">การส่งคืนรายการ</h2>
+				</div>
+			</div>
+			<div class="row mb-4">
+				<div class="col-12">
+					<p class="text-primary">เหตุผลในการส่งกลับ</p>
+				</div>
+				<div class="col-12">
+					<select @bind=IdReason class="selectpickerdefault">
+						<option value="">เลือก</option>
+						@if (ReasonReturn?.Count > 0)
+						{
+							foreach (var item in ReasonReturn)
+							{
+								<option value="@item.Id">@item.Name</option>
+							}
+						}
+					</select>
+				</div>
+			</div>
+			@if (!String.IsNullOrEmpty(_errorMessage))
+			{
+				<MessageError errorMessage="@_errorMessage" />
+			}
+			<div class="row my-3 text-center">
+				<div class="d-flex justify-content-evenly align-items-center">
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">กลับ</Button>
+					</div>
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Confirm" Disabled="@isLoading">
+							@if (isLoading)
+							{
+								<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+							}
+							ยืนยัน
+						</Button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+@code {
+	public string? Id { get; set; }
+	public string? IdReason { get; set; }
+
+	[Parameter]
+	public string? _errorMessage { get; set; }
+
+	[Parameter]
+	public bool isLoading { get; set; }
+
+	[Parameter]
+	public List<Master_ReasonReturnCustom>? ReasonReturn { get; set; }
+
+	[Parameter]
+	public EventCallback<string?> CallbackConfirm { get; set; }
+
+	[Parameter]
+	public EventCallback CallbackModalHidden { get; set; }
+
+	protected Modal modalConfirm = default!;
+	public async Task OnShowConfirm()
+	{
+		await modalConfirm.ShowAsync();
+	}
+
+	public async Task OnHide()
+	{
+		await modalConfirm.HideAsync();
+	}
+
+	public async Task Confirm()
+	{
+		await CallbackConfirm.InvokeAsync(IdReason);
+	}
+
+	private async Task OnModalHidden()
+	{
+		await CallbackModalHidden.InvokeAsync();
+	}
+}

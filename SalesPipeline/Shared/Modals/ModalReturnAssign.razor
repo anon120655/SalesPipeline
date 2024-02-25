@@ -1,0 +1,89 @@
+﻿
+<Modal @ref="modal"
+	   Title=""
+	   IsVerticallyCentered="true"
+	   OnHidden="OnModalHidden"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<div class="col-12">
+				@((MarkupString)(Icon ?? String.Empty))
+			</div>
+		</div>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">@((MarkupString)(Content ?? String.Empty))</h4>
+		</div>
+		@if (!String.IsNullOrEmpty(_errorMessage))
+		{
+			<MessageError errorMessage="@_errorMessage" />
+		}
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="Return">ส่งคืน</Button>
+				</div>
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Assign" Disabled="@isLoading">
+						@if (isLoading)
+						{
+							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+						}
+						มอบหมาย
+					</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
+
+@code {
+	public string? Id { get; set; }
+	public string? Icon { get; set; } = "<img src=\"/image/icon/bookicon.png\" width=\"65\" />";
+	public string? Content { get; set; }
+	public int? CountDown { get; set; }
+
+	[Parameter]
+	public string? _errorMessage { get; set; }
+
+	[Parameter]
+	public bool isLoading { get; set; }
+
+	[Parameter]
+	public EventCallback<SelectModel> CallbackConfirm { get; set; }
+
+	[Parameter]
+	public EventCallback CallbackModalHidden { get; set; }
+
+	protected Modal modal = default!;
+	public async Task OnShowConfirm(string? id, string? txt, string? icon = null)
+	{
+		Id = id;
+		Content = txt;
+		if (icon != null)
+		{
+			Icon = icon;
+		}
+		await modal.ShowAsync();
+	}
+
+	public async Task OnHide()
+	{
+		await modal.HideAsync();
+	}
+
+	public async Task Return()
+	{
+		await CallbackConfirm.InvokeAsync(new() { ID = Id, Value = "0" });
+	}
+
+	public async Task Assign()
+	{
+		await CallbackConfirm.InvokeAsync(new() { ID = Id, Value = "1" });
+	}
+
+	private async Task OnModalHidden()
+	{
+		await CallbackModalHidden.InvokeAsync();
+	}
+}

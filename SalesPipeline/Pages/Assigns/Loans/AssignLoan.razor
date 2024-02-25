@@ -11,8 +11,6 @@
 			<div class="col-12 my-2">
 				@if (stepAssign == StepAssignLoanModel.Home)
 				{
-					@* var _items = Items?.Where(x => x.Status != StatusModel.Delete).ToList(); *@
-
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
@@ -316,7 +314,7 @@
 										</Button>
 									</div>
 									<div class="p-2 bd-highlight">
-										<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										<Button @onclick="(async () => await  InitShowReturnAssign())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											@if (isLoading)
 											{
 												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
@@ -375,6 +373,88 @@
 								</div>
 							</div>
 						}
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Return)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปลูกค้าที่ส่งคืนกิจการสาขาภาค</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ส่งคืนกิจการสาขาภาค <span class="text-info">จำนวน @(SaleMoveAssigned?.Count) รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (SaleMoveAssigned == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (SaleMoveAssigned.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in SaleMoveAssigned)
+												{
+													<tr>
+														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.Sale?.CompanyName</td>
+														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  ShowReturnReason())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ส่งคืน
+									</Button>
+								</div>
+							</div>
+						</div>
 					</div>
 				}
 				else if (stepAssign == StepAssignLoanModel.Assigned)
@@ -530,7 +610,6 @@
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
 					var _items = ItemsRMNew?.Where(x => x.IsSelect).FirstOrDefault();
-					@* var _itemsSale = _items?.Assignment_RM_Sales?.Where(x => x.IsSelectMove).ToList(); *@
 
 					List<Assignment_RM_SaleCustom>? _itemsSale = null;
 					if (SaleMoveAssigned != null)
@@ -675,6 +754,8 @@
 	</div>
 
 	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
+	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="ReturnReason" isLoading="isLoading" _errorMessage="@_errorMessage" ReasonReturn="LookUp.ReasonReturn" />
 	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
 }
 else

@@ -36,6 +36,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		private Guid? assignmentIdPrevious = null;
 
 		ModalConfirm modalConfirmAssign = default!;
+		ModalReturnAssign modalReturnAssign = default!;
+		ModalReturnReason modalReturnReason = default!;
 		ModalSuccessful modalSuccessfulAssign = default!;
 		private bool IsToClose = false;
 
@@ -81,6 +83,17 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			else
 			{
 				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var reasonReturn = await _masterViewModel.GetReasonReturns(new() { pagesize = 50 });
+			if (reasonReturn != null && reasonReturn.Status)
+			{
+				LookUp.ReasonReturn = reasonReturn.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = reasonReturn?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -378,6 +391,56 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			StateHasChanged();
 		}
 
+		protected async Task InitShowReturnAssign()
+		{
+			await ShowReturnAssign(null, "ท่านต้องการ \"ส่งคืน\" หรือ \"มอบหมาย\" ");
+		}
+
+		protected async Task ShowReturnAssign(string? id, string? txt, string? icon = null)
+		{
+			var isNext = CheckSelectCustomer();
+			if (!isNext)
+			{
+				_utilsViewModel.AlertWarning("เลือกลูกค้า");
+			}
+			else
+			{
+				IsToClose = false;
+				await modalReturnAssign.OnShowConfirm(id, $"{txt}", icon);
+			}
+		}
+
+		protected async Task ReturnAssign(SelectModel model)
+		{
+			if (model.Value == "0")
+			{
+				await GotoStep(StepAssignLoanModel.Return);
+			}
+			else if (model.Value == "1")
+			{
+				await GotoStep(StepAssignLoanModel.Assigned);
+			}
+			await modalReturnAssign.OnHide();
+		}
+
+		protected async Task ShowReturnReason()
+		{
+			await modalReturnReason.OnShowConfirm();
+		}
+
+		protected async Task ReturnReason(string? id)
+		{
+			if (Guid.TryParse(id, out Guid _id))
+			{
+
+				await modalReturnReason.OnHide();
+			}
+			else
+			{
+				_errorMessage = "Something went wrong.";
+			}
+		}
+
 		protected async Task InitShowConfirmAssign()
 		{
 			await ShowConfirmAssign(null, "กรุณากด ยืนยัน การมอบหมายงาน", "<img src=\"/image/icon/do.png\" width=\"65\" />");
@@ -443,6 +506,19 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			if (step == StepAssignLoanModel.Customer)
 			{
 
+			}
+			else if (step == StepAssignLoanModel.Return)
+			{
+				isNext = CheckSelectCustomer();
+				if (!isNext)
+				{
+					_utilsViewModel.AlertWarning("เลือกลูกค้า");
+				}
+				else
+				{
+					//เก็บกลุ่มลูกค้าที่ถูกเลือกไว้ใน SaleMoveAssigned ใช้แสดงตอน Sammary
+					KeepSaleMove();
+				}
 			}
 			else if (step == StepAssignLoanModel.Assigned)
 			{
