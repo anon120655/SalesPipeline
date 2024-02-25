@@ -753,9 +753,9 @@
 		</div>
 	</div>
 
-	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
-	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
-	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="ReturnReason" isLoading="isLoading" _errorMessage="@_errorMessage" ReasonReturn="LookUp.ReasonReturn" />
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" />
+	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" />
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="Return" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
 	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
 }
 else

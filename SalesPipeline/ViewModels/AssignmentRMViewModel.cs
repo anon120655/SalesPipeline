@@ -46,6 +46,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<Boolean>> Return(ReturnModel model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/AssignmentRM/Return", dataJson, token: tokenJwt);
+
+				return new ResultModel<Boolean>()
+				{
+					Data = true
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Boolean>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<Boolean>> Assign(List<Assignment_RMCustom> model)
 		{
 			try

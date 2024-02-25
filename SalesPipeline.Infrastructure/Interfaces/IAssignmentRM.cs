@@ -25,5 +25,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<Assignment_RMCustom>>> GetListRM(allFilter model);
 		Task Assign(List<Assignment_RMCustom> model);
 		Task AssignChange(AssignChangeModel model);
+		Task Return(ReturnModel model);
 	}
 }

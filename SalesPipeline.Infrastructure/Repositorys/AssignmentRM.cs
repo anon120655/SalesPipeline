@@ -419,5 +419,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public Task Return(ReturnModel model)
+		{
+			throw new NotImplementedException();
+		}
+
 	}
 }

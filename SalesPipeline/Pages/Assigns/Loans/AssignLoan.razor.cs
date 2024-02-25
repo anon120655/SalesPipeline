@@ -16,6 +16,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 	public partial class AssignLoan
 	{
 		string? _errorMessage = null;
+		string? _errorMessageModal = null;
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
@@ -393,6 +394,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task InitShowReturnAssign()
 		{
+			_errorMessageModal = null;
 			await ShowReturnAssign(null, "ท่านต้องการ \"ส่งคืน\" หรือ \"มอบหมาย\" ");
 		}
 
@@ -428,21 +430,42 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			await modalReturnReason.OnShowConfirm();
 		}
 
-		protected async Task ReturnReason(string? id)
+		protected async Task Return(string? id)
 		{
-			if (Guid.TryParse(id, out Guid _id))
-			{
+			_errorMessageModal = null;
 
-				await modalReturnReason.OnHide();
+			if (Guid.TryParse(id, out Guid _id) && SaleMoveAssigned?.Count > 0)
+			{
+				var response = await _assignmentRMViewModel.Return(new()
+				{
+					CurrentUserId = UserInfo.Id,
+					Master_ReasonReturnId = _id,
+					RM_Sale = SaleMoveAssigned
+				});
+
+				if (response.Status)
+				{
+					IsToClose = true;
+					await modalReturnReason.OnHide();
+					await ShowSuccessfulAssign(null, "เสร็จสิ้นการส่งคืน");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessageModal = response.errorMessage;
+				}
 			}
 			else
 			{
-				_errorMessage = "Something went wrong.";
+				_errorMessageModal = "ระบุเหตุผลในการส่งคืน";
 			}
 		}
 
 		protected async Task InitShowConfirmAssign()
 		{
+			_errorMessageModal = null;
 			await ShowConfirmAssign(null, "กรุณากด ยืนยัน การมอบหมายงาน", "<img src=\"/image/icon/do.png\" width=\"65\" />");
 		}
 
@@ -564,7 +587,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			await SetInitManual();
 		}
 
-		//2. ลูกค้า
+		//เลือกลูกค้า
 		protected void OnCheckCustomer(Assignment_RM_SaleCustom model, object? checkedValue)
 		{
 			if (checkedValue != null && (bool)checkedValue)
@@ -686,7 +709,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		//3. ผู้รับผิดชอบ
+		//เลือกผู้รับผิดชอบ
 		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
 		{
 			if (ItemsRMNew?.Count > 0)
@@ -759,7 +782,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			return false;
 		}
 
-		//4. สรุปผู้รับผิดชอบและลูกค้าที่ได้รับมอบหมาย
+		//สรุปผู้รับผิดชอบและลูกค้าที่ได้รับมอบหมาย
 		protected bool Summary()
 		{
 			if (ItemsRMNew?.Count > 0)
@@ -778,7 +801,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			return false;
 		}
 
-		//5. เพิ่มลูกค้าไปผู้รับผิดชอบใหม่ ลบลูกค้าผู้ับผิดชอบเดิม ใน model หลัก
+		//เพิ่มลูกค้าไปผู้รับผิดชอบใหม่ ลบลูกค้าผู้ับผิดชอบเดิม ใน model หลัก
 		protected void SetDataCustomerMove()
 		{
 			if (ItemsRMNew?.Count > 0 && ItemsAll?.Count > 0 && SaleMoveAssigned?.Count > 0)
@@ -816,7 +839,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task Assign()
 		{
-			_errorMessage = null;
+			_errorMessageModal = null;
 
 			if (ItemsRM != null)
 			{
@@ -833,8 +856,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				else
 				{
 					HideLoading();
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					_errorMessageModal = response.errorMessage;
 				}
 			}
 
