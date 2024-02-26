@@ -766,6 +766,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					}
 				}
 			}
+			ItemsRM = GeneralUtils.DeepCopyJson(ItemsAll);
+			ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);
+			IsSelectNewAssign = null;
 		}
 
 		protected bool CheckSelectCustomer()
