@@ -195,6 +195,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 				if (response.Status)
 				{
+					HideLoading();
 					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
 				}
 				else
