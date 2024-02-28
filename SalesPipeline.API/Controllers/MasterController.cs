@@ -362,6 +362,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet("MasterLists")]
 		public async Task<IActionResult> MasterLists([FromQuery] allFilter model)
 		{
