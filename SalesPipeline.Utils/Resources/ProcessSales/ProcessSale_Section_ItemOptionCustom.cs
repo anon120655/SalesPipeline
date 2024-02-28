@@ -28,6 +28,8 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 		/// </summary>
 		public Guid? ShowSectionId { get; set; }
 
+		public Guid? Master_ListId { get; set; }
+
 		public virtual ProcessSale_Section_ItemCustom? PSaleSectionItem { get; set; }
 
 	}

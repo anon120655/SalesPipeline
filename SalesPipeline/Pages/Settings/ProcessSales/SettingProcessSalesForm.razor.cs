@@ -15,6 +15,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private LookUpResource LookUp = new();
 		private User_PermissionCustom _permission = new();
 		private ProcessSaleCustom formModel = new();
 
@@ -24,18 +25,39 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetProcessSales) ?? new User_PermissionCustom();
 			StateHasChanged();
-
-			await SetModel();
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				await SetInitManual();
+
+				await SetModel();
 				StateHasChanged();
+
+				await Task.Delay(100);
+				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
+		}
+
+		protected async Task SetInitManual()
+		{
+			var masterLists = await _masterViewModel.MasterLists(new allFilter() { status = StatusModel.Active });
+			if (masterLists != null && masterLists.Status)
+			{
+				LookUp.MasterList = masterLists.Data;
+			}
+			else
+			{
+				_errorMessage = masterLists?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await Task.Delay(10);
 		}
 
 		protected async Task SetModel()
@@ -70,8 +92,12 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 					await InsertSectionItemOption(sectionId, saleItemId);
 
-					await Task.Delay(1);
 					StateHasChanged();
+					await Task.Delay(1);
+					if (item.ItemType == FieldTypes.Multiplechoice || item.ItemType == FieldTypes.Dropdown || item.ItemType == FieldTypes.DropdownMaster)
+					{
+						await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+					}
 				}
 			}
 		}
@@ -104,8 +130,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			formModel.ProcessSale_Sections = formModel.ProcessSale_Sections.OrderBy(x => x.SequenceNo).ToList();
 
-			await Task.Delay(1);
 			StateHasChanged();
+			await Task.Delay(1);
+			//await _jsRuntimes.InvokeVoidAsync("selectPickerRender");
 		}
 
 		protected async Task RemoveSection(Guid sectionId)
@@ -127,9 +154,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 				}
 			}
 
-
-			await Task.Delay(1);
 			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async Task ConfirmDeleteSection(string? id, string? txt)
@@ -175,8 +201,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 				section.ProcessSale_Section_Items = section.ProcessSale_Section_Items.OrderBy(x => x.SequenceNo).ToList();
 
-				await Task.Delay(1);
 				StateHasChanged();
+				await Task.Delay(1);
 			}
 		}
 
@@ -193,8 +219,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 					//SetSequenceItem();
 				}
 
-				await Task.Delay(1);
 				StateHasChanged();
+				await Task.Delay(1);
 			}
 
 		}
@@ -215,9 +241,10 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 					}
 					
 					var itemOption = new List<ProcessSale_Section_ItemOptionCustom>();
-					if (sectionitem.ProcessSale_Section_ItemOptions?.Count > 0)
+					var processSale_Section_ItemOptions = sectionitem.ProcessSale_Section_ItemOptions?.Where(x=>x.Status == StatusModel.Active).ToList();
+					if (processSale_Section_ItemOptions?.Count > 0)
 					{
-						foreach (var item_option in sectionitem.ProcessSale_Section_ItemOptions)
+						foreach (var item_option in processSale_Section_ItemOptions)
 						{
 							itemOption.Add(new()
 							{
@@ -227,6 +254,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 								SequenceNo = item_option.SequenceNo,
 								OptionLabel = item_option.OptionLabel,
 								DefaultValue = item_option.DefaultValue,
+								ShowSectionId = item_option.ShowSectionId,
 							});
 						}
 					}
@@ -245,8 +273,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 					});
 				}
 
-				await Task.Delay(1);
 				StateHasChanged();
+				await Task.Delay(1);
+				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 			}
 
 		}
@@ -280,8 +309,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 				}
 			}
 
-			await Task.Delay(1);
 			StateHasChanged();
+			await Task.Delay(1); 
+			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
 
 		protected async Task RemoveSectionItemOption(Guid sectionId, Guid saleItemId, Guid saleItemOptionId)

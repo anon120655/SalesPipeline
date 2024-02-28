@@ -52,6 +52,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_ISICCode> Master_ISICCodes { get; set; }
 
+    public virtual DbSet<Master_List> Master_Lists { get; set; }
+
     public virtual DbSet<Master_LoanType> Master_LoanTypes { get; set; }
 
     public virtual DbSet<Master_Position> Master_Positions { get; set; }
@@ -820,6 +822,20 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Master_List>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_List");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Path).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+        });
+
         modelBuilder.Entity<Master_LoanType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -1082,15 +1098,23 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("ProcessSale_Section_ItemOption");
 
+            entity.HasIndex(e => e.Master_ListId, "Master_ListId");
+
             entity.HasIndex(e => e.PSaleSectionItemId, "ProcessSaleItemId");
+
+            entity.HasIndex(e => e.ShowSectionId, "ShowSectionId");
 
             entity.Property(e => e.DefaultValue).HasMaxLength(255);
             entity.Property(e => e.OptionLabel).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
-            entity.Property(e => e.ShowSectionId).HasComment("แสดงผลตาม Section");
+            entity.Property(e => e.ShowSectionId).HasComment("แสดงผลตาม Section (ไม่ต้องผูก FK เพราะ sec save ทีหลัง option)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Master_List).WithMany(p => p.ProcessSale_Section_ItemOptions)
+                .HasForeignKey(d => d.Master_ListId)
+                .HasConstraintName("processsale_section_itemoption_ibfk_2");
 
             entity.HasOne(d => d.PSaleSectionItem).WithMany(p => p.ProcessSale_Section_ItemOptions)
                 .HasForeignKey(d => d.PSaleSectionItemId)

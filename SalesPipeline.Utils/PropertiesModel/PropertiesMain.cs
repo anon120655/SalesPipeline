@@ -51,12 +51,12 @@ namespace SalesPipeline.Utils.PropertiesModel
 				new PropertiesOptions()
 				{
 					Code = "ShortAnswer",
-					Name = "Short Answer"
+					Name = "Short answer"
 				},
 				new PropertiesOptions()
 				{
 					Code = "TextArea",
-					Name = "Text Area"
+					Name = "Text area"
 				},
 				new PropertiesOptions()
 				{
@@ -67,6 +67,16 @@ namespace SalesPipeline.Utils.PropertiesModel
 				{
 					Code = "Dropdown",
 					Name = "Drop down"
+				},
+				new PropertiesOptions()
+				{
+					Code = "DropdownMaster",
+					Name = "Drop Down master"
+				},
+				new PropertiesOptions()
+				{
+					Code = "DropdownSection",
+					Name = "Drop down section"
 				},
 				new PropertiesOptions()
 				{

@@ -23,6 +23,28 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
+		public async Task<ResultModel<List<Master_ListCustom>>> MasterLists(allFilter parameters)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/MasterLists?{parameters.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<List<Master_ListCustom>>(content);
+
+				return new ResultModel<List<Master_ListCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Master_ListCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Master_DepartmentCustom>>>> GetDepartments(allFilter model)
 		{
 			try

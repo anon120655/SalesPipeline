@@ -59,36 +59,32 @@
 															</div>
 														</div>
 													</div>
-													@if (item.ItemType == FieldTypes.ShortAnswer)
-													{
-														foreach (var item_option in replyItemValues)
+													<div class="row mb-3">
+														@if (item.ItemType == FieldTypes.ShortAnswer)
 														{
-															<div class="row mb-3">
+															foreach (var item_option in replyItemValues)
+															{
 																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<input @bind="item_option.ReplyValue" type="text" class="form-control" placeholder="">
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.TextArea)
-													{
-														foreach (var item_option in replyItemValues)
+														else if (item.ItemType == FieldTypes.TextArea)
 														{
-															<div class="row mb-3">
-																<div class="col-12">
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<textarea @bind="item_option.ReplyValue" class="form-control" rows="3"></textarea>
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.Multiplechoice)
-													{
-														foreach (var item_option in replyItemValues)
+														else if (item.ItemType == FieldTypes.Multiplechoice)
 														{
-															bool isCheck = false;
-															bool.TryParse(item_option.ReplyValue, out isCheck);
+															foreach (var item_option in replyItemValues)
+															{
+																bool isCheck = false;
+																bool.TryParse(item_option.ReplyValue, out isCheck);
 
-															<div class="row mb-3">
 																<div class="col-12">
 																	<div class="form-check d-flex align-items-center">
 																		<input class="form-check-input me-2" type="checkbox"
@@ -97,15 +93,13 @@
 																		@item_option.OptionLabel
 																	</div>
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.Dropdown)
-													{
-														if (replyItemValues.Count > 0)
+														else if (item.ItemType == FieldTypes.Dropdown)
 														{
-															<div class="row mb-3">
-																<div class="col-12">
+															if (replyItemValues.Count > 0)
+															{
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<select @onchange="((e)=> OnDropdown(e,saleSections.PSaleSectionId,item.PSaleSectionItemId))" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 																		<option value="">เลือก</option>
 																		@foreach (var item_option in replyItemValues)
@@ -114,15 +108,13 @@
 																		}
 																	</select>
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.Fileupload)
-													{
-														foreach (var item_option in replyItemValues)
+														else if (item.ItemType == FieldTypes.Fileupload)
 														{
-															<div class="row mb-3">
-																<div class="col-12">
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	@if (!item_option.bClearInput)
 																	{
 																		<InputFile class="form-control" OnChange="((e)=>OnFileuploadChanged(e,item_option))" />
@@ -134,31 +126,27 @@
 																		<p class="text-danger">@item_option.errorMessage</p>
 																	}
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.Date)
-													{
-														foreach (var item_option in replyItemValues)
+														else if (item.ItemType == FieldTypes.Date)
 														{
-															<div class="row mb-3">
-																<div class="col-12">
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<input @bind="item_option.ReplyDate" type="date" class="form-control">
 																</div>
-															</div>
+															}
 														}
-													}
-													else if (item.ItemType == FieldTypes.Time)
-													{
-														foreach (var item_option in replyItemValues)
+														else if (item.ItemType == FieldTypes.Time)
 														{
-															<div class="row mb-3">
-																<div class="col-12">
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<input @bind="item_option.ReplyTime" type="time" class="form-control">
 																</div>
-															</div>
+															}
 														}
-													}
+													</div>
 												</div>
 											</div>
 										}

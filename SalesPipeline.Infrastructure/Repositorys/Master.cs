@@ -31,6 +31,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+		public async Task<IList<Master_ListCustom>> MasterLists(allFilter model)
+		{
+			var query = _repo.Context.Master_Lists
+				.Where(x => x.Status != StatusModel.Delete)
+				.OrderBy(x => x.Id)
+				.AsQueryable();
+
+			return _mapper.Map<IList<Master_ListCustom>>(await query.ToListAsync());
+		}
+
 		public async Task<IList<Master_PositionCustom>> Positions(allFilter model)
 		{
 			var query = _repo.Context.Master_Positions

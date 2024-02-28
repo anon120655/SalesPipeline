@@ -12,6 +12,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 {
     public class LookUpResource
 	{
+		public List<Master_ListCustom>? MasterList { get; set; }
 		public List<MenuItemCustom>? MenuItem { get; set; }
 		public List<Master_PositionCustom>? Positions { get; set; }
 		public List<User_LevelCustom>? UserLevels { get; set; }

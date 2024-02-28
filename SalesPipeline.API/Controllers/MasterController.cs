@@ -362,6 +362,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("MasterLists")]
+		public async Task<IActionResult> MasterLists([FromQuery] allFilter model)
+		{
+			try
+			{
+				return Ok(await _repo.Master.MasterLists(model));
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetListRM")]
 		public async Task<IActionResult> GetListRM([FromQuery] allFilter model)
 		{

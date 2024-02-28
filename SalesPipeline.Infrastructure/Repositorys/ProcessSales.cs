@@ -101,6 +101,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							else if (section.Status == StatusModel.Active)
 							{
 								processSaleSection = new();
+								processSaleSection.Id = section.Id;
 								processSaleSection.Status = StatusModel.Active;
 								processSaleSection.ProcessSaleId = processSales.Id;
 								processSaleSection.SequenceNo = section.SequenceNo;
@@ -124,6 +125,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										processSaleSectionItem.ItemLabel = section_item.ItemLabel;
 										processSaleSectionItem.ItemType = section_item.ItemType;
 										processSaleSectionItem.Required = section_item.Required;
+										processSaleSectionItem.ShowType = section_item.ShowType;
 										_db.Update(processSaleSectionItem);
 									}
 									else if (section_item.Status == StatusModel.Active)
@@ -135,6 +137,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										processSaleSectionItem.ItemLabel = section_item.ItemLabel;
 										processSaleSectionItem.ItemType = section_item.ItemType;
 										processSaleSectionItem.Required = section_item.Required;
+										processSaleSectionItem.ShowType = section_item.ShowType;
 										await _db.InsterAsync(processSaleSectionItem);
 									}
 									await _db.SaveAsync();
@@ -143,6 +146,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									{
 										foreach (var section_item_option in section_item.ProcessSale_Section_ItemOptions)
 										{
+											if (section_item_option.Master_ListId.HasValue)
+											{
+												section_item_option.OptionLabel = _repo.Context.Master_Lists
+																					   .FirstOrDefault(x => x.Id == section_item_option.Master_ListId)?.Name;
+											}
+
+
 											var processSaleSectionItemOption = await _repo.Context.ProcessSale_Section_ItemOptions
 																							.Where(x => x.PSaleSectionItemId == processSaleSectionItem.Id && x.Id == section_item_option.Id)
 																							.FirstOrDefaultAsync();
@@ -151,6 +161,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												processSaleSectionItemOption.Status = section_item_option.Status;
 												processSaleSectionItemOption.OptionLabel = section_item_option.OptionLabel;
 												processSaleSectionItemOption.ShowSectionId = section_item_option.ShowSectionId;
+												processSaleSectionItemOption.Master_ListId = section_item_option.Master_ListId;
 												_db.Update(processSaleSectionItemOption);
 											}
 											else if (section_item_option.Status == StatusModel.Active)
@@ -162,6 +173,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												processSaleSectionItemOption.OptionLabel = section_item_option.OptionLabel;
 												processSaleSectionItemOption.DefaultValue = section_item_option.DefaultValue;
 												processSaleSectionItemOption.ShowSectionId = section_item_option.ShowSectionId;
+												processSaleSectionItemOption.Master_ListId = section_item_option.Master_ListId;
 												await _db.InsterAsync(processSaleSectionItemOption);
 											}
 											await _db.SaveAsync();

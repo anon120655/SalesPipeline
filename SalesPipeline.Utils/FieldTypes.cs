@@ -25,6 +25,10 @@ namespace SalesPipeline.Utils
 		/// </summary>
 		public const string Dropdown = "Dropdown";
 		/// <summary>
+		/// Drop down form master
+		/// </summary>
+		public const string DropdownMaster = "DropdownMaster";
+		/// <summary>
 		/// File upload
 		/// </summary>
 		public const string Fileupload = "Fileupload";

@@ -21,9 +21,13 @@ public partial class ProcessSale_Section_ItemOption
     public string? DefaultValue { get; set; }
 
     /// <summary>
-    /// แสดงผลตาม Section
+    /// แสดงผลตาม Section (ไม่ต้องผูก FK เพราะ sec save ทีหลัง option)
     /// </summary>
     public Guid? ShowSectionId { get; set; }
+
+    public Guid? Master_ListId { get; set; }
+
+    public virtual Master_List? Master_List { get; set; }
 
     public virtual ProcessSale_Section_Item PSaleSectionItem { get; set; } = null!;
 
