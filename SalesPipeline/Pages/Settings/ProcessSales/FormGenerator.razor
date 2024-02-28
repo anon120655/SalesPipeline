@@ -110,6 +110,47 @@
 																</div>
 															}
 														}
+														else if (item.ItemType == FieldTypes.DropdownMaster)
+														{
+															if (replyItemValues.Count > 0)
+															{
+																var Path = replyItemValues.FirstOrDefault()?.Path;
+
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
+																	<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+																		<option value="">เลือก</option>
+																		@if (Path == "/v1/Master/GetBusinessSize")
+																		{
+																			foreach (var item_option in LookUp.BusinessSize ?? new())
+																			{
+																				<option value="@item_option.Id">@item_option.Name</option>
+																			}
+																		}
+																		else if (Path == "/v1/Master/GetBusinessType")
+																		{
+																			foreach (var item_option in LookUp.BusinessType ?? new())
+																			{
+																				<option value="@item_option.Id">@item_option.Name</option>
+																			}
+																		}
+																		else if (Path == "/v1/Master/GetYields")
+																		{
+																			foreach (var item_option in LookUp.Yield ?? new())
+																			{
+																				<option value="@item_option.Id">@item_option.Name</option>
+																			}
+																		}
+																		else if (Path == "/v1/Master/GetChains")
+																		{
+																			foreach (var item_option in LookUp.Chain ?? new())
+																			{
+																				<option value="@item_option.Id">@item_option.Name</option>
+																			}
+																		}
+																	</select>
+																</div>
+															}
+														}
 														else if (item.ItemType == FieldTypes.Fileupload)
 														{
 															foreach (var item_option in replyItemValues)

@@ -255,6 +255,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 								OptionLabel = item_option.OptionLabel,
 								DefaultValue = item_option.DefaultValue,
 								ShowSectionId = item_option.ShowSectionId,
+								Master_ListId = item_option.Master_ListId,
 							});
 						}
 					}

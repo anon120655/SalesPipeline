@@ -33,12 +33,15 @@ namespace SalesPipeline.Utils.Resources.Sales
 
         public virtual ProcessSale_Section_ItemOptionCustom? PSaleSectionItemOption { get; set; }
 
-        //Custom
-        [JsonIgnore]
+		//Custom
+		public Guid? Master_ListId { get; set; }
+		public string? Path { get; set; }
+		[JsonIgnore]
         public string? errorMessage { get; set; }
         [JsonIgnore]
         public bool bClearInput { get; set; }
         [JsonIgnore]
         public string _inputFileId { get; set; } = Guid.NewGuid().ToString();
+
     }
 }

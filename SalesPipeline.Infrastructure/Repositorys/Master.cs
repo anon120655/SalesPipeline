@@ -38,6 +38,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderBy(x => x.Id)
 				.AsQueryable();
 
+			if (model.id != Guid.Empty)
+			{
+				query = query.Where(x => x.Id == model.id);
+			}
+
 			return _mapper.Map<IList<Master_ListCustom>>(await query.ToListAsync());
 		}
 
