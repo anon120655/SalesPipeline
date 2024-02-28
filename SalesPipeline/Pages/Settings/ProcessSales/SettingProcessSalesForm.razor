@@ -107,6 +107,7 @@
 															<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
 																<select @onchange="async (e) => await OnItemTypes(e,section.Id,item.Id)" class="form-select" value="@item.ItemType">
 																	<option value="@FieldTypes.ShortAnswer">@PropertiesMain.PerFieldType(FieldTypes.ShortAnswer).Name</option>
+																	<option value="@FieldTypes.TextArea">@PropertiesMain.PerFieldType(FieldTypes.TextArea).Name</option>
 																	<option value="@FieldTypes.Multiplechoice">@PropertiesMain.PerFieldType(FieldTypes.Multiplechoice).Name</option>
 																	<option value="@FieldTypes.Dropdown">@PropertiesMain.PerFieldType(FieldTypes.Dropdown).Name</option>
 																	<option value="@FieldTypes.Fileupload">@PropertiesMain.PerFieldType(FieldTypes.Fileupload).Name</option>
@@ -120,6 +121,14 @@
 															<div class="row mb-3">
 																<div class="col-12 col-sm-8 col-xl-7">
 																	<input type="text" class="form-control" placeholder="text" disabled>
+																</div>
+															</div>
+														}
+														@if (item.ItemType == FieldTypes.TextArea)
+														{
+															<div class="row mb-3">
+																<div class="col-12 col-sm-8 col-xl-7">
+																	<textarea class="form-control" rows="3" disabled></textarea>
 																</div>
 															</div>
 														}

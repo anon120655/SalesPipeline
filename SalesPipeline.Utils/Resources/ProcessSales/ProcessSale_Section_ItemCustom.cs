@@ -23,7 +23,15 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 
 		public string? ItemType { get; set; }
 
+		/// <summary>
+		/// 0=ไม่จำเป็น ,1=จำเป็น
+		/// </summary>
 		public bool Required { get; set; }
+
+		/// <summary>
+		/// 0=แสดงครึ่ง ,1=แสดงเต็ม
+		/// </summary>
+		public int ShowType { get; set; }
 
 		public virtual ProcessSale_SectionCustom? PSaleSection { get; set; }
 

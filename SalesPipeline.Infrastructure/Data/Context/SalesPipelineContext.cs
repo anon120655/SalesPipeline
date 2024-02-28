@@ -1061,7 +1061,11 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.ItemLabel).HasMaxLength(255);
             entity.Property(e => e.ItemType).HasMaxLength(255);
+            entity.Property(e => e.Required).HasComment("0=ไม่จำเป็น ,1=จำเป็น");
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
+            entity.Property(e => e.ShowType)
+                .HasComment("0=แสดงครึ่ง ,1=แสดงเต็ม")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

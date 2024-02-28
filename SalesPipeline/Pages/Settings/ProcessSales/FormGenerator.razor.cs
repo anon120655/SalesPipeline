@@ -92,6 +92,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 									replyItem.PSaleSectionItemId = item.Id;
 									replyItem.ItemLabel = item.ItemLabel;
 									replyItem.ItemType = item.ItemType;
+									replyItem.ShowType = item.ShowType;
 
 									var itemOptions = item.ProcessSale_Section_ItemOptions?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 

@@ -64,8 +64,19 @@
 														foreach (var item_option in replyItemValues)
 														{
 															<div class="row mb-3">
-																<div class="col-12">
+																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
 																	<input @bind="item_option.ReplyValue" type="text" class="form-control" placeholder="">
+																</div>
+															</div>
+														}
+													}
+													else if (item.ItemType == FieldTypes.TextArea)
+													{
+														foreach (var item_option in replyItemValues)
+														{
+															<div class="row mb-3">
+																<div class="col-12">
+																	<textarea @bind="item_option.ReplyValue" class="form-control" rows="3"></textarea>
 																</div>
 															</div>
 														}

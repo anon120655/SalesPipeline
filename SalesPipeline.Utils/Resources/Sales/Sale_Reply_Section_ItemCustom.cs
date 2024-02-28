@@ -29,5 +29,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public virtual Sale_Reply_SectionCustom? SaleReplySection { get; set; } = null!;
 
 		public virtual List<Sale_Reply_Section_ItemValueCustom>? Sale_Reply_Section_ItemValues { get; set; }
-    }
+
+		//Custom
+		public int ShowType { get; set; }
+	}
 }
