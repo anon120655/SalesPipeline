@@ -118,12 +118,14 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			}
 
 			Guid _idGen = Guid.NewGuid();
+			var secName = $"Section {sequenceNo}";
 			formModel.ProcessSale_Sections.Add(new()
 			{
 				Id = _idGen,
 				Status = StatusModel.Active,
 				ProcessSaleId = id,
 				SequenceNo = sequenceNo,
+				Name = secName,
 			});
 
 			await InsertSectionItem(_idGen, 0);
@@ -131,8 +133,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.ProcessSale_Sections = formModel.ProcessSale_Sections.OrderBy(x => x.SequenceNo).ToList();
 
 			StateHasChanged();
-			await Task.Delay(1);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshClass", "dropdownsection");
+			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshClass", "dropdownsection");
 		}
 
 		protected async Task RemoveSection(Guid sectionId)

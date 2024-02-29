@@ -30,8 +30,9 @@ window.selectPickerRender = () => {
 window.BootSelectRefreshClass = (className) => {
 	setTimeout(function () {
 		$(`.${className}`).selectpicker('destroy');
-		$(`.${className}`).selectpicker('setStyle', 'btn_white');
-		$(`.${className}`).selectpicker('refresh');
+		$(`.${className}`).selectpicker('render');
+		//$(`.${className}`).selectpicker('setStyle', 'btn_white');
+		//$(`.${className}`).selectpicker('refresh');
 	}, 100)
 }
 
