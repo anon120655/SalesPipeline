@@ -151,12 +151,17 @@
 																	int indexType = 1;
 																	foreach (var item_option in itemOptions)
 																	{
+																		if (item_option.Id == Guid.Parse("08dc383b-0fac-4cff-8813-72280a69f6ce"))
+																		{
+																			
+																		}
+
 																		<div class="row mb-3">
 																			<div class="col-12 col-sm-8 col-xl-6">
 																				<input @bind="item_option.OptionLabel" type="text" class="form-control" placeholder="ตัวเลือก @indexType">
 																			</div>
 																			<div class="col-12  col-sm-4 col-xl-3">
-																				<select @bind="item_option.ShowSectionId" id="dropdown_sec_@item_option.Id" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+																				<select @bind="item_option.ShowSectionId" id="dropdown_sec_@item_option.Id" class="selectpicker dropdownsection" data-style="select_btn_set" data-live-search="true">
 																					<option value="">เลือก</option>
 																					@foreach (var item_sec_drop in dropdownSection)
 																					{

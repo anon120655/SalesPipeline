@@ -132,7 +132,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			StateHasChanged();
 			await Task.Delay(1);
-			//await _jsRuntimes.InvokeVoidAsync("selectPickerRender");
+			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshClass", "dropdownsection");
 		}
 
 		protected async Task RemoveSection(Guid sectionId)

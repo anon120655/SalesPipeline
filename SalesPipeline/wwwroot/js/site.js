@@ -27,6 +27,14 @@ window.selectPickerRender = () => {
 	$('.selectpicker').selectpicker('render');
 }
 
+window.BootSelectRefreshClass = (className) => {
+	setTimeout(function () {
+		$(`.${className}`).selectpicker('destroy');
+		$(`.${className}`).selectpicker('setStyle', 'btn_white');
+		$(`.${className}`).selectpicker('refresh');
+	}, 100)
+}
+
 window.BootSelectId = (id) => {
 	$(`#${id}`).selectpicker('setStyle', 'btn_white');
 }
