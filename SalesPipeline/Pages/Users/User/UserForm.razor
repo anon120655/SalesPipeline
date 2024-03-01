@@ -198,6 +198,18 @@
 										<ValidationMessage For="@(() => formModel.AmphurId)" />
 									</div>
 								</div>
+
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สถานะ<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.Status" class="selectpickerdefault">
+											<option value="1">Y</option>
+											<option value="0">N</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Status)" />
+									</div>
+								</div>
+
 							</div>
 						</div>
 						<div class="my-4 text-center">
