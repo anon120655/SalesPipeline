@@ -1,5 +1,5 @@
-﻿@page "/user/create"
-@page "/user/update/{id:int}"
+﻿@page "/user_backup/create"
+@page "/user_backup/update/{id:int}"
 
 <PageTitle>จัดการ User</PageTitle>
 
@@ -153,7 +153,7 @@
 								</div>
 
 								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 || formModel.RoleId == 8 ? "d-none":"" )">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขา<span class="text-danger">*</span></label>
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>

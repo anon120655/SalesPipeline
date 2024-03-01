@@ -9,7 +9,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Users.User
 {
-	public partial class UserForm
+	public partial class UserForm_Backup
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -319,13 +319,8 @@ namespace SalesPipeline.Pages.Users.User
 					_errorMessage = dataLevels?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
+
 			}
-
-			await Task.Delay(10);
-
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "DepartmentBranch", 100);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
 		}
 
 		protected void OnDepartment_Center(object? val)
