@@ -36,7 +36,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (department_BranchId.HasValue)
 			{
-				query = query.Where(x=>x.Master_Department_BranchId == department_BranchId);
+				query = query.Where(x => x.Master_Department_BranchId == department_BranchId);
 			}
 
 			return _mapper.Map<IList<InfoProvinceCustom>>(await query.ToListAsync());
@@ -105,5 +105,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public async Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model)
+		{
+			int id = 1;
+			if (_repo.Context.InfoBranches.FirstOrDefault() != null)
+			{
+				id = _repo.Context.InfoBranches.Max(u => u == null ? 0 : u.BranchID) + 1;
+			}
+
+			var infoBranch = new Data.Entity.InfoBranch()
+			{
+				BranchID = id,
+				ProvinceID = model.ProvinceID,
+				BranchName = model.BranchName,
+				BranchNameMain = model.BranchNameMain,
+			};
+			await _db.InsterAsync(infoBranch);
+			await _db.SaveAsync();
+
+			return _mapper.Map<InfoBranchCustom>(infoBranch);
+		}
 	}
 }

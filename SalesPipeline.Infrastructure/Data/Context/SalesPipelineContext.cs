@@ -28,6 +28,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<InfoAmphur> InfoAmphurs { get; set; }
 
+    public virtual DbSet<InfoBranch> InfoBranches { get; set; }
+
     public virtual DbSet<InfoProvince> InfoProvinces { get; set; }
 
     public virtual DbSet<InfoTambol> InfoTambols { get; set; }
@@ -597,6 +599,20 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("int(11)");
             entity.Property(e => e.AmphurCode).HasMaxLength(50);
             entity.Property(e => e.AmphurName).HasMaxLength(255);
+            entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
+        });
+
+        modelBuilder.Entity<InfoBranch>(entity =>
+        {
+            entity.HasKey(e => e.BranchID).HasName("PRIMARY");
+
+            entity.ToTable("InfoBranch");
+
+            entity.Property(e => e.BranchID)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.BranchName).HasMaxLength(255);
+            entity.Property(e => e.BranchNameMain).HasMaxLength(255);
             entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
         });
 

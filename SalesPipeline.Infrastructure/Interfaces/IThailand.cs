@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<string?> GetAmphurNameByid(int id);
 		Task<string?> GetTambolNameByid(int id);
 		Task MapZipCode(List<InfoTambolCustom> tambolList);
+		Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model);
 	}
 }

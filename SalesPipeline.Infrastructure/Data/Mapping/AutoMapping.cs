@@ -49,6 +49,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.InfoProvince, InfoProvinceCustom>().ReverseMap();
 			CreateMap<Entity.InfoAmphur, InfoAmphurCustom>().ReverseMap();
 			CreateMap<Entity.InfoTambol, InfoTambolCustom>().ReverseMap();
+			CreateMap<Entity.InfoBranch, InfoBranchCustom>().ReverseMap();
 
 
 			//ProcessSales
