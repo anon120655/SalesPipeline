@@ -112,7 +112,7 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(formModel.RoleId == 8 ? "":"d-none" )">
+								@* <div class="row mb-3 @(formModel.RoleId == 8 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ผู้จัดการศูนย์ที่ดูแล<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.AssignmentId" id="Assignment" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
@@ -127,7 +127,7 @@
 										</select>
 										<ValidationMessage For="@(() => formModel.AssignmentId)" />
 									</div>
-								</div>
+								</div> *@
 								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
@@ -186,16 +186,16 @@
 								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา</label>
 									<div class="col-sm-4">
-										<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-											@if (LookUp.Amphurs?.Count > 0)
+										<select @bind="formModel.BranchId" id="Branch" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+											@if (LookUp.Branchs?.Count > 0)
 											{
-												foreach (var item in LookUp.Amphurs)
+												foreach (var item in LookUp.Branchs)
 												{
-													<option value="@item.AmphurID">@item.AmphurName</option>
+													<option value="@item.BranchID">@item.BranchName</option>
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.AmphurId)" />
+										<ValidationMessage For="@(() => formModel.BranchId)" />
 									</div>
 								</div>
 

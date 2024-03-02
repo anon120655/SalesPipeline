@@ -36,8 +36,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Logging> Loggings { get; set; }
 
-    public virtual DbSet<Master_Branch> Master_Branches { get; set; }
-
     public virtual DbSet<Master_BusinessSize> Master_BusinessSizes { get; set; }
 
     public virtual DbSet<Master_BusinessType> Master_BusinessTypes { get; set; }
@@ -667,30 +665,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ResponseDate).HasColumnType("datetime");
             entity.Property(e => e.ResponseStatus).HasMaxLength(255);
             entity.Property(e => e.Scheme).HasMaxLength(255);
-        });
-
-        modelBuilder.Entity<Master_Branch>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Master_Branch", tb => tb.HasComment("สาขา"));
-
-            entity.HasIndex(e => e.RegionId, "RegionId");
-
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.RegionId).HasColumnType("int(11)");
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Region).WithMany(p => p.Master_Branches)
-                .HasForeignKey(d => d.RegionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("master_branch_ibfk_1");
         });
 
         modelBuilder.Entity<Master_BusinessSize>(entity =>
@@ -1436,7 +1410,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.AmphurName).HasMaxLength(255);
-            entity.Property(e => e.BranchId).HasComment("สาขา");
+            entity.Property(e => e.BranchId)
+                .HasComment("สาขา")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.BranchName).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
@@ -1473,10 +1450,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TitleName).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Branch).WithMany(p => p.Users)
-                .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("user_ibfk_4");
 
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)

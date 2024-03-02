@@ -168,16 +168,6 @@ namespace SalesPipeline.Pages.Users.User
 			return null;
 		}
 
-		protected string? GetBranchName(Guid? id)
-		{
-			if (LookUp.Branchs != null && id.HasValue)
-			{
-				return LookUp.Branchs.FirstOrDefault(x => x.Id == id)?.Name;
-			}
-
-			return null;
-		}
-
 		protected async Task Search()
 		{
 			await SetModel();

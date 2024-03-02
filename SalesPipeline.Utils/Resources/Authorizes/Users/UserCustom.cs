@@ -54,12 +54,6 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? Tel { get; set; }
 
 		/// <summary>
-		/// สาขา
-		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public Guid? BranchId { get; set; }
-
-		/// <summary>
 		/// ฝ่ายส่วนงานธุรกิจสินเชื่อ
 		/// </summary>
 		public Guid? Master_DepartmentId { get; set; }
@@ -99,6 +93,14 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? AmphurName { get; set; }
 
 		/// <summary>
+		/// สาขา
+		/// </summary>
+		[UserAtt(FieldName = "BranchId")]
+		public int? BranchId { get; set; }
+
+		public string? BranchName { get; set; }
+
+		/// <summary>
 		/// ตำแหน่ง
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
@@ -120,7 +122,6 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public sbyte? LoginFail { get; set; }
 
-		public virtual Master_BranchCustom? Branch { get; set; }
 		public virtual Master_Department_BranchCustom? Master_Department_Branch { get; set; }
 		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
@@ -167,31 +168,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 			}
 		}
 
-		[UserAtt(FieldName = "AssignmentId")]
-		public Guid? AssignmentId { get; set; }
-
-  //      private Guid? _AssignmentId;
 		//[UserAtt(FieldName = "AssignmentId")]
-		//public Guid? AssignmentId
-		//{
-		//	get
-		//	{
-		//		if (Assignment_RMs?.Count > 0)
-		//		{
-		//			var response = Assignment_RMs.FirstOrDefault();
-		//			if (response != null)
-		//			{
-		//				return response.AssignmentId;
-		//			}
-		//		}
-		//		return _AssignmentId;
-		//	}
-		//	set
-		//	{
-		//		_AssignmentId = value;				
-		//	}
-		//}
-
-
+		//public Guid? AssignmentId { get; set; }
 	}
 }

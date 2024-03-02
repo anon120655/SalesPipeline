@@ -64,18 +64,7 @@ namespace SalesPipeline.Pages.Users.User
 			{
 				_errorMessage = dataGetDivLoans?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var dataBranchs = await _masterViewModel.Branchs(new allFilter() { status = StatusModel.Active });
-			if (dataBranchs != null && dataBranchs.Status)
-			{
-				LookUp.Branchs = dataBranchs.Data;
-			}
-			else
-			{
-				_errorMessage = dataBranchs?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+			}			
 
 			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
@@ -133,14 +122,14 @@ namespace SalesPipeline.Pages.Users.User
 					{
 						await OnRoles(formModel.RoleId, formModel.LevelId);
 					}
-					if (formModel.Assignment_RMs?.Count > 0)
-					{
-						var response = formModel.Assignment_RMs.FirstOrDefault();
-						if (response != null)
-						{
-							formModel.AssignmentId = response.AssignmentId;
-						}
-					}
+					//if (formModel.Assignment_RMs?.Count > 0)
+					//{
+					//	var response = formModel.Assignment_RMs.FirstOrDefault();
+					//	if (response != null)
+					//	{
+					//		formModel.AssignmentId = response.AssignmentId;
+					//	}
+					//}
 					StateHasChanged();
 				}
 				else
@@ -160,22 +149,22 @@ namespace SalesPipeline.Pages.Users.User
 			Guid? department_BranchId = null;
 			department_BranchName = null;
 
-			if (formModel.Master_Department_BranchId.HasValue && !formModel.AssignmentId.HasValue)
-			{
-				department_BranchId = formModel.Master_Department_BranchId.Value;
-			}
-			else if (formModel.AssignmentId.HasValue) //RM
-			{
-				var dataassignmentCenter = await _assignmentCenterViewModel.GetById(formModel.AssignmentId.Value);
-				if (dataassignmentCenter != null && dataassignmentCenter.Status)
-				{
-					if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
-					{
-						department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
-						department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
-					}
-				}
-			}
+			//if (formModel.Master_Department_BranchId.HasValue && !formModel.AssignmentId.HasValue)
+			//{
+			//	department_BranchId = formModel.Master_Department_BranchId.Value;
+			//}
+			//else if (formModel.AssignmentId.HasValue) //RM
+			//{
+			//	var dataassignmentCenter = await _assignmentCenterViewModel.GetById(formModel.AssignmentId.Value);
+			//	if (dataassignmentCenter != null && dataassignmentCenter.Status)
+			//	{
+			//		if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
+			//		{
+			//			department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
+			//			department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
+			//		}
+			//	}
+			//}
 
 			if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
 			{
@@ -201,19 +190,19 @@ namespace SalesPipeline.Pages.Users.User
 
 						if (formModel.ProvinceId.HasValue)
 						{
-							LookUp.Amphurs = new();
+							LookUp.Branchs = new();
 							StateHasChanged();
 							await Task.Delay(10);
-							await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Amphur");
+							await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Branch");
 
-							var amphur = await _masterViewModel.GetAmphur(formModel.ProvinceId.Value);
-							if (amphur != null && amphur.Data != null)
+							var branch = await _masterViewModel.GetBranch(formModel.ProvinceId.Value);
+							if (branch != null && branch.Data != null)
 							{
-								LookUp.Amphurs = new() { new() { AmphurID = 0, AmphurName = "--เลือก--" } };
-								LookUp.Amphurs?.AddRange(amphur.Data);
+								LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "--เลือก--" } };
+								LookUp.Branchs?.AddRange(branch.Data);
 								StateHasChanged();
 								await Task.Delay(10);
-								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", $"#Amphur");
+								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", $"#Branch");
 
 							}
 						}
@@ -322,10 +311,6 @@ namespace SalesPipeline.Pages.Users.User
 			}
 
 			await Task.Delay(10);
-
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "DepartmentBranch", 100);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
 		}
 
 		protected void OnDepartment_Center(object? val)
@@ -349,75 +334,16 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
-		public async Task OnAssignment(string _id, string _name)
-		{
-			formModel.AssignmentId = null;
-			formModel.Master_Department_CenterId = null;
-			formModel.Master_Department_BranchId = null;
-			formModel.ProvinceId = null;
-			formModel.AmphurId = null;
-			LookUp.Provinces = new();
-			LookUp.Amphurs = new();
-			department_BranchName = null;
-			StateHasChanged();
-
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
-
-			if (_id != null && Guid.TryParse(_id, out Guid assignmentid))
-			{
-				formModel.AssignmentId = assignmentid;
-				StateHasChanged();
-
-				var dataassignmentCenter = await _assignmentCenterViewModel.GetById(assignmentid);
-				if (dataassignmentCenter != null && dataassignmentCenter.Status)
-				{
-					if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
-					{
-						formModel.Master_Department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
-						formModel.Master_Department_CenterId = dataassignmentCenter.Data.User.Master_Department_Center.Id;
-						department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
-
-						var dataProvince = await _masterViewModel.GetProvince(formModel.Master_Department_BranchId);
-						if (dataProvince != null && dataProvince.Status)
-						{
-							if (dataProvince.Data != null && dataProvince.Data.Count > 0)
-							{
-								LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
-								LookUp.Provinces.AddRange(dataProvince.Data);
-								StateHasChanged();
-								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
-								await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
-								await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
-							}
-						}
-						else
-						{
-							_errorMessage = dataProvince?.errorMessage;
-							_utilsViewModel.AlertWarning(_errorMessage);
-						}
-					}
-				}
-				else
-				{
-					_errorMessage = dataassignmentCenter?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-
-			}
-		}
-
-		[JSInvokable]
 		public async Task OnDepartmentBranch(string _id, string _name)
 		{
 			formModel.ProvinceId = null;
-			formModel.AmphurId = null;
+			formModel.BranchId = null;
 			LookUp.Provinces = new();
-			LookUp.Amphurs = new();
+			LookUp.Branchs = new();
 			StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
 			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
 			{
@@ -433,7 +359,7 @@ namespace SalesPipeline.Pages.Users.User
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
 						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 					}
 				}
 				else
@@ -447,30 +373,30 @@ namespace SalesPipeline.Pages.Users.User
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			LookUp.Amphurs = new List<InfoAmphurCustom>();
+			LookUp.Branchs = new List<InfoBranchCustom>();
 			StateHasChanged();
 
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
 				formModel.ProvinceId = provinceID;
 
-				var amphurs = await _masterViewModel.GetAmphur(provinceID);
-				if (amphurs != null && amphurs.Data?.Count > 0)
+				var branch = await _masterViewModel.GetBranch(provinceID);
+				if (branch != null && branch.Data?.Count > 0)
 				{
-					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
-					LookUp.Amphurs.AddRange(amphurs.Data);
+					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
+					LookUp.Branchs.AddRange(branch.Data);
 
 					StateHasChanged();
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 				}
 			}
 		}
 
 		[JSInvokable]
-		public async Task AmphurChange(string _provinceID, string _provinceName)
+		public async Task BranchChange(string _provinceID, string _provinceName)
 		{
 			await Task.Delay(100);
 		}

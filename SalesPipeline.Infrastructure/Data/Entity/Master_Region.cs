@@ -24,6 +24,4 @@ public partial class Master_Region
     public int UpdateBy { get; set; }
 
     public string? Name { get; set; }
-
-    public virtual ICollection<Master_Branch> Master_Branches { get; set; } = new List<Master_Branch>();
 }

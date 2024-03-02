@@ -323,6 +323,26 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// สาขา
+		/// </summary>
+		/// <param name="provinceID"></param>
+		/// <returns></returns>
+		[HttpGet("GetBranch")]
+		public async Task<IActionResult> GetBranch([FromQuery] int provinceID)
+		{
+			try
+			{
+				var response = await _repo.Thailand.GetBranch(provinceID);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("Positions")]
 		public async Task<IActionResult> Positions([FromQuery] allFilter model)
 		{
@@ -342,19 +362,6 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				return Ok(await _repo.Master.Regions(model));
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("Branchs")]
-		public async Task<IActionResult> Branchs([FromQuery] allFilter model)
-		{
-			try
-			{
-				return Ok(await _repo.Master.Branchs(model));
 			}
 			catch (Exception ex)
 			{

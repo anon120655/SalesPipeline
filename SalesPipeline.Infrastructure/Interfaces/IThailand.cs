@@ -22,5 +22,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<string?> GetTambolNameByid(int id);
 		Task MapZipCode(List<InfoTambolCustom> tambolList);
 		Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model);
+		Task<IList<InfoBranchCustom>> GetBranch(int provinceID);
+		Task<string?> GetBranchNameByid(int id);
 	}
 }

@@ -124,31 +124,31 @@ namespace SalesPipeline.Pages.Dashboards
 						filterRegionsTitle = $"เลือก ({filterAvg.Regions.Count})";
 					}
 
-					var dataBranchs = await _masterViewModel.Branchs(new allFilter()
-					{
-						status = StatusModel.Active,
-						Selecteds = filterAvg.Regions.Select(x => x.Value).ToList()
-					});
-					if (dataBranchs != null && dataBranchs.Status)
-					{
-						if (dataBranchs.Data?.Count > 0)
-						{
-							LookUp.Branchs = new() { new() { Id = Guid.NewGuid(), Name = "ทั้งหมด" } };
-							LookUp.Branchs.AddRange(dataBranchs.Data);
-						}
-					}
-					else
-					{
-						_errorMessage = dataBranchs?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
+					//var dataBranchs = await _masterViewModel.Branchs(new allFilter()
+					//{
+					//	status = StatusModel.Active,
+					//	Selecteds = filterAvg.Regions.Select(x => x.Value).ToList()
+					//});
+					//if (dataBranchs != null && dataBranchs.Status)
+					//{
+					//	if (dataBranchs.Data?.Count > 0)
+					//	{
+					//		LookUp.Branchs = new() { new() { Id = Guid.NewGuid(), Name = "ทั้งหมด" } };
+					//		LookUp.Branchs.AddRange(dataBranchs.Data);
+					//	}
+					//}
+					//else
+					//{
+					//	_errorMessage = dataBranchs?.errorMessage;
+					//	_utilsViewModel.AlertWarning(_errorMessage);
+					//}
 				}
 
 				StateHasChanged();
 			}
 		}
 
-		public async Task OnBranch(object? valChecked, Master_BranchCustom model)
+		public async Task OnBranch(object? valChecked)
 		{
 			if (valChecked != null)
 			{

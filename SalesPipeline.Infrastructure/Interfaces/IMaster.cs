@@ -8,7 +8,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<IList<Master_ListCustom>> MasterLists(allFilter model);
 		Task<IList<Master_PositionCustom>> Positions(allFilter model);
 		Task<IList<Master_RegionCustom>> Regions(allFilter model);
-		Task<IList<Master_BranchCustom>> Branchs(allFilter model);
 		Task<IList<MenuItemCustom>> MenuItem(allFilter model);
 	}
 }

@@ -44,11 +44,6 @@ public partial class User
     public string? Tel { get; set; }
 
     /// <summary>
-    /// สาขา
-    /// </summary>
-    public Guid? BranchId { get; set; }
-
-    /// <summary>
     /// ฝ่ายส่วนงานธุรกิจสินเชื่อ
     /// </summary>
     public Guid? Master_DepartmentId { get; set; }
@@ -78,6 +73,13 @@ public partial class User
     public string? AmphurName { get; set; }
 
     /// <summary>
+    /// สาขา
+    /// </summary>
+    public int? BranchId { get; set; }
+
+    public string? BranchName { get; set; }
+
+    /// <summary>
     /// ตำแหน่ง
     /// </summary>
     public int? PositionId { get; set; }
@@ -101,8 +103,6 @@ public partial class User
     public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
 
     public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
-
-    public virtual Master_Branch? Branch { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 

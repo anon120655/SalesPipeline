@@ -111,28 +111,6 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Master_BranchCustom>>> Branchs(allFilter parameters)
-		{
-			try
-			{
-				var content = await _httpClient.GetAsync($"/v1/Master/Branchs?{parameters.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<List<Master_BranchCustom>>(content);
-
-				return new ResultModel<List<Master_BranchCustom>>()
-				{
-					Data = dataMap
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResultModel<List<Master_BranchCustom>>
-				{
-					Status = false,
-					errorMessage = GeneralUtils.GetExMessage(ex)
-				};
-			}
-		}
-
 		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListCenter(allFilter model)
 		{
 			try
@@ -372,6 +350,28 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<List<InfoTambolCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<InfoBranchCustom>>> GetBranch(int provinceID)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBranch?provinceID={provinceID}");
+				var dataMap = JsonConvert.DeserializeObject<List<InfoBranchCustom>>(content);
+
+				return new ResultModel<List<InfoBranchCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<InfoBranchCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

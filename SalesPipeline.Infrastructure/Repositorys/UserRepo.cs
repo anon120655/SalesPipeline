@@ -65,11 +65,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
 					model.Master_Department_CenterId = null;
-					model.AssignmentId = null;
+					//model.AssignmentId = null;
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					model.AssignmentId = null;
+					//model.AssignmentId = null;
 					model.LevelId = null;
 					//model.Master_Department_BranchId = null;
 					model.ProvinceId = null;
@@ -108,14 +108,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
 				string? provinceName = null;
-				string? amphurName = null;
+				string? branchName = null;
 				if (model.ProvinceId.HasValue)
 				{
 					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 				}
-				if (model.AmphurId.HasValue)
+				if (model.BranchId.HasValue)
 				{
-					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+					branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId.Value);
 				}
 
 				var user = new Data.Entity.User();
@@ -138,9 +138,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Master_Department_CenterId = model.Master_Department_CenterId;
 				//user.AssignmentId = model.AssignmentId;
 				user.ProvinceId = model.ProvinceId;
-				user.ProvinceName = provinceName;
-				user.AmphurId = model.AmphurId;
-				user.AmphurName = amphurName;
+				user.ProvinceName = provinceName;				
+				user.BranchId = model.BranchId;
+				user.BranchName = branchName;
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
@@ -172,20 +172,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								});
 							}
 						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
-						{
-							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-							{
-								var assignment = await _repo.AssignmentRM.Create(new()
-								{
-									AssignmentId = model.AssignmentId.Value,
-									UserId = user.Id,
-									EmployeeId = model.EmployeeId,
-									EmployeeName = model.FullName,
-								});
-							}
-						}
+						//else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
+						//{
+						//	//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+						//	if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+						//	{
+						//		var assignment = await _repo.AssignmentRM.Create(new()
+						//		{
+						//			AssignmentId = model.AssignmentId.Value,
+						//			UserId = user.Id,
+						//			EmployeeId = model.EmployeeId,
+						//			EmployeeName = model.FullName,
+						//		});
+						//	}
+						//}
 					}
 				}
 
@@ -205,14 +205,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				DateTime _dateNow = DateTime.Now;
 
 				string? provinceName = null;
-				string? amphurName = null;
+				string? branchName = null;
 				if (model.ProvinceId.HasValue)
 				{
 					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 				}
-				if (model.AmphurId.HasValue)
+				if (model.BranchId.HasValue)
 				{
-					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+					branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId.Value);
 				}
 
 				string? roleCode = null;
@@ -250,22 +250,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								}
 							}
 
-							if (model.AssignmentId != _AssignmentId)
-							{
-								var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-								if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
-								{
-									throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
-								}
-								else
-								{
-									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
-									if (salesCount > 0)
-									{
-										throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
-									}
-								}
-							}
+							//if (model.AssignmentId != _AssignmentId)
+							//{
+							//	var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+							//	if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
+							//	{
+							//		throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
+							//	}
+							//	else
+							//	{
+							//		var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
+							//		if (salesCount > 0)
+							//		{
+							//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
+							//		}
+							//	}
+							//}
 						}
 					}
 
@@ -285,8 +285,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//user.AssignmentId = model.AssignmentId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
-					user.AmphurId = model.AmphurId;
-					user.AmphurName = amphurName;
+					user.BranchId = model.BranchId;
+					user.BranchName = branchName;
 					user.PositionId = model.PositionId;
 					user.LevelId = model.LevelId;
 					user.RoleId = model.RoleId;
@@ -325,25 +325,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								}
 							}
 						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
 							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-							Assignment_RMCustom assignmentRMModel = new()
-							{
-								AssignmentId = model.AssignmentId.Value,
-								UserId = user.Id,
-								EmployeeId = model.EmployeeId,
-								EmployeeName = model.FullName
-							};
+							//Assignment_RMCustom assignmentRMModel = new()
+							//{
+							//	AssignmentId = model.AssignmentId.Value,
+							//	UserId = user.Id,
+							//	EmployeeId = model.EmployeeId,
+							//	EmployeeName = model.FullName
+							//};
 
-							if (!await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id))
-							{
-								await _repo.AssignmentRM.Create(assignmentRMModel);
-							}
-							else
-							{
-								await _repo.AssignmentRM.Update(assignmentRMModel);
-							}
+							//if (!await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id))
+							//{
+							//	await _repo.AssignmentRM.Create(assignmentRMModel);
+							//}
+							//else
+							//{
+							//	await _repo.AssignmentRM.Update(assignmentRMModel);
+							//}
 						}
 					}
 

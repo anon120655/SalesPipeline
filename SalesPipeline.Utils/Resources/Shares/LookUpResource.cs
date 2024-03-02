@@ -17,7 +17,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_PositionCustom>? Positions { get; set; }
 		public List<User_LevelCustom>? UserLevels { get; set; }
 		public List<Master_RegionCustom>? Regions { get; set; }
-		public List<Master_BranchCustom>? Branchs { get; set; }
 		public List<User_BranchCustom>? RMUser { get; set; }
 		public List<AssignmentCustom>? AssignmentCenter { get; set; }
 		public List<Assignment_RMCustom>? AssignmentUser { get; set; }
@@ -36,5 +35,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<InfoProvinceCustom>? Provinces { get; set; }
 		public List<InfoAmphurCustom>? Amphurs { get; set; }
 		public List<InfoTambolCustom>? Tambols { get; set; }
+		public List<InfoBranchCustom>? Branchs { get; set; }
 	}
 }

@@ -204,7 +204,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 				if (!String.IsNullOrEmpty(filterRM.amphur))
 				{
-					ItemsRM = ItemsRM.Where(x => x.AmphurName != null && x.AmphurName.Contains(filterRM.amphur)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.amphur)).ToList();
 				}
 
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
@@ -261,7 +261,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 				if (!String.IsNullOrEmpty(filterRMNew.amphur))
 				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.AmphurName != null && x.AmphurName.Contains(filterRMNew.amphur)).ToList();
+					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.amphur)).ToList();
 				}
 
 				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);

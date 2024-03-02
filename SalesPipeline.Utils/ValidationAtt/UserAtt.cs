@@ -39,7 +39,7 @@ namespace SalesPipeline.Utils.ValidationAtt
 						{
 							return resultValidate;
 						}
-						if (FieldName == "ProvinceId" || FieldName == "AmphurId" || FieldName == "AssignmentId")
+						if (FieldName == "ProvinceId" || FieldName == "BranchId" || FieldName == "AssignmentId")
 						{
 							if (model.RoleId == 8 && value == null)
 							{

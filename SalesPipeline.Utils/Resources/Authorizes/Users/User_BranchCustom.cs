@@ -24,8 +24,6 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
         public int BranchId { get; set; }
 
-        public virtual Master_BranchCustom? Branch { get; set; }
-
         public virtual UserCustom? User { get; set; }
     }
 }

@@ -188,7 +188,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.User).ThenInclude(x => x.Branch)
+												 .Include(x => x.User)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
@@ -252,7 +252,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						assignment_RM.Assignment_RM_Sales = new();
 						assignment_RM.Tel = assignment_RM.User?.Tel;
 						assignment_RM.ProvinceName = assignment_RM.User?.ProvinceName;
-						assignment_RM.AmphurName = assignment_RM.User?.AmphurName;
+						assignment_RM.BranchName = assignment_RM.User?.BranchName;
 
 						foreach (var item_sales in item_path)
 						{

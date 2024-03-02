@@ -125,5 +125,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return _mapper.Map<InfoBranchCustom>(infoBranch);
 		}
+
+		public async Task<IList<InfoBranchCustom>> GetBranch(int provinceID)
+		{
+			var query = _repo.Context.InfoBranches.Where(x => x.ProvinceID == provinceID).AsQueryable();
+			return _mapper.Map<IList<InfoBranchCustom>>(await query.ToListAsync());
+		}
+
+		public async Task<string?> GetBranchNameByid(int id)
+		{
+			var name = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
+			return name;
+		}
 	}
 }

@@ -25,6 +25,5 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		public string? Name { get; set; }
 
-		public virtual ICollection<Master_BranchCustom>? Master_Branches { get; set; }
 	}
 }

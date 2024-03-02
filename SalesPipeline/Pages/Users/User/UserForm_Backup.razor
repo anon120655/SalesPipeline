@@ -112,22 +112,6 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(formModel.RoleId == 8 ? "":"d-none" )">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ผู้จัดการศูนย์ที่ดูแล<span class="text-danger">*</span></label>
-									<div class="col-sm-4">
-										<select @bind="formModel.AssignmentId" id="Assignment" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-											<option value="">เลือก</option>
-											@if (LookUp.AssignmentCenter?.Count > 0)
-											{
-												foreach (var item in LookUp.AssignmentCenter)
-												{
-													<option value="@item.Id">@item.EmployeeName</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.AssignmentId)" />
-									</div>
-								</div>
 								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">

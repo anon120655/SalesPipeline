@@ -54,7 +54,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		//Custom
 		public string? Tel { get; set; }
 		public string? ProvinceName { get; set; }
-		public string? AmphurName { get; set; }
+		public string? BranchName { get; set; }
 		/// <summary>
 		/// จำนวนการมอบหมาย
 		/// </summary>
