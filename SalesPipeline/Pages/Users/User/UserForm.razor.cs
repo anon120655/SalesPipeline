@@ -149,10 +149,10 @@ namespace SalesPipeline.Pages.Users.User
 			Guid? department_BranchId = null;
 			department_BranchName = null;
 
-			//if (formModel.Master_Department_BranchId.HasValue && !formModel.AssignmentId.HasValue)
-			//{
-			//	department_BranchId = formModel.Master_Department_BranchId.Value;
-			//}
+			if (formModel.Master_Department_BranchId.HasValue)
+			{
+				department_BranchId = formModel.Master_Department_BranchId.Value;
+			}
 			//else if (formModel.AssignmentId.HasValue) //RM
 			//{
 			//	var dataassignmentCenter = await _assignmentCenterViewModel.GetById(formModel.AssignmentId.Value);
