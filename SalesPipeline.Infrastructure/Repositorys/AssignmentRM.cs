@@ -43,6 +43,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			assignment_RM.Status = StatusModel.Active;
 			assignment_RM.CreateDate = DateTime.Now;
 			assignment_RM.AssignmentId = model.AssignmentId;
+			assignment_RM.AssignmentUserId = model.AssignmentUserId;
+			assignment_RM.AssignmentName = model.AssignmentName;
+			assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
 			assignment_RM.UserId = model.UserId;
 			assignment_RM.EmployeeId = model.EmployeeId;
 			assignment_RM.EmployeeName = model.EmployeeName;
@@ -51,7 +54,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			//**** update ผู้จัดการศูนย์
-			await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId);
+			if (model.AssignmentId.HasValue)
+			{
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId.Value);
+			}
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
@@ -67,7 +73,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					assignmentIdOriginal = assignment_RM.AssignmentId;
 				}
 				assignment_RM.AssignmentId = model.AssignmentId;
-				//assignment_RM.UserId = model.UserId;
+				assignment_RM.AssignmentUserId = model.AssignmentUserId;
+				assignment_RM.AssignmentName = model.AssignmentName;
+				assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
 				assignment_RM.EmployeeId = model.EmployeeId;
 				assignment_RM.EmployeeName = model.EmployeeName;
 				_db.Update(assignment_RM);
@@ -75,9 +83,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//**** มีการเปลี่ยนศูนย์ที่รับผิดชอบ  update ผู้จัดการศูนย์ 
-			if (assignmentIdOriginal.HasValue)
+			if (assignmentIdOriginal.HasValue && model.AssignmentId.HasValue)
 			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId);
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId.Value);
 				await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentIdOriginal.Value);
 			}
 
@@ -158,7 +166,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//**** update ผู้จัดการศูนย์
-					await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.AssignmentId);
+					if (assignment_RMs.AssignmentId.HasValue)
+					{
+						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.AssignmentId.Value);
+					}
 
 				}
 			}

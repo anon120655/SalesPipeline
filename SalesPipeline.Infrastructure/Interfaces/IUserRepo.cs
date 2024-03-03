@@ -12,6 +12,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<UserCustom> GetById(int id);
+		Task<UserCustom> GetMcencerByBranchId(Guid id);
 		Task<string?> GetFullNameById(int id);
 		Task<bool> UserExists(string employeeid);
 		Task<PaginationView<List<UserCustom>>> GetList(UserFilter model);

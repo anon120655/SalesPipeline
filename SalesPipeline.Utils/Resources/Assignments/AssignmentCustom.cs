@@ -20,6 +20,11 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public DateTime CreateDate { get; set; }
 
 		/// <summary>
+		/// กิจการสาขาภาค
+		/// </summary>
+		public Guid? Master_Department_BranchId { get; set; }
+
+		/// <summary>
 		/// รหัสศูนย์
 		/// </summary>
 		public string? Code { get; set; }

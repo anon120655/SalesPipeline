@@ -138,7 +138,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Master_Department_CenterId = model.Master_Department_CenterId;
 				//user.AssignmentId = model.AssignmentId;
 				user.ProvinceId = model.ProvinceId;
-				user.ProvinceName = provinceName;				
+				user.ProvinceName = provinceName;
 				user.BranchId = model.BranchId;
 				user.BranchName = branchName;
 				user.PositionId = model.PositionId;
@@ -154,38 +154,60 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER) && user.Master_Department_BranchId.HasValue)
+						if (user.Master_Department_BranchId.HasValue)
 						{
-							var depCenter = await _repo.MasterDepCenter.GetByBranchId(user.Master_Department_BranchId.Value);
-							if (depCenter != null)
+							if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 							{
-								var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+								var depCenter = await _repo.MasterDepCenter.GetByBranchId(user.Master_Department_BranchId.Value);
+								if (depCenter != null)
 								{
-									Code = depCenter.Code,
-									Name = depCenter.Name,
-									UserId = user.Id,
-									EmployeeId = model.EmployeeId,
-									EmployeeName = model.FullName,
-									Tel = model.Tel,
-									RMNumber = 0,
-									CurrentNumber = 0
-								});
+									var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+									{
+										Master_Department_BranchId = user.Master_Department_BranchId,
+										Code = depCenter.Code,
+										Name = depCenter.Name,
+										UserId = user.Id,
+										EmployeeId = model.EmployeeId,
+										EmployeeName = model.FullName,
+										Tel = model.Tel,
+										RMNumber = 0,
+										CurrentNumber = 0
+									});
+								}
+							}
+							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+							{
+								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+								{
+									Guid? _assignmentId = null;
+									int? _assignmentUserId = null;
+									string? _assignmentName = null;
+									var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
+									if (userMcenter != null)
+									{
+										_assignmentUserId = userMcenter.Id;
+										_assignmentName = userMcenter.FullName;
+										var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(userMcenter.Id);
+										if (assignmentCenter != null)
+										{
+											_assignmentId = assignmentCenter.Id;
+										}
+									}
+
+									var assignment = await _repo.AssignmentRM.Create(new()
+									{
+										AssignmentId = _assignmentId,
+										AssignmentUserId = _assignmentUserId,
+										AssignmentName = _assignmentName,
+										Master_Department_BranchId = user.Master_Department_BranchId,
+										UserId = user.Id,
+										EmployeeId = model.EmployeeId,
+										EmployeeName = model.FullName,
+									});
+								}
 							}
 						}
-						//else if (roleCode.ToUpper().StartsWith(RoleCodes.RM) && model.AssignmentId.HasValue)
-						//{
-						//	//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-						//	if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-						//	{
-						//		var assignment = await _repo.AssignmentRM.Create(new()
-						//		{
-						//			AssignmentId = model.AssignmentId.Value,
-						//			UserId = user.Id,
-						//			EmployeeId = model.EmployeeId,
-						//			EmployeeName = model.FullName,
-						//		});
-						//	}
-						//}
 					}
 				}
 
@@ -221,7 +243,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					roleCode = await GetRoleCodeById(model.RoleId.Value);
 				}
 
-				var user = await _repo.Context.Users.Include(x=>x.Assignment_RMs.Where(x=> x.Status != StatusModel.Delete))
+				var user = await _repo.Context.Users.Include(x => x.Assignment_RMs.Where(x => x.Status != StatusModel.Delete))
 					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
@@ -303,6 +325,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								AssignmentCustom assignmentCenterModel = new()
 								{
+									Master_Department_BranchId = user.Master_Department_BranchId,
 									Code = depCenter.Code,
 									Name = depCenter.Name,
 									UserId = user.Id,
@@ -395,6 +418,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Role)
 				.Include(x => x.Assignment_RMs.Where(x => x.Status == StatusModel.Active))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<UserCustom>(query);
+		}
+
+		public async Task<UserCustom> GetMcencerByBranchId(Guid id)
+		{
+			//7=ผู้จัดการศูนย์
+			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 7 && x.Master_Department_BranchId == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
 

@@ -131,6 +131,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.EmployeeName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้จัดการศูนย์");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ศูนย์สาขา");
@@ -163,7 +164,13 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.AssignmentId).HasComment("ผู้จัดการศูนย์ที่ดูแล");
+            entity.Property(e => e.AssignmentId).HasComment("ผู้จัดการศูนย์ที่ดูแลปัจจุบัน");
+            entity.Property(e => e.AssignmentName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้จัดการศูนย์ที่ดูแล");
+            entity.Property(e => e.AssignmentUserId)
+                .HasComment("ผู้จัดการศูนย์ที่ดูแล")
+                .HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CurrentNumber)
                 .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
@@ -174,6 +181,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.EmployeeName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อพนักงานที่ได้รับมอบหมาย");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -183,7 +191,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Assignment).WithMany(p => p.Assignment_RMs)
                 .HasForeignKey(d => d.AssignmentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("assignment_rm_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_RMs)
@@ -1429,7 +1436,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("int(11)");
             entity.Property(e => e.LoginFail).HasColumnType("smallint(6)");
             entity.Property(e => e.Master_DepartmentId).HasComment("ฝ่ายส่วนงานธุรกิจสินเชื่อ");
-            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Master_Department_CenterId).HasComment("ศูนย์ธุรกิจสินเชื่อ");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.PositionId)

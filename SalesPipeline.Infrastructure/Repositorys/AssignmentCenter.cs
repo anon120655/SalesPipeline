@@ -66,6 +66,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment = new Data.Entity.Assignment();
 			assignment.Status = StatusModel.Active;
 			assignment.CreateDate = DateTime.Now;
+			assignment.Master_Department_BranchId = model.Master_Department_BranchId;
 			assignment.Code = model.Code;
 			assignment.Name = model.Name;
 			assignment.UserId = model.UserId;
@@ -85,6 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 			if (assignment != null)
 			{
+				assignment.Master_Department_BranchId = model.Master_Department_BranchId;
 				assignment.Code = model.Code;
 				assignment.Name = model.Name;
 				assignment.UserId = model.UserId;
@@ -246,6 +248,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
+								Master_Department_BranchId = item_center.Master_Department_BranchId,
 								Code = depCenter.Code,
 								Name = depCenter.Name,
 								UserId = item_center.Id,

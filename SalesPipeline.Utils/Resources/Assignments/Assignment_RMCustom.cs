@@ -23,9 +23,24 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public DateTime CreateDate { get; set; }
 
 		/// <summary>
+		/// ผู้จัดการศูนย์ที่ดูแลปัจจุบัน
+		/// </summary>
+		public Guid? AssignmentId { get; set; }
+
+		/// <summary>
+		/// ผู้จัดการศูนย์ที่ดูแล
+		/// </summary>
+		public int? AssignmentUserId { get; set; }
+
+		/// <summary>
 		/// ชื่อผู้จัดการศูนย์ที่ดูแล
 		/// </summary>
-		public Guid AssignmentId { get; set; }
+		public string? AssignmentName { get; set; }
+
+		/// <summary>
+		/// กิจการสาขาภาค
+		/// </summary>
+		public Guid? Master_Department_BranchId { get; set; }
 
 		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย
