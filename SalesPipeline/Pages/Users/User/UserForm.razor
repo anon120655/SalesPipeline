@@ -82,7 +82,7 @@
 										}
 										else
 										{
-											<select @onchange="((e) => OnRoles(e.Value,null))" class="selectpickerdefault" value="@formModel.RoleId">
+											<select id="Roles" class="selectpicker selectInit" data-style="select_btn_set" value="@formModel.RoleId">
 												<option value="">เลือก</option>
 												@if (ItemsUserRole?.Count > 0)
 												{
@@ -96,8 +96,8 @@
 										<ValidationMessage For="@(() => formModel.RoleId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(LookUp.UserLevels == null || LookUp.UserLevels?.Count == 0 ? "d-none":"")">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.LevelId" class="selectpickerdefault">
 											<option value="">เลือก</option>
@@ -128,7 +128,7 @@
 										<ValidationMessage For="@(() => formModel.AssignmentId)" />
 									</div>
 								</div> *@
-								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
+								@* <div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @onchange="((e) => OnDepartment_Center(e.Value))" class="selectpickerdefault" value="@formModel.Master_Department_CenterId">
@@ -143,16 +143,16 @@
 										</select>
 										<ValidationMessage For="@(() => formModel.Master_Department_CenterId)" />
 									</div>
-								</div>
+								</div> *@
 
-								<div class="row mb-3">
+								@* <div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขาที่ดูแล</label>
 									<div class="col-sm-4">
 										<input type="text" disabled class="form-control" value="@department_BranchName">
 									</div>
-								</div>
+								</div> *@
 
-								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขา<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
@@ -168,7 +168,7 @@
 										<ValidationMessage For="@(() => formModel.Master_Department_BranchId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+								<div class="row mb-3 @(formModel.RoleId == 7 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">จังหวัด</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.ProvinceId" id="Province" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
@@ -183,7 +183,7 @@
 										<ValidationMessage For="@(() => formModel.ProvinceId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">
+								<div class="row mb-3 @(formModel.RoleId == 7 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.BranchId" id="Branch" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">

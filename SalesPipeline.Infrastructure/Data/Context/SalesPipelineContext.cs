@@ -802,6 +802,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Master_ISICCode");
 
+            entity.Property(e => e.Code).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);

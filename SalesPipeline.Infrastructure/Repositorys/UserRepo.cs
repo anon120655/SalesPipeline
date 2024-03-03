@@ -154,9 +154,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER) && user.Master_Department_CenterId.HasValue)
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER) && user.Master_Department_BranchId.HasValue)
 						{
-							var depCenter = await _repo.MasterDepCenter.GetById(user.Master_Department_CenterId.Value);
+							var depCenter = await _repo.MasterDepCenter.GetByBranchId(user.Master_Department_BranchId.Value);
 							if (depCenter != null)
 							{
 								var assignmentCenter = await _repo.AssignmentCenter.Create(new()
@@ -190,7 +190,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 
-				_transaction.Commit();
+				//_transaction.Commit();
 
 				return _mapper.Map<UserCustom>(user);
 			}

@@ -29,14 +29,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public Task<Master_ISICCodeCustom> Create(Master_ISICCodeCustom model)
+		public async Task<Master_ISICCodeCustom> Create(Master_ISICCodeCustom model)
 		{
-			throw new NotImplementedException();
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				DateTime _dateNow = DateTime.Now;
+
+				var master_ISICCode = new Data.Entity.Master_ISICCode()
+				{
+					Status = StatusModel.Active,
+					CreateDate = _dateNow,
+					CreateBy = model.CurrentUserId,
+					UpdateDate = _dateNow,
+					UpdateBy = model.CurrentUserId,
+					Code = model.Code,
+					Name = model.Name
+				};
+				await _db.InsterAsync(master_ISICCode);
+				await _db.SaveAsync();
+
+				_transaction.Commit();
+
+				return _mapper.Map<Master_ISICCodeCustom>(master_ISICCode);
+			}
 		}
 
-		public Task<Master_ISICCodeCustom> Update(Master_ISICCodeCustom model)
+		public async Task<Master_ISICCodeCustom> Update(Master_ISICCodeCustom model)
 		{
-			throw new NotImplementedException();
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				var _dateNow = DateTime.Now;
+
+				var master_ISICCode = await _repo.Context.Master_ISICCodes.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (master_ISICCode != null)
+				{
+					master_ISICCode.UpdateDate = _dateNow;
+					master_ISICCode.UpdateBy = model.CurrentUserId;
+					master_ISICCode.Code = model.Code;
+					master_ISICCode.Name = model.Name;
+					_db.Update(master_ISICCode);
+					await _db.SaveAsync();
+
+					_transaction.Commit();
+				}
+
+				return _mapper.Map<Master_ISICCodeCustom>(master_ISICCode);
+			}
 		}
 
 		public Task DeleteById(UpdateModel model)

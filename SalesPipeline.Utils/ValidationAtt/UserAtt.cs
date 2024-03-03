@@ -31,10 +31,10 @@ namespace SalesPipeline.Utils.ValidationAtt
 							return resultValidate;
 						}
 						//ศูนย์ธุรกิจสินเชื่อ
-						if (FieldName == "Master_Department_CenterId" && model.RoleId == 7 && value == null)
-						{
-							return resultValidate;
-						}
+						//if (FieldName == "Master_Department_CenterId" && model.RoleId == 7 && value == null)
+						//{
+						//	return resultValidate;
+						//}
 						if ((model.RoleId == 5 || model.RoleId == 6) && FieldName == "LevelId" && value == null)
 						{
 							return resultValidate;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Masters
 {
-	public class Master_ISICCodeCustom
+	public class Master_ISICCodeCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -22,6 +23,8 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public DateTime UpdateDate { get; set; }
 
 		public int UpdateBy { get; set; }
+
+		public string? Code { get; set; }
 
 		public string? Name { get; set; }
 	}

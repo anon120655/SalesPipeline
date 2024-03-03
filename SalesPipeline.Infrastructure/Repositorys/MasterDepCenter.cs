@@ -136,6 +136,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_Department_CenterCustom>(query);
 		}
 
+		public async Task<Master_Department_CenterCustom> GetByBranchId(Guid id)
+		{
+			var query = await _repo.Context.Master_Department_Centers
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Master_Department_BranchId == id);
+
+			return _mapper.Map<Master_Department_CenterCustom>(query);
+		}
+
 		public async Task<PaginationView<List<Master_Department_CenterCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Department_Centers
@@ -173,5 +182,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var name = await _repo.Context.Master_Department_Centers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
+
 	}
 }

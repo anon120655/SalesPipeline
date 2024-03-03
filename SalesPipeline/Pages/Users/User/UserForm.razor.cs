@@ -101,7 +101,8 @@ namespace SalesPipeline.Pages.Users.User
 
 			StateHasChanged();
 			await Task.Delay(1);
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
+			//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRoles", "#Roles");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepartmentBranch", "#DepartmentBranch");
 
 			await Task.Delay(1);
@@ -120,7 +121,8 @@ namespace SalesPipeline.Pages.Users.User
 					formModel = data.Data;
 					if (formModel.RoleId.HasValue)
 					{
-						await OnRoles(formModel.RoleId, formModel.LevelId);
+						//formModel.LevelId = formModel.LevelId;
+						//await OnRoles(formModel.RoleId, formModel.LevelId);
 					}
 					//if (formModel.Assignment_RMs?.Count > 0)
 					//{
@@ -141,6 +143,7 @@ namespace SalesPipeline.Pages.Users.User
 			else
 			{
 				isLoadingContent = false;
+				formModel.Status = StatusModel.Active;
 			}
 		}
 
@@ -274,16 +277,48 @@ namespace SalesPipeline.Pages.Users.User
 			StateHasChanged();
 		}
 
-		protected async Task OnRoles(object? val, int? levelId = null)
+		//protected void OnDepartment_Center(object? val)
+		//{
+		//	department_BranchName = null;
+		//	formModel.Master_Department_CenterId = null;
+		//	formModel.Master_Department_BranchId = null;
+		//	StateHasChanged();
+
+		//	if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
+		//	{
+		//		formModel.Master_Department_CenterId = department_CenterId;
+		//		var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
+		//		if (departmentCenter != null)
+		//		{
+		//			department_BranchName = departmentCenter.Master_Department_BranchName;
+		//			formModel.Master_Department_BranchId = departmentCenter.Master_Department_BranchId;
+		//			StateHasChanged();
+		//		}
+		//	}
+		//}
+
+		[JSInvokable]
+		public async Task OnRoles(string _id, string _name)
 		{
-			formModel.LevelId = levelId;
 			formModel.RoleId = null;
 			LookUp.UserLevels = new();
 			StateHasChanged();
 
-			if (val != null && int.TryParse(val.ToString(), out int roleid))
+			if (_id != null && int.TryParse(_id.ToString(), out int roleid))
 			{
 				formModel.RoleId = roleid;
+
+				if (formModel.RoleId == 7) //¼Ùé¨Ñ´¡ÒÃÈÙ¹Âì
+				{
+					formModel.ProvinceId = null;
+					formModel.BranchId = null;
+					LookUp.Provinces = new();
+					LookUp.Branchs = new();
+					StateHasChanged();
+
+					await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+				}
 				StateHasChanged();
 
 				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
@@ -299,6 +334,10 @@ namespace SalesPipeline.Pages.Users.User
 						{
 							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
 						}
+						else if (formModel.RoleId == 8) //RM
+						{
+							LookUp.UserLevels = dataLevels.Data;
+						}
 
 						StateHasChanged();
 					}
@@ -311,26 +350,6 @@ namespace SalesPipeline.Pages.Users.User
 			}
 
 			await Task.Delay(10);
-		}
-
-		protected void OnDepartment_Center(object? val)
-		{
-			department_BranchName = null;
-			formModel.Master_Department_CenterId = null;
-			formModel.Master_Department_BranchId = null;
-			StateHasChanged();
-
-			if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
-			{
-				formModel.Master_Department_CenterId = department_CenterId;
-				var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
-				if (departmentCenter != null)
-				{
-					department_BranchName = departmentCenter.Master_Department_BranchName;
-					formModel.Master_Department_BranchId = departmentCenter.Master_Department_BranchId;
-					StateHasChanged();
-				}
-			}
 		}
 
 		[JSInvokable]
