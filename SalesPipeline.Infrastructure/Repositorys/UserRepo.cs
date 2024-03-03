@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -136,7 +137,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Master_DepartmentId = model.Master_DepartmentId;
 				user.Master_Department_BranchId = model.Master_Department_BranchId;
 				user.Master_Department_CenterId = model.Master_Department_CenterId;
-				//user.AssignmentId = model.AssignmentId;
 				user.ProvinceId = model.ProvinceId;
 				user.ProvinceName = provinceName;
 				user.BranchId = model.BranchId;
@@ -158,29 +158,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 							{
+								string? _code = null;
+								string? _name = null;
 								var depCenter = await _repo.MasterDepCenter.GetByBranchId(user.Master_Department_BranchId.Value);
 								if (depCenter != null)
 								{
-									var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-									{
-										Master_Department_BranchId = user.Master_Department_BranchId,
-										Code = depCenter.Code,
-										Name = depCenter.Name,
-										UserId = user.Id,
-										EmployeeId = model.EmployeeId,
-										EmployeeName = model.FullName,
-										Tel = model.Tel,
-										RMNumber = 0,
-										CurrentNumber = 0
-									});
+									_code = depCenter.Code;
+									_name = depCenter.Name;
 								}
+								var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+								{
+									Master_Department_BranchId = user.Master_Department_BranchId,
+									Code = _code,
+									Name = _name,
+									UserId = user.Id,
+									EmployeeId = model.EmployeeId,
+									EmployeeName = model.FullName,
+									Tel = model.Tel,
+									RMNumber = 0,
+									CurrentNumber = 0
+								});
 							}
 							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 							{
 								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
 								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
 								{
-									Guid? _assignmentId = null;
 									int? _assignmentUserId = null;
 									string? _assignmentName = null;
 									var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
@@ -188,16 +191,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									{
 										_assignmentUserId = userMcenter.Id;
 										_assignmentName = userMcenter.FullName;
-										var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(userMcenter.Id);
-										if (assignmentCenter != null)
-										{
-											_assignmentId = assignmentCenter.Id;
-										}
 									}
 
 									var assignment = await _repo.AssignmentRM.Create(new()
 									{
-										AssignmentId = _assignmentId,
 										AssignmentUserId = _assignmentUserId,
 										AssignmentName = _assignmentName,
 										Master_Department_BranchId = user.Master_Department_BranchId,
@@ -212,7 +209,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 
-				//_transaction.Commit();
+				_transaction.Commit();
 
 				return _mapper.Map<UserCustom>(user);
 			}
@@ -262,15 +259,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
-							Guid? _AssignmentId = null;
-							if (user.Assignment_RMs?.Count > 0)
-							{
-								var response = user.Assignment_RMs.FirstOrDefault();
-								if (response != null)
-								{
-									_AssignmentId = response.AssignmentId;
-								}
-							}
 
 							//if (model.AssignmentId != _AssignmentId)
 							//{
@@ -293,7 +281,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;
-					//user.EmployeeId = model.EmployeeId;
 					user.TitleName = model.TitleName;
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
@@ -304,7 +291,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Master_DepartmentId = model.Master_DepartmentId;
 					user.Master_Department_BranchId = model.Master_Department_BranchId;
 					user.Master_Department_CenterId = model.Master_Department_CenterId;
-					//user.AssignmentId = model.AssignmentId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
 					user.BranchId = model.BranchId;
@@ -414,7 +400,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Master_Department_Branch)
 				.Include(x => x.Master_Department_Center)
 				.Include(x => x.Position)
-				//.Include(x => x.Branch)
 				.Include(x => x.Role)
 				.Include(x => x.Assignment_RMs.Where(x => x.Status == StatusModel.Active))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
@@ -444,7 +429,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Master_Department_Branch)
 										   .Include(x => x.Master_Department_Center)
-										   //.Include(x => x.Branch)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();

@@ -56,7 +56,5 @@ public partial class Assignment
     /// </summary>
     public int? CurrentNumber { get; set; }
 
-    public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
-
     public virtual User User { get; set; } = null!;
 }

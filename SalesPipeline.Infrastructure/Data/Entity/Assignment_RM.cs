@@ -18,11 +18,6 @@ public partial class Assignment_RM
     public DateTime CreateDate { get; set; }
 
     /// <summary>
-    /// ผู้จัดการศูนย์ที่ดูแลปัจจุบัน
-    /// </summary>
-    public Guid? AssignmentId { get; set; }
-
-    /// <summary>
     /// ผู้จัดการศูนย์ที่ดูแล
     /// </summary>
     public int? AssignmentUserId { get; set; }
@@ -56,8 +51,6 @@ public partial class Assignment_RM
     /// จำนวนลูกค้าปัจจุบันที่ดูแล
     /// </summary>
     public int? CurrentNumber { get; set; }
-
-    public virtual Assignment? Assignment { get; set; }
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 

@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -37,6 +30,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
 		}
 
+		public async Task<bool> CheckAssignmentByBranchId(Guid id)
+		{
+			return await _repo.Context.Assignments.AnyAsync(x => x.Master_Department_BranchId == id);
+		}
+
 		public async Task<AssignmentCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Assignments
@@ -58,6 +56,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
 
+			if (model.Master_Department_BranchId.HasValue)
+			{
+				if (await CheckAssignmentByBranchId(model.Master_Department_BranchId.Value))
+					throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
+			}
+
 			if (string.IsNullOrEmpty(model.EmployeeName))
 			{
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
@@ -78,6 +82,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment);
 			await _db.SaveAsync();
 
+			if (model.Master_Department_BranchId.HasValue)
+			{
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.Master_Department_BranchId.Value);
+				await _repo.AssignmentRM.UpdateAssignmentEmpty(model.Master_Department_BranchId.Value);
+			}
+
 			return _mapper.Map<AssignmentCustom>(assignment);
 		}
 
@@ -95,6 +105,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				assignment.Tel = model.Tel;
 				_db.Update(assignment);
 				await _db.SaveAsync();
+
+				if (model.Master_Department_BranchId.HasValue)
+				{
+					await _repo.AssignmentCenter.UpdateCurrentNumber(model.Master_Department_BranchId.Value);
+				}
+
 			}
 			return _mapper.Map<AssignmentCustom>(assignment);
 		}
@@ -204,17 +220,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task UpdateCurrentNumber(Guid id)
 		{
 			var assignment_RMs = await _repo.Context.Assignment_RMs
-											  .Where(x => x.AssignmentId == id && x.Status == StatusModel.Active)
+											  .Where(x => x.Master_Department_BranchId == id && x.Status == StatusModel.Active)
 											  .ToListAsync();
 
 			int countRm = assignment_RMs.Count;
 
-			var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Id == id);
+			var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Master_Department_BranchId == id && x.Status == StatusModel.Active);
 			if (assignments != null)
 			{
 				assignments.RMNumber = countRm;
-				//assignments.CurrentNumber = assignment_RMs.Sum(x => x.CurrentNumber);
 
+				//ส่วนนี้ต้องตัดออก แล้วไม่เช็คที่ Assignment กับ AssignmentRM โดยตรง
 				var sales = await _repo.Context.Sales
 												  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
 												  .ToListAsync();

@@ -61,7 +61,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// </summary>
 		public int? CurrentNumber { get; set; }
 
-		public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
+		//public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
 		public virtual UserCustom? User { get; set; }
 
 		//Custom

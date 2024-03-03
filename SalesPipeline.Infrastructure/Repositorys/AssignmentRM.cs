@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
@@ -42,7 +43,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_RM = new Data.Entity.Assignment_RM();
 			assignment_RM.Status = StatusModel.Active;
 			assignment_RM.CreateDate = DateTime.Now;
-			assignment_RM.AssignmentId = model.AssignmentId;
 			assignment_RM.AssignmentUserId = model.AssignmentUserId;
 			assignment_RM.AssignmentName = model.AssignmentName;
 			assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
@@ -54,9 +54,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			//**** update ผู้จัดการศูนย์
-			if (model.AssignmentId.HasValue)
+			if (model.Master_Department_BranchId.HasValue)
 			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId.Value);
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.Master_Department_BranchId.Value);
 			}
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
@@ -64,15 +64,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Assignment_RMCustom> Update(Assignment_RMCustom model)
 		{
-			Guid? assignmentIdOriginal = null;
+			//Guid? assignmentIdOriginal = null;
 			var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
 			if (assignment_RM != null)
 			{
-				if (assignment_RM.AssignmentId != model.AssignmentId)
-				{
-					assignmentIdOriginal = assignment_RM.AssignmentId;
-				}
-				assignment_RM.AssignmentId = model.AssignmentId;
 				assignment_RM.AssignmentUserId = model.AssignmentUserId;
 				assignment_RM.AssignmentName = model.AssignmentName;
 				assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
@@ -83,11 +78,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//**** มีการเปลี่ยนศูนย์ที่รับผิดชอบ  update ผู้จัดการศูนย์ 
-			if (assignmentIdOriginal.HasValue && model.AssignmentId.HasValue)
-			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId.Value);
-				await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentIdOriginal.Value);
-			}
+			//if (assignmentIdOriginal.HasValue && model.AssignmentId.HasValue)
+			//{
+			//	await _repo.AssignmentCenter.UpdateCurrentNumber(model.AssignmentId.Value);
+			//	await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentIdOriginal.Value);
+			//}
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
@@ -142,7 +137,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Assignment_RMCustom> GetByUserId(int id)
 		{
 			var query = await _repo.Context.Assignment_RMs
-				.Include(x => x.Assignment)
 				.Include(x => x.Assignment_RM_Sales)
 				.Include(x => x.User)
 				.Where(x => x.UserId == id).FirstOrDefaultAsync();
@@ -166,11 +160,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//**** update ผู้จัดการศูนย์
-					if (assignment_RMs.AssignmentId.HasValue)
+					if (assignment_RMs.Master_Department_BranchId.HasValue)
 					{
-						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.AssignmentId.Value);
+						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.Master_Department_BranchId.Value);
 					}
 
+				}
+			}
+		}
+
+		public async Task UpdateAssignmentEmpty(Guid id)
+		{
+			var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == id && x.RoleId == 7);
+			if (users != null)
+			{
+				var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.Master_Department_BranchId == id && x.AssignmentUserId == null).ToListAsync();
+				if (assignment_RMs.Count > 0)
+				{
+					foreach (var item in assignment_RMs)
+					{
+						if (item != null)
+						{
+							item.AssignmentUserId = users.Id;
+							item.AssignmentName = users.FullName;
+							_db.Update(item);
+							await _db.SaveAsync();
+						}
+					}
 				}
 			}
 		}
@@ -203,11 +219,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			if (assignmentCenterId.HasValue)
-			{
-				query = query.Where(x => x.AssignmentId == assignmentCenterId);
-			}
-
+			
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
@@ -306,11 +318,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.assigncenter.HasValue)
 			{
-				var assignment = await _repo.AssignmentCenter.GetByUserId(model.assigncenter.Value);
-				if (assignment != null)
-				{
-					query = query.Where(x => x.AssignmentId == assignment.Id);
-				}
+				//var assignment = await _repo.AssignmentCenter.GetByUserId(model.assigncenter.Value);
+				//if (assignment != null)
+				//{
+				//	query = query.Where(x => x.AssignmentId == assignment.Id);
+				//}
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))

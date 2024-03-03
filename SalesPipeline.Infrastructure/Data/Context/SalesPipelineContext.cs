@@ -158,13 +158,10 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Assignment_RM", tb => tb.HasComment("พนักงานที่ถูกมอบหมาย"));
 
-            entity.HasIndex(e => e.AssignmentId, "AssignmentId");
-
             entity.HasIndex(e => e.Status, "Status");
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.AssignmentId).HasComment("ผู้จัดการศูนย์ที่ดูแลปัจจุบัน");
             entity.Property(e => e.AssignmentName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้จัดการศูนย์ที่ดูแล");
@@ -188,10 +185,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UserId)
                 .HasComment("พนักงานที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
-
-            entity.HasOne(d => d.Assignment).WithMany(p => p.Assignment_RMs)
-                .HasForeignKey(d => d.AssignmentId)
-                .HasConstraintName("assignment_rm_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_RMs)
                 .HasForeignKey(d => d.UserId)
