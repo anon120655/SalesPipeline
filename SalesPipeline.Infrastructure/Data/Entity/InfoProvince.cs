@@ -17,7 +17,7 @@ public partial class InfoProvince
     public int? RegionID { get; set; }
 
     /// <summary>
-    /// ฝ่ายกิจการสาขาภาค
+    /// กิจการสาขาภาค
     /// </summary>
     public Guid? Master_Department_BranchId { get; set; }
 

@@ -59,7 +59,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public Guid? Master_DepartmentId { get; set; }
 
 		/// <summary>
-		/// ฝ่ายกิจการสาขาภาค
+		/// กิจการสาขาภาค
 		/// </summary>
 		[UserAtt(FieldName = "Master_Department_BranchId")]
 		public Guid? Master_Department_BranchId { get; set; }

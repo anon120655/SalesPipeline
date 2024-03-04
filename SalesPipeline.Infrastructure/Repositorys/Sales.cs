@@ -51,6 +51,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
+			sale.Master_Department_BranchId = model.Master_Department_BranchId;
 			sale.AssCenterUserId = model.AssCenterUserId;
 			sale.AssCenterUserName = model.AssCenterUserName;
 			if (model.AssCenterUserId.HasValue)
@@ -101,18 +102,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_db.Update(sale);
 				await _db.SaveAsync();
-
-				//if (model.StatusSaleId != StatusSaleModel.NotStatus)
-				//{
-				//	await UpdateStatusOnly(new()
-				//	{
-				//		SaleId = sale.Id,
-				//		StatusId = model.StatusSaleId,
-				//		CreateBy = model.CurrentUserId,
-				//		CreateByName = currentUserName,
-				//	});
-				//}
-
 			}
 			return _mapper.Map<SaleCustom>(sale);
 		}
@@ -238,7 +227,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													.Include(x => x.Customer)
-													.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Department_Center)
+													.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Department_Branch)
 													.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();

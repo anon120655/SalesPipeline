@@ -27,5 +27,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task Assign(List<Assignment_RMCustom> model);
 		Task AssignChange(AssignChangeModel model);
 		Task Return(ReturnModel model);
+		Task CreateAssignmentRMAll(allFilter model);
 	}
 }

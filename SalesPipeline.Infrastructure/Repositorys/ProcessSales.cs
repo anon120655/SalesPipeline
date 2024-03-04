@@ -243,6 +243,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				saleReply.UpdateDate = _dateNow;
 				saleReply.UpdateBy = model.CurrentUserId;
 				saleReply.UpdateByName = _fullNameUser;
+				saleReply.SaleId = model.SaleId;
 				saleReply.ProcessSaleId = model.ProcessSaleId;
 				saleReply.ProcessSaleName = _processSaleName;
 				await _db.InsterAsync(saleReply);

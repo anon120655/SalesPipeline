@@ -273,6 +273,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
+				Guid? master_Department_BranchId = null;
 				int? assCenterUserId = null;
 				string? assCenterUserName = null;
 				int? assUserId = null;
@@ -286,6 +287,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
+					master_Department_BranchId = user.Master_Department_BranchId;
 				}
 				else
 				{
@@ -299,27 +301,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					var userCenter = await _repo.User.GetById(modelSale.AssCenterUserId.Value);
 					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
-					if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
+					//if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
 
-					var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
-					if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
+					//var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
+					//if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
 
 					//พนักงาน RM สร้าง ต้องเช็คกิจการสาขาภาคว่าตรงกับผู้จัดการศูนย์ที่ดูแลอยู่หรือป่าว
 					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{
 						var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
-						if (assignmentRM == null || assignmentRM.Assignment == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM!");
-						if (assignmentRM.Assignment.User?.Master_Department_Center != null)
-						{
-							if (assignmentRM.Assignment.User.Master_Department_Center.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
-							{
-								throw new ExceptionCustom("assignedCenter not correct!");
-							}
-						}
+						if (assignmentRM == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM!");
+						//if (assignmentRM.Assignment.User?.Master_Department_Center != null)
+						//{
+						//	if (assignmentRM.Assignment.User.Master_Department_Center.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+						//	{
+						//		throw new ExceptionCustom("assignedCenter not correct!");
+						//	}
+						//}
 					}
 
 					assCenterUserId = modelSale.AssCenterUserId;
 					assCenterUserName = userCenter.FullName;
+					master_Department_BranchId = userCenter.Master_Department_BranchId;
 				}
 
 
@@ -332,6 +335,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
+					Master_Department_BranchId = master_Department_BranchId,
 					AssCenterUserId = assCenterUserId,
 					AssCenterUserName = assCenterUserName,
 					AssUserId = assUserId,

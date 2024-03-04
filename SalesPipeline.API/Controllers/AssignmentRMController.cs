@@ -137,5 +137,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("CreateAssignmentRMAll")]
+		public async Task<IActionResult> CreateAssignmentRMAll()
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentRM.CreateAssignmentRMAll(new());
+
+					_transaction.Commit();
+
+					return Ok();
+				}
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

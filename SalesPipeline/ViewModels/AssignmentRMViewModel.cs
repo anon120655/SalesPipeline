@@ -139,5 +139,26 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<bool>?> CreateAssignmentRMAll()
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/AssignmentRM/CreateAssignmentRMAll");
+
+				return new ResultModel<bool>()
+				{
+					Data = true
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 	}
 }

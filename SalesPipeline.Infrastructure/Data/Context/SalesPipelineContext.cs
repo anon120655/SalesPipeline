@@ -625,7 +625,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProvinceID)
                 .ValueGeneratedNever()
                 .HasColumnType("int(11)");
-            entity.Property(e => e.Master_Department_BranchId).HasComment("ฝ่ายกิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.ProvinceCode).HasMaxLength(50);
             entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.RegionID).HasColumnType("int(11)");
@@ -754,7 +754,7 @@ public partial class SalesPipelineContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Master_Department_Branch", tb => tb.HasComment("ฝ่ายกิจการสาขาภาค"));
+            entity.ToTable("Master_Department_Branch", tb => tb.HasComment("กิจการสาขาภาค"));
 
             entity.Property(e => e.Code)
                 .HasMaxLength(255)
@@ -782,7 +782,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("รหัส");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Master_Department_BranchId).HasComment("FK ฝ่ายกิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("FK กิจการสาขาภาค");
             entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
@@ -1125,6 +1125,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.CustomerId, "CustomerId");
 
+            entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_BranchId");
+
             entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
 
             entity.Property(e => e.AssCenterCreateBy)
@@ -1154,6 +1156,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DateAppointment)
                 .HasComment("วันที่นัดหมาย")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.PercentChanceLoanPass)
                 .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
                 .HasColumnType("int(11)");
@@ -1183,6 +1186,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_ibfk_1");
+
+            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.Master_Department_BranchId)
+                .HasConstraintName("sale_ibfk_5");
 
             entity.HasOne(d => d.StatusSale).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.StatusSaleId)

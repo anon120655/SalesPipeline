@@ -219,7 +219,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			
+
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
@@ -447,5 +447,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
+		public async Task CreateAssignmentRMAll(allFilter model)
+		{
+			var usersRM = await _repo.Context.Users.Include(x => x.Role)
+										   .Include(x => x.Assignment_RMs.Where(s => s.Status == StatusModel.Active))
+										   .Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignment_RMs.Count == 0)
+										   .OrderBy(x => x.Id)
+										   .ToListAsync();
+
+			if (usersRM.Count > 0)
+			{
+				foreach (var item_rm in usersRM)
+				{
+					if (item_rm.Master_Department_BranchId.HasValue)
+					{
+						var assignment = await _repo.AssignmentRM.Create(new()
+						{
+							Master_Department_BranchId = item_rm.Master_Department_BranchId,
+							UserId = item_rm.Id,
+							EmployeeId = item_rm.EmployeeId,
+							EmployeeName = item_rm.FullName,
+						});
+					}
+
+				}
+			}
+
+		}
 	}
 }

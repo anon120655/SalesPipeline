@@ -83,8 +83,14 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				await _repo.AssignmentCenter.CreateAssignmentCenterAll(new());
-				return Ok();
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentCenter.CreateAssignmentCenterAll(new());
+
+					_transaction.Commit();
+
+					return Ok();
+				}
 			}
 			catch (Exception ex)
 			{

@@ -239,6 +239,7 @@ namespace SalesPipeline.API.Controllers
 						var checkAssignmentRM = await _repo.AssignmentRM.CheckAssignmentByUserId(currentUserId);
 						if (!checkAssignmentRM)
 						{
+							//RUN CreateAssignmentRMAll
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
 						}
 					}
@@ -275,13 +276,24 @@ namespace SalesPipeline.API.Controllers
 
 					if (rolecode == RoleCodes.RM)
 					{
-						var assignmentRM = await _repo.AssignmentRM.GetByUserId(currentUserId);
-						if (assignmentRM == null || assignmentRM.Assignment == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
+						Guid? master_Department_BranchId = null;
+						int? assCenterUserId = null;
+						var user = await _repo.User.GetById(currentUserId);
+						if (user != null && user.Master_Department_BranchId.HasValue)
+						{
+							master_Department_BranchId = user.Master_Department_BranchId;
+							var userCenter = await _repo.User.GetMcencerByBranchId(master_Department_BranchId.Value);
+							if (userCenter != null)
+							{
+								assCenterUserId = userCenter.Id;
+							}
+						}
 
 						modelSale = new()
 						{
+							Master_Department_BranchId = master_Department_BranchId,
 							AssUserId = currentUserId,
-							AssCenterUserId = assignmentRM.Assignment.UserId
+							AssCenterUserId = assCenterUserId
 						};
 					}
 
@@ -387,8 +399,6 @@ namespace SalesPipeline.API.Controllers
 						}
 					}, modelSale);
 				}
-
-				//await _repo.User.CreateAssignmentAll(new());
 
 				return Ok();
 			}

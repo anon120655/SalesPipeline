@@ -246,35 +246,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignments)
-										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_CenterId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignments.Count == 0)
-										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+										   .Where(x => x.Status != StatusModel.Delete && x.Master_Department_BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignments.Count == 0)
+										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
 			if (usersCenter.Count > 0)
 			{
 				foreach (var item_center in usersCenter)
 				{
-					if (item_center.Master_Department_CenterId.HasValue)
+					if (item_center.Master_Department_BranchId.HasValue)
 					{
-						var depCenter = await _repo.MasterDepCenter.GetById(item_center.Master_Department_CenterId.Value);
+						string? _code = null;
+						string? _name = null;
+						var depCenter = await _repo.MasterDepCenter.GetByBranchId(item_center.Master_Department_BranchId.Value);
 						if (depCenter != null)
 						{
-							int rMNumber = 0;
-							int currentNumber = 0;
-
-							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-							{
-								Master_Department_BranchId = item_center.Master_Department_BranchId,
-								Code = depCenter.Code,
-								Name = depCenter.Name,
-								UserId = item_center.Id,
-								EmployeeId = item_center.EmployeeId,
-								EmployeeName = item_center.FullName,
-								Tel = item_center.Tel,
-								RMNumber = rMNumber,
-								CurrentNumber = currentNumber
-							});
+							_code = depCenter.Code;
+							_name = depCenter.Name;
 						}
+						var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+						{
+							Master_Department_BranchId = item_center.Master_Department_BranchId,
+							Code = _code,
+							Name = _name,
+							UserId = item_center.Id,
+							EmployeeId = item_center.EmployeeId,
+							EmployeeName = item_center.FullName,
+							Tel = item_center.Tel,
+							RMNumber = 0,
+							CurrentNumber = 0
+						});
 					}
 
 				}

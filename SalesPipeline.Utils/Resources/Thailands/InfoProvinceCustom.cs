@@ -17,7 +17,7 @@ namespace SalesPipeline.Utils.Resources.Thailands
 		public int? RegionID { get; set; }
 
 		/// <summary>
-		/// ฝ่ายกิจการสาขาภาค
+		/// กิจการสาขาภาค
 		/// </summary>
 		public Guid? Master_Department_BranchId { get; set; }
 

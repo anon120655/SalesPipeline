@@ -24,7 +24,7 @@ public partial class Master_Department_Center
     public int UpdateBy { get; set; }
 
     /// <summary>
-    /// FK ฝ่ายกิจการสาขาภาค
+    /// FK กิจการสาขาภาค
     /// </summary>
     public Guid? Master_Department_BranchId { get; set; }
 

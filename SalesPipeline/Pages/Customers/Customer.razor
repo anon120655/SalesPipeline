@@ -143,7 +143,6 @@
 											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
-											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">สถานะ</th>
 											<th class="text-center">ผู้รับผิดชอบ</th>
@@ -183,12 +182,10 @@
 													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
 													@if (item.AssCenterUser != null)
 													{
-														<td class="text-center">@item.AssCenterUser.Master_Department_Center?.Master_Department_BranchName</td>
-														<td class="text-center">@item.AssCenterUser.Master_Department_Center?.Name</td>
+														<td class="text-center">@item.AssCenterUser.Master_Department_Branch?.Name</td>
 													}
 													else
 													{
-														<td class="text-center">-</td>
 														<td class="text-center">-</td>
 													}
 													<td class="text-center">@item.Customer?.ProvinceName</td>

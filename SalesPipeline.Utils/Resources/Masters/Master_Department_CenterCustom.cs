@@ -26,7 +26,7 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public int UpdateBy { get; set; }
 
 		/// <summary>
-		/// FK ฝ่ายกิจการสาขาภาค
+		/// FK กิจการสาขาภาค
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Department_BranchId { get; set; }
