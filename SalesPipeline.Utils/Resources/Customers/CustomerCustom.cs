@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using SalesPipeline.Utils.Resources.Sales;
 
 namespace SalesPipeline.Utils.Resources.Customers
 {
@@ -376,6 +377,8 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public virtual List<Customer_CommitteeCustom>? Customer_Committees { get; set; }
 
 		public virtual List<Customer_ShareholderCustom>? Customer_Shareholders { get; set; }
+
+		public virtual List<SaleCustom>? Sales { get; set; }
 
 		//Custom
 		public int? StatusSaleId { get; set; }

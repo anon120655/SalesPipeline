@@ -31,7 +31,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลและสถานะลูกค้าทั้งหมด
 		/// </summary>
-		//[AllowAnonymous]
+		[AllowAnonymous]
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{
@@ -50,6 +50,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลและสถานะลูกค้า ById
 		/// </summary>
+		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{

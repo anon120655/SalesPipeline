@@ -1,6 +1,6 @@
 ﻿@page "/setting/dep/branch"
 
-<PageTitle>ตั้งค่าฝ่ายงานกิจการสาขา</PageTitle>
+<PageTitle>ตั้งค่ากิจการสาขา</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ตั้งค่าฝ่ายงานกิจการสาขา</p>
+							<p class="back_topic">ตั้งค่ากิจการสาขา</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -31,7 +31,7 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อฝ่าย</label>
+							<label class="form-label">ชื่อกิจการสาขา</label>
 							<div class="input-group">
 								<input @bind="filter.val2" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
@@ -58,9 +58,9 @@
 									<thead>
 										<tr>
 											<th class="text-center">รหัส</th>
-											<th class="text-center">ชื่อฝ่าย</th>
+											<th class="text-center">ชื่อกิจการสาขา</th>
 											<th class="text-center">จัดการ</th>
-											<th class="text-center">การใช้งาน</th>
+											<th class="text-center">สถานะ</th>
 										</tr>
 									</thead>
 									<tbody>

@@ -654,8 +654,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<CustomerCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Customers
-				.Include(x => x.Customer_Committees.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Committees.Where(s => s.Status == StatusModel.Delete).OrderBy(o => o.SequenceNo))
 				.Include(x => x.Customer_Shareholders.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Sales.Where(s=> s.Status != StatusModel.Delete).OrderBy(o => o.CreateDate))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);
 		}

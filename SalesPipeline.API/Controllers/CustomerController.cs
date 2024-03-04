@@ -137,6 +137,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลลูกค้า ById
 		/// </summary>
+		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
@@ -154,7 +155,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลลูกค้าทั้งหมด
 		/// </summary>
-		//[AllowAnonymous]
+		[AllowAnonymous]
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] CustomerFilter model)
 		{
