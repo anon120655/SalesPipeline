@@ -88,6 +88,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// เพิ่มกระบวนการขาย
 		/// </summary>
+		[AllowAnonymous]
 		[HttpPost("CreateReply")]
 		public async Task<IActionResult> CreateReply(Sale_ReplyCustom model)
 		{

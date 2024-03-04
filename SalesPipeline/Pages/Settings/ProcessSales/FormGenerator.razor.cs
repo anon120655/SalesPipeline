@@ -95,7 +95,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 								{
 									var replyItem = new Sale_Reply_Section_ItemCustom();
 									replyItem.Status = item.Status;
-									replyItem.SaleReplySectionId = section.Id;
+									//replyItem.SaleReplySectionId = section.Id;
 									replyItem.PSaleSectionItemId = item.Id;
 									replyItem.ItemLabel = item.ItemLabel;
 									replyItem.ItemType = item.ItemType;
@@ -155,7 +155,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 											replyItem.Sale_Reply_Section_ItemValues.Add(new()
 											{
 												Status = item_option.Status,
-												PSaleReplySectionItemId = replyItem.Id,
+												SaleReplySectionItemId = replyItem.Id,
 												PSaleSectionItemOptionId = item_option.Id,
 												OptionLabel = item_option.OptionLabel,
 												ReplyValue = item_option.DefaultValue,
@@ -216,6 +216,26 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 						foreach (var item in answerItem.Sale_Reply_Section_ItemValues)
 						{
 							item.ReplyValue = item.PSaleSectionItemOptionId == itemOptionId ? true.ToString() : null;
+						}
+					}
+				}
+			}
+		}
+
+		protected void OnDropdownMaster(ChangeEventArgs e, Guid sectionId, Guid saleItemId)
+		{
+			var section = formModel.Sale_Reply_Sections?.FirstOrDefault(r => r.PSaleSectionId == sectionId);
+			if (section != null)
+			{
+				var answerItem = section.Sale_Reply_Section_Items?.FirstOrDefault(r => r.PSaleSectionItemId == saleItemId);
+				if (answerItem != null && answerItem.Sale_Reply_Section_ItemValues != null)
+				{
+					if (Guid.TryParse(e.Value?.ToString(), out Guid itemOptionId))
+					{
+						foreach (var item in answerItem.Sale_Reply_Section_ItemValues)
+						{
+							item.ReplyValue = itemOptionId.ToString();
+							item.Master_ListId = item.Master_ListId;
 						}
 					}
 				}

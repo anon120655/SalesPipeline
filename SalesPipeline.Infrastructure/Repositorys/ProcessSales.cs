@@ -11,7 +11,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class ProcessSales : IProcessSales
+	public class ProcessSales : IProcessSales
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -255,11 +255,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (reply_section.IsSave)
 						{
+							string? _replySectionName = string.Empty;
+							var processSale_Section = await _repo.Context.ProcessSale_Sections.FirstOrDefaultAsync(x => x.Id == reply_section.PSaleSectionId);
+							if (processSale_Section == null) throw new ExceptionCustom("PSaleSectionId id not found.");
+							_replySectionName = processSale_Section.Name;
+
 							Sale_Reply_Section saleReplySection = new();
 							saleReplySection.Status = StatusModel.Active;
 							saleReplySection.SaleReplyId = saleReply.Id;
 							saleReplySection.PSaleSectionId = reply_section.PSaleSectionId;
-							saleReplySection.Name = reply_section.Name;
+							saleReplySection.Name = _replySectionName;
 							await _db.InsterAsync(saleReplySection);
 							await _db.SaveAsync();
 
@@ -289,16 +294,68 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									{
 										foreach (var reply_section_value in reply_section_item.Sale_Reply_Section_ItemValues)
 										{
+											string? _optionLabel = reply_section_value.OptionLabel;
+
+											if (_itemType == FieldTypes.Dropdown && reply_section_value.PSaleSectionItemOptionId != Guid.Empty)
+											{
+												var pSection_ItemOption = await _repo.Context.ProcessSale_Section_ItemOptions.FirstOrDefaultAsync(x => x.Id == reply_section_value.PSaleSectionItemOptionId);
+												if (pSection_ItemOption != null)
+												{
+													_optionLabel = pSection_ItemOption.OptionLabel;
+												}
+											}
+											if (_itemType == FieldTypes.DropdownMaster && reply_section_value.Master_ListId.HasValue)
+											{
+												var master_Lists = await _repo.Context.Master_Lists.FirstOrDefaultAsync(x => x.Id == reply_section_value.Master_ListId);
+												if (master_Lists == null) throw new ExceptionCustom("replyValue not match master_ListId.");
+												_optionLabel = master_Lists.Name;
+
+												if (!String.IsNullOrEmpty(reply_section_value.ReplyValue))
+												{
+													if (Guid.TryParse(reply_section_value.ReplyValue, out Guid master_id))
+													{
+														if (master_Lists.Path == "/v1/Master/GetYields")
+														{
+															var masterData = await _repo.MasterYield.GetById(master_id);
+															if (masterData == null) throw new ExceptionCustom("MasterYield not match replyValue.");															
+														}
+														else if (master_Lists.Path == "/v1/Master/GetChains")
+														{
+														}
+														else if (master_Lists.Path == "/v1/Master/GetBusinessType")
+														{
+														}
+														else if (master_Lists.Path == "/v1/Master/GetBusinessSize")
+														{
+															var masterData = await _repo.MasterBusinessSize.GetById(master_id);
+															if (masterData == null) throw new ExceptionCustom("BusinessSize not match replyValue.");
+														}
+													}
+													else
+													{
+														throw new ExceptionCustom("Master not match replyValue.");
+													}
+												}
+											}
+
+											string? _fileUrl = string.Empty;
+											if (reply_section_value.FileId.HasValue)
+											{
+												var fileUploads = await _repo.Context.FileUploads.FirstOrDefaultAsync(x => x.Id == reply_section_value.FileId);
+												if (fileUploads == null) throw new ExceptionCustom("FileId not found.");
+												_fileUrl = fileUploads.Url;
+											}
+
 											Sale_Reply_Section_ItemValue replySectionItemValue = new();
 											replySectionItemValue.Status = StatusModel.Active;
 											replySectionItemValue.SaleReplySectionItemId = replySectionItem.Id;
 											replySectionItemValue.PSaleSectionItemOptionId = reply_section_value.PSaleSectionItemOptionId;
-											replySectionItemValue.OptionLabel = reply_section_value.OptionLabel;
+											replySectionItemValue.OptionLabel = _optionLabel;
 											replySectionItemValue.ReplyValue = reply_section_value.ReplyValue;
 											replySectionItemValue.ReplyDate = reply_section_value.ReplyDate;
 											replySectionItemValue.ReplyTime = reply_section_value.ReplyTime;
 											replySectionItemValue.FileId = reply_section_value.FileId;
-											replySectionItemValue.FileUrl = reply_section_value.FileUrl;
+											replySectionItemValue.FileUrl = _fileUrl;
 											await _db.InsterAsync(replySectionItemValue);
 											await _db.SaveAsync();
 										}
@@ -310,7 +367,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				//_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}

@@ -13,7 +13,7 @@ namespace SalesPipeline.Utils.Resources.Sales
         /// </summary>
         public short Status { get; set; }
 
-        public Guid PSaleReplySectionItemId { get; set; }
+        public Guid SaleReplySectionItemId { get; set; }
 
         public Guid PSaleSectionItemOptionId { get; set; }
 
@@ -29,9 +29,10 @@ namespace SalesPipeline.Utils.Resources.Sales
 
         public string? FileUrl { get; set; }
 
-        public virtual Sale_Reply_Section_ItemCustom? PSaleReplySectionItem { get; set; }
+		public virtual ProcessSale_Section_ItemOptionCustom? PSaleSectionItemOption { get; set; }
 
-        public virtual ProcessSale_Section_ItemOptionCustom? PSaleSectionItemOption { get; set; }
+		public virtual Sale_Reply_Section_ItemCustom? SaleReplySectionItem { get; set; }
+
 
 		//Custom
 		public Guid? Master_ListId { get; set; }

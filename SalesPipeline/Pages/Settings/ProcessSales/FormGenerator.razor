@@ -121,10 +121,15 @@
 														{
 															if (replyItemValues.Count > 0)
 															{
-																var Path = replyItemValues.FirstOrDefault()?.Path;
+																string? Path = null;
+																var _replyItemValues = replyItemValues.FirstOrDefault();
+																if (_replyItemValues != null)
+																{
+																	Path = replyItemValues.FirstOrDefault()?.Path;
+																}
 
 																<div class="col-@(item.ShowType == ShowTypes.Half ? "6" : "12")">
-																	<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+																	<select @onchange="((e)=> OnDropdownMaster(e,saleSections.PSaleSectionId,item.PSaleSectionItemId))" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 																		<option value="">เลือก</option>
 																		@if (Path == "/v1/Master/GetBusinessSize")
 																		{
