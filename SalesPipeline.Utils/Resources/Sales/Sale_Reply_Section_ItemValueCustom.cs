@@ -21,7 +21,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 
         public string? ReplyValue { get; set; }
 
-        public DateTime? ReplyDate { get; set; }
+		public string? ReplyName { get; set; }
+
+		public DateTime? ReplyDate { get; set; }
 
         public TimeOnly? ReplyTime { get; set; }
 

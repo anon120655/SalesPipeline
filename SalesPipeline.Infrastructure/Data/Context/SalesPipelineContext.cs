@@ -1297,6 +1297,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.FileUrl).HasMaxLength(255);
             entity.Property(e => e.OptionLabel).HasMaxLength(255);
             entity.Property(e => e.ReplyDate).HasColumnType("datetime");
+            entity.Property(e => e.ReplyName).HasMaxLength(1000);
             entity.Property(e => e.ReplyTime).HasColumnType("time");
             entity.Property(e => e.ReplyValue).HasMaxLength(1000);
             entity.Property(e => e.Status)

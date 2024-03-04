@@ -105,6 +105,17 @@
 																</div>
 															</div>
 														}
+														else if (item.ItemType == FieldTypes.DropdownMaster)
+														{
+															foreach (var item_option in replyItemValues)
+															{
+																<div class="row mb-3">
+																	<div class="col-12">
+																		<p class="text-primary">@item_option.ReplyName</p>
+																	</div>
+																</div>
+															}
+														}
 														else if (item.ItemType == FieldTypes.Fileupload)
 														{
 															foreach (var item_option in replyItemValues)
@@ -122,7 +133,7 @@
 															{
 																<div class="row mb-3">
 																	<div class="col-12">
-																		<p class="text-primary">@item_option.ReplyDate</p>
+																		<p class="text-primary">@GeneralUtils.DateToThString(item_option.ReplyDate)</p>
 																	</div>
 																</div>
 															}

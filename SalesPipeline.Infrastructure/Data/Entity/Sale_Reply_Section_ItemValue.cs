@@ -20,6 +20,8 @@ public partial class Sale_Reply_Section_ItemValue
 
     public string? ReplyValue { get; set; }
 
+    public string? ReplyName { get; set; }
+
     public DateTime? ReplyDate { get; set; }
 
     public TimeOnly? ReplyTime { get; set; }

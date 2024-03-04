@@ -295,6 +295,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										foreach (var reply_section_value in reply_section_item.Sale_Reply_Section_ItemValues)
 										{
 											string? _optionLabel = reply_section_value.OptionLabel;
+											string? _replyName = reply_section_value.ReplyName;
 
 											if (_itemType == FieldTypes.Dropdown && reply_section_value.PSaleSectionItemOptionId != Guid.Empty)
 											{
@@ -317,18 +318,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 														if (master_Lists.Path == "/v1/Master/GetYields")
 														{
 															var masterData = await _repo.MasterYield.GetById(master_id);
-															if (masterData == null) throw new ExceptionCustom("MasterYield not match replyValue.");															
+															if (masterData == null) throw new ExceptionCustom("MasterYield not match replyValue.");
+															_replyName = masterData.Name;
 														}
 														else if (master_Lists.Path == "/v1/Master/GetChains")
 														{
+															var masterData = await _repo.MasterChain.GetById(master_id);
+															if (masterData == null) throw new ExceptionCustom("MasterChain not match replyValue.");
+															_replyName = masterData.Name;
 														}
 														else if (master_Lists.Path == "/v1/Master/GetBusinessType")
 														{
+															var masterData = await _repo.MasterBusinessType.GetById(master_id);
+															if (masterData == null) throw new ExceptionCustom("BusinessType not match replyValue.");
+															_replyName = masterData.Name;
 														}
 														else if (master_Lists.Path == "/v1/Master/GetBusinessSize")
 														{
 															var masterData = await _repo.MasterBusinessSize.GetById(master_id);
 															if (masterData == null) throw new ExceptionCustom("BusinessSize not match replyValue.");
+															_replyName = masterData.Name;
 														}
 													}
 													else
@@ -352,6 +361,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											replySectionItemValue.PSaleSectionItemOptionId = reply_section_value.PSaleSectionItemOptionId;
 											replySectionItemValue.OptionLabel = _optionLabel;
 											replySectionItemValue.ReplyValue = reply_section_value.ReplyValue;
+											replySectionItemValue.ReplyName = _replyName;
 											replySectionItemValue.ReplyDate = reply_section_value.ReplyDate;
 											replySectionItemValue.ReplyTime = reply_section_value.ReplyTime;
 											replySectionItemValue.FileId = reply_section_value.FileId;
@@ -367,7 +377,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				//_transaction.Commit();
+				_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
