@@ -31,13 +31,14 @@ namespace SalesPipeline.Utils.Resources.Sales
 
         public string? FileUrl { get; set; }
 
+		public Guid? Master_ListId { get; set; }
+
 		public virtual ProcessSale_Section_ItemOptionCustom? PSaleSectionItemOption { get; set; }
 
 		public virtual Sale_Reply_Section_ItemCustom? SaleReplySectionItem { get; set; }
 
 
 		//Custom
-		public Guid? Master_ListId { get; set; }
 		public string? Path { get; set; }
 		[JsonIgnore]
         public string? errorMessage { get; set; }

@@ -14,7 +14,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-    [Authorizes]
+    //[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -34,7 +34,6 @@ namespace SalesPipeline.API.Controllers
 		/// ข้อมูลฟอร์มกระบวนการขาย ById
 		/// </summary>
 		/// 
-		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
@@ -88,7 +87,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// เพิ่มกระบวนการขาย
 		/// </summary>
-		[AllowAnonymous]
 		[HttpPost("CreateReply")]
 		public async Task<IActionResult> CreateReply(Sale_ReplyCustom model)
 		{
@@ -102,7 +100,7 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
-		
+
 		/// <summary>
 		/// แก้ไขกระบวนการขาย
 		/// </summary>

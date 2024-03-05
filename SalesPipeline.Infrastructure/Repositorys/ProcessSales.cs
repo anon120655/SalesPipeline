@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -29,9 +30,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<ProcessSaleCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.ProcessSales
-				.Include(x => x.ProcessSale_Sections.OrderBy(s => s.SequenceNo))
-				.ThenInclude(x => x.ProcessSale_Section_Items.OrderBy(s => s.SequenceNo))
-				.ThenInclude(x => x.ProcessSale_Section_ItemOptions.OrderBy(s => s.SequenceNo))
+				.Include(x => x.ProcessSale_Sections.Where(x => x.Status == StatusModel.Active).OrderBy(s => s.SequenceNo))
+				.ThenInclude(x => x.ProcessSale_Section_Items.Where(x => x.Status == StatusModel.Active).OrderBy(s => s.SequenceNo))
+				.ThenInclude(x => x.ProcessSale_Section_ItemOptions.Where(x => x.Status == StatusModel.Active).OrderBy(s => s.SequenceNo))
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
@@ -315,30 +316,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												{
 													if (Guid.TryParse(reply_section_value.ReplyValue, out Guid master_id))
 													{
-														if (master_Lists.Path == "/v1/Master/GetYields")
-														{
-															var masterData = await _repo.MasterYield.GetById(master_id);
-															if (masterData == null) throw new ExceptionCustom("MasterYield not match replyValue.");
-															_replyName = masterData.Name;
-														}
-														else if (master_Lists.Path == "/v1/Master/GetChains")
-														{
-															var masterData = await _repo.MasterChain.GetById(master_id);
-															if (masterData == null) throw new ExceptionCustom("MasterChain not match replyValue.");
-															_replyName = masterData.Name;
-														}
-														else if (master_Lists.Path == "/v1/Master/GetBusinessType")
-														{
-															var masterData = await _repo.MasterBusinessType.GetById(master_id);
-															if (masterData == null) throw new ExceptionCustom("BusinessType not match replyValue.");
-															_replyName = masterData.Name;
-														}
-														else if (master_Lists.Path == "/v1/Master/GetBusinessSize")
-														{
-															var masterData = await _repo.MasterBusinessSize.GetById(master_id);
-															if (masterData == null) throw new ExceptionCustom("BusinessSize not match replyValue.");
-															_replyName = masterData.Name;
-														}
+														await GetReplyName(master_id, master_Lists.Path);
 													}
 													else
 													{
@@ -383,9 +361,217 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public Task<Sale_ReplyCustom> UpdateReply(Sale_ReplyCustom model)
+		public async Task<Sale_ReplyCustom> UpdateReply(Sale_ReplyCustom model)
 		{
-			throw new NotImplementedException();
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				DateTime _dateNow = DateTime.Now;
+
+				string? _fullNameUser = string.Empty;
+				var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Id == model.CurrentUserId);
+				if (users != null)
+					_fullNameUser = users.FullName;
+
+				string? _processSaleName = string.Empty;
+				var processSales = await _repo.Context.ProcessSales.FirstOrDefaultAsync(x => x.Id == model.ProcessSaleId);
+				if (processSales != null)
+					_processSaleName = processSales.Name;
+
+				var saleReply = await _repo.Context.Sale_Replies.FirstOrDefaultAsync(x => x.Id == model.Id);
+				if (saleReply == null) throw new ExceptionCustom("id not found.");
+
+				saleReply.UpdateDate = _dateNow;
+				saleReply.UpdateBy = model.CurrentUserId;
+				saleReply.UpdateByName = _fullNameUser;
+				saleReply.ProcessSaleName = _processSaleName;
+				await _db.InsterAsync(saleReply);
+				await _db.SaveAsync();
+
+				//Update Status To Delete All
+				var sale_Reply_Sections_Remove = _repo.Context.Sale_Reply_Sections
+					.Include(x => x.Sale_Reply_Section_Items.Where(x => x.Status == StatusModel.Active))
+					.ThenInclude(x => x.Sale_Reply_Section_ItemValues.Where(x => x.Status == StatusModel.Active))
+					.Where(x => x.SaleReplyId == model.Id).ToList();
+				if (sale_Reply_Sections_Remove.Count > 0)
+				{
+					foreach (var reply_sec in sale_Reply_Sections_Remove)
+					{
+						reply_sec.Status = StatusModel.Delete;
+						if (reply_sec.Sale_Reply_Section_Items.Count > 0)
+						{
+							foreach (var reply_sec_item in reply_sec.Sale_Reply_Section_Items)
+							{
+								reply_sec_item.Status = StatusModel.Delete;
+								if (reply_sec_item.Sale_Reply_Section_ItemValues.Count > 0)
+								{
+									foreach (var reply_sec_item_val in reply_sec_item.Sale_Reply_Section_ItemValues)
+									{
+										reply_sec_item_val.Status = StatusModel.Delete;
+									}
+									await _db.SaveAsync();
+								}
+							}
+							await _db.SaveAsync();
+						}
+					}
+					await _db.SaveAsync();
+				}
+
+				if (model.Sale_Reply_Sections?.Count > 0)
+				{
+					foreach (var reply_section in model.Sale_Reply_Sections)
+					{
+						if (reply_section.IsSave && reply_section.Status == StatusModel.Active)
+						{
+							int CRUD = CRUDModel.Update;
+
+							string? _replySectionName = string.Empty;
+							var processSale_Section = await _repo.Context.ProcessSale_Sections.FirstOrDefaultAsync(x => x.Id == reply_section.PSaleSectionId);
+							if (processSale_Section == null) throw new ExceptionCustom("PSaleSectionId id not found.");
+							_replySectionName = processSale_Section.Name;
+
+							var saleReplySection = await _repo.Context.Sale_Reply_Sections.FirstOrDefaultAsync(x => x.Id == reply_section.Id);
+							if (saleReplySection == null)
+							{
+								CRUD = CRUDModel.Create;
+								saleReplySection = new();
+							}
+
+							saleReplySection.Status = reply_section.Status;
+							saleReplySection.SaleReplyId = saleReply.Id;
+							saleReplySection.PSaleSectionId = reply_section.PSaleSectionId;
+							saleReplySection.Name = _replySectionName;
+							if (CRUD == CRUDModel.Create)
+							{
+								await _db.InsterAsync(saleReplySection);
+							}
+							else
+							{
+								_db.Update(saleReplySection);
+							}
+							await _db.SaveAsync();
+
+							if (reply_section.Sale_Reply_Section_Items?.Count > 0)
+							{
+								foreach (var reply_section_item in reply_section.Sale_Reply_Section_Items)
+								{
+									if (reply_section_item.Status == StatusModel.Active)
+									{
+										CRUD = CRUDModel.Update;
+										string? _itemLabel = string.Empty;
+										string? _itemType = string.Empty;
+										var processSaleItem = await _repo.Context.ProcessSale_Section_Items.FirstOrDefaultAsync(x => x.Id == reply_section_item.PSaleSectionItemId);
+										if (processSaleItem != null)
+										{
+											_itemLabel = processSaleItem.ItemLabel;
+											_itemType = processSaleItem.ItemType;
+										}
+
+										var replySectionItem = await _repo.Context.Sale_Reply_Section_Items.FirstOrDefaultAsync(x => x.Id == reply_section_item.Id);
+										if (replySectionItem == null)
+										{
+											CRUD = CRUDModel.Create;
+											replySectionItem = new();
+										}
+
+										replySectionItem.Status = reply_section_item.Status;
+										replySectionItem.SaleReplySectionId = saleReplySection.Id;
+										replySectionItem.PSaleSectionItemId = reply_section_item.PSaleSectionItemId;
+										replySectionItem.ItemLabel = _itemLabel;
+										replySectionItem.ItemType = _itemType;
+										if (CRUD == CRUDModel.Create)
+										{
+											await _db.InsterAsync(replySectionItem);
+										}
+										else
+										{
+											_db.Update(replySectionItem);
+										}
+										await _db.SaveAsync();
+
+										if (reply_section_item.Sale_Reply_Section_ItemValues?.Count > 0)
+										{
+											foreach (var reply_section_value in reply_section_item.Sale_Reply_Section_ItemValues)
+											{
+												CRUD = CRUDModel.Update;
+												string? _optionLabel = reply_section_value.OptionLabel;
+												string? _replyName = reply_section_value.ReplyName;
+
+												if (_itemType == FieldTypes.Dropdown && reply_section_value.PSaleSectionItemOptionId != Guid.Empty)
+												{
+													var pSection_ItemOption = await _repo.Context.ProcessSale_Section_ItemOptions.FirstOrDefaultAsync(x => x.Id == reply_section_value.PSaleSectionItemOptionId);
+													if (pSection_ItemOption != null)
+													{
+														_optionLabel = pSection_ItemOption.OptionLabel;
+													}
+												}
+												if (_itemType == FieldTypes.DropdownMaster && reply_section_value.Master_ListId.HasValue)
+												{
+													var master_Lists = await _repo.Context.Master_Lists.FirstOrDefaultAsync(x => x.Id == reply_section_value.Master_ListId);
+													if (master_Lists == null) throw new ExceptionCustom("replyValue not match master_ListId.");
+													_optionLabel = master_Lists.Name;
+
+													if (!String.IsNullOrEmpty(reply_section_value.ReplyValue))
+													{
+														if (Guid.TryParse(reply_section_value.ReplyValue, out Guid master_id))
+														{
+															await GetReplyName(master_id, master_Lists.Path);
+														}
+														else
+														{
+															throw new ExceptionCustom("Master not match replyValue.");
+														}
+													}
+												}
+
+												string? _fileUrl = string.Empty;
+												if (reply_section_value.FileId.HasValue)
+												{
+													var fileUploads = await _repo.Context.FileUploads.FirstOrDefaultAsync(x => x.Id == reply_section_value.FileId);
+													if (fileUploads == null) throw new ExceptionCustom("FileId not found.");
+													_fileUrl = fileUploads.Url;
+												}
+
+												var replySectionItemValue = await _repo.Context.Sale_Reply_Section_ItemValues.FirstOrDefaultAsync(x => x.Id == reply_section_value.Id);
+												if (replySectionItemValue == null)
+												{
+													CRUD = CRUDModel.Create;
+													replySectionItemValue = new();
+												}
+
+												replySectionItemValue.Status = reply_section_item.Status;
+												replySectionItemValue.SaleReplySectionItemId = replySectionItem.Id;
+												replySectionItemValue.PSaleSectionItemOptionId = reply_section_value.PSaleSectionItemOptionId;
+												replySectionItemValue.OptionLabel = _optionLabel;
+												replySectionItemValue.ReplyValue = reply_section_value.ReplyValue;
+												replySectionItemValue.ReplyName = _replyName;
+												replySectionItemValue.ReplyDate = reply_section_value.ReplyDate;
+												replySectionItemValue.ReplyTime = reply_section_value.ReplyTime;
+												replySectionItemValue.FileId = reply_section_value.FileId;
+												replySectionItemValue.FileUrl = _fileUrl;
+												if (CRUD == CRUDModel.Create)
+												{
+													await _db.InsterAsync(replySectionItemValue);
+												}
+												else
+												{
+													_db.Update(replySectionItemValue);
+												}
+												await _db.SaveAsync();
+											}
+										}
+
+									}
+								}
+							}
+						}
+					}
+				}
+
+				//_transaction.Commit();
+
+				return _mapper.Map<Sale_ReplyCustom>(saleReply);
+			}
 		}
 
 		public async Task<Sale_ReplyCustom> GetReplyById(Guid id)
@@ -423,6 +609,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<Sale_ReplyCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task<string?> GetReplyName(Guid master_id, string? path)
+		{
+			string? _replyName = null;
+			if (path == "/v1/Master/GetYields")
+			{
+				var masterData = await _repo.MasterYield.GetById(master_id);
+				if (masterData == null) throw new ExceptionCustom("MasterYield not match replyValue.");
+				_replyName = masterData.Name;
+			}
+			else if (path == "/v1/Master/GetChains")
+			{
+				var masterData = await _repo.MasterChain.GetById(master_id);
+				if (masterData == null) throw new ExceptionCustom("MasterChain not match replyValue.");
+				_replyName = masterData.Name;
+			}
+			else if (path == "/v1/Master/GetBusinessType")
+			{
+				var masterData = await _repo.MasterBusinessType.GetById(master_id);
+				if (masterData == null) throw new ExceptionCustom("BusinessType not match replyValue.");
+				_replyName = masterData.Name;
+			}
+			else if (path == "/v1/Master/GetBusinessSize")
+			{
+				var masterData = await _repo.MasterBusinessSize.GetById(master_id);
+				if (masterData == null) throw new ExceptionCustom("BusinessSize not match replyValue.");
+				_replyName = masterData.Name;
+			}
+			return _replyName;
 		}
 
 	}

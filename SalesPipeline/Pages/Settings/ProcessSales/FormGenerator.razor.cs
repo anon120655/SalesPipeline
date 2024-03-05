@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -48,6 +49,28 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 				if (data.Data != null)
 				{
 					formModel = data.Data;
+					if (formModel != null)
+					{
+						var masterLists = await _masterViewModel.MasterLists(new() { status = StatusModel.Active });
+						if (masterLists != null && masterLists.Status)
+						{
+							LookUp.MasterList = masterLists.Data;
+						}
+
+						foreach (var reply_sec in formModel.Sale_Reply_Sections ?? new())
+						{
+							foreach (var reply_sec_item in reply_sec.Sale_Reply_Section_Items ?? new())
+							{
+								foreach (var reply_sec_item_val in reply_sec_item.Sale_Reply_Section_ItemValues ?? new())
+								{
+									if (reply_sec_item_val.Master_ListId.HasValue)
+									{
+										reply_sec_item_val.Path = await SetMasterModel(reply_sec_item_val.Master_ListId.Value);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			else
@@ -95,7 +118,6 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 								{
 									var replyItem = new Sale_Reply_Section_ItemCustom();
 									replyItem.Status = item.Status;
-									//replyItem.SaleReplySectionId = section.Id;
 									replyItem.PSaleSectionItemId = item.Id;
 									replyItem.ItemLabel = item.ItemLabel;
 									replyItem.ItemType = item.ItemType;
@@ -111,45 +133,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 										foreach (var item_option in itemOptions)
 										{
-											if (item_option.Master_ListId.HasValue && LookUp.MasterList != null)
+											if (item_option.Master_ListId.HasValue)
 											{
-												var masterData = LookUp.MasterList.FirstOrDefault(x => x.Id == item_option.Master_ListId.Value);
-												if (masterData != null)
-												{
-													_Path = masterData.Path;
-													if (masterData.Path == "/v1/Master/GetYields" && LookUp.Yield == null)
-													{
-														var dataModel = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
-														if (dataModel != null && dataModel.Status)
-														{
-															LookUp.Yield = dataModel.Data?.Items;
-														}
-													}
-													else if (masterData.Path == "/v1/Master/GetChains" && LookUp.Chain == null)
-													{
-														var dataModel = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
-														if (dataModel != null && dataModel.Status)
-														{
-															LookUp.Chain = dataModel.Data?.Items;
-														}
-													}
-													else if (masterData.Path == "/v1/Master/GetBusinessType" && LookUp.BusinessType == null)
-													{
-														var dataModel = await _masterViewModel.GetBusinessType(new allFilter() { status = StatusModel.Active });
-														if (dataModel != null && dataModel.Status)
-														{
-															LookUp.BusinessType = dataModel.Data?.Items;
-														}
-													}
-													else if (masterData.Path == "/v1/Master/GetBusinessSize" && LookUp.BusinessSize == null)
-													{
-														var dataModel = await _masterViewModel.GetBusinessSize(new allFilter() { status = StatusModel.Active });
-														if (dataModel != null && dataModel.Status)
-														{
-															LookUp.BusinessSize = dataModel.Data?.Items;
-														}
-													}
-												}
+												_Path = await SetMasterModel(item_option.Master_ListId.Value);
 											}
 
 											replyItem.Sale_Reply_Section_ItemValues.Add(new()
@@ -181,6 +167,54 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+		}
+
+		protected async Task<string?> SetMasterModel(Guid master_ListId)
+		{
+			string? _Path = null;
+
+			if (LookUp.MasterList != null)
+			{
+				var masterData = LookUp.MasterList.FirstOrDefault(x => x.Id == master_ListId);
+				if (masterData != null)
+				{
+					_Path = masterData.Path;
+					if (masterData.Path == "/v1/Master/GetYields" && LookUp.Yield == null)
+					{
+						var dataModel = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
+						if (dataModel != null && dataModel.Status)
+						{
+							LookUp.Yield = dataModel.Data?.Items;
+						}
+					}
+					else if (masterData.Path == "/v1/Master/GetChains" && LookUp.Chain == null)
+					{
+						var dataModel = await _masterViewModel.GetChains(new allFilter() { status = StatusModel.Active });
+						if (dataModel != null && dataModel.Status)
+						{
+							LookUp.Chain = dataModel.Data?.Items;
+						}
+					}
+					else if (masterData.Path == "/v1/Master/GetBusinessType" && LookUp.BusinessType == null)
+					{
+						var dataModel = await _masterViewModel.GetBusinessType(new allFilter() { status = StatusModel.Active });
+						if (dataModel != null && dataModel.Status)
+						{
+							LookUp.BusinessType = dataModel.Data?.Items;
+						}
+					}
+					else if (masterData.Path == "/v1/Master/GetBusinessSize" && LookUp.BusinessSize == null)
+					{
+						var dataModel = await _masterViewModel.GetBusinessSize(new allFilter() { status = StatusModel.Active });
+						if (dataModel != null && dataModel.Status)
+						{
+							LookUp.BusinessSize = dataModel.Data?.Items;
+						}
+					}
+				}
+			}
+
+			return _Path;
 		}
 
 		protected void OnCheckBox(ChangeEventArgs e, Guid sectionId, Guid saleItemId, Guid itemOptionId)
