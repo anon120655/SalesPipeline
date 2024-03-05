@@ -316,7 +316,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												{
 													if (Guid.TryParse(reply_section_value.ReplyValue, out Guid master_id))
 													{
-														await GetReplyName(master_id, master_Lists.Path);
+														_replyName = await GetReplyName(master_id, master_Lists.Path);
 													}
 													else
 													{
@@ -384,7 +384,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				saleReply.UpdateBy = model.CurrentUserId;
 				saleReply.UpdateByName = _fullNameUser;
 				saleReply.ProcessSaleName = _processSaleName;
-				await _db.InsterAsync(saleReply);
+				_db.Update(saleReply);
 				await _db.SaveAsync();
 
 				//Update Status To Delete All
@@ -515,7 +515,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													{
 														if (Guid.TryParse(reply_section_value.ReplyValue, out Guid master_id))
 														{
-															await GetReplyName(master_id, master_Lists.Path);
+															_replyName = await GetReplyName(master_id, master_Lists.Path);
 														}
 														else
 														{
@@ -568,7 +568,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				//_transaction.Commit();
+				_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
