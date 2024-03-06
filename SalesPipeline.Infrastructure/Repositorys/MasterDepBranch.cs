@@ -72,17 +72,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(masterDivisionBranch);
 					await _db.SaveAsync();
 
-					var masterDivisionCenter = await _repo.Context.Master_Department_Centers.Where(x => x.Master_Department_BranchId == model.Id).ToListAsync();
-					if (masterDivisionCenter.Count > 0)
+					var assignments = await _repo.Context.Assignments.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == model.Id).ToListAsync();
+					if (assignments.Count > 0)
 					{
-						foreach (var item in masterDivisionCenter)
+						foreach (var item in assignments)
 						{
-							item.Master_Department_BranchName = model.Name;
+							item.Name = model.Name;
 							_db.Update(item);
 						}
 						await _db.SaveAsync();
 					}
-
 
 					_transaction.Commit();
 				}

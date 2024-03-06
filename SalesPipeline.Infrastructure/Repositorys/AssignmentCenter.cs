@@ -231,7 +231,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				assignments.RMNumber = countRm;
 
-				//ส่วนนี้ต้องตัดออก แล้วไม่เช็คที่ Assignment กับ AssignmentRM โดยตรง
 				var sales = await _repo.Context.Sales
 												  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
 												  .ToListAsync();

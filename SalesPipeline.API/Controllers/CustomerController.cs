@@ -230,6 +230,8 @@ namespace SalesPipeline.API.Controllers
 
 				SaleCustom? modelSale = null;
 
+				rolecode = rolecode.ToUpper();
+
 				for (int i = 1; i <= number; i++)
 				{
 					if (rolecode == RoleCodes.RM)

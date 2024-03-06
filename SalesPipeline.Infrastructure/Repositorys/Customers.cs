@@ -343,13 +343,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				};
 				var sale = await _repo.Sales.Create(saleData);
 
-				if (assCenterUserId.HasValue)
+				if (master_Department_BranchId.HasValue)
 				{
-					var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(assCenterUserId.Value);
-					if (assignmentCenter != null)
-					{
-						await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentCenter.Id);
-					}
+					await _repo.AssignmentCenter.UpdateCurrentNumber(master_Department_BranchId.Value);
 				}
 
 				//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
@@ -656,7 +652,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = await _repo.Context.Customers
 				.Include(x => x.Customer_Committees.Where(s => s.Status == StatusModel.Delete).OrderBy(o => o.SequenceNo))
 				.Include(x => x.Customer_Shareholders.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
-				.Include(x => x.Sales.Where(s=> s.Status != StatusModel.Delete).OrderBy(o => o.CreateDate))
+				.Include(x => x.Sales.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.CreateDate))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);
 		}
