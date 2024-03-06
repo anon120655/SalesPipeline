@@ -144,7 +144,7 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<CustomerCustom>>>> GetList(CustomerFilter model)
+		public async Task<ResultModel<PaginationView<List<CustomerCustom>>>> GetList(allFilter model)
 		{
 			try
 			{

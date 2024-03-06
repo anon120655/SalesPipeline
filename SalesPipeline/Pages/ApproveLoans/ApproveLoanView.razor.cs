@@ -19,7 +19,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
-		private SaleCustom formModel = new();
+		private CustomerCustom formModel = new();
 		ModalConfirm modalConfirmApprove = default!;
 		ModalNotApprove modalNotApprove = default!;
 		private bool IsToCancel = false;
@@ -45,7 +45,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 		{
 			if (id != Guid.Empty)
 			{
-				var data = await _salesViewModel.GetById(id);
+				var data = await _customerViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;

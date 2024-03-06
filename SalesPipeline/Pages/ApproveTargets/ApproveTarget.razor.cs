@@ -7,6 +7,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Shared.Modals;
+using SalesPipeline.Utils.Resources.Customers;
 
 namespace SalesPipeline.Pages.ApproveTargets
 {
@@ -19,7 +20,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
-		private SaleCustom? formView = null;
+		private CustomerCustom? formView = null;
 		ModalConfirm modalConfirmApprove = default!;
 		ModalSuccessful modalSuccessfulApprove = default!;
 		ModalNotApprove modalNotApprove = default!;
@@ -222,7 +223,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 			}
 		}
 
-		protected void OnViewCustomer(SaleCustom? model)
+		protected void OnViewCustomer(CustomerCustom? model)
 		{
 			if (model != null)
 			{

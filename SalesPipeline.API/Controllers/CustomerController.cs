@@ -157,7 +157,7 @@ namespace SalesPipeline.API.Controllers
 		/// </summary>
 		[AllowAnonymous]
 		[HttpGet("GetList")]
-		public async Task<IActionResult> GetList([FromQuery] CustomerFilter model)
+		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{
 			try
 			{

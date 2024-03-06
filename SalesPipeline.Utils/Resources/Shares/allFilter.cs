@@ -11,17 +11,19 @@ namespace SalesPipeline.Utils.Resources.Shares
 	public class allFilter : PagerFilter
 	{
 		public Guid id { get; set; }
+		public Guid? customerid { get; set; }
 		public int? statussaleid { get; set; }
 		public int? userid { get; set; }
 		public int? assigncenter { get; set; }
 		public int? assignrm { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
+		public string? cif { get; set; }
 		public string? searchtxt { get; set; }
 		public string? juristicnumber { get; set; }
 		public string? type { get; set; }
 		public string? chain { get; set; }
-		public string? isiccode { get; set; }		
+		public string? isiccode { get; set; }
 		public string? businesstype { get; set; }
 		public string? province { get; set; }
 		public string? amphur { get; set; }
@@ -51,6 +53,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (id != Guid.Empty)
 				ParameterAll += $"&id={id}";
 
+			if (customerid.HasValue && customerid != Guid.Empty)
+				ParameterAll += $"&customerid={customerid}";
+
 			if (statussaleid > 0)
 				ParameterAll += $"&statussaleid={statussaleid}";
 
@@ -65,6 +70,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (isshow.HasValue)
 				ParameterAll += $"&isshow={isshow}";
+
+			if (!String.IsNullOrEmpty(cif))
+				ParameterAll += $"&cif={cif}";
 
 			if (!String.IsNullOrEmpty(searchtxt))
 				ParameterAll += $"&searchtxt={searchtxt}";
@@ -157,6 +165,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(CurrentUserId), out var _CurrentUserId))
 				CurrentUserId = Convert.ToInt32(_CurrentUserId);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(cif), out var _cif))
+				cif = _cif;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(searchtxt), out var _searchtxt))
 				searchtxt = _searchtxt;

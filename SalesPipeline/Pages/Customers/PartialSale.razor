@@ -1,0 +1,46 @@
+﻿
+<div class="row mt-5 mx-3">
+	<div class="col-12">
+		<div class="table-responsive border-top">
+			<table class="table table_list">
+				<thead>
+					<tr>
+						<th class="text-center">ชื่อลูกค้า</th>
+						<th class="text-center">สถานะ</th>
+						<th class="text-center">วันที่อัปเดต</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Items == null)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+							</td>
+						</tr>
+					}
+					else if (Items.Count == 0)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<em>ไม่พบข้อมูล</em>
+							</td>
+						</tr>
+					}
+					else
+					{
+						foreach (var item in Items)
+						{
+							<tr>
+								<td class="text-center">@item.CompanyName</td>
+								<td class="text-center">@item.StatusSaleName</td>
+								<td class="text-center">@GeneralUtils.DateToThString(item.UpdateDate)</td>								
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+

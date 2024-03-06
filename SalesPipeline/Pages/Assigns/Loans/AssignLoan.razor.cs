@@ -32,7 +32,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		//IsSelectNewAssign ใช้เช็คตอนกด back กลับจากหน้า Summary
 		private Guid? IsSelectNewAssign = null;
 		private Pager? Pager;
-		private SaleCustom? formView = null;
+		private CustomerCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
 		private Guid? assignmentIdPrevious = null;
 
@@ -601,7 +601,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			}
 		}
 
-		protected void OnViewCustomer(SaleCustom? model)
+		protected void OnViewCustomer(CustomerCustom? model)
 		{
 			if (model != null)
 			{

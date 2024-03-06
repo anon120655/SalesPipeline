@@ -233,6 +233,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.AsQueryable();
 			}
 
+			if (model.customerid.HasValue && model.customerid != Guid.Empty)
+			{
+				query = query.Where(x => x.CustomerId == model.customerid.Value);
+			}
 
 			if (model.status.HasValue)
 			{

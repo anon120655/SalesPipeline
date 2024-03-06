@@ -17,7 +17,7 @@ namespace SalesPipeline.Pages.Customers
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
-		private SaleCustom formModel = new();
+		private CustomerCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -40,7 +40,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (id != Guid.Empty)
 			{
-				var data = await _salesViewModel.GetById(id);
+				var data = await _customerViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;

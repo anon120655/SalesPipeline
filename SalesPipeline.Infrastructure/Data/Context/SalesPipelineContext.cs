@@ -280,6 +280,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchName)
                 .HasMaxLength(255)
                 .HasComment("สาขา");
+            entity.Property(e => e.CIF).HasMaxLength(255);
             entity.Property(e => e.CompanyEmail)
                 .HasMaxLength(255)
                 .HasComment("อีเมลบริษัท");

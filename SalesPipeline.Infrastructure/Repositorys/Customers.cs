@@ -650,14 +650,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<CustomerCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Customers
-				.Include(x => x.Customer_Committees.Where(s => s.Status == StatusModel.Delete).OrderBy(o => o.SequenceNo))
-				.Include(x => x.Customer_Shareholders.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Committees.Where(s => s.Status == StatusModel.Active).OrderBy(o => o.SequenceNo))
+				.Include(x => x.Customer_Shareholders.Where(s => s.Status == StatusModel.Active).OrderBy(o => o.SequenceNo))
 				.Include(x => x.Sales.Where(s => s.Status != StatusModel.Delete).OrderBy(o => o.CreateDate))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<CustomerCustom>(query);
 		}
 
-		public async Task<PaginationView<List<CustomerCustom>>> GetList(CustomerFilter model)
+		public async Task<PaginationView<List<CustomerCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Customers.Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
@@ -666,6 +666,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.Status == model.status);
 			}
+
+			if (!String.IsNullOrEmpty(model.cif))
+				query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)

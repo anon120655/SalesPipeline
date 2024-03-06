@@ -16,7 +16,7 @@ namespace SalesPipeline.Pages.Customers
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<SaleCustom>? Items;
+		private List<CustomerCustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;
@@ -145,7 +145,7 @@ namespace SalesPipeline.Pages.Customers
 				}
 			}
 
-			var data = await _salesViewModel.GetList(filter);
+			var data = await _customerViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -203,22 +203,6 @@ namespace SalesPipeline.Pages.Customers
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-		}
-
-		protected async Task OnStatus(ChangeEventArgs e)
-		{
-			filter.statussaleid = null;
-			if (e.Value != null)
-			{
-				if (short.TryParse(e.Value.ToString(), out short _status))
-				{
-					filter.statussaleid = _status;
-				}
-
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-			}
 		}
 
 		protected async Task OnChain(ChangeEventArgs e)
