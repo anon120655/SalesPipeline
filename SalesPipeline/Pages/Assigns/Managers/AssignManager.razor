@@ -308,16 +308,8 @@
 												{
 													int NumberAfterAssignment = (item.CurrentNumber + ItemsSelected.Count) ?? 0;
 													<tr>
-														@if (item.Master_Department_Branch != null)
-														{
-															<td class="text-center">@item.Master_Department_Branch.Code</td>
-															<td class="text-center">@item.Master_Department_Branch.Name</td>
-														}
-														else
-														{
-															<td class="text-center">-</td>
-															<td class="text-center">-</td>
-														}
+														<td class="text-center">@item.Code</td>
+														<td class="text-center">@item.Name</td>
 														<td class="text-center">@item.EmployeeName</td>
 														<td class="text-center">@item.Tel</td>
 														<td class="text-center">@item.RMNumber</td>
