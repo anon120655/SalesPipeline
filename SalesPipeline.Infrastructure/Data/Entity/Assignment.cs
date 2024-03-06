@@ -56,5 +56,7 @@ public partial class Assignment
     /// </summary>
     public int? CurrentNumber { get; set; }
 
+    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

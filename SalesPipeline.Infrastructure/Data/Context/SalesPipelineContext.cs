@@ -116,6 +116,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Assignment");
 
+            entity.HasIndex(e => e.Master_Department_BranchId, "Master_Department_BranchId");
+
             entity.HasIndex(e => e.UserId, "UserId");
 
             entity.Property(e => e.Code)
@@ -145,6 +147,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UserId)
                 .HasComment("UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Master_Department_Branch).WithMany(p => p.Assignments)
+                .HasForeignKey(d => d.Master_Department_BranchId)
+                .HasConstraintName("assignment_ibfk_2");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignments)
                 .HasForeignKey(d => d.UserId)

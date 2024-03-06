@@ -182,6 +182,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected void SetModelRM()
 		{
+			ItemsRM = new();
 			if (ItemsAll?.Count > 0)
 			{
 				ItemsRM = GeneralUtils.DeepCopyJson(ItemsAll);

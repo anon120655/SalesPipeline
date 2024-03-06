@@ -118,6 +118,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<AssignmentCustom>>> GetListCenter(allFilter model)
 		{
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x=>x.Master_Department_Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
@@ -258,11 +259,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						string? _code = null;
 						string? _name = null;
-						var depCenter = await _repo.MasterDepCenter.GetByBranchId(item_center.Master_Department_BranchId.Value);
-						if (depCenter != null)
+						//var depCenter = await _repo.MasterDepCenter.GetByBranchId(item_center.Master_Department_BranchId.Value);
+						var depBranch = await _repo.MasterDepBranch.GetById(item_center.Master_Department_BranchId.Value);
+						if (depBranch != null)
 						{
-							_code = depCenter.Code;
-							_name = depCenter.Name;
+							_code = depBranch.Code;
+							_name = depBranch.Name;
 						}
 						var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 						{

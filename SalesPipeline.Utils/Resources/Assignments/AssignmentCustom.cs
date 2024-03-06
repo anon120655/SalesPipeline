@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Masters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,8 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		//public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
 		public virtual UserCustom? User { get; set; }
+
+		public virtual Master_Department_BranchCustom? Master_Department_Branch { get; set; }
 
 		//Custom
 		public bool IsSelected { get; set; } = false;
