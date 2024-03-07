@@ -27,69 +27,74 @@
 		/// </summary>
 		public const short WaitAssignCenter = 5;
 		/// <summary>
-		/// รออนุมัติ(ศูนย์สาขา)
+		/// สาขาภาคส่งคืนศูนย์ธุรกิจสินเชื่อ
 		/// </summary>
-		public const short WaitApproveCenter = 6;
+		public const short BranchReturnLCenter = 6;
 		/// <summary>
-		/// ไม่อนุมัติ(ศูนย์สาขา)
+		/// ผจศ. ส่งคืน สาขาภาค
 		/// </summary>
-		public const short NotApproveCenter = 7;
+		public const short MCenterReturnBranch = 7;
+		/// <summary>
+		/// ส่งคืน ผจศ.
+		/// </summary>
+		public const short RMReturnMCenter = 8;
+
 		/// <summary>
 		/// รอมอบหมาย
 		/// </summary>
-		public const short WaitAssign = 8;
+		public const short WaitAssign = 9;
 		/// <summary>
 		/// รอการติดต่อ
 		/// </summary>
-		public const short WaitContact = 9;
+		public const short WaitContact = 10;
 		/// <summary>
 		/// ติดต่อ
 		/// </summary>
-		public const short Contact = 10;
+		public const short Contact = 11;
 		/// <summary>
 		/// ติดต่อไม่สำเร็จ
 		/// </summary>
-		public const short ContactFail = 11;
+		public const short ContactFail = 12;
 		/// <summary>
 		/// รอการเข้าพบ
 		/// </summary>
-		public const short WaitMeet = 12;
+		public const short WaitMeet = 13;
 		/// <summary>
 		/// เข้าพบ
 		/// </summary>
-		public const short Meet = 13;
+		public const short Meet = 14;
 		/// <summary>
 		/// เข้าพบไม่สำเร็จ
 		/// </summary>
-		public const short MeetFail = 14;
+		public const short MeetFail = 15;
 		/// <summary>
 		/// ยื่นเอกสาร
 		/// </summary>
-		public const short SubmitDocument = 15;
+		public const short SubmitDocument = 16;
 		/// <summary>
 		/// ยื่นเอกสารไม่สำเร็จ
 		/// </summary>
-		public const short SubmitDocumentFail = 16;
+		public const short SubmitDocumentFail = 17;
 		/// <summary>
 		/// ผลลัพธ์
 		/// </summary>
-		public const short Results = 17;
+		public const short Results = 18;
 		/// <summary>
 		/// ไม่ผ่านการพิจารณา
 		/// </summary>
-		public const short ResultsNotConsidered = 18;
+		public const short ResultsNotConsidered = 19;
 		/// <summary>
 		/// ไม่ประสงค์กู้
 		/// </summary>
-		public const short ResultsNotLoan = 19;
+		public const short ResultsNotLoan = 20;
 		/// <summary>
 		/// ปิดการขาย
 		/// </summary>
-		public const short CloseSale = 20;
+		public const short CloseSale = 21;
 		/// <summary>
 		/// ปิดการขายไม่สำเร็จ
 		/// </summary>
-		public const short CloseSaleFail = 21;
+		public const short CloseSaleFail = 22;
 	}
 
 }

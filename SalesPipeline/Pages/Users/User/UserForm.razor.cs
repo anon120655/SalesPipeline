@@ -307,18 +307,6 @@ namespace SalesPipeline.Pages.Users.User
 			if (_id != null && int.TryParse(_id.ToString(), out int roleid))
 			{
 				formModel.RoleId = roleid;
-
-				if (formModel.RoleId == 7) //ผู้จัดการศูนย์
-				{
-					formModel.ProvinceId = null;
-					formModel.BranchId = null;
-					LookUp.Provinces = new();
-					LookUp.Branchs = new();
-					StateHasChanged();
-
-					await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
-				}
 				StateHasChanged();
 
 				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });

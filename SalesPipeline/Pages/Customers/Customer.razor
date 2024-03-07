@@ -53,19 +53,6 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ISIC Code</label>
-							<select @onchange="OnChain" value="@filter.isiccode" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option value="">ทั้งหมด</option>
-								@if (LookUp.ISICCode?.Count > 0)
-								{
-									foreach (var item in LookUp.ISICCode)
-									{
-										<option value="@item.Id">@item.Name</option>
-									}
-								}
-							</select>
-						</div>
-						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
 							<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
@@ -74,6 +61,19 @@
 									foreach (var item in LookUp.Provinces)
 									{
 										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สถานะ</label>
+							<select @onchange="OnStatusSale" value="@filter.statussaleid" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.StatusSale?.Count > 0)
+								{
+									foreach (var item in LookUp.StatusSale)
+									{
+										<option value="@item.Id">@item.Name</option>
 									}
 								}
 							</select>
@@ -115,10 +115,11 @@
 											<th class="text-center">เลขนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">ISIC Code</th>
 											<th class="text-center">ห่วงโซ่</th>
+											<th class="text-center">กิจการสาขา</th>
 											<th class="text-center">จังหวัด</th>
-											<th class="text-center">วันที่อัปเดต</th>
+											<th class="text-center">สถานะ</th>
+											<th class="text-center">ผู้รับผิดชอบ</th>
 											<th class="text-center">รายละเอียด</th>
 										</tr>
 									</thead>
@@ -147,14 +148,23 @@
 											{
 												<tr>
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
-													<td class="text-center">@GeneralUtils.EmptyTo(item.CIF)</td>
-													<td class="text-center">@item.JuristicPersonRegNumber</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.CIF)</td>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
 													<td class="text-center">@item.CompanyName</td>
-													<td class="text-center">@item.Master_BusinessTypeName</td>
-													<td class="">@item.Master_ISICCodeName</td>
-													<td class="">@item.Master_ChainName</td>
-													<td class="text-center">@item.ProvinceName</td>
-													<td class="text-center">@GeneralUtils.DateToThString(item.UpdateDate)</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="">@item.Customer?.Master_ChainName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssCenterUser?.Master_Department_Branch?.Name)</td>
+													<td class="text-center">@item.Customer?.ProvinceName</td>
+													<td class="text-center fw-bold">
+														@item.StatusSaleName
+														@if (!String.IsNullOrEmpty(item.StatusDescription))
+														{
+															<TooltipCustom Text="@item.StatusDescription">
+																<i class="fa-solid fa-circle-question text-primary"></i>
+															</TooltipCustom>
+														}
+													</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssUserName)</td>
 													<td class="text-center">
 														<a class="btn btn-info btn-circle" href="/customer/view/@item.Id">
 															<i class="fa-solid fa-eye text-white fs_15e"></i>

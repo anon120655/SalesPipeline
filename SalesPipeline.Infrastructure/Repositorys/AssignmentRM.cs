@@ -42,7 +42,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var assignment_RM = new Data.Entity.Assignment_RM();
 			assignment_RM.Status = StatusModel.Active;
-			assignment_RM.CreateDate = DateTime.Now;
+			if (model.CreateDate != DateTime.MinValue)
+			{
+				assignment_RM.CreateDate = model.CreateDate;
+			}
+			else
+			{
+				assignment_RM.CreateDate = DateTime.Now;
+			}
 			assignment_RM.AssignmentUserId = model.AssignmentUserId;
 			assignment_RM.AssignmentName = model.AssignmentName;
 			assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
@@ -442,9 +449,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
-		public Task Return(ReturnModel model)
+		public async Task Return(ReturnModel model)
 		{
-			throw new NotImplementedException();
+			//ผู้จัดการศูนย์ส่งคืนกิจการสาขาภาค
+			foreach (var item in model.RM_Sale)
+			{
+				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
+				if (sales != null)
+				{
+					sales.AssCenterUserId = null;
+					sales.AssCenterUserName = null;
+					sales.AssCenterCreateBy = null;
+					sales.AssCenterDate = null;
+					_db.Update(sales);
+					await _db.SaveAsync();
+
+					var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+					var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
+
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = item.SaleId,
+						StatusId = StatusSaleModel.MCenterReturnBranch,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+						Description = reasonName
+					});
+
+				}
+
+			}
 		}
 
 		public async Task CreateAssignmentRMAll(allFilter model)
@@ -457,17 +492,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (usersRM.Count > 0)
 			{
+				int i = 1;
 				foreach (var item_rm in usersRM)
 				{
 					if (item_rm.Master_Department_BranchId.HasValue)
 					{
 						var assignment = await _repo.AssignmentRM.Create(new()
 						{
+							CreateDate = DateTime.Now.AddSeconds(i),
 							Master_Department_BranchId = item_rm.Master_Department_BranchId,
 							UserId = item_rm.Id,
 							EmployeeId = item_rm.EmployeeId,
 							EmployeeName = item_rm.FullName,
 						});
+						i++;
 					}
 
 				}

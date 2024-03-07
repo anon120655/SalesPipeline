@@ -26,24 +26,13 @@
 											@if (UserInfo.RoleCode != RoleCodes.BRANCH01)
 											{
 												<div class="col-12 col-xl-3 text-end">
-													<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.Id">แก้ไขข้อมูล</a>
+													<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.Customer?.Id">แก้ไขข้อมูล</a>
 												</div>
 											}
 										</div>
-										<PartialCustomerInfo formModel="formModel" />
-									</Content>
-								</Tab>
-								<Tab Title="ใบคำขอ">
-									<Content>
-										@if (formModel.Id != Guid.Empty)
+										@if (formModel.Customer != null)
 										{
-											<PartialSale customerid="formModel.Id" />
-										}
-										else
-										{
-											<div class="d-flex align-items-center justify-content-center mh_10r">
-												<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-											</div>
+											<PartialCustomerInfo formModel="formModel.Customer" />
 										}
 									</Content>
 								</Tab>
