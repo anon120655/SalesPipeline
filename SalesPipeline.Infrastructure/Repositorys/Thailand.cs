@@ -135,8 +135,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				item.BranchCode = item.BranchID.ToString("0000");
 				_db.Update(item);
+				await _db.SaveAsync();
 			}
-			await _db.SaveAsync();
 
 			return new();
 

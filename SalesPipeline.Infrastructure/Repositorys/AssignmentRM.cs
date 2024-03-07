@@ -453,7 +453,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersRM = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_RMs.Where(s => s.Status == StatusModel.Active))
-										   .Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignment_RMs.Count == 0)
+										   .Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignment_RMs.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
@@ -462,7 +462,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int i = 1;
 				foreach (var item_rm in usersRM)
 				{
-					if (item_rm.Master_Department_BranchId.HasValue)
+					if (item_rm.BranchId.HasValue)
 					{
 						var assignment = await _repo.AssignmentRM.Create(new()
 						{

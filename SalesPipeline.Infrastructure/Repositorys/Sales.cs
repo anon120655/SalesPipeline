@@ -51,7 +51,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
-			sale.Master_Department_BranchId = model.Master_Department_BranchId;
+			sale.BranchId = model.BranchId;
 			sale.AssCenterUserId = model.AssCenterUserId;
 			sale.AssCenterUserName = model.AssCenterUserName;
 			if (model.AssCenterUserId.HasValue)

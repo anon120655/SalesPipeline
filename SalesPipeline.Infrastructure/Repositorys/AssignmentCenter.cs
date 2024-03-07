@@ -39,7 +39,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Assignments
 				.Where(x => x.Id == id)
-				.Include(x => x.User).ThenInclude(x => x.Master_Department_Center)
+				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
 				.FirstOrDefaultAsync();
 			return _mapper.Map<AssignmentCustom>(query);
 		}
