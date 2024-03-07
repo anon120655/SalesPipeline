@@ -69,9 +69,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var assignment = await _repo.AssignmentCenter.GetByUserId(model.CurrentUserId);
+			var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
+			if (assignmentRM == null)
+				throw new ExceptionCustom("currentuserid not match assignmentrm");
 
-			await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
+			//if (assignmentRM.AssignmentUserId.HasValue)
+			//{
+			//	var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(assignmentRM.AssignmentUserId.Value);
+			//	if (assignmentCenter == null)
+			//		throw new ExceptionCustom("currentuserid not match assignmentcenter");
+
+			//	await _repo.AssignmentRM.UpdateCurrentNumber(assignmentCenter.Id);
+			//}
+
 		}
 
 		public async Task MCenterToBranch(ReturnModel model)

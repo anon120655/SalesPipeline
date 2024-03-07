@@ -109,6 +109,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.Master_Department_BranchId.HasValue)
 				{
 					await _repo.AssignmentCenter.UpdateCurrentNumber(model.Master_Department_BranchId.Value);
+					await _repo.AssignmentRM.UpdateAssignmentEmpty(model.Master_Department_BranchId.Value);
 				}
 
 			}

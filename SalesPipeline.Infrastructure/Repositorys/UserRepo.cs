@@ -66,21 +66,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
 					model.Master_Department_CenterId = null;
-					//model.AssignmentId = null;
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					//model.AssignmentId = null;
 					model.LevelId = null;
-					//model.Master_Department_BranchId = null;
-					model.ProvinceId = null;
-					model.AmphurId = null;
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					model.LevelId = null;
-					//model.Master_Department_BranchId = null;
-					//model.Master_Department_CenterId = null;
 				}
 			}
 
@@ -152,58 +145,55 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.RoleId.HasValue)
 				{
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
-					if (roleCode != null)
+					if (roleCode != null && user.Master_Department_BranchId.HasValue)
 					{
-						if (user.Master_Department_BranchId.HasValue)
+						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 						{
-							if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
-							{
-								string? _code = null;
-								string? _name = null;
+							string? _code = null;
+							string? _name = null;
 
-								var depBranch = await _repo.MasterDepBranch.GetById(user.Master_Department_BranchId.Value);
-								if (depBranch != null)
+							var depBranch = await _repo.MasterDepBranch.GetById(user.Master_Department_BranchId.Value);
+							if (depBranch != null)
+							{
+								_code = depBranch.Code;
+								_name = depBranch.Name;
+							}
+							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+							{
+								Master_Department_BranchId = user.Master_Department_BranchId,
+								Code = _code,
+								Name = _name,
+								UserId = user.Id,
+								EmployeeId = model.EmployeeId,
+								EmployeeName = model.FullName,
+								Tel = model.Tel,
+								RMNumber = 0,
+								CurrentNumber = 0
+							});
+						}
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+						{
+							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+							{
+								int? _assignmentUserId = null;
+								string? _assignmentName = null;
+								var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
+								if (userMcenter != null)
 								{
-									_code = depBranch.Code;
-									_name = depBranch.Name;
+									_assignmentUserId = userMcenter.Id;
+									_assignmentName = userMcenter.FullName;
 								}
-								var assignmentCenter = await _repo.AssignmentCenter.Create(new()
+
+								var assignment = await _repo.AssignmentRM.Create(new()
 								{
+									AssignmentUserId = _assignmentUserId,
+									AssignmentName = _assignmentName,
 									Master_Department_BranchId = user.Master_Department_BranchId,
-									Code = _code,
-									Name = _name,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
 									EmployeeName = model.FullName,
-									Tel = model.Tel,
-									RMNumber = 0,
-									CurrentNumber = 0
 								});
-							}
-							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
-							{
-								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-								{
-									int? _assignmentUserId = null;
-									string? _assignmentName = null;
-									var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
-									if (userMcenter != null)
-									{
-										_assignmentUserId = userMcenter.Id;
-										_assignmentName = userMcenter.FullName;
-									}
-
-									var assignment = await _repo.AssignmentRM.Create(new()
-									{
-										AssignmentUserId = _assignmentUserId,
-										AssignmentName = _assignmentName,
-										Master_Department_BranchId = user.Master_Department_BranchId,
-										UserId = user.Id,
-										EmployeeId = model.EmployeeId,
-										EmployeeName = model.FullName,
-									});
-								}
 							}
 						}
 					}
@@ -245,11 +235,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
-					if (roleCode != null)
+					if (roleCode != null && user.Master_Department_BranchId.HasValue)
 					{
 						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 						{
-							if (model.Master_Department_CenterId != user.Master_Department_CenterId)
+							if (model.Master_Department_BranchId != user.Master_Department_BranchId)
 							{
 								var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignments != null && assignments.RMNumber > 0)
@@ -260,7 +250,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
-
 							//if (model.AssignmentId != _AssignmentId)
 							//{
 							//	var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
@@ -277,6 +266,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							//		}
 							//	}
 							//}
+
+
+							int? _assignmentUserId = null;
+							string? _assignmentName = null;
+							var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
+							if (userMcenter != null)
+							{
+								_assignmentUserId = userMcenter.Id;
+								_assignmentName = userMcenter.FullName;
+							}
+
+							Assignment_RMCustom assignment_RM = new()
+							{
+								AssignmentUserId = _assignmentUserId,
+								AssignmentName = _assignmentName,
+								Master_Department_BranchId = user.Master_Department_BranchId,
+								UserId = user.Id,
+								EmployeeId = model.EmployeeId,
+								EmployeeName = model.FullName,
+							};
+
+							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+							{
+								var assignment = await _repo.AssignmentRM.Create(assignment_RM);
+							}
+							else
+							{
+								var assignment = await _repo.AssignmentRM.Update(assignment_RM);
+							}
 						}
 					}
 
