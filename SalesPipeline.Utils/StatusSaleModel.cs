@@ -35,7 +35,7 @@
 		/// </summary>
 		public const short MCenterReturnBranch = 7;
 		/// <summary>
-		/// ส่งคืน ผจศ.
+		/// พนักงาน RM ส่งคืน ผจศ.
 		/// </summary>
 		public const short RMReturnMCenter = 8;
 

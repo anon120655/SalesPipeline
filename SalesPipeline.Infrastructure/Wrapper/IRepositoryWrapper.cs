@@ -39,6 +39,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IThailand Thailand { get; }
 		IAssignmentCenter AssignmentCenter { get; }
 		IAssignmentRM AssignmentRM { get; }
+		IReturnRepo Return { get; }
 
 		IProcessSales ProcessSale { get; }
 		ISales Sales { get; }

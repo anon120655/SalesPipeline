@@ -51,6 +51,7 @@ builder.Services.AddScoped<CustomerViewModel>();
 builder.Services.AddScoped<SalesViewModel>();
 builder.Services.AddScoped<AssignmentCenterViewModel>();
 builder.Services.AddScoped<AssignmentRMViewModel>();
+builder.Services.AddScoped<ReturnViewModel>();
 builder.Services.AddScoped<SystemViewModel>();
 
 //StateProvider

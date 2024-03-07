@@ -43,6 +43,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IThailand Thailand { get; }
 		public IAssignmentCenter AssignmentCenter { get; }
 		public IAssignmentRM AssignmentRM { get; }
+		public IReturnRepo Return { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -79,7 +80,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
 			AssignmentCenter = new AssignmentCenter(this, _db, settings, _mapper);
-			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);			
+			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);
+			Return = new ReturnRepo(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

@@ -431,13 +431,13 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			await modalReturnReason.OnShowConfirm();
 		}
 
-		protected async Task Return(string? id)
+		protected async Task MCenterToBranch(string? id)
 		{
 			_errorMessageModal = null;
 
 			if (Guid.TryParse(id, out Guid _id) && SaleMoveAssigned?.Count > 0)
 			{
-				var response = await _assignmentRMViewModel.Return(new()
+				var response = await _returnViewModel.MCenterToBranch(new()
 				{
 					CurrentUserId = UserInfo.Id,
 					Master_ReasonReturnId = _id,
@@ -450,6 +450,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					await modalReturnReason.OnHide();
 					await ShowSuccessfulAssign(null, "เสร็จสิ้นการส่งคืน");
 					await SetModel();
+					await GotoStep(StepAssignLoanModel.Home);
 					HideLoading();
 				}
 				else

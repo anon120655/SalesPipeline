@@ -176,6 +176,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		/// <summary>
+		/// update ผู้จัดการศูนย์ที่ดูแลพนักงาน RM กรณีที่สร้างพนักงานมาก่อน แต่ยังไม่มีผู้จัดการศูนย?
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public async Task UpdateAssignmentEmpty(Guid id)
 		{
 			var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == id && x.RoleId == 7);
@@ -447,39 +452,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			await UpdateCurrentNumber(model.New.Id);
 
-		}
-
-		public async Task Return(ReturnModel model)
-		{
-			//ผู้จัดการศูนย์ส่งคืนกิจการสาขาภาค
-			foreach (var item in model.RM_Sale)
-			{
-				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
-				if (sales != null)
-				{
-					sales.AssCenterUserId = null;
-					sales.AssCenterUserName = null;
-					sales.AssCenterCreateBy = null;
-					sales.AssCenterDate = null;
-					_db.Update(sales);
-					await _db.SaveAsync();
-
-					var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
-
-					var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
-
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = item.SaleId,
-						StatusId = StatusSaleModel.MCenterReturnBranch,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-						Description = reasonName
-					});
-
-				}
-
-			}
 		}
 
 		public async Task CreateAssignmentRMAll(allFilter model)

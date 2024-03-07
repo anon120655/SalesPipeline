@@ -45,25 +45,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPost("Return")]
-		public async Task<IActionResult> Return(ReturnModel model)
-		{
-			try
-			{
-				using (var _transaction = _repo.BeginTransaction())
-				{
-					await _repo.AssignmentRM.Return(model);
-
-					_transaction.Commit();
-				}
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		[HttpPost("Assign")]
 		public async Task<IActionResult> Assign(List<Assignment_RMCustom> model)
 		{
