@@ -30,11 +30,7 @@ public partial class Master_Department_Branch
 
     public string? Name { get; set; }
 
-    public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
-
     public virtual ICollection<Master_Department_Center> Master_Department_Centers { get; set; } = new List<Master_Department_Center>();
-
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
-using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -52,7 +47,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			assignment_RM.AssignmentUserId = model.AssignmentUserId;
 			assignment_RM.AssignmentName = model.AssignmentName;
-			assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
+			assignment_RM.BranchId = model.BranchId;
 			assignment_RM.UserId = model.UserId;
 			assignment_RM.EmployeeId = model.EmployeeId;
 			assignment_RM.EmployeeName = model.EmployeeName;
@@ -61,9 +56,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			//**** update ผู้จัดการศูนย์
-			if (model.Master_Department_BranchId.HasValue)
+			if (model.BranchId.HasValue)
 			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.Master_Department_BranchId.Value);
+				await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
 			}
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
@@ -77,7 +72,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				assignment_RM.AssignmentUserId = model.AssignmentUserId;
 				assignment_RM.AssignmentName = model.AssignmentName;
-				assignment_RM.Master_Department_BranchId = model.Master_Department_BranchId;
+				assignment_RM.BranchId = model.BranchId;
 				assignment_RM.EmployeeId = model.EmployeeId;
 				assignment_RM.EmployeeName = model.EmployeeName;
 				_db.Update(assignment_RM);
@@ -167,9 +162,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//**** update ผู้จัดการศูนย์
-					if (assignment_RMs.Master_Department_BranchId.HasValue)
+					if (assignment_RMs.BranchId.HasValue)
 					{
-						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.Master_Department_BranchId.Value);
+						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
 					}
 
 				}
@@ -181,12 +176,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public async Task UpdateAssignmentEmpty(Guid id)
+		public async Task UpdateAssignmentEmpty(int id)
 		{
-			var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == id && x.RoleId == 7);
+			var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.BranchId == id && x.RoleId == 7);
 			if (users != null)
 			{
-				var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.Master_Department_BranchId == id && x.AssignmentUserId == null).ToListAsync();
+				var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.BranchId == id && x.AssignmentUserId == null).ToListAsync();
 				if (assignment_RMs.Count > 0)
 				{
 					foreach (var item in assignment_RMs)
@@ -472,7 +467,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var assignment = await _repo.AssignmentRM.Create(new()
 						{
 							CreateDate = DateTime.Now.AddSeconds(i),
-							Master_Department_BranchId = item_rm.Master_Department_BranchId,
+							BranchId = item_rm.BranchId,
 							UserId = item_rm.Id,
 							EmployeeId = item_rm.EmployeeId,
 							EmployeeName = item_rm.FullName,

@@ -57,9 +57,9 @@ public partial class Sale
     public int? PercentChanceLoanPass { get; set; }
 
     /// <summary>
-    /// กิจการสาขาภาค
+    /// สาขา
     /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
+    public int? BranchId { get; set; }
 
     /// <summary>
     /// ผู้จัดการศูนย์ที่ดูแล
@@ -97,9 +97,9 @@ public partial class Sale
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual InfoBranch? Branch { get; set; }
 
-    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
+    public virtual Customer Customer { get; set; } = null!;
 
     public virtual ICollection<Sale_Reply> Sale_Replies { get; set; } = new List<Sale_Reply>();
 

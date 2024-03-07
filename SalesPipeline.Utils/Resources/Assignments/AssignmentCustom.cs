@@ -1,5 +1,6 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,20 +21,17 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public DateTime CreateDate { get; set; }
 
-		/// <summary>
-		/// กิจการสาขาภาค
-		/// </summary>
-		public Guid? Master_Department_BranchId { get; set; }
+		public int? BranchId { get; set; }
 
 		/// <summary>
-		/// รหัสศูนย์
+		/// รหัสสาขา
 		/// </summary>
-		public string? Code { get; set; }
+		public string? BranchCode { get; set; }
 
 		/// <summary>
-		/// ศูนย์สาขา
+		/// สาขา
 		/// </summary>
-		public string? Name { get; set; }
+		public string? BranchName { get; set; }
 
 		/// <summary>
 		/// UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย
@@ -62,10 +60,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// </summary>
 		public int? CurrentNumber { get; set; }
 
-		//public virtual List<Assignment_RMCustom>? Assignment_RMs { get; set; }
-		public virtual UserCustom? User { get; set; }
+		public virtual InfoBranchCustom? Branch { get; set; }
 
-		public virtual Master_Department_BranchCustom? Master_Department_Branch { get; set; }
+		public virtual UserCustom? User { get; set; }
 
 		//Custom
 		public bool IsSelected { get; set; } = false;

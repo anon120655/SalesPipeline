@@ -62,9 +62,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? PercentChanceLoanPass { get; set; }
 
 		/// <summary>
-		/// กิจการสาขาภาค
+		/// สาขา
 		/// </summary>
-		public Guid? Master_Department_BranchId { get; set; }
+		public int? BranchId { get; set; }
 
 		/// <summary>
 		/// ผู้จัดการศูนย์ที่ดูแล

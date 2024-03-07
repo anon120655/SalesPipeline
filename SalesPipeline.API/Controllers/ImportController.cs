@@ -204,7 +204,21 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
+		
+		[HttpGet("UpdateBranch")]
+		public async Task<IActionResult> UpdateBranch([FromQuery] allFilter model)
+		{
+			try
+			{
+				await _repo.Thailand.UpdateBranch(new());
 
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 
 	}

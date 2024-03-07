@@ -273,7 +273,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
-				Guid? master_Department_BranchId = null;
+				int? branchId = null;
 				int? assCenterUserId = null;
 				string? assCenterUserName = null;
 				int? assUserId = null;
@@ -287,7 +287,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
-					master_Department_BranchId = user.Master_Department_BranchId;
+					branchId = user.BranchId;
 				}
 				else
 				{
@@ -322,7 +322,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					assCenterUserId = modelSale.AssCenterUserId;
 					assCenterUserName = userCenter.FullName;
-					master_Department_BranchId = userCenter.Master_Department_BranchId;
+					branchId = userCenter.BranchId;
 				}
 
 
@@ -335,7 +335,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
-					Master_Department_BranchId = master_Department_BranchId,
+					BranchId = branchId,
 					AssCenterUserId = assCenterUserId,
 					AssCenterUserName = assCenterUserName,
 					AssUserId = assUserId,
@@ -343,9 +343,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				};
 				var sale = await _repo.Sales.Create(saleData);
 
-				if (master_Department_BranchId.HasValue)
+				if (branchId.HasValue)
 				{
-					await _repo.AssignmentCenter.UpdateCurrentNumber(master_Department_BranchId.Value);
+					await _repo.AssignmentCenter.UpdateCurrentNumber(branchId.Value);
 				}
 
 				//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************

@@ -33,9 +33,9 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public string? AssignmentName { get; set; }
 
 		/// <summary>
-		/// กิจการสาขาภาค
+		/// สาขา
 		/// </summary>
-		public Guid? Master_Department_BranchId { get; set; }
+		public int? BranchId { get; set; }
 
 		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย

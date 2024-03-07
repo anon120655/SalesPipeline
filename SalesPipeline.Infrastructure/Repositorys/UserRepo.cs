@@ -145,24 +145,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.RoleId.HasValue)
 				{
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
-					if (roleCode != null && user.Master_Department_BranchId.HasValue)
+					if (roleCode != null && user.BranchId.HasValue)
 					{
 						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 						{
 							string? _code = null;
 							string? _name = null;
-
-							var depBranch = await _repo.MasterDepBranch.GetById(user.Master_Department_BranchId.Value);
-							if (depBranch != null)
+							var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
+							if (branch != null)
 							{
-								_code = depBranch.Code;
-								_name = depBranch.Name;
+								_code = branch.BranchCode;
+								_name = branch.BranchName;
 							}
+
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
-								Master_Department_BranchId = user.Master_Department_BranchId,
-								Code = _code,
-								Name = _name,
+								BranchId = user.BranchId,
+								BranchCode = _code,
+								BranchName = _name,
 								UserId = user.Id,
 								EmployeeId = model.EmployeeId,
 								EmployeeName = model.FullName,
@@ -178,7 +178,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								int? _assignmentUserId = null;
 								string? _assignmentName = null;
-								var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
+								var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
 								if (userMcenter != null)
 								{
 									_assignmentUserId = userMcenter.Id;
@@ -189,7 +189,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								{
 									AssignmentUserId = _assignmentUserId,
 									AssignmentName = _assignmentName,
-									Master_Department_BranchId = user.Master_Department_BranchId,
+									BranchId = user.BranchId,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
 									EmployeeName = model.FullName,
@@ -235,11 +235,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
-					if (roleCode != null && user.Master_Department_BranchId.HasValue)
+					if (roleCode != null && user.BranchId.HasValue)
 					{
 						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 						{
-							if (model.Master_Department_BranchId != user.Master_Department_BranchId)
+							if (model.BranchId != user.BranchId)
 							{
 								var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignments != null && assignments.RMNumber > 0)
@@ -270,7 +270,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							int? _assignmentUserId = null;
 							string? _assignmentName = null;
-							var userMcenter = await this.GetMcencerByBranchId(user.Master_Department_BranchId.Value);
+							var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
 							if (userMcenter != null)
 							{
 								_assignmentUserId = userMcenter.Id;
@@ -281,7 +281,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								AssignmentUserId = _assignmentUserId,
 								AssignmentName = _assignmentName,
-								Master_Department_BranchId = user.Master_Department_BranchId,
+								BranchId = user.BranchId,
 								UserId = user.Id,
 								EmployeeId = model.EmployeeId,
 								EmployeeName = model.FullName,
@@ -324,26 +324,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//RM Role Create Default Assignment
 					if (roleCode != null)
 					{
-						if (user.Master_Department_BranchId.HasValue)
+						if (user.BranchId.HasValue)
 						{
 							if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 							{
 
 								string? _code = null;
 								string? _name = null;
-
-								var depBranch = await _repo.MasterDepBranch.GetById(user.Master_Department_BranchId.Value);
-								if (depBranch != null)
+								var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
+								if (branch != null)
 								{
-									_code = depBranch.Code;
-									_name = depBranch.Name;
+									_code = branch.BranchCode;
+									_name = branch.BranchName;
 								}
 
 								AssignmentCustom assignmentCenterModel = new()
 								{
-									Master_Department_BranchId = user.Master_Department_BranchId,
-									Code = _code,
-									Name = _name,
+									BranchId = user.BranchId,
+									BranchCode = _code,
+									BranchName = _name,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
 									EmployeeName = model.FullName,
@@ -437,10 +436,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<UserCustom>(query);
 		}
 
-		public async Task<UserCustom> GetMcencerByBranchId(Guid id)
+		public async Task<UserCustom> GetMcencerByBranchId(int id)
 		{
 			//7=ผู้จัดการศูนย์
-			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 7 && x.Master_Department_BranchId == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 7 && x.BranchId == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
 

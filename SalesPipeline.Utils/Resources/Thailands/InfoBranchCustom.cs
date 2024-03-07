@@ -12,6 +12,8 @@ namespace SalesPipeline.Utils.Resources.Thailands
 
 		public int ProvinceID { get; set; }
 
+		public string? BranchCode { get; set; }
+
 		public string? BranchName { get; set; }
 
 		public string? BranchNameMain { get; set; }

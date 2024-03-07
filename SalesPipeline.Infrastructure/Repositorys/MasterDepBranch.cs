@@ -72,17 +72,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(masterDivisionBranch);
 					await _db.SaveAsync();
 
-					var assignments = await _repo.Context.Assignments.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == model.Id).ToListAsync();
-					if (assignments.Count > 0)
-					{
-						foreach (var item in assignments)
-						{
-							item.Name = model.Name;
-							_db.Update(item);
-						}
-						await _db.SaveAsync();
-					}
-
 					_transaction.Commit();
 				}
 

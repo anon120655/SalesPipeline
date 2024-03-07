@@ -279,13 +279,13 @@ namespace SalesPipeline.API.Controllers
 
 					if (rolecode == RoleCodes.RM)
 					{
-						Guid? master_Department_BranchId = null;
+						int? branchId = null;
 						int? assCenterUserId = null;
 						var user = await _repo.User.GetById(currentUserId);
-						if (user != null && user.Master_Department_BranchId.HasValue)
+						if (user != null && user.BranchId.HasValue)
 						{
-							master_Department_BranchId = user.Master_Department_BranchId;
-							var userCenter = await _repo.User.GetMcencerByBranchId(master_Department_BranchId.Value);
+							branchId = user.BranchId;
+							var userCenter = await _repo.User.GetMcencerByBranchId(branchId.Value);
 							if (userCenter != null)
 							{
 								assCenterUserId = userCenter.Id;
@@ -294,7 +294,7 @@ namespace SalesPipeline.API.Controllers
 
 						modelSale = new()
 						{
-							Master_Department_BranchId = master_Department_BranchId,
+							BranchId = branchId,
 							AssUserId = currentUserId,
 							AssCenterUserId = assCenterUserId
 						};

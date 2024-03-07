@@ -28,9 +28,9 @@ public partial class Assignment_RM
     public string? AssignmentName { get; set; }
 
     /// <summary>
-    /// กิจการสาขาภาค
+    /// สาขา
     /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
+    public int? BranchId { get; set; }
 
     /// <summary>
     /// พนักงานที่ได้รับมอบหมาย
@@ -53,6 +53,8 @@ public partial class Assignment_RM
     public int? CurrentNumber { get; set; }
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
+
+    public virtual InfoBranch? Branch { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

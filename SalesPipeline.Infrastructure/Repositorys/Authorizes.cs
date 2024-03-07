@@ -76,7 +76,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							var assignment = await _repo.AssignmentRM.Create(new()
 							{
-								Master_Department_BranchId = user.Master_Department_BranchId,
+								BranchId = user.BranchId,
 								UserId = user.Id,
 								EmployeeId = user.EmployeeId,
 								EmployeeName = user.FullName,

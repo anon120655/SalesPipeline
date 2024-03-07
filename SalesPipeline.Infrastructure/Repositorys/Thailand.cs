@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -117,6 +118,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				BranchID = id,
 				ProvinceID = model.ProvinceID,
+				BranchCode = model.BranchCode,
 				BranchName = model.BranchName,
 				BranchNameMain = model.BranchNameMain,
 			};
@@ -124,6 +126,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			return _mapper.Map<InfoBranchCustom>(infoBranch);
+		}
+
+		public async Task<InfoBranchCustom> UpdateBranch(InfoBranchCustom model)
+		{
+			var infoBranches = await _repo.Context.InfoBranches.ToListAsync();
+			foreach (var item in infoBranches)
+			{
+				item.BranchCode = item.BranchID.ToString("0000");
+				_db.Update(item);
+			}
+			await _db.SaveAsync();
+
+			return new();
+
+			//var infoBranches = await _repo.Context.InfoBranches
+			//									   .FirstOrDefaultAsync(x => x.BranchID == model.BranchID);
+			//if (infoBranches != null)
+			//{
+			//	infoBranches.ProvinceID = model.ProvinceID;
+			//	infoBranches.BranchCode = model.BranchCode;
+			//	infoBranches.BranchName = model.BranchName;
+			//	infoBranches.BranchNameMain = model.BranchNameMain;
+			//	_db.Update(infoBranches);
+			//  await _db.SaveAsync();
+			//}
+
+			//return _mapper.Map<InfoBranchCustom>(infoBranches);
 		}
 
 		public async Task<IList<InfoBranchCustom>> GetBranch(int provinceID)
@@ -136,6 +165,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var name = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
 			return name;
+		}
+
+		public async Task<InfoBranchCustom?> GetBranchByid(int id)
+		{
+			var InfoBranches = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).FirstOrDefaultAsync();
+			return _mapper.Map<InfoBranchCustom>(InfoBranches);
 		}
 	}
 }

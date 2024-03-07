@@ -14,20 +14,17 @@ public partial class Assignment
 
     public DateTime CreateDate { get; set; }
 
-    /// <summary>
-    /// กิจการสาขาภาค
-    /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
+    public int? BranchId { get; set; }
 
     /// <summary>
-    /// รหัสศูนย์
+    /// รหัสสาขา
     /// </summary>
-    public string? Code { get; set; }
+    public string? BranchCode { get; set; }
 
     /// <summary>
-    /// ศูนย์สาขา
+    /// สาขา
     /// </summary>
-    public string? Name { get; set; }
+    public string? BranchName { get; set; }
 
     /// <summary>
     /// UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย
@@ -56,7 +53,7 @@ public partial class Assignment
     /// </summary>
     public int? CurrentNumber { get; set; }
 
-    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
+    public virtual InfoBranch? Branch { get; set; }
 
     public virtual User User { get; set; } = null!;
 }
