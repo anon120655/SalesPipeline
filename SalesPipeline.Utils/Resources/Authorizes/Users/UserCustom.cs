@@ -19,6 +19,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public short Status { get; set; }
 
 		public DateTime CreateDate { get; set; }
@@ -61,7 +62,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// กิจการสาขาภาค
 		/// </summary>
-		[UserAtt(FieldName = "Master_Department_BranchId")]
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Department_BranchId { get; set; }
 
 		/// <summary>
@@ -71,15 +72,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public Guid? Master_Department_CenterId { get; set; }
 
 		/// <summary>
-		/// ผู้จัดการศูนย์ที่ดูแล พนักงาน RM
-		/// </summary>
-		//[UserAtt(FieldName = "AssignmentId")]
-		//public Guid? AssignmentId { get; set; }
-
-		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[UserAtt(FieldName = "ProvinceId")]
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -87,7 +82,6 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
-		[UserAtt(FieldName = "AmphurId")]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -95,7 +89,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// สาขา
 		/// </summary>
-		[UserAtt(FieldName = "BranchId")]
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? BranchId { get; set; }
 
 		public string? BranchName { get; set; }

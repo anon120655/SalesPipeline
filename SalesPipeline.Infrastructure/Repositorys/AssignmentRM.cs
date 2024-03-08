@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -36,7 +37,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var assignment_RM = new Data.Entity.Assignment_RM();
-			assignment_RM.Status = StatusModel.Active;
+			assignment_RM.Status = model.Status;
 			if (model.CreateDate != DateTime.MinValue)
 			{
 				assignment_RM.CreateDate = model.CreateDate;
@@ -70,6 +71,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
 			if (assignment_RM != null)
 			{
+				assignment_RM.Status = model.Status;
 				assignment_RM.AssignmentUserId = model.AssignmentUserId;
 				assignment_RM.AssignmentName = model.AssignmentName;
 				assignment_RM.BranchId = model.BranchId;

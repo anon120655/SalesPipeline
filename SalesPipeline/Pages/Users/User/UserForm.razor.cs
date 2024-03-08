@@ -121,17 +121,9 @@ namespace SalesPipeline.Pages.Users.User
 					formModel = data.Data;
 					if (formModel.RoleId.HasValue)
 					{
-						//formModel.LevelId = formModel.LevelId;
-						//await OnRoles(formModel.RoleId, formModel.LevelId);
+						await SetLevels(formModel.RoleId.Value);
 					}
-					//if (formModel.Assignment_RMs?.Count > 0)
-					//{
-					//	var response = formModel.Assignment_RMs.FirstOrDefault();
-					//	if (response != null)
-					//	{
-					//		formModel.AssignmentId = response.AssignmentId;
-					//	}
-					//}
+					
 					StateHasChanged();
 				}
 				else
@@ -156,19 +148,7 @@ namespace SalesPipeline.Pages.Users.User
 			{
 				department_BranchId = formModel.Master_Department_BranchId.Value;
 			}
-			//else if (formModel.AssignmentId.HasValue) //RM
-			//{
-			//	var dataassignmentCenter = await _assignmentCenterViewModel.GetById(formModel.AssignmentId.Value);
-			//	if (dataassignmentCenter != null && dataassignmentCenter.Status)
-			//	{
-			//		if (dataassignmentCenter.Data != null && dataassignmentCenter.Data.User != null && dataassignmentCenter.Data.User.Master_Department_Center != null)
-			//		{
-			//			department_BranchId = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchId;
-			//			department_BranchName = dataassignmentCenter.Data.User.Master_Department_Center.Master_Department_BranchName;
-			//		}
-			//	}
-			//}
-
+			
 			if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
 			{
 				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
@@ -277,25 +257,35 @@ namespace SalesPipeline.Pages.Users.User
 			StateHasChanged();
 		}
 
-		//protected void OnDepartment_Center(object? val)
-		//{
-		//	department_BranchName = null;
-		//	formModel.Master_Department_CenterId = null;
-		//	formModel.Master_Department_BranchId = null;
-		//	StateHasChanged();
+		protected async Task SetLevels(int roleid)
+		{
+			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+			if (dataLevels != null && dataLevels.Status)
+			{
+				if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+				{
+					if (roleid == 5) //สายงานกิจการสาขาภาค  10-12
+					{
+						LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+					}
+					else if (roleid == 6) //สายงานกิจการสาขาภาค  4-9
+					{
+						LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+					}
+					else if (roleid == 8) //RM
+					{
+						LookUp.UserLevels = dataLevels.Data;
+					}
 
-		//	if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
-		//	{
-		//		formModel.Master_Department_CenterId = department_CenterId;
-		//		var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
-		//		if (departmentCenter != null)
-		//		{
-		//			department_BranchName = departmentCenter.Master_Department_BranchName;
-		//			formModel.Master_Department_BranchId = departmentCenter.Master_Department_BranchId;
-		//			StateHasChanged();
-		//		}
-		//	}
-		//}
+					StateHasChanged();
+				}
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+		}
 
 		[JSInvokable]
 		public async Task OnRoles(string _id, string _name)
@@ -309,32 +299,32 @@ namespace SalesPipeline.Pages.Users.User
 				formModel.RoleId = roleid;
 				StateHasChanged();
 
-				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-				if (dataLevels != null && dataLevels.Status)
-				{
-					if (dataLevels.Data != null && dataLevels.Data.Count > 0)
-					{
-						if (formModel.RoleId == 5) //สายงานกิจการสาขาภาค  10-12
-						{
-							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
-						}
-						else if (formModel.RoleId == 6) //สายงานกิจการสาขาภาค  4-9
-						{
-							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
-						}
-						else if (formModel.RoleId == 8) //RM
-						{
-							LookUp.UserLevels = dataLevels.Data;
-						}
+				//var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+				//if (dataLevels != null && dataLevels.Status)
+				//{
+				//	if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+				//	{
+				//		if (formModel.RoleId == 5) //สายงานกิจการสาขาภาค  10-12
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+				//		}
+				//		else if (formModel.RoleId == 6) //สายงานกิจการสาขาภาค  4-9
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+				//		}
+				//		else if (formModel.RoleId == 8) //RM
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data;
+				//		}
 
-						StateHasChanged();
-					}
-				}
-				else
-				{
-					_errorMessage = dataLevels?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
+				//		StateHasChanged();
+				//	}
+				//}
+				//else
+				//{
+				//	_errorMessage = dataLevels?.errorMessage;
+				//	_utilsViewModel.AlertWarning(_errorMessage);
+				//}
 			}
 
 			await Task.Delay(10);

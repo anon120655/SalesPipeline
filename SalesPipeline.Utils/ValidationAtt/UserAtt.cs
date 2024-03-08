@@ -26,26 +26,26 @@ namespace SalesPipeline.Utils.ValidationAtt
 					if (model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 7 || model.RoleId == 8)
 					{
 						//กิจการสาขาภาค
-						if (FieldName == "Master_Department_BranchId" && model.RoleId != 7 && model.RoleId != 8 && value == null)
-						{
-							return resultValidate;
-						}
+						//if (FieldName == "Master_Department_BranchId" && model.RoleId != 7 && model.RoleId != 8 && value == null)
+						//{
+						//	return resultValidate;
+						//}
 						//ศูนย์ธุรกิจสินเชื่อ
 						//if (FieldName == "Master_Department_CenterId" && model.RoleId == 7 && value == null)
 						//{
 						//	return resultValidate;
 						//}
-						if ((model.RoleId == 5 || model.RoleId == 6) && FieldName == "LevelId" && value == null)
+						if ((model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 8) && FieldName == "LevelId" && value == null)
 						{
 							return resultValidate;
 						}
-						if (FieldName == "ProvinceId" || FieldName == "BranchId" || FieldName == "AssignmentId")
-						{
-							if (model.RoleId == 8 && value == null)
-							{
-								return resultValidate;
-							}
-						}
+						//if (FieldName == "ProvinceId" || FieldName == "BranchId")
+						//{
+						//	if (model.RoleId == 8 && value == null)
+						//	{
+						//		return resultValidate;
+						//	}
+						//}
 					}
 				}
 			}

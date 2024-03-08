@@ -68,7 +68,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var assignment = new Data.Entity.Assignment();
-			assignment.Status = StatusModel.Active;
+			assignment.Status = model.Status;
 			assignment.CreateDate = DateTime.Now;
 			assignment.BranchId = model.BranchId;
 			assignment.BranchCode = model.BranchCode;
@@ -96,6 +96,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 			if (assignment != null)
 			{
+				assignment.Status = model.Status;
 				assignment.BranchId = model.BranchId;
 				assignment.BranchCode = model.BranchCode;
 				assignment.BranchName = model.BranchName;

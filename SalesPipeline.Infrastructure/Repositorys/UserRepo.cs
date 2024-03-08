@@ -65,7 +65,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
-					model.Master_Department_CenterId = null;
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
@@ -73,7 +72,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					model.LevelId = null;
 				}
 			}
 
@@ -114,7 +112,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				var user = new Data.Entity.User();
 				user.Id = id;
-				user.Status = StatusModel.Active;
+				user.Status = model.Status;
 				user.CreateDate = _dateNow;
 				user.CreateBy = model.CurrentUserId;
 				user.UpdateDate = _dateNow;
@@ -160,6 +158,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
+								Status = model.Status,
 								BranchId = user.BranchId,
 								BranchCode = _code,
 								BranchName = _name,
@@ -187,6 +186,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								var assignment = await _repo.AssignmentRM.Create(new()
 								{
+									Status = model.Status,
 									AssignmentUserId = _assignmentUserId,
 									AssignmentName = _assignmentName,
 									BranchId = user.BranchId,
@@ -244,61 +244,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignments != null && assignments.RMNumber > 0)
 								{
-									throw new ExceptionCustom("ไม่สามารถเปลี่ยนศูนย์ที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
+									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
 								}
 							}
 						}
 						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 						{
-							//if (model.AssignmentId != _AssignmentId)
-							//{
-							//	var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-							//	if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
-							//	{
-							//		throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีการมอบหมายแล้ว");
-							//	}
-							//	else
-							//	{
-							//		var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
-							//		if (salesCount > 0)
-							//		{
-							//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนผู้จัดการศูนย์ที่ดูแลได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
-							//		}
-							//	}
-							//}
-
-
-							int? _assignmentUserId = null;
-							string? _assignmentName = null;
-							var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
-							if (userMcenter != null)
+							if (model.BranchId != user.BranchId)
 							{
-								_assignmentUserId = userMcenter.Id;
-								_assignmentName = userMcenter.FullName;
-							}
-
-							Assignment_RMCustom assignment_RM = new()
-							{
-								AssignmentUserId = _assignmentUserId,
-								AssignmentName = _assignmentName,
-								BranchId = user.BranchId,
-								UserId = user.Id,
-								EmployeeId = model.EmployeeId,
-								EmployeeName = model.FullName,
-							};
-
-							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-							{
-								var assignment = await _repo.AssignmentRM.Create(assignment_RM);
-							}
-							else
-							{
-								var assignment = await _repo.AssignmentRM.Update(assignment_RM);
+								var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+								if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
+								{
+									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีการมอบหมายแล้ว");
+								}
+								else
+								{
+									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
+									if (salesCount > 0)
+									{
+										throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
+									}
+								}
 							}
 						}
 					}
 
+					user.Status = model.Status;
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;
 					user.TitleName = model.TitleName;
@@ -340,6 +311,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								AssignmentCustom assignmentCenterModel = new()
 								{
+									Status = model.Status,
 									BranchId = user.BranchId,
 									BranchCode = _code,
 									BranchName = _name,
@@ -365,23 +337,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 							{
-								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-								//Assignment_RMCustom assignmentRMModel = new()
-								//{
-								//	AssignmentId = model.AssignmentId.Value,
-								//	UserId = user.Id,
-								//	EmployeeId = model.EmployeeId,
-								//	EmployeeName = model.FullName
-								//};
+								int? _assignmentUserId = null;
+								string? _assignmentName = null;
+								var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
+								if (userMcenter != null)
+								{
+									_assignmentUserId = userMcenter.Id;
+									_assignmentName = userMcenter.FullName;
+								}
 
-								//if (!await _repo.AssignmentRM.GetAssignmentOnlyByUserId(user.Id))
-								//{
-								//	await _repo.AssignmentRM.Create(assignmentRMModel);
-								//}
-								//else
-								//{
-								//	await _repo.AssignmentRM.Update(assignmentRMModel);
-								//}
+								Assignment_RMCustom assignment_RM = new()
+								{
+									Status = model.Status,
+									AssignmentUserId = _assignmentUserId,
+									AssignmentName = _assignmentName,
+									BranchId = user.BranchId,
+									UserId = user.Id,
+									EmployeeId = model.EmployeeId,
+									EmployeeName = model.FullName,
+								};
+
+								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+								{
+									var assignment = await _repo.AssignmentRM.Create(assignment_RM);
+								}
+								else
+								{
+									var assignment = await _repo.AssignmentRM.Update(assignment_RM);
+								}
 							}
 						}
 					}
@@ -420,6 +404,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query.Status = _status;
 					_db.Update(query);
 					await _db.SaveAsync();
+
+					if (query.RoleId == 7)
+					{
+						var assignment = await _repo.Context.Assignments.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+						if (assignment != null)
+						{
+							assignment.Status = _status;
+							_db.Update(assignment);
+							await _db.SaveAsync();
+						}
+					}
+					else if (query.RoleId == 8)
+					{
+						var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+						if (assignment_RM != null)
+						{
+							assignment_RM.Status = _status;
+							_db.Update(assignment_RM);
+							await _db.SaveAsync();
+						}
+					}
+
 				}
 			}
 		}
