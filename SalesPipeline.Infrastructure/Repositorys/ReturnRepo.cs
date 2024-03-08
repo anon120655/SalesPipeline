@@ -73,6 +73,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (assignmentRM == null)
 				throw new ExceptionCustom("currentuserid not match assignmentrm");
 
+			await _repo.AssignmentRM.UpdateCurrentNumber(assignmentRM.Id);
+
+
 			//if (assignmentRM.AssignmentUserId.HasValue)
 			//{
 			//	var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(assignmentRM.AssignmentUserId.Value);
