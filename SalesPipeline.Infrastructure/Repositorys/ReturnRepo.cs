@@ -35,11 +35,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int countReturn = 0;
 			foreach (var item in model.RM_Sale)
 			{
-				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
+				var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == item.SaleId);
 				if (sales != null)
 				{
 					if (model.CurrentUserId != sales.AssUserId)
 						throw new ExceptionCustom("currentuserid not match assuserid");
+
+					await _repo.Sales.CreateReturn(new()
+					{
+						CurrentUserId = model.CurrentUserId,
+						CustomerId = sales.CustomerId,
+						CompanyName = sales.CompanyName,
+						SaleId = sales.Id,
+						StatusSaleId = sales.StatusSaleId,
+						StatusSaleName = sales.StatusSaleName,
+						StatusDescription = sales.StatusDescription,
+						Master_BusinessTypeId = sales.Customer.Master_BusinessTypeId,
+						Master_BusinessTypeName = sales.Customer.Master_BusinessTypeName,
+						Master_LoanTypeId = sales.Customer.Master_LoanTypeId,
+						Master_LoanTypeName = sales.Customer.Master_LoanTypeName,
+						AssUserId = sales.AssUserId,
+						AssUserName = sales.AssUserName,
+					});
 
 					sales.AssUserId = null;
 					sales.AssUserName = null;

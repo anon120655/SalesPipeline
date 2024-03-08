@@ -90,6 +90,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Reply_Section_ItemValue> Sale_Reply_Section_ItemValues { get; set; }
 
+    public virtual DbSet<Sale_Return> Sale_Returns { get; set; }
+
     public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
@@ -1336,6 +1338,40 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleReplySectionItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_reply_section_itemvalue_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Return>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Return");
+
+            entity.Property(e => e.AssUserId)
+                .HasComment("พนักงานที่ได้รับมอบหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AssUserName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อพนักงานที่ได้รับมอบหมาย");
+            entity.Property(e => e.CompanyName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อบริษัท");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
+            entity.Property(e => e.Master_LoanTypeId).HasComment("ประเภทสินเชื่อ");
+            entity.Property(e => e.Master_LoanTypeName).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.StatusDescription)
+                .HasMaxLength(255)
+                .HasComment("รายละเอียดสถานะ");
+            entity.Property(e => e.StatusSaleId).HasColumnType("int(11)");
+            entity.Property(e => e.StatusSaleName)
+                .HasMaxLength(255)
+                .HasComment("สถานะการขาย");
         });
 
         modelBuilder.Entity<Sale_Status>(entity =>

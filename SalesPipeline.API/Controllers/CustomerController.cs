@@ -187,6 +187,7 @@ namespace SalesPipeline.API.Controllers
 				var ISICCode = new List<Guid>();
 				var Yield = new List<Guid>();
 				var Chain = new List<Guid>();
+				var LoanType = new List<Guid>();
 
 				var MasterContactChannel = await _repo.MasterContactChannel.GetList(new() { pagesize = 100 });
 				if (MasterContactChannel != null && MasterContactChannel.Items.Count > 0)
@@ -222,6 +223,12 @@ namespace SalesPipeline.API.Controllers
 				if (MasterChain != null && MasterChain.Items.Count > 0)
 				{
 					Chain = MasterChain.Items.Select(x => x.Id).ToList();
+				}
+
+				var MasterLoanType = await _repo.MasterLoanTypes.GetList(new() { pagesize = 100 });
+				if (MasterLoanType != null && MasterLoanType.Items.Count > 0)
+				{
+					LoanType = MasterLoanType.Items.Select(x => x.Id).ToList();
 				}
 
 				string? employeeName = null;
@@ -321,6 +328,7 @@ namespace SalesPipeline.API.Controllers
 					int ISICCodeRandom = random.Next(ISICCode.Count);
 					int YieldRandom = random.Next(Yield.Count);
 					int ChainRandom = random.Next(Chain.Count);
+					int LoanTypeRandom = random.Next(LoanType.Count);
 
 					var data = await _repo.Customer.Create(new()
 					{
@@ -345,6 +353,7 @@ namespace SalesPipeline.API.Controllers
 						Master_ISICCodeId = ISICCode[ISICCodeRandom],
 						Master_YieldId = Yield[YieldRandom],
 						Master_ChainId = Chain[ChainRandom],
+						Master_LoanTypeId = LoanType[LoanTypeRandom],
 						CompanyEmail = $"company_{i}@email.com",
 						CompanyTel = $"02{i.ToString("0000000")}",
 						ParentCompanyGroup = $"บริษัทแม่_{i}",

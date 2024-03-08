@@ -340,5 +340,97 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<Sale_ReturnCustom> CreateReturn(Sale_ReturnCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			var sale_Return = new Data.Entity.Sale_Return();
+			sale_Return.Status = StatusModel.Active;
+			sale_Return.CreateDate = _dateNow;
+			sale_Return.CreateBy = model.CurrentUserId;
+			sale_Return.CreateByName = currentUserName;
+			sale_Return.CustomerId = model.CustomerId;
+			sale_Return.CompanyName = model.CompanyName;
+			sale_Return.SaleId = model.SaleId;
+			sale_Return.StatusSaleId = model.StatusSaleId;
+			sale_Return.StatusSaleName = model.StatusSaleName;
+			sale_Return.StatusDescription = model.StatusDescription;
+			sale_Return.Master_BusinessTypeId = model.Master_BusinessTypeId;
+			sale_Return.Master_BusinessTypeName = model.Master_BusinessTypeName;
+			sale_Return.Master_LoanTypeId = model.Master_LoanTypeId;
+			sale_Return.Master_LoanTypeName = model.Master_LoanTypeName;
+			sale_Return.AssUserId = model.AssUserId;
+			sale_Return.AssUserName = model.AssUserName;
+			await _db.InsterAsync(sale_Return);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_ReturnCustom>(sale_Return);
+		}
+
+		public async Task<PaginationView<List<Sale_ReturnCustom>>> GetListReturn(allFilter model)
+		{
+			IQueryable<Sale_Return> query;
+			string? roleCode = null;
+			if (model.assigncenter.HasValue)
+			{
+				var roleList = await _repo.User.GetRoleByUserId(model.assigncenter.Value);
+				if (roleList != null)
+				{
+					roleCode = roleList.Code;
+				}
+			}
+
+			query = _repo.Context.Sale_Returns.Where(x => x.Status != StatusModel.Delete)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+			if (model.customerid.HasValue && model.customerid != Guid.Empty)
+			{
+				query = query.Where(x => x.CustomerId == model.customerid.Value);
+			}
+
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (model.statussaleid.HasValue)
+			{
+				query = query.Where(x => x.StatusSaleId == model.statussaleid);
+			}
+
+			if (model.assignrm.HasValue)
+			{
+				query = query.Where(x => x.AssUserId == model.assignrm);
+			}
+
+			if (!String.IsNullOrEmpty(model.sort))
+			{
+				if (model.sort == OrderByModel.ASC)
+				{
+					query = query.OrderBy(x => x.CreateDate);
+				}
+				else if (model.sort == OrderByModel.DESC)
+				{
+					query = query.OrderByDescending(x => x.CreateDate);
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt));
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_ReturnCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_ReturnCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
 	}
 }

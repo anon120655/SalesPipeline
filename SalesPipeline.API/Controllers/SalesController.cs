@@ -110,5 +110,24 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// รายชื่อลูกค้าที่ส่งคืน
+		/// </summary>
+		[AllowAnonymous]
+		[HttpGet("GetListReturn")]
+		public async Task<IActionResult> GetListReturn([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Sales.GetListReturn(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
