@@ -174,7 +174,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		/// <summary>
-		/// update ผู้จัดการศูนย์ที่ดูแลพนักงาน RM กรณีที่สร้างพนักงานมาก่อน แต่ยังไม่มีผู้จัดการศูนย?
+		/// update ผู้จัดการศูนย์ที่ดูแลพนักงาน RM กรณีที่สร้างพนักงานมาก่อน แต่ยังไม่มีผู้จัดการศูนย์
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>

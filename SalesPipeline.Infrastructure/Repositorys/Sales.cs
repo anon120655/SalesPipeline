@@ -37,6 +37,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId ?? 0);
 
 			var sale = new Data.Entity.Sale();
 			sale.Status = StatusModel.Active;
@@ -52,6 +53,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
 			sale.BranchId = model.BranchId;
+			sale.BranchName = branchName;
 			sale.AssCenterUserId = model.AssCenterUserId;
 			sale.AssCenterUserName = model.AssCenterUserName;
 			if (model.AssCenterUserId.HasValue)
@@ -82,6 +84,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId ?? 0);
 
 			var sale = await _repo.Context.Sales
 				.Where(x => x.Id == model.Id).FirstOrDefaultAsync();

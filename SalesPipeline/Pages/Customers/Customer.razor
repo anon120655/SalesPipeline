@@ -118,6 +118,7 @@
 											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">กิจการสาขา</th>
 											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">สถานะ</th>
 											<th class="text-center">ผู้รับผิดชอบ</th>
 											<th class="text-center">รายละเอียด</th>
@@ -155,6 +156,7 @@
 													<td class="">@item.Customer?.Master_ChainName</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.AssCenterUser?.Master_Department_Branch?.Name)</td>
 													<td class="text-center">@item.Customer?.ProvinceName</td>
+													<td class="text-center">@item.BranchName</td>
 													<td class="text-center fw-bold">
 														@item.StatusSaleName
 														@if (!String.IsNullOrEmpty(item.StatusDescription))

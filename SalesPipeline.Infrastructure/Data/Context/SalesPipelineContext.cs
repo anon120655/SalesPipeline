@@ -1166,6 +1166,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchId)
                 .HasComment("สาขา")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.BranchName).HasMaxLength(255);
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อบริษัท");

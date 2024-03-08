@@ -1,7 +1,6 @@
-﻿
-@page "/returned/center"
+﻿@page "/return/center"
 
-<PageTitle>รายการที่ส่งคืน</PageTitle>
+<PageTitle>รายการส่งคืนจากพนักงาน RM</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -14,7 +13,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
 						<div class="p-2">
-							<p class="back_topic">สายงานสินเชื่อส่งคืน...</p>
+							<p class="back_topic">รายการส่งคืนจากพนักงาน RM</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -72,43 +71,51 @@
 									<thead>
 										<tr>
 											<th class="text-center">ลำดับที่</th>
+											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">ผู้ติดต่อ</th>
-											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">จังหวัด</th>
-											<th class="text-center">วันที่ส่งคืน</th>
-											<th class="text-center">เหตุผล</th>
-											<th class="text-center">รายละเอียด</th>
-											<th class="text-center">จัดการ</th>
+											<th class="text-center">อำเภอ</th>
+											<th class="text-center">-</th>
+											<th class="text-center">-</th>
 										</tr>
 									</thead>
 									<tbody>
-										
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">@(i)</td>
-												<td class="">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">ชูใจ โชคดี</td>
-												<td class="text-center">ผลิต</td>
-												<td class="text-center">อุสาหกรรม</td>
-												<td class="text-center">ศูนย์สมุทสาคร</td>
-												<td class="text-center">ราชบุรี</td>
-												<td class="text-center">15/05/66</td>
-												<td class="text-center">ปิดกิจการ</td>
-												<td class="text-center">
-													<a href="/returned/center/detail/@(Guid.NewGuid())" class="fw-bold">
-														รายละเอียด
-													</a>
-												</td>
-												<td class="text-center">
-													<a class="btn btn-info btn-circle">
-														<i class="fa-solid fa-eye text-white fs_15e"></i>
-													</a>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int SequenceNo = 1;
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@(SequenceNo)</td>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@item.Customer?.ProvinceName</td>
+													<td class="text-center">@item.Customer?.AmphurName</td>
+													<td class="text-center">
+													</td>
+													<td class="text-center">
+													</td>
+												</tr>
+												SequenceNo++;
+											}
 										}
 									</tbody>
 								</table>
@@ -116,7 +123,15 @@
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
 					</div>
 				</div>
 			</div>

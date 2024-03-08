@@ -6,7 +6,7 @@
 		public const int AssignManager = 120000;
 		public const int AssignLoan = 130000;
 
-		//รายการผู้จัดการศูนย์ส่งคืนไปสาขาภาค
+		//รายการส่งคืนจากผู้จัดการศูนย์
 		public const int ReturnedBranch = 140000;
 
 		//Customer
@@ -21,9 +21,9 @@
 		//ประวัติการมอบหมาย
 		public const int HistoryAssign = 180000;
 
-		//รายการธุรกิจสินเชื่อส่งคืนผู้จัดการศูนย์
+		//รายการส่งคืนจากพนักงาน RM
 		public const int ReturnedCenter = 200000;
-		//รายการสาขาภาคส่งคืนธุรกิจสินเชื่อ
+		//รายการส่งคืนจากกิจการสาขาภาค
 		public const int ReturnedLoan = 210000;
 
 		//จัดการระบบ

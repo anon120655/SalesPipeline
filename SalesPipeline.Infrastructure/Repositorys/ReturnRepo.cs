@@ -32,6 +32,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task RMToMCenter(ReturnModel model)
 		{
+			int countReturn = 0;
 			foreach (var item in model.RM_Sale)
 			{
 				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
@@ -59,32 +60,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					});
 
 					var assignment_RM_Sales = await _repo.Context.Assignment_RM_Sales
-						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item.SaleId);
+						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.SaleId == item.SaleId);
 					if (assignment_RM_Sales != null)
 					{
 						assignment_RM_Sales.Status = StatusModel.InActive;
 						_db.Update(assignment_RM_Sales);
 						await _db.SaveAsync();
 					}
+
+					countReturn++;
 				}
 			}
 
-			var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
-			if (assignmentRM == null)
-				throw new ExceptionCustom("currentuserid not match assignmentrm");
+			if (countReturn > 0)
+			{
+				var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
+				if (assignmentRM == null)
+					throw new ExceptionCustom("currentuserid not match assignmentrm");
 
-			await _repo.AssignmentRM.UpdateCurrentNumber(assignmentRM.Id);
-
-
-			//if (assignmentRM.AssignmentUserId.HasValue)
-			//{
-			//	var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(assignmentRM.AssignmentUserId.Value);
-			//	if (assignmentCenter == null)
-			//		throw new ExceptionCustom("currentuserid not match assignmentcenter");
-
-			//	await _repo.AssignmentRM.UpdateCurrentNumber(assignmentCenter.Id);
-			//}
-
+				await _repo.AssignmentRM.UpdateCurrentNumber(assignmentRM.Id);
+			}
+			else
+			{
+				throw new ExceptionCustom("sales not found.");
+			}
 		}
 
 		public async Task MCenterToBranch(ReturnModel model)
@@ -94,6 +93,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
 				if (sales != null)
 				{
+					sales.BranchId = null;
+					sales.BranchName = null;
 					sales.AssCenterUserId = null;
 					sales.AssCenterUserName = null;
 					sales.AssCenterCreateBy = null;

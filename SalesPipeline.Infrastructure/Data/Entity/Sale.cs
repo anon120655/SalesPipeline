@@ -61,6 +61,8 @@ public partial class Sale
     /// </summary>
     public int? BranchId { get; set; }
 
+    public string? BranchName { get; set; }
+
     /// <summary>
     /// ผู้จัดการศูนย์ที่ดูแล
     /// </summary>

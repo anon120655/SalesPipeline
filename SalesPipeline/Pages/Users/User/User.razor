@@ -99,7 +99,7 @@
 											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ระดับ</th>
 											<th class="text-center">จังหวัด</th>
-											<th class="text-center">วันที่เพิ่ม</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">การใช้งาน</th>
 										</tr>
@@ -147,7 +147,7 @@
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Role?.Name)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(GetLevelName(item.LevelId))</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
-													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
 													<td class="text-center">
 														<a href="/user/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.FullName))'>ลบ</a>

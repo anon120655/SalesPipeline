@@ -192,6 +192,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
+						sale.BranchId = assignment.BranchId;
+						sale.BranchName = assignment.BranchName;
 						sale.AssCenterUserId = model.Assign.UserId;
 						sale.AssCenterUserName = assignment.EmployeeName;
 						sale.AssCenterCreateBy = model.CurrentUserId;
