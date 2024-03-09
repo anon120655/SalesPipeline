@@ -1,4 +1,5 @@
-﻿@page "/historyassign/view/{id:guid}"
+﻿
+@page "/return/center/summary/{id:guid}"
 
 <PageTitle>ประวัติการมอบหมาย</PageTitle>
 
@@ -15,9 +16,9 @@
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
 							<div class="p-2">
-								<p class="back_topic">ประวัติการมอบหมายพนักงานธุรกิจสินเชื่อ > แก้ไขการมอบหมาย</p>
+								<p class="back_topic">รายการที่ส่งคืน > มอบหมายใหม่</p>
 							</div>
 						</div>
 						<div class="row mt-4 mb-2">
@@ -37,7 +38,6 @@
 												<th class="text-center">จังหวัด</th>
 												<th class="text-center">อำเภอ</th>
 												<th class="text-center">ประเภทธุรกิจ</th>
-												<th class="text-center">ผู้รับผิดชอบเดิม</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -58,7 +58,6 @@
 													<td class="text-center">@formModel.Customer?.ProvinceName</td>
 													<td class="text-center">@formModel.Customer?.AmphurName</td>
 													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@formModel.AssUserName</td>
 												</tr>
 											}
 										</tbody>
@@ -68,7 +67,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">เลือกผู้รับผิดชอบใหม่</h5>
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบ</h5>
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -108,13 +107,13 @@
 								</select>
 							</div>
 							<div class="col mb-2">
-								<label class="form-label">อำเภอ</label>
-								<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-									@if (LookUp.Amphurs?.Count > 0)
+								<label class="form-label">สาขา</label>
+								<select id="Branch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Branchs?.Count > 0)
 									{
-										foreach (var item in LookUp.Amphurs)
+										foreach (var item in LookUp.Branchs)
 										{
-											<option value="@item.AmphurID">@item.AmphurName</option>
+											<option value="@item.BranchID">@item.BranchName</option>
 										}
 									}
 								</select>
@@ -195,7 +194,7 @@
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
 										}
-										ยืนยัน
+										ถัดไป
 									</Button>
 								</div>
 							</div>
@@ -209,60 +208,14 @@
 
 					<div class="box_content">
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
 							<div class="p-2">
-								<p class="back_topic">ประวัติการมอบหมายพนักงานธุรกิจสินเชื่อ > สรุปแก้ไขการมอบหมาย</p>
+								<p class="back_topic">รายการที่ส่งคืน > สรุปมอบหมายใหม่</p>
 							</div>
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">ชื่อลูกค้า</h5>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<div class="table-responsive border-top">
-									<table class="table table_list">
-										<thead>
-											<tr>
-												<th class="text-center">วันที่</th>
-												<th class="text-center">เลขนิติบุคคล</th>
-												<th class="text-center">ชื่อลูกค้า</th>
-												<th class="text-center">จังหวัด</th>
-												<th class="text-center">อำเภอ</th>
-												<th class="text-center">ประเภทธุรกิจ</th>
-												<th class="text-center">ผู้รับผิดชอบเดิม</th>
-											</tr>
-										</thead>
-										<tbody>
-											@if (formModel == null)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<em>ไม่พบข้อมูล</em>
-													</td>
-												</tr>
-											}
-											else
-											{
-												<tr>
-													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
-													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
-													<td class="text-center">@formModel.CompanyName</td>
-													<td class="text-center">@formModel.Customer?.ProvinceName</td>
-													<td class="text-center">@formModel.Customer?.AmphurName</td>
-													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@formModel.AssUserName</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-						<div class="row mt-4 mb-2">
-							<div class="col">
-								<h5 class="fw-bold">ผู้รับผิดชอบเดิม</h5>
+								<h5 class="fw-bold">รายชื่อผู้รับผิดชอบ</h5>
 							</div>
 						</div>
 						<div class="row">
@@ -275,53 +228,7 @@
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">เบอร์ติดต่อ</th>
 												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">อำเภอที่ดูแล</th>
-												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
-												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-											</tr>
-										</thead>
-										<tbody>
-											@if (_itemsOriginal == null)
-											{
-												<tr class="text-center align-middle">
-													<td colspan="100">
-														<em>ไม่พบข้อมูล</em>
-													</td>
-												</tr>
-											}
-											else
-											{
-												<tr>
-													<td class="text-center">@_itemsOriginal.EmployeeId</td>
-													<td class="text-center">@_itemsOriginal.EmployeeName</td>
-													<td class="text-center">@_itemsOriginal.User?.Tel</td>
-													<td class="text-center">@_itemsOriginal.User?.ProvinceName</td>
-													<td class="text-center">@_itemsOriginal.User?.AmphurName</td>
-													<td class="text-center">@(_itemsOriginal.CurrentNumber)/100</td>
-													<td class="text-center">@(_itemsOriginal.CurrentNumber - 1)/100</td>
-												</tr>
-											}
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-						<div class="row mt-4 mb-2">
-							<div class="col">
-								<h5 class="fw-bold">ผู้รับผิดชอบใหม่</h5>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<div class="table-responsive border-top">
-									<table class="table table_list">
-										<thead>
-											<tr>
-												<th class="text-center">รหัสพนักงาน</th>
-												<th class="text-center">ชื่อพนักงาน</th>
-												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">อำเภอที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
 											</tr>
@@ -342,9 +249,51 @@
 													<td class="text-center">@_itemsNew.EmployeeName</td>
 													<td class="text-center">@_itemsNew.User?.Tel</td>
 													<td class="text-center">@_itemsNew.User?.ProvinceName</td>
-													<td class="text-center">@_itemsNew.User?.AmphurName</td>
+													<td class="text-center">@_itemsNew.User?.BranchName</td>
 													<td class="text-center">@(_itemsNew.CurrentNumber)/100</td>
 													<td class="text-center">@(_itemsNew.CurrentNumber + 1)/100</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน 1 รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (formModel == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@formModel.CompanyName</td>
+													<td class="text-center">@formModel.Customer?.ProvinceName</td>
+													<td class="text-center">@formModel.Customer?.AmphurName</td>
+													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
 												</tr>
 											}
 										</tbody>
@@ -365,7 +314,7 @@
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
 										}
-										แก้ไข
+										ยืนยัน
 									</Button>
 								</div>
 							</div>
@@ -383,3 +332,4 @@ else
 {
 	<NotPermissionPage />
 }
+

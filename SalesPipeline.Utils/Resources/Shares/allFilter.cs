@@ -27,6 +27,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? businesstype { get; set; }
 		public string? province { get; set; }
 		public string? amphur { get; set; }
+		public string? branch { get; set; }
 		public string? emp_id { get; set; }
 		public string? emp_name { get; set; }
 		public string? assignmentid { get; set; }
@@ -97,6 +98,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(amphur))
 				ParameterAll += $"&amphur={amphur}";
+
+			if (!String.IsNullOrEmpty(branch))
+				ParameterAll += $"&branch={branch}";
 
 			if (!String.IsNullOrEmpty(emp_id))
 				ParameterAll += $"&emp_id={emp_id}";
@@ -192,6 +196,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amphur), out var _amphur))
 				amphur = _amphur;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(branch), out var _branch))
+				branch = _branch;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(emp_id), out var _emp_id))
 				emp_id = _emp_id;

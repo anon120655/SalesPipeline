@@ -58,10 +58,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						AssUserName = sales.AssUserName,
 					});
 
-					sales.AssUserId = null;
-					sales.AssUserName = null;
-					_db.Update(sales);
-					await _db.SaveAsync();
+					//update ทับตอนมอบหมายใหม่
+					//sales.AssUserId = null;
+					//sales.AssUserName = null;
+					//_db.Update(sales);
+					//await _db.SaveAsync();
 
 					var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 

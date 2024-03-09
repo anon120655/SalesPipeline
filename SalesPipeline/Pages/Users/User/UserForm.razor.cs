@@ -393,9 +393,13 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
-		public async Task BranchChange(string _provinceID, string _provinceName)
+		public async Task BranchChange(string _branchID, string _branchName)
 		{
-			await Task.Delay(100);
+			await Task.Delay(100); 
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
+			{
+			
+			}
 		}
 
 

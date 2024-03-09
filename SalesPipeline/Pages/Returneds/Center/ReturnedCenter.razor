@@ -41,13 +41,13 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
+							<label class="form-label">จังหวัด</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">จังหวัด</label>
+							<label class="form-label">สาขา</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
@@ -74,10 +74,12 @@
 											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">กิจการสาขา</th>
 											<th class="text-center">จังหวัด</th>
-											<th class="text-center">อำเภอ</th>
-											<th class="text-center">-</th>
-											<th class="text-center">-</th>
+											<th class="text-center">สาขา</th>
+											<th class="text-center">วันที่ส่งคืน</th>
+											<th class="text-center">รายละเอียด</th>
+											<th class="text-center">จัดการ</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -107,11 +109,28 @@
 													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
 													<td class="text-center">@item.CompanyName</td>
 													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@item.Customer?.ProvinceName</td>
-													<td class="text-center">@item.Customer?.AmphurName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssCenterUser?.Master_Department_Branch?.Name)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssCenterUser?.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
 													<td class="text-center">
+														@if (item.Sale_Statuses != null)
+														{
+															var statusName = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.RMReturnMCenter);
+															<span>@GeneralUtils.DateToThString(statusName?.CreateDate)</span>
+														}
 													</td>
 													<td class="text-center">
+														<a class="btn btn-info btn-circle" href="/return/center/view/@item.Id">
+															<i class="fa-solid fa-eye text-white fs_15e"></i>
+														</a>
+													</td>
+													<td class="text-center">
+														@* <a class="" href="/return/center/summary/@item.Id">
+															<img src="/image/icon/ckeckbox.png" width="25" />
+														</a> *@
+														<a role="button" class="pe-auto" @onclick="(async () => await  InitShowReturnAssign(item.Id.ToString()))">
+															<img src="/image/icon/ckeckbox.png" width="25" />
+														</a>
 													</td>
 												</tr>
 												SequenceNo++;
@@ -137,6 +156,9 @@
 			</div>
 		</div>
 	</div>
+
+	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" CallbackModalHidden="OnModalReturnHidden" />
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="MCenterToBranch" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
 }
 else
 {

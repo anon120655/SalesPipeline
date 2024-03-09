@@ -1,20 +1,30 @@
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Returneds.Center
 {
 	public partial class ReturnedCenter
-    {
+	{
 		string? _errorMessage = null;
+		string? _errorMessageModal = null;
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private allFilter filter = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
+
+		ModalReturnAssign modalReturnAssign = default!;
+		ModalReturnReason modalReturnReason = default!;
+		private bool IsToClose = false;
+		private string? pathToNext = null;
+
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -85,6 +95,80 @@ namespace SalesPipeline.Pages.Returneds.Center
 		{
 			await SetQuery(parematerAll);
 			StateHasChanged();
+		}
+
+		private async Task OnModalReturnHidden()
+		{
+			await Task.Delay(1);
+			if (!String.IsNullOrEmpty(pathToNext))
+			{
+				_Navs.NavigateTo(pathToNext);
+			}
+		}
+
+		protected async Task InitShowReturnAssign(string? id)
+		{
+			pathToNext = null;
+			_errorMessageModal = null;
+			await ShowReturnAssign(id, "ท่านต้องการ \"ส่งคืน\" หรือ \"มอบหมาย\" ");
+		}
+
+		protected async Task ShowReturnAssign(string? id, string? txt, string? icon = null)
+		{
+			//IsToClose = false;
+			await modalReturnAssign.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task ReturnAssign(SelectModel model)
+		{
+			pathToNext = null;
+			if (model.Value == "0")
+			{
+				//	await GotoStep(StepAssignLoanModel.Return);
+			}
+			else if (model.Value == "1")
+			{
+				pathToNext = $"/return/center/summary/{model.ID}";
+			}
+			await modalReturnAssign.OnHide();
+		}
+
+		protected async Task ShowReturnReason()
+		{
+			await modalReturnReason.OnShowConfirm();
+		}
+
+		protected async Task MCenterToBranch(string? id)
+		{
+			_errorMessageModal = null;
+
+			if (Guid.TryParse(id, out Guid _id))
+			{
+				var response = await _returnViewModel.MCenterToBranch(new()
+				{
+					CurrentUserId = UserInfo.Id,
+					Master_ReasonReturnId = _id,
+				});
+
+				if (response.Status)
+				{
+					//IsToClose = true;
+					//await modalReturnReason.OnHide();
+					//await ShowSuccessfulAssign(null, "เสร็จสิ้นการส่งคืน");
+					//await SetModel();
+					//await GotoStep(StepAssignLoanModel.Home);
+					//HideLoading();
+				}
+				else
+				{
+					//HideLoading();
+					_errorMessageModal = response.errorMessage;
+				}
+			}
+			else
+			{
+				_errorMessageModal = "ระบุเหตุผลในการส่งคืน";
+			}
 		}
 
 	}

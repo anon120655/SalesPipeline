@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
-using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils;
 
-namespace SalesPipeline.Pages.AssignsHistory
+namespace SalesPipeline.Pages.Returneds.Center
 {
-	public partial class HistoryAssignSummary
+	public partial class ReturnedCenterSummary
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -164,7 +164,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		protected void Cancel()
 		{
-			_Navs.NavigateTo("/historyassign");
+			_Navs.NavigateTo("/return/center");
 		}
 
 		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
@@ -231,7 +231,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		protected async Task ConfirmAssign(string id)
 		{
 			ShowLoading();
-			await Task.Delay(10);
+			await Task.Delay(1);
 			await AssignChange();
 		}
 
@@ -251,6 +251,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 		protected async Task AssignChange()
 		{
+			await Task.Delay(1);
 			_errorMessage = null;
 
 			if (Items != null && formModel != null)
@@ -264,28 +265,28 @@ namespace SalesPipeline.Pages.AssignsHistory
 					model.Original = formModel;
 					model.New = _itemsNew;
 
-					var response = await _assignmentRMViewModel.AssignChange(model);
+					//		var response = await _assignmentRMViewModel.AssignChange(model);
 
-					if (response.Status)
-					{
-						IsToClose = true;
-						await modalConfirmAssign.OnHideConfirm();
-						await ShowSuccessfulAssign(null, "เสร็จสิ้นการแก้ไขมอบหมายงาน");
-						await SetModel();
-						HideLoading();
-					}
-					else
-					{
-						HideLoading();
-						_errorMessage = response.errorMessage;
-						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-					}
-				}
-				else
-				{
+					//		if (response.Status)
+					//		{
+					IsToClose = true;
+					await modalConfirmAssign.OnHideConfirm();
+					await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+					await SetModel();
 					HideLoading();
-					_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					//		}
+					//		else
+					//		{
+					//			HideLoading();
+					//			_errorMessage = response.errorMessage;
+					//			await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					//		}
+					//	}
+					//	else
+					//	{
+					//		HideLoading();
+					//		_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
+					//		await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 				}
 			}
 
@@ -301,10 +302,10 @@ namespace SalesPipeline.Pages.AssignsHistory
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
 			filter.province = null;
-			filter.amphur = null;
-			LookUp.Amphurs = new();
+			filter.branch = null;
+			LookUp.Branchs = new();
 			StateHasChanged();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
@@ -312,20 +313,20 @@ namespace SalesPipeline.Pages.AssignsHistory
 
 				if (int.TryParse(filter.province, out int id))
 				{
-					var amphurs = await _masterViewModel.GetAmphur(id);
-					if (amphurs != null && amphurs.Data?.Count > 0)
+					var branchs = await _masterViewModel.GetBranch(id);
+					if (branchs != null && branchs.Data?.Count > 0)
 					{
-						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
-						LookUp.Amphurs.AddRange(amphurs.Data);
+						LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
+						LookUp.Branchs.AddRange(branchs.Data);
 
 						StateHasChanged();
 						await Task.Delay(10);
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 					}
 					else
 					{
-						_errorMessage = amphurs?.errorMessage;
+						_errorMessage = branchs?.errorMessage;
 						_utilsViewModel.AlertWarning(_errorMessage);
 					}
 				}
@@ -337,17 +338,18 @@ namespace SalesPipeline.Pages.AssignsHistory
 		}
 
 		[JSInvokable]
-		public async Task AmphurChange(string _amphurID, string _amphurName)
+		public async Task BranchChange(string _branchID, string _branchName)
 		{
-			filter.amphur = null;
-			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			filter.branch = null;
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
-				filter.amphur = amphurID.ToString();
+				filter.branch = branchID.ToString();
 			}
 
 			await SetModelAssigned();
 			StateHasChanged();
 		}
+
 
 	}
 }
