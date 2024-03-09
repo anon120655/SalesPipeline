@@ -111,7 +111,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateStatusOnly(Sale_StatusCustom model)
 		{
-			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.SaleId).ToListAsync();
+			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId).ToListAsync();
 			if (sale_Statuses != null && sale_Statuses.Count > 0)
 			{
 				foreach (var item in sale_Statuses)

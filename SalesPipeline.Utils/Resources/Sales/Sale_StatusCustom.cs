@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class Sale_StatusCustom 
+	public class Sale_StatusCustom
 	{
 		public Guid Id { get; set; }
 

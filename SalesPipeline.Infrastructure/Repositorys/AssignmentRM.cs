@@ -441,10 +441,79 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Original.Id);
 			if (sales != null)
 			{
+				if (sales.StatusSaleId != StatusSaleModel.WaitContact)
+				{
+					throw new ExceptionCustom("ไม่อยู่ในเงื่อนไขการมอบหมายใหม่");
+				}
+
 				sales.AssUserId = model.New.UserId;
 				sales.AssUserName = assUserName;
 				_db.Update(sales);
 				await _db.SaveAsync();
+			}
+
+			await UpdateCurrentNumber(model.New.Id);
+
+		}
+
+		public async Task AssignReturnChange(AssignChangeModel model)
+		{
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var assUserName = await _repo.User.GetFullNameById(model.New.UserId);
+
+			var assignments_RM_sales = await _repo.Context.Assignment_RM_Sales
+				.Include(s => s.AssignmentRM)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.IsActive == StatusModel.Active && x.SaleId == model.Original.Id);
+
+			//กรณีถูกมอบหมายงานแล้ว
+			if (assignments_RM_sales != null)
+			{
+				assignments_RM_sales.Status = StatusModel.InActive;
+				assignments_RM_sales.IsActive = StatusModel.InActive;
+				assignments_RM_sales.AssignmentRM.CurrentNumber = assignments_RM_sales.AssignmentRM.CurrentNumber - 1;
+				_db.Update(assignments_RM_sales);
+				await _db.SaveAsync();
+
+				var assignmentSale = await CreateSale(new()
+				{
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+					AssignmentRMId = model.New.Id,
+					SaleId = model.Original.Id
+				});
+			}
+
+			var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Original.Id);
+			if (sales != null)
+			{
+				var sale_Statuses = await _repo.Context.Sale_Statuses
+					.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.Original.Id)
+					.ToListAsync();
+				if (sale_Statuses != null && sale_Statuses.Count >= 2)
+				{
+					sales.AssUserId = model.New.UserId;
+					sales.AssUserName = assUserName;
+					_db.Update(sales);
+					await _db.SaveAsync();
+
+					//สถานะล่าสุดก่อนส่งคืน
+					var sale_beforelast = sale_Statuses.OrderByDescending(s => s.CreateDate).Take(2).Skip(1).FirstOrDefault();
+					if (sale_beforelast != null)
+					{
+						sale_beforelast.Status = StatusModel.Delete;
+						_db.Update(sale_beforelast);
+						await _db.SaveAsync();
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = sales.Id,
+							StatusId = sale_beforelast.StatusId,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName
+						});
+					}
+				}
+
 			}
 
 			await UpdateCurrentNumber(model.New.Id);

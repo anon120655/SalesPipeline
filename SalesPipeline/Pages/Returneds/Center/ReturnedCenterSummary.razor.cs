@@ -219,7 +219,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected async Task InitShowConfirmAssign()
 		{
-			await ShowConfirmAssign(null, "กรุณากด ยืนยัน แก้ไขมอบหมายงาน", "<img src=\"/image/icon/do.png\" width=\"65\" />");
+			await ShowConfirmAssign(null, "กรุณากด ยืนยัน มอบหมายใหม่", "<img src=\"/image/icon/do.png\" width=\"65\" />");
 		}
 
 		protected async Task ShowConfirmAssign(string? id, string? txt, string? icon = null)
@@ -265,28 +265,28 @@ namespace SalesPipeline.Pages.Returneds.Center
 					model.Original = formModel;
 					model.New = _itemsNew;
 
-					//		var response = await _assignmentRMViewModel.AssignChange(model);
+					var response = await _assignmentRMViewModel.AssignReturnChange(model);
 
-					//		if (response.Status)
-					//		{
-					IsToClose = true;
-					await modalConfirmAssign.OnHideConfirm();
-					await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-					await SetModel();
+					if (response.Status)
+					{
+						IsToClose = true;
+						await modalConfirmAssign.OnHideConfirm();
+						await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+						await SetModel();
+						HideLoading();
+					}
+					else
+					{
+						HideLoading();
+						_errorMessage = response.errorMessage;
+						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					}
+				}
+				else
+				{
 					HideLoading();
-					//		}
-					//		else
-					//		{
-					//			HideLoading();
-					//			_errorMessage = response.errorMessage;
-					//			await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-					//		}
-					//	}
-					//	else
-					//	{
-					//		HideLoading();
-					//		_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
-					//		await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+					_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 				}
 			}
 
