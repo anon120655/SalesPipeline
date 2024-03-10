@@ -118,8 +118,8 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">รหัส</th>
-												<th class="text-center">กิจการสาขา</th>
+												<th class="text-center">รหัสสาขา</th>
+												<th class="text-center">สาขา</th>
 												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
 												<th class="text-center">เบอร์โทรศัพท์</th>
 												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
@@ -156,7 +156,7 @@
 														<td class="text-center">@item.EmployeeName</td>
 														<td class="text-center">@item.Tel</td>
 														<td class="text-center">@item.RMNumber</td>
-														<td class="text-center">@item.CurrentNumber</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">@NumberAfterAssignment</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">
@@ -194,7 +194,6 @@
 				}
 				else if (stepAssign == StepAssignLoanModel.Summary)
 				{
-					var _itemsOriginal = Items?.FirstOrDefault(x => x.UserId == formModel?.AssUserId);
 					var _itemsNew = Items?.FirstOrDefault(x => x.IsSelected);
 
 					<div class="box_content">
@@ -215,13 +214,14 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">รหัสพนักงาน</th>
-												<th class="text-center">ชื่อพนักงาน</th>
-												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">รหัสสาขา</th>
+												<th class="text-center">สาขา</th>
+												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
+												<th class="text-center">เบอร์โทรศัพท์</th>
+												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">มอบหมาย</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -235,14 +235,21 @@
 											}
 											else
 											{
+												int NumberAfterAssignment = (_itemsNew.CurrentNumber + 1) ?? 0;
 												<tr>
-													<td class="text-center">@_itemsNew.EmployeeId</td>
+													<td class="text-center">@_itemsNew.BranchCode</td>
+													<td class="text-center">@_itemsNew.BranchName</td>
 													<td class="text-center">@_itemsNew.EmployeeName</td>
-													<td class="text-center">@_itemsNew.User?.Tel</td>
-													<td class="text-center">@_itemsNew.User?.ProvinceName</td>
-													<td class="text-center">@_itemsNew.User?.BranchName</td>
-													<td class="text-center">@(_itemsNew.CurrentNumber)/100</td>
-													<td class="text-center">@(_itemsNew.CurrentNumber + 1)/100</td>
+													<td class="text-center">@_itemsNew.Tel</td>
+													<td class="text-center">@_itemsNew.RMNumber</td>
+													<td class="text-center">@_itemsNew.CurrentNumber</td>
+													<td class="text-center">@NumberAfterAssignment</td>
+													<td class="text-center">
+														<div class="form-check d-flex justify-content-center">
+															<input class="form-check-input" type="checkbox" checked="@_itemsNew.IsSelected"
+																   @onchange="( (e) => OnCheckEmployee(_itemsNew,e.Value))">
+														</div>
+													</td>
 												</tr>
 											}
 										</tbody>
