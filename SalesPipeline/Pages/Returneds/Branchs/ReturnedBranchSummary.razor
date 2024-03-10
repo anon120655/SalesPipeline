@@ -1,0 +1,328 @@
+﻿
+@page "/return/branch/summary/{id:guid}"
+
+<PageTitle>รายการที่ส่งคืน</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				@if (stepAssign == StepAssignLoanModel.Assigned)
+				{
+					var _items = Items?.Where(x => x.UserId != formModel?.AssUserId).ToList();
+
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
+							<div class="p-2">
+								<p class="back_topic">รายการที่ส่งคืน > มอบหมายใหม่</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">ชื่อลูกค้า</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">วันที่</th>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (formModel == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@GeneralUtils.getFullThaiShot(formModel.Customer?.DateContact)</td>
+													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@formModel.CompanyName</td>
+													<td class="text-center">@formModel.Customer?.ProvinceName</td>
+													<td class="text-center">@formModel.Customer?.AmphurName</td>
+													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบ</h5>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">รหัสศูนย์</label>
+								<div class="input-group">
+									<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ศูนย์สาขา</label>
+								<div class="input-group">
+									<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchStepAssigned" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ชื่อผู้จัดการศูนย์</label>
+								<select value="@filter.province" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button  type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัส</th>
+												<th class="text-center">กิจการสาขา</th>
+												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
+												<th class="text-center">เบอร์โทรศัพท์</th>
+												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">มอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (Items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+													</td>
+												</tr>
+											}
+											else if (Items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in Items)
+												{
+													int NumberAfterAssignment = (item.CurrentNumber + 1) ?? 0;
+													<tr>
+														<td class="text-center">@item.BranchCode</td>
+														<td class="text-center">@item.BranchName</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.RMNumber</td>
+														<td class="text-center">@item.CurrentNumber</td>
+														<td class="text-center">@NumberAfterAssignment</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																	   @onchange="( (e) => OnCheckEmployee(item,e.Value))">
+															</div>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(() => Cancel())" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ถัดไป
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Summary)
+				{
+					var _itemsOriginal = Items?.FirstOrDefault(x => x.UserId == formModel?.AssUserId);
+					var _itemsNew = Items?.FirstOrDefault(x => x.IsSelected);
+
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
+							<div class="p-2">
+								<p class="back_topic">รายการที่ส่งคืน > สรุปมอบหมายใหม่</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อผู้รับผิดชอบ</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_itemsNew == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@_itemsNew.EmployeeId</td>
+													<td class="text-center">@_itemsNew.EmployeeName</td>
+													<td class="text-center">@_itemsNew.User?.Tel</td>
+													<td class="text-center">@_itemsNew.User?.ProvinceName</td>
+													<td class="text-center">@_itemsNew.User?.BranchName</td>
+													<td class="text-center">@(_itemsNew.CurrentNumber)/100</td>
+													<td class="text-center">@(_itemsNew.CurrentNumber + 1)/100</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน 1 รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (formModel == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@formModel.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@formModel.CompanyName</td>
+													<td class="text-center">@formModel.Customer?.ProvinceName</td>
+													<td class="text-center">@formModel.Customer?.AmphurName</td>
+													<td class="text-center">@formModel.Customer?.Master_BusinessTypeName</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										ยืนยัน
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessage" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+

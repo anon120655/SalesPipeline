@@ -8,9 +8,9 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils;
 
-namespace SalesPipeline.Pages.Returneds.Center
+namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedCenterSummary
+	public partial class ReturnedBranchSummary
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -21,7 +21,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
-		private List<Assignment_RMCustom>? Items;
+		private List<AssignmentCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
 
 		ModalConfirm modalConfirmAssign = default!;
@@ -30,7 +30,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedCenter) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
 
 			await SetModel();
@@ -98,18 +98,8 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected async Task SetModelAssigned()
 		{
-			if (UserInfo.RoleCode != null)
-			{
-				filter.assigncenter = UserInfo.Id;
-				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
-				{
-					filter.assigncenter = null;
-					filter.assignrm = null;
-				}
-			}
-
 			filter.pagesize = 100;
-			var data = await _assignmentRMViewModel.GetListRM(filter);
+			var data = await _assignmentCenterViewModel.GetListCenter(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -126,7 +116,6 @@ namespace SalesPipeline.Pages.Returneds.Center
 		protected async Task GotoStep(int step)
 		{
 			bool isNext = true;
-			ClearSearchAssigned();
 
 			if (step == StepAssignLoanModel.Assigned)
 			{
@@ -164,38 +153,26 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected void Cancel()
 		{
-			_Navs.NavigateTo("/return/center");
+			_Navs.NavigateTo("/return/branch");
 		}
 
-		protected void OnCheckEmployee(Assignment_RMCustom model, object? checkedValue)
+		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{
-				foreach (var item in Items.Where(x => x.IsSelect))
+				foreach (var item in Items.Where(x => x.IsSelected))
 				{
-					item.IsSelect = false;
+					item.IsSelected = false;
 				}
 			}
 
 			if (checkedValue != null && (bool)checkedValue)
 			{
-				model.IsSelect = true;
+				model.IsSelected = true;
 			}
 			else
 			{
-				model.IsSelect = false;
-			}
-		}
-
-		protected void ClearSearchAssigned()
-		{
-			filter = new();
-			if (Items?.Count > 0)
-			{
-				foreach (var item in Items)
-				{
-					item.IsShow = true;
-				}
+				model.IsSelected = false;
 			}
 		}
 
@@ -204,7 +181,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 			if (Items?.Count > 0)
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมายใหม่
-				var _itemsAssign = Items.Where(x => x.IsSelect).FirstOrDefault();
+				var _itemsAssign = Items.Where(x => x.IsSelected).FirstOrDefault();
 				if (_itemsAssign != null)
 				{
 					return true;
@@ -253,42 +230,6 @@ namespace SalesPipeline.Pages.Returneds.Center
 		{
 			await Task.Delay(1);
 			_errorMessage = null;
-
-			if (Items != null && formModel != null)
-			{
-				var _itemsNew = Items.FirstOrDefault(x => x.IsSelect);
-
-				if (_itemsNew != null)
-				{
-					AssignChangeModel model = new();
-					model.CurrentUserId = UserInfo.Id;
-					model.Original = formModel;
-					model.New = _itemsNew;
-
-					var response = await _assignmentRMViewModel.AssignReturnChange(model);
-
-					if (response.Status)
-					{
-						IsToClose = true;
-						await modalConfirmAssign.OnHideConfirm();
-						await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-						await SetModel();
-						HideLoading();
-					}
-					else
-					{
-						HideLoading();
-						_errorMessage = response.errorMessage;
-						await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-					}
-				}
-				else
-				{
-					HideLoading();
-					_errorMessage = "เกิดข้อผิดพลาด กรุณาทำรายการอีกครั้ง";
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
-			}
 
 		}
 
@@ -349,7 +290,6 @@ namespace SalesPipeline.Pages.Returneds.Center
 			await SetModelAssigned();
 			StateHasChanged();
 		}
-
 
 	}
 }

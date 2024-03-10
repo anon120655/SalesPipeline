@@ -6,9 +6,9 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 
-namespace SalesPipeline.Pages.Returneds.Center
+namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedCenterBranch
+	public partial class ReturnedBranchLoan
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -26,7 +26,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedCenter) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await SetModel();
 		}
@@ -115,7 +115,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected void Cancel()
 		{
-			_Navs.NavigateTo("/return/center");
+			_Navs.NavigateTo("/return/branch");
 		}
 
 		protected async Task ShowSuccessfulAssign(string? id, string? txt)
@@ -172,7 +172,6 @@ namespace SalesPipeline.Pages.Returneds.Center
 				_errorMessageModal = "ระบุเหตุผลในการส่งคืน";
 			}
 		}
-
 
 	}
 }

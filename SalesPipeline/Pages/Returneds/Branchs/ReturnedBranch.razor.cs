@@ -1,15 +1,13 @@
-using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
-using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils;
+using Microsoft.JSInterop;
 
-namespace SalesPipeline.Pages.Returneds.Center
+namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedCenter
+	public partial class ReturnedBranch
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;
@@ -24,10 +22,9 @@ namespace SalesPipeline.Pages.Returneds.Center
 		private bool IsToClose = false;
 		private string? pathToNext = null;
 
-
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedCenter) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
 
 		}
@@ -60,7 +57,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected async Task SetModel()
 		{
-			filter.statussaleid = StatusSaleModel.RMReturnMCenter;
+			filter.statussaleid = StatusSaleModel.MCenterReturnBranch;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -68,7 +65,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/return/center";
+					Pager.UrlAction = "/return/branch";
 				}
 			}
 			else
@@ -123,11 +120,11 @@ namespace SalesPipeline.Pages.Returneds.Center
 			pathToNext = null;
 			if (model.Value == "0")
 			{
-				pathToNext = $"/return/center/branch/{model.ID}";
+				pathToNext = $"/return/branch/loan/{model.ID}";
 			}
 			else if (model.Value == "1")
 			{
-				pathToNext = $"/return/center/summary/{model.ID}";
+				pathToNext = $"/return/branch/summary/{model.ID}";
 			}
 			await modalReturnAssign.OnHide();
 		}

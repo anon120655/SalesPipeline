@@ -46,7 +46,7 @@ namespace SalesPipeline.Pages.Users.User
 
 		protected async Task SetInitManual()
 		{
-			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active });
+			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active, type = UserTypes.User });
 			if (dataPosition != null && dataPosition.Status)
 			{
 				LookUp.Positions = dataPosition.Data;

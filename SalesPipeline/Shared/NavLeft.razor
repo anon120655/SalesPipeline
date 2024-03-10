@@ -11,13 +11,22 @@
 			<div class="col-12 mb-1">
 				<p class="fs_0_9r">@UserInfo.PositionName</p>
 			</div>
-			<div class="col-12">
-				<p class="fs_0_9r">@UserInfo.Master_Department_BranchName</p>
-			</div>
+			@if (!String.IsNullOrEmpty(UserInfo.Master_Department_BranchName))
+			{
+				<div class="col-12">
+					<p class="fs_0_9r">@UserInfo.Master_Department_BranchName</p>
+				</div>
+			}
+			@if (!String.IsNullOrEmpty(UserInfo.BranchName))
+			{
+				<div class="col-12">
+					<p class="fs_0_9r">สาขา : @UserInfo.BranchName</p>
+				</div>
+			}
 			@if (!String.IsNullOrEmpty(UserInfo.LevelName))
 			{
 				<div class="col-12">
-					<p class="fs_0_9r">ระดับ @UserInfo.LevelName</p>
+					<p class="fs_0_9r">ระดับ : @UserInfo.LevelName</p>
 				</div>
 			}
 		</div>

@@ -2,28 +2,171 @@
 
 <PageTitle>รายการส่งคืนจากผู้จัดการศูนย์</PageTitle>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-12 my-2">
-			<div class="box_content">
-				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-					<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
-					<div class="p-2">
-						<p class="back_topic">รายการส่งคืนจากผู้จัดการศูนย์</p>
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
+						<div class="p-2">
+							<p class="back_topic">รายการส่งคืนจากผู้จัดการศูนย์</p>
+						</div>
 					</div>
-				</div>
-				<div class="row mt-3">
-					<div class="col-12">
-						<p>Content</p>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">ค้นหาลูกค้า</label>
+							<div class="input-group">
+								<input class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ห่วงโซ่</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">วันที่ส่งคืน</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สาขา</th>
+											<th class="text-center">วันที่ส่งคืน</th>
+											<th class="text-center">ส่งคืนจาก</th>
+											<th class="text-center">รายละเอียด</th>
+											<th class="text-center">จัดการ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int SequenceNo = 1;
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssCenterUser?.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
+													<td class="text-center">
+														@if (item.Sale_Statuses != null)
+														{
+															var statusName = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.RMReturnMCenter);
+															<span>@GeneralUtils.DateToThString(statusName?.CreateDate)</span>
+															@if (!String.IsNullOrEmpty(item.StatusDescription))
+															{
+																<TooltipCustom Text="@item.StatusDescription">
+																	<i class="fa-solid fa-circle-question text-primary"></i>
+																</TooltipCustom>
+															}
+														}
+													</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssUserName)</td>
+													<td class="text-center">
+														<a class="btn btn-info btn-circle" href="/return/branch/view/@item.Id">
+															<i class="fa-solid fa-eye text-white fs_15e"></i>
+														</a>
+													</td>
+													<td class="text-center">														
+														<a role="button" class="pe-auto" @onclick="(async () => await  InitShowReturnAssign(item.Id.ToString()))">
+															<img src="/image/icon/ckeckbox.png" width="25" />
+														</a>
+													</td>
+												</tr>
+												SequenceNo++;
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-
-
-@code {
+	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" CallbackModalHidden="OnModalReturnHidden" />
 
 }
+else
+{
+	<NotPermissionPage />
+}
+
+
+
+
+

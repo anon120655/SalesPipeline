@@ -1,0 +1,95 @@
+﻿@page "/return/branch/loan/{id:guid}"
+
+<PageTitle>รายการที่ส่งคืน</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
+						<div class="p-2">
+							<p class="back_topic">รายการที่ส่งคืน > สรุปลูกค้าที่ส่งคืนศูนย์ธุรกิจสินเชื่อ</p>
+						</div>
+					</div>
+					<div class="row mt-4 mb-2">
+						<div class="col">
+							<h5 class="fw-bold">รายชื่อลูกค้าที่ส่งคืนศูนย์ธุรกิจสินเชื่อ <span class="text-info">จำนวน 1 รายการ</span></h5>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">เลขนิติบุคคล</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">อำเภอ</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (formModel == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else
+										{
+											<tr>
+												<td class="text-center">@formModel?.Customer?.JuristicPersonRegNumber</td>
+												<td class="text-center">@formModel?.CompanyName</td>
+												<td class="text-center">@formModel?.Customer?.ProvinceName</td>
+												<td class="text-center">@formModel?.Customer?.AmphurName</td>
+												<td class="text-center">@formModel?.Customer?.Master_BusinessTypeName</td>
+											</tr>
+
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								<Button @onclick="Cancel" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									กลับ
+								</Button>
+							</div>
+							<div class="p-2 bd-highlight">
+								<Button @onclick="ShowReturnReason" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									@if (isLoading)
+									{
+										<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+									}
+									ถัดไป
+								</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="MCenterToBranch" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
