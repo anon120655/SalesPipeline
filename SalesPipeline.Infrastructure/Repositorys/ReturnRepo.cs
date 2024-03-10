@@ -33,60 +33,63 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task RMToMCenter(ReturnModel model)
 		{
 			int countReturn = 0;
-			foreach (var item in model.RM_Sale)
+			foreach (var item in model.ListSale)
 			{
-				var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == item.SaleId);
-				if (sales != null)
+				if (Guid.TryParse(item.ID, out Guid saleId))
 				{
-					if (model.CurrentUserId != sales.AssUserId)
-						throw new ExceptionCustom("currentuserid not match assuserid");
-
-					await _repo.Sales.CreateReturn(new()
+					var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleId);
+					if (sales != null)
 					{
-						CurrentUserId = model.CurrentUserId,
-						CustomerId = sales.CustomerId,
-						CompanyName = sales.CompanyName,
-						SaleId = sales.Id,
-						StatusSaleId = sales.StatusSaleId,
-						StatusSaleName = sales.StatusSaleName,
-						StatusDescription = sales.StatusDescription,
-						Master_BusinessTypeId = sales.Customer.Master_BusinessTypeId,
-						Master_BusinessTypeName = sales.Customer.Master_BusinessTypeName,
-						Master_LoanTypeId = sales.Customer.Master_LoanTypeId,
-						Master_LoanTypeName = sales.Customer.Master_LoanTypeName,
-						AssUserId = sales.AssUserId,
-						AssUserName = sales.AssUserName,
-					});
+						if (model.CurrentUserId != sales.AssUserId)
+							throw new ExceptionCustom("currentuserid not match assuserid");
 
-					//update ทับตอนมอบหมายใหม่
-					//sales.AssUserId = null;
-					//sales.AssUserName = null;
-					//_db.Update(sales);
-					//await _db.SaveAsync();
+						await _repo.Sales.CreateReturn(new()
+						{
+							CurrentUserId = model.CurrentUserId,
+							CustomerId = sales.CustomerId,
+							CompanyName = sales.CompanyName,
+							SaleId = sales.Id,
+							StatusSaleId = sales.StatusSaleId,
+							StatusSaleName = sales.StatusSaleName,
+							StatusDescription = sales.StatusDescription,
+							Master_BusinessTypeId = sales.Customer.Master_BusinessTypeId,
+							Master_BusinessTypeName = sales.Customer.Master_BusinessTypeName,
+							Master_LoanTypeId = sales.Customer.Master_LoanTypeId,
+							Master_LoanTypeName = sales.Customer.Master_LoanTypeName,
+							AssUserId = sales.AssUserId,
+							AssUserName = sales.AssUserName,
+						});
 
-					var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+						//update ทับตอนมอบหมายใหม่
+						//sales.AssUserId = null;
+						//sales.AssUserName = null;
+						//_db.Update(sales);
+						//await _db.SaveAsync();
 
-					var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
+						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = item.SaleId,
-						StatusId = StatusSaleModel.RMReturnMCenter,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-						Description = reasonName
-					});
+						var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
 
-					var assignment_RM_Sales = await _repo.Context.Assignment_RM_Sales
-						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.SaleId == item.SaleId);
-					if (assignment_RM_Sales != null)
-					{
-						assignment_RM_Sales.Status = StatusModel.InActive;
-						_db.Update(assignment_RM_Sales);
-						await _db.SaveAsync();
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = saleId,
+							StatusId = StatusSaleModel.RMReturnMCenter,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+							Description = reasonName
+						});
+
+						var assignment_RM_Sales = await _repo.Context.Assignment_RM_Sales
+							.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.SaleId == saleId);
+						if (assignment_RM_Sales != null)
+						{
+							assignment_RM_Sales.Status = StatusModel.InActive;
+							_db.Update(assignment_RM_Sales);
+							await _db.SaveAsync();
+						}
+
+						countReturn++;
 					}
-
-					countReturn++;
 				}
 			}
 
@@ -106,37 +109,66 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task MCenterToBranch(ReturnModel model)
 		{
-			foreach (var item in model.RM_Sale)
+			int countReturn = 0;
+			foreach (var item in model.ListSale)
 			{
-				var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == item.SaleId);
-				if (sales != null)
+				if (Guid.TryParse(item.ID, out Guid saleId))
 				{
-					sales.BranchId = null;
-					sales.BranchName = null;
-					sales.AssCenterUserId = null;
-					sales.AssCenterUserName = null;
-					sales.AssCenterCreateBy = null;
-					sales.AssCenterDate = null;
-					_db.Update(sales);
-					await _db.SaveAsync();
-
-					var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
-
-					var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
-
-					await _repo.Sales.UpdateStatusOnly(new()
+					var sales = await _repo.Context.Sales.FindAsync(saleId);
+					if (sales != null)
 					{
-						SaleId = item.SaleId,
-						StatusId = StatusSaleModel.MCenterReturnBranch,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-						Description = reasonName
-					});
+						sales.AssCenterUser = null;
 
-					//ไม่ต้อง update Assignment_RM_Sale เพราะยังไม่ถูกมอบหมายให้ RM
+						if (model.CurrentUserId != sales.AssCenterUserId)
+							throw new ExceptionCustom("currentuserid not match assuserid");
 
+						//update ทับตอนมอบหมายใหม่
+						//sales.BranchId = null;
+						//sales.BranchName = null;
+						//sales.AssUserId = null;
+						//sales.AssUserName = null;
+						//sales.AssCenterUserId = null;
+						//sales.AssCenterUserName = null;
+						//sales.AssCenterCreateBy = null;
+						//sales.AssCenterDate = null;
+						//_db.Update(sales);
+						//await _db.SaveAsync();
+
+						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+						var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = saleId,
+							StatusId = StatusSaleModel.MCenterReturnBranch,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+							Description = reasonName
+						});
+
+						countReturn++;
+
+					}
 				}
 			}
+
+			if (countReturn > 0)
+			{
+				var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(model.CurrentUserId);
+				if (assignmentCenter == null || !assignmentCenter.BranchId.HasValue)
+					throw new ExceptionCustom("currentuserid not match assignmentCenter");
+
+				await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentCenter.BranchId.Value);
+			}
+			else
+			{
+				throw new ExceptionCustom("sales not found.");
+			}
+
+			//ไม่ต้อง update Assignment_RM_Sale เพราะยังไม่ถูกมอบหมายให้ RM
+			//หรือถ้าถูกมอบหมายแล้ว ตอน RM ส่งคืนจะถูก update แล้ว
+
 		}
 
 		public Task BranchToLCenter(ReturnModel model)

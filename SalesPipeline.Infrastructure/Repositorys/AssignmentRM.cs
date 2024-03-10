@@ -154,23 +154,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											  .Where(x => x.AssignmentRMId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active
 													&& x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
 											  .CountAsync();
-			if (currentNumber > 0)
+
+			var assignment_RMs = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Id == id);
+			if (assignment_RMs != null)
 			{
-				var assignment_RMs = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Id == id);
-				if (assignment_RMs != null)
+				assignment_RMs.CurrentNumber = currentNumber;
+				_db.Update(assignment_RMs);
+				await _db.SaveAsync();
+
+				//**** update ผู้จัดการศูนย์
+				if (assignment_RMs.BranchId.HasValue)
 				{
-					assignment_RMs.CurrentNumber = currentNumber;
-					_db.Update(assignment_RMs);
-					await _db.SaveAsync();
-
-					//**** update ผู้จัดการศูนย์
-					if (assignment_RMs.BranchId.HasValue)
-					{
-						await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
-					}
-
+					await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
 				}
+
 			}
+
 		}
 
 		/// <summary>
@@ -537,6 +536,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var assignment = await _repo.AssignmentRM.Create(new()
 						{
+							Status = StatusModel.Active,
 							CreateDate = DateTime.Now.AddSeconds(i),
 							BranchId = item_rm.BranchId,
 							UserId = item_rm.Id,

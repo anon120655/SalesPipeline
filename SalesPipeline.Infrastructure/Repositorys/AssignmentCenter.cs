@@ -271,6 +271,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 						{
+							Status = StatusModel.Active,
 							BranchId = item_center.BranchId,
 							BranchCode = _code,
 							BranchName = _name,

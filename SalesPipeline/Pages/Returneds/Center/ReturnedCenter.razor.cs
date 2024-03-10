@@ -124,7 +124,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 			pathToNext = null;
 			if (model.Value == "0")
 			{
-				//	await GotoStep(StepAssignLoanModel.Return);
+				pathToNext = $"/return/center/branch/{model.ID}";
 			}
 			else if (model.Value == "1")
 			{

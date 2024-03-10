@@ -437,11 +437,17 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 			if (Guid.TryParse(id, out Guid _id) && SaleMoveAssigned?.Count > 0)
 			{
+				List<SelectModel> listSale = new();
+				foreach (var item in SaleMoveAssigned)
+				{
+					listSale.Add(new() { ID = item.SaleId.ToString() });
+				}
+
 				var response = await _returnViewModel.MCenterToBranch(new()
 				{
 					CurrentUserId = UserInfo.Id,
 					Master_ReasonReturnId = _id,
-					RM_Sale = SaleMoveAssigned
+					ListSale = listSale
 				});
 
 				if (response.Status)
