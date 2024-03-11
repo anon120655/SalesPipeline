@@ -7,9 +7,9 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Assigns.Managers
+namespace SalesPipeline.Pages.Assigns.MCenters
 {
-	public partial class AssignManager
+	public partial class AssignMCenter
 	{
 		string? _errorMessage = null;
 		private bool isLoading = false;
@@ -357,7 +357,6 @@ namespace SalesPipeline.Pages.Assigns.Managers
 					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 				}
 			}
-
 		}
 
 		private async Task OnModalHidden()

@@ -190,6 +190,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
 					if (sale != null)
 					{
+						sale.AssUser = null;
+
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
 						sale.BranchId = assignment.BranchId;
@@ -198,6 +200,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sale.AssCenterUserName = assignment.EmployeeName;
 						sale.AssCenterCreateBy = model.CurrentUserId;
 						sale.AssCenterDate = DateTime.Now;
+						//กรณีตีกลับบางจังหวะจะมี assUser ค้างไว้แสดงผล ต้องเคลียร์ออกกรณีมอบหมายใหม่
+						sale.AssUserId = null;
+						sale.AssUserName = null;
 						_db.Update(sale);
 						await _db.SaveAsync();
 

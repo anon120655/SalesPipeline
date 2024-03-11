@@ -1,5 +1,4 @@
-﻿
-@page "/return/branch/summary/{id:guid}"
+﻿@page "/return/branch/summary/{id:guid}"
 
 <PageTitle>รายการที่ส่งคืน</PageTitle>
 
@@ -107,7 +106,7 @@
 								</select>
 							</div>
 							<div class="col mb-2 mt-3">
-								<button  type="button" class="btn btn-primary text-white mw_7r w-100">
+								<button type="button" class="btn btn-primary text-white mw_7r w-100">
 									<i class="fa fa-search fa-xs"></i> ค้นหา
 								</button>
 							</div>
@@ -150,6 +149,13 @@
 												foreach (var item in Items)
 												{
 													int NumberAfterAssignment = (item.CurrentNumber + 1) ?? 0;
+
+													//ส่งคืนผุ้รับผิดชอบเดิม
+													@* if (item.UserId == formModel?.AssCenterUserId)
+													{
+														NumberAfterAssignment = NumberAfterAssignment - 1;
+													} *@
+
 													<tr>
 														<td class="text-center">@item.BranchCode</td>
 														<td class="text-center">@item.BranchName</td>
@@ -180,7 +186,7 @@
 									</Button>
 								</div>
 								<div class="p-2 bd-highlight">
-									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisabled" Class="mw_6r">
 										@if (isLoading)
 										{
 											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>

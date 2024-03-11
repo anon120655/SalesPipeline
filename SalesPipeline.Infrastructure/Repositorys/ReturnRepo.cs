@@ -40,6 +40,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleId);
 					if (sales != null)
 					{
+						sales.AssUser = null;
+						sales.AssCenterUser = null;
+
 						if (model.CurrentUserId != sales.AssUserId)
 							throw new ExceptionCustom("currentuserid not match assuserid");
 
@@ -60,11 +63,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							AssUserName = sales.AssUserName,
 						});
 
-						//update ทับตอนมอบหมายใหม่
-						//sales.AssUserId = null;
+						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
+						sales.AssUserId = null;
 						//sales.AssUserName = null;
-						//_db.Update(sales);
-						//await _db.SaveAsync();
+						_db.Update(sales);
+						await _db.SaveAsync();
 
 						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -117,22 +120,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var sales = await _repo.Context.Sales.FindAsync(saleId);
 					if (sales != null)
 					{
+						sales.AssUser = null;
 						sales.AssCenterUser = null;
 
 						if (model.CurrentUserId != sales.AssCenterUserId)
 							throw new ExceptionCustom("currentuserid not match assuserid");
 
-						//update ทับตอนมอบหมายใหม่
-						//sales.BranchId = null;
+						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
+						sales.BranchId = null;
 						//sales.BranchName = null;
-						//sales.AssUserId = null;
+						sales.AssUserId = null;
 						//sales.AssUserName = null;
-						//sales.AssCenterUserId = null;
+						sales.AssCenterUserId = null;
 						//sales.AssCenterUserName = null;
 						//sales.AssCenterCreateBy = null;
 						//sales.AssCenterDate = null;
-						//_db.Update(sales);
-						//await _db.SaveAsync();
+						_db.Update(sales);
+						await _db.SaveAsync();
 
 						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 

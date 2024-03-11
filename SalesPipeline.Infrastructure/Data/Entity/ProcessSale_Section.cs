@@ -21,7 +21,7 @@ public partial class ProcessSale_Section
     /// <summary>
     /// 1=แสดงผลตลอด
     /// </summary>
-    public bool ShowAlways { get; set; }
+    public int ShowAlways { get; set; }
 
     public virtual ProcessSale ProcessSale { get; set; } = null!;
 

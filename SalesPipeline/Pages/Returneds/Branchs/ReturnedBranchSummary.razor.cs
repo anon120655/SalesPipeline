@@ -17,12 +17,14 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private bool isDisabled = true;
 		private allFilter filter = new();
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
 		private List<AssignmentCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
+		private AssignCenterModel AssignModel = new();
 
 		ModalConfirm modalConfirmAssign = default!;
 		ModalSuccessful modalSuccessfulAssign = default!;
@@ -174,16 +176,26 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 			{
 				model.IsSelected = false;
 			}
+
+			isDisabled = !model.IsSelected;
 		}
 
 		protected bool Summary()
 		{
-			if (Items?.Count > 0)
+			if (Items?.Count > 0 && formModel != null)
 			{
 				//_itemsAssign ผู้รับผิดชอบใหม่ที่ถูกมอบหมายใหม่
 				var _itemsAssign = Items.Where(x => x.IsSelected).FirstOrDefault();
 				if (_itemsAssign != null)
 				{
+					var saleModel = GeneralUtils.DeepCopyJson(formModel);
+					saleModel.Customer = null;
+
+					AssignModel.Assign = _itemsAssign;
+					AssignModel.Sales = new()
+					{
+						saleModel
+					};
 					return true;
 				}
 				else
@@ -230,7 +242,27 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 		{
 			await Task.Delay(1);
 			_errorMessage = null;
+			ShowLoading();
 
+			AssignModel.CurrentUserId = UserInfo.Id;
+
+			if (Items != null)
+			{
+				var response = await _assignmentCenterViewModel.Assign(AssignModel);
+
+				if (response.Status)
+				{
+					IsToClose = true;
+					await modalSuccessfulAssign.OnShow(null, "เสร็จสิ้นการมอบหมายงาน");
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
 		}
 
 		protected async Task SearchStepAssigned()
