@@ -273,6 +273,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
+				Guid? master_Department_BranchId = null;
+				int? provinceId = null;
 				int? branchId = null;
 				int? assCenterUserId = null;
 				string? assCenterUserName = null;
@@ -287,6 +289,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
+					master_Department_BranchId = user.Master_Department_BranchId;
+					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
 				else
@@ -322,6 +326,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					assCenterUserId = modelSale.AssCenterUserId;
 					assCenterUserName = userCenter.FullName;
+					master_Department_BranchId = userCenter.Master_Department_BranchId;
+					provinceId = userCenter.ProvinceId;
 					branchId = userCenter.BranchId;
 				}
 
@@ -335,6 +341,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
+					Master_Department_BranchId = master_Department_BranchId,
+					ProvinceId = provinceId,
 					BranchId = branchId,
 					AssCenterUserId = assCenterUserId,
 					AssCenterUserName = assCenterUserName,

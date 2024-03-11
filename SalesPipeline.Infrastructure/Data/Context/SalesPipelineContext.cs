@@ -1180,9 +1180,15 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DateAppointment)
                 .HasComment("วันที่นัดหมาย")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
+            entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
             entity.Property(e => e.PercentChanceLoanPass)
                 .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceId)
+                .HasComment("จังหวัด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

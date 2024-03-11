@@ -253,6 +253,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 				if (response.Status)
 				{
 					IsToClose = true;
+					await modalConfirmAssign.OnHideConfirm();
 					await modalSuccessfulAssign.OnShow(null, "เสร็จสิ้นการมอบหมายงาน");
 					HideLoading();
 				}

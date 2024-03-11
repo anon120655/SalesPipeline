@@ -120,7 +120,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<AssignmentCustom>>> GetListCenter(allFilter model)
 		{
 			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x=>x.Branch)
+												 .Include(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
@@ -181,7 +181,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task Assign(AssignCenterModel model)
 		{
-			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
+			var assignment = await _repo.Context.Assignments
+				.Include(x => x.User).ThenInclude(x=>x.Master_Department_Branch)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
 			if (assignment != null)
 			{
 				var salesCount = 0;
@@ -193,6 +195,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sale.AssUser = null;
 
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
+
+						if (assignment.User != null)
+						{
+							sale.Master_Department_BranchId = assignment.User.Master_Department_BranchId;
+							if (assignment.User.Master_Department_Branch != null)
+							{
+								sale.Master_Department_BranchName = assignment.User.Master_Department_Branch.Name;
+							}
+							sale.ProvinceId = assignment.User.ProvinceId;
+							sale.ProvinceName = assignment.User.ProvinceName;
+						}
 
 						sale.BranchId = assignment.BranchId;
 						sale.BranchName = assignment.BranchName;

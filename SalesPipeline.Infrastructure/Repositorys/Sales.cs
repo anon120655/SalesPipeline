@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -37,6 +38,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var master_Department_BranchName = await _repo.MasterDepBranch.GetNameById(model.Master_Department_BranchId ?? Guid.Empty);
+			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
 			var branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId ?? 0);
 
 			var sale = new Data.Entity.Sale();
@@ -52,6 +55,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
+			sale.Master_Department_BranchId = model.Master_Department_BranchId;
+			sale.Master_Department_BranchName = master_Department_BranchName;
+			sale.ProvinceId = model.ProvinceId;
+			sale.ProvinceName = provinceName;
 			sale.BranchId = model.BranchId;
 			sale.BranchName = branchName;
 			sale.AssCenterUserId = model.AssCenterUserId;
@@ -114,18 +121,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId).ToListAsync();
 			if (sale_Statuses != null && sale_Statuses.Count > 0)
 			{
-				foreach (var item in sale_Statuses)
+				var last_status = sale_Statuses.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+				if (last_status != null)
 				{
-					if (item.StatusId == model.StatusId)
-					{
-						throw new ExceptionCustom("Duplicate the process.");
-					}
-
-					if (item.StatusId == StatusSaleModel.NotApprove)
+					if (last_status.StatusId == StatusSaleModel.NotApprove)
 					{
 						throw new ExceptionCustom("Not approve the process.");
 					}
 
+					if (last_status.StatusId == model.StatusId)
+					{
+						throw new ExceptionCustom("Duplicate the process.");
+					}
 				}
 			}
 

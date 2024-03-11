@@ -137,13 +137,13 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 			await modalReturnReason.OnShowConfirm();
 		}
 
-		protected async Task MCenterToBranch(string? id)
+		protected async Task BranchToLCenter(string? id)
 		{
 			_errorMessageModal = null;
 
 			if (Guid.TryParse(id, out Guid _id) && formModel != null)
 			{
-				var response = await _returnViewModel.MCenterToBranch(new()
+				var response = await _returnViewModel.BranchToLCenter(new()
 				{
 					CurrentUserId = UserInfo.Id,
 					Master_ReasonReturnId = _id,

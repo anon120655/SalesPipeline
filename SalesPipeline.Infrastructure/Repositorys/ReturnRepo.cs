@@ -127,6 +127,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("currentuserid not match assuserid");
 
 						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
+						sales.Master_Department_BranchId = null;
+						//sales.Master_Department_BranchName = null;
+						sales.ProvinceId = null;
+						//sales.ProvinceName = null;
 						sales.BranchId = null;
 						//sales.BranchName = null;
 						sales.AssUserId = null;
@@ -175,9 +179,56 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
-		public Task BranchToLCenter(ReturnModel model)
+		public async Task BranchToLCenter(ReturnModel model)
 		{
-			throw new NotImplementedException();
+			int countReturn = 0;
+			foreach (var item in model.ListSale)
+			{
+				if (Guid.TryParse(item.ID, out Guid saleId))
+				{
+					var sales = await _repo.Context.Sales.FindAsync(saleId);
+					if (sales != null)
+					{
+						sales.AssUser = null;
+						sales.AssCenterUser = null;
+
+						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
+						sales.Master_Department_BranchId = null;
+						//sales.Master_Department_BranchName = null;
+						sales.ProvinceId = null;
+						//sales.ProvinceName = null;
+						sales.BranchId = null;
+						//sales.BranchName = null;
+						sales.AssUserId = null;
+						//sales.AssUserName = null;
+						sales.AssCenterUserId = null;
+						//sales.AssCenterUserName = null;
+						//sales.AssCenterCreateBy = null;
+						//sales.AssCenterDate = null;
+						_db.Update(sales);
+						await _db.SaveAsync();
+
+						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+						var reasonName = await _repo.MasterReasonReturn.GetNameById(model.Master_ReasonReturnId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = saleId,
+							StatusId = StatusSaleModel.BranchReturnLCenter,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+							Description = reasonName
+						});
+
+						countReturn++;
+
+					}
+				}
+			}
+
+			//ไม่ต้อง update Assignments เพราะถูก update ตอนส่งคืนจากผู้จัดการศูนย์แล้ว
+
 		}
 
 	}
