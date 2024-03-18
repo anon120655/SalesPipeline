@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SalesPipeline.Infrastructure.Data.Entity;
+
+public partial class Sale_Document
+{
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
+    /// </summary>
+    public short Status { get; set; }
+
+    public DateTime CreateDate { get; set; }
+
+    public int CreateBy { get; set; }
+
+    public DateTime UpdateDate { get; set; }
+
+    public int UpdateBy { get; set; }
+
+    public Guid SaleId { get; set; }
+
+    /// <summary>
+    /// ชื่อผู้ติดต่อ
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// เลขบัตรประชาชน
+    /// </summary>
+    public string? IDCardNumber { get; set; }
+
+    /// <summary>
+    /// ชื่อภาษาไทย
+    /// </summary>
+    public string? NameTh { get; set; }
+
+    /// <summary>
+    /// ชื่อภาษาอังกฤษ
+    /// </summary>
+    public string? NameEn { get; set; }
+
+    /// <summary>
+    /// วันเกิด
+    /// </summary>
+    public DateTime? Birthday { get; set; }
+
+    /// <summary>
+    /// ศาสนา
+    /// </summary>
+    public string? Religion { get; set; }
+
+    /// <summary>
+    /// บ้านเลขที่
+    /// </summary>
+    public string? HouseNo { get; set; }
+
+    /// <summary>
+    /// หมู่ที่
+    /// </summary>
+    public string? VillageNo { get; set; }
+
+    /// <summary>
+    /// จังหวัด
+    /// </summary>
+    public int? ProvinceId { get; set; }
+
+    /// <summary>
+    /// อำเภอ
+    /// </summary>
+    public int? AmphurId { get; set; }
+
+    /// <summary>
+    /// ไฟล์ทะเบียนนบ้าน
+    /// </summary>
+    public string? HouseRegistrationPath { get; set; }
+
+    /// <summary>
+    /// ไฟล์เอกสารอื่นๆ
+    /// </summary>
+    public string? PathOtherDocument { get; set; }
+
+    /// <summary>
+    /// ประเภทธุรกิจ
+    /// </summary>
+    public Guid? Master_BusinessTypeId { get; set; }
+
+    /// <summary>
+    /// ลักษณะการดำเนินธุรกิจ
+    /// </summary>
+    public string? BusinessOperation { get; set; }
+
+    /// <summary>
+    /// วันที่รับขึ้นทะเบียนเป็นลูกค้า
+    /// </summary>
+    public DateTime? RegistrationDate { get; set; }
+
+    /// <summary>
+    /// วันที่เริ่มติดต่อกับธนาคารในการขอกู้ครั้งนี้
+    /// </summary>
+    public DateTime? DateFirstContactBank { get; set; }
+
+    public Guid? Master_TypeLoanRequestId { get; set; }
+
+    /// <summary>
+    /// ระบุ
+    /// </summary>
+    public string? Master_TypeLoanRequestSpecify { get; set; }
+
+    public Guid? Master_ProductProgramBankId { get; set; }
+
+    /// <summary>
+    /// วงเงินกู้สำหรับเงินทุนหมุนเวียนในกิจการ
+    /// </summary>
+    public decimal? LoanLimitBusiness { get; set; }
+
+    /// <summary>
+    /// วงเงินกู้สำหรับค่าลงทุน
+    /// </summary>
+    public decimal? LoanLimitInvestmentCost { get; set; }
+
+    /// <summary>
+    /// วงเงินกู้สำหรับวัตถุประสงค์
+    /// </summary>
+    public decimal? LoanLimitObjectiveOther { get; set; }
+
+    /// <summary>
+    /// ระบุ
+    /// </summary>
+    public string? LoanLimitObjectiveOtherSpecify { get; set; }
+
+    /// <summary>
+    /// วงเงินรวม
+    /// </summary>
+    public decimal? TotaLlimit { get; set; }
+
+    /// <summary>
+    /// CEQA รวมวงเงินเทียบเท่าสินเชื่อ เท่ากับ
+    /// </summary>
+    public decimal? TotaLlimitCEQA { get; set; }
+
+    /// <summary>
+    /// ความคิดเห็นพนักงานสินเชื่อ
+    /// </summary>
+    public string? CommentEmployeeLoan { get; set; }
+
+    /// <summary>
+    /// รูปลายเซ็นผู้กู้ยืม
+    /// </summary>
+    public string? SignatureNamePath { get; set; }
+
+    /// <summary>
+    /// วันที่เซ็นผู้กู้ยืม
+    /// </summary>
+    public DateTime? SignatureNameDate { get; set; }
+
+    /// <summary>
+    /// รูปลายเซ็นพนักงานสินเชื่อ
+    /// </summary>
+    public string? SignatureEmployeeLoanPath { get; set; }
+
+    /// <summary>
+    /// วันที่เซ็นพนักงานสินเชื่อ
+    /// </summary>
+    public DateTime? SignatureEmployeeLoanDate { get; set; }
+
+    /// <summary>
+    /// รูปลายเซ็นผู้จัดการศูนย์
+    /// </summary>
+    public string? SignatureMCenterPath { get; set; }
+
+    /// <summary>
+    /// วันที่เซ็นผู้จัดการศูนย์
+    /// </summary>
+    public DateTime? SignatureMCenterDate { get; set; }
+
+    /// <summary>
+    /// 1=ยื่นกู้
+    /// </summary>
+    public string? SubmitType { get; set; }
+
+    /// <summary>
+    /// วันที่ยื่นกู้
+    /// </summary>
+    public DateTime? SubmitDate { get; set; }
+
+    public virtual Master_ProductProgramBank? Master_ProductProgramBank { get; set; }
+
+    public virtual Master_TypeLoanRequest? Master_TypeLoanRequest { get; set; }
+
+    public virtual Sale Sale { get; set; } = null!;
+}

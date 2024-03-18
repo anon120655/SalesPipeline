@@ -56,7 +56,15 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_LoanType> Master_LoanTypes { get; set; }
 
+    public virtual DbSet<Master_Meet> Master_Meets { get; set; }
+
+    public virtual DbSet<Master_NextAction> Master_NextActions { get; set; }
+
     public virtual DbSet<Master_Position> Master_Positions { get; set; }
+
+    public virtual DbSet<Master_Proceed> Master_Proceeds { get; set; }
+
+    public virtual DbSet<Master_ProductProgramBank> Master_ProductProgramBanks { get; set; }
 
     public virtual DbSet<Master_ReasonReturn> Master_ReasonReturns { get; set; }
 
@@ -65,6 +73,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Master_SLAOperation> Master_SLAOperations { get; set; }
 
     public virtual DbSet<Master_StatusSale> Master_StatusSales { get; set; }
+
+    public virtual DbSet<Master_TypeLoanRequest> Master_TypeLoanRequests { get; set; }
 
     public virtual DbSet<Master_Yield> Master_Yields { get; set; }
 
@@ -82,6 +92,16 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale> Sales { get; set; }
 
+    public virtual DbSet<Sale_Close_Sale> Sale_Close_Sales { get; set; }
+
+    public virtual DbSet<Sale_Contact> Sale_Contacts { get; set; }
+
+    public virtual DbSet<Sale_Contact_History> Sale_Contact_Histories { get; set; }
+
+    public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
+
+    public virtual DbSet<Sale_Meet> Sale_Meets { get; set; }
+
     public virtual DbSet<Sale_Reply> Sale_Replies { get; set; }
 
     public virtual DbSet<Sale_Reply_Section> Sale_Reply_Sections { get; set; }
@@ -89,6 +109,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Sale_Reply_Section_Item> Sale_Reply_Section_Items { get; set; }
 
     public virtual DbSet<Sale_Reply_Section_ItemValue> Sale_Reply_Section_ItemValues { get; set; }
+
+    public virtual DbSet<Sale_Result> Sale_Results { get; set; }
 
     public virtual DbSet<Sale_Return> Sale_Returns { get; set; }
 
@@ -861,6 +883,47 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Master_Meet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Meet", tb => tb.HasComment("การเข้าพบ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_NextAction>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_NextAction");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.IsNext)
+                .HasComment("1=ไปขั้นตอนถัดไป")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=ติดต่อ\r\n,2=เข้าพบ\r\n,3=ยื่นเอกสาร\r\n,4=ผลลัพธ์\r\n")
+                .HasColumnType("int(11)");
+        });
+
         modelBuilder.Entity<Master_Position>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -879,6 +942,38 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Type)
                 .HasComment("1=Admin 2=User")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Proceed>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Proceed", tb => tb.HasComment("ดำเนินการ ยื่นเอกสารกู้"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_ProductProgramBank>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_ProductProgramBank", tb => tb.HasComment("Product Program ของธนาคาร โครงการสินเชื่อ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
@@ -953,6 +1048,22 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+        });
+
+        modelBuilder.Entity<Master_TypeLoanRequest>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_TypeLoanRequest", tb => tb.HasComment("ประเภทการขอสินเชื่อ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Master_Yield>(entity =>
@@ -1226,6 +1337,328 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("sale_ibfk_2");
         });
 
+        modelBuilder.Entity<Sale_Close_Sale>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Close_Sale");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DesireLoanId)
+                .HasComment("1=ประสงค์กู้ 2=ไม่ประสงค์กู้")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.ReasonId)
+                .HasComment("1=ได้รับสินเชื่อจากสถาบันการเงินอื่น")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ResultMeetId)
+                .HasComment("1=รับสาย 2=ไม่รับสาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel)
+                .HasMaxLength(255)
+                .HasComment("เบอร์ติดต่อ");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Close_Sales)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_close_sale_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Contact>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Contact", tb => tb.HasComment("ติดต่อ"));
+
+            entity.HasIndex(e => e.NextActionId, "Master_NextActionId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.AppointmentDate)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AppointmentTime)
+                .HasComment("เวลาที่นัดหมาย")
+                .HasColumnType("time");
+            entity.Property(e => e.ContactDate)
+                .HasComment("วันที่ติดต่อ")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ContactResult)
+                .HasComment("ผลการติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .HasComment("สถานที่");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.NextActionId)
+                .HasComment("1=ทำการนัดหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel)
+                .HasMaxLength(255)
+                .HasComment("เบอร์ติดต่อ");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contacts)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_contact_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Contact_History>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Contact_History", tb => tb.HasComment("ประวัติการติดต่อ"));
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.AppointmentDate)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AppointmentTime)
+                .HasComment("เวลาที่นัดหมาย")
+                .HasColumnType("time");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByName).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreditLimit)
+                .HasPrecision(18, 2)
+                .HasComment("วงเงิน");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .HasComment("สถานที่");
+            entity.Property(e => e.NextActionName).HasMaxLength(255);
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.Percent)
+                .HasMaxLength(255)
+                .HasComment("ร้อยละ");
+            entity.Property(e => e.ProceedName)
+                .HasMaxLength(255)
+                .HasComment("การดำเนินการ");
+            entity.Property(e => e.ResultContactName)
+                .HasMaxLength(255)
+                .HasComment("ผลการติดต่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.StatusName)
+                .HasMaxLength(255)
+                .HasComment("สถานะ");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contact_Histories)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_contact_history_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Document>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Document");
+
+            entity.HasIndex(e => e.Master_ProductProgramBankId, "Master_ProductProgramBankId");
+
+            entity.HasIndex(e => e.Master_TypeLoanRequestId, "Master_TypeLoanRequest");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.AmphurId)
+                .HasComment("อำเภอ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Birthday)
+                .HasComment("วันเกิด")
+                .HasColumnType("datetime");
+            entity.Property(e => e.BusinessOperation)
+                .HasMaxLength(1000)
+                .HasComment("ลักษณะการดำเนินธุรกิจ");
+            entity.Property(e => e.CommentEmployeeLoan)
+                .HasMaxLength(500)
+                .HasComment("ความคิดเห็นพนักงานสินเชื่อ");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DateFirstContactBank)
+                .HasComment("วันที่เริ่มติดต่อกับธนาคารในการขอกู้ครั้งนี้")
+                .HasColumnType("datetime");
+            entity.Property(e => e.HouseNo)
+                .HasMaxLength(255)
+                .HasComment("บ้านเลขที่");
+            entity.Property(e => e.HouseRegistrationPath)
+                .HasMaxLength(255)
+                .HasComment("ไฟล์ทะเบียนนบ้าน");
+            entity.Property(e => e.IDCardNumber)
+                .HasMaxLength(20)
+                .HasComment("เลขบัตรประชาชน");
+            entity.Property(e => e.LoanLimitBusiness)
+                .HasPrecision(18, 2)
+                .HasComment("วงเงินกู้สำหรับเงินทุนหมุนเวียนในกิจการ");
+            entity.Property(e => e.LoanLimitInvestmentCost)
+                .HasPrecision(18, 2)
+                .HasComment("วงเงินกู้สำหรับค่าลงทุน");
+            entity.Property(e => e.LoanLimitObjectiveOther)
+                .HasPrecision(18, 2)
+                .HasComment("วงเงินกู้สำหรับวัตถุประสงค์");
+            entity.Property(e => e.LoanLimitObjectiveOtherSpecify)
+                .HasMaxLength(255)
+                .HasComment("ระบุ");
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_TypeLoanRequestSpecify)
+                .HasMaxLength(255)
+                .HasComment("ระบุ");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.NameEn)
+                .HasMaxLength(255)
+                .HasComment("ชื่อภาษาอังกฤษ");
+            entity.Property(e => e.NameTh)
+                .HasMaxLength(255)
+                .HasComment("ชื่อภาษาไทย");
+            entity.Property(e => e.PathOtherDocument)
+                .HasMaxLength(255)
+                .HasComment("ไฟล์เอกสารอื่นๆ");
+            entity.Property(e => e.ProvinceId)
+                .HasComment("จังหวัด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.RegistrationDate)
+                .HasComment("วันที่รับขึ้นทะเบียนเป็นลูกค้า")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Religion)
+                .HasMaxLength(255)
+                .HasComment("ศาสนา");
+            entity.Property(e => e.SignatureEmployeeLoanDate)
+                .HasComment("วันที่เซ็นพนักงานสินเชื่อ")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SignatureEmployeeLoanPath)
+                .HasMaxLength(255)
+                .HasComment("รูปลายเซ็นพนักงานสินเชื่อ");
+            entity.Property(e => e.SignatureMCenterDate)
+                .HasComment("วันที่เซ็นผู้จัดการศูนย์")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SignatureMCenterPath)
+                .HasMaxLength(255)
+                .HasComment("รูปลายเซ็นผู้จัดการศูนย์");
+            entity.Property(e => e.SignatureNameDate)
+                .HasComment("วันที่เซ็นผู้กู้ยืม")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SignatureNamePath)
+                .HasMaxLength(255)
+                .HasComment("รูปลายเซ็นผู้กู้ยืม");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.SubmitDate)
+                .HasComment("วันที่ยื่นกู้")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SubmitType)
+                .HasMaxLength(255)
+                .HasComment("1=ยื่นกู้");
+            entity.Property(e => e.TotaLlimit)
+                .HasPrecision(18, 2)
+                .HasComment("วงเงินรวม");
+            entity.Property(e => e.TotaLlimitCEQA)
+                .HasPrecision(18, 2)
+                .HasComment("CEQA รวมวงเงินเทียบเท่าสินเชื่อ เท่ากับ");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.VillageNo)
+                .HasMaxLength(255)
+                .HasComment("หมู่ที่");
+
+            entity.HasOne(d => d.Master_ProductProgramBank).WithMany(p => p.Sale_Documents)
+                .HasForeignKey(d => d.Master_ProductProgramBankId)
+                .HasConstraintName("sale_document_ibfk_3");
+
+            entity.HasOne(d => d.Master_TypeLoanRequest).WithMany(p => p.Sale_Documents)
+                .HasForeignKey(d => d.Master_TypeLoanRequestId)
+                .HasConstraintName("sale_document_ibfk_2");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Documents)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_document_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Meet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Meet", tb => tb.HasComment("เข้าพบ"));
+
+            entity.HasIndex(e => e.NextActionId, "Master_NextActionId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.AppointmentDate)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AppointmentTime)
+                .HasComment("เวลาที่นัดหมาย")
+                .HasColumnType("time");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.LoanAmount)
+                .HasPrecision(18, 2)
+                .HasComment("จำนวนการกู้");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .HasComment("สถานที่");
+            entity.Property(e => e.Master_ChainId).HasComment("ห่วงโซ่คุณค่า ");
+            entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
+            entity.Property(e => e.MeetDate)
+                .HasComment("วันที่เข้าพบ")
+                .HasColumnType("datetime");
+            entity.Property(e => e.MeetId).HasComment("1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("บุคคลที่เข้าพบ");
+            entity.Property(e => e.NextActionId)
+                .HasComment("1=นัดเก็บเอกสาร/ประสงค์กู้")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel)
+                .HasMaxLength(255)
+                .HasComment("เบอร์ติดต่อ");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Meets)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_meet_ibfk_1");
+        });
+
         modelBuilder.Entity<Sale_Reply>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -1346,6 +1779,57 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleReplySectionItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_reply_section_itemvalue_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Result>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Result");
+
+            entity.HasIndex(e => e.ProceedId, "Master_ProceedId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.AppointmentDate)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AppointmentTime)
+                .HasComment("เวลาที่นัดหมาย")
+                .HasColumnType("time");
+            entity.Property(e => e.AttachmentPath)
+                .HasMaxLength(255)
+                .HasComment("เอกสาร");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .HasComment("สถานที่");
+            entity.Property(e => e.MeetName)
+                .HasMaxLength(255)
+                .HasComment("ผู้เข้าพบ");
+            entity.Property(e => e.NextActionId)
+                .HasComment("1=ทำการนัดหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.ProceedId)
+                .HasComment("1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ResultMeetId)
+                .HasComment("1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Results)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_result_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Return>(entity =>
