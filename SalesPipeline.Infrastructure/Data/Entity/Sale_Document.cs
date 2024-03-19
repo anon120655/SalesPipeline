@@ -173,7 +173,7 @@ public partial class Sale_Document
     /// <summary>
     /// 1=ยื่นกู้
     /// </summary>
-    public string? SubmitType { get; set; }
+    public int? SubmitType { get; set; }
 
     /// <summary>
     /// วันที่ยื่นกู้

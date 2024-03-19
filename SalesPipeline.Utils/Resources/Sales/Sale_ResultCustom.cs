@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ProceedId { get; set; }
 
 		/// <summary>

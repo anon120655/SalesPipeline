@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,11 +34,13 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=รับสาย 2=ไม่รับสาย
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ResultMeetId { get; set; }
 
 		/// <summary>
 		/// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? DesireLoanId { get; set; }
 
 		/// <summary>

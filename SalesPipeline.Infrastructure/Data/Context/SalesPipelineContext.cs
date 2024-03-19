@@ -1461,6 +1461,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ResultContactName)
                 .HasMaxLength(255)
                 .HasComment("ผลการติดต่อ");
+            entity.Property(e => e.ResultMeetName)
+                .HasMaxLength(255)
+                .HasComment("ผลการเข้าพบ");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -1579,8 +1582,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("วันที่ยื่นกู้")
                 .HasColumnType("datetime");
             entity.Property(e => e.SubmitType)
-                .HasMaxLength(255)
-                .HasComment("1=ยื่นกู้");
+                .HasComment("1=ยื่นกู้")
+                .HasColumnType("int(11)");
             entity.Property(e => e.TotaLlimit)
                 .HasPrecision(18, 2)
                 .HasComment("วงเงินรวม");
@@ -1633,7 +1636,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.MeetDate)
                 .HasComment("วันที่เข้าพบ")
                 .HasColumnType("datetime");
-            entity.Property(e => e.MeetId).HasComment("1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ");
+            entity.Property(e => e.MeetId)
+                .HasComment("1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("บุคคลที่เข้าพบ");

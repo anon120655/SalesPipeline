@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
@@ -26,15 +27,17 @@ public partial class Sale_Close_Sale
     /// </summary>
     public string? Tel { get; set; }
 
-    /// <summary>
-    /// 1=รับสาย 2=ไม่รับสาย
-    /// </summary>
-    public int? ResultMeetId { get; set; }
+	/// <summary>
+	/// 1=รับสาย 2=ไม่รับสาย
+	/// </summary>
+	[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+	public int? ResultMeetId { get; set; }
 
-    /// <summary>
-    /// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
-    /// </summary>
-    public int? DesireLoanId { get; set; }
+	/// <summary>
+	/// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+	/// </summary>
+	[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+	public int? DesireLoanId { get; set; }
 
     /// <summary>
     /// 1=ได้รับสินเชื่อจากสถาบันการเงินอื่น

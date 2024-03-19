@@ -696,7 +696,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
-			int statusSaleId = 0;
+			int statusSaleId = StatusSaleModel.NotStatus;
 			string? proceedName = "ติดต่อ";
 			string? resultContactName = string.Empty;
 			string? nextActionName = string.Empty;
@@ -771,6 +771,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Sale_MeetCustom> CreateMeet(Sale_MeetCustom model)
 		{
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleId != StatusSaleModel.WaitMeet
+				&& sale.StatusSaleId != StatusSaleModel.Meet
+				&& sale.StatusSaleId != StatusSaleModel.MeetFail)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = StatusSaleModel.NotStatus;
+			string? proceedName = "เข้าพบ";
+			string? resultMeetName = string.Empty;
+			string? nextActionName = string.Empty;
+
 			DateTime _dateNow = DateTime.Now;
 
 			Sale_Meet sale_Meet = new();
@@ -792,22 +809,306 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale_Meet);
 			await _db.SaveAsync();
 
+			if (model.MeetId == 1 || model.MeetId == 2)
+			{
+				resultMeetName = model.MeetId == 1 ? "เข้าพบสำเร็จ" : "เข้าพบไม่สำเร็จ";
+				statusSaleId = StatusSaleModel.Contact;
+			}
+
+			if (sale_Meet.NextActionId == 1)
+			{
+				proceedName = "ยื่นเอกสาร";
+				statusSaleId = StatusSaleModel.WaitSubmitDocument;
+				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
+			else
+			{
+				if (sale.StatusSaleId == StatusSaleModel.WaitMeet)
+				{
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					});
+				}
+			}
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				StatusSaleId = statusSaleId,
+				ProceedName = proceedName,
+				ResultMeetName = resultMeetName,
+				NextActionName = nextActionName,
+				AppointmentDate = model.AppointmentDate,
+				AppointmentTime = model.AppointmentTime,
+				Location = model.Location,
+				Note = model.Note,
+			});
+
 			return _mapper.Map<Sale_MeetCustom>(sale_Meet);
 		}
 
 		public async Task<Sale_DocumentCustom> CreateDocument(Sale_DocumentCustom model)
 		{
-			throw new NotImplementedException();
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleId != StatusSaleModel.WaitSubmitDocument
+				&& sale.StatusSaleId != StatusSaleModel.SubmitDocument
+				&& sale.StatusSaleId != StatusSaleModel.SubmitDocumentFail)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = StatusSaleModel.SubmitDocument;
+			string? proceedName = "ยื่นเอกสาร";
+			string? resultContactName = string.Empty;
+			string? nextActionName = string.Empty;
+
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Document sale_Document = new();
+			sale_Document.Status = StatusModel.Active;
+			sale_Document.CreateDate = _dateNow;
+			sale_Document.SaleId = model.SaleId;
+			sale_Document.Name = model.Name;
+			sale_Document.IDCardNumber = model.IDCardNumber;
+			sale_Document.NameTh = model.NameTh;
+			sale_Document.NameEn = model.NameEn;
+			sale_Document.Birthday = model.Birthday;
+			sale_Document.Religion = model.Religion;
+			sale_Document.HouseNo = model.HouseNo;
+			sale_Document.VillageNo = model.VillageNo;
+			sale_Document.ProvinceId = model.ProvinceId;
+			sale_Document.AmphurId = model.AmphurId;
+			sale_Document.HouseRegistrationPath = model.HouseRegistrationPath;
+			sale_Document.PathOtherDocument = model.PathOtherDocument;
+			sale_Document.Master_BusinessTypeId = model.Master_BusinessTypeId;
+			sale_Document.BusinessOperation = model.BusinessOperation;
+			sale_Document.RegistrationDate = model.RegistrationDate;
+			sale_Document.DateFirstContactBank = model.DateFirstContactBank;
+			sale_Document.Master_TypeLoanRequestId = model.Master_TypeLoanRequestId;
+			sale_Document.Master_TypeLoanRequestSpecify = model.Master_TypeLoanRequestSpecify;
+			sale_Document.Master_ProductProgramBankId = model.Master_ProductProgramBankId;
+			sale_Document.LoanLimitBusiness = model.LoanLimitBusiness;
+			sale_Document.LoanLimitInvestmentCost = model.LoanLimitInvestmentCost;
+			sale_Document.LoanLimitObjectiveOther = model.LoanLimitObjectiveOther;
+			sale_Document.TotaLlimit = model.TotaLlimit;
+			sale_Document.TotaLlimitCEQA = model.TotaLlimitCEQA;
+			sale_Document.CommentEmployeeLoan = model.CommentEmployeeLoan;
+			sale_Document.SignatureNamePath = model.SignatureNamePath;
+			sale_Document.SignatureNameDate = model.SignatureNameDate;
+			sale_Document.SignatureEmployeeLoanPath = model.SignatureEmployeeLoanPath;
+			sale_Document.SignatureEmployeeLoanDate = model.SignatureEmployeeLoanDate;
+			sale_Document.SignatureMCenterPath = model.SignatureMCenterPath;
+			sale_Document.SignatureMCenterDate = model.SignatureMCenterDate;
+			sale_Document.SubmitType = model.SubmitType;
+			if (model.SubmitType == 1)
+			{
+				sale_Document.SubmitDate = _dateNow;
+			}
+
+			await _db.InsterAsync(sale_Document);
+			await _db.SaveAsync();
+
+			if (sale_Document.SubmitType == 1)
+			{
+				proceedName = "รอผลพิจารณา";
+				statusSaleId = StatusSaleModel.WaitResults;
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
+			else
+			{
+				if (sale.StatusSaleId == StatusSaleModel.WaitSubmitDocument)
+				{
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					});
+				}
+			}
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				StatusSaleId = statusSaleId,
+				ProceedName = proceedName,
+				ResultContactName = resultContactName,
+				NextActionName = nextActionName,
+			});
+
+			return _mapper.Map<Sale_DocumentCustom>(sale_Document);
 		}
 
 		public async Task<Sale_ResultCustom> CreateResult(Sale_ResultCustom model)
 		{
-			throw new NotImplementedException();
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleId != StatusSaleModel.WaitResults
+				&& sale.StatusSaleId != StatusSaleModel.Results)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = StatusSaleModel.NotStatus;
+			string? proceedName = "ผลลัพธ์";
+			string? resultMeetName = string.Empty;
+			string? nextActionName = string.Empty;
+
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Result sale_Result = new();
+			sale_Result.Status = StatusModel.Active;
+			sale_Result.CreateDate = _dateNow;
+			sale_Result.SaleId = model.SaleId;
+			sale_Result.ProceedId = model.ProceedId;
+			sale_Result.NextActionId = model.NextActionId;
+			sale_Result.AppointmentDate = model.AppointmentDate;
+			sale_Result.AppointmentTime = model.AppointmentTime;
+			sale_Result.Location = model.Location;
+			sale_Result.Note = model.Note;
+			await _db.InsterAsync(sale_Result);
+			await _db.SaveAsync();
+
+			statusSaleId = StatusSaleModel.Results;
+
+			resultMeetName = model.ResultMeetId == 1 ? "เข้าพบสำเร็จ" : model.ResultMeetId == 2 ? "เข้าพบไม่สำเร็จ" : "";
+
+			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร
+			if (model.ProceedId == 1 || model.ProceedId == 2 || model.ProceedId == 3)
+			{
+				proceedName = model.ProceedId == 1 ? "แจ้งข้อมูลเพิ่มเติม" : model.ProceedId == 2 ? "ติดต่อขอเอกสาร" : model.ProceedId == 3 ? "เข้าพบรับเอกสาร" : string.Empty;
+			}
+
+			if (model.NextActionId == 1)
+			{
+				nextActionName = "ทำการนัดหมาย";
+			}
+
+			if (sale.StatusSaleId == StatusSaleModel.WaitResults)
+			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				StatusSaleId = statusSaleId,
+				ProceedName = proceedName,
+				ResultMeetName = resultMeetName,
+				NextActionName = nextActionName,
+				AppointmentDate = model.AppointmentDate,
+				AppointmentTime = model.AppointmentTime,
+				Location = model.Location,
+				Note = model.Note,
+			});
+
+			return _mapper.Map<Sale_ResultCustom>(sale_Result);
 		}
 
 		public async Task<Sale_Close_SaleCustom> CreateCloseSale(Sale_Close_SaleCustom model)
 		{
-			throw new NotImplementedException();
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleId != StatusSaleModel.Results)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = StatusSaleModel.NotStatus;
+			string? proceedName = "เข้าพบ";
+			string? resultContactName = string.Empty;
+
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Close_Sale sale_Close_Sale = new();
+			sale_Close_Sale.Status = StatusModel.Active;
+			sale_Close_Sale.CreateDate = _dateNow;
+			sale_Close_Sale.SaleId = model.SaleId;
+			sale_Close_Sale.Name = model.Name;
+			sale_Close_Sale.Tel = model.Tel;
+			sale_Close_Sale.ResultMeetId = model.ResultMeetId;
+			sale_Close_Sale.DesireLoanId = model.DesireLoanId;
+			sale_Close_Sale.ReasonId = model.ReasonId;
+			sale_Close_Sale.Note = model.Note;
+			await _db.InsterAsync(sale_Close_Sale);
+			await _db.SaveAsync();
+
+			resultContactName = model.ResultMeetId == 1 ? "เข้าพบสำเร็จ" : model.ResultMeetId == 2 ? "" : "";
+
+			if (sale_Close_Sale.DesireLoanId == 1 || sale_Close_Sale.DesireLoanId == 2)
+			{
+				if (sale_Close_Sale.DesireLoanId == 1)
+				{
+					proceedName = "ประสงค์กู้";
+					statusSaleId = StatusSaleModel.CloseSale;
+				}
+				else if (sale_Close_Sale.DesireLoanId == 2)
+				{
+					proceedName = "ไม่ประสงค์กู้";
+					statusSaleId = StatusSaleModel.ResultsNotLoan;
+				}
+				else
+				{
+					throw new ExceptionCustom("desireLoanId not match");
+				}
+
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				StatusSaleId = statusSaleId,
+				ProceedName = proceedName,
+				ResultContactName = resultContactName,
+				Note = model.Note,
+			});
+
+			return _mapper.Map<Sale_Close_SaleCustom>(sale_Close_Sale);
 		}
 
 		public async Task<Sale_Contact_HistoryCustom> CreateContactHistory(Sale_Contact_HistoryCustom model)
@@ -826,6 +1127,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			sale_Contact_History.ProceedName = model.ProceedName;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
+			sale_Contact_History.ResultMeetName = model.ResultMeetName;
 			sale_Contact_History.NextActionName = model.NextActionName;
 			sale_Contact_History.CreditLimit = model.CreditLimit;
 			sale_Contact_History.Percent = model.Percent;

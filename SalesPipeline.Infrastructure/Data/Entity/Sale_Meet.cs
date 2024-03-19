@@ -37,7 +37,7 @@ public partial class Sale_Meet
     /// <summary>
     /// 1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ
     /// </summary>
-    public Guid? MeetId { get; set; }
+    public int? MeetId { get; set; }
 
     /// <summary>
     /// ผลผลิตหลัก

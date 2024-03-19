@@ -68,33 +68,45 @@
 		/// </summary>
 		public const short MeetFail = 15;
 		/// <summary>
+		/// รอยื่นเอกสาร
+		/// </summary>
+		public const short WaitSubmitDocument = 16;
+		/// <summary>
 		/// ยื่นเอกสาร
 		/// </summary>
-		public const short SubmitDocument = 16;
+		public const short SubmitDocument = 17;
 		/// <summary>
 		/// ยื่นเอกสารไม่สำเร็จ
 		/// </summary>
-		public const short SubmitDocumentFail = 17;
+		public const short SubmitDocumentFail = 18;
+		/// <summary>
+		/// รอผลพิจารณา
+		/// </summary>
+		public const short WaitResults = 19;
 		/// <summary>
 		/// ผลลัพธ์
 		/// </summary>
-		public const short Results = 18;
+		public const short Results = 20;
 		/// <summary>
 		/// ไม่ผ่านการพิจารณา
 		/// </summary>
-		public const short ResultsNotConsidered = 19;
+		public const short ResultsNotConsidered = 21;
 		/// <summary>
 		/// ไม่ประสงค์กู้
 		/// </summary>
-		public const short ResultsNotLoan = 20;
+		public const short ResultsNotLoan = 22;
+		/// <summary>
+		/// รอปิดการขาย
+		/// </summary>
+		public const short WaitCloseSale = 23;
 		/// <summary>
 		/// ปิดการขาย
 		/// </summary>
-		public const short CloseSale = 21;
+		public const short CloseSale = 24;
 		/// <summary>
 		/// ปิดการขายไม่สำเร็จ
 		/// </summary>
-		public const short CloseSaleFail = 22;
+		public const short CloseSaleFail = 25;
 	}
 
 }

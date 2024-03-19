@@ -36,6 +36,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public string? ResultContactName { get; set; }
 
+		/// <summary>
+		/// ผลการเข้าพบ
+		/// </summary>
+		public string? ResultMeetName { get; set; }
+
 		public string? NextActionName { get; set; }
 
 		/// <summary>
