@@ -1,12 +1,14 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class Sale_ContactCustom
+	public class Sale_ContactCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -16,12 +18,6 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public short Status { get; set; }
 
 		public DateTime CreateDate { get; set; }
-
-		public int CreateBy { get; set; }
-
-		public DateTime UpdateDate { get; set; }
-
-		public int UpdateBy { get; set; }
 
 		public Guid SaleId { get; set; }
 
@@ -41,8 +37,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public DateTime? ContactDate { get; set; }
 
 		/// <summary>
-		/// ผลการติดต่อ
+		/// 1=รับสาย 2=ไม่รับสาย
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ContactResult { get; set; }
 
 		/// <summary>

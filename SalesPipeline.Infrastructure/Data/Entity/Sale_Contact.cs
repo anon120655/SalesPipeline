@@ -17,12 +17,6 @@ public partial class Sale_Contact
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public DateTime UpdateDate { get; set; }
-
-    public int UpdateBy { get; set; }
-
     public Guid SaleId { get; set; }
 
     /// <summary>
@@ -41,7 +35,7 @@ public partial class Sale_Contact
     public DateTime? ContactDate { get; set; }
 
     /// <summary>
-    /// ผลการติดต่อ
+    /// 1=รับสาย 2=ไม่รับสาย
     /// </summary>
     public int? ContactResult { get; set; }
 

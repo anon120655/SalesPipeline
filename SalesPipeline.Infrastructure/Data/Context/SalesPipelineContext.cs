@@ -1345,7 +1345,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DesireLoanId)
                 .HasComment("1=ประสงค์กู้ 2=ไม่ประสงค์กู้")
@@ -1368,8 +1367,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(255)
                 .HasComment("เบอร์ติดต่อ");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Close_Sales)
                 .HasForeignKey(d => d.SaleId)
@@ -1397,9 +1394,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("วันที่ติดต่อ")
                 .HasColumnType("datetime");
             entity.Property(e => e.ContactResult)
-                .HasComment("ผลการติดต่อ")
+                .HasComment("1=รับสาย 2=ไม่รับสาย")
                 .HasColumnType("int(11)");
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
@@ -1419,8 +1415,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(255)
                 .HasComment("เบอร์ติดต่อ");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contacts)
                 .HasForeignKey(d => d.SaleId)
@@ -1435,6 +1429,8 @@ public partial class SalesPipelineContext : DbContext
             entity.ToTable("Sale_Contact_History", tb => tb.HasComment("ประวัติการติดต่อ"));
 
             entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
 
             entity.Property(e => e.AppointmentDate)
                 .HasComment("วันที่นัดหมาย")
@@ -1470,11 +1466,17 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.StatusName)
                 .HasMaxLength(255)
                 .HasComment("สถานะ");
+            entity.Property(e => e.StatusSaleId).HasColumnType("int(11)");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contact_Histories)
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_contact_history_ibfk_1");
+
+            entity.HasOne(d => d.StatusSale).WithMany(p => p.Sale_Contact_Histories)
+                .HasForeignKey(d => d.StatusSaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_contact_history_ibfk_2");
         });
 
         modelBuilder.Entity<Sale_Document>(entity =>
@@ -1501,7 +1503,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CommentEmployeeLoan)
                 .HasMaxLength(500)
                 .HasComment("ความคิดเห็นพนักงานสินเชื่อ");
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DateFirstContactBank)
                 .HasComment("วันที่เริ่มติดต่อกับธนาคารในการขอกู้ครั้งนี้")
@@ -1585,8 +1586,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TotaLlimitCEQA)
                 .HasPrecision(18, 2)
                 .HasComment("CEQA รวมวงเงินเทียบเท่าสินเชื่อ เท่ากับ");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.VillageNo)
                 .HasMaxLength(255)
                 .HasComment("หมู่ที่");
@@ -1621,7 +1620,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AppointmentTime)
                 .HasComment("เวลาที่นัดหมาย")
                 .HasColumnType("time");
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.LoanAmount)
                 .HasPrecision(18, 2)
@@ -1650,8 +1648,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(255)
                 .HasComment("เบอร์ติดต่อ");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Meets)
                 .HasForeignKey(d => d.SaleId)
@@ -1800,7 +1796,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AttachmentPath)
                 .HasMaxLength(255)
                 .HasComment("เอกสาร");
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
@@ -1823,8 +1818,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Results)
                 .HasForeignKey(d => d.SaleId)

@@ -212,6 +212,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<SaleCustom>(query);
 		}
 
+		public async Task<SaleCustom> GetStatusById(Guid id)
+		{
+			var query = await _repo.Context.Sales
+				.Include(x => x.StatusSale)
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<SaleCustom>(query);
+		}
+
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
 		{
 			IQueryable<Sale> query;

@@ -355,6 +355,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
+				if (model.ProcessSaleId.ToString().ToLower() == "015fdd4b-dea2-11ee-980e-30e37aef72fb" && model.Sale_Contact != null)
+				{
+					model.Sale_Contact.SaleId = model.SaleId;
+					model.Sale_Contact.CurrentUserId = model.CurrentUserId;
+					await CreateContact(model.Sale_Contact);
+				}
+				else if (model.ProcessSaleId.ToString().ToLower() == "0bb6fa64-dea2-11ee-980e-30e37aef72fb" && model.Sale_Meet != null)
+				{
+					model.Sale_Meet.SaleId = model.SaleId;
+					model.Sale_Meet.CurrentUserId = model.CurrentUserId;
+					await CreateMeet(model.Sale_Meet);
+				}
+				else if (model.ProcessSaleId.ToString().ToLower() == "f037dede-dea1-11ee-980e-30e37aef72fb" && model.Sale_Document != null)
+				{
+					model.Sale_Document.SaleId = model.SaleId;
+					model.Sale_Document.CurrentUserId = model.CurrentUserId;
+					await CreateDocument(model.Sale_Document);
+				}
+				else if (model.ProcessSaleId.ToString().ToLower() == "fd0f2bca-dea1-11ee-980e-30e37aef72fb" && model.Sale_Result != null)
+				{
+					model.Sale_Result.SaleId = model.SaleId;
+					model.Sale_Result.CurrentUserId = model.CurrentUserId;
+					await CreateResult(model.Sale_Result);
+				}
+				else if (model.ProcessSaleId.ToString().ToLower() == "ff900c10-dea1-11ee-980e-30e37aef72fb" && model.Sale_Close_Sale != null)
+				{
+					model.Sale_Close_Sale.SaleId = model.SaleId;
+					model.Sale_Close_Sale.CurrentUserId = model.CurrentUserId;
+					await CreateCloseSale(model.Sale_Close_Sale);
+				}
+
 				_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
@@ -639,6 +670,156 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_replyName = masterData.Name;
 			}
 			return _replyName;
+		}
+
+		public async Task<Sale_ContactCustom> CreateContact(Sale_ContactCustom model)
+		{
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleId != StatusSaleModel.WaitContact
+				&& sale.StatusSaleId != StatusSaleModel.Contact
+				&& sale.StatusSaleId != StatusSaleModel.ContactFail)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Contact sale_Contact = new();
+			sale_Contact.Status = StatusModel.Active;
+			sale_Contact.CreateDate = _dateNow;
+			sale_Contact.SaleId = model.SaleId;
+			sale_Contact.Name = model.Name;
+			sale_Contact.Tel = model.Tel;
+			sale_Contact.ContactDate = model.ContactDate;
+			sale_Contact.ContactResult = model.ContactResult;
+			sale_Contact.NextActionId = model.NextActionId;
+			sale_Contact.AppointmentDate = model.AppointmentDate;
+			sale_Contact.AppointmentTime = model.AppointmentTime;
+			sale_Contact.Location = model.Location;
+			sale_Contact.Note = model.Note;
+			await _db.InsterAsync(sale_Contact);
+			await _db.SaveAsync();
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = 0;
+			string? proceedName = string.Empty;
+			string? resultContactName = string.Empty;
+			string? nextActionName = string.Empty;
+
+			if (sale_Contact.NextActionId == 1)
+			{
+				statusSaleId = StatusSaleModel.WaitMeet;
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
+			else
+			{
+				if (model.ContactResult == 1 || model.ContactResult == 2)
+				{
+					statusSaleId = StatusSaleModel.Contact;
+					if (sale.StatusSaleId == StatusSaleModel.WaitContact)
+					{
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = model.SaleId,
+							StatusId = statusSaleId,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+					}
+				}
+			}
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				StatusSaleId = statusSaleId,
+				ProceedName = proceedName,
+				ResultContactName = resultContactName,
+				NextActionName = nextActionName,
+			});
+
+			return _mapper.Map<Sale_ContactCustom>(sale_Contact);
+		}
+
+		public async Task<Sale_MeetCustom> CreateMeet(Sale_MeetCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Meet sale_Meet = new();
+			sale_Meet.Status = StatusModel.Active;
+			sale_Meet.CreateDate = _dateNow;
+			sale_Meet.SaleId = model.SaleId;
+			sale_Meet.Name = model.Name;
+			sale_Meet.Tel = model.Tel;
+			sale_Meet.MeetDate = model.MeetDate;
+			sale_Meet.MeetId = model.MeetId;
+			sale_Meet.Master_YieldId = model.Master_YieldId;
+			sale_Meet.Master_ChainId = model.Master_ChainId;
+			sale_Meet.LoanAmount = model.LoanAmount;
+			sale_Meet.NextActionId = model.NextActionId;
+			sale_Meet.AppointmentDate = model.AppointmentDate;
+			sale_Meet.AppointmentTime = model.AppointmentTime;
+			sale_Meet.Location = model.Location;
+			sale_Meet.Note = model.Note;
+			await _db.InsterAsync(sale_Meet);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_MeetCustom>(sale_Meet);
+		}
+
+		public async Task<Sale_DocumentCustom> CreateDocument(Sale_DocumentCustom model)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<Sale_ResultCustom> CreateResult(Sale_ResultCustom model)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<Sale_Close_SaleCustom> CreateCloseSale(Sale_Close_SaleCustom model)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<Sale_Contact_HistoryCustom> CreateContactHistory(Sale_Contact_HistoryCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			Sale_Contact_HistoryCustom sale_Contact_History = new();
+			sale_Contact_History.Status = StatusModel.Active;
+			sale_Contact_History.CreateDate = _dateNow;
+			sale_Contact_History.CreateBy = model.CurrentUserId;
+			sale_Contact_History.CreateByName = currentUserName;
+			sale_Contact_History.SaleId = model.SaleId;
+			sale_Contact_History.StatusSaleId = model.StatusSaleId;
+
+			sale_Contact_History.ProceedName = model.ProceedName;
+			sale_Contact_History.ResultContactName = model.ResultContactName;
+			sale_Contact_History.NextActionName = model.NextActionName;
+			sale_Contact_History.CreditLimit = model.CreditLimit;
+			sale_Contact_History.Percent = model.Percent;
+
+			sale_Contact_History.AppointmentDate = model.AppointmentDate;
+			sale_Contact_History.AppointmentTime = model.AppointmentTime;
+			sale_Contact_History.Location = model.Location;
+			sale_Contact_History.Note = model.Note;
+			await _db.InsterAsync(sale_Contact_History);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_Contact_HistoryCustom>(sale_Contact_History);
 		}
 
 	}

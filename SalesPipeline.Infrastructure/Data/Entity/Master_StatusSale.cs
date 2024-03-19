@@ -26,6 +26,8 @@ public partial class Master_StatusSale
     /// </summary>
     public short? IsShowFilter { get; set; }
 
+    public virtual ICollection<Sale_Contact_History> Sale_Contact_Histories { get; set; } = new List<Sale_Contact_History>();
+
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();

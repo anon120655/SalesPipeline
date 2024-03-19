@@ -36,5 +36,28 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public virtual List<Sale_Reply_SectionCustom>? Sale_Reply_Sections { get; set; }
 
-    }
+        //Custom
+
+		/// <summary>
+		/// ติดต่อ
+		/// </summary>
+        public Sale_ContactCustom? Sale_Contact { get; set; }
+		/// <summary>
+		/// เข้าพบ
+		/// </summary>
+		public Sale_MeetCustom? Sale_Meet { get; set; }
+		/// <summary>
+		/// ยื่นเอกสาร
+		/// </summary>
+		public Sale_DocumentCustom? Sale_Document { get; set; }
+		/// <summary>
+		/// ผลลัพธ์
+		/// </summary>
+		public Sale_ResultCustom? Sale_Result { get; set; }
+		/// <summary>
+		/// ปิดกาขาย
+		/// </summary>
+		public Sale_Close_SaleCustom? Sale_Close_Sale { get; set; }
+
+	}
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class Sale_Contact_HistoryCustom
+	public class Sale_Contact_HistoryCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -22,6 +23,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? CreateByName { get; set; }
 
 		public Guid SaleId { get; set; }
+
+		public int StatusSaleId { get; set; }
 
 		/// <summary>
 		/// การดำเนินการ

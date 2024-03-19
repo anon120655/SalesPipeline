@@ -23,6 +23,8 @@ public partial class Sale_Contact_History
 
     public Guid SaleId { get; set; }
 
+    public int StatusSaleId { get; set; }
+
     /// <summary>
     /// การดำเนินการ
     /// </summary>
@@ -71,4 +73,6 @@ public partial class Sale_Contact_History
     public string? Percent { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
+
+    public virtual Master_StatusSale StatusSale { get; set; } = null!;
 }

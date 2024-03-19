@@ -67,11 +67,11 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Sale_Reply_Section_ItemValue, Sale_Reply_Section_ItemValueCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Reply_Section_ItemValue, Sale_Reply_Section_ItemValueCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Contact, Sale_ContactCustom>().ReverseMap();
-			CreateMap<Entity.Sale_Contact_History, Sale_Contact_HistoryCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Meet, Sale_MeetCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Document, Sale_DocumentCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Result, Sale_ResultCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Close_Sale, Sale_Close_SaleCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Contact_History, Sale_Contact_HistoryCustom>().ReverseMap();
 
 			//Customer
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();

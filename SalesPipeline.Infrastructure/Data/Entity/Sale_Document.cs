@@ -14,12 +14,6 @@ public partial class Sale_Document
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public DateTime UpdateDate { get; set; }
-
-    public int UpdateBy { get; set; }
-
     public Guid SaleId { get; set; }
 
     /// <summary>
