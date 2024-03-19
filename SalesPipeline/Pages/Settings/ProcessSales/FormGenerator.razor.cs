@@ -283,6 +283,17 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			formModel.CurrentUserId = UserInfo.Id;
 
+			//formModel.Sale_Contact = new();
+			//formModel.Sale_Contact.Name = "นายทดสอบ ติดต่อ01";
+			//formModel.Sale_Contact.Tel = "0800000001";
+			//formModel.Sale_Contact.ContactDate = DateTime.Now;
+			//formModel.Sale_Contact.ContactResult = 1;
+			//formModel.Sale_Contact.NextActionId = 1;
+			//formModel.Sale_Contact.AppointmentDate = new DateTime(2024, 03, 25);
+			//formModel.Sale_Contact.AppointmentTime = new TimeOnly(11, 30, 00);
+			//formModel.Sale_Contact.Location = "อเมซอล ในตัวเมือง2";
+			//formModel.Sale_Contact.Note = "ลูกค้าสั่งกาแฟอเมริกาโน่";
+
 			ResultModel<Sale_ReplyCustom> response;
 
 			if (id_reply != Guid.Empty)

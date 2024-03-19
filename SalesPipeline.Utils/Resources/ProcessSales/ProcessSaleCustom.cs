@@ -23,6 +23,8 @@ namespace SalesPipeline.Utils.Resources.ProcessSales
 
 		public string? Name { get; set; }
 
+		public string Code { get; set; } = null!;
+
 		public virtual List<ProcessSale_SectionCustom>? ProcessSale_Sections { get; set; }
 	}
 }

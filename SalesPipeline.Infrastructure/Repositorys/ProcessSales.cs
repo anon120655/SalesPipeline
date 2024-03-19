@@ -233,8 +233,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				string? _processSaleName = string.Empty;
 				var processSales = await _repo.Context.ProcessSales.FirstOrDefaultAsync(x => x.Id == model.ProcessSaleId);
-				if (processSales != null)
-					_processSaleName = processSales.Name;
+				if (processSales == null) throw new ExceptionCustom("ProcessSaleId not found.");
+				_processSaleName = processSales.Name;
+
+				if (processSales.Code == ProcessSaleCodeModel.Contact)
+				{
+					if (model.Sale_Contact == null) throw new ExceptionCustom("Sale_Contact model not found.");
+
+					model.Sale_Contact.SaleId = model.SaleId;
+					model.Sale_Contact.CurrentUserId = model.CurrentUserId;
+					await CreateContact(model.Sale_Contact);
+				}
+				else if (processSales.Code == ProcessSaleCodeModel.Meet)
+				{
+					if (model.Sale_Meet == null) throw new ExceptionCustom("Sale_Meet model not found.");
+
+					model.Sale_Meet.SaleId = model.SaleId;
+					model.Sale_Meet.CurrentUserId = model.CurrentUserId;
+					await CreateMeet(model.Sale_Meet);
+				}
+				else if (processSales.Code == ProcessSaleCodeModel.Document)
+				{
+					if (model.Sale_Document == null) throw new ExceptionCustom("Sale_Document model not found.");
+
+					model.Sale_Document.SaleId = model.SaleId;
+					model.Sale_Document.CurrentUserId = model.CurrentUserId;
+					await CreateDocument(model.Sale_Document);
+				}
+				else if (processSales.Code == ProcessSaleCodeModel.Result)
+				{
+					if (model.Sale_Result == null) throw new ExceptionCustom("Sale_Result model not found.");
+
+					model.Sale_Result.SaleId = model.SaleId;
+					model.Sale_Result.CurrentUserId = model.CurrentUserId;
+					await CreateResult(model.Sale_Result);
+				}
+				else if (processSales.Code == ProcessSaleCodeModel.CloseSale && model.Sale_Close_Sale != null)
+				{
+					if (model.Sale_Close_Sale == null) throw new ExceptionCustom("Sale_Close_Sale model not found.");
+
+					model.Sale_Close_Sale.SaleId = model.SaleId;
+					model.Sale_Close_Sale.CurrentUserId = model.CurrentUserId;
+					await CreateCloseSale(model.Sale_Close_Sale);
+				}
 
 				Sale_Reply saleReply = new();
 				saleReply.Status = StatusModel.Active;
@@ -353,37 +394,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 						}
 					}
-				}
-
-				if (model.ProcessSaleId.ToString().ToLower() == "015fdd4b-dea2-11ee-980e-30e37aef72fb" && model.Sale_Contact != null)
-				{
-					model.Sale_Contact.SaleId = model.SaleId;
-					model.Sale_Contact.CurrentUserId = model.CurrentUserId;
-					await CreateContact(model.Sale_Contact);
-				}
-				else if (model.ProcessSaleId.ToString().ToLower() == "0bb6fa64-dea2-11ee-980e-30e37aef72fb" && model.Sale_Meet != null)
-				{
-					model.Sale_Meet.SaleId = model.SaleId;
-					model.Sale_Meet.CurrentUserId = model.CurrentUserId;
-					await CreateMeet(model.Sale_Meet);
-				}
-				else if (model.ProcessSaleId.ToString().ToLower() == "f037dede-dea1-11ee-980e-30e37aef72fb" && model.Sale_Document != null)
-				{
-					model.Sale_Document.SaleId = model.SaleId;
-					model.Sale_Document.CurrentUserId = model.CurrentUserId;
-					await CreateDocument(model.Sale_Document);
-				}
-				else if (model.ProcessSaleId.ToString().ToLower() == "fd0f2bca-dea1-11ee-980e-30e37aef72fb" && model.Sale_Result != null)
-				{
-					model.Sale_Result.SaleId = model.SaleId;
-					model.Sale_Result.CurrentUserId = model.CurrentUserId;
-					await CreateResult(model.Sale_Result);
-				}
-				else if (model.ProcessSaleId.ToString().ToLower() == "ff900c10-dea1-11ee-980e-30e37aef72fb" && model.Sale_Close_Sale != null)
-				{
-					model.Sale_Close_Sale.SaleId = model.SaleId;
-					model.Sale_Close_Sale.CurrentUserId = model.CurrentUserId;
-					await CreateCloseSale(model.Sale_Close_Sale);
 				}
 
 				_transaction.Commit();
@@ -684,6 +694,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("statussale not match");
 			}
 
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = 0;
+			string? proceedName = "ติดต่อ";
+			string? resultContactName = string.Empty;
+			string? nextActionName = string.Empty;
+
 			DateTime _dateNow = DateTime.Now;
 
 			Sale_Contact sale_Contact = new();
@@ -702,16 +719,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale_Contact);
 			await _db.SaveAsync();
 
-			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
-
-			int statusSaleId = 0;
-			string? proceedName = string.Empty;
-			string? resultContactName = string.Empty;
-			string? nextActionName = string.Empty;
+			if (model.ContactResult == 1 || model.ContactResult == 2)
+			{
+				resultContactName = model.ContactResult == 1 ? "รับสาย" : "ไม่รับสาย";
+				statusSaleId = StatusSaleModel.Contact;
+			}
 
 			if (sale_Contact.NextActionId == 1)
 			{
+				proceedName = "รอเข้าพบ";
 				statusSaleId = StatusSaleModel.WaitMeet;
+				nextActionName = "ทำการนัดหมาย";
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -722,19 +740,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else
 			{
-				if (model.ContactResult == 1 || model.ContactResult == 2)
+				if (sale.StatusSaleId == StatusSaleModel.WaitContact)
 				{
-					statusSaleId = StatusSaleModel.Contact;
-					if (sale.StatusSaleId == StatusSaleModel.WaitContact)
+					await _repo.Sales.UpdateStatusOnly(new()
 					{
-						await _repo.Sales.UpdateStatusOnly(new()
-						{
-							SaleId = model.SaleId,
-							StatusId = statusSaleId,
-							CreateBy = model.CurrentUserId,
-							CreateByName = currentUserName,
-						});
-					}
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					});
 				}
 			}
 
@@ -746,6 +760,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
+				AppointmentDate = model.AppointmentDate,
+				AppointmentTime = model.AppointmentTime,
+				Location = model.Location,
+				Note = model.Note,
 			});
 
 			return _mapper.Map<Sale_ContactCustom>(sale_Contact);
@@ -798,7 +816,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
-			Sale_Contact_HistoryCustom sale_Contact_History = new();
+			Sale_Contact_History sale_Contact_History = new();
 			sale_Contact_History.Status = StatusModel.Active;
 			sale_Contact_History.CreateDate = _dateNow;
 			sale_Contact_History.CreateBy = model.CurrentUserId;
@@ -820,6 +838,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			return _mapper.Map<Sale_Contact_HistoryCustom>(sale_Contact_History);
+		}
+
+		public async Task<PaginationView<List<Sale_Contact_HistoryCustom>>> GetListContactHistory(allFilter model)
+		{
+			var query = _repo.Context.Sale_Contact_Histories
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CreateBy)
+												 .AsQueryable();
+			if (model.id != Guid.Empty)
+			{
+				query = query.Where(x => x.SaleId == model.id);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_Contact_HistoryCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_Contact_HistoryCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 	}

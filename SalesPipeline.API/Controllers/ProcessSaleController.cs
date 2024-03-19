@@ -153,5 +153,23 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ข้อมูลประวัติการติดต่อทั้งหมด
+		/// </summary>
+		[HttpGet("GetListContactHistory")]
+		public async Task<IActionResult> GetListContactHistory([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetListContactHistory(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
