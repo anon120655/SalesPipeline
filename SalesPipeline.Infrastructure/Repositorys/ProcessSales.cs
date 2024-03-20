@@ -926,8 +926,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Document.SubmitType == 1)
 			{
-				proceedName = "รอผลพิจารณา";
-				statusSaleId = StatusSaleModel.WaitResults;
+				proceedName = "รอลงนามอนุมัติเอกสาร";
+				statusSaleId = StatusSaleModel.WaitApproveDocument;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,

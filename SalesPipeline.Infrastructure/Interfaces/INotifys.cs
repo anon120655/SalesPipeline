@@ -11,6 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface INotifys
 	{
 		Task LineNotify(string msg);
+		Task<NotificationCustom> Create(NotificationCustom model);
 		Task<PaginationView<List<NotificationCustom>>> GetList(NotiFilter model);
 		Task UpdateRead(List<Guid> model);
 

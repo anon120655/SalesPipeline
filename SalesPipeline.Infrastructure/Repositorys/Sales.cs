@@ -197,6 +197,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
 					}
+
+					//Noti
+
+					await _repo.Notifys.Create(new()
+					{
+						EventId = 2,
+						FromUserId = model.CreateBy,
+						ToUserId = sales.AssUserId.Value,
+						ActionId = 2,
+						ActionName1 = sales.CompanyName
+					});
 				}
 
 			}
