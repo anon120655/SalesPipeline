@@ -878,6 +878,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
+			var amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId ?? 0);
 
 			int statusSaleId = StatusSaleModel.SubmitDocument;
 			string? proceedName = "ยื่นเอกสาร";
@@ -899,7 +901,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.HouseNo = model.HouseNo;
 			sale_Document.VillageNo = model.VillageNo;
 			sale_Document.ProvinceId = model.ProvinceId;
+			sale_Document.ProvinceName = provinceName;
 			sale_Document.AmphurId = model.AmphurId;
+			sale_Document.AmphurName = amphurName;
 			sale_Document.HouseRegistrationPath = model.HouseRegistrationPath;
 			sale_Document.PathOtherDocument = model.PathOtherDocument;
 			sale_Document.Master_BusinessTypeId = model.Master_BusinessTypeId;

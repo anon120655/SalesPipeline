@@ -61,10 +61,14 @@ public partial class Sale_Document
     /// </summary>
     public int? ProvinceId { get; set; }
 
+    public string? ProvinceName { get; set; }
+
     /// <summary>
     /// อำเภอ
     /// </summary>
     public int? AmphurId { get; set; }
+
+    public string? AmphurName { get; set; }
 
     /// <summary>
     /// ไฟล์ทะเบียนนบ้าน

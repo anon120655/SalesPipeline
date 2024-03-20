@@ -1502,6 +1502,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.AmphurName).HasMaxLength(255);
             entity.Property(e => e.Birthday)
                 .HasComment("วันเกิด")
                 .HasColumnType("datetime");
@@ -1555,6 +1556,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProvinceId)
                 .HasComment("จังหวัด")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
             entity.Property(e => e.RegistrationDate)
                 .HasComment("วันที่รับขึ้นทะเบียนเป็นลูกค้า")
                 .HasColumnType("datetime");

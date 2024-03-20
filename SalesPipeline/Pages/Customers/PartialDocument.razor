@@ -1,21 +1,118 @@
 ﻿@if (formModel != null && formModel.Count > 0)
 {
-	var Document = formModel.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+	var document = formModel.OrderByDescending(x => x.CreateDate).FirstOrDefault();
 
 	<div class="row my-3">
 		<div class="col-12">
-			@if (Document != null)
+			@if (document != null)
 			{
 				<div class="form-group row mb-1">
 					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เลขบัตรประชาชน : </label>
 					<div class="col-6 col-md-7 col-xl-3">
 						<label class="col-form-label">
-							@Document.IDCardNumber
+							@GeneralUtils.EmptyTo(document.IDCardNumber)
 						</label>
-					</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาไทย :</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาไทย : </label>
 					<div class="col-6 col-md-7 col-xl-3">
 						<label class="col-form-label">
-							@Document.NameTh
+							@GeneralUtils.EmptyTo(document.NameTh)
+						</label>
+					</div>
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาอังกฤษ :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.NameEn)
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วันเกิด : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(GeneralUtils.DateToThString(document.Birthday))
+						</label>
+					</div>
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ศาสนา :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.Religion)
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่ : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.HouseNo)
+						</label>
+					</div>
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่ :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.VillageNo)
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.ProvinceName)
+						</label>
+					</div>
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อำเภอ :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.AmphurName)
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ไฟล์ทะเบียนนบ้าน : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							<a href="@document.HouseRegistrationPath" target="_blank">เปิดไฟล์</a>
+						</label>
+					</div>
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ไฟล์เอกสารอื่นๆ :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							<a href="@document.PathOtherDocument" target="_blank">เปิดไฟล์</a>
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ความคิดเห็นพนักงานสินเชื่อ : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@GeneralUtils.EmptyTo(document.CommentEmployeeLoan)
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นผู้กู้ยืม : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							<img src="@document.SignatureNamePath" width="250" />
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นพนักงานสินเชื่อ : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							<img src="@document.SignatureEmployeeLoanPath" width="250" />
+						</label>
+					</div>
+				</div>
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นผู้จัดการศูนย์ : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							<img src="@document.SignatureMCenterPath" width="250" />
 						</label>
 					</div>
 				</div>
