@@ -75,6 +75,14 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.Sales.UpdateStatusOnly(model);
 
+
+					if (model.StatusId == StatusSaleModel.WaitAPIPHOENIXLPS)
+					{
+						//รอส่ง API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS)
+
+
+					}
+
 					_transaction.Commit();
 				}
 

@@ -80,7 +80,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			var response = await _salesViewModel.UpdateStatusOnly(new()
 			{
 				SaleId = id,
-				StatusId = StatusSaleModel.NotApprove,
+				StatusId = StatusSaleModel.NotApproveDocument,
 				CreateBy = UserInfo.Id,
 				Description = model.Name
 			});
@@ -105,11 +105,11 @@ namespace SalesPipeline.Pages.ApproveLoans
 			_errorMessage = null;
 			ShowLoading();
 
-			//ผู้จัดการศูนย์อนุมัติลูกค้าจาก RM ไปรอการติดต่อ
+			//ผู้จัดการศูนย์ตรวจสอบและอนุมัติลงนาม และส่ง API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS) ไป รอวิเคราะห์สินเชื่อ(LPS)
 			var response = await _salesViewModel.UpdateStatusOnly(new()
 			{
 				SaleId = id,
-				StatusId = StatusSaleModel.WaitContact,
+				StatusId = StatusSaleModel.WaitAPIPHOENIXLPS,
 				CreateBy = UserInfo.Id,
 			});
 
