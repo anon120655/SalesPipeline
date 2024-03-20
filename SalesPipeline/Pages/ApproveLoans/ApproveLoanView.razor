@@ -19,7 +19,7 @@
 					<div class="row mt-3">
 						<div class="col-12 tabs_elm">
 							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
-								<Tab Title="ข้อมูลลูกค้า" IsActive="true">
+								<Tab Title="ข้อมูลลูกค้า" Name="CustomerInfo" IsActive="true">
 									<Content>
 										<PartialCustomerInfo formModel="formModel.Customer" />
 									</Content>
@@ -38,9 +38,9 @@
 										</div>
 									</Content>
 								</Tab>
-								<Tab Title="ประวัติการติดต่อ">
+								<Tab Title="ประวัติการติดต่อ" Name="ContactHistory">
 									<Content>
-										<PartialContactHistoryInfo formModel="formModel.Sale_Contact_Histories" />
+										<PartialContactHistory formModel="formModel.Sale_Contact_Histories" />
 									</Content>
 								</Tab>
 								<Tab Title="คู่ค้า">

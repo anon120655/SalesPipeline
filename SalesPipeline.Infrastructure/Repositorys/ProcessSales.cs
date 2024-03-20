@@ -756,6 +756,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CurrentUserId = model.CurrentUserId,
 				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.Contact,
 				StatusSaleId = statusSaleId,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
@@ -847,6 +848,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CurrentUserId = model.CurrentUserId,
 				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.Meet,
 				StatusSaleId = statusSaleId,
 				ProceedName = proceedName,
 				ResultMeetName = resultMeetName,
@@ -963,6 +965,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CurrentUserId = model.CurrentUserId,
 				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.Document,
 				StatusSaleId = statusSaleId,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
@@ -1035,6 +1038,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CurrentUserId = model.CurrentUserId,
 				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.Result,
 				StatusSaleId = statusSaleId,
 				ProceedName = proceedName,
 				ResultMeetName = resultMeetName,
@@ -1111,6 +1115,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				CurrentUserId = model.CurrentUserId,
 				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.CloseSale,
 				StatusSaleId = statusSaleId,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
@@ -1155,7 +1160,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Sale_Contact_Histories
 												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderBy(x => x.CreateBy)
+												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 			if (model.id != Guid.Empty)
 			{

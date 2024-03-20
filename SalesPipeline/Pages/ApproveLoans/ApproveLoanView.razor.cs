@@ -7,6 +7,8 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Shared.Modals;
 using SixLabors.ImageSharp.Metadata.Profiles.Iptc;
+using BlazorBootstrap;
+using NPOI.SS.Formula.Functions;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
@@ -143,7 +145,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 		protected async Task ConfirmApprove(string id)
 		{
-			await Approve();			
+			await Approve();
 		}
 
 		protected async Task InitShowNotApprove()
@@ -176,6 +178,13 @@ namespace SalesPipeline.Pages.ApproveLoans
 				Cancel();
 			}
 		}
+
+		//protected async Task ShowTabCustomerInfo()
+		//{
+		//}
+		//protected async Task ShowTabContactHistory()
+		//{
+		//}
 
 	}
 }

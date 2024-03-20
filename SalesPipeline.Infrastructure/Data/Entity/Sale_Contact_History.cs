@@ -25,6 +25,8 @@ public partial class Sale_Contact_History
 
     public int StatusSaleId { get; set; }
 
+    public string? ProcessSaleCode { get; set; }
+
     /// <summary>
     /// การดำเนินการ
     /// </summary>

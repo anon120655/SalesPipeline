@@ -218,7 +218,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
-				.Include(x => x.Sale_Contact_Histories)
+				.Include(x => x.Sale_Contact_Histories.OrderBy(x => x.CreateDate))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);
 		}

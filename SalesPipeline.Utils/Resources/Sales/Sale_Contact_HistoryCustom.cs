@@ -26,6 +26,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public int StatusSaleId { get; set; }
 
+		public string? ProcessSaleCode { get; set; }
+
 		/// <summary>
 		/// การดำเนินการ
 		/// </summary>

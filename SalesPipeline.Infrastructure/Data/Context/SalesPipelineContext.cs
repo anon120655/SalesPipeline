@@ -1458,6 +1458,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProceedName)
                 .HasMaxLength(255)
                 .HasComment("การดำเนินการ");
+            entity.Property(e => e.ProcessSaleCode).HasMaxLength(255);
             entity.Property(e => e.ResultContactName)
                 .HasMaxLength(255)
                 .HasComment("ผลการติดต่อ");
