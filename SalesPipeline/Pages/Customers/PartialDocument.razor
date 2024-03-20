@@ -1,0 +1,35 @@
+﻿@if (formModel != null && formModel.Count > 0)
+{
+	var Document = formModel.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+
+	<div class="row my-3">
+		<div class="col-12">
+			@if (Document != null)
+			{
+				<div class="form-group row mb-1">
+					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เลขบัตรประชาชน : </label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@Document.IDCardNumber
+						</label>
+					</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาไทย :</label>
+					<div class="col-6 col-md-7 col-xl-3">
+						<label class="col-form-label">
+							@Document.NameTh
+						</label>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+}
+else
+{
+	<div class="d-flex align-items-center justify-content-center mh_10r">
+		<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+	</div>
+}
+@code {
+	[Parameter]
+	public List<Sale_DocumentCustom>? formModel { get; set; }
+}

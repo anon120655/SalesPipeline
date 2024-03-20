@@ -1,177 +1,6 @@
-﻿
-<style>
+﻿@inject IOptions<AppSettings> _appSet
 
-	.tracking-detail {
-		padding: 3rem 0
-	}
-
-	#tracking {
-		margin-bottom: 1rem
-	}
-
-	[class*=tracking-status-] p {
-		margin: 0;
-		font-size: 1.1rem;
-		color: #fff;
-		text-transform: uppercase;
-		text-align: center
-	}
-
-	[class*=tracking-status-] {
-		padding: 1.6rem 0
-	}
-
-	.tracking-status-intransit {
-		background-color: #65aee0
-	}
-
-	.tracking-status-outfordelivery {
-		background-color: #f5a551
-	}
-
-	.tracking-status-deliveryoffice {
-		background-color: #f7dc6f
-	}
-
-	.tracking-status-delivered {
-		background-color: #4cbb87
-	}
-
-	.tracking-status-attemptfail {
-		background-color: #b789c7
-	}
-
-	.tracking-status-error, .tracking-status-exception {
-		background-color: #d26759
-	}
-
-	.tracking-status-expired {
-		background-color: #616e7d
-	}
-
-	.tracking-status-pending {
-		background-color: #ccc
-	}
-
-	.tracking-status-inforeceived {
-		background-color: #214977
-	}
-
-	.tracking-list {
-		border-radius: 1.2rem;
-		background-color: #F5F7F9;
-	}
-
-	.tracking-item {
-		border-left: 5px solid #203864;
-		position: relative;
-		padding: 2rem 1.5rem .5rem 2.5rem;
-		font-size: .9rem;
-		margin-left: 3rem;
-		min-height: 5rem
-	}
-
-		.tracking-item:last-child {
-			padding-bottom: 4rem
-		}
-
-		.tracking-item .tracking-date {
-			margin-bottom: .5rem
-		}
-
-			.tracking-item .tracking-date span {
-				color: #888;
-				font-size: 85%;
-				padding-left: .4rem
-			}
-
-		.tracking-item .tracking-content {
-			padding: .5rem .8rem;
-			background-color: #f4f4f4;
-			border-radius: .5rem
-		}
-
-			.tracking-item .tracking-content span {
-				display: block;
-				color: #888;
-				font-size: 85%
-			}
-
-		.tracking-item .tracking-icon {
-			line-height: 2.4rem;
-			position: absolute;
-			left: -1.4rem;
-			width: 2.4rem;
-			height: 2.4rem;
-			text-align: center;
-			border-radius: 50%;
-			font-size: 1.1rem;
-			background-color: #fff;
-			color: #fff
-		}
-
-			.tracking-item .tracking-icon.status-sponsored {
-				background-color: #f68
-			}
-
-			.tracking-item .tracking-icon.status-delivered {
-				background-color: #4cbb87
-			}
-
-			.tracking-item .tracking-icon.status-outfordelivery {
-				background-color: #f5a551
-			}
-
-			.tracking-item .tracking-icon.status-deliveryoffice {
-				background-color: #f7dc6f
-			}
-
-			.tracking-item .tracking-icon.status-attemptfail {
-				background-color: #b789c7
-			}
-
-			.tracking-item .tracking-icon.status-exception {
-				background-color: #d26759
-			}
-
-			.tracking-item .tracking-icon.status-inforeceived {
-				background-color: #214977
-			}
-
-			.tracking-item .tracking-icon.status-intransit {
-				color: #e5e5e5;
-				border: 1px solid #214977;
-				font-size: .6rem;
-				background-color: #214977;
-			}
-
-			.tracking-item .tracking-icon img {
-				width: 20px;
-			}
-
-	@@media(min-width:992px) {
-		.tracking-item {
-			margin-left: 10rem
-		}
-
-			.tracking-item .tracking-date {
-				position: absolute;
-				left: -10rem;
-				width: 7.5rem;
-				text-align: right
-			}
-
-				.tracking-item .tracking-date span {
-					display: block
-				}
-
-			.tracking-item .tracking-content {
-				padding: 0;
-				background-color: transparent
-			}
-	}
-</style>
-
+<link href="/css/contacthistory.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
 
 @if (formModel != null)
 {
@@ -192,20 +21,57 @@
 										<div class="tracking-date">@GeneralUtils.DateToThString(item.CreateDate)</div>
 										<div class="tracking-content">
 											<p class="fw-bold">@item.ProceedName</p>
-											<p>@item.ProceedName</p>
-											<p>@item.ProceedName</p>
-											<p>@item.ProceedName</p>
+											@if (!String.IsNullOrEmpty(item.FullName))
+											{
+												<p>ผู้เข้าพบ : @item.FullName</p>
+											}
+											@if (!String.IsNullOrEmpty(item.ResultContactName))
+											{
+												<p>ผลการติดต่อ : @item.ResultContactName</p>
+											}
+											@if (!String.IsNullOrEmpty(item.ResultMeetName))
+											{
+												<p>ผลการเข้าพบ @item.ResultMeetName</p>
+											}
+											@if (!String.IsNullOrEmpty(item.NextActionName))
+											{
+												<p>Next Action @item.NextActionName</p>
+											}
+											@if (item.AppointmentDate.HasValue)
+											{
+												<p>วันที่นัดหมาย @GeneralUtils.DateToThString(item.AppointmentDate)</p>
+											}
+											@if (item.AppointmentTime.HasValue)
+											{
+												<p>เวลาที่นัดหมาย @item.AppointmentTime น.</p>
+											}
+											@if (!String.IsNullOrEmpty(item.Location))
+											{
+												<p>สถานที่ @item.Location</p>
+											}
+											@if (item.CreditLimit.HasValue)
+											{
+												<p>วงเงิน @item.CreditLimit?.ToString("#,##0")</p>
+											}
+											@if (!String.IsNullOrEmpty(item.Percent))
+											{
+												<p>ร้อยละ @item.Percent</p>
+											}
+											@if (!String.IsNullOrEmpty(item.Note))
+											{
+												<p>บันทึกเพิ่มเติม @item.Note</p>
+											}
 										</div>
 									</div>
 								}
 							}
-							<div class="tracking-item">
+							@* <div class="tracking-item">
 								<div class="tracking-icon status-intransit">
 									<img src="/image/icon/call.png" />
 								</div>
 								<div class="tracking-date">Aug 10, 2018<span>05:01 PM</span></div>
 								<div class="tracking-content">DESTROYEDPER SHIPPER INSTRUCTION<span>KUALA LUMPUR (LOGISTICS HUB), MALAYSIA, MALAYSIA</span></div>
-							</div>
+							</div> *@
 						</div>
 					</div>
 				</div>

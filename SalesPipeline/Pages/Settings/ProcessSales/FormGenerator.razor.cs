@@ -311,8 +311,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			//ยื่นเอกสาร
 			formModel.Sale_Document = new();
-			formModel.Sale_Document.SubmitType = 1;
+			//formModel.Sale_Document.SubmitType = 1;
 			formModel.Sale_Document.IDCardIMGPath = "https://hilight.kapook.com/img_cms2/user/patcharin/2022/hilight/card1.jpg";
+			formModel.Sale_Document.IDCardNumber = "1234567890123";
 			formModel.Sale_Document.NameTh = "นายชื่อไทย";
 			formModel.Sale_Document.NameEn = "นายชื่ออังกฤษ";
 			formModel.Sale_Document.Birthday = new DateTime(2000, 03, 30);

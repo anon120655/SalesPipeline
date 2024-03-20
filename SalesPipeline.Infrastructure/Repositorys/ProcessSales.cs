@@ -758,6 +758,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Contact,
 				StatusSaleId = statusSaleId,
+				FullName = model.Name,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
@@ -850,6 +851,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Meet,
 				StatusSaleId = statusSaleId,
+				FullName = model.Name,
 				ProceedName = proceedName,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
@@ -857,6 +859,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				AppointmentTime = model.AppointmentTime,
 				Location = model.Location,
 				Note = model.Note,
+				CreditLimit = model.LoanAmount
 			});
 
 			return _mapper.Map<Sale_MeetCustom>(sale_Meet);
@@ -1117,6 +1120,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.CloseSale,
 				StatusSaleId = statusSaleId,
+				FullName = model.Name,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
 				Note = model.Note,
@@ -1139,6 +1143,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.SaleId = model.SaleId;
 			sale_Contact_History.StatusSaleId = model.StatusSaleId;
 
+			sale_Contact_History.FullName = model.FullName;
 			sale_Contact_History.ProceedName = model.ProceedName;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
 			sale_Contact_History.ResultMeetName = model.ResultMeetName;
@@ -1154,6 +1159,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			return _mapper.Map<Sale_Contact_HistoryCustom>(sale_Contact_History);
+		}
+
+		public async Task<PaginationView<List<Sale_DocumentCustom>>> GetListDocument(allFilter model)
+		{
+			var query = _repo.Context.Sale_Documents
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderByDescending(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.id != Guid.Empty)
+			{
+				query = query.Where(x => x.SaleId == model.id);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_DocumentCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_DocumentCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 		public async Task<PaginationView<List<Sale_Contact_HistoryCustom>>> GetListContactHistory(allFilter model)

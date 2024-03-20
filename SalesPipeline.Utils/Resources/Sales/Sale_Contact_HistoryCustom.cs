@@ -29,6 +29,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? ProcessSaleCode { get; set; }
 
 		/// <summary>
+		/// ผู้เข้าพบ
+		/// </summary>
+		public string? FullName { get; set; }
+
+		/// <summary>
 		/// การดำเนินการ
 		/// </summary>
 		public string ProceedName { get; set; } = null!;

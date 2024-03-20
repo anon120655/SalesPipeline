@@ -1445,6 +1445,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreditLimit)
                 .HasPrecision(18, 2)
                 .HasComment("วงเงิน");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(255)
+                .HasComment("ผู้เข้าพบ");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasComment("สถานที่");

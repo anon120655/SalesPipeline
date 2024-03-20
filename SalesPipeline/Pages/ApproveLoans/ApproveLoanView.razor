@@ -19,7 +19,7 @@
 					<div class="row mt-3">
 						<div class="col-12 tabs_elm">
 							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
-								<Tab Title="ข้อมูลลูกค้า" Name="CustomerInfo" IsActive="true">
+								<Tab Title="ข้อมูลลูกค้า" IsActive="true">
 									<Content>
 										<PartialCustomerInfo formModel="formModel.Customer" />
 									</Content>
@@ -31,14 +31,12 @@
 										</div>
 									</Content>
 								</Tab>
-								<Tab Title="เอกสาร">
+								<Tab Title="เอกสาร" OnClick="ShowTabDocument">
 									<Content>
-										<div class="d-flex align-items-center justify-content-center mh_10r">
-											<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-										</div>
+										<PartialDocument formModel="formModel.Sale_Documents" />
 									</Content>
 								</Tab>
-								<Tab Title="ประวัติการติดต่อ" Name="ContactHistory">
+								<Tab Title="ประวัติการติดต่อ" OnClick="ShowTabContactHistory">
 									<Content>
 										<PartialContactHistory formModel="formModel.Sale_Contact_Histories" />
 									</Content>

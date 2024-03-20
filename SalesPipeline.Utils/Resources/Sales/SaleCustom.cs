@@ -119,6 +119,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public virtual List<Sale_StatusCustom>? Sale_Statuses { get; set; }
 
 		public virtual List<Sale_Contact_HistoryCustom>? Sale_Contact_Histories { get; set; }
+		public virtual List<Sale_DocumentCustom>? Sale_Documents { get; set; }
 
 		//Custom
 		public bool IsSelected { get; set; }

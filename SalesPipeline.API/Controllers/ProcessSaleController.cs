@@ -154,6 +154,24 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// ข้อมูลเอกสารทั้งหมด
+		/// </summary>
+		[HttpGet("GetListDocument")]
+		public async Task<IActionResult> GetListDocument([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetListDocument(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		/// ข้อมูลประวัติการติดต่อทั้งหมด
 		/// </summary>
 		[HttpGet("GetListContactHistory")]
