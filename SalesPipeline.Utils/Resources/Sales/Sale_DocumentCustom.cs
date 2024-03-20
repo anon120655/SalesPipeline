@@ -21,9 +21,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public Guid SaleId { get; set; }
 
 		/// <summary>
-		/// ชื่อผู้ติดต่อ
+		/// รูปบัตรประชาชน
 		/// </summary>
-		public string? Name { get; set; }
+		public string? IDCardIMGPath { get; set; }
 
 		/// <summary>
 		/// เลขบัตรประชาชน

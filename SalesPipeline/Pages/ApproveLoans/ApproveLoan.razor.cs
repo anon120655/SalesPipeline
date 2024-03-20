@@ -83,18 +83,20 @@ namespace SalesPipeline.Pages.ApproveLoans
 				filter.assigncenter = UserInfo.Id;
 			}
 
-			filter.statussaleid = StatusSaleModel.WaitApprove;
+			filter.statussaleid = StatusSaleModel.WaitApproveDocument;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
-				//รอแก้ไข อนุมัติคำขอสินเชื่อของลูกค้า จะเป็นขั้นตอนหลังจากที่ลูกค้ายื่นเอกสารคำขอสินเชื่อ หลังจากนั้นผู้จัดการศูนย์จะตรวจสอบและอนุมัติลงนาม เพื่อ API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS) อีกที
-				Items = new();
-				//Items = data.Data?.Items;
-				//Pager = data.Data?.Pager;
-				//if (Pager != null)
-				//{
-				//	Pager.UrlAction = "/approveloan";
-				//}
+				//อนุมัติคำขอสินเชื่อของลูกค้า
+				//จะเป็นขั้นตอนหลังจากที่ลูกค้ายื่นเอกสารคำขอสินเชื่อ
+				//หลังจากนั้นผู้จัดการศูนย์จะตรวจสอบและอนุมัติลงนาม เพื่อ API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS) อีกที
+				
+				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/approveloan";
+				}
 			}
 			else
 			{

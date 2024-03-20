@@ -199,7 +199,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//Noti
-
 					await _repo.Notifys.Create(new()
 					{
 						EventId = 2,
@@ -219,6 +218,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
+				.Include(x => x.Sale_Contact_Histories)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);
 		}

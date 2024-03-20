@@ -1517,6 +1517,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.HouseRegistrationPath)
                 .HasMaxLength(255)
                 .HasComment("ไฟล์ทะเบียนนบ้าน");
+            entity.Property(e => e.IDCardIMGPath)
+                .HasMaxLength(255)
+                .HasComment("รูปบัตรประชาชน");
             entity.Property(e => e.IDCardNumber)
                 .HasMaxLength(20)
                 .HasComment("เลขบัตรประชาชน");
@@ -1536,9 +1539,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Master_TypeLoanRequestSpecify)
                 .HasMaxLength(255)
                 .HasComment("ระบุ");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.NameEn)
                 .HasMaxLength(255)
                 .HasComment("ชื่อภาษาอังกฤษ");

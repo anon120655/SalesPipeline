@@ -56,35 +56,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<NotificationCustom> Create(NotificationCustom model)
 		{
-			using (var _transaction = _repo.BeginTransaction())
+			DateTime _dateNow = DateTime.Now;
+
+			var fromUserName = await _repo.User.GetFullNameById(model.FromUserId);
+			var toUserName = await _repo.User.GetFullNameById(model.ToUserId);
+
+			var notification = new Data.Entity.Notification()
 			{
-				DateTime _dateNow = DateTime.Now;
+				Status = StatusModel.Active,
+				CreateDate = _dateNow,
+				EventId = model.EventId,
+				FromUserId = model.FromUserId,
+				FromUserName = fromUserName,
+				ToUserId = model.ToUserId,
+				ToUserName = toUserName,
+				IsRead = 0,
+				RedirectUrl = model.RedirectUrl,
+				ActionId = model.ActionId,
+				ActionName1 = model.ActionName1,
+				ActionName2 = model.ActionName2,
+				ActionName3 = model.ActionName3,
+			};
+			await _db.InsterAsync(notification);
+			await _db.SaveAsync();
 
-				var fromUserName = await _repo.User.GetFullNameById(model.FromUserId);
-				var toUserName = await _repo.User.GetFullNameById(model.ToUserId);
-
-				var notification = new Data.Entity.Notification()
-				{
-					Status = StatusModel.Active,
-					CreateDate = _dateNow,
-					EventId = model.EventId,
-					FromUserId = model.FromUserId,
-					FromUserName = fromUserName,
-					ToUserId = model.ToUserId,
-					ToUserName = toUserName,
-					RedirectUrl = model.RedirectUrl,
-					ActionId = model.ActionId,
-					ActionName1 = model.ActionName1,
-					ActionName2 = model.ActionName2,
-					ActionName3 = model.ActionName3,
-				};
-				await _db.InsterAsync(notification);
-				await _db.SaveAsync();
-
-				_transaction.Commit();
-
-				return _mapper.Map<NotificationCustom>(notification);
-			}
+			return _mapper.Map<NotificationCustom>(notification);
 		}
 
 		public async Task<PaginationView<List<NotificationCustom>>> GetList(NotiFilter model)

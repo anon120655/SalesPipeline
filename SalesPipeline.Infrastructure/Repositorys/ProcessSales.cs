@@ -809,15 +809,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale_Meet);
 			await _db.SaveAsync();
 
+			statusSaleId = StatusSaleModel.Meet;
+
 			if (model.MeetId == 1 || model.MeetId == 2)
 			{
 				resultMeetName = model.MeetId == 1 ? "เข้าพบสำเร็จ" : "เข้าพบไม่สำเร็จ";
-				statusSaleId = StatusSaleModel.Contact;
 			}
 
 			if (sale_Meet.NextActionId == 1)
 			{
-				proceedName = "ยื่นเอกสาร";
+				proceedName = "รอยื่นเอกสาร";
 				statusSaleId = StatusSaleModel.WaitSubmitDocument;
 				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -884,7 +885,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.Status = StatusModel.Active;
 			sale_Document.CreateDate = _dateNow;
 			sale_Document.SaleId = model.SaleId;
-			sale_Document.Name = model.Name;
+			sale_Document.IDCardIMGPath = model.IDCardIMGPath;
 			sale_Document.IDCardNumber = model.IDCardNumber;
 			sale_Document.NameTh = model.NameTh;
 			sale_Document.NameEn = model.NameEn;
@@ -918,6 +919,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.SubmitType = model.SubmitType;
 			if (model.SubmitType == 1)
 			{
+				if (String.IsNullOrEmpty(model.IDCardIMGPath))
+				{
+					throw new ExceptionCustom("ระบุรูปบัตรประชาชน");
+				}
+				if (String.IsNullOrEmpty(model.SignatureNamePath) || String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) || String.IsNullOrEmpty(model.SignatureMCenterPath))
+				{
+					throw new ExceptionCustom("ระบุลายเซ็นไม่ครบ");
+				}
 				sale_Document.SubmitDate = _dateNow;
 			}
 

@@ -283,16 +283,43 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			//formModel.Sale_Contact = new();
-			//formModel.Sale_Contact.Name = "นายทดสอบ ติดต่อ01";
-			//formModel.Sale_Contact.Tel = "0800000001";
-			//formModel.Sale_Contact.ContactDate = DateTime.Now;
-			//formModel.Sale_Contact.ContactResult = 1;
+			//ติดต่อ
+			formModel.Sale_Contact = new();
+			formModel.Sale_Contact.Name = "นายทดสอบ ติดต่อ01";
+			formModel.Sale_Contact.Tel = "0800000001";
+			formModel.Sale_Contact.ContactDate = DateTime.Now;
+			formModel.Sale_Contact.ContactResult = 1;
 			//formModel.Sale_Contact.NextActionId = 1;
-			//formModel.Sale_Contact.AppointmentDate = new DateTime(2024, 03, 25);
-			//formModel.Sale_Contact.AppointmentTime = new TimeOnly(11, 30, 00);
-			//formModel.Sale_Contact.Location = "อเมซอล ในตัวเมือง2";
-			//formModel.Sale_Contact.Note = "ลูกค้าสั่งกาแฟอเมริกาโน่";
+			formModel.Sale_Contact.AppointmentDate = new DateTime(2024, 03, 25);
+			formModel.Sale_Contact.AppointmentTime = new TimeOnly(11, 30, 00);
+			formModel.Sale_Contact.Location = "อเมซอล ในตัวเมือง2";
+			formModel.Sale_Contact.Note = "ลูกค้าสั่งกาแฟอเมริกาโน่";
+
+			//เข้าพบ
+			formModel.Sale_Meet = new();
+			formModel.Sale_Meet.Name = "นายทดสอบ เข้าพบ01";
+			formModel.Sale_Meet.Tel = "0800000001";
+			formModel.Sale_Meet.MeetDate = DateTime.Now;
+			formModel.Sale_Meet.MeetId = 1;
+			formModel.Sale_Meet.MeetId = 1;
+			//formModel.Sale_Meet.NextActionId = 1;
+			formModel.Sale_Meet.LoanAmount = 500000;
+			formModel.Sale_Meet.AppointmentDate = new DateTime(2024, 03, 30);
+			formModel.Sale_Meet.AppointmentTime = new TimeOnly(13, 30, 00);
+			formModel.Sale_Meet.Location = "สตาบัค ในตัวเมือง2";
+			formModel.Sale_Meet.Note = "นัดหมายส่งเอกสาร";
+
+			//ยื่นเอกสาร
+			formModel.Sale_Document = new();
+			formModel.Sale_Document.SubmitType = 1;
+			formModel.Sale_Document.IDCardIMGPath = "https://hilight.kapook.com/img_cms2/user/patcharin/2022/hilight/card1.jpg";
+			formModel.Sale_Document.NameTh = "นายชื่อไทย";
+			formModel.Sale_Document.NameEn = "นายชื่ออังกฤษ";
+			formModel.Sale_Document.Birthday = new DateTime(2000, 03, 30);
+			formModel.Sale_Document.SignatureNamePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
+			formModel.Sale_Document.SignatureEmployeeLoanPath = "https://m.media-amazon.com/images/I/411AYEiEsVL._SX300_SY300_QL70_FMwebp_.jpg";
+			formModel.Sale_Document.SignatureMCenterPath = "https://m.media-amazon.com/images/I/618-nxYP6vL._AC_UF1000,1000_QL80_.jpg";
+
 
 			ResultModel<Sale_ReplyCustom> response;
 
