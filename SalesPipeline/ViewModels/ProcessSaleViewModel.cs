@@ -178,21 +178,21 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<Sale_DocumentCustom>>>> GetListDocument(allFilter model)
+		public async Task<ResultModel<List<Sale_DocumentCustom>>> GetListDocument(allFilter model)
 		{
 			try
 			{
 				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetListDocument?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Sale_DocumentCustom>>>(content);
+				var dataMap = JsonConvert.DeserializeObject<List<Sale_DocumentCustom>>(content);
 
-				return new ResultModel<PaginationView<List<Sale_DocumentCustom>>>()
+				return new ResultModel<List<Sale_DocumentCustom>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<Sale_DocumentCustom>>>
+				return new ResultModel<List<Sale_DocumentCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

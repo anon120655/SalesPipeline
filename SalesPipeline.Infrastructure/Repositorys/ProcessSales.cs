@@ -1165,19 +1165,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Sale_Contact_HistoryCustom>(sale_Contact_History);
 		}
 
-		public async Task<List<SelectModel>> GetListDocument(allFilter model)
+		public async Task<List<Sale_DocumentCustom>> GetListDocument(allFilter model)
 		{
-			var query = await _repo.Context.Sale_Documents.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == model.id);
+			var query = await _repo.Context.Sale_Documents.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.id).OrderByDescending(x => x.CreateDate).Skip(0).Take(1).ToListAsync();
 
-			var response = new List<SelectModel>();
-			if (query != null)
-			{
-				response.Add(new() { Name = "บัตรประชาชน", Value = query.IDCardIMGPath });
-				response.Add(new() { Name = "ทะเบียนนบ้าน", Value = query.HouseRegistrationPath });
-				response.Add(new() { Name = "เอกสารอื่นๆ", Value = query.PathOtherDocument });
-			}
-
-			return response;
+			return _mapper.Map<List<Sale_DocumentCustom>>(query);
 		}
 
 		public async Task<PaginationView<List<Sale_Contact_HistoryCustom>>> GetListContactHistory(allFilter model)

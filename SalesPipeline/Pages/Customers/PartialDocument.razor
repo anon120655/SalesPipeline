@@ -15,38 +15,47 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>
-									<a class="text-decoration-none" href="@document.IDCardIMGPath" target="_blank">
-										<img src="/image/other/idcard.jpg" width="50" class="me-2" />
-										บัตรประชาชน
-									</a>
-								</td>
-								<td>
-									@GeneralUtils.DateToThString(document.CreateDate)
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a class="text-decoration-none" href="@document.HouseRegistrationPath" target="_blank">
-										<img src="/image/other/registration.jpg" width="50" class="me-2" />
-										ทะเบียนบ้าน
-									</a>
-								</td>
-								<td>
-									@GeneralUtils.DateToThString(document.CreateDate)
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a class="text-decoration-none" href="@document.PathOtherDocument" target="_blank">
-										<img src="/image/other/docother.jpg" width="50" class="me-2" />เอกสารอื่นๆ
-									</a>
-								</td>
-								<td>
-									@GeneralUtils.DateToThString(document.CreateDate)
-								</td>
-							</tr>
+							@if (!String.IsNullOrEmpty(document.IDCardIMGPath))
+							{
+								<tr>
+									<td>
+										<a class="text-decoration-none" href="@document.IDCardIMGPath" target="_blank">
+											<img src="/image/other/idcard.jpg" width="50" class="me-2" />
+											บัตรประชาชน
+										</a>
+									</td>
+									<td>
+										@GeneralUtils.DateToThString(document.CreateDate)
+									</td>
+								</tr>
+							}
+							@if (!String.IsNullOrEmpty(document.HouseRegistrationPath))
+							{
+								<tr>
+									<td>
+										<a class="text-decoration-none" href="@document.HouseRegistrationPath" target="_blank">
+											<img src="/image/other/registration.jpg" width="50" class="me-2" />
+											ทะเบียนบ้าน
+										</a>
+									</td>
+									<td>
+										@GeneralUtils.DateToThString(document.CreateDate)
+									</td>
+								</tr>
+							}
+							@if (!String.IsNullOrEmpty(document.PathOtherDocument))
+							{
+								<tr>
+									<td>
+										<a class="text-decoration-none" href="@document.PathOtherDocument" target="_blank">
+											<img src="/image/other/docother.jpg" width="50" class="me-2" />เอกสารอื่นๆ
+										</a>
+									</td>
+									<td>
+										@GeneralUtils.DateToThString(document.CreateDate)
+									</td>
+								</tr>
+							}
 						</tbody>
 					</table>
 				}

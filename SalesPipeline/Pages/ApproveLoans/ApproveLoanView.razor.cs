@@ -186,7 +186,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 				var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 50 });
 				if (data != null && data.Status && data.Data != null)
 				{
-					formModel.Sale_Documents = data.Data.Items;
+					formModel.Sale_Documents = data.Data;
 				}
 				else
 				{
