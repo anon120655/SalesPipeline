@@ -452,5 +452,74 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task UpdateStatusTotalById(int id)
+		{
+			var statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.AssUserId == id).GroupBy(info => info.StatusSaleId)
+						.Select(group => new
+						{
+							StatusID = group.Key,
+							Count = group.Count()
+						}).OrderBy(x => x.StatusID).ToListAsync();
+
+			int allCustomer = statusTotal.Sum(x => x.Count);
+			int waitContact = 0;
+			int contact = 0;
+			int waitMeet = 0;
+			int meet = 0;
+			int submitDocument = 0;
+			int results = 0;
+			int closeSale = 0;
+
+			foreach (var item in statusTotal)
+			{
+				if (item.StatusID == (int)StatusSaleModel.WaitContact) waitContact = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.Contact) contact = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.WaitMeet) waitMeet = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.Meet) meet = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.SubmitDocument) submitDocument = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.Results) results = item.Count;
+				if (item.StatusID == (int)StatusSaleModel.CloseSale) closeSale = item.Count;
+			}
+
+			int CRUD = CRUDModel.Update;
+
+			var sale_Status_Totals = await _repo.Context.Sale_Status_Totals.Where(x => x.UserId == id).FirstOrDefaultAsync();
+			if (sale_Status_Totals == null)
+			{
+				CRUD = CRUDModel.Create;
+				sale_Status_Totals = new();
+				sale_Status_Totals.Status = StatusModel.Active;
+				sale_Status_Totals.CreateDate = DateTime.Now;
+				sale_Status_Totals.UserId = id;
+			}
+
+			sale_Status_Totals.AllCustomer = allCustomer;
+			sale_Status_Totals.WaitContact = waitContact;
+			sale_Status_Totals.Contact = contact;
+			sale_Status_Totals.WaitMeet = waitMeet;
+			sale_Status_Totals.Meet = meet;
+			sale_Status_Totals.SubmitDocument = submitDocument;
+			sale_Status_Totals.Results = results;
+			sale_Status_Totals.CloseSale = closeSale;
+
+			if (CRUD == CRUDModel.Create)
+			{
+				await _db.InsterAsync(sale_Status_Totals);
+				await _db.SaveAsync();
+			}
+			else
+			{
+				_db.Update(sale_Status_Totals);
+				await _db.SaveAsync();
+			}
+		}
+
+		public async Task<Sale_Status_TotalCustom> GetStatusTotalById(int id)
+		{
+			var query = await _repo.Context.Sale_Status_Totals
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<Sale_Status_TotalCustom>(query);
+		}
+
 	}
 }

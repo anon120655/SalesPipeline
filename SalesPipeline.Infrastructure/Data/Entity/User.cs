@@ -126,5 +126,7 @@ public partial class User
 
     public virtual ICollection<Sale> SaleAssUsers { get; set; } = new List<Sale>();
 
+    public virtual ICollection<Sale_Status_Total> Sale_Status_Totals { get; set; } = new List<Sale_Status_Total>();
+
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 }

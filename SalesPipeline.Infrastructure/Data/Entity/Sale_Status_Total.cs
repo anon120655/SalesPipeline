@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SalesPipeline.Infrastructure.Data.Entity;
+
+public partial class Sale_Status_Total
+{
+    public int Id { get; set; }
+
+    /// <summary>
+    /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
+    /// </summary>
+    public short Status { get; set; }
+
+    public DateTime CreateDate { get; set; }
+
+    public int UserId { get; set; }
+
+    /// <summary>
+    /// ลูกค้าทั้งหมด
+    /// </summary>
+    public int AllCustomer { get; set; }
+
+    /// <summary>
+    /// รอการติดต่อ
+    /// </summary>
+    public int WaitContact { get; set; }
+
+    /// <summary>
+    /// ติดต่อ
+    /// </summary>
+    public int Contact { get; set; }
+
+    /// <summary>
+    /// รอการเข้าพบ
+    /// </summary>
+    public int WaitMeet { get; set; }
+
+    /// <summary>
+    /// เข้าพบ
+    /// </summary>
+    public int Meet { get; set; }
+
+    /// <summary>
+    /// ยื่นเอกสาร
+    /// </summary>
+    public int SubmitDocument { get; set; }
+
+    /// <summary>
+    /// ผลลัพธ์
+    /// </summary>
+    public int Results { get; set; }
+
+    /// <summary>
+    /// ปิดการขาย
+    /// </summary>
+    public int CloseSale { get; set; }
+
+    public virtual User User { get; set; } = null!;
+}

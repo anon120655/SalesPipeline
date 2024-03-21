@@ -116,6 +116,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
+    public virtual DbSet<Sale_Status_Total> Sale_Status_Totals { get; set; }
+
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
     public virtual DbSet<System_Signature> System_Signatures { get; set; }
@@ -1906,6 +1908,53 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_status_ibfk_2");
+        });
+
+        modelBuilder.Entity<Sale_Status_Total>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Status_Total");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AllCustomer)
+                .HasComment("ลูกค้าทั้งหมด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CloseSale)
+                .HasComment("ปิดการขาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Contact)
+                .HasComment("ติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Meet)
+                .HasComment("เข้าพบ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Results)
+                .HasComment("ผลลัพธ์")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.SubmitDocument)
+                .HasComment("ยื่นเอกสาร")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+            entity.Property(e => e.WaitContact)
+                .HasComment("รอการติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.WaitMeet)
+                .HasComment("รอการเข้าพบ")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Sale_Status_Totals)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_status_total_ibfk_1");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

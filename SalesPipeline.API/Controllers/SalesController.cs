@@ -12,7 +12,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
+	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -130,6 +130,39 @@ namespace SalesPipeline.API.Controllers
 				var response = await _repo.Sales.GetListReturn(model);
 
 				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลผลรวมสถานะต่างๆ ById
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpGet("GetStatusTotalById")]
+		public async Task<IActionResult> GetStatusTotalById([FromQuery] int id)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetStatusTotalById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("UpdateStatusTotalById")]
+		public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int id)
+		{
+			try
+			{
+				await _repo.Sales.UpdateStatusTotalById(id);
+				return Ok();
 			}
 			catch (Exception ex)
 			{
