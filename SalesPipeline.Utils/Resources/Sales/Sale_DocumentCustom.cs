@@ -75,7 +75,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? AmphurName { get; set; }
 
 		/// <summary>
-		/// ไฟล์ทะเบียนนบ้าน
+		/// ไฟล์ทะเบียนบ้าน
 		/// </summary>
 		public string? HouseRegistrationPath { get; set; }
 

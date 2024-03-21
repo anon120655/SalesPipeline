@@ -2,7 +2,59 @@
 {
 	var document = formModel.OrderByDescending(x => x.CreateDate).FirstOrDefault();
 
-	<div class="row my-3">
+	<div class="container">
+		<div class="row my-3">
+			<div class="col-12">
+				@if (document != null)
+				{
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">ชื่อ</th>
+								<th scope="col">วันที่นำเข้า</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a class="text-decoration-none" href="@document.IDCardIMGPath" target="_blank">
+										<img src="/image/other/idcard.jpg" width="50" class="me-2" />
+										บัตรประชาชน
+									</a>
+								</td>
+								<td>
+									@GeneralUtils.DateToThString(document.CreateDate)
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a class="text-decoration-none" href="@document.HouseRegistrationPath" target="_blank">
+										<img src="/image/other/registration.jpg" width="50" class="me-2" />
+										ทะเบียนบ้าน
+									</a>
+								</td>
+								<td>
+									@GeneralUtils.DateToThString(document.CreateDate)
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a class="text-decoration-none" href="@document.PathOtherDocument" target="_blank">
+										<img src="/image/other/docother.jpg" width="50" class="me-2" />เอกสารอื่นๆ
+									</a>
+								</td>
+								<td>
+									@GeneralUtils.DateToThString(document.CreateDate)
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				}
+			</div>
+		</div>
+	</div>
+
+	<div class="row my-3 d-none">
 		<div class="col-12">
 			@if (document != null)
 			{
