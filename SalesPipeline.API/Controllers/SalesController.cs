@@ -32,8 +32,8 @@ namespace SalesPipeline.API.Controllers
 		/// ข้อมูลและสถานะลูกค้าทั้งหมด
 		/// </summary>
 		[AllowAnonymous]
-		[HttpGet("GetList")]
-		public async Task<IActionResult> GetList([FromQuery] allFilter model)
+		[HttpPost("GetList")]
+		public async Task<IActionResult> GetList(allFilter model)
 		{
 			try
 			{

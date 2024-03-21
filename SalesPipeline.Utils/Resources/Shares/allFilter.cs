@@ -25,8 +25,10 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? chain { get; set; }
 		public string? isiccode { get; set; }
 		public string? businesstype { get; set; }
-		public string? province { get; set; }
-		public string? amphur { get; set; }
+		public int? provinceid { get; set; }
+		public int? amphurid { get; set; }
+		public string? province_name { get; set; }
+		public string? amphur_name { get; set; }
 		public string? branch { get; set; }
 		public string? emp_id { get; set; }
 		public string? emp_name { get; set; }
@@ -93,11 +95,17 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (!String.IsNullOrEmpty(businesstype))
 				ParameterAll += $"&businesstype={businesstype}";
 
-			if (!String.IsNullOrEmpty(province))
-				ParameterAll += $"&province={province}";
+			if (provinceid > 0)
+				ParameterAll += $"&provinceid={provinceid}";
 
-			if (!String.IsNullOrEmpty(amphur))
-				ParameterAll += $"&amphur={amphur}";
+			if (amphurid > 0)
+				ParameterAll += $"&amphurid={amphurid}";
+
+			if (!String.IsNullOrEmpty(province_name))
+				ParameterAll += $"&province_name={province_name}";
+
+			if (!String.IsNullOrEmpty(amphur_name))
+				ParameterAll += $"&amphur_name={amphur_name}";
 
 			if (!String.IsNullOrEmpty(branch))
 				ParameterAll += $"&branch={branch}";
@@ -191,11 +199,11 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(businesstype), out var _businesstype))
 				businesstype = _businesstype;
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(province), out var _province))
-				province = _province;
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(provinceid), out var _province))
+				provinceid = Convert.ToInt32(_province); ;
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amphur), out var _amphur))
-				amphur = _amphur;
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amphurid), out var _amphur))
+				amphurid = Convert.ToInt32(_amphur); ;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(branch), out var _branch))
 				branch = _branch;

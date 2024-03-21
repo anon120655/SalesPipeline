@@ -275,7 +275,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			filter.province = null;
+			filter.provinceid = null;
 			filter.branch = null;
 			LookUp.Branchs = new();
 			StateHasChanged();
@@ -283,26 +283,23 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
-				filter.province = provinceID.ToString();
+				filter.provinceid = provinceID;
 
-				if (int.TryParse(filter.province, out int id))
+				var branchs = await _masterViewModel.GetBranch(provinceID);
+				if (branchs != null && branchs.Data?.Count > 0)
 				{
-					var branchs = await _masterViewModel.GetBranch(id);
-					if (branchs != null && branchs.Data?.Count > 0)
-					{
-						LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
-						LookUp.Branchs.AddRange(branchs.Data);
+					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
+					LookUp.Branchs.AddRange(branchs.Data);
 
-						StateHasChanged();
-						await Task.Delay(10);
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
-					}
-					else
-					{
-						_errorMessage = branchs?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+				}
+				else
+				{
+					_errorMessage = branchs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
 

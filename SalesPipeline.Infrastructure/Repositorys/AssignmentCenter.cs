@@ -152,20 +152,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
 			}
 
-			if (!String.IsNullOrEmpty(model.province))
+			if (model.provinceid.HasValue)
 			{
-				if (int.TryParse(model.province, out var province))
-				{
-					query = query.Where(x => x.User != null && x.User.ProvinceId == province);
-				}
+				query = query.Where(x => x.User != null && x.User.ProvinceId == model.provinceid);
 			}
 
-			if (!String.IsNullOrEmpty(model.amphur))
+			if (model.amphurid.HasValue)
 			{
-				if (int.TryParse(model.amphur, out var amphur))
-				{
-					query = query.Where(x => x.User != null && x.User.AmphurId == amphur);
-				}
+				query = query.Where(x => x.User != null && x.User.AmphurId == model.amphurid);
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -182,7 +176,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task Assign(AssignCenterModel model)
 		{
 			var assignment = await _repo.Context.Assignments
-				.Include(x => x.User).ThenInclude(x=>x.Master_Department_Branch)
+				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
 			if (assignment != null)
 			{

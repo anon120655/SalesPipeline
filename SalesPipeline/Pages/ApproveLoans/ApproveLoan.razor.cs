@@ -90,7 +90,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 				//อนุมัติคำขอสินเชื่อของลูกค้า
 				//จะเป็นขั้นตอนหลังจากที่ลูกค้ายื่นเอกสารคำขอสินเชื่อ
 				//หลังจากนั้นผู้จัดการศูนย์จะตรวจสอบและอนุมัติลงนาม เพื่อ API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS) อีกที
-				
+
 				Items = data.Data?.Items;
 				Pager = data.Data?.Pager;
 				if (Pager != null)
@@ -146,34 +146,31 @@ namespace SalesPipeline.Pages.ApproveLoans
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			filter.province = null;
-			filter.amphur = null;
+			filter.provinceid = null;
+			filter.amphurid = null;
 			LookUp.Amphurs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
-				filter.province = provinceID.ToString();
+				filter.provinceid = provinceID;
 
-				if (int.TryParse(filter.province,out int id))
+				var amphurs = await _masterViewModel.GetAmphur(provinceID);
+				if (amphurs != null && amphurs.Data?.Count > 0)
 				{
-					var amphurs = await _masterViewModel.GetAmphur(id);
-					if (amphurs != null && amphurs.Data?.Count > 0)
-					{
-						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
-						LookUp.Amphurs.AddRange(amphurs.Data);
+					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+					LookUp.Amphurs.AddRange(amphurs.Data);
 
-						StateHasChanged();
-						await Task.Delay(10);
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
-					}
-					else
-					{
-						_errorMessage = amphurs?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+				}
+				else
+				{
+					_errorMessage = amphurs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
 
@@ -186,10 +183,10 @@ namespace SalesPipeline.Pages.ApproveLoans
 		[JSInvokable]
 		public async Task AmphurChange(string _amphurID, string _amphurName)
 		{
-			filter.amphur = null;
+			filter.amphurid = null;
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
 			{
-				filter.amphur = amphurID.ToString();
+				filter.amphurid = amphurID;
 			}
 
 			await SetModel();

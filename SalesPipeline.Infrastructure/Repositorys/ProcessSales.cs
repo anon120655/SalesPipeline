@@ -1165,26 +1165,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Sale_Contact_HistoryCustom>(sale_Contact_History);
 		}
 
-		public async Task<PaginationView<List<Sale_DocumentCustom>>> GetListDocument(allFilter model)
+		public async Task<List<SelectModel>> GetListDocument(allFilter model)
 		{
-			var query = _repo.Context.Sale_Documents
-												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderByDescending(x => x.CreateDate)
-												 .AsQueryable();
-			if (model.id != Guid.Empty)
+			var query = await _repo.Context.Sale_Documents.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == model.id);
+
+			var response = new List<SelectModel>();
+			if (query != null)
 			{
-				query = query.Where(x => x.SaleId == model.id);
+				response.Add(new() { Name = "บัตรประชาชน", Value = query.IDCardIMGPath });
+				response.Add(new() { Name = "ทะเบียนนบ้าน", Value = query.HouseRegistrationPath });
+				response.Add(new() { Name = "เอกสารอื่นๆ", Value = query.PathOtherDocument });
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
-
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
-
-			return new PaginationView<List<Sale_DocumentCustom>>()
-			{
-				Items = _mapper.Map<List<Sale_DocumentCustom>>(await items.ToListAsync()),
-				Pager = pager
-			};
+			return response;
 		}
 
 		public async Task<PaginationView<List<Sale_Contact_HistoryCustom>>> GetListContactHistory(allFilter model)

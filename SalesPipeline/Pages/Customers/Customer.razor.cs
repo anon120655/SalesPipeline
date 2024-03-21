@@ -233,10 +233,13 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task OnProvince(ChangeEventArgs e)
 		{
-			filter.province = null;
+			filter.provinceid = null;
 			if (e.Value != null)
 			{
-				filter.province = e.Value.ToString();
+				if (int.TryParse(e.Value.ToString(),out int id))
+				{
+					filter.provinceid = id;
+				}
 
 				await SetModel();
 				StateHasChanged();

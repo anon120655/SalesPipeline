@@ -46,7 +46,9 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Sales/GetList?{model.SetParameter(true)}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Sales/GetList", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<SaleCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<SaleCustom>>>()

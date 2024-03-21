@@ -198,14 +198,14 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRM.emp_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRM.province))
+				if (!String.IsNullOrEmpty(filterRM.province_name))
 				{
-					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRM.amphur))
+				if (!String.IsNullOrEmpty(filterRM.amphur_name))
 				{
-					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.amphur)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.amphur_name)).ToList();
 				}
 
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
@@ -255,14 +255,14 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRMNew.emp_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRMNew.province))
+				if (!String.IsNullOrEmpty(filterRMNew.province_name))
 				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province)).ToList();
+					ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRMNew.amphur))
+				if (!String.IsNullOrEmpty(filterRMNew.amphur_name))
 				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.amphur)).ToList();
+					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.amphur_name)).ToList();
 				}
 
 				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
@@ -279,41 +279,38 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		[JSInvokable]
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
-			filterRM.province = null;
-			filterRM.amphur = null;
-			filterRMNew.province = null;
-			filterRMNew.amphur = null;
+			filterRM.provinceid = null;
+			filterRM.amphurid = null;
+			filterRMNew.provinceid = null;
+			filterRMNew.amphurid = null;
 			LookUp.Amphurs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
-				filterRM.province = provinceID.ToString();
-				filterRMNew.province = provinceID.ToString();
+				filterRM.provinceid = provinceID;
+				filterRMNew.provinceid = provinceID;
 
-				if (int.TryParse(filterRM.province, out int id))
+				//เปลี่ยนเป็น name เพื่อเช็คใน Items
+				filterRM.province_name = _provinceName;
+				filterRMNew.province_name = _provinceName;
+
+				var amphurs = await _masterViewModel.GetAmphur(provinceID);
+				if (amphurs != null && amphurs.Data?.Count > 0)
 				{
-					//เปลี่ยนเป็น name เพื่อเช็คใน Items
-					filterRM.province = _provinceName;
-					filterRMNew.province = _provinceName;
+					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--ทั้งหมด--" } };
+					LookUp.Amphurs.AddRange(amphurs.Data);
 
-					var amphurs = await _masterViewModel.GetAmphur(id);
-					if (amphurs != null && amphurs.Data?.Count > 0)
-					{
-						LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--ทั้งหมด--" } };
-						LookUp.Amphurs.AddRange(amphurs.Data);
-
-						StateHasChanged();
-						await Task.Delay(10);
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
-					}
-					else
-					{
-						_errorMessage = amphurs?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+				}
+				else
+				{
+					_errorMessage = amphurs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
 
@@ -337,20 +334,20 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		public async Task AmphurChange(string _amphurID, string _amphurName)
 		{
 			await Task.Delay(1);
-			filterRM.amphur = null;
-			filterRMNew.amphur = null;
+			filterRM.amphurid = null;
+			filterRMNew.amphurid = null;
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
 			{
 				if (amphurID != 0)
 				{
 					//เปลี่ยนเป็น name เพื่อเช็คใน Items
-					filterRM.amphur = _amphurName;
-					filterRMNew.amphur = _amphurName;
+					filterRM.amphur_name = _amphurName;
+					filterRMNew.amphur_name = _amphurName;
 				}
 				else
 				{
-					filterRM.amphur = null;
-					filterRMNew.amphur = null;
+					filterRM.amphurid = null;
+					filterRMNew.amphurid = null;
 				}
 			}
 
@@ -629,8 +626,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 				string valSearch = filterRM.searchtxt ?? string.Empty;
 				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
-				string valProvince = filterRM.province ?? string.Empty;
-				string valAmphur = filterRM.amphur ?? string.Empty;
+				string valProvince = filterRM.province_name ?? string.Empty;
+				string valAmphur = filterRM.amphur_name ?? string.Empty;
 				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype) || !String.IsNullOrEmpty(valProvince) || !String.IsNullOrEmpty(valAmphur))
 				{
 					if (_items != null && _items.Assignment_RM_Sales != null)

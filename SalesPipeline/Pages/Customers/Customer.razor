@@ -54,7 +54,7 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select @onchange="OnProvince" value="@filter.province" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
 								@if (LookUp.Provinces?.Count > 0)
 								{

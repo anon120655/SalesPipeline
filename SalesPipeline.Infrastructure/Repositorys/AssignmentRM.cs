@@ -238,12 +238,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
 			}
 
-			if (!String.IsNullOrEmpty(model.province))
+			if (model.provinceid.HasValue)
 			{
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
-			if (!String.IsNullOrEmpty(model.amphur))
+			if (model.amphurid.HasValue)
 			{
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
@@ -343,12 +343,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
 			}
 
-			if (!String.IsNullOrEmpty(model.province))
+			if (model.provinceid.HasValue)
 			{
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
-			if (!String.IsNullOrEmpty(model.amphur))
+			if (model.amphurid.HasValue)
 			{
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}

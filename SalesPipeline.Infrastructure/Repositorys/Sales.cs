@@ -334,21 +334,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//จังหวัด
-			if (!String.IsNullOrEmpty(model.province))
+			if (model.provinceid.HasValue)
 			{
-				if (int.TryParse(model.province, out int id))
-				{
-					query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == id);
-				}
+				query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == model.provinceid);
 			}
 
 			//อำเภอ
-			if (!String.IsNullOrEmpty(model.amphur))
+			if (model.amphurid.HasValue)
 			{
-				if (int.TryParse(model.amphur, out int id))
-				{
-					query = query.Where(x => x.Customer != null && x.Customer.AmphurId == id);
-				}
+				query = query.Where(x => x.Customer != null && x.Customer.AmphurId == model.amphurid);
 			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
