@@ -17,6 +17,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public DateTime CreateDate { get; set; }
 
+		public bool IsUpdate { get; set; }
+
 		public int UserId { get; set; }
 
 		/// <summary>

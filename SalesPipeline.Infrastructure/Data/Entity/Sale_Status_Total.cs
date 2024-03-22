@@ -14,6 +14,8 @@ public partial class Sale_Status_Total
 
     public DateTime CreateDate { get; set; }
 
+    public bool IsUpdate { get; set; }
+
     public int UserId { get; set; }
 
     /// <summary>

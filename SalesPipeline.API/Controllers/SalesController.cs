@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Ocsp;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -9,6 +10,7 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
+using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -140,14 +142,14 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลผลรวมสถานะต่างๆ ById
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="userid"></param>
 		/// <returns></returns>
 		[HttpGet("GetStatusTotalById")]
-		public async Task<IActionResult> GetStatusTotalById([FromQuery] int id)
+		public async Task<IActionResult> GetStatusTotalById([FromQuery] int userid)
 		{
 			try
 			{
-				var data = await _repo.Sales.GetStatusTotalById(id);
+				var data = await _repo.Sales.GetStatusTotalById(userid);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -156,12 +158,43 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet("UpdateStatusTotalById")]
-		public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int id)
+		public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int userid)
 		{
 			try
 			{
-				await _repo.Sales.UpdateStatusTotalById(id);
+				await _repo.Sales.UpdateStatusTotalById(userid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpGet("SetIsUpdateStatusTotal")]
+		public async Task<IActionResult> SetIsUpdateStatusTotal([FromQuery] int userid)
+		{
+			try
+			{
+				await _repo.Sales.SetIsUpdateStatusTotal(userid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpGet("UpdateStatusTotalAll")]
+		public async Task<IActionResult> UpdateStatusTotalAll()
+		{
+			try
+			{
+				await _repo.Sales.UpdateStatusTotalAll();
 				return Ok();
 			}
 			catch (Exception ex)

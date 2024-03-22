@@ -14,7 +14,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<SaleCustom>>> GetList(allFilter model);
 		Task<Sale_ReturnCustom> CreateReturn(Sale_ReturnCustom model);
 		Task<PaginationView<List<Sale_ReturnCustom>>> GetListReturn(allFilter model);
+		Task SetIsUpdateStatusTotal(int id);
 		Task UpdateStatusTotalById(int id);
+		Task UpdateStatusTotalAll();
 		Task<Sale_Status_TotalCustom> GetStatusTotalById(int id);
 	}
 }
