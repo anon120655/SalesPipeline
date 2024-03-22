@@ -21,20 +21,20 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<AssignmentCustom>?> GetById(Guid id)
+		public async Task<ResultModel<Assignment_MCenterCustom>?> GetById(Guid id)
 		{
 			try
 			{
 				var content = await _httpClient.GetAsync($"/v1/AssignmentCenter/GetById?id={id}");
-				var dataMap = JsonConvert.DeserializeObject<AssignmentCustom>(content);
-				return new ResultModel<AssignmentCustom>()
+				var dataMap = JsonConvert.DeserializeObject<Assignment_MCenterCustom>(content);
+				return new ResultModel<Assignment_MCenterCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<AssignmentCustom>
+				return new ResultModel<Assignment_MCenterCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -42,23 +42,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<PaginationView<List<AssignmentCustom>>>> GetListCenter(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Assignment_MCenterCustom>>>> GetListCenter(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/AssignmentCenter/GetListCenter", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<AssignmentCustom>>>(content);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_MCenterCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>()
+				return new ResultModel<PaginationView<List<Assignment_MCenterCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<AssignmentCustom>>>
+				return new ResultModel<PaginationView<List<Assignment_MCenterCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

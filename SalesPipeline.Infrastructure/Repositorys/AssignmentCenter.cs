@@ -27,31 +27,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<bool> CheckAssignmentByUserId(int id)
 		{
-			return await _repo.Context.Assignments.AnyAsync(x => x.UserId == id);
+			return await _repo.Context.Assignment_MCenters.AnyAsync(x => x.UserId == id);
 		}
 
 		public async Task<bool> CheckAssignmentByBranchId(int id)
 		{
-			return await _repo.Context.Assignments.AnyAsync(x => x.BranchId == id);
+			return await _repo.Context.Assignment_MCenters.AnyAsync(x => x.BranchId == id);
 		}
 
-		public async Task<AssignmentCustom> GetById(Guid id)
+		public async Task<Assignment_MCenterCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Assignments
+			var query = await _repo.Context.Assignment_MCenters
 				.Where(x => x.Id == id)
 				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
 				.FirstOrDefaultAsync();
-			return _mapper.Map<AssignmentCustom>(query);
+			return _mapper.Map<Assignment_MCenterCustom>(query);
 		}
 
-		public async Task<AssignmentCustom> GetByUserId(int id)
+		public async Task<Assignment_MCenterCustom> GetByUserId(int id)
 		{
-			var query = await _repo.Context.Assignments
+			var query = await _repo.Context.Assignment_MCenters
 				.Where(x => x.UserId == id).FirstOrDefaultAsync();
-			return _mapper.Map<AssignmentCustom>(query);
+			return _mapper.Map<Assignment_MCenterCustom>(query);
 		}
 
-		public async Task<AssignmentCustom> Create(AssignmentCustom model)
+		public async Task<Assignment_MCenterCustom> Create(Assignment_MCenterCustom model)
 		{
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
@@ -67,59 +67,59 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
 			}
 
-			var assignment = new Data.Entity.Assignment();
-			assignment.Status = model.Status;
-			assignment.CreateDate = DateTime.Now;
-			assignment.BranchId = model.BranchId;
-			assignment.BranchCode = model.BranchCode;
-			assignment.BranchName = model.BranchName;
-			assignment.UserId = model.UserId;
-			assignment.EmployeeId = model.EmployeeId;
-			assignment.EmployeeName = model.EmployeeName;
-			assignment.Tel = model.Tel;
-			assignment.RMNumber = model.RMNumber ?? 0;
-			assignment.CurrentNumber = model.CurrentNumber ?? 0;
-			await _db.InsterAsync(assignment);
+			var assignment_MCenter = new Data.Entity.Assignment_MCenter();
+			assignment_MCenter.Status = model.Status;
+			assignment_MCenter.CreateDate = DateTime.Now;
+			assignment_MCenter.BranchId = model.BranchId;
+			assignment_MCenter.BranchCode = model.BranchCode;
+			assignment_MCenter.BranchName = model.BranchName;
+			assignment_MCenter.UserId = model.UserId;
+			assignment_MCenter.EmployeeId = model.EmployeeId;
+			assignment_MCenter.EmployeeName = model.EmployeeName;
+			assignment_MCenter.Tel = model.Tel;
+			assignment_MCenter.RMNumber = model.RMNumber ?? 0;
+			assignment_MCenter.CurrentNumber = model.CurrentNumber ?? 0;
+			await _db.InsterAsync(assignment_MCenter);
 			await _db.SaveAsync();
 
 			if (model.BranchId.HasValue)
 			{
 				await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-				await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
+				//await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
 			}
 
-			return _mapper.Map<AssignmentCustom>(assignment);
+			return _mapper.Map<Assignment_MCenterCustom>(assignment_MCenter);
 		}
 
-		public async Task<AssignmentCustom> Update(AssignmentCustom model)
+		public async Task<Assignment_MCenterCustom> Update(Assignment_MCenterCustom model)
 		{
-			var assignment = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
-			if (assignment != null)
+			var assignment_MCenter = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
+			if (assignment_MCenter != null)
 			{
-				assignment.Status = model.Status;
-				assignment.BranchId = model.BranchId;
-				assignment.BranchCode = model.BranchCode;
-				assignment.BranchName = model.BranchName;
-				assignment.UserId = model.UserId;
-				assignment.EmployeeId = model.EmployeeId;
-				assignment.EmployeeName = model.EmployeeName;
-				assignment.Tel = model.Tel;
-				_db.Update(assignment);
+				assignment_MCenter.Status = model.Status;
+				assignment_MCenter.BranchId = model.BranchId;
+				assignment_MCenter.BranchCode = model.BranchCode;
+				assignment_MCenter.BranchName = model.BranchName;
+				assignment_MCenter.UserId = model.UserId;
+				assignment_MCenter.EmployeeId = model.EmployeeId;
+				assignment_MCenter.EmployeeName = model.EmployeeName;
+				assignment_MCenter.Tel = model.Tel;
+				_db.Update(assignment_MCenter);
 				await _db.SaveAsync();
 
 				if (model.BranchId.HasValue)
 				{
 					await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-					await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
+					//await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
 				}
 
 			}
-			return _mapper.Map<AssignmentCustom>(assignment);
+			return _mapper.Map<Assignment_MCenterCustom>(assignment_MCenter);
 		}
 
-		public async Task<PaginationView<List<AssignmentCustom>>> GetListCenter(allFilter model)
+		public async Task<PaginationView<List<Assignment_MCenterCustom>>> GetListCenter(allFilter model)
 		{
-			var query = _repo.Context.Assignments.Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Assignment_MCenters.Where(x => x.Status != StatusModel.Delete)
 												 .Include(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
@@ -166,19 +166,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<AssignmentCustom>>()
+			return new PaginationView<List<Assignment_MCenterCustom>>()
 			{
-				Items = _mapper.Map<List<AssignmentCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Assignment_MCenterCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}
 
 		public async Task Assign(AssignCenterModel model)
 		{
-			var assignment = await _repo.Context.Assignments
+			var assignment_MCenter = await _repo.Context.Assignment_MCenters
 				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
-			if (assignment != null)
+			if (assignment_MCenter != null)
 			{
 				var salesCount = 0;
 				foreach (var item in model.Sales)
@@ -190,21 +190,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
-						if (assignment.User != null)
+						if (assignment_MCenter.User != null)
 						{
-							sale.Master_Department_BranchId = assignment.User.Master_Department_BranchId;
-							if (assignment.User.Master_Department_Branch != null)
+							sale.Master_Department_BranchId = assignment_MCenter.User.Master_Department_BranchId;
+							if (assignment_MCenter.User.Master_Department_Branch != null)
 							{
-								sale.Master_Department_BranchName = assignment.User.Master_Department_Branch.Name;
+								sale.Master_Department_BranchName = assignment_MCenter.User.Master_Department_Branch.Name;
 							}
-							sale.ProvinceId = assignment.User.ProvinceId;
-							sale.ProvinceName = assignment.User.ProvinceName;
+							sale.ProvinceId = assignment_MCenter.User.ProvinceId;
+							sale.ProvinceName = assignment_MCenter.User.ProvinceName;
 						}
 
-						sale.BranchId = assignment.BranchId;
-						sale.BranchName = assignment.BranchName;
+						sale.BranchId = assignment_MCenter.BranchId;
+						sale.BranchName = assignment_MCenter.BranchName;
 						sale.AssCenterUserId = model.Assign.UserId;
-						sale.AssCenterUserName = assignment.EmployeeName;
+						sale.AssCenterUserName = assignment_MCenter.EmployeeName;
 						sale.AssCenterCreateBy = model.CurrentUserId;
 						sale.AssCenterDate = DateTime.Now;
 						//กรณีตีกลับบางจังหวะจะมี assUser ค้างไว้แสดงผล ต้องเคลียร์ออกกรณีมอบหมายใหม่
@@ -227,8 +227,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				assignment.CurrentNumber = assignment.CurrentNumber + salesCount;
-				_db.Update(assignment);
+				assignment_MCenter.CurrentNumber = assignment_MCenter.CurrentNumber + salesCount;
+				_db.Update(assignment_MCenter);
 				await _db.SaveAsync();
 
 			}
@@ -242,7 +242,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			int countRm = assignment_RMs.Count;
 
-			var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.BranchId == id && x.Status == StatusModel.Active);
+			var assignments = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.BranchId == id && x.Status == StatusModel.Active);
 			if (assignments != null)
 			{
 				assignments.RMNumber = countRm;
@@ -261,8 +261,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task CreateAssignmentCenterAll(allFilter model)
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.Assignments)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignments.Count == 0)
+										   .Include(x => x.Assignment_MCenters)
+										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignment_MCenters.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 

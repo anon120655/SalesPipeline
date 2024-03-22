@@ -175,20 +175,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
 							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
 							{
-								int? _assignmentUserId = null;
-								string? _assignmentName = null;
-								var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
-								if (userMcenter != null)
-								{
-									_assignmentUserId = userMcenter.Id;
-									_assignmentName = userMcenter.FullName;
-								}
-
 								var assignment = await _repo.AssignmentRM.Create(new()
 								{
 									Status = model.Status,
-									AssignmentUserId = _assignmentUserId,
-									AssignmentName = _assignmentName,
 									BranchId = user.BranchId,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
@@ -241,7 +230,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (model.BranchId != user.BranchId)
 							{
-								var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+								var assignments = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignments != null && assignments.RMNumber > 0)
 								{
 									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
@@ -309,7 +298,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									_name = branch.BranchName;
 								}
 
-								AssignmentCustom assignmentCenterModel = new()
+								Assignment_MCenterCustom assignmentCenterModel = new()
 								{
 									Status = model.Status,
 									BranchId = user.BranchId,
@@ -337,20 +326,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 							{
-								int? _assignmentUserId = null;
-								string? _assignmentName = null;
-								var userMcenter = await this.GetMcencerByBranchId(user.BranchId.Value);
-								if (userMcenter != null)
-								{
-									_assignmentUserId = userMcenter.Id;
-									_assignmentName = userMcenter.FullName;
-								}
-
 								Assignment_RMCustom assignment_RM = new()
 								{
 									Status = model.Status,
-									AssignmentUserId = _assignmentUserId,
-									AssignmentName = _assignmentName,
 									BranchId = user.BranchId,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
@@ -407,7 +385,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (query.RoleId == 7)
 					{
-						var assignment = await _repo.Context.Assignments.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+						var assignment = await _repo.Context.Assignment_MCenters.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
 						if (assignment != null)
 						{
 							assignment.Status = _status;

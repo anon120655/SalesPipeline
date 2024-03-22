@@ -18,16 +18,6 @@ public partial class Assignment_RM
     public DateTime CreateDate { get; set; }
 
     /// <summary>
-    /// ผู้จัดการศูนย์ที่ดูแล
-    /// </summary>
-    public int? AssignmentUserId { get; set; }
-
-    /// <summary>
-    /// ชื่อผู้จัดการศูนย์ที่ดูแล
-    /// </summary>
-    public string? AssignmentName { get; set; }
-
-    /// <summary>
     /// สาขา
     /// </summary>
     public int? BranchId { get; set; }

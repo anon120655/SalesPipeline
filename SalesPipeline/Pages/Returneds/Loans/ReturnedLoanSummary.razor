@@ -66,7 +66,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">เลือกผู้รับผิดชอบ</h5>
+								<h5 class="fw-bold">เลือกกิจการสาขาที่รับผิดชอบ</h5>
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -149,12 +149,6 @@
 												foreach (var item in Items)
 												{
 													int NumberAfterAssignment = (item.CurrentNumber + 1) ?? 0;
-
-													//ส่งคืนผุ้รับผิดชอบเดิม
-													@* if (item.UserId == formModel?.AssCenterUserId)
-									{
-									NumberAfterAssignment = NumberAfterAssignment - 1;
-									} *@
 
 													<tr>
 														<td class="text-center">@item.BranchCode</td>

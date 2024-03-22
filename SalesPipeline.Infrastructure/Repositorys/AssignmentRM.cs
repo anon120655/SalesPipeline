@@ -46,8 +46,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				assignment_RM.CreateDate = DateTime.Now;
 			}
-			assignment_RM.AssignmentUserId = model.AssignmentUserId;
-			assignment_RM.AssignmentName = model.AssignmentName;
 			assignment_RM.BranchId = model.BranchId;
 			assignment_RM.UserId = model.UserId;
 			assignment_RM.EmployeeId = model.EmployeeId;
@@ -72,8 +70,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (assignment_RM != null)
 			{
 				assignment_RM.Status = model.Status;
-				assignment_RM.AssignmentUserId = model.AssignmentUserId;
-				assignment_RM.AssignmentName = model.AssignmentName;
 				assignment_RM.BranchId = model.BranchId;
 				assignment_RM.EmployeeId = model.EmployeeId;
 				assignment_RM.EmployeeName = model.EmployeeName;
@@ -177,27 +173,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public async Task UpdateAssignmentEmpty(int id)
-		{
-			var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.BranchId == id && x.RoleId == 7);
-			if (users != null)
-			{
-				var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.BranchId == id && x.AssignmentUserId == null).ToListAsync();
-				if (assignment_RMs.Count > 0)
-				{
-					foreach (var item in assignment_RMs)
-					{
-						if (item != null)
-						{
-							item.AssignmentUserId = users.Id;
-							item.AssignmentName = users.FullName;
-							_db.Update(item);
-							await _db.SaveAsync();
-						}
-					}
-				}
-			}
-		}
+		//public async Task UpdateAssignmentEmpty(int id)
+		//{
+		//	var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.BranchId == id && x.RoleId == 7);
+		//	if (users != null)
+		//	{
+		//		var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.BranchId == id && x.AssignmentUserId == null).ToListAsync();
+		//		if (assignment_RMs.Count > 0)
+		//		{
+		//			foreach (var item in assignment_RMs)
+		//			{
+		//				if (item != null)
+		//				{
+		//					item.AssignmentUserId = users.Id;
+		//					item.AssignmentName = users.FullName;
+		//					_db.Update(item);
+		//					await _db.SaveAsync();
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model)
 		{
@@ -213,11 +209,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int? assignmentCenterUserId = null;
 			if (model.assigncenter.HasValue)
 			{
-				var assignments = await _repo.Context.Assignments.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
-				if (assignments != null)
+				var assignment_MCenter = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
+				if (assignment_MCenter != null)
 				{
-					assignmentCenterId = assignments.Id;
-					assignmentCenterUserId = assignments.UserId;
+					assignmentCenterId = assignment_MCenter.Id;
+					assignmentCenterUserId = assignment_MCenter.UserId;
 				}
 			}
 

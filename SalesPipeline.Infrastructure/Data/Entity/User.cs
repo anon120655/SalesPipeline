@@ -98,11 +98,11 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
+    public virtual ICollection<Assignment_MCenter> Assignment_MCenters { get; set; } = new List<Assignment_MCenter>();
+
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 
     public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
-
-    public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 

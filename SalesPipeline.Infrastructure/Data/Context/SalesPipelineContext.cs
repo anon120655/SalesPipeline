@@ -12,7 +12,7 @@ public partial class SalesPipelineContext : DbContext
     {
     }
 
-    public virtual DbSet<Assignment> Assignments { get; set; }
+    public virtual DbSet<Assignment_MCenter> Assignment_MCenters { get; set; }
 
     public virtual DbSet<Assignment_RM> Assignment_RMs { get; set; }
 
@@ -136,11 +136,11 @@ public partial class SalesPipelineContext : DbContext
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
 
-        modelBuilder.Entity<Assignment>(entity =>
+        modelBuilder.Entity<Assignment_MCenter>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Assignment");
+            entity.ToTable("Assignment_MCenter");
 
             entity.HasIndex(e => e.BranchId, "Master_Department_BranchId");
 
@@ -174,14 +174,14 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
 
-            entity.HasOne(d => d.Branch).WithMany(p => p.Assignments)
+            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_MCenters)
                 .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("assignment_ibfk_2");
+                .HasConstraintName("assignment_mcenter_ibfk_2");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Assignments)
+            entity.HasOne(d => d.User).WithMany(p => p.Assignment_MCenters)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("assignment_ibfk_1");
+                .HasConstraintName("assignment_mcenter_ibfk_1");
         });
 
         modelBuilder.Entity<Assignment_RM>(entity =>
@@ -196,12 +196,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.AssignmentName)
-                .HasMaxLength(255)
-                .HasComment("ชื่อผู้จัดการศูนย์ที่ดูแล");
-            entity.Property(e => e.AssignmentUserId)
-                .HasComment("ผู้จัดการศูนย์ที่ดูแล")
-                .HasColumnType("int(11)");
             entity.Property(e => e.BranchId)
                 .HasComment("สาขา")
                 .HasColumnType("int(11)");

@@ -21,8 +21,8 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		private CustomerCustom? formView = null;
 		private List<SaleCustom>? Items;
 		private List<SaleCustom> ItemsSelected = new();
-		private List<AssignmentCustom>? ItemsAssignment;
-		private List<AssignmentCustom> ItemsAssignmentSelected = new();
+		private List<Assignment_MCenterCustom>? ItemsAssignment;
+		private List<Assignment_MCenterCustom> ItemsAssignmentSelected = new();
 		private AssignCenterModel AssignModel = new();
 		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
@@ -300,7 +300,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		}
 
 		//เลือกผู้รับผิดชอบ
-		protected void OnCheckEmployee(AssignmentCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_MCenterCustom model, object? checkedValue)
 		{
 			if (ItemsAssignment?.Count > 0)
 			{

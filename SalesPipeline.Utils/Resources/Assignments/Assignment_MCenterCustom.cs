@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Assignments
 {
-	public class AssignmentCustom
+	public class Assignment_MCenterCustom
 	{
 		public Guid Id { get; set; }
 
