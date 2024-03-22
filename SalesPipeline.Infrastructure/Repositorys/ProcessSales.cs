@@ -1194,5 +1194,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<List<Sale_Contact_HistoryCustom>> GetListCalendar(allFilter model)
+		{
+			var query = _repo.Context.Sale_Contact_Histories
+												 .Include(x => x.Sale)
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CreateDate)
+												 .AsQueryable();
+
+			query = query.Where(x => x.AppointmentDate.HasValue);
+
+			if (model.assignrm.HasValue)
+			{
+				query = query.Where(x => x.Sale.AssUserId == model.assignrm);
+			}
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+
+			return _mapper.Map<List<Sale_Contact_HistoryCustom>>(await query.ToListAsync());
+		}
+
 	}
 }

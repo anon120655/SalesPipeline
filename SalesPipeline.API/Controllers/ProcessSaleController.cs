@@ -189,5 +189,23 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ข้อมูลปฏิทิน
+		/// </summary>
+		[HttpGet("GetListCalendar")]
+		public async Task<IActionResult> GetListCalendar([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetListCalendar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
