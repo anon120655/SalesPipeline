@@ -17,7 +17,7 @@ namespace SalesPipeline.API.Controllers
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
-	public class AssignmentCenterController : Controller
+	public class AssignmentCenterController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;

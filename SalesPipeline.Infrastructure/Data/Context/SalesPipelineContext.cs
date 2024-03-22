@@ -12,6 +12,8 @@ public partial class SalesPipelineContext : DbContext
     {
     }
 
+    public virtual DbSet<Assignment_Branch> Assignment_Branches { get; set; }
+
     public virtual DbSet<Assignment_MCenter> Assignment_MCenters { get; set; }
 
     public virtual DbSet<Assignment_RM> Assignment_RMs { get; set; }
@@ -135,6 +137,48 @@ public partial class SalesPipelineContext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<Assignment_Branch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Assignment_Branch");
+
+            entity.HasIndex(e => e.BranchId, "BranchId");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.BranchCode)
+                .HasMaxLength(255)
+                .HasComment("รหัสสาขา");
+            entity.Property(e => e.BranchId).HasColumnType("int(11)");
+            entity.Property(e => e.BranchName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสาขา");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.EmployeeId)
+                .HasMaxLength(10)
+                .HasComment("รหัสพนักงาน");
+            entity.Property(e => e.EmployeeName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อพนักงาน");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel).HasMaxLength(255);
+            entity.Property(e => e.UserId)
+                .HasComment("UserId กิจการสาขาภาค")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_Branches)
+                .HasForeignKey(d => d.BranchId)
+                .HasConstraintName("assignment_branch_ibfk_2");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Assignment_Branches)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("assignment_branch_ibfk_1");
+        });
 
         modelBuilder.Entity<Assignment_MCenter>(entity =>
         {

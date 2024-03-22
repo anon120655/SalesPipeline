@@ -37,6 +37,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterISICCode MasterISICCode { get; }
 		IMasterStatusSale MasterStatusSale { get; }
 		IThailand Thailand { get; }
+		IAssignmentBranch AssignmentBranch { get; }
 		IAssignmentCenter AssignmentCenter { get; }
 		IAssignmentRM AssignmentRM { get; }
 		IReturnRepo Return { get; }
