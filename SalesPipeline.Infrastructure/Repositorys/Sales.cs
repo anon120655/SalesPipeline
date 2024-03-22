@@ -548,7 +548,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Sale_Status_TotalCustom> GetStatusTotalById(int userid)
 		{
 			var query = await _repo.Context.Sale_Status_Totals
-				.Where(x => x.Id == userid).FirstOrDefaultAsync();
+				.Where(x => x.UserId == userid).FirstOrDefaultAsync();
 			return _mapper.Map<Sale_Status_TotalCustom>(query);
 		}
 

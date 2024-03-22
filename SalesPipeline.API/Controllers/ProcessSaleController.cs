@@ -14,7 +14,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-    //[Authorizes]
+	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -192,8 +192,8 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลปฏิทิน
 		/// </summary>
-		[HttpGet("GetListCalendar")]
-		public async Task<IActionResult> GetListCalendar([FromQuery] allFilter model)
+		[HttpPost("GetListCalendar")]
+		public async Task<IActionResult> GetListCalendar(allFilter model)
 		{
 			try
 			{
