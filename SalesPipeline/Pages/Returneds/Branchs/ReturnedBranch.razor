@@ -128,7 +128,7 @@
 															<i class="fa-solid fa-eye text-white fs_15e"></i>
 														</a>
 													</td>
-													<td class="text-center">														
+													<td class="text-center">
 														<a role="button" class="pe-auto" @onclick="(async () => await  InitShowReturnAssign(item.Id.ToString()))">
 															<img src="/image/icon/ckeckbox.png" width="25" />
 														</a>
@@ -159,7 +159,6 @@
 	</div>
 
 	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" CallbackModalHidden="OnModalReturnHidden" />
-
 }
 else
 {
