@@ -17,7 +17,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Assignment_MCenterCustom> Create(Assignment_MCenterCustom model);
 		Task<Assignment_MCenterCustom> Update(Assignment_MCenterCustom model);
 		Task<PaginationView<List<Assignment_MCenterCustom>>> GetListCenter(allFilter model);
-		Task Assign(AssignCenterModel model);
+		Task Assign(AssignModel model);
 		Task UpdateCurrentNumber(int id);
 		Task CreateAssignmentCenterAll(allFilter model);
 	}

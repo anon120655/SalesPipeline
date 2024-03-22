@@ -760,6 +760,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				StatusSaleId = statusSaleId,
 				FullName = model.Name,
 				ProceedName = proceedName,
+				ContactDate = model.ContactDate,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
 				AppointmentDate = model.AppointmentDate,
@@ -1149,6 +1150,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			sale_Contact_History.FullName = model.FullName;
 			sale_Contact_History.ProceedName = model.ProceedName;
+			sale_Contact_History.ContactDate = model.ContactDate;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
 			sale_Contact_History.ResultMeetName = model.ResultMeetName;
 			sale_Contact_History.NextActionName = model.NextActionName;

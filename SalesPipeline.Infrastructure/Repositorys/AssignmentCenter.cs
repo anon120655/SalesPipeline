@@ -173,11 +173,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task Assign(AssignCenterModel model)
+		public async Task Assign(AssignModel model)
 		{
 			var assignment_MCenter = await _repo.Context.Assignment_MCenters
 				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
-				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Assign.Id);
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMCenter.Id);
 			if (assignment_MCenter != null)
 			{
 				var salesCount = 0;
@@ -203,7 +203,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						sale.BranchId = assignment_MCenter.BranchId;
 						sale.BranchName = assignment_MCenter.BranchName;
-						sale.AssCenterUserId = model.Assign.UserId;
+						sale.AssCenterUserId = model.AssignMCenter.UserId;
 						sale.AssCenterUserName = assignment_MCenter.EmployeeName;
 						sale.AssCenterCreateBy = model.CurrentUserId;
 						sale.AssCenterDate = DateTime.Now;

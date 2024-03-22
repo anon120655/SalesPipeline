@@ -23,7 +23,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		private List<SaleCustom> ItemsSelected = new();
 		private List<Assignment_MCenterCustom>? ItemsAssignment;
 		private List<Assignment_MCenterCustom> ItemsAssignmentSelected = new();
-		private AssignCenterModel AssignModel = new();
+		private AssignModel AssignModel = new();
 		private int stepAssign = StepAssignManagerCenterModel.Customer;
 		public Pager? Pager;
 		private int LimitAssign = 10;
@@ -326,7 +326,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		{
 			if (ItemsSelected.Count > 0 && ItemsAssignmentSelected.Count > 0)
 			{
-				AssignModel.Assign = ItemsAssignmentSelected.FirstOrDefault() ?? new();
+				AssignModel.AssignMCenter = ItemsAssignmentSelected.FirstOrDefault() ?? new();
 				AssignModel.Sales = ItemsSelected;
 				return true;
 			}

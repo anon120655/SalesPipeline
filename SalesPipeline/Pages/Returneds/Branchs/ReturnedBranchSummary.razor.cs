@@ -24,7 +24,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 		private SaleCustom? formModel;
 		private List<Assignment_MCenterCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
-		private AssignCenterModel AssignModel = new();
+		private AssignModel AssignModel = new();
 
 		ModalConfirm modalConfirmAssign = default!;
 		ModalSuccessful modalSuccessfulAssign = default!;
@@ -191,7 +191,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 					var saleModel = GeneralUtils.DeepCopyJson(formModel);
 					saleModel.Customer = null;
 
-					AssignModel.Assign = _itemsAssign;
+					AssignModel.AssignMCenter = _itemsAssign;
 					AssignModel.Sales = new()
 					{
 						saleModel

@@ -1479,6 +1479,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AppointmentTime)
                 .HasComment("เวลาที่นัดหมาย")
                 .HasColumnType("time");
+            entity.Property(e => e.ContactDate)
+                .HasComment("วันที่ติดต่อ")
+                .HasColumnType("datetime");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");

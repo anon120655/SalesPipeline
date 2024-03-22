@@ -227,7 +227,6 @@
 												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
-												<th class="text-center">มอบหมาย</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -250,12 +249,6 @@
 													<td class="text-center">@_itemsNew.RMNumber</td>
 													<td class="text-center">@_itemsNew.CurrentNumber</td>
 													<td class="text-center">@NumberAfterAssignment</td>
-													<td class="text-center">
-														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox" checked="@_itemsNew.IsSelected"
-																   @onchange="( (e) => OnCheckEmployee(_itemsNew,e.Value))">
-														</div>
-													</td>
 												</tr>
 											}
 										</tbody>

@@ -37,6 +37,7 @@ namespace SalesPipeline.Pages.Users.User
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
+				await _assignmentBranchViewModel.CreateAssignmentBranchAll();
 				await _assignmentCenterViewModel.CreateAssignmentCenterAll();
 				await _assignmentRMViewModel.CreateAssignmentRMAll();
 

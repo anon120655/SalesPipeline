@@ -22,9 +22,9 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
-		private List<Assignment_MCenterCustom>? Items;
+		private List<Assignment_BranchCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
-		private AssignCenterModel AssignModel = new();
+		private AssignModel AssignModel = new();
 
 		ModalConfirm modalConfirmAssign = default!;
 		ModalSuccessful modalSuccessfulAssign = default!;
@@ -101,7 +101,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		protected async Task SetModelAssigned()
 		{
 			filter.pagesize = 100;
-			var data = await _assignmentCenterViewModel.GetListCenter(filter);
+			var data = await _assignmentBranchViewModel.GetListBranch(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -158,7 +158,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 			_Navs.NavigateTo("/return/loan");
 		}
 
-		protected void OnCheckEmployee(Assignment_MCenterCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_BranchCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{
@@ -191,7 +191,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 					var saleModel = GeneralUtils.DeepCopyJson(formModel);
 					saleModel.Customer = null;
 
-					AssignModel.Assign = _itemsAssign;
+					AssignModel.AssignMBranch = _itemsAssign;
 					AssignModel.Sales = new()
 					{
 						saleModel
@@ -248,7 +248,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 
 			if (Items != null)
 			{
-				var response = await _assignmentCenterViewModel.Assign(AssignModel);
+				var response = await _assignmentBranchViewModel.Assign(AssignModel);
 
 				if (response.Status)
 				{

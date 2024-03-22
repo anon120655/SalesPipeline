@@ -23,7 +23,7 @@
 		/// </summary>
 		public const short NotVerifyBranch = 4;
 		/// <summary>
-		/// รอมอบหมาย(ศูนย์สาขา)
+		/// รอมอบหมาย(ผจศ)
 		/// </summary>
 		public const short WaitAssignCenter = 5;
 		/// <summary>

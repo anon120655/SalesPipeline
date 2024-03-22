@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Assignments
 {
-	public class AssignCenterModel : CommonModel
+	public class AssignModel : CommonModel
 	{
-		public Assignment_MCenterCustom Assign { get; set; } = null!;
+		public Assignment_MCenterCustom AssignMCenter { get; set; } = new();
+		public Assignment_BranchCustom AssignMBranch { get; set; } = new();
 		public List<SaleCustom> Sales { get; set; } = null!;
 	}
 }

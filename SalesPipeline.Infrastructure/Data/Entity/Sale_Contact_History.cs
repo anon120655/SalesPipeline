@@ -38,6 +38,11 @@ public partial class Sale_Contact_History
     public string ProceedName { get; set; } = null!;
 
     /// <summary>
+    /// วันที่ติดต่อ
+    /// </summary>
+    public DateTime? ContactDate { get; set; }
+
+    /// <summary>
     /// ผลการติดต่อ
     /// </summary>
     public string? ResultContactName { get; set; }

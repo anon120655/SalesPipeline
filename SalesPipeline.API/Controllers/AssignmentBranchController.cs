@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 
@@ -24,6 +26,40 @@ namespace SalesPipeline.API.Controllers
 		{
 			_repo = repo;
 			_appSet = appSet.Value;
+		}
+
+		[HttpPost("GetListBranch")]
+		public async Task<IActionResult> GetListBranch(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.AssignmentBranch.GetListBranch(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("Assign")]
+		public async Task<IActionResult> Assign(AssignModel model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentBranch.Assign(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
 		}
 
 		[HttpGet("CreateAssignmentBranchAll")]

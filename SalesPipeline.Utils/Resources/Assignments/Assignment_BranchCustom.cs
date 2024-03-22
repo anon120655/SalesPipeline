@@ -45,5 +45,8 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public string? EmployeeName { get; set; }
 
 		public string? Tel { get; set; }
+
+		//Custom
+		public bool IsSelected { get; set; } = false;
 	}
 }

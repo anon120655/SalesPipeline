@@ -71,6 +71,116 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Assignment_BranchCustom>(assignment_Branch);
 		}
 
+		public async Task<PaginationView<List<Assignment_BranchCustom>>> GetListBranch(allFilter model)
+		{
+			var query = _repo.Context.Assignment_Branches.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x => x.Branch)
+												 .OrderBy(x => x.CreateDate)
+												 .AsQueryable();
+
+			//if (!String.IsNullOrEmpty(model.assignmentid))
+			//{
+			//	if (Guid.TryParse(model.assignmentid, out Guid assignmentid))
+			//	{
+			//		query = query.Where(x => x.Id == assignmentid);
+			//	}
+			//}
+
+			if (!String.IsNullOrEmpty(model.mcenter_code))
+			{
+				query = query.Where(x => x.BranchCode != null && x.BranchCode.Contains(model.mcenter_code));
+			}
+
+			if (!String.IsNullOrEmpty(model.mcenter_name))
+			{
+				query = query.Where(x => x.BranchName != null && x.BranchName.Contains(model.mcenter_name));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
+			}
+
+			if (model.provinceid.HasValue)
+			{
+				query = query.Where(x => x.User != null && x.User.ProvinceId == model.provinceid);
+			}
+
+			if (model.amphurid.HasValue)
+			{
+				query = query.Where(x => x.User != null && x.User.AmphurId == model.amphurid);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Assignment_BranchCustom>>()
+			{
+				Items = _mapper.Map<List<Assignment_BranchCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
+		public async Task Assign(AssignModel model)
+		{
+			var assignment_Branch = await _repo.Context.Assignment_Branches
+				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMBranch.Id);
+			if (assignment_Branch != null)
+			{
+				foreach (var item in model.Sales)
+				{
+					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+					if (sale != null)
+					{
+						sale.AssCenterUser = null;
+						sale.AssUser = null;
+
+						//if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
+
+						if (assignment_Branch.User != null)
+						{
+							sale.Master_Department_BranchId = assignment_Branch.User.Master_Department_BranchId;
+							if (assignment_Branch.User.Master_Department_Branch != null)
+							{
+								sale.Master_Department_BranchName = assignment_Branch.User.Master_Department_Branch.Name;
+							}
+							sale.ProvinceId = assignment_Branch.User.ProvinceId;
+							sale.ProvinceName = assignment_Branch.User.ProvinceName;
+						}
+
+						sale.BranchId = assignment_Branch.BranchId;
+						sale.BranchName = assignment_Branch.BranchName;
+						sale.AssCenterUserId = null;
+						sale.AssCenterUserName = null;
+						sale.AssCenterCreateBy = null;
+						sale.AssCenterDate = null;
+						sale.AssUserId = null;
+						sale.AssUserName = null;
+						_db.Update(sale);
+						await _db.SaveAsync();
+
+						var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = sale.Id,
+							StatusId = StatusSaleModel.WaitAssignCenter,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+
+					}
+				}
+			}
+		}
+
 		public async Task CreateAssignmentBranchAll(allFilter model)
 		{
 			var usersBranch = await _repo.Context.Users.Include(x => x.Role)

@@ -58,9 +58,8 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		//[AllowAnonymous]
 		[HttpPost("Assign")]
-		public async Task<IActionResult> Assign(AssignCenterModel model)
+		public async Task<IActionResult> Assign(AssignModel model)
 		{
 			try
 			{

@@ -66,7 +66,7 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Boolean>> Assign(AssignCenterModel model)
+		public async Task<ResultModel<Boolean>> Assign(AssignModel model)
 		{
 			try
 			{

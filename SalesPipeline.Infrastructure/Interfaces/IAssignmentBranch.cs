@@ -13,6 +13,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<bool> CheckAssignmentByUserId(int id);
 		Task<bool> CheckAssignmentByBranchId(int id);
 		Task<Assignment_BranchCustom> Create(Assignment_BranchCustom model);
+		Task<PaginationView<List<Assignment_BranchCustom>>> GetListBranch(allFilter model);
+		Task Assign(AssignModel model);
 		Task CreateAssignmentBranchAll(allFilter model);
 	}
 }
