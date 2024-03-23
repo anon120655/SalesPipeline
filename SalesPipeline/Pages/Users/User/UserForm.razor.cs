@@ -299,6 +299,7 @@ namespace SalesPipeline.Pages.Users.User
 				formModel.RoleId = roleid;
 				StateHasChanged();
 
+				await SetLevels(formModel.RoleId.Value);
 				//var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
 				//if (dataLevels != null && dataLevels.Status)
 				//{

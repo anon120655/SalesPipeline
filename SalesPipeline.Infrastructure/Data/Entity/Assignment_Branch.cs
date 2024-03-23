@@ -43,6 +43,11 @@ public partial class Assignment_Branch
 
     public string? Tel { get; set; }
 
+    /// <summary>
+    /// จำนวนลูกค้าปัจจุบันที่ดูแล
+    /// </summary>
+    public int? CurrentNumber { get; set; }
+
     public virtual InfoBranch? Branch { get; set; }
 
     public virtual User User { get; set; } = null!;

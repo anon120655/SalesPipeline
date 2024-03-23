@@ -28,6 +28,7 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
+		[ApiExplorerSettings(IgnoreApi = true)]
 		[HttpPost("GetListBranch")]
 		public async Task<IActionResult> GetListBranch(allFilter model)
 		{
@@ -43,6 +44,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[ApiExplorerSettings(IgnoreApi = true)]
 		[HttpPost("Assign")]
 		public async Task<IActionResult> Assign(AssignModel model)
 		{
@@ -55,6 +57,26 @@ namespace SalesPipeline.API.Controllers
 					_transaction.Commit();
 				}
 				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("AutoAssignToMCenter")]
+		public async Task<IActionResult> AutoAssignToMCenter(AssignModel model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentBranch.AutoAssignToMCenter(model);
+
+					_transaction.Commit();
+
+					return Ok();
+				}
 			}
 			catch (Exception ex)
 			{

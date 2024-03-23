@@ -341,10 +341,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
 				{
-					//statusSaleId = StatusSaleModel.WaitAssignCenter;
-					//master_Department_BranchId = user.Master_Department_BranchId;
-					//provinceId = user.ProvinceId;
-					//branchId = user.BranchId;
+					statusSaleId = StatusSaleModel.WaitVerifyBranch;
 				}
 
 				var saleData = new SaleCustom()

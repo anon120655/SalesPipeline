@@ -46,6 +46,11 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public string? Tel { get; set; }
 
+		/// <summary>
+		/// จำนวนลูกค้าปัจจุบันที่ดูแล
+		/// </summary>
+		public int? CurrentNumber { get; set; }
+
 		//Custom
 		public bool IsSelected { get; set; } = false;
 	}

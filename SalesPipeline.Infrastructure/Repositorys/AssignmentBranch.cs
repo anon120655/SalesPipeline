@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -65,6 +66,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			assignment_Branch.EmployeeId = model.EmployeeId;
 			assignment_Branch.EmployeeName = model.EmployeeName;
 			assignment_Branch.Tel = model.Tel;
+			assignment_Branch.CurrentNumber = model.CurrentNumber ?? 0;
 			await _db.InsterAsync(assignment_Branch);
 			await _db.SaveAsync();
 
@@ -125,6 +127,43 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<Assignment_BranchCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task UpdateCurrentNumber(int id)
+		{
+			//var sales = await _repo.Context.Sales
+			//								  .Where(x => x. == assignments.UserId && x.Status == StatusModel.Active)
+			//								  .ToListAsync();
+
+			//assignments.CurrentNumber = sales.Count;
+			//_db.Update(assignments);
+			//await _db.SaveAsync();
+		}
+
+		public async Task AutoAssignToMCenter(AssignModel model)
+		{
+			if (model.Sales.Count > 0)
+			{
+				foreach (var item in model.Sales)
+				{
+					var sale = await _repo.Context.Sales.Include(x=>x.Customer).FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+					if (sale != null && sale.Customer != null)
+					{
+						if (sale.StatusSaleId == StatusSaleModel.WaitVerifyBranch)
+						{
+							//ตรวจสอบว่าลูกค้าอยู่จังหวัดและอำเภอไหน และ assign ไปที่สาขาภาคนั้น **รอถามว่าตอนสร้างต้องระบุสาขาเลยไหม
+							var provinceId = sale.Customer.ProvinceId;
+							var amphurId = sale.Customer.AmphurId;
+
+							//รูปแบบการมอบหมายตามเกณฑ์
+							//1. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+							//2. หาลูกค้าที่ยังไม่ถูกมอบหมาย
+							//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
+
+						}
+					}
+				}
+			}
 		}
 
 		public async Task Assign(AssignModel model)

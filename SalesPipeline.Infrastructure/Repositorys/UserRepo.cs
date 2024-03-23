@@ -34,6 +34,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
+			if (model.ValidateError == null) model.ValidateError = new();
 
 			string? roleCode = null;
 			if (model.RoleId.HasValue)
@@ -43,8 +44,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.Id == 0)
 			{
-				if (model.ValidateError == null) model.ValidateError = new();
-
 				if (model.EmployeeId != null && await UserExists(model.EmployeeId))
 				{
 					errorMessage = $"มีรหัสพนักงาน {model.EmployeeId} อยู่แล้ว";
@@ -55,6 +54,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
 				{
 					errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+			}
+
+			if (model.BranchId.HasValue)
+			{
+				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
+				if (usersBranch != null)
+				{
+					errorMessage = $"มีพนักงานสาขานี้แล้ว";
 					model.IsValidate = false;
 					model.ValidateError.Add(errorMessage);
 					if (isThrow) throw new ExceptionCustom(errorMessage);

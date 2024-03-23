@@ -156,6 +156,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ชื่อสาขา");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CurrentNumber)
+                .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
+                .HasColumnType("int(11)");
             entity.Property(e => e.EmployeeId)
                 .HasMaxLength(10)
                 .HasComment("รหัสพนักงาน");
