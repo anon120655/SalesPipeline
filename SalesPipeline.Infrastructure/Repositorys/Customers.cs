@@ -92,7 +92,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<CustomerCustom> Create(CustomerCustom model, SaleCustom? modelSale = null)
+		public async Task<CustomerCustom> Create(CustomerCustom model)
 		{
 			//string strJson = JsonSerializer.Serialize<CustomerCustom>(model);
 
@@ -293,17 +293,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
-				else
-				{
-					if (model.StatusSaleId > 0)
-					{
-						statusSaleId = model.StatusSaleId.Value;
-					}
-				}
+				//else
+				//{
+				//	if (model.StatusSaleId > 0)
+				//	{
+				//		statusSaleId = model.StatusSaleId.Value;
+				//	}
+				//}
 
-				if (modelSale != null && modelSale.AssCenterUserId.HasValue)
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					var userCenter = await _repo.User.GetById(modelSale.AssCenterUserId.Value);
+					var userCenter = await _repo.User.GetById(user.Id);
 					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
 					//if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
 
@@ -324,13 +324,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//}
 					}
 
-					assCenterUserId = modelSale.AssCenterUserId;
+					assCenterUserId = user.Id;
 					assCenterUserName = userCenter.FullName;
 					master_Department_BranchId = userCenter.Master_Department_BranchId;
 					provinceId = userCenter.ProvinceId;
 					branchId = userCenter.BranchId;
 				}
 
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+					statusSaleId = StatusSaleModel.WaitAssignCenter;					
+					master_Department_BranchId = user.Master_Department_BranchId;
+					provinceId = user.ProvinceId;
+					branchId = user.BranchId;
+				}
+
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+				{
+					//statusSaleId = StatusSaleModel.WaitAssignCenter;
+					//master_Department_BranchId = user.Master_Department_BranchId;
+					//provinceId = user.ProvinceId;
+					//branchId = user.BranchId;
+				}
 
 				var saleData = new SaleCustom()
 				{

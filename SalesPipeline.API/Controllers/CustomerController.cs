@@ -235,7 +235,7 @@ namespace SalesPipeline.API.Controllers
 				int currentUserId = 0;
 				int _statusSaleId = StatusSaleModel.NotStatus;
 
-				SaleCustom? modelSale = null;
+				//SaleCustom? modelSale = null;
 
 				rolecode = rolecode.ToUpper();
 
@@ -255,7 +255,7 @@ namespace SalesPipeline.API.Controllers
 					}
 					else if (rolecode == RoleCodes.MCENTER)
 					{
-						currentUserId = 12;
+						currentUserId = 11;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssign;
 
@@ -282,37 +282,6 @@ namespace SalesPipeline.API.Controllers
 						currentUserId = 9;
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
-					}
-
-					if (rolecode == RoleCodes.RM)
-					{
-						int? branchId = null;
-						int? assCenterUserId = null;
-						var user = await _repo.User.GetById(currentUserId);
-						if (user != null && user.BranchId.HasValue)
-						{
-							branchId = user.BranchId;
-							var userCenter = await _repo.User.GetMcencerByBranchId(branchId.Value);
-							if (userCenter != null)
-							{
-								assCenterUserId = userCenter.Id;
-							}
-						}
-
-						modelSale = new()
-						{
-							BranchId = branchId,
-							AssUserId = currentUserId,
-							AssCenterUserId = assCenterUserId
-						};
-					}
-
-					if (rolecode == RoleCodes.MCENTER && assignedCenterUserId.HasValue)
-					{
-						modelSale = new()
-						{
-							AssCenterUserId = assignedCenterUserId.Value,
-						};
 					}
 
 					if (statusSaleId.HasValue)
@@ -409,7 +378,7 @@ namespace SalesPipeline.API.Controllers
 							new() { Name = $"ผู้ถือหุ้น_1" , Nationality="ไทย", Proportion = "40%", NumberShareholder = 40 ,TotalShareValue = 400000 },
 							new() { Name = $"ผู้ถือหุ้น_2" , Nationality="ไทย", Proportion = "60%", NumberShareholder = 60 ,TotalShareValue = 600000 }
 						}
-					}, modelSale);
+					});
 				}
 
 				return Ok();
