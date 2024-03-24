@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Dashboards;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +30,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+		public async Task<Dash_Status_TotalCustom> GetStatus_Total(allFilter model)
+		{
+			var query = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync();
+			
+			return _mapper.Map<Dash_Status_TotalCustom>(query);
+		}
 
+		public Task<Dash_Avg_NumberCustom> GetAvg_Number(allFilter model)
+		{
+			throw new NotImplementedException();
+		}
 
 	}
 }
