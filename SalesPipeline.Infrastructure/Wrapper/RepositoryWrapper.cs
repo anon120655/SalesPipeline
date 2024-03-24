@@ -27,6 +27,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public INotifys Notifys { get; }
 		public IFileRepository Files { get; }
 		public IMaster Master { get; }
+		public IDashboard Dashboard { get; }
 		public IMasterDepBranch MasterDepBranch { get; }
 		public IMasterDepartment MasterDepartment { get; }
 		public IMasterDepCenter MasterDepCenter { get; }
@@ -66,6 +67,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Notifys = new Notifys(this, _db, settings, _mapper);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
+			Dashboard = new Dashboard(this, _db, settings, _mapper);
 			MasterDepBranch = new MasterDepBranch(this, _db, settings, _mapper);
 			MasterDepartment = new MasterDepartment(this, _db, settings, _mapper);
 			MasterDepCenter = new MasterDepCenter(this, _db, settings, _mapper);

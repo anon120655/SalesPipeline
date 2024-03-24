@@ -4,7 +4,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class AvgSalesActClosedDeal
+	public partial class AvgSaleActCloseDeal
     {
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

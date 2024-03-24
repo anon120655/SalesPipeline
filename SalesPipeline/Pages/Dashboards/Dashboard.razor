@@ -2,7 +2,7 @@
 
 <PageTitle>รายงาน (Dashboard)</PageTitle>
 
-@inherits SalesPipeline.PagesCode.Dashboards.DashboardCode
+@* @inherits SalesPipeline.PagesCode.Dashboards.DashboardCode *@
 
 <link href="/css/dashboard.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
 
@@ -32,13 +32,13 @@
 						</select>
 					</div>
 					<div class="col mb-2">
-						<label class="form-label">จังหวัด</label>
+						<label class="form-label">กิจการสาขา</label>
 						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 							<option selected>ทั้งหมด</option>
 						</select>
 					</div>
 					<div class="col mb-2">
-						<label class="form-label">อำเภอ</label>
+						<label class="form-label">สาขา</label>
 						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 							<option selected>ทั้งหมด</option>
 						</select>
@@ -204,7 +204,7 @@
 									</div>
 								</div>
 							</a>
-							<a href="/dashboard/avgtimelostsales" class="col-12 col-xl-4 mb-3 text-decoration-none">
+							<a href="/dashboard/avgtimelostsale" class="col-12 col-xl-4 mb-3 text-decoration-none">
 								<div class="box_content border border-secondary-subtle">
 									<div role="button" class="box-text_main w-100 px-2">
 										<div class="box-text text-blue">
@@ -418,45 +418,9 @@
 					</a>
 				</div>
 				<div class="row text-center">
-					<div class="col-12 col-lg-7">
-						<div class="row h-100">
-							<a href="/dashboard/sizebusinessclosedsales" class="col-12 col-lg-6 pe-lg-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ขนาดธุรกิจที่ปิดการขายสำเร็จ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="sizebusinessclosedsales"></canvas>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-							<a href="/dashboard/typebusinessclosedsales" class="col-12 col-lg-6 pe-lg-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ประเภทธุรกิจที่ปิดการขายสำเร็จ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="typebusinessclosedsales"></canvas>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-						</div>
-					</div>
-					<div class="col-12 col-lg-5">
+					<div class="col-12">
 						<div class="row">
-							<a href="/dashboard/avgdealorg" class="col-12 col-lg-6 pe-lg-1 mb-3 text-decoration-none">
+							<a href="/dashboard/avgdealorg" class="col pe-lg-1 mb-3 text-decoration-none">
 								<div class="box_content border border-secondary-subtle">
 									<div role="button" class="box-text_main w-100 px-2">
 										<div class="box-text text-blue">
@@ -470,23 +434,7 @@
 									</div>
 								</div>
 							</a>
-							<a href="/dashboard/avgdealrm" class="col mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ดีลโดยเฉลี่ยต่อพนักงานขาย</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h3 class="mw_3r">5 ดีล</h3>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-						</div>
-						<div class="row">
-							<a href="/dashboard/avgsalesactcloseddeal" class="col-12 col-lg-6 pe-lg-1 mb-3 text-decoration-none">
+							<a href="/dashboard/avgsaleactclosedeal" class="col pe-lg-1 mb-3 text-decoration-none">
 								<div class="box_content border border-secondary-subtle">
 									<div role="button" class="box-text_main w-100 px-2">
 										<div class="box-text text-blue">
@@ -514,6 +462,160 @@
 									</div>
 								</div>
 							</a>
+							<a href="/dashboard/avgdealrm" class="col mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle">
+									<div role="button" class="box-text_main w-100 px-2">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<h3 class="mw_3r">5 ดีล</h3>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row text-center">
+					<div class="col-12">
+						<div class="row h-100">
+							<a href="/dashboard/numcussizebusiness" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">จำนวนลูกค้าตามขนาดธุรกิจ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="numcussizebusiness"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="/dashboard/numcustypebusiness" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">จำนวนลูกค้าตามประเภทธุรกิจ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="numcustypebusiness"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">จำนวนลูกค้าตาม ISIC Code</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="numcusisiccode"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">จำนวนลูกค้าตามประเภทสินเชื่อ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="numcusloantype"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row text-center">
+					<div class="col-12">
+						<div class="row h-100">
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">มูลค่าสินเชื่อตามขนาดธุรกิจ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="valuesizebusiness"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">มูลค่าสินเชื่อตามประเภทธุรกิจ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="valuetypebusiness"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">มูลค่าสินเชื่อตาม ISIC Code</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="valueisiccode"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="" class="col pe-lg-1 mb-3 text-decoration-none">
+								<div class="box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-0">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">มูลค่าสินเชื่อตามประเภทสินเชื่อ</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="chart-container" style="position: relative; height:33vh;">
+													<canvas id="valueloantype"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -521,3 +623,4 @@
 		</div>
 	</div>
 </div>
+

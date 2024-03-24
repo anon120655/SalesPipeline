@@ -3,6 +3,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Notifications;
@@ -17,6 +18,11 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 	{
 		public AutoMapping()
 		{
+			//Dashboard
+			CreateMap<Entity.Dash_Status_Total, Dash_Status_TotalCustom>().ReverseMap();
+			CreateMap<Entity.Dash_Avg_Number, Dash_Avg_NumberCustom>().ReverseMap();
+
+
 			//User
 			CreateMap<Entity.User, UserCustom>().ReverseMap();
 			CreateMap<Entity.User_Level, User_LevelCustom>().ReverseMap();

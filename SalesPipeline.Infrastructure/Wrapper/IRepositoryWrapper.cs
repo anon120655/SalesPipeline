@@ -23,6 +23,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IFileRepository Files { get; }
 		INotifys Notifys { get; }
 		IMaster Master { get; }
+		IDashboard Dashboard { get; }
 		IMasterDepartment MasterDepartment { get; }
 		IMasterDepBranch MasterDepBranch { get; }
 		IMasterDepCenter MasterDepCenter { get; }

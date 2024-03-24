@@ -26,6 +26,10 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Customer_Shareholder> Customer_Shareholders { get; set; }
 
+    public virtual DbSet<Dash_Avg_Number> Dash_Avg_Numbers { get; set; }
+
+    public virtual DbSet<Dash_Status_Total> Dash_Status_Totals { get; set; }
+
     public virtual DbSet<FileUpload> FileUploads { get; set; }
 
     public virtual DbSet<InfoAmphur> InfoAmphurs { get; set; }
@@ -640,6 +644,91 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("customer_shareholder_ibfk_1");
+        });
+
+        modelBuilder.Entity<Dash_Avg_Number>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Dash_Avg_Number");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgDealOrg)
+                .HasComment("ดีลโดยเฉลี่ยต่อองค์กร")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgDealRM)
+                .HasComment("ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgDeliveryTime)
+                .HasComment("ระยะเวลาเฉลี่ยในการส่งมอบ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgPerDeal)
+                .HasComment("มูลค่าเฉลี่ยต่อหนึ่งดีล")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgSaleActcloseDeal)
+                .HasComment("กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgTimeCloseSale)
+                .HasComment("ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.AvgTimeLostSale)
+                .HasComment("ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Dash_Avg_Numbers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dash_avg_number_ibfk_1");
+        });
+
+        modelBuilder.Entity<Dash_Status_Total>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Dash_Status_Total");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.NumCusAll)
+                .HasComment("จำนวนลูกค้านำเข้าทั้งหมด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.NumCusInProcess)
+                .HasComment("อยู่ในกระบวนการ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.NumCusMCenterAssign)
+                .HasComment("ผู้จัดการศูนย์มอบหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.NumCusReturn)
+                .HasComment("รายการส่งกลับ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.NumCusTargeNotSuccess)
+                .HasComment("พนักงานที่ไม่บรรลุเป้าหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.NumCusWaitMCenterAssign)
+                .HasComment("รอผู้จัดการศูนย์มอบหมาย")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Dash_Status_Totals)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dash_status_total_ibfk_1");
         });
 
         modelBuilder.Entity<FileUpload>(entity =>

@@ -108,6 +108,10 @@ public partial class User
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
+    public virtual ICollection<Dash_Avg_Number> Dash_Avg_Numbers { get; set; } = new List<Dash_Avg_Number>();
+
+    public virtual ICollection<Dash_Status_Total> Dash_Status_Totals { get; set; } = new List<Dash_Status_Total>();
+
     public virtual User_Level? Level { get; set; }
 
     public virtual Master_Department? Master_Department { get; set; }
