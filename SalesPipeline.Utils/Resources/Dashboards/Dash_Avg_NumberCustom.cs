@@ -24,36 +24,36 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		/// <summary>
 		/// มูลค่าเฉลี่ยต่อหนึ่งดีล
 		/// </summary>
-		public int? AvgPerDeal { get; set; }
+		public int AvgPerDeal { get; set; }
 
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย
 		/// </summary>
-		public int? AvgTimeCloseSale { get; set; }
+		public int AvgTimeCloseSale { get; set; }
 
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
 		/// </summary>
-		public int? AvgTimeLostSale { get; set; }
+		public int AvgTimeLostSale { get; set; }
 
 		/// <summary>
 		/// ดีลโดยเฉลี่ยต่อองค์กร
 		/// </summary>
-		public int? AvgDealOrg { get; set; }
+		public int AvgDealOrg { get; set; }
 
 		/// <summary>
 		/// กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย
 		/// </summary>
-		public int? AvgSaleActcloseDeal { get; set; }
+		public int AvgSaleActcloseDeal { get; set; }
 
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยในการส่งมอบ
 		/// </summary>
-		public int? AvgDeliveryTime { get; set; }
+		public int AvgDeliveryTime { get; set; }
 
 		/// <summary>
 		/// ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ
 		/// </summary>
-		public int? AvgDealRM { get; set; }
+		public int AvgDealRM { get; set; }
 	}
 }
