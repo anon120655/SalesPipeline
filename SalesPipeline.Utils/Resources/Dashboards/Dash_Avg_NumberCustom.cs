@@ -8,7 +8,7 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 {
 	public class Dash_Avg_NumberCustom
 	{
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 
 		/// <summary>
 		/// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
@@ -24,7 +24,7 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		/// <summary>
 		/// มูลค่าเฉลี่ยต่อหนึ่งดีล
 		/// </summary>
-		public int AvgPerDeal { get; set; }
+		public decimal AvgPerDeal { get; set; }
 
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย

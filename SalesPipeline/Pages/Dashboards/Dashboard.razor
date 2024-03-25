@@ -6,621 +6,627 @@
 
 <link href="/css/dashboard.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-12 my-2">
-			<div class="box_content">
-				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
-					<div class="p-2"><img src="/image/icon/monitor128x.png" width="55" /></div>
-					<div class="p-2">
-						<p class="back_topic">รายงาน</p>
-					</div>
-				</div>
-				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-					<div class="col mb-2">
-						<label class="form-label">เริ่มต้น</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-							<option selected>ทั้งหมด</option>
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2">
-						<label class="form-label">สิ้นสุด</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2">
-						<label class="form-label">กิจการสาขา</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2">
-						<label class="form-label">สาขา</label>
-						<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-							<option selected>ทั้งหมด</option>
-						</select>
-					</div>
-					<div class="col mb-2 mt-3">
-						<button type="button" class="btn btn-primary text-white mw_7r w-100">
-							<i class="fa fa-search fa-xs"></i> ค้นหา
-						</button>
-					</div>
-				</div>
-				<div class="row text-center mb-3">
-					<a href="/dashboard/totalimport" class="col-12 col-md-4 col-xl-2 pe-lg-1 mt-2 text-decoration-none">
-						<div role="button" class="box-text_main box-1 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto"><p class="">จำนวนลูกค้านำเข้าทั้งหมด</p></div>
-								<div class=""><h3 class="mw_3r">1000</h3></div>
-							</div>
-						</div>
-					</a>
-					<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2">
-						<div role="button" class="box-text_main box-2 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto"><p class="">รอผู้จัดการศูนย์มอบหมาย</p></div>
-								<div class=""><h3 class="mw_3r">500</h3></div>
-							</div>
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/monitor128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">รายงาน</p>
 						</div>
 					</div>
-					<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-md-auto pe-xl-1 mt-2">
-						<div role="button" class="box-text_main box-3 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto">
-									<p class="">ผู้จัดการศูนย์มอบหมาย</p>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">เริ่มต้น</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+								<option selected>ทั้งหมด</option>
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สิ้นสุด</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">กิจการสาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row text-center mb-3">
+						<a href="/dashboard/totalimport" class="col-12 col-md-4 col-xl-2 pe-lg-1 mt-2 text-decoration-none">
+							<div role="button" class="box-text_main box-1 w-100 px-2">
+								<div class="box-text">
+									<div class="mb-auto"><p class="">จำนวนลูกค้านำเข้าทั้งหมด</p></div>
+									<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusAll</h3></div>
 								</div>
-								<div class="">
-									<h3 class="mw_3r">
-										500
-									</h3>
+							</div>
+						</a>
+						<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2">
+							<div role="button" class="box-text_main box-2 w-100 px-2">
+								<div class="box-text">
+									<div class="mb-auto"><p class="">รอผู้จัดการศูนย์มอบหมาย</p></div>
+									<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusWaitMCenterAssign</h3></div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-12 col-md-4 col-xl-2 ps-xl-1 pe-lg-1 mt-2">
-						<div role="button" class="box-text_main box-4 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto">
-									<p class="">อยู่ในกระบวนการ</p>
-								</div>
-								<div class="">
-									<h3 class="mw_3r">490</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<a href="/dashboard/returneditems" class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2 text-decoration-none">
-						<div role="button" class="box-text_main box-5 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto">
-									<p class="">รายการส่งกลับ</p>
-								</div>
-								<div class="">
-									<h3 class="mw_3r">10</h3>
-								</div>
-							</div>
-						</div>
-					</a>
-					<a href="/dashboard/notachievedtarget" class="col-12 col-md-4 col-xl-2 ps-lg-1 mt-2 text-decoration-none">
-						<div role="button" class="box-text_main box-6 w-100 px-2">
-							<div class="box-text">
-								<div class="mb-auto">
-									<p class="">พนักงานที่ไม่บรรลุเป้าหมาย</p>
-								</div>
-								<div class="">
-									<h3 class="mw_3r">15</h3>
-								</div>
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="row">
-					<div class="col-12 col-xl-5 pe-xl-1 mb-3">
-						<div class="box_content border border-secondary-subtle h-100">
-							<div role="button" class="box-text_main w-100 px-2">
-								<div class="box-text text-blue">
+						<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-md-auto pe-xl-1 mt-2">
+							<div role="button" class="box-text_main box-3 w-100 px-2">
+								<div class="box-text">
 									<div class="mb-auto">
-										<p class="">Sales Pipeline</p>
+										<p class="">ผู้จัดการศูนย์มอบหมาย</p>
 									</div>
-									<div class="d-flex align-items-end">
-										<div class="pipeline p-1">
-											<div class="funnel_outer">
-												<ul>
-													<li class="funnel_step_1">
-														<div>
-															<p class="step_text">จำนวนลูกค้านำเข้าทั้งหมด</p>
-															<p class="step_val">1000</p>
-														</div>
-													</li>
-													<li class="funnel_step_2">
-														<div>
-															<p class="step_text">จำนวนลูกค้าสนใจ</p>
-															<p class="step_val">400</p>
-														</div>
-													</li>
-													<li class="funnel_step_3">
-														<div>
-															<p class="step_text">ยื่นอนุมัติ</p>
-															<p class="step_val">350</p>
-														</div>
-													</li>
-													<li class="funnel_step_4">
-														<div>
-															<p class="step_text">ผ่าน</p>
-															<p class="step_val">200</p>
-														</div>
-													</li>
-													<li class="funnel_step_5">
-														<div>
-															<p class="step_text">กู้</p>
-															<p class="step_val">150</p>
-														</div>
-													</li>
-												</ul>
-											</div>
-											@* <ul>
+									<div class="">
+										<h3 class="mw_3r">
+											@status_TotalModel.NumCusMCenterAssign
+										</h3>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-12 col-md-4 col-xl-2 ps-xl-1 pe-lg-1 mt-2">
+							<div role="button" class="box-text_main box-4 w-100 px-2">
+								<div class="box-text">
+									<div class="mb-auto">
+										<p class="">อยู่ในกระบวนการ</p>
+									</div>
+									<div class="">
+										<h3 class="mw_3r">@status_TotalModel.NumCusInProcess</h3>
+									</div>
+								</div>
+							</div>
+						</div>
+						<a href="/dashboard/returneditems" class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2 text-decoration-none">
+							<div role="button" class="box-text_main box-5 w-100 px-2">
+								<div class="box-text">
+									<div class="mb-auto">
+										<p class="">รายการส่งกลับ</p>
+									</div>
+									<div class="">
+										<h3 class="mw_3r">@status_TotalModel.NumCusReturn</h3>
+									</div>
+								</div>
+							</div>
+						</a>
+						<a href="/dashboard/notachievedtarget" class="col-12 col-md-4 col-xl-2 ps-lg-1 mt-2 text-decoration-none">
+							<div role="button" class="box-text_main box-6 w-100 px-2">
+								<div class="box-text">
+									<div class="mb-auto">
+										<p class="">พนักงานที่ไม่บรรลุเป้าหมาย</p>
+									</div>
+									<div class="">
+										<h3 class="mw_3r">@status_TotalModel.NumCusTargeNotSuccess</h3>
+									</div>
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="row">
+						<div class="col-12 col-xl-5 pe-xl-1 mb-3">
+							<div class="box_content border border-secondary-subtle h-100">
+								<div role="button" class="box-text_main w-100 px-2">
+									<div class="box-text text-blue">
+										<div class="mb-auto">
+											<p class="">Sales Pipeline</p>
+										</div>
+										<div class="d-flex align-items-end">
+											<div class="pipeline p-1">
+												<div class="funnel_outer">
+													<ul>
+														<li class="funnel_step_1">
+															<div>
+																<p class="step_text">จำนวนลูกค้านำเข้าทั้งหมด</p>
+																<p class="step_val">1000</p>
+															</div>
+														</li>
+														<li class="funnel_step_2">
+															<div>
+																<p class="step_text">จำนวนลูกค้าสนใจ</p>
+																<p class="step_val">400</p>
+															</div>
+														</li>
+														<li class="funnel_step_3">
+															<div>
+																<p class="step_text">ยื่นอนุมัติ</p>
+																<p class="step_val">350</p>
+															</div>
+														</li>
+														<li class="funnel_step_4">
+															<div>
+																<p class="step_text">ผ่าน</p>
+																<p class="step_val">200</p>
+															</div>
+														</li>
+														<li class="funnel_step_5">
+															<div>
+																<p class="step_text">กู้</p>
+																<p class="step_val">150</p>
+															</div>
+														</li>
+													</ul>
+												</div>
+												@* <ul>
 											<li>จำนวนลูกค้านำเข้าทั้งหมด</li>
 											<li>จำนวนลูกค้าสนใจ</li>
 											<li>ยื่นอนุมัติ</li>
 											<li>ผ่าน</li>
 											<li>กู้</li>
 											</ul> *@
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-12 col-xl-7">
-						<div class="row text-center">
-							<a href="/dashboard/avgeperdeal" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">มูลค่าเฉลี่ยต่อหนึ่งดีล</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h5 class="mw_3r">80,000 บาท</h5>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-							<a href="/dashboard/avgtimeclosesale" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h5 class="mw_3r">20 วัน</h5>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-							<a href="/dashboard/avgtimelostsale" class="col-12 col-xl-4 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h5 class="mw_3r">15 วัน</h5>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-						</div>
-						<div class="row text-center">
-							<a href="/dashboard/closingsale" class="col-12 col-xl pe-xl-1 pe-xxl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">การปิดการขาย</p>
-											</div>
-											<div class="d-flex align-items-end mt-2">
-												<div class="chart-container" style="position: relative; height:33vh;max-width: 220px;">
-													<canvas id="closesale"></canvas>
+						<div class="col-12 col-xl-7">
+							<div class="row text-center">
+								<a href="/dashboard/avgeperdeal" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">มูลค่าเฉลี่ยต่อหนึ่งดีล</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h5 class="mw_3r">@avg_NumberModel.AvgPerDeal.ToString("#,##0") บาท</h5>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a href="/dashboard/reasonnotloan" class="col-12 col-xl pe-xxl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
-											</div>
-											<div class="d-flex align-items-end mt-2">
-												<div class="chart-container" style="position: relative; height:33vh; max-width:270px;">
-													<canvas id="reasonnotloan"></canvas>
+								</a>
+								<a href="/dashboard/avgtimeclosesale" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h5 class="mw_3r">@avg_NumberModel.AvgTimeCloseSale วัน</h5>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a href="/dashboard/targetsales" id="elm_targetsales" class="col-12 col-xl-3 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">เป้ายอดการขาย</p>
+								</a>
+								<a href="/dashboard/avgtimelostsale" class="col-12 col-xl-4 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h5 class="mw_3r">@avg_NumberModel.AvgTimeLostSale วัน</h5>
+												</div>
 											</div>
-											<div class="d-flex align-items-end mt-2">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="targetsales"></canvas>
-													@* <p>50,000,000</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							<div class="row text-center">
+								<a href="/dashboard/closingsale" class="col-12 col-xl pe-xl-1 pe-xxl-1 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">การปิดการขาย</p>
+												</div>
+												<div class="d-flex align-items-end mt-2">
+													<div class="chart-container" style="position: relative; height:33vh;max-width: 220px;">
+														<canvas id="closesale"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</a>
+								<a href="/dashboard/reasonnotloan" class="col-12 col-xl pe-xxl-1 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
+												</div>
+												<div class="d-flex align-items-end mt-2">
+													<div class="chart-container" style="position: relative; height:33vh; max-width:270px;">
+														<canvas id="reasonnotloan"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</a>
+								<a href="/dashboard/targetsales" id="elm_targetsales" class="col-12 col-xl-3 mb-3 text-decoration-none">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">เป้ายอดการขาย</p>
+												</div>
+												<div class="d-flex align-items-end mt-2">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="targetsales"></canvas>
+														@* <p>50,000,000</p>
 													<p>35,000,000</p> *@
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row text-center">
-					<a href="/dashboard/topsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
-						<div class="box_content border border-secondary-subtle">
-							<div role="button" class="box-text_main w-100 px-2">
-								<div class="box-text text-blue">
-									<div class="mb-auto">
-										<p class="">10 อันดับ ศูนย์ยอดขายสูงสุด</p>
-									</div>
-									<div class="d-flex align-items-end mt-2">
-										<div class="mapbox">
-											<div class="row maptop10">
-												<div class="col-12 col-xl">
-													<MapThailand />
-												</div>
-												<div class="col-12 col-xl-6">
-													<table class="tbl_top10 table table-bordered border-white table-striped">
-														<thead class="">
-															<tr>
-																<th scope="col">ศูนย์</th>
-																<th scope="col">ยอดขาย</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>ราชบุรี</td>
-																<td>70,500,653</td>
-															</tr>
-															<tr>
-																<td>สมุทรปราการ</td>
-																<td>60,000,000</td>
-															</tr>
-															<tr>
-																<td>นนทบุรี</td>
-																<td>50,000,000</td>
-															</tr>
-															<tr>
-																<td>ปทุมธานี</td>
-																<td>40,000,000</td>
-															</tr>
-															<tr>
-																<td>พระนครศรีอยุธยา</td>
-																<td>30,000,000</td>
-															</tr>
-															<tr>
-																<td>อ่างทอง</td>
-																<td>20,000,000</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<div class="col-12">
-													<ul class="map-info">
-														<li class="left info"><span class="number">4,060.91</span></li>
-														<li class="center"><div class="progress-map"></div></li>
-														<li class="right info"><span class="number">34,420,370.00</span></li>
-													</ul>
+					<div class="row text-center">
+						<a href="/dashboard/topsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
+							<div class="box_content border border-secondary-subtle">
+								<div role="button" class="box-text_main w-100 px-2">
+									<div class="box-text text-blue">
+										<div class="mb-auto">
+											<p class="">10 อันดับ ศูนย์ยอดขายสูงสุด</p>
+										</div>
+										<div class="d-flex align-items-end mt-2">
+											<div class="mapbox">
+												<div class="row maptop10">
+													<div class="col-12 col-xl">
+														<MapThailand />
+													</div>
+													<div class="col-12 col-xl-6">
+														<table class="tbl_top10 table table-bordered border-white table-striped">
+															<thead class="">
+																<tr>
+																	<th scope="col">ศูนย์</th>
+																	<th scope="col">ยอดขาย</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>ราชบุรี</td>
+																	<td>70,500,653</td>
+																</tr>
+																<tr>
+																	<td>สมุทรปราการ</td>
+																	<td>60,000,000</td>
+																</tr>
+																<tr>
+																	<td>นนทบุรี</td>
+																	<td>50,000,000</td>
+																</tr>
+																<tr>
+																	<td>ปทุมธานี</td>
+																	<td>40,000,000</td>
+																</tr>
+																<tr>
+																	<td>พระนครศรีอยุธยา</td>
+																	<td>30,000,000</td>
+																</tr>
+																<tr>
+																	<td>อ่างทอง</td>
+																	<td>20,000,000</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div class="col-12">
+														<ul class="map-info">
+															<li class="left info"><span class="number">4,060.91</span></li>
+															<li class="center"><div class="progress-map"></div></li>
+															<li class="right info"><span class="number">34,420,370.00</span></li>
+														</ul>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</a>
-					<a href="/dashboard/lostsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
-						<div class="box_content border border-secondary-subtle">
-							<div role="button" class="box-text_main w-100 px-2">
-								<div class="box-text text-blue">
-									<div class="mb-auto">
-										<p class="">10 อันดับ ศูนย์ที่แพ้ให้กับคู่แข่งสูงสุด</p>
-									</div>
-									<div class="d-flex align-items-end mt-2">
-										<div class="mapbox">
-											<div class="row mapcenterlost10">
-												<div class="col-12 col-xl">
-													<MapThailand />
-												</div>
-												<div class="col-12 col-xl-6">
-													<table class="tbl_centerlost10 table table-bordered border-white table-striped">
-														<thead class="">
-															<tr>
-																<th scope="col">ศูนย์</th>
-																<th scope="col">ยอดขาย</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>ราชบุรี</td>
-																<td>70,500,653</td>
-															</tr>
-															<tr>
-																<td>สมุทรปราการ</td>
-																<td>60,000,000</td>
-															</tr>
-															<tr>
-																<td>นนทบุรี</td>
-																<td>50,000,000</td>
-															</tr>
-															<tr>
-																<td>ปทุมธานี</td>
-																<td>40,000,000</td>
-															</tr>
-															<tr>
-																<td>พระนครศรีอยุธยา</td>
-																<td>30,000,000</td>
-															</tr>
-															<tr>
-																<td>อ่างทอง</td>
-																<td>20,000,000</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<div class="col-12">
-													<ul class="map-info">
-														<li class="left info"><span class="number">3,060.91</span></li>
-														<li class="center"><div class="progress-map"></div></li>
-														<li class="right info"><span class="number">50,420,370.00</span></li>
-													</ul>
+						</a>
+						<a href="/dashboard/lostsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
+							<div class="box_content border border-secondary-subtle">
+								<div role="button" class="box-text_main w-100 px-2">
+									<div class="box-text text-blue">
+										<div class="mb-auto">
+											<p class="">10 อันดับ ศูนย์ที่แพ้ให้กับคู่แข่งสูงสุด</p>
+										</div>
+										<div class="d-flex align-items-end mt-2">
+											<div class="mapbox">
+												<div class="row mapcenterlost10">
+													<div class="col-12 col-xl">
+														<MapThailand />
+													</div>
+													<div class="col-12 col-xl-6">
+														<table class="tbl_centerlost10 table table-bordered border-white table-striped">
+															<thead class="">
+																<tr>
+																	<th scope="col">ศูนย์</th>
+																	<th scope="col">ยอดขาย</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>ราชบุรี</td>
+																	<td>70,500,653</td>
+																</tr>
+																<tr>
+																	<td>สมุทรปราการ</td>
+																	<td>60,000,000</td>
+																</tr>
+																<tr>
+																	<td>นนทบุรี</td>
+																	<td>50,000,000</td>
+																</tr>
+																<tr>
+																	<td>ปทุมธานี</td>
+																	<td>40,000,000</td>
+																</tr>
+																<tr>
+																	<td>พระนครศรีอยุธยา</td>
+																	<td>30,000,000</td>
+																</tr>
+																<tr>
+																	<td>อ่างทอง</td>
+																	<td>20,000,000</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div class="col-12">
+														<ul class="map-info">
+															<li class="left info"><span class="number">3,060.91</span></li>
+															<li class="center"><div class="progress-map"></div></li>
+															<li class="right info"><span class="number">50,420,370.00</span></li>
+														</ul>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</a>
-					<a href="/dashboard/periodonstage" class="col-12 col-xl mb-3 text-decoration-none">
-						<div class="box_content border border-secondary-subtle">
-							<div role="button" class="box-text_main w-100 px-2">
-								<div class="box-text text-blue">
-									<div class="mb-auto">
-										<p class="">ระยะเวลาที่ใช้ในแต่ละสเตจ</p>
-									</div>
-									<div class="d-flex align-items-end">
-										<div class="" style="position: relative; height:33vh;">
-											<canvas id="periodonstage"></canvas>
+						</a>
+						<a href="/dashboard/periodonstage" class="col-12 col-xl mb-3 text-decoration-none">
+							<div class="box_content border border-secondary-subtle">
+								<div role="button" class="box-text_main w-100 px-2">
+									<div class="box-text text-blue">
+										<div class="mb-auto">
+											<p class="">ระยะเวลาที่ใช้ในแต่ละสเตจ</p>
+										</div>
+										<div class="d-flex align-items-end">
+											<div class="" style="position: relative; height:33vh;">
+												<canvas id="periodonstage"></canvas>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</a>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-3 mt-1 text-center">
-							<a class="col text-decoration-none" href="/dashboard/avgdealorg">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ดีลโดยเฉลี่ยต่อองค์กร</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h3 class="mw_3r">4 ดีล</h3>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h3 class="mw_3r">6 กิจกรรม</h3>
+						</a>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-3 mt-1 text-center">
+								<a class="col text-decoration-none" href="/dashboard/avgdealorg">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ดีลโดยเฉลี่ยต่อองค์กร</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h3 class="mw_3r">@avg_NumberModel.AvgDealOrg ดีล</h3>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ระยะเวลาเฉลี่ยในการส่งมอบ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h3 class="mw_3r">21 วัน</h3>
-											</div>
-										</div>
-									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdealrm">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<h3 class="mw_3r">5 ดีล</h3>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h3 class="mw_3r">@avg_NumberModel.AvgSaleActcloseDeal กิจกรรม</h3>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ระยะเวลาเฉลี่ยในการส่งมอบ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h3 class="mw_3r">@avg_NumberModel.AvgDeliveryTime วัน</h3>
+												</div>
+											</div>
+										</div>
+									</div>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdealrm">
+									<div class="box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<h3 class="mw_3r">@avg_NumberModel.AvgDealRM ดีล</h3>
+												</div>
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
-							<a class="col text-decoration-none" href="/dashboard/avgdealorg">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">จำนวนลูกค้าตามขนาดธุรกิจ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="numcussizebusiness"></canvas>
+					<div class="row">
+						<div class="col">
+							<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
+								<a class="col text-decoration-none" href="/dashboard/avgdealorg">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">จำนวนลูกค้าตามขนาดธุรกิจ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="numcussizebusiness"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">จำนวนลูกค้าตามประเภทธุรกิจ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="numcustypebusiness"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">จำนวนลูกค้าตามประเภทธุรกิจ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="numcustypebusiness"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">จำนวนลูกค้าตาม ISIC Code</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="numcusisiccode"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">จำนวนลูกค้าตาม ISIC Code</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="numcusisiccode"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdealrm">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">จำนวนลูกค้าตามประเภทสินเชื่อ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="numcusloantype"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdealrm">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">จำนวนลูกค้าตามประเภทสินเชื่อ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="numcusloantype"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
-							<a class="col text-decoration-none" href="/dashboard/avgdealorg">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">มูลค่าสินเชื่อตามขนาดธุรกิจ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="valuesizebusiness"></canvas>
+					<div class="row">
+						<div class="col">
+							<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
+								<a class="col text-decoration-none" href="/dashboard/avgdealorg">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">มูลค่าสินเชื่อตามขนาดธุรกิจ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="valuesizebusiness"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">มูลค่าสินเชื่อตามประเภทธุรกิจ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="valuetypebusiness"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">มูลค่าสินเชื่อตามประเภทธุรกิจ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="valuetypebusiness"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">มูลค่าสินเชื่อตาม ISIC Code</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="valueisiccode"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdeliverytime">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">มูลค่าสินเชื่อตาม ISIC Code</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="valueisiccode"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a class="col text-decoration-none" href="/dashboard/avgdealrm">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-0">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">มูลค่าสินเชื่อตามประเภทสินเชื่อ</p>
-											</div>
-											<div class="d-flex align-items-end">
-												<div class="chart-container" style="position: relative; height:33vh;">
-													<canvas id="valueloantype"></canvas>
+								</a>
+								<a class="col text-decoration-none" href="/dashboard/avgdealrm">
+									<div class="box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-0">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">มูลค่าสินเชื่อตามประเภทสินเชื่อ</p>
+												</div>
+												<div class="d-flex align-items-end">
+													<div class="chart-container" style="position: relative; height:33vh;">
+														<canvas id="valueloantype"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-
+}
+else
+{
+	<NotPermissionPage />
+}

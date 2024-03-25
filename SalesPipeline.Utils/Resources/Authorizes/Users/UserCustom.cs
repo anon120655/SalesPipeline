@@ -120,7 +120,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
-		public virtual ICollection<Assignment_RMCustom>? Assignment_RMs { get; set; }
+		//public virtual ICollection<Assignment_RMCustom>? Assignment_RMs { get; set; }
 
 
 		//Custom --------------------------------------

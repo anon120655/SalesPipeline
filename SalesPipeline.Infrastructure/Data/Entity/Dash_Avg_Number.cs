@@ -21,7 +21,7 @@ public partial class Dash_Avg_Number
     /// <summary>
     /// มูลค่าเฉลี่ยต่อหนึ่งดีล
     /// </summary>
-    public int AvgPerDeal { get; set; }
+    public decimal AvgPerDeal { get; set; }
 
     /// <summary>
     /// ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย

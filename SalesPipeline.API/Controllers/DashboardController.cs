@@ -68,6 +68,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("UpdateAvg_NumberById")]
+		public async Task<IActionResult> UpdateAvg_NumberById([FromQuery] int userid)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateAvg_NumberById(userid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 
 	}

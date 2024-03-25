@@ -36,9 +36,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
 
-			if (dash_Status_Total == null)
+			if (dash_Status_Total == null || (dash_Status_Total != null && dash_Status_Total.IsUpdate))
 			{
 				await UpdateStatus_TotalById(userid);
+				dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
 			}
 
 			return _mapper.Map<Dash_Status_TotalCustom>(dash_Status_Total);
@@ -46,10 +47,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateStatus_TotalById(int userid)
 		{
-			var userRole = await _repo.User.GetRoleByUserId(userid);
-			if (userRole == null) throw new ExceptionCustom("userid not map role.");
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			if (!userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				var dash_Status_Total = await _repo.Context.Dash_Status_Totals
 																   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == userid);
@@ -64,15 +65,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					dash_Status_Total.UserId = userid;
 				}
 
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
-				{
-					var statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
-								.Select(group => new
-								{
-									StatusID = group.Key,
-									Count = group.Count()
-								}).OrderBy(x => x.StatusID).ToListAsync();
+				var statusTotal = new List<SaleStatusGroupByModel>();
 
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+
+				if (statusTotal != null)
+				{
 					dash_Status_Total.NumCusAll = statusTotal.Sum(x => x.Count);
 					dash_Status_Total.NumCusWaitMCenterAssign = 0;
 					dash_Status_Total.NumCusMCenterAssign = 0;
@@ -111,6 +126,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
+				dash_Status_Total.IsUpdate = false;
 				if (CRUD == CRUDModel.Create)
 				{
 					await _db.InsterAsync(dash_Status_Total);
@@ -125,9 +141,64 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Dash_Avg_NumberCustom> GetAvg_NumberById(int userid)
 		{
-			var query = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
 
-			return _mapper.Map<Dash_Avg_NumberCustom>(query);
+			if (dash_Avg_Number == null || (dash_Avg_Number != null && dash_Avg_Number.IsUpdate))
+			{
+				await UpdateAvg_NumberById(userid);
+				dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			}
+
+			return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
+		}
+
+		public async Task UpdateAvg_NumberById(int userid)
+		{
+			var userRole = await _repo.User.GetRoleByUserId(userid);
+			if (userRole == null) throw new ExceptionCustom("userid not map role.");
+
+			if (!userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
+																   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == userid);
+
+				int CRUD = CRUDModel.Update;
+
+				if (dash_Avg_Number == null)
+				{
+					CRUD = CRUDModel.Create;
+					dash_Avg_Number = new();
+					dash_Avg_Number.Status = StatusModel.Active;
+					dash_Avg_Number.UserId = userid;
+				}
+
+				var statusTotal = new List<SaleStatusGroupByModel>();
+
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+
+				}
+				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+
+				}
+
+				if (statusTotal != null)
+				{
+
+				}
+
+				dash_Avg_Number.IsUpdate = false;
+				if (CRUD == CRUDModel.Create)
+				{
+					await _db.InsterAsync(dash_Avg_Number);
+				}
+				else
+				{
+					_db.Update(dash_Avg_Number);
+				}
+				await _db.SaveAsync();
+			}
 		}
 
 	}

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.ViewModels;
 
 namespace SalesPipeline.Pages.Dashboards
@@ -11,17 +12,25 @@ namespace SalesPipeline.Pages.Dashboards
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
+		private Dash_Status_TotalCustom status_TotalModel = new();
+		private Dash_Avg_NumberCustom avg_NumberModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
+
+			await Status_Total();
+			await Avg_Number();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
+
+
+
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
 				var UrlJs = $"/js/dashboards/dashboard.js?v={_appSet.Value.Version}";
@@ -56,6 +65,42 @@ namespace SalesPipeline.Pages.Dashboards
 			await TopSalesCenter();
 			await CenterLost();
 			await PeriodOnStage();
+		}
+
+		protected async Task Status_Total()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.GetStatus_TotalById(UserInfo.Id);
+				if (data != null && data.Status && data.Data != null)
+				{
+					status_TotalModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+		}
+
+		protected async Task Avg_Number()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.GetAvg_NumberById(UserInfo.Id);
+				if (data != null && data.Status && data.Data != null)
+				{
+					avg_NumberModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
 		}
 
 		protected async Task CloseSale()

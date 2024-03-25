@@ -9,5 +9,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Dash_Status_TotalCustom> GetStatus_TotalById(int userid);
 		Task UpdateStatus_TotalById(int userid);
 		Task<Dash_Avg_NumberCustom> GetAvg_NumberById(int userid);
+		Task UpdateAvg_NumberById(int userid);
 	}
 }

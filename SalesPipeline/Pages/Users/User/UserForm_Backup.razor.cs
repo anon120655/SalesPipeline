@@ -122,14 +122,6 @@ namespace SalesPipeline.Pages.Users.User
 					{
 						await OnRoles(formModel.RoleId, formModel.LevelId);
 					}
-					if (formModel.Assignment_RMs?.Count > 0)
-					{
-						var response = formModel.Assignment_RMs.FirstOrDefault();
-						if (response != null)
-						{
-							//formModel.AssignmentId = response.AssignmentId;
-						}
-					}
 					StateHasChanged();
 				}
 				else

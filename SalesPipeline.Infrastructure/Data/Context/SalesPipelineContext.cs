@@ -664,8 +664,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ระยะเวลาเฉลี่ยในการส่งมอบ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.AvgPerDeal)
-                .HasComment("มูลค่าเฉลี่ยต่อหนึ่งดีล")
-                .HasColumnType("int(11)");
+                .HasPrecision(18, 2)
+                .HasComment("มูลค่าเฉลี่ยต่อหนึ่งดีล");
             entity.Property(e => e.AvgSaleActcloseDeal)
                 .HasComment("กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย")
                 .HasColumnType("int(11)");
@@ -1420,6 +1420,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DateAppointment)
                 .HasComment("วันที่นัดหมาย")
                 .HasColumnType("datetime");
+            entity.Property(e => e.LoanAmount)
+                .HasPrecision(18, 2)
+                .HasComment("จำนวนการกู้");
             entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
             entity.Property(e => e.PercentChanceLoanPass)

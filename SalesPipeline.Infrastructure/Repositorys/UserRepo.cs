@@ -62,7 +62,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.BranchId.HasValue)
 			{
-				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
+				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active 
+				&& x.RoleId == model.RoleId
+				&& x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
 				if (usersBranch != null)
 				{
 					errorMessage = $"มีพนักงานสาขานี้แล้ว";
@@ -426,7 +428,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Master_Department_Center)
 				.Include(x => x.Position)
 				.Include(x => x.Role)
-				.Include(x => x.Assignment_RMs.Where(x => x.Status == StatusModel.Active))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
