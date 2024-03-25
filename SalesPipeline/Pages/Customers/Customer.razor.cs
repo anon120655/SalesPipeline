@@ -136,13 +136,15 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (UserInfo.RoleCode != null)
 			{
-				filter.assigncenter = UserInfo.Id;
-
-				if (UserInfo.RoleCode != RoleCodes.RM)
+				if (UserInfo.RoleCode == RoleCodes.MCENTER)
 				{
-					filter.assigncenter = null;
-					filter.assignrm = null;
+					filter.assigncenter = UserInfo.Id;
 				}
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				{
+
+				}
+
 			}
 
 			var data = await _salesViewModel.GetList(filter);
@@ -236,7 +238,7 @@ namespace SalesPipeline.Pages.Customers
 			filter.provinceid = null;
 			if (e.Value != null)
 			{
-				if (int.TryParse(e.Value.ToString(),out int id))
+				if (int.TryParse(e.Value.ToString(), out int id))
 				{
 					filter.provinceid = id;
 				}
@@ -252,7 +254,7 @@ namespace SalesPipeline.Pages.Customers
 			filter.statussaleid = null;
 			if (e.Value != null)
 			{
-				if (int.TryParse(e.Value.ToString(),out int saleid))
+				if (int.TryParse(e.Value.ToString(), out int saleid))
 				{
 					filter.statussaleid = saleid;
 				}

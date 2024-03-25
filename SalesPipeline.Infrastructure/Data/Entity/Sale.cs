@@ -42,6 +42,11 @@ public partial class Sale
     public string? StatusSaleName { get; set; }
 
     /// <summary>
+    /// สถานะการขายหลัก
+    /// </summary>
+    public string? StatusSaleNameMain { get; set; }
+
+    /// <summary>
     /// รายละเอียดสถานะ
     /// </summary>
     public string? StatusDescription { get; set; }

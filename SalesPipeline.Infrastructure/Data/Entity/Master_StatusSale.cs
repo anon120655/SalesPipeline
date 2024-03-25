@@ -17,6 +17,8 @@ public partial class Master_StatusSale
 
     public int SequenceNo { get; set; }
 
+    public string? NameMain { get; set; }
+
     public string? Name { get; set; }
 
     public string? Description { get; set; }

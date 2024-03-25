@@ -159,16 +159,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (sales != null)
 			{
 				string? statusSaleName = null;
+				string? statusSaleNameMain = null;
 
 				var masterStatus = await _repo.MasterStatusSale.GetById(model.StatusId);
 				if (masterStatus != null)
 				{
 					statusSaleName = masterStatus.Name;
+					statusSaleNameMain = masterStatus.NameMain;
 				}
 
 				sales.UpdateDate = _dateNow;
 				sales.StatusSaleId = model.StatusId;
 				sales.StatusSaleName = statusSaleName;
+				sales.StatusSaleNameMain = statusSaleNameMain;
 				sales.StatusDescription = model.Description;
 				_db.Update(sales);
 				await _db.SaveAsync();

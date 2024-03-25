@@ -1176,6 +1176,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("1=แสดงใน filter")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.NameMain).HasMaxLength(255);
             entity.Property(e => e.SequenceNo).HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
@@ -1443,6 +1444,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.StatusSaleName)
                 .HasMaxLength(255)
                 .HasComment("สถานะการขาย");
+            entity.Property(e => e.StatusSaleNameMain)
+                .HasMaxLength(255)
+                .HasComment("สถานะการขายหลัก");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateByName).HasMaxLength(255);
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");

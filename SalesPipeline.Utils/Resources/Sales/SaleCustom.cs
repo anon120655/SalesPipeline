@@ -47,6 +47,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? StatusSaleName { get; set; }
 
 		/// <summary>
+		/// สถานะการขายหลัก
+		/// </summary>
+		public string? StatusSaleNameMain { get; set; }
+
+		/// <summary>
 		/// รายละเอียด
 		/// </summary>
 		public string? StatusDescription { get; set; }
