@@ -69,7 +69,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
 							   {
 								   StatusID = group.Key,
@@ -78,7 +78,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
 							   {
 								   StatusID = group.Key,
