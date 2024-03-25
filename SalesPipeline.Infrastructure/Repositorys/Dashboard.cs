@@ -60,6 +60,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					CRUD = CRUDModel.Create;
 					dash_Status_Total = new();
+					dash_Status_Total.Status = StatusModel.Active;
+					dash_Status_Total.UserId = userid;
 				}
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
@@ -72,6 +74,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								}).OrderBy(x => x.StatusID).ToListAsync();
 
 					dash_Status_Total.NumCusAll = statusTotal.Sum(x => x.Count);
+					dash_Status_Total.NumCusWaitMCenterAssign = 0;
+					dash_Status_Total.NumCusMCenterAssign = 0;
+					dash_Status_Total.NumCusInProcess = 0;
+					dash_Status_Total.NumCusReturn = 0;
+					dash_Status_Total.NumCusTargeNotSuccess = 0;
 
 					foreach (var item in statusTotal)
 					{
@@ -89,7 +96,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							|| item.StatusID == (int)StatusSaleModel.Results
 							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS)
 						{
-							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
+							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
 
 						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;

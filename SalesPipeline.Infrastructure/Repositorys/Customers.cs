@@ -286,6 +286,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
+					if (user.BranchId.HasValue)
+					{
+						var userMcencer = await _repo.User.GetMcencerByBranchId(user.BranchId.Value);
+						if (userMcencer == null) throw new ExceptionCustom("mcencer branchId not found!");
+
+						assCenterUserId = userMcencer.Id;
+						assCenterUserName = userMcencer.FullName;
+					}
+
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
@@ -293,13 +302,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
-				//else
-				//{
-				//	if (model.StatusSaleId > 0)
-				//	{
-				//		statusSaleId = model.StatusSaleId.Value; 
-				//	}
-				//}
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
@@ -334,7 +336,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
-					statusSaleId = StatusSaleModel.WaitAssignCenter;					
+					statusSaleId = StatusSaleModel.WaitAssignCenter;
 					master_Department_BranchId = user.Master_Department_BranchId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;

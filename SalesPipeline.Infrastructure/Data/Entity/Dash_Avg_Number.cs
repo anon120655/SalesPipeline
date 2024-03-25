@@ -5,7 +5,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 
 public partial class Dash_Avg_Number
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน

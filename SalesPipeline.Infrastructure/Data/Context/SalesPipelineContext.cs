@@ -654,9 +654,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnType("int(11)");
             entity.Property(e => e.AvgDealOrg)
                 .HasComment("ดีลโดยเฉลี่ยต่อองค์กร")
                 .HasColumnType("int(11)");
@@ -698,9 +695,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.NumCusAll)
                 .HasComment("จำนวนลูกค้านำเข้าทั้งหมด")
