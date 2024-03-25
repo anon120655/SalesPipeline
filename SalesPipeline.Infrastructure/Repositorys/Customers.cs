@@ -297,7 +297,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//{
 				//	if (model.StatusSaleId > 0)
 				//	{
-				//		statusSaleId = model.StatusSaleId.Value;
+				//		statusSaleId = model.StatusSaleId.Value; 
 				//	}
 				//}
 
@@ -324,6 +324,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//}
 					}
 
+					statusSaleId = StatusSaleModel.WaitAssign;
 					assCenterUserId = user.Id;
 					assCenterUserName = userCenter.FullName;
 					master_Department_BranchId = userCenter.Master_Department_BranchId;

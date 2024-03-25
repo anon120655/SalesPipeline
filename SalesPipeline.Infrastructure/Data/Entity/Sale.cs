@@ -34,17 +34,19 @@ public partial class Sale
     /// </summary>
     public string? CompanyName { get; set; }
 
+    public int? StatusSaleMainId { get; set; }
+
+    /// <summary>
+    /// สถานะการขายหลัก
+    /// </summary>
+    public string? StatusSaleNameMain { get; set; }
+
     public int StatusSaleId { get; set; }
 
     /// <summary>
     /// สถานะการขาย
     /// </summary>
     public string? StatusSaleName { get; set; }
-
-    /// <summary>
-    /// สถานะการขายหลัก
-    /// </summary>
-    public string? StatusSaleNameMain { get; set; }
 
     /// <summary>
     /// รายละเอียดสถานะ

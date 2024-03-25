@@ -259,11 +259,10 @@ namespace SalesPipeline.API.Controllers
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssign;
 
-						if (!assignedCenterUserId.HasValue)
+						if (assignedCenterUserId.HasValue)
 						{
-							throw new ExceptionCustom($"ไม่พบข้อมูล assignedCenterUserId");
+							currentUserId = assignedCenterUserId.Value;
 						}
-						currentUserId = assignedCenterUserId.Value;
 
 						var checkAssignmentCenter = await _repo.AssignmentCenter.CheckAssignmentByUserId(currentUserId);
 						if (!checkAssignmentCenter)

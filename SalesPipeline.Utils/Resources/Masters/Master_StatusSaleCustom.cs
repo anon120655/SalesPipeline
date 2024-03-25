@@ -17,6 +17,8 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		public int SequenceNo { get; set; }
 
+		public int? MainId { get; set; }
+
 		public string? NameMain { get; set; }
 
 		public string? Name { get; set; }

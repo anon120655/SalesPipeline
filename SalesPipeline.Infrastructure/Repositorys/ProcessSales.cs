@@ -687,9 +687,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleId != StatusSaleModel.WaitContact
-				&& sale.StatusSaleId != StatusSaleModel.Contact
-				&& sale.StatusSaleId != StatusSaleModel.ContactFail)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.Contact)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
@@ -777,9 +775,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleId != StatusSaleModel.WaitMeet
-				&& sale.StatusSaleId != StatusSaleModel.Meet
-				&& sale.StatusSaleId != StatusSaleModel.MeetFail)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.Meet)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
@@ -871,9 +867,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleId != StatusSaleModel.WaitSubmitDocument
-				&& sale.StatusSaleId != StatusSaleModel.SubmitDocument
-				&& sale.StatusSaleId != StatusSaleModel.SubmitDocumentFail)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.Document)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
@@ -988,8 +982,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleId != StatusSaleModel.WaitResults
-				&& sale.StatusSaleId != StatusSaleModel.Results)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.Result)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
@@ -1065,7 +1058,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleId != StatusSaleModel.Results)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
