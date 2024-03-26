@@ -43,11 +43,11 @@
 									</td>
 								</tr>
 							}
-							@if (!String.IsNullOrEmpty(document.PathOtherDocument))
+							@if (!String.IsNullOrEmpty(document.OtherDocumentPath))
 							{
 								<tr>
 									<td>
-										<a class="text-decoration-none" href="@document.PathOtherDocument" target="_blank">
+										<a class="text-decoration-none" href="@document.OtherDocumentPath" target="_blank">
 											<img src="/image/other/docother.jpg" width="50" class="me-2" />เอกสารอื่นๆ
 										</a>
 									</td>
@@ -141,7 +141,7 @@
 					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ไฟล์เอกสารอื่นๆ :</label>
 					<div class="col-6 col-md-7 col-xl-3">
 						<label class="col-form-label">
-							<a href="@document.PathOtherDocument" target="_blank">เปิดไฟล์</a>
+							<a href="@document.OtherDocumentPath" target="_blank">เปิดไฟล์</a>
 						</label>
 					</div>
 				</div>
@@ -157,7 +157,7 @@
 					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นผู้กู้ยืม : </label>
 					<div class="col-6 col-md-7 col-xl-3">
 						<label class="col-form-label">
-							<img src="@document.SignatureNamePath" width="250" />
+							<img src="@document.SignaturePath" width="250" />
 						</label>
 					</div>
 				</div>

@@ -883,6 +883,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			DateTime _dateNow = DateTime.Now;
 
+			if (!String.IsNullOrEmpty(model.HouseRegistrationPath) && (!model.HouseRegistrationFileId.HasValue || model.HouseRegistrationFileId == Guid.Empty)) throw new ExceptionCustom("houseRegistrationFileId not found.");
+			if (!String.IsNullOrEmpty(model.OtherDocumentPath) && (!model.OtherDocumentFileId.HasValue || model.OtherDocumentFileId == Guid.Empty)) throw new ExceptionCustom("otherDocumentFileId not found.");
+			if (!String.IsNullOrEmpty(model.SignaturePath) && (!model.SignatureFileId.HasValue || model.SignatureFileId == Guid.Empty)) throw new ExceptionCustom("signatureFileId not found.");
+			if (!String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) && (!model.SignatureEmployeeFileId.HasValue || model.SignatureEmployeeFileId == Guid.Empty)) throw new ExceptionCustom("signatureEmployeeFileId not found.");
+
 			Sale_Document sale_Document = new();
 			sale_Document.Status = StatusModel.Active;
 			sale_Document.CreateDate = _dateNow;
@@ -899,8 +904,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.ProvinceName = provinceName;
 			sale_Document.AmphurId = model.AmphurId;
 			sale_Document.AmphurName = amphurName;
+			sale_Document.HouseRegistrationFileId = model.HouseRegistrationFileId;
 			sale_Document.HouseRegistrationPath = model.HouseRegistrationPath;
-			sale_Document.PathOtherDocument = model.PathOtherDocument;
+			sale_Document.OtherDocumentFileId = model.OtherDocumentFileId;
+			sale_Document.OtherDocumentPath = model.OtherDocumentPath;
 			sale_Document.Master_BusinessTypeId = model.Master_BusinessTypeId;
 			sale_Document.BusinessOperation = model.BusinessOperation;
 			sale_Document.RegistrationDate = model.RegistrationDate;
@@ -914,10 +921,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.TotaLlimit = model.TotaLlimit;
 			sale_Document.TotaLlimitCEQA = model.TotaLlimitCEQA;
 			sale_Document.CommentEmployeeLoan = model.CommentEmployeeLoan;
-			sale_Document.SignatureNamePath = model.SignatureNamePath;
-			sale_Document.SignatureNameDate = model.SignatureNameDate;
+			sale_Document.SignatureFileId = model.SignatureFileId;
+			sale_Document.SignaturePath = model.SignaturePath;
+			sale_Document.SignatureDate = model.SignatureDate;
+			sale_Document.SignatureEmployeeFileId = model.SignatureEmployeeFileId;
 			sale_Document.SignatureEmployeeLoanPath = model.SignatureEmployeeLoanPath;
 			sale_Document.SignatureEmployeeLoanDate = model.SignatureEmployeeLoanDate;
+			sale_Document.SignatureMCenterFileId = model.SignatureMCenterFileId;
 			sale_Document.SignatureMCenterPath = model.SignatureMCenterPath;
 			sale_Document.SignatureMCenterDate = model.SignatureMCenterDate;
 			sale_Document.SubmitType = model.SubmitType;
@@ -927,9 +937,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					throw new ExceptionCustom("ระบุรูปบัตรประชาชน");
 				}
-				if (String.IsNullOrEmpty(model.SignatureNamePath) || String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) || String.IsNullOrEmpty(model.SignatureMCenterPath))
+				else if (String.IsNullOrEmpty(model.SignaturePath))
 				{
-					throw new ExceptionCustom("ระบุลายเซ็นไม่ครบ");
+					throw new ExceptionCustom("ระบุรูปลายเซ็นผู้กู้ยืม");
+				}
+				else if (String.IsNullOrEmpty(model.SignatureEmployeeLoanPath))
+				{
+					throw new ExceptionCustom("ระบุรูปลายเซ็นพนักงานสินเชื่อ");
 				}
 				sale_Document.SubmitDate = _dateNow;
 			}

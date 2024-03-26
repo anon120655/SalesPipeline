@@ -75,14 +75,24 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? AmphurName { get; set; }
 
 		/// <summary>
-		/// ไฟล์ทะเบียนบ้าน
+		/// id file ไฟล์ทะเบียนนบ้าน
+		/// </summary>
+		public Guid? HouseRegistrationFileId { get; set; }
+
+		/// <summary>
+		/// ไฟล์ทะเบียนนบ้าน
 		/// </summary>
 		public string? HouseRegistrationPath { get; set; }
 
 		/// <summary>
+		/// id file ไฟล์เอกสารอื่นๆ
+		/// </summary>
+		public Guid? OtherDocumentFileId { get; set; }
+
+		/// <summary>
 		/// ไฟล์เอกสารอื่นๆ
 		/// </summary>
-		public string? PathOtherDocument { get; set; }
+		public string? OtherDocumentPath { get; set; }
 
 		/// <summary>
 		/// ประเภทธุรกิจ
@@ -149,14 +159,24 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? CommentEmployeeLoan { get; set; }
 
 		/// <summary>
+		/// id file รูปลายเซ็นผู้กู้ยืม
+		/// </summary>
+		public Guid? SignatureFileId { get; set; }
+
+		/// <summary>
 		/// รูปลายเซ็นผู้กู้ยืม
 		/// </summary>
-		public string? SignatureNamePath { get; set; }
+		public string? SignaturePath { get; set; }
 
 		/// <summary>
 		/// วันที่เซ็นผู้กู้ยืม
 		/// </summary>
-		public DateTime? SignatureNameDate { get; set; }
+		public DateTime? SignatureDate { get; set; }
+
+		/// <summary>
+		/// id file รูปลายเซ็นพนักงานสินเชื่อ
+		/// </summary>
+		public Guid? SignatureEmployeeFileId { get; set; }
 
 		/// <summary>
 		/// รูปลายเซ็นพนักงานสินเชื่อ
@@ -167,6 +187,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// วันที่เซ็นพนักงานสินเชื่อ
 		/// </summary>
 		public DateTime? SignatureEmployeeLoanDate { get; set; }
+
+		/// <summary>
+		/// id file รูปลายเซ็นผู้จัดการศูนย์
+		/// </summary>
+		public Guid? SignatureMCenterFileId { get; set; }
 
 		/// <summary>
 		/// รูปลายเซ็นผู้จัดการศูนย์

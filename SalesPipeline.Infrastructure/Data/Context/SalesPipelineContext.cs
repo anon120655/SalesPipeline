@@ -1637,6 +1637,12 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
+            entity.HasIndex(e => e.SignatureEmployeeFileId, "SignatureEmployeeFileId");
+
+            entity.HasIndex(e => e.SignatureFileId, "SignatureFileId");
+
+            entity.HasIndex(e => e.SignatureMCenterFileId, "SignatureMCenterFileId");
+
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
                 .HasColumnType("int(11)");
@@ -1657,6 +1663,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.HouseNo)
                 .HasMaxLength(255)
                 .HasComment("บ้านเลขที่");
+            entity.Property(e => e.HouseRegistrationFileId).HasComment("id file ไฟล์ทะเบียนนบ้าน");
             entity.Property(e => e.HouseRegistrationPath)
                 .HasMaxLength(255)
                 .HasComment("ไฟล์ทะเบียนนบ้าน");
@@ -1688,7 +1695,8 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.NameTh)
                 .HasMaxLength(255)
                 .HasComment("ชื่อภาษาไทย");
-            entity.Property(e => e.PathOtherDocument)
+            entity.Property(e => e.OtherDocumentFileId).HasComment("id file ไฟล์เอกสารอื่นๆ");
+            entity.Property(e => e.OtherDocumentPath)
                 .HasMaxLength(255)
                 .HasComment("ไฟล์เอกสารอื่นๆ");
             entity.Property(e => e.ProvinceId)
@@ -1701,22 +1709,25 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Religion)
                 .HasMaxLength(255)
                 .HasComment("ศาสนา");
+            entity.Property(e => e.SignatureDate)
+                .HasComment("วันที่เซ็นผู้กู้ยืม")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SignatureEmployeeFileId).HasComment("id file รูปลายเซ็นพนักงานสินเชื่อ");
             entity.Property(e => e.SignatureEmployeeLoanDate)
                 .HasComment("วันที่เซ็นพนักงานสินเชื่อ")
                 .HasColumnType("datetime");
             entity.Property(e => e.SignatureEmployeeLoanPath)
                 .HasMaxLength(255)
                 .HasComment("รูปลายเซ็นพนักงานสินเชื่อ");
+            entity.Property(e => e.SignatureFileId).HasComment("id file รูปลายเซ็นผู้กู้ยืม");
             entity.Property(e => e.SignatureMCenterDate)
                 .HasComment("วันที่เซ็นผู้จัดการศูนย์")
                 .HasColumnType("datetime");
+            entity.Property(e => e.SignatureMCenterFileId).HasComment("id file รูปลายเซ็นผู้จัดการศูนย์");
             entity.Property(e => e.SignatureMCenterPath)
                 .HasMaxLength(255)
                 .HasComment("รูปลายเซ็นผู้จัดการศูนย์");
-            entity.Property(e => e.SignatureNameDate)
-                .HasComment("วันที่เซ็นผู้กู้ยืม")
-                .HasColumnType("datetime");
-            entity.Property(e => e.SignatureNamePath)
+            entity.Property(e => e.SignaturePath)
                 .HasMaxLength(255)
                 .HasComment("รูปลายเซ็นผู้กู้ยืม");
             entity.Property(e => e.Status)
@@ -1750,6 +1761,18 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_document_ibfk_1");
+
+            entity.HasOne(d => d.SignatureEmployeeFile).WithMany(p => p.Sale_DocumentSignatureEmployeeFiles)
+                .HasForeignKey(d => d.SignatureEmployeeFileId)
+                .HasConstraintName("sale_document_ibfk_5");
+
+            entity.HasOne(d => d.SignatureFile).WithMany(p => p.Sale_DocumentSignatureFiles)
+                .HasForeignKey(d => d.SignatureFileId)
+                .HasConstraintName("sale_document_ibfk_4");
+
+            entity.HasOne(d => d.SignatureMCenterFile).WithMany(p => p.Sale_DocumentSignatureMCenterFiles)
+                .HasForeignKey(d => d.SignatureMCenterFileId)
+                .HasConstraintName("sale_document_ibfk_6");
         });
 
         modelBuilder.Entity<Sale_Meet>(entity =>
