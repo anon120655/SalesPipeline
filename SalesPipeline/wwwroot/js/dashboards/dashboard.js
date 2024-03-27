@@ -1521,7 +1521,7 @@ window.centerlost = (indata) => {
 	}, 300)
 }
 
-window.periodonstage = (indata) => {
+window.durationonstage = (indata) => {
 	var barOptions_stacked = {
 		responsive: true,
 		maintainAspectRatio: false,
@@ -1547,7 +1547,7 @@ window.periodonstage = (indata) => {
 		}
 	};
 
-	var ctx = document.getElementById("periodonstage");
+	var ctx = document.getElementById("durationonstage");
 	if (ctx != null) {
 		var chart = new Chart(ctx, {
 			type: 'bar',

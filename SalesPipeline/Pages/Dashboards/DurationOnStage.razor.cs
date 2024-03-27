@@ -4,8 +4,8 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class AvgDeliveryTime
-    {
+	public partial class DurationOnStage
+	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 

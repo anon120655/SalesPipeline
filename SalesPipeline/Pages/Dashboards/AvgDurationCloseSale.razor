@@ -1,8 +1,6 @@
-﻿
-@page "/dashboard/periodonstage"
+﻿@page "/dashboard/avgdurationclosesale"
 
-<PageTitle>ระยะเวลาที่ใช้ในแต่ละสเตจ</PageTitle>
-
+<PageTitle>ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -17,52 +15,24 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">ระยะเวลาที่ใช้ในแต่ละสเตจ</span></p>
+							<p class="back_topic">รายงาน <span class="back_topic_active">ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</span></p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
-							<label class="form-label">เลขนิติบุคคล</label>
-							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
-							</div>
+							<label class="form-label">วันที่เริ่มติดต่อ</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ชื่อลูกค้า</label>
-							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
-								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
-										<i class="fa fa-search"></i>
-									</button>
-								</span>
-							</div>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ติดต่อ (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">เข้าพบ (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ยื่นเอกสาร (วัน)</label>
+							<label class="form-label">ชื่อผู้ติดต่อ</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
@@ -85,28 +55,28 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ลำดับที่</th>
-											<th class="text-center">เลขนิติบุคคล</th>
+											<th class="text-center">วันที่เริ่มติดต่อ</th>
 											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">ศูนย์สาขา</th>
-											<th class="text-center">ติดต่อ (วัน)</th>
+											<th class="text-center">ผู้ติดต่อ</th>
+											<th class="text-center">รอการติดต่อ (วัน)</th>
 											<th class="text-center">เข้าพบ (วัน)</th>
-											<th class="text-center">ยื่นเอกสาร (วัน)</th>
-											<th class="text-center">ชื่อผู้รับผิดชอบ</th>
+											<th class="text-center">พิจารณาเอกสาร (วัน)</th>
+											<th class="text-center">ระยะเวลารวม (วัน)</th>
+											<th class="text-center">ผู้รับผิดชอบ</th>
 										</tr>
 									</thead>
 									<tbody>
 										@for (int i = 1; i < 6; i++)
 										{
 											<tr>
-												<td class="text-center">@i</td>
-												<td class="text-center">1234567890123</td>
+												<td class="text-center">0@(i)/06/65</td>
 												<td class="">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">ราชบุรี</td>
-												<td class="text-center">1</td>
+												<td class="text-center">ชูใจ โชคดี</td>
 												<td class="text-center">2</td>
 												<td class="text-center">3</td>
-												<td class="text-center">5,000,000</td>
+												<td class="text-center">4</td>
+												<td class="text-center">5</td>
+												<td class="text-center">วีระ หล่อสุด</td>
 											</tr>
 										}
 									</tbody>
@@ -126,6 +96,4 @@ else
 {
 	<NotPermissionPage />
 }
-
-
 

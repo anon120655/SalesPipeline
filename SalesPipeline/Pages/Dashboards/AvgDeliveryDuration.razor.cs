@@ -4,7 +4,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class AvgTimeCloseSale
+	public partial class AvgDeliveryDuration
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -25,6 +25,5 @@ namespace SalesPipeline.Pages.Dashboards
 				firstRender = false;
 			}
 		}
-
 	}
 }

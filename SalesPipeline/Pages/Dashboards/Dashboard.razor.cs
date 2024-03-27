@@ -64,7 +64,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			await TopSalesCenter();
 			await CenterLost();
-			await PeriodOnStage();
+			await DurationOnStage();
 		}
 
 		protected async Task Status_Total()
@@ -168,9 +168,9 @@ namespace SalesPipeline.Pages.Dashboards
 			await _jsRuntimes.InvokeVoidAsync("centerlost", null);
 		}
 
-		protected async Task PeriodOnStage()
+		protected async Task DurationOnStage()
 		{
-			await _jsRuntimes.InvokeVoidAsync("periodonstage", null);
+			await _jsRuntimes.InvokeVoidAsync("durationonstage", null);
 		}
 
 

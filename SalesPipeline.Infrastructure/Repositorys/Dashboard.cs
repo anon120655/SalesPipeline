@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -163,10 +164,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task UpdateAvg_NumberById(int userid)
 		{
-			var userRole = await _repo.User.GetRoleByUserId(userid);
-			if (userRole == null) throw new ExceptionCustom("userid not map role.");
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			if (!userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
 																   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == userid);
@@ -183,13 +184,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				var statusTotal = new List<SaleStatusGroupByModel>();
 
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					decimal? RatingAverage = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid)
+																	  .AverageAsync(r => r.LoanAmount);
+
+					dash_Avg_Number.AvgPerDeal = RatingAverage ?? 0;
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
 
 				}
-				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-
 				}
 
 				if (statusTotal != null)
