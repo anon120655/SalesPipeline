@@ -137,6 +137,8 @@ public partial class Sale
 
     public virtual ICollection<Sale_Document> Sale_Documents { get; set; } = new List<Sale_Document>();
 
+    public virtual ICollection<Sale_Duration> Sale_Durations { get; set; } = new List<Sale_Duration>();
+
     public virtual ICollection<Sale_Meet> Sale_Meets { get; set; } = new List<Sale_Meet>();
 
     public virtual ICollection<Sale_Reply> Sale_Replies { get; set; } = new List<Sale_Reply>();
@@ -144,6 +146,8 @@ public partial class Sale
     public virtual ICollection<Sale_Result> Sale_Results { get; set; } = new List<Sale_Result>();
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
+
+    public virtual ICollection<Sales_Activity> Sales_Activities { get; set; } = new List<Sales_Activity>();
 
     public virtual Master_StatusSale StatusSale { get; set; } = null!;
 }

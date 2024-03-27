@@ -106,6 +106,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
 
+    public virtual DbSet<Sale_Duration> Sale_Durations { get; set; }
+
     public virtual DbSet<Sale_Meet> Sale_Meets { get; set; }
 
     public virtual DbSet<Sale_Reply> Sale_Replies { get; set; }
@@ -123,6 +125,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
     public virtual DbSet<Sale_Status_Total> Sale_Status_Totals { get; set; }
+
+    public virtual DbSet<Sales_Activity> Sales_Activities { get; set; }
 
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
@@ -1631,9 +1635,13 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Document");
 
+            entity.HasIndex(e => e.HouseRegistrationFileId, "HouseRegistrationFileId");
+
             entity.HasIndex(e => e.Master_ProductProgramBankId, "Master_ProductProgramBankId");
 
             entity.HasIndex(e => e.Master_TypeLoanRequestId, "Master_TypeLoanRequest");
+
+            entity.HasIndex(e => e.OtherDocumentFileId, "OtherDocumentFileId");
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
@@ -1749,6 +1757,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("หมู่ที่");
 
+            entity.HasOne(d => d.HouseRegistrationFile).WithMany(p => p.Sale_DocumentHouseRegistrationFiles)
+                .HasForeignKey(d => d.HouseRegistrationFileId)
+                .HasConstraintName("sale_document_ibfk_7");
+
             entity.HasOne(d => d.Master_ProductProgramBank).WithMany(p => p.Sale_Documents)
                 .HasForeignKey(d => d.Master_ProductProgramBankId)
                 .HasConstraintName("sale_document_ibfk_3");
@@ -1756,6 +1768,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_TypeLoanRequest).WithMany(p => p.Sale_Documents)
                 .HasForeignKey(d => d.Master_TypeLoanRequestId)
                 .HasConstraintName("sale_document_ibfk_2");
+
+            entity.HasOne(d => d.OtherDocumentFile).WithMany(p => p.Sale_DocumentOtherDocumentFiles)
+                .HasForeignKey(d => d.OtherDocumentFileId)
+                .HasConstraintName("sale_document_ibfk_8");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Documents)
                 .HasForeignKey(d => d.SaleId)
@@ -1773,6 +1789,49 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.SignatureMCenterFile).WithMany(p => p.Sale_DocumentSignatureMCenterFiles)
                 .HasForeignKey(d => d.SignatureMCenterFileId)
                 .HasConstraintName("sale_document_ibfk_6");
+        });
+
+        modelBuilder.Entity<Sale_Duration>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Duration", tb => tb.HasComment("จำนวนวันการดำเนินการแต่ละขั้นตอน"));
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CloseSale)
+                .HasComment("ปิดการขาย(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Contact)
+                .HasComment("ติดต่อ(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactName)
+                .HasComment("ชื่อผู้ติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactStartDate)
+                .HasComment("วันที่เริ่มติดต่อ")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Document)
+                .HasComment("พิจารณาเอกสาร(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Meet)
+                .HasComment("เข้าพบ(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Result)
+                .HasComment("ผลลัพธ์(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.WaitContact)
+                .HasComment("รอการติดต่อ(วัน)")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Durations)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_duration_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Meet>(entity =>
@@ -2114,6 +2173,43 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_status_total_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sales_Activity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sales_Activity", tb => tb.HasComment("จำนวนครั้งการดำเนินการแต่ละขั้นตอน"));
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CloseSale)
+                .HasComment("ปิดการขาย(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Contact)
+                .HasComment("ติดต่อ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactName)
+                .HasComment("ชื่อผู้ติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Document)
+                .HasComment("ยื่นเอกสาร(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Meet)
+                .HasComment("เข้าพบ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Result)
+                .HasComment("ผลลัพธ์(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sales_Activities)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sales_activity_ibfk_1");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

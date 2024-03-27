@@ -38,6 +38,10 @@ public partial class FileUpload
     /// </summary>
     public string MimeType { get; set; } = null!;
 
+    public virtual ICollection<Sale_Document> Sale_DocumentHouseRegistrationFiles { get; set; } = new List<Sale_Document>();
+
+    public virtual ICollection<Sale_Document> Sale_DocumentOtherDocumentFiles { get; set; } = new List<Sale_Document>();
+
     public virtual ICollection<Sale_Document> Sale_DocumentSignatureEmployeeFiles { get; set; } = new List<Sale_Document>();
 
     public virtual ICollection<Sale_Document> Sale_DocumentSignatureFiles { get; set; } = new List<Sale_Document>();

@@ -209,9 +209,13 @@ public partial class Sale_Document
     /// </summary>
     public DateTime? SubmitDate { get; set; }
 
+    public virtual FileUpload? HouseRegistrationFile { get; set; }
+
     public virtual Master_ProductProgramBank? Master_ProductProgramBank { get; set; }
 
     public virtual Master_TypeLoanRequest? Master_TypeLoanRequest { get; set; }
+
+    public virtual FileUpload? OtherDocumentFile { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 

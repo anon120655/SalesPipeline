@@ -79,6 +79,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Sale_Close_Sale, Sale_Close_SaleCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Contact_History, Sale_Contact_HistoryCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Status_Total, Sale_Status_TotalCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Duration, Sale_DurationCustom>().ReverseMap();
+			CreateMap<Entity.Sales_Activity, Sales_ActivityCustom>().ReverseMap();
 
 			//Customer
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();
