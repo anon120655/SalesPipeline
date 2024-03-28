@@ -34,5 +34,6 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		/// ยอดขาย
 		/// </summary>
 		public decimal SalesAmount { get; set; }
+
 	}
 }

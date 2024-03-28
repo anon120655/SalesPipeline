@@ -1448,17 +1448,9 @@ window.valueloantype = (indata) => {
 }
 
 window.topsalescenter = (indata) => {
-	setTimeout(function () {
-		$(".maptop10 .path_province").each(function (k, v) {
-			var dname = $(this).attr("data-name");
-			var code = $(this).attr("data-code");
-			//console.log(dname, code)
-			//$(this).attr("data-value", "0");
-			//$(this).attr("data-percent", "0");
-		});
-	}, 10)
 
 	setTimeout(function () {
+		console.log($(".maptop10 .path_province").length)
 		$(".maptop10 .path_province").each(function (k, v) {
 			var code = $(this).attr("data-code");
 			var dname = $(this).attr("data-name");
@@ -1485,16 +1477,6 @@ window.topsalescenter = (indata) => {
 }
 
 window.centerlost = (indata) => {
-	setTimeout(function () {
-		$(".mapcenterlost10 .path_province").each(function (k, v) {
-			var dname = $(this).attr("data-name");
-			var code = $(this).attr("data-code");
-			//console.log(dname, code)
-			//$(this).attr("data-value", "0");
-			//$(this).attr("data-percent", "0");
-		});
-	}, 10)
-
 	setTimeout(function () {
 		$(".mapcenterlost10 .path_province").each(function (k, v) {
 			var code = $(this).attr("data-code");
@@ -1591,8 +1573,11 @@ window.durationonstage = (indata) => {
 	}
 }
 
+//function percentToRange(v) {
+//	return v > 95 ? 29 : v > 90 ? 28 : v > 85 ? 27 : v > 80 ? 26 : v > 75 ? 25 : v > 70 ? 24 : v > 65 ? 23 : v > 60 ? 22 : v > 55 ? 21 : v > 50 ? 20 : v > 45 ? 19 : v > 40 ? 18 : v > 35 ? 17 : v > 30 ? 16 : v > 25 ? 15 : v > 20 ? 14 : v > 15 ? 13 : v > 10 ? 12 : v > 5 ? 11 : v > 4.5 ? 10 : v > 4 ? 9 : v > 3.5 ? 8 : v > 3 ? 7 : v > 2.5 ? 6 : v > 2 ? 5 : v > 1.5 ? 4 : v > 1 ? 3 : v > 0.5 ? 2 : v > 0.1 ? 1 : 0;
+//}
 function percentToRange(v) {
-	return v > 95 ? 29 : v > 90 ? 28 : v > 85 ? 27 : v > 80 ? 26 : v > 75 ? 25 : v > 70 ? 24 : v > 65 ? 23 : v > 60 ? 22 : v > 55 ? 21 : v > 50 ? 20 : v > 45 ? 19 : v > 40 ? 18 : v > 35 ? 17 : v > 30 ? 16 : v > 25 ? 15 : v > 20 ? 14 : v > 15 ? 13 : v > 10 ? 12 : v > 5 ? 11 : v > 4.5 ? 10 : v > 4 ? 9 : v > 3.5 ? 8 : v > 3 ? 7 : v > 2.5 ? 6 : v > 2 ? 5 : v > 1.5 ? 4 : v > 1 ? 3 : v > 0.5 ? 2 : v > 0.1 ? 1 : 0;
+	return v > 9 ? 29 : v > 8 ? 25 : v > 7 ? 21 : v > 6 ? 17 : v > 5 ? 13 : v > 4 ? 9 : v > 3 ? 5 : v > 2 ? 3 : v > 1 ? 1 : 0;
 }
 
 function trimSvgWhitespace() {

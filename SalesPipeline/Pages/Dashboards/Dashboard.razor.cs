@@ -41,6 +41,9 @@ namespace SalesPipeline.Pages.Dashboards
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
+
+
+
 				firstRender = false;
 			}
 		}
@@ -50,20 +53,27 @@ namespace SalesPipeline.Pages.Dashboards
 			await CloseSale();
 			await ReasonNotLoan();
 			await TargetSales();
+			StateHasChanged();
 
 			await NumCusSizeBusiness();
 			await NumCusTypeBusiness();
 			await NumCusISICCode();
 			await NumCusLoanType();
+			StateHasChanged();
 
 			await ValueSizeBusiness();
 			await ValueTypeBusiness();
 			await ValueISICCode();
 			await ValueLoanType();
+			StateHasChanged();
 
+			await DurationOnStage();
+			StateHasChanged();
+
+			await Task.Delay(100);
 			await TopSalesCenter();
 			await CenterLost();
-			await DurationOnStage();
+			StateHasChanged();
 		}
 
 		protected async Task Status_Total()

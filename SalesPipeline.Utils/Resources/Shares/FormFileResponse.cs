@@ -11,5 +11,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public Guid FileId { get; set; }
 
 		public string? FileUrl { get; set; }
+
+		public string? OriginalFileName { get; set; }
 	}
 }

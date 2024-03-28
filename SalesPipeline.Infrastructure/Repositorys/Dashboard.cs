@@ -246,10 +246,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					//1=ยอดขายสูงสุด
+					Random rnd = new Random();
+												  //1=ยอดขายสูงสุด
 					for (int i = 1; i <= 10; i++)
 					{
-						var province = await _repo.Thailand.GetProvinceByid(i);
+						int month = rnd.Next(1, 77);
+						var province = await _repo.Thailand.GetProvinceByid(month);
 
 						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
 						dash_Map_Thailand.Status = StatusModel.Active;
@@ -270,7 +272,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//2=แพ้ให้กับคู่แข่งสูงสุด
 					for (int i = 1; i <= 10; i++)
 					{
-						var province = await _repo.Thailand.GetProvinceByid(i);
+						int month = rnd.Next(1, 77);
+						var province = await _repo.Thailand.GetProvinceByid(month);
 
 						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
 						dash_Map_Thailand.Status = StatusModel.Active;
@@ -283,7 +286,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Map_Thailand.ProvinceId = province.ProvinceID;
 							dash_Map_Thailand.ProvinceName = province.ProvinceName;
 						}
-						dash_Map_Thailand.SalesAmount = 1000000 * i;
+						dash_Map_Thailand.SalesAmount = 10000 * i;
 						await _db.InsterAsync(dash_Map_Thailand);
 						await _db.SaveAsync();
 					}

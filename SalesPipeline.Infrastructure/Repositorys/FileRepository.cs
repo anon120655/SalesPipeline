@@ -71,6 +71,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.InsterAsync(fileUpload);
 					await _db.SaveAsync();
 
+					response.OriginalFileName = fileUpload.OriginalFileName;
+
 					_transaction.Commit();
 
 

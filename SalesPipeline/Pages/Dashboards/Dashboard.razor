@@ -286,68 +286,43 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row maptop10">
-													<div class="col-12 col-xl">
-														<MapThailand />
-													</div>
-													<div class="col-12 col-xl-6">
-														<table class="tbl_top10 table table-bordered border-white table-striped">
-															<thead class="">
-																<tr>
-																	<th scope="col">ศูนย์</th>
-																	<th scope="col">ยอดขาย</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>ราชบุรี</td>
-																	<td>70,500,653</td>
-																</tr>
-																<tr>
-																	<td>สมุทรปราการ</td>
-																	<td>60,000,000</td>
-																</tr>
-																<tr>
-																	<td>นนทบุรี</td>
-																	<td>50,000,000</td>
-																</tr>
-																<tr>
-																	<td>ปทุมธานี</td>
-																	<td>40,000,000</td>
-																</tr>
-																<tr>
-																	<td>พระนครศรีอยุธยา</td>
-																	<td>30,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-													<div class="col-12">
-														<ul class="map-info">
-															<li class="left info"><span class="number">4,060.91</span></li>
-															<li class="center"><div class="progress-map"></div></li>
-															<li class="right info"><span class="number">34,420,370.00</span></li>
-														</ul>
-													</div>
+													@if (map_ThailandModel.Count > 0)
+													{
+														var map_Thailand = map_ThailandModel.Where(x => x.Type == 1).OrderByDescending(x => x.SalesAmount).ToList();
+
+														<div class="col-12 col-xl">
+															<MapThailand map_ThailandModel="map_Thailand" />
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">ศูนย์</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (map_Thailand.Count > 0)
+																	{
+																		foreach (var item in map_Thailand)
+																		{
+																			<tr>
+																				<td>@item.ProvinceName</td>
+																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			</tr>
+																		}
+																	}
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															<ul class="map-info">
+																<li class="left info"><span class="number">@map_Thailand.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																<li class="center"><div class="progress-map"></div></li>
+																<li class="right info"><span class="number">@map_Thailand.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+															</ul>
+														</div>
+													}
 												</div>
 											</div>
 										</div>
@@ -365,68 +340,43 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row mapcenterlost10">
-													<div class="col-12 col-xl">
-														<MapThailand />
-													</div>
-													<div class="col-12 col-xl-6">
-														<table class="tbl_centerlost10 table table-bordered border-white table-striped">
-															<thead class="">
-																<tr>
-																	<th scope="col">ศูนย์</th>
-																	<th scope="col">ยอดขาย</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>ราชบุรี</td>
-																	<td>70,500,653</td>
-																</tr>
-																<tr>
-																	<td>สมุทรปราการ</td>
-																	<td>60,000,000</td>
-																</tr>
-																<tr>
-																	<td>นนทบุรี</td>
-																	<td>50,000,000</td>
-																</tr>
-																<tr>
-																	<td>ปทุมธานี</td>
-																	<td>40,000,000</td>
-																</tr>
-																<tr>
-																	<td>พระนครศรีอยุธยา</td>
-																	<td>30,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-																<tr>
-																	<td>อ่างทอง</td>
-																	<td>20,000,000</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-													<div class="col-12">
-														<ul class="map-info">
-															<li class="left info"><span class="number">3,060.91</span></li>
-															<li class="center"><div class="progress-map"></div></li>
-															<li class="right info"><span class="number">50,420,370.00</span></li>
-														</ul>
-													</div>
+													@if (map_ThailandModel.Count > 0)
+													{
+														var map_Thailand = map_ThailandModel.Where(x => x.Type == 2).OrderBy(x => x.SalesAmount).ToList();
+
+														<div class="col-12 col-xl">
+															<MapThailand map_ThailandModel="map_Thailand" />
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_centerlost10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">ศูนย์</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (map_Thailand.Count > 0)
+																	{
+																		foreach (var item in map_Thailand)
+																		{
+																			<tr>
+																				<td>@item.ProvinceName</td>
+																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			</tr>
+																		}
+																	}
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															<ul class="map-info">
+																<li class="left info"><span class="number">@map_Thailand.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																<li class="center"><div class="progress-map"></div></li>
+																<li class="right info"><span class="number">@map_Thailand.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+															</ul>
+														</div>
+													}
 												</div>
 											</div>
 										</div>
