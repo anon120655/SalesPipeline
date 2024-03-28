@@ -286,12 +286,10 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row maptop10">
-													@if (map_ThailandModel.Count > 0)
+													@if (map_ThailandModel.Count == 0)
 													{
-														var map_Thailand = map_ThailandModel.Where(x => x.Type == 1).OrderByDescending(x => x.SalesAmount).ToList();
-
 														<div class="col-12 col-xl">
-															<MapThailand map_ThailandModel="map_Thailand" />
+															<MapThailandEmpty />
 														</div>
 														<div class="col-12 col-xl-6">
 															<table class="tbl_top10 table table-bordered border-white table-striped">
@@ -302,9 +300,41 @@
 																	</tr>
 																</thead>
 																<tbody>
-																	@if (map_Thailand.Count > 0)
+																	<tr class="text-center align-middle">
+																		<td colspan="100">
+																			
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															<ul class="map-info">
+																<li class="left info"><span class="number">0.00</span></li>
+																<li class="center"><div class="progress-map"></div></li>
+																<li class="right info"><span class="number">0.00</span></li>
+															</ul>
+														</div>
+													}
+													else
+													{
+														var map_ThailandType1 = map_ThailandModel.Where(x => x.Type == 1).OrderByDescending(x => x.SalesAmount).ToList();
+
+														<div class="col-12 col-xl">
+															<MapThailand map_ThailandModel="map_ThailandType1" />
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">ศูนย์</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (map_ThailandType1.Count > 0)
 																	{
-																		foreach (var item in map_Thailand)
+																		foreach (var item in map_ThailandType1)
 																		{
 																			<tr>
 																				<td>@item.ProvinceName</td>
@@ -316,11 +346,14 @@
 															</table>
 														</div>
 														<div class="col-12">
-															<ul class="map-info">
-																<li class="left info"><span class="number">@map_Thailand.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																<li class="center"><div class="progress-map"></div></li>
-																<li class="right info"><span class="number">@map_Thailand.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-															</ul>
+															@if (map_ThailandType1.Count > 0)
+															{
+																<ul class="map-info">
+																	<li class="left info"><span class="number">@map_ThailandType1.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	<li class="center"><div class="progress-map"></div></li>
+																	<li class="right info"><span class="number">@map_ThailandType1.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																</ul>
+															}
 														</div>
 													}
 												</div>
@@ -340,15 +373,13 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row mapcenterlost10">
-													@if (map_ThailandModel.Count > 0)
+													@if (map_ThailandModel.Count == 0)
 													{
-														var map_Thailand = map_ThailandModel.Where(x => x.Type == 2).OrderBy(x => x.SalesAmount).ToList();
-
 														<div class="col-12 col-xl">
-															<MapThailand map_ThailandModel="map_Thailand" />
+															<MapThailandEmpty />
 														</div>
 														<div class="col-12 col-xl-6">
-															<table class="tbl_centerlost10 table table-bordered border-white table-striped">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
 																<thead class="">
 																	<tr>
 																		<th scope="col">ศูนย์</th>
@@ -356,9 +387,41 @@
 																	</tr>
 																</thead>
 																<tbody>
-																	@if (map_Thailand.Count > 0)
+																	<tr class="text-center align-middle">
+																		<td colspan="100">
+																			<i class="fa-solid fa-circle-notch fa-spin text-black-50"></i>
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															<ul class="map-info">
+																<li class="left info"><span class="number">0.00</span></li>
+																<li class="center"><div class="progress-map"></div></li>
+																<li class="right info"><span class="number">0.00</span></li>
+															</ul>
+														</div>
+													}
+													else
+													{
+														var map_ThailandType2 = map_ThailandModel.Where(x => x.Type == 2).OrderBy(x => x.SalesAmount).ToList();
+
+														<div class="col-12 col-xl">
+															<MapThailand map_ThailandModel="map_ThailandType2" />
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">ศูนย์</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (map_ThailandType2.Count > 0)
 																	{
-																		foreach (var item in map_Thailand)
+																		foreach (var item in map_ThailandType2)
 																		{
 																			<tr>
 																				<td>@item.ProvinceName</td>
@@ -370,11 +433,14 @@
 															</table>
 														</div>
 														<div class="col-12">
-															<ul class="map-info">
-																<li class="left info"><span class="number">@map_Thailand.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																<li class="center"><div class="progress-map"></div></li>
-																<li class="right info"><span class="number">@map_Thailand.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-															</ul>
+															@if (map_ThailandType2.Count > 0)
+															{
+																<ul class="map-info">
+																	<li class="left info"><span class="number">@map_ThailandType2.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	<li class="center"><div class="progress-map"></div></li>
+																	<li class="right info"><span class="number">@map_ThailandType2.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																</ul>
+															}
 														</div>
 													}
 												</div>

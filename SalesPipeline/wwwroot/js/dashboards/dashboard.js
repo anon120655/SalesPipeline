@@ -1473,7 +1473,7 @@ window.topsalescenter = (indata) => {
 				$("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
 			});
 		});
-	}, 300)
+	}, 100)
 }
 
 window.centerlost = (indata) => {
@@ -1500,7 +1500,7 @@ window.centerlost = (indata) => {
 				$("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
 			});
 		});
-	}, 300)
+	}, 100)
 }
 
 window.durationonstage = (indata) => {

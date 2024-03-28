@@ -23,7 +23,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			await Status_Total();
 			await Avg_Number();
-			await Map_Thailand();
+
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -37,12 +37,17 @@ namespace SalesPipeline.Pages.Dashboards
 				if (iSloadJs)
 				{
 					await SetModelAll();
+
+					await Map_Thailand();
+					StateHasChanged();
+
+					await TopSalesCenter();
+					await CenterLost();
+					StateHasChanged();
 				}
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
-
-
 
 				firstRender = false;
 			}
@@ -70,10 +75,6 @@ namespace SalesPipeline.Pages.Dashboards
 			await DurationOnStage();
 			StateHasChanged();
 
-			await Task.Delay(100);
-			await TopSalesCenter();
-			await CenterLost();
-			StateHasChanged();
 		}
 
 		protected async Task Status_Total()
