@@ -87,8 +87,16 @@ html, body {
     height: 55vh;
 }
 
+.mh_5r {
+    min-height: 5rem;
+}
+
 .mh_10r {
     min-height: 10rem;
+}
+
+.mh_20r {
+    min-height: 20rem;
 }
 
 .mh_40r {

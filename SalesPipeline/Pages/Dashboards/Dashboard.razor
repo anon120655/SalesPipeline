@@ -286,37 +286,7 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row maptop10">
-													@if (map_ThailandModel.Count == 0)
-													{
-														<div class="col-12 col-xl">
-															<MapThailandEmpty />
-														</div>
-														<div class="col-12 col-xl-6">
-															<table class="tbl_top10 table table-bordered border-white table-striped">
-																<thead class="">
-																	<tr>
-																		<th scope="col">ศูนย์</th>
-																		<th scope="col">ยอดขาย</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr class="text-center align-middle">
-																		<td colspan="100">
-																			
-																		</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="col-12">
-															<ul class="map-info">
-																<li class="left info"><span class="number">0.00</span></li>
-																<li class="center"><div class="progress-map"></div></li>
-																<li class="right info"><span class="number">0.00</span></li>
-															</ul>
-														</div>
-													}
-													else
+													@if (map_ThailandModel.Count > 0)
 													{
 														var map_ThailandType1 = map_ThailandModel.Where(x => x.Type == 1).OrderByDescending(x => x.SalesAmount).ToList();
 
@@ -356,6 +326,14 @@
 															}
 														</div>
 													}
+													else
+													{
+														<div class="col-12 mh_20r">
+															<div class="text-center">
+																<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-2xl"></i>
+															</div>
+														</div>
+													}
 												</div>
 											</div>
 										</div>
@@ -373,37 +351,7 @@
 										<div class="d-flex align-items-end mt-2">
 											<div class="mapbox">
 												<div class="row mapcenterlost10">
-													@if (map_ThailandModel.Count == 0)
-													{
-														<div class="col-12 col-xl">
-															<MapThailandEmpty />
-														</div>
-														<div class="col-12 col-xl-6">
-															<table class="tbl_top10 table table-bordered border-white table-striped">
-																<thead class="">
-																	<tr>
-																		<th scope="col">ศูนย์</th>
-																		<th scope="col">ยอดขาย</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr class="text-center align-middle">
-																		<td colspan="100">
-																			<i class="fa-solid fa-circle-notch fa-spin text-black-50"></i>
-																		</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div class="col-12">
-															<ul class="map-info">
-																<li class="left info"><span class="number">0.00</span></li>
-																<li class="center"><div class="progress-map"></div></li>
-																<li class="right info"><span class="number">0.00</span></li>
-															</ul>
-														</div>
-													}
-													else
+													@if (map_ThailandModel.Count > 0)
 													{
 														var map_ThailandType2 = map_ThailandModel.Where(x => x.Type == 2).OrderBy(x => x.SalesAmount).ToList();
 
@@ -441,6 +389,14 @@
 																	<li class="right info"><span class="number">@map_ThailandType2.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
 																</ul>
 															}
+														</div>
+													}
+													else
+													{
+														<div class="col-12 mh_20r">
+															<div class="text-center">
+																<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-2xl"></i>
+															</div>
 														</div>
 													}
 												</div>

@@ -1450,7 +1450,7 @@ window.valueloantype = (indata) => {
 window.topsalescenter = (indata) => {
 
 	setTimeout(function () {
-		console.log($(".maptop10 .path_province").length)
+		//console.log($(".maptop10 .path_province").length)
 		$(".maptop10 .path_province").each(function (k, v) {
 			var code = $(this).attr("data-code");
 			var dname = $(this).attr("data-name");

@@ -9,7 +9,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
+	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -234,6 +234,26 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var response = await _repo.MasterISICCode.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// Product Program Banks
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("ProductProgramBanks")]
+		public async Task<IActionResult> ProductProgramBanks([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master.ProductProgramBanks(model);
 
 				return Ok(response);
 			}

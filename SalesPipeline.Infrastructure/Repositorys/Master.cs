@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Crypto;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -45,6 +46,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			return _mapper.Map<IList<Master_ListCustom>>(await query.ToListAsync());
+		}
+
+		public async Task<IList<Master_ProductProgramBankCustom>> ProductProgramBanks(allFilter model)
+		{
+			var query = _repo.Context.Master_ProductProgramBanks
+				.Where(x => x.Status != StatusModel.Delete)
+				.OrderBy(x => x.Id)
+				.AsQueryable();
+
+			return _mapper.Map<IList<Master_ProductProgramBankCustom>>(await query.ToListAsync());
 		}
 
 		public async Task<IList<Master_PositionCustom>> Positions(allFilter model)
