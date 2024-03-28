@@ -14,6 +14,7 @@ namespace SalesPipeline.Pages.Dashboards
 		private User_PermissionCustom _permission = new();
 		private Dash_Status_TotalCustom status_TotalModel = new();
 		private Dash_Avg_NumberCustom avg_NumberModel = new();
+		private List<Dash_Map_ThailandCustom> map_ThailandModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -22,15 +23,13 @@ namespace SalesPipeline.Pages.Dashboards
 
 			await Status_Total();
 			await Avg_Number();
+			await Map_Thailand();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
-
-
-
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
 				var UrlJs = $"/js/dashboards/dashboard.js?v={_appSet.Value.Version}";
@@ -100,7 +99,23 @@ namespace SalesPipeline.Pages.Dashboards
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+		}
 
+		protected async Task Map_Thailand()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.GetMap_ThailandById(UserInfo.Id);
+				if (data != null && data.Status && data.Data != null)
+				{
+					map_ThailandModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
 		}
 
 		protected async Task CloseSale()

@@ -63,6 +63,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Dash_Map_ThailandCustom>>?> GetMap_ThailandById(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetMap_ThailandById?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_Map_ThailandCustom>>(content);
+				return new ResultModel<List<Dash_Map_ThailandCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_Map_ThailandCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 
 	}

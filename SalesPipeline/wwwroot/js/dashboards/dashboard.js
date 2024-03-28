@@ -1586,7 +1586,7 @@ window.durationonstage = (indata) => {
 			plugins: [ChartDataLabels]
 		});
 		if (chart != null) {
-			chart.canvas.parentNode.style.height = 300 + 'px';
+			chart.canvas.parentNode.style.height = 350 + 'px';
 		}
 	}
 }

@@ -82,6 +82,33 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetMap_ThailandById")]
+		public async Task<IActionResult> GetMap_ThailandById([FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetMap_ThailandById(userid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("UpdateMap_ThailandById")]
+		public async Task<IActionResult> UpdateMap_ThailandById([FromQuery] int userid)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateMap_ThailandById(userid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 
 	}

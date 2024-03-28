@@ -28,6 +28,12 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Dash_Avg_Number> Dash_Avg_Numbers { get; set; }
 
+    public virtual DbSet<Dash_Map_Thailand> Dash_Map_Thailands { get; set; }
+
+    public virtual DbSet<Dash_Pie> Dash_Pies { get; set; }
+
+    public virtual DbSet<Dash_Pie_Value> Dash_Pie_Values { get; set; }
+
     public virtual DbSet<Dash_Status_Total> Dash_Status_Totals { get; set; }
 
     public virtual DbSet<FileUpload> FileUploads { get; set; }
@@ -689,6 +695,71 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("dash_avg_number_ibfk_1");
+        });
+
+        modelBuilder.Entity<Dash_Map_Thailand>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Dash_Map_Thailand");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.ProvinceId).HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
+            entity.Property(e => e.SalesAmount)
+                .HasPrecision(18, 2)
+                .HasComment("ยอดขาย");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=ยอดขายสูงสุด 2=แพ้ให้กับคู่แข่งสูงสุด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Dash_Map_Thailands)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("dash_map_thailand_ibfk_1");
+        });
+
+        modelBuilder.Entity<Dash_Pie>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Dash_Pie");
+
+            entity.Property(e => e.Code)
+                .HasMaxLength(255)
+                .HasComment("ClosingSale = การปิดการขาย\r\nReasonNotLoan = เหตุผลไม่ประสงค์ขอสินเชื่อ\r\nNumCusSizeBusiness = จำนวนลูกค้าตามขนาดธุรกิจ\r\nNumCusTypeBusiness = จำนวนลูกค้าตามประเภทธุรกิจ\r\nNumCusISICCode = จำนวนลูกค้าตาม ISIC Code\r\nNumCusLoanType = จำนวนลูกค้าตามประเภทสินเชื่อ\r\nValueSizeBusiness = มูลค่าสินเชื่อตามขนาดธุรกิจ\r\nValueTypeBusiness = มูลค่าสินเชื่อตามประเภทธุรกิจ\r\nValueISICCode = มูลค่าสินเชื่อตาม ISIC Code\r\nValueLoanType = มูลค่าสินเชื่อตามประเภทสินเชื่อ");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+        });
+
+        modelBuilder.Entity<Dash_Pie_Value>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Dash_Pie_Value");
+
+            entity.HasIndex(e => e.Dash_PieId, "Dash_PieId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Value).HasPrecision(18, 2);
+
+            entity.HasOne(d => d.Dash_Pie).WithMany(p => p.Dash_Pie_Values)
+                .HasForeignKey(d => d.Dash_PieId)
+                .HasConstraintName("dash_pie_value_ibfk_1");
         });
 
         modelBuilder.Entity<Dash_Status_Total>(entity =>

@@ -217,5 +217,82 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(int userid)
+		{
+			var dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == userid).ToListAsync();
+
+			if (dash_Map_Thailands.Count == 0 || (dash_Map_Thailands.Count > 0 && dash_Map_Thailands.First().IsUpdate))
+			{
+				await UpdateMap_ThailandById(userid);
+				dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == userid).ToListAsync();
+			}
+
+			return _mapper.Map<List<Dash_Map_ThailandCustom>>(dash_Map_Thailands);
+		}
+
+		public async Task UpdateMap_ThailandById(int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var dash_Map_Thailands = _repo.Context.Dash_Map_Thailands.Where(x => x.Status == StatusModel.Active && x.UserId == userid).ToList();
+				if (dash_Map_Thailands.Count > 0)
+				{
+					_db.DeleteRange(dash_Map_Thailands);
+					await _db.SaveAsync();
+				}
+
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					//1=ยอดขายสูงสุด
+					for (int i = 1; i <= 10; i++)
+					{
+						var province = await _repo.Thailand.GetProvinceByid(i);
+
+						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+						dash_Map_Thailand.Status = StatusModel.Active;
+						dash_Map_Thailand.CreateDate = DateTime.Now;
+						dash_Map_Thailand.IsUpdate = false;
+						dash_Map_Thailand.UserId = userid;
+						dash_Map_Thailand.Type = 1;
+						if (province != null)
+						{
+							dash_Map_Thailand.ProvinceId = province.ProvinceID;
+							dash_Map_Thailand.ProvinceName = province.ProvinceName;
+						}
+						dash_Map_Thailand.SalesAmount = 1000000 * i;
+						await _db.InsterAsync(dash_Map_Thailand);
+						await _db.SaveAsync();
+					}
+
+					//2=แพ้ให้กับคู่แข่งสูงสุด
+					for (int i = 1; i <= 10; i++)
+					{
+						var province = await _repo.Thailand.GetProvinceByid(i);
+
+						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+						dash_Map_Thailand.Status = StatusModel.Active;
+						dash_Map_Thailand.CreateDate = DateTime.Now;
+						dash_Map_Thailand.IsUpdate = false;
+						dash_Map_Thailand.UserId = userid;
+						dash_Map_Thailand.Type = 2;
+						if (province != null)
+						{
+							dash_Map_Thailand.ProvinceId = province.ProvinceID;
+							dash_Map_Thailand.ProvinceName = province.ProvinceName;
+						}
+						dash_Map_Thailand.SalesAmount = 1000000 * i;
+						await _db.InsterAsync(dash_Map_Thailand);
+						await _db.SaveAsync();
+					}
+				}
+			}
+
+		}
+
+
+
 	}
 }

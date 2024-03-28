@@ -110,6 +110,8 @@ public partial class User
 
     public virtual ICollection<Dash_Avg_Number> Dash_Avg_Numbers { get; set; } = new List<Dash_Avg_Number>();
 
+    public virtual ICollection<Dash_Map_Thailand> Dash_Map_Thailands { get; set; } = new List<Dash_Map_Thailand>();
+
     public virtual ICollection<Dash_Status_Total> Dash_Status_Totals { get; set; } = new List<Dash_Status_Total>();
 
     public virtual User_Level? Level { get; set; }
