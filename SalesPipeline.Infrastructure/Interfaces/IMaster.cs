@@ -6,6 +6,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IMaster
 	{
 		Task<IList<Master_ProductProgramBankCustom>> ProductProgramBanks(allFilter model);
+		Task<IList<Master_TypeLoanRequestCustom>> TypeLoanRequests(allFilter model);
 		Task<IList<Master_ListCustom>> MasterLists(allFilter model);
 		Task<IList<Master_PositionCustom>> Positions(allFilter model);
 		Task<IList<Master_RegionCustom>> Regions(allFilter model);

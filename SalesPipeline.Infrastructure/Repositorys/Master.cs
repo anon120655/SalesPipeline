@@ -58,6 +58,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<IList<Master_ProductProgramBankCustom>>(await query.ToListAsync());
 		}
 
+		public async Task<IList<Master_TypeLoanRequestCustom>> TypeLoanRequests(allFilter model)
+		{
+			var query = _repo.Context.Master_TypeLoanRequests
+				.Where(x => x.Status != StatusModel.Delete)
+				.OrderBy(x => x.Id)
+				.AsQueryable();
+
+			return _mapper.Map<IList<Master_TypeLoanRequestCustom>>(await query.ToListAsync());
+		}
+
 		public async Task<IList<Master_PositionCustom>> Positions(allFilter model)
 		{
 			var query = _repo.Context.Master_Positions

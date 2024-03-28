@@ -264,6 +264,26 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// Type Loan Requests
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("TypeLoanRequests")]
+		public async Task<IActionResult> TypeLoanRequests([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master.TypeLoanRequests(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		///  สถานะการขาย
 		/// </summary>
 		/// <param name="model"></param>
