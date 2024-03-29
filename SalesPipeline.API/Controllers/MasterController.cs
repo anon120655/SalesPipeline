@@ -284,6 +284,26 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// ดำเนินการ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("Proceeds")]
+		public async Task<IActionResult> Proceeds([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master.Proceeds(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		///  สถานะการขาย
 		/// </summary>
 		/// <param name="model"></param>

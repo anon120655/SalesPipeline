@@ -35,6 +35,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_List, Master_ListCustom>().ReverseMap();
 			CreateMap<Entity.Master_ProductProgramBank, Master_ProductProgramBankCustom>().ReverseMap();
 			CreateMap<Entity.Master_TypeLoanRequest, Master_TypeLoanRequestCustom>().ReverseMap();
+			CreateMap<Entity.Master_Proceed, Master_ProceedCustom>().ReverseMap();
 			CreateMap<Entity.Master_Position, Master_PositionCustom>().ReverseMap();
 			CreateMap<Entity.Master_Region, Master_RegionCustom>().ReverseMap();
 			CreateMap<Entity.MenuItem, MenuItemCustom>().ReverseMap();
