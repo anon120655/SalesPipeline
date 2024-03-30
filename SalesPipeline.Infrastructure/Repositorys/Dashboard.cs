@@ -295,6 +295,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public async Task<Dash_Avg_NumberCustom> GetPieCloseSaleReason(int userid)
+		{
+			var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+
+			if (dash_Avg_Number == null || (dash_Avg_Number != null && dash_Avg_Number.IsUpdate))
+			{
+				await UpdateAvg_NumberById(userid);
+				dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			}
+
+			return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
+		}
+
 
 
 	}

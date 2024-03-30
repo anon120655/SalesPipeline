@@ -32,8 +32,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Dash_Pie> Dash_Pies { get; set; }
 
-    public virtual DbSet<Dash_Pie_Value> Dash_Pie_Values { get; set; }
-
     public virtual DbSet<Dash_Status_Total> Dash_Status_Totals { get; set; }
 
     public virtual DbSet<FileUpload> FileUploads { get; set; }
@@ -739,27 +737,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.TitleName).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnType("int(11)");
-        });
-
-        modelBuilder.Entity<Dash_Pie_Value>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Dash_Pie_Value");
-
-            entity.HasIndex(e => e.Dash_PieId, "Dash_PieId");
-
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
             entity.Property(e => e.Value).HasPrecision(18, 2);
-
-            entity.HasOne(d => d.Dash_Pie).WithMany(p => p.Dash_Pie_Values)
-                .HasForeignKey(d => d.Dash_PieId)
-                .HasConstraintName("dash_pie_value_ibfk_1");
         });
 
         modelBuilder.Entity<Dash_Status_Total>(entity =>

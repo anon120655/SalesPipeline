@@ -32,7 +32,9 @@ public partial class Dash_Pie
     /// </summary>
     public string? Code { get; set; }
 
+    public string? TitleName { get; set; }
+
     public string? Name { get; set; }
 
-    public virtual ICollection<Dash_Pie_Value> Dash_Pie_Values { get; set; } = new List<Dash_Pie_Value>();
+    public decimal? Value { get; set; }
 }
