@@ -1104,7 +1104,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (sale_Close_Sale.DesireLoanId == 1)
 				{
-					proceedName = "ประสงค์กู้";
+					//proceedName = "ประสงค์กู้";
+					proceedName = "ปิดการขาย";
 					statusSaleId = StatusSaleModel.CloseSale;
 				}
 				else if (sale_Close_Sale.DesireLoanId == 2)

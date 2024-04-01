@@ -333,12 +333,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					});
 
 					//เหตุผลไม่ประสงค์ขอสินเชื่อ
-
 					var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
 																 .GroupBy(fu => fu.StatusDescription)
 																 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
 																 .ToList();
-					
+
 					if (salesResultsNotLoan.Count > 0)
 					{
 						foreach (var item in salesResultsNotLoan)
@@ -381,7 +380,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					
+					//จำนวนลูกค้าตามขนาดธุรกิจ
+					var salesBusinessSize = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_BusinessSizeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count()  })
+																 .ToList();
+					if (salesBusinessSize.Count > 0)
+					{
+						foreach (var item in salesBusinessSize)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.NumCusSizeBusiness,
+								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
+
 				}
 			}
 
@@ -399,7 +417,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-
 				}
 			}
 

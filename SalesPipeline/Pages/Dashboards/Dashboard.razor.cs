@@ -54,10 +54,12 @@ namespace SalesPipeline.Pages.Dashboards
 			await CloseSaleAndReasonNotLoan();
 			await TargetSales();
 
-			await NumCusSizeBusiness();
-			await NumCusTypeBusiness();
-			await NumCusISICCode();
-			await NumCusLoanType();
+			await NumberCustomer();
+
+			//await NumCusSizeBusiness();
+			//await NumCusTypeBusiness();
+			//await NumCusISICCode();
+			//await NumCusLoanType();
 
 			await ValueSizeBusiness();
 			await ValueTypeBusiness();
@@ -166,25 +168,58 @@ namespace SalesPipeline.Pages.Dashboards
 			await _jsRuntimes.InvokeVoidAsync("targetsales", null);
 		}
 
-		protected async Task NumCusSizeBusiness()
+		protected async Task NumberCustomer()
 		{
-			await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", null);
-		}
+			var data = await _dashboarViewModel.GetPieNumberCustomer(UserInfo.Id);
+			if (data != null && data.Status && data.Data != null)
+			{
+				//var labels = new[] { "ใช้เวลานาน ", "ขาดการติดต่อ ", "กู้ธนาคารอื่นแล้ว ", "ดอกเบี้ยสูง " };
+				//var datas = new[] { 10, 20, 30, 40 };
+				var labels = new List<string?>();
+				var datas = new List<decimal>();
 
-		protected async Task NumCusTypeBusiness()
-		{
+				var reasonnotloan = data.Data.Where(x => x.Code == Dash_PieCodeModel.NumCusSizeBusiness).ToList();
+				if (reasonnotloan.Count > 0)
+				{
+					foreach (var item in reasonnotloan)
+					{
+						labels.Add(item.Name);
+						datas.Add(item.Value ?? 0);
+					}
+
+					await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", datas.ToArray(), labels.ToArray());
+				}
+
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 			await _jsRuntimes.InvokeVoidAsync("numcustypebusiness", null);
-		}
-
-		protected async Task NumCusISICCode()
-		{
 			await _jsRuntimes.InvokeVoidAsync("numcusisiccode", null);
-		}
-
-		protected async Task NumCusLoanType()
-		{
 			await _jsRuntimes.InvokeVoidAsync("numcusloantype", null);
 		}
+
+		//protected async Task NumCusSizeBusiness()
+		//{
+		//	await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", null);
+		//}
+
+		//protected async Task NumCusTypeBusiness()
+		//{
+		//	await _jsRuntimes.InvokeVoidAsync("numcustypebusiness", null);
+		//}
+
+		//protected async Task NumCusISICCode()
+		//{
+		//	await _jsRuntimes.InvokeVoidAsync("numcusisiccode", null);
+		//}
+
+		//protected async Task NumCusLoanType()
+		//{
+		//	await _jsRuntimes.InvokeVoidAsync("numcusloantype", null);
+		//}
 
 		protected async Task ValueSizeBusiness()
 		{
