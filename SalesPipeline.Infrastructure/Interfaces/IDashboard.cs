@@ -12,5 +12,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateAvg_NumberById(int userid);
 		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(int userid);
 		Task UpdateMap_ThailandById(int userid);
+		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid);
+		Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid);
+		Task<List<Dash_PieCustom>> GetPieLoanValue(int userid);
 	}
 }

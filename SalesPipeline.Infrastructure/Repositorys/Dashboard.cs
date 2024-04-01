@@ -244,10 +244,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
 					Random rnd = new Random();
-												  //1=ยอดขายสูงสุด
+					//1=ยอดขายสูงสุด
 					for (int i = 1; i <= 10; i++)
 					{
 						int month = rnd.Next(1, 77);
@@ -295,20 +295,116 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
-		public async Task<Dash_Avg_NumberCustom> GetPieCloseSaleReason(int userid)
+		public async Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid)
 		{
-			var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			if (dash_Avg_Number == null || (dash_Avg_Number != null && dash_Avg_Number.IsUpdate))
+			var response = new List<Dash_PieCustom>();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				await UpdateAvg_NumberById(userid);
-				dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+					//var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+
+					int salesAllCount = 50;
+					int salesCloseSaleCount = 47;
+
+					var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
+					var perFail = 100 - perSuccess;
+
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ClosingSale,
+						TitleName = "การปิดการขาย",
+						Name = "สำเร็จ",
+						Value = perSuccess
+					});
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ClosingSale,
+						TitleName = "การปิดการขาย",
+						Name = "ไม่สำเร็จ",
+						Value = perFail
+					});
+
+					//เหตุผลไม่ประสงค์ขอสินเชื่อ
+
+					var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+																 .GroupBy(fu => fu.StatusDescription)
+																 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
+																 .ToList();
+					
+					if (salesResultsNotLoan.Count > 0)
+					{
+						foreach (var item in salesResultsNotLoan)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.ReasonNotLoan,
+								TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
+					else
+					{
+						response.Add(new()
+						{
+							Status = StatusModel.Active,
+							Code = Dash_PieCodeModel.ReasonNotLoan,
+							TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
+							Name = "ไม่พบข้อมูล ",
+							Value = 100
+						});
+					}
+				}
 			}
 
-			return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
+			return response;
 		}
 
+		public async Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			var response = new List<Dash_PieCustom>();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					
+				}
+			}
+
+			return response;
+		}
+
+		public async Task<List<Dash_PieCustom>> GetPieLoanValue(int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var response = new List<Dash_PieCustom>();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+
+				}
+			}
+
+			return response;
+		}
 
 	}
 }

@@ -65,12 +65,17 @@ var colorsWarning = [
 ];
 
 window.closesale = (indata) => {
+	if (indata.length != 2) return
+	//console.log(indata)
+	var success_data = indata[0];
+	var fail_data = indata[1];
+
 	var height = 150;
 	const data = {
-		labels: ["สำเร็จ ", "ไม่สำเร็จ "],
+		labels: [`${success_data.name} `, `${fail_data.name} `],
 		datasets: [
 			{
-				data: [40, 10],
+				data: [success_data.value, fail_data.value],
 				backgroundColor: [
 					"#1A68AF",
 					"#88C9FF",
@@ -194,13 +199,15 @@ window.closesale = (indata) => {
 	}
 }
 
-window.reasonnotloan = (indata) => {
+window.reasonnotloan = (_data, _labels) => {
+	console.log(_data)
+	console.log(_labels)
 	var height = 150;
 	const data = {
-		labels: ["ใช้เวลานาน", "ขาดการติดต่อ", "กู้ธนาคารอื่นแล้ว", "ดอกเบี้ยสูง "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [10, 20, 30, 40],
+				data: _data,
 				backgroundColor: [
 					"#88C9FF",
 					"#bbd0eb",

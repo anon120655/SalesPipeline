@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalesPipeline.Utils.Resources.Masters
+namespace SalesPipeline.Utils.Resources.Dashboards
 {
 	public class Dash_PieCustom
 	{

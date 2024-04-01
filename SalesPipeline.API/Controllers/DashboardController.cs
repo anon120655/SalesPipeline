@@ -110,6 +110,47 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetPieCloseSaleReason")]
+		public async Task<IActionResult> GetPieCloseSaleReason([FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetPieCloseSaleReason(userid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPieNumberCustomer")]
+		public async Task<IActionResult> GetPieNumberCustomer([FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetPieNumberCustomer(userid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPieLoanValue")]
+		public async Task<IActionResult> GetPieLoanValue([FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetPieLoanValue(userid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 	}
 }

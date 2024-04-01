@@ -84,6 +84,70 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieCloseSaleReason(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieCloseSaleReason?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
+				return new ResultModel<List<Dash_PieCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_PieCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieNumberCustomer(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieNumberCustomer?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
+				return new ResultModel<List<Dash_PieCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_PieCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieLoanValue(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieLoanValue?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
+				return new ResultModel<List<Dash_PieCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_PieCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+
 
 
 	}

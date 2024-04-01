@@ -36,14 +36,10 @@ namespace SalesPipeline.Pages.Dashboards
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/dashboard.js");
 				if (iSloadJs)
 				{
-					await SetModelAll();
-
 					await Map_Thailand();
 					StateHasChanged();
 
-					await TopSalesCenter();
-					await CenterLost();
-					StateHasChanged();
+					await SetModelAll();
 				}
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
@@ -55,22 +51,18 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelAll()
 		{
-			await CloseSale();
-			await ReasonNotLoan();
+			await CloseSaleAndReasonNotLoan();
 			await TargetSales();
-			StateHasChanged();
 
 			await NumCusSizeBusiness();
 			await NumCusTypeBusiness();
 			await NumCusISICCode();
 			await NumCusLoanType();
-			StateHasChanged();
 
 			await ValueSizeBusiness();
 			await ValueTypeBusiness();
 			await ValueISICCode();
 			await ValueLoanType();
-			StateHasChanged();
 
 			await DurationOnStage();
 			StateHasChanged();
@@ -120,6 +112,12 @@ namespace SalesPipeline.Pages.Dashboards
 				if (data != null && data.Status && data.Data != null)
 				{
 					map_ThailandModel = data.Data;
+					StateHasChanged();
+					await Task.Delay(10);
+
+					await TopSalesCenter();
+					await CenterLost();
+					StateHasChanged();
 				}
 				else
 				{
@@ -129,14 +127,38 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task CloseSale()
+		protected async Task CloseSaleAndReasonNotLoan()
 		{
-			await _jsRuntimes.InvokeVoidAsync("closesale", null);
-		}
+			var data = await _dashboarViewModel.GetPieCloseSaleReason(UserInfo.Id);
+			if (data != null && data.Status && data.Data != null)
+			{
+				var closesale = data.Data.Where(x => x.Code == Dash_PieCodeModel.ClosingSale).ToList();
+				await _jsRuntimes.InvokeVoidAsync("closesale", closesale);
 
-		protected async Task ReasonNotLoan()
-		{
-			await _jsRuntimes.InvokeVoidAsync("reasonnotloan", null);
+
+				//var labels = new[] { "ใช้เวลานาน ", "ขาดการติดต่อ ", "กู้ธนาคารอื่นแล้ว ", "ดอกเบี้ยสูง " };
+				//var datas = new[] { 10, 20, 30, 40 };
+				var labels = new List<string?>();
+				var datas = new List<decimal>();
+
+				var reasonnotloan = data.Data.Where(x => x.Code == Dash_PieCodeModel.ReasonNotLoan).ToList();
+				if (reasonnotloan.Count > 0)
+				{
+					foreach (var item in reasonnotloan)
+					{
+						labels.Add(item.Name);
+						datas.Add(item.Value ?? 0);
+					}
+
+					await _jsRuntimes.InvokeVoidAsync("reasonnotloan", datas.ToArray(), labels.ToArray());
+				}
+
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task TargetSales()
