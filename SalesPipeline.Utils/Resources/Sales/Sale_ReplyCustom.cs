@@ -37,7 +37,6 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public virtual List<Sale_Reply_SectionCustom>? Sale_Reply_Sections { get; set; }
 
         //Custom
-
 		/// <summary>
 		/// ติดต่อ
 		/// </summary>
@@ -58,6 +57,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// ปิดกาขาย
 		/// </summary>
 		public Sale_Close_SaleCustom? Sale_Close_Sale { get; set; }
+
+
+		public int? Nex { get; set; }
 
 	}
 }

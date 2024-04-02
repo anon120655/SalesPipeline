@@ -24,7 +24,19 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
+		public int? StatusMainId { get; set; }
+
+		/// <summary>
+		/// สถานะการขายหลัก
+		/// </summary>
+		public string? StatusNameMain { get; set; }
+
 		public int StatusId { get; set; }
+
+		/// <summary>
+		/// สถานะการขาย
+		/// </summary>
+		public string? StatusName { get; set; }
 
 		public string? Description { get; set; }
 	}

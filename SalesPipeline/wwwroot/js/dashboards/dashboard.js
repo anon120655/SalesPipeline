@@ -947,12 +947,12 @@ window.numcusloantype = (_data, _labels) => {
 	}
 }
 
-window.valuesizebusiness = (indata) => {
+window.valuesizebusiness = (_data, _labels) => {
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
 					"#1A68AF",
 					"#97C7FF",
@@ -1076,12 +1076,12 @@ window.valuesizebusiness = (indata) => {
 	}
 }
 
-window.valuetypebusiness = (indata) => {
+window.valuetypebusiness = (_data, _labels) => {
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
 					"#1A68AF",
 					"#97C7FF",
@@ -1205,12 +1205,12 @@ window.valuetypebusiness = (indata) => {
 	}
 }
 
-window.valueisiccode = (indata) => {
+window.valueisiccode = (_data, _labels) => {
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
 					"#1A68AF",
 					"#97C7FF",
@@ -1334,12 +1334,12 @@ window.valueisiccode = (indata) => {
 	}
 }
 
-window.valueloantype = (indata) => {
+window.valueloantype = (_data, _labels) => {
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
 					"#1A68AF",
 					"#97C7FF",

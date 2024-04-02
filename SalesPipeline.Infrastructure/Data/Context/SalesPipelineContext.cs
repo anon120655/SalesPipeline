@@ -2162,6 +2162,13 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.StatusId).HasColumnType("int(11)");
+            entity.Property(e => e.StatusMainId).HasColumnType("int(11)");
+            entity.Property(e => e.StatusName)
+                .HasMaxLength(255)
+                .HasComment("สถานะการขาย");
+            entity.Property(e => e.StatusNameMain)
+                .HasMaxLength(255)
+                .HasComment("สถานะการขายหลัก");
 
             entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Sale_Statuses)
                 .HasForeignKey(d => d.CreateBy)

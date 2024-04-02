@@ -142,6 +142,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				currentUserName = await _repo.User.GetFullNameById(model.CreateBy);
 			}
 
+			int? statusSaleMainId = null;
+			string? statusSaleNameMain = null;
+			string? statusSaleName = null;
+
+			var masterStatus = await _repo.MasterStatusSale.GetById(model.StatusId);
+			if (masterStatus != null)
+			{
+				statusSaleMainId = masterStatus.MainId;
+				statusSaleNameMain = masterStatus.NameMain;
+				statusSaleName = masterStatus.Name;
+			}
+
 			DateTime _dateNow = DateTime.Now;
 			var sale_Status = new Data.Entity.Sale_Status();
 			sale_Status.Status = StatusModel.Active;
@@ -149,7 +161,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Status.CreateBy = model.CreateBy;
 			sale_Status.CreateByName = currentUserName;
 			sale_Status.SaleId = model.SaleId;
+			sale_Status.StatusMainId = statusSaleMainId;
+			sale_Status.StatusNameMain = statusSaleNameMain;
 			sale_Status.StatusId = model.StatusId;
+			sale_Status.StatusName = statusSaleName;
 			sale_Status.Description = model.Description;
 
 			await _db.InsterAsync(sale_Status);
@@ -158,18 +173,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sales = await _repo.Context.Sales.Where(x => x.Id == model.SaleId).FirstOrDefaultAsync();
 			if (sales != null)
 			{
-				int? statusSaleMainId = null;
-				string? statusSaleNameMain = null;
-				string? statusSaleName = null;
-
-				var masterStatus = await _repo.MasterStatusSale.GetById(model.StatusId);
-				if (masterStatus != null)
-				{
-					statusSaleMainId = masterStatus.MainId;
-					statusSaleNameMain = masterStatus.NameMain;
-					statusSaleName = masterStatus.Name;
-				}
-
 				sales.UpdateDate = _dateNow;
 				sales.StatusSaleMainId = statusSaleMainId;
 				sales.StatusSaleNameMain = statusSaleNameMain;

@@ -304,65 +304,62 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+				//var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+
+				int salesAllCount = 50;
+				int salesCloseSaleCount = 47;
+
+				var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
+				var perFail = 100 - perSuccess;
+
+				response.Add(new()
 				{
-					//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
-					//var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+					Status = StatusModel.Active,
+					Code = Dash_PieCodeModel.ClosingSale,
+					TitleName = "การปิดการขาย",
+					Name = "สำเร็จ",
+					Value = perSuccess
+				});
+				response.Add(new()
+				{
+					Status = StatusModel.Active,
+					Code = Dash_PieCodeModel.ClosingSale,
+					TitleName = "การปิดการขาย",
+					Name = "ไม่สำเร็จ",
+					Value = perFail
+				});
 
-					int salesAllCount = 50;
-					int salesCloseSaleCount = 47;
+				//เหตุผลไม่ประสงค์ขอสินเชื่อ
+				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+															 .GroupBy(fu => fu.StatusDescription)
+															 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
+															 .ToList();
 
-					var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
-					var perFail = 100 - perSuccess;
-
-					response.Add(new()
-					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ClosingSale,
-						TitleName = "การปิดการขาย",
-						Name = "สำเร็จ",
-						Value = perSuccess
-					});
-					response.Add(new()
-					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ClosingSale,
-						TitleName = "การปิดการขาย",
-						Name = "ไม่สำเร็จ",
-						Value = perFail
-					});
-
-					//เหตุผลไม่ประสงค์ขอสินเชื่อ
-					var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
-																 .GroupBy(fu => fu.StatusDescription)
-																 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
-																 .ToList();
-
-					if (salesResultsNotLoan.Count > 0)
-					{
-						foreach (var item in salesResultsNotLoan)
-						{
-							response.Add(new()
-							{
-								Status = StatusModel.Active,
-								Code = Dash_PieCodeModel.ReasonNotLoan,
-								TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-								Name = $"{item.Label} ",
-								Value = item.Value
-							});
-						}
-					}
-					else
+				if (salesResultsNotLoan.Count > 0)
+				{
+					foreach (var item in salesResultsNotLoan)
 					{
 						response.Add(new()
 						{
 							Status = StatusModel.Active,
 							Code = Dash_PieCodeModel.ReasonNotLoan,
 							TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-							Name = "ไม่พบข้อมูล ",
-							Value = 100
+							Name = $"{item.Label} ",
+							Value = item.Value
 						});
 					}
+				}
+				else
+				{
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ReasonNotLoan,
+						TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
+						Name = "ไม่พบข้อมูล ",
+						Value = 100
+					});
 				}
 			}
 
@@ -380,10 +377,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var salesBusinessSize = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_BusinessSizeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count()  })
-																 .ToList();
+					var salesBusinessSize = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+												 .GroupBy(m => m.Master_BusinessSizeId)
+												 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+												 .ToList();
+
 					if (salesBusinessSize.Count > 0)
 					{
 						foreach (var item in salesBusinessSize)
@@ -393,16 +391,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.NumCusSizeBusiness,
 								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								Name = $"{item.Customers.Select(x => x.Master_BusinessSizeName).FirstOrDefault()} ",
+								Value = item.Customers.Count
 							});
 						}
 					}
 
-					var salesBusinessType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_BusinessTypeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count() })
-																 .ToList();
+					var salesBusinessType = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+												 .GroupBy(m => m.Master_BusinessTypeId)
+												 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+												 .ToList();
 					if (salesBusinessType.Count > 0)
 					{
 						foreach (var item in salesBusinessType)
@@ -411,9 +409,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.NumCusTypeBusiness,
-								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								TitleName = "จำนวนลูกค้าตามประเภทธุรกิจ",
+								Name = $"{item.Customers.Select(x => x.Master_BusinessTypeName).FirstOrDefault()} ",
+								Value = item.Customers.Count
 							});
 						}
 					}
@@ -427,24 +425,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						Value = 100
 					});
 
-					var salesLoanType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_LoanTypeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count() })
-																 .ToList();
+					var salesLoanType = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+												 .GroupBy(m => m.Master_LoanTypeId)
+												 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+												 .ToList();
 					if (salesLoanType.Count > 0)
 					{
-						foreach (var item in salesLoanType)
+						foreach (var item in salesBusinessType)
 						{
 							response.Add(new()
 							{
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.NumCusLoanType,
-								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								TitleName = "จำนวนลูกค้าตามประเภทสินเชื่อ",
+								Name = $"{item.Customers.Select(x => x.Master_LoanTypeName).FirstOrDefault()} ",
+								Value = item.Customers.Count
 							});
 						}
 					}
+
 				}
 			}
 
@@ -462,10 +461,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var salesBusinessSize = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_BusinessSizeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count() })
-																 .ToList();
+					var salesBusinessSize = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+												 .GroupBy(m => m.Customer.Master_BusinessSizeId)
+												 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
+												 .ToList();
+
 					if (salesBusinessSize.Count > 0)
 					{
 						foreach (var item in salesBusinessSize)
@@ -475,16 +475,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.ValueSizeBusiness,
 								TitleName = "มูลค่าสินเชื่อตามขนาดธุรกิจ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								Name = $"{item.Sales.Select(x => x.Customer.Master_BusinessSizeName).FirstOrDefault()} ",
+								Value = item.Sales.Sum(s => s.LoanAmount)
 							});
 						}
 					}
 
 					var salesBusinessType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_BusinessTypeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count() })
-																 .ToList();
+												 .GroupBy(m => m.Customer.Master_BusinessTypeId)
+												 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
+												 .ToList();
 					if (salesBusinessType.Count > 0)
 					{
 						foreach (var item in salesBusinessType)
@@ -494,8 +494,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.ValueTypeBusiness,
 								TitleName = "มูลค่าสินเชื่อตามประเภทธุรกิจ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								Name = $"{item.Sales.Select(x => x.Customer.Master_BusinessTypeName).FirstOrDefault()} ",
+								Value = item.Sales.Sum(s => s.LoanAmount)
 							});
 						}
 					}
@@ -510,23 +510,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					});
 
 					var salesLoanType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-																 .GroupBy(fu => fu.Customer.Master_LoanTypeName)
-																 .Select(g => new { Label = g.Key, Value = g.Count() })
-																 .ToList();
+												 .GroupBy(m => m.Customer.Master_LoanTypeId)
+												 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
+												 .ToList();
 					if (salesLoanType.Count > 0)
 					{
-						foreach (var item in salesLoanType)
+						foreach (var item in salesBusinessType)
 						{
 							response.Add(new()
 							{
 								Status = StatusModel.Active,
 								Code = Dash_PieCodeModel.ValueLoanType,
 								TitleName = "มูลค่าสินเชื่อตามประเภทสินเชื่อ",
-								Name = $"{item.Label} ",
-								Value = item.Value
+								Name = $"{item.Sales.Select(x => x.Customer.Master_BusinessSizeName).FirstOrDefault()} ",
+								Value = item.Sales.Sum(s => s.LoanAmount)
 							});
 						}
 					}
+
 				}
 			}
 

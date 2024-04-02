@@ -22,8 +22,6 @@ namespace SalesPipeline.Pages.Dashboards
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			await Status_Total();
-			await Avg_Number();
 
 		}
 
@@ -31,15 +29,15 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
+				await Status_Total();
+				await Avg_Number();
+
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
 				var UrlJs = $"/js/dashboards/dashboard.js?v={_appSet.Value.Version}";
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/dashboard.js");
 				if (iSloadJs)
 				{
-					await Map_Thailand();
-					StateHasChanged();
-
 					await SetModelAll();
 				}
 
@@ -52,24 +50,29 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelAll()
 		{
+			if (UserInfo.RoleCode != RoleCodes.MCENTER)
+			{
+				//10 อันดับ
+				await Map_Thailand();
+				StateHasChanged();
+			}
+
+			//การปิดการขาย เหตุผลไม่ประสงค์ขอสินเชื่อ
 			await CloseSaleAndReasonNotLoan();
+			//เป้ายอดการขาย
 			await TargetSales();
-
+			//จำนวนลูกค้าตาม...
 			await NumberCustomer();
+			//มูลค่าสินเชื่อตาม...
+			await LoanValue();
 
-			//await NumCusSizeBusiness();
-			//await NumCusTypeBusiness();
-			//await NumCusISICCode();
-			//await NumCusLoanType();
+			if (UserInfo.RoleCode != RoleCodes.MCENTER)
+			{
+				//ระยะเวลาที่ใช้ในแต่ละสเตจ
+				await DurationOnStage();
+			}
 
-			await ValueSizeBusiness();
-			await ValueTypeBusiness();
-			await ValueISICCode();
-			await ValueLoanType();
-
-			await DurationOnStage();
 			StateHasChanged();
-
 		}
 
 		protected async Task Status_Total()
@@ -237,44 +240,69 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		//protected async Task NumCusSizeBusiness()
-		//{
-		//	await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", null);
-		//}
-
-		//protected async Task NumCusTypeBusiness()
-		//{
-		//	await _jsRuntimes.InvokeVoidAsync("numcustypebusiness", null);
-		//}
-
-		//protected async Task NumCusISICCode()
-		//{
-		//	await _jsRuntimes.InvokeVoidAsync("numcusisiccode", null);
-		//}
-
-		//protected async Task NumCusLoanType()
-		//{
-		//	await _jsRuntimes.InvokeVoidAsync("numcusloantype", null);
-		//}
-
-		protected async Task ValueSizeBusiness()
+		protected async Task LoanValue()
 		{
-			await _jsRuntimes.InvokeVoidAsync("valuesizebusiness", null);
-		}
+			var data = await _dashboarViewModel.GetPieLoanValue(UserInfo.Id);
+			if (data != null && data.Status && data.Data != null)
+			{
+				var chartModel = new ChartJsDataLabelsModel();
 
-		protected async Task ValueTypeBusiness()
-		{
-			await _jsRuntimes.InvokeVoidAsync("valuetypebusiness", null);
-		}
+				var valueSizeBusiness = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueSizeBusiness).ToList();
+				if (valueSizeBusiness.Count > 0)
+				{
+					foreach (var item in valueSizeBusiness)
+					{
+						chartModel.labels.Add(item.Name);
+						chartModel.datas.Add(item.Value ?? 0);
+					}
 
-		protected async Task ValueISICCode()
-		{
-			await _jsRuntimes.InvokeVoidAsync("valueisiccode", null);
-		}
+					await _jsRuntimes.InvokeVoidAsync("valuesizebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
+				}
 
-		protected async Task ValueLoanType()
-		{
-			await _jsRuntimes.InvokeVoidAsync("valueloantype", null);
+				chartModel = new();
+				var valueTypeBusiness = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueTypeBusiness).ToList();
+				if (valueTypeBusiness.Count > 0)
+				{
+					foreach (var item in valueTypeBusiness)
+					{
+						chartModel.labels.Add(item.Name);
+						chartModel.datas.Add(item.Value ?? 0);
+					}
+
+					await _jsRuntimes.InvokeVoidAsync("valuetypebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
+				}
+
+				chartModel = new();
+				var valueISICCode = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueISICCode).ToList();
+				if (valueISICCode.Count > 0)
+				{
+					foreach (var item in valueISICCode)
+					{
+						chartModel.labels.Add(item.Name);
+						chartModel.datas.Add(item.Value ?? 0);
+					}
+
+					await _jsRuntimes.InvokeVoidAsync("valueisiccode", chartModel.datas.ToArray(), chartModel.labels.ToArray());
+				}
+
+				chartModel = new();
+				var valueLoanType = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueLoanType).ToList();
+				if (valueLoanType.Count > 0)
+				{
+					foreach (var item in valueLoanType)
+					{
+						chartModel.labels.Add(item.Name);
+						chartModel.datas.Add(item.Value ?? 0);
+					}
+
+					await _jsRuntimes.InvokeVoidAsync("valueloantype", chartModel.datas.ToArray(), chartModel.labels.ToArray());
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task TopSalesCenter()
