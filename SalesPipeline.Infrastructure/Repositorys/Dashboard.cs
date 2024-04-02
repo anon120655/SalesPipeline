@@ -600,6 +600,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			await _db.SaveAsync();
 
+
 		}
 
 	}
