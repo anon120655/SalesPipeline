@@ -534,5 +534,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task UpdateDurationById(int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			//var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x=>x.us);
+
+
+		}
+
 	}
 }
