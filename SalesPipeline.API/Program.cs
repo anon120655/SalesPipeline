@@ -187,7 +187,7 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
 
-string? pathBase = Environment.GetEnvironmentVariable("PATH_BASE");
-app.UsePathBase(new PathString(pathBase));
+//string? pathBase = Environment.GetEnvironmentVariable("PATH_BASE");
+//app.UsePathBase(new PathString(pathBase));
 
 app.Run();

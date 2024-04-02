@@ -560,35 +560,45 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					sale_Durations.ContactName = sale_Contacts.Name;
 				}
 
-				var waitContactLast = sale_Status
-					.Where(x => x.StatusId == StatusSaleModel.WaitContact)
-					.OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Day)
-					.FirstOrDefault();
+				var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				var contactFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
 
-				var contactLast = sale_Status
-					.Where(x => x.StatusMainId == StatusSaleMainModel.Contact)
-					.OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Day)
-					.FirstOrDefault();
+				var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
 
-				sale_Durations.WaitContact = (contactLast  - waitContactLast);
+				var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
+
+				var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
+
+				var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+				sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
+
+				sale_Durations.ContactStartDate = contactFirst;
 			}
 
-			sale_Durations.WaitContact = 0;
-			sale_Durations.Contact = 0;
-			sale_Durations.Meet = 0;
-			sale_Durations.Document = 0;
-			sale_Durations.Result = 0;
+			sale_Durations.WaitContact = sale_Durations.WaitContact > 0 ? sale_Durations.WaitContact : 0;
+			sale_Durations.Contact = sale_Durations.Contact > 0 ? sale_Durations.Contact : 0;
+			sale_Durations.Meet = sale_Durations.Meet > 0 ? sale_Durations.Meet : 0;
+			sale_Durations.Document = sale_Durations.Document > 0 ? sale_Durations.Document : 0;
+			sale_Durations.Result = sale_Durations.Result > 0 ? sale_Durations.Result : 0;
 			sale_Durations.CloseSale = 0;
 
-			//if (CRUD == CRUDModel.Create)
-			//{
-			//	await _db.InsterAsync(sale_Durations);
-			//}
-			//else
-			//{
-			//	_db.Update(sale_Durations);
-			//}
-			//await _db.SaveAsync();
+			if (CRUD == CRUDModel.Create)
+			{
+				await _db.InsterAsync(sale_Durations);
+			}
+			else
+			{
+				_db.Update(sale_Durations);
+			}
+			await _db.SaveAsync();
 
 		}
 
