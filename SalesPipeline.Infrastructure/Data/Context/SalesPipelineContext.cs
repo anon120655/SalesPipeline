@@ -1857,8 +1857,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ติดต่อ(วัน)")
                 .HasColumnType("int(11)");
             entity.Property(e => e.ContactName)
-                .HasComment("ชื่อผู้ติดต่อ")
-                .HasColumnType("int(11)");
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.ContactStartDate)
                 .HasComment("วันที่เริ่มติดต่อ")
                 .HasColumnType("datetime");

@@ -534,13 +534,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
-		public async Task UpdateDurationById(int userid)
+		public async Task UpdateDurationById(Guid saleid)
 		{
-			var user = await _repo.User.GetById(userid);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x => x.SaleId == saleid);
 
-			//var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x=>x.us);
+			int CRUD = CRUDModel.Update;
 
+			if (sale_Durations == null)
+			{
+				CRUD = CRUDModel.Create;
+				sale_Durations = new();
+				sale_Durations.Status = StatusModel.Active;
+				sale_Durations.CreateDate = DateTime.Now;
+				sale_Durations.SaleId = saleid;
+			}
+
+			string? contactName = null;
+			var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Status.Count > 0)
+			{
+				var sale_Contacts = await _repo.Context.Sale_Contacts.OrderByDescending(x => x.CreateDate).FirstOrDefaultAsync(x => x.SaleId == saleid);
+				if (sale_Contacts != null)
+				{
+					sale_Durations.ContactName = contactName;
+				}
+
+			}
+
+			sale_Durations.WaitContact = 0;
+			sale_Durations.Contact = 0;
+			sale_Durations.Meet = 0;
+			sale_Durations.Document = 0;
+			sale_Durations.Result = 0;
+			sale_Durations.CloseSale = 0;
+
+			if (CRUD == CRUDModel.Create)
+			{
+				await _db.InsterAsync(sale_Durations);
+			}
+			else
+			{
+				_db.Update(sale_Durations);
+			}
+			await _db.SaveAsync();
 
 		}
 

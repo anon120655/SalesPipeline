@@ -27,7 +27,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// ชื่อผู้ติดต่อ
 		/// </summary>
-		public int? ContactName { get; set; }
+		public string? ContactName { get; set; }
 
 		/// <summary>
 		/// รอการติดต่อ(วัน)
