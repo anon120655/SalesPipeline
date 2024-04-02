@@ -152,5 +152,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("UpdateDurationById")]
+		public async Task<IActionResult> UpdateDurationById([FromQuery] Guid saleid)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateDurationById(saleid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

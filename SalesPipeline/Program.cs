@@ -30,8 +30,8 @@ IConfigurationRoot con_root = con_builder.Build();
 
 var appSettings = con_root.GetSection("AppSettings");
 string baseUriApi = con_root["AppSettings:baseUriApi"] ?? String.Empty;
-string ServerSite = con_root["AppSettings:ServerSite"] ?? String.Empty;
-string ContentRootPath = con_root["AppSettings:ContentRootPath"] ?? String.Empty;
+string serverSite = con_root["AppSettings:ServerSite"] ?? String.Empty;
+string contentRootPath = con_root["AppSettings:ContentRootPath"] ?? String.Empty;
 
 builder.Services.Configure<AppSettings>(appSettings);
 
@@ -77,17 +77,17 @@ app.UseStaticFiles();
 string currentDirectory = Directory.GetCurrentDirectory();
 
 string currentDirectoryRoot = Path.Combine(currentDirectory, @"wwwroot");
-string currentDirectoryFiles = ContentRootPath;
+string currentDirectoryFiles = contentRootPath;
 
-if (ServerSite != ServerSites.DEV && !baseUriApi.Contains("localhost"))
+if (serverSite != ServerSites.DEV && !baseUriApi.Contains("localhost"))
 {
 	//Server Linix
-	if (ServerSite == ServerSites.UAT)
+	if (serverSite == ServerSites.UAT)
 	{
 		//currentDirectoryRoot = "/home/thanapat/uat/frontend/wwwroot";
 		//currentDirectoryFiles = $"/home/thanapat/uat/files";
 	}
-	else if (ServerSite == ServerSites.PRO)
+	else if (serverSite == ServerSites.PRO)
 	{
 		//currentDirectoryRoot = "/home/thanapat/prd/frontend/wwwroot";
 		//currentDirectoryFiles = $"/home/thanapat/prd/files";

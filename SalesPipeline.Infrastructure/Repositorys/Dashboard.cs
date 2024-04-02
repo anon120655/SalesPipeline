@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -549,16 +551,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale_Durations.SaleId = saleid;
 			}
 
-			string? contactName = null;
 			var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == saleid).ToListAsync();
 			if (sale_Status.Count > 0)
 			{
 				var sale_Contacts = await _repo.Context.Sale_Contacts.OrderByDescending(x => x.CreateDate).FirstOrDefaultAsync(x => x.SaleId == saleid);
 				if (sale_Contacts != null)
 				{
-					sale_Durations.ContactName = contactName;
+					sale_Durations.ContactName = sale_Contacts.Name;
 				}
 
+				var waitContactLast = sale_Status
+					.Where(x => x.StatusId == StatusSaleModel.WaitContact)
+					.OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Day)
+					.FirstOrDefault();
+
+				var contactLast = sale_Status
+					.Where(x => x.StatusMainId == StatusSaleMainModel.Contact)
+					.OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Day)
+					.FirstOrDefault();
+
+				sale_Durations.WaitContact = (contactLast  - waitContactLast);
 			}
 
 			sale_Durations.WaitContact = 0;
@@ -568,15 +580,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Durations.Result = 0;
 			sale_Durations.CloseSale = 0;
 
-			if (CRUD == CRUDModel.Create)
-			{
-				await _db.InsterAsync(sale_Durations);
-			}
-			else
-			{
-				_db.Update(sale_Durations);
-			}
-			await _db.SaveAsync();
+			//if (CRUD == CRUDModel.Create)
+			//{
+			//	await _db.InsterAsync(sale_Durations);
+			//}
+			//else
+			//{
+			//	_db.Update(sale_Durations);
+			//}
+			//await _db.SaveAsync();
 
 		}
 

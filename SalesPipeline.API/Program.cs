@@ -42,6 +42,7 @@ IConfigurationRoot con_root = con_builder.Build();
 
 var appSettings = con_root.GetSection("AppSettings");
 var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
+var contentRootPath = con_root["AppSettings:ContentRootPath"] ?? String.Empty;
 
 //builder.Services.AddDbContext<SalesPipelineContext>(options =>
 //options.UseSqlServer(SalesPipelineContext));
@@ -150,9 +151,10 @@ app.Use(async (context, next) =>
 	await next(context);
 });
 
+//"C:\\DataRM"
 app.UseStaticFiles(new StaticFileOptions()
 {
-	FileProvider = new PhysicalFileProvider("C:\\DataRM"),
+	FileProvider = new PhysicalFileProvider(contentRootPath),
 	//OnPrepareResponse = ctx =>
 	//{
 	//	ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
@@ -184,5 +186,8 @@ app.UseCors(x => x
 app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
+
+string? pathBase = Environment.GetEnvironmentVariable("PATH_BASE");
+app.UsePathBase(new PathString(pathBase));
 
 app.Run();
