@@ -380,7 +380,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					//จำนวนลูกค้าตามขนาดธุรกิจ
 					var salesBusinessSize = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
 																 .GroupBy(fu => fu.Customer.Master_BusinessSizeName)
 																 .Select(g => new { Label = g.Key, Value = g.Count()  })
@@ -400,6 +399,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
+					var salesBusinessType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_BusinessTypeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count() })
+																 .ToList();
+					if (salesBusinessType.Count > 0)
+					{
+						foreach (var item in salesBusinessType)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.NumCusTypeBusiness,
+								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
+
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.NumCusISICCode,
+						TitleName = "จำนวนลูกค้าตาม ISIC Code",
+						Name = "ไม่พบข้อมูล ",
+						Value = 100
+					});
+
+					var salesLoanType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_LoanTypeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count() })
+																 .ToList();
+					if (salesLoanType.Count > 0)
+					{
+						foreach (var item in salesLoanType)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.NumCusLoanType,
+								TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
 				}
 			}
 
@@ -417,6 +462,71 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
+					var salesBusinessSize = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_BusinessSizeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count() })
+																 .ToList();
+					if (salesBusinessSize.Count > 0)
+					{
+						foreach (var item in salesBusinessSize)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.ValueSizeBusiness,
+								TitleName = "มูลค่าสินเชื่อตามขนาดธุรกิจ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
+
+					var salesBusinessType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_BusinessTypeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count() })
+																 .ToList();
+					if (salesBusinessType.Count > 0)
+					{
+						foreach (var item in salesBusinessType)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.ValueTypeBusiness,
+								TitleName = "มูลค่าสินเชื่อตามประเภทธุรกิจ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
+
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ValueISICCode,
+						TitleName = "มูลค่าสินเชื่อตาม ISIC Code",
+						Name = "ไม่พบข้อมูล ",
+						Value = 100
+					});
+
+					var salesLoanType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+																 .GroupBy(fu => fu.Customer.Master_LoanTypeName)
+																 .Select(g => new { Label = g.Key, Value = g.Count() })
+																 .ToList();
+					if (salesLoanType.Count > 0)
+					{
+						foreach (var item in salesLoanType)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.ValueLoanType,
+								TitleName = "มูลค่าสินเชื่อตามประเภทสินเชื่อ",
+								Name = $"{item.Label} ",
+								Value = item.Value
+							});
+						}
+					}
 				}
 			}
 

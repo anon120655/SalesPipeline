@@ -429,14 +429,14 @@ window.numcussizebusiness = (_data, _labels) => {
 			{
 				data: _data,
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -554,21 +554,23 @@ window.numcussizebusiness = (_data, _labels) => {
 	}
 }
 
-window.numcustypebusiness = (indata) => {
+window.numcustypebusiness = (_data, _labels) => {
+	//console.log(_data)
+	//console.log(_labels)
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -683,21 +685,23 @@ window.numcustypebusiness = (indata) => {
 	}
 }
 
-window.numcusisiccode = (indata) => {
+window.numcusisiccode = (_data, _labels) => {
+	//console.log(_data)
+	//console.log(_labels)
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -812,21 +816,23 @@ window.numcusisiccode = (indata) => {
 	}
 }
 
-window.numcusloantype = (indata) => {
+window.numcusloantype = (_data, _labels) => {
+	//console.log(_data)
+	//console.log(_labels)
 	const data = {
-		labels: ["บริการ ", "การพาณิชย์ ", "เกษตรกรรม "],
+		labels: _labels,
 		datasets: [
 			{
-				data: [20, 9, 75],
+				data: _data,
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -948,14 +954,14 @@ window.valuesizebusiness = (indata) => {
 			{
 				data: [20, 9, 75],
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -1077,14 +1083,14 @@ window.valuetypebusiness = (indata) => {
 			{
 				data: [20, 9, 75],
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -1206,14 +1212,14 @@ window.valueisiccode = (indata) => {
 			{
 				data: [20, 9, 75],
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
@@ -1335,14 +1341,14 @@ window.valueloantype = (indata) => {
 			{
 				data: [20, 9, 75],
 				backgroundColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 				borderColor: [
-					"#bbd0eb",
-					"#97C7FF",
 					"#1A68AF",
+					"#97C7FF",
+					"#bbd0eb",
 				],
 			},
 		],
