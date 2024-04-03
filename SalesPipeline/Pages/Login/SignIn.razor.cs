@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.JSInterop;
+using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 
 namespace SalesPipeline.Pages.Login
@@ -15,6 +17,17 @@ namespace SalesPipeline.Pages.Login
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
 			await _authorizeViewModel.LogoutAsync();
+
+			if (firstRender)
+			{
+				if (_appSet.Value.ServerSite != ServerSites.PRO)
+				{
+					loginModel.Username = "superadmin@gmail.com";
+					loginModel.Password = "password";
+					StateHasChanged();
+				}
+				firstRender = false;
+			}
 		}
 
 		//protected override async Task OnInitializedAsync()

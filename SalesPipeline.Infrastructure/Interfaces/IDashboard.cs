@@ -16,7 +16,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid);
 		Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid);
 		Task<List<Dash_PieCustom>> GetPieLoanValue(int userid);
+		Task<PaginationView<List<Sale_DurationCustom>>> GetDuration(allFilter model);
 		Task UpdateDurationById(Guid saleid);
 		Task UpdateActivityById(Guid saleid);
+		Task<List<SelectModel>> GetGroupReasonNotLoan(int userid);
 	}
 }

@@ -11,6 +11,7 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Dashboards;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -536,6 +537,46 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task<PaginationView<List<Sale_DurationCustom>>> GetDuration(allFilter model)
+		{
+			IQueryable<Sale_Duration> query;
+			string? roleCode = null;
+
+			if (model.userid.HasValue)
+			{
+				var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
+				if (roleList != null)
+				{
+					roleCode = roleList.Code;
+				}
+			}
+
+			query = _repo.Context.Sale_Durations.Include(x => x.Sale)
+												.Where(x => x.Status != StatusModel.Delete)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
+
+			if (!String.IsNullOrEmpty(model.contact_name))
+				query = query.Where(x => x.ContactName != null && x.ContactName.Contains(model.contact_name));
+
+			if (!String.IsNullOrEmpty(model.assignrm_name))
+				query = query.Where(x => x.Sale.AssUserName != null && x.Sale.AssUserName.Contains(model.assignrm_name));
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_DurationCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_DurationCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
 		public async Task UpdateDurationById(Guid saleid)
 		{
 			var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x => x.SaleId == saleid);
@@ -551,15 +592,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale_Durations.SaleId = saleid;
 			}
 
+			var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleid);
+			if (sales != null && sales.Customer != null)
+			{
+				sale_Durations.ContactName = sales.Customer.ContactName;
+			}
+
 			var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == saleid).ToListAsync();
 			if (sale_Status.Count > 0)
 			{
-				var sale_Contacts = await _repo.Context.Sale_Contacts.OrderByDescending(x => x.CreateDate).FirstOrDefaultAsync(x => x.SaleId == saleid);
-				if (sale_Contacts != null)
-				{
-					sale_Durations.ContactName = sale_Contacts.Name;
-				}
-
 				var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 				var contactFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 				sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
@@ -616,10 +657,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales_Activities.SaleId = saleid;
 			}
 
+			var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleid);
+			if (sales != null && sales.Customer != null)
+			{
+				sales_Activities.ContactName = sales.Customer.ContactName;
+			}
+
 			var sale_Contacts = await _repo.Context.Sale_Contacts.Where(x => x.SaleId == saleid).ToListAsync();
 			if (sale_Contacts.Count > 0)
 			{
-				sales_Activities.ContactName = sale_Contacts.OrderByDescending(x => x.CreateDate).FirstOrDefault()?.Name;
 				sales_Activities.Contact = sale_Contacts.Count;
 			}
 
@@ -656,6 +702,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sales_Activities);
 			}
 			await _db.SaveAsync();
+		}
+
+		public async Task<List<SelectModel>> GetGroupReasonNotLoan(int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var salesBusinessSize = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+										 .GroupBy(m => m.StatusDescription)
+										 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+										 .ToList();
+			return new();
 		}
 
 	}

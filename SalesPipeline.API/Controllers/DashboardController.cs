@@ -152,6 +152,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetDuration")]
+		public async Task<IActionResult> GetDuration(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetDuration(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("UpdateDurationById")]
 		public async Task<IActionResult> UpdateDurationById([FromQuery] Guid saleid)
 		{

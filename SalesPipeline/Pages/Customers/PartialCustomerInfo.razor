@@ -1,5 +1,62 @@
 ﻿@if (formModel != null)
 {
+	<div class="row my-3 d-flex justify-content-center">
+		<div class="col-12">
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วันที่เข้ามาติดต่อ : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@GeneralUtils.DateToThString(formModel.DateContact)
+					</label>
+				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ :</label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.Master_ContactChannelName
+					</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.BranchName
+					</label>
+				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ. :</label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.ProvincialOffice
+					</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.EmployeeName
+					</label>
+				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน. :</label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.EmployeeId
+					</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ติดต่อ : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.ContactName
+					</label>
+				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์ :</label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.ContactTel
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	@* ข้อมูลบริษัท *@
 	<div class="row my-3 d-flex justify-content-center">
 		<div class="col-12">

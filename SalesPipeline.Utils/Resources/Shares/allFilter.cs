@@ -16,6 +16,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int? userid { get; set; }
 		public int? assigncenter { get; set; }
 		public int? assignrm { get; set; }
+		public string? assignrm_name { get; set; }
+		public string? contact_name { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? cif { get; set; }
@@ -67,6 +69,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (assignrm > 0)
 				ParameterAll += $"&assignrm={assignrm}";
+
+			if (!String.IsNullOrEmpty(assignrm_name))
+				ParameterAll += $"&assignrm_name={assignrm_name}";
+
+			if (!String.IsNullOrEmpty(contact_name))
+				ParameterAll += $"&contact_name={contact_name}";
 
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
@@ -168,6 +176,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignrm), out var _assignrm))
 				assignrm = Convert.ToInt16(_assignrm);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(assignrm_name), out var _assignrm_name))
+				assignrm_name = _assignrm_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(contact_name), out var _contact_name))
+				contact_name = _contact_name;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);

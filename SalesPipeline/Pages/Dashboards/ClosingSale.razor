@@ -16,26 +16,43 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">ลูกค้าที่ปิดการขาย</span></p>
+							<p class="back_topic">รายงานลูกค้าที่ปิดการขาย</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">ชื่อลูกค้า</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ชื่อผู้ติดต่อ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.contact_name" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ประเภทธุระกิจ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select @onchange="OnBusinessType" value="@filter.businesstype" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.BusinessType?.Count > 0)
+								{
+									foreach (var item in LookUp.BusinessType)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
@@ -45,21 +62,24 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">การปิดการขาย</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
+								<option value="1">สำเร็จ</option>
+								<option value="2">ไม่สำเร็จ</option>
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
@@ -80,25 +100,55 @@
 											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
-											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">การปิดการขาย</th>
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">@(i)</td>
-												<td class="">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">ชูใจ โชคดี</td>
-												<td class="text-center">อุสาหกรรม</td>
-												<td class="text-center">โชห่วย</td>
-												<td class="text-center">ภาคกลางตอนล่าง</td>
-												<td class="text-center">สมุทสาคร</td>
-												<td class="text-center">สมุทสาคร</td>
-												<td class="text-center">สำเร็จ</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+											int SequenceNo = 0;
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													<td class="">@item.CompanyName</td>
+													<td class="text-center">@item.Customer?.ContactName</td>
+													<td class="text-center">@item.Customer?.Master_ChainName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Department_BranchName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
+													<td class="text-center fw-bold">
+														@if (item.StatusSaleId == StatusSaleModel.CloseSale)
+														{
+															<span>สำเร็จ</span>
+														}
+														else
+														{
+															<span>ไม่สำเร็จ</span>														
+														}
+													</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
@@ -106,7 +156,13 @@
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

@@ -86,7 +86,7 @@
 											<th class="text-center">ผู้ติดต่อ</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">สถานะ</th>
 										</tr>
@@ -117,7 +117,7 @@
 												<tr>
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="">@item.CompanyName</td>
-													<td class="text-center">@item.Customer?.EmployeeName</td>
+													<td class="text-center">@item.Customer?.ContactName</td>
 													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Department_BranchName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
