@@ -27,7 +27,7 @@ public partial class Sale_Result
     public int? ResultMeetId { get; set; }
 
     /// <summary>
-    /// 1=ทำการนัดหมาย
+    /// 1=ทำการนัดหมาย 2=รอปิดการขาย
     /// </summary>
     public int? NextActionId { get; set; }
 

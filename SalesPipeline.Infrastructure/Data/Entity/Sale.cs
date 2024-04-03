@@ -54,6 +54,11 @@ public partial class Sale
     public string? StatusDescription { get; set; }
 
     /// <summary>
+    /// เหตุผลไม่ประสงค์กู้
+    /// </summary>
+    public Guid? Master_Reason_CloseSaleId { get; set; }
+
+    /// <summary>
     /// วันที่นัดหมาย
     /// </summary>
     public DateTime? DateAppointment { get; set; }
@@ -128,6 +133,8 @@ public partial class Sale
     public virtual InfoBranch? Branch { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
+
+    public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 
     public virtual ICollection<Sale_Close_Sale> Sale_Close_Sales { get; set; } = new List<Sale_Close_Sale>();
 

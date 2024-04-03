@@ -195,5 +195,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetGroupReasonNotLoan")]
+		public async Task<IActionResult> GetGroupReasonNotLoan([FromQuery] int userid)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetGroupReasonNotLoan(userid);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

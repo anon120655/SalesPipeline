@@ -301,7 +301,6 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Meet.Tel = "0800000001";
 			formModel.Sale_Meet.MeetDate = DateTime.Now;
 			formModel.Sale_Meet.MeetId = 1;
-			formModel.Sale_Meet.MeetId = 1;
 			formModel.Sale_Meet.NextActionId = formModel.Nex;
 			formModel.Sale_Meet.LoanAmount = 500000;
 			formModel.Sale_Meet.AppointmentDate = new DateTime(2024, 03, 30);
@@ -312,14 +311,35 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			//ยื่นเอกสาร
 			formModel.Sale_Document = new();
 			formModel.Sale_Document.SubmitType = formModel.Nex;
-			//formModel.Sale_Document.IDCardIMGPath = "https://hilight.kapook.com/img_cms2/user/patcharin/2022/hilight/card1.jpg";
+			formModel.Sale_Document.IDCardIMGPath = "https://hilight.kapook.com/img_cms2/user/patcharin/2022/hilight/card1.jpg";
 			formModel.Sale_Document.IDCardNumber = "1234567890123";
 			formModel.Sale_Document.NameTh = "นายชื่อไทย";
 			formModel.Sale_Document.NameEn = "นายชื่ออังกฤษ";
 			formModel.Sale_Document.Birthday = new DateTime(2000, 03, 30);
-			//formModel.Sale_Document.SignaturePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
-			//formModel.Sale_Document.SignatureEmployeeLoanPath = "https://m.media-amazon.com/images/I/411AYEiEsVL._SX300_SY300_QL70_FMwebp_.jpg";
+			formModel.Sale_Document.SignaturePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
+			formModel.Sale_Document.SignatureEmployeeLoanPath = "https://m.media-amazon.com/images/I/411AYEiEsVL._SX300_SY300_QL70_FMwebp_.jpg";
 			//formModel.Sale_Document.SignatureMCenterPath = "https://m.media-amazon.com/images/I/618-nxYP6vL._AC_UF1000,1000_QL80_.jpg";
+
+			//ผลลัพธ์
+			formModel.Sale_Result = new();
+			formModel.Sale_Result.ProceedId = 2;
+			formModel.Sale_Result.ResultMeetId = null;
+			formModel.Sale_Result.MeetName = "นายทดสอบ เข้าพบ01";
+			formModel.Sale_Result.AppointmentDate = new DateTime(2024, 03, 25);
+			formModel.Sale_Result.AppointmentTime = new TimeOnly(13, 30, 00);
+			formModel.Sale_Result.NextActionId = formModel.Nex;
+			formModel.Sale_Result.Location = "co workspace the mall";
+			formModel.Sale_Result.Note = "ชั้น 4";
+
+			//ปิดการขาย
+			formModel.Sale_Close_Sale = new();
+			formModel.Sale_Close_Sale.Name = "นายทดสอบ เข้าพบ01";
+			formModel.Sale_Close_Sale.Tel = "0800000001";
+			formModel.Sale_Close_Sale.ResultMeetId = 1;
+			formModel.Sale_Close_Sale.DesireLoanId = 2; //1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+			formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse("1fc04d50-f19c-11ee-998d-30e37aef72fb");
+			//367288e0-f19c-11ee-998d-30e37aef72fb กู้ธนาคารอื่นแล้ว
+			//1fc04d50-f19c-11ee-998d-30e37aef72fb ดอกเบี้ยสูง
 
 
 			ResultModel<Sale_ReplyCustom> response;

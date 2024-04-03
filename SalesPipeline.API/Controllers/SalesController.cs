@@ -67,7 +67,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[ApiExplorerSettings(IgnoreApi = true)]
+		//[ApiExplorerSettings(IgnoreApi = true)]
 		[HttpPost("UpdateStatusOnly")]
 		public async Task<IActionResult> UpdateStatusOnly(Sale_StatusCustom model)
 		{

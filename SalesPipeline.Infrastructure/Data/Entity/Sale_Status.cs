@@ -39,7 +39,11 @@ public partial class Sale_Status
 
     public string? Description { get; set; }
 
+    public Guid? Master_Reason_CloseSaleId { get; set; }
+
     public virtual User CreateByNavigation { get; set; } = null!;
+
+    public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 

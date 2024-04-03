@@ -166,6 +166,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Status.StatusId = model.StatusId;
 			sale_Status.StatusName = statusSaleName;
 			sale_Status.Description = model.Description;
+			sale_Status.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
 
 			await _db.InsterAsync(sale_Status);
 			await _db.SaveAsync();
@@ -179,6 +180,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales.StatusSaleId = model.StatusId;
 				sales.StatusSaleName = statusSaleName;
 				sales.StatusDescription = model.Description;
+				sales.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
 				_db.Update(sales);
 				await _db.SaveAsync();
 

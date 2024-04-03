@@ -33,7 +33,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? ResultMeetId { get; set; }
 
 		/// <summary>
-		/// 1=ทำการนัดหมาย
+		/// 1=ทำการนัดหมาย 2=รอปิดการขาย
 		/// </summary>
 		public int? NextActionId { get; set; }
 

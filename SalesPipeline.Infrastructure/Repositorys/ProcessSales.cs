@@ -883,10 +883,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			DateTime _dateNow = DateTime.Now;
 
-			if (!String.IsNullOrEmpty(model.HouseRegistrationPath) && (!model.HouseRegistrationFileId.HasValue || model.HouseRegistrationFileId == Guid.Empty)) throw new ExceptionCustom("houseRegistrationFileId not found.");
-			if (!String.IsNullOrEmpty(model.OtherDocumentPath) && (!model.OtherDocumentFileId.HasValue || model.OtherDocumentFileId == Guid.Empty)) throw new ExceptionCustom("otherDocumentFileId not found.");
-			if (!String.IsNullOrEmpty(model.SignaturePath) && (!model.SignatureFileId.HasValue || model.SignatureFileId == Guid.Empty)) throw new ExceptionCustom("signatureFileId not found.");
-			if (!String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) && (!model.SignatureEmployeeFileId.HasValue || model.SignatureEmployeeFileId == Guid.Empty)) throw new ExceptionCustom("signatureEmployeeFileId not found.");
+			if (_appSet.ServerSite != ServerSites.DEV)
+			{
+				if (!String.IsNullOrEmpty(model.HouseRegistrationPath) && (!model.HouseRegistrationFileId.HasValue || model.HouseRegistrationFileId == Guid.Empty)) throw new ExceptionCustom("houseRegistrationFileId not found.");
+				if (!String.IsNullOrEmpty(model.OtherDocumentPath) && (!model.OtherDocumentFileId.HasValue || model.OtherDocumentFileId == Guid.Empty)) throw new ExceptionCustom("otherDocumentFileId not found.");
+				if (!String.IsNullOrEmpty(model.SignaturePath) && (!model.SignatureFileId.HasValue || model.SignatureFileId == Guid.Empty)) throw new ExceptionCustom("signatureFileId not found.");
+				if (!String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) && (!model.SignatureEmployeeFileId.HasValue || model.SignatureEmployeeFileId == Guid.Empty)) throw new ExceptionCustom("signatureEmployeeFileId not found.");
+			}
 
 			Sale_Document sale_Document = new();
 			sale_Document.Status = StatusModel.Active;
@@ -1037,9 +1040,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				nextActionName = "ทำการนัดหมาย";
 			}
-
-			if (sale.StatusSaleId == StatusSaleModel.WaitResults)
+			else if (model.NextActionId == 2)
 			{
+				statusSaleId = StatusSaleModel.WaitCloseSale;
+				nextActionName = "รอปิดการขาย";
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -1047,6 +1051,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
+			}
+			else
+			{
+				if (sale.StatusSaleId == StatusSaleModel.WaitResults)
+				{
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					});
+				}
 			}
 
 			await CreateContactHistory(new()
@@ -1082,6 +1099,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int statusSaleId = StatusSaleModel.NotStatus;
 			string? proceedName = "เข้าพบ";
 			string? resultContactName = string.Empty;
+			string? descriptionStatus = null;
 
 			DateTime _dateNow = DateTime.Now;
 
@@ -1093,7 +1111,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Close_Sale.Tel = model.Tel;
 			sale_Close_Sale.ResultMeetId = model.ResultMeetId;
 			sale_Close_Sale.DesireLoanId = model.DesireLoanId;
-			sale_Close_Sale.ReasonId = model.ReasonId;
+			sale_Close_Sale.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
 			sale_Close_Sale.Note = model.Note;
 			await _db.InsterAsync(sale_Close_Sale);
 			await _db.SaveAsync();
@@ -1114,10 +1132,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					proceedName = "ไม่ประสงค์กู้";
 					statusSaleId = StatusSaleModel.ResultsNotLoan;
+					if(!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
 				}
 				else
 				{
 					throw new ExceptionCustom("desireLoanId not match");
+				}
+
+				if (model.Master_Reason_CloseSaleId.HasValue)
+				{
+					descriptionStatus = await _repo.MasterReasonCloseSale.GetNameById(model.Master_Reason_CloseSaleId.Value);
 				}
 
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -1126,6 +1150,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					StatusId = statusSaleId,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
+					Description = descriptionStatus,
+					Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId
 				});
 			}
 

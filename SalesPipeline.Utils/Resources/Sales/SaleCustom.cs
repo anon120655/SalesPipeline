@@ -59,6 +59,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? StatusDescription { get; set; }
 
 		/// <summary>
+		/// เหตุผลไม่ประสงค์กู้
+		/// </summary>
+		public Guid? Master_Reason_CloseSaleId { get; set; }
+
+		/// <summary>
 		/// วันที่นัดหมาย
 		/// </summary>
 		public DateTime? DateAppointment { get; set; }

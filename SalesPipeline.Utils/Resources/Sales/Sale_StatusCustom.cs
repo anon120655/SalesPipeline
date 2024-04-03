@@ -39,5 +39,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? StatusName { get; set; }
 
 		public string? Description { get; set; }
+
+		public Guid? Master_Reason_CloseSaleId { get; set; }
 	}
 }

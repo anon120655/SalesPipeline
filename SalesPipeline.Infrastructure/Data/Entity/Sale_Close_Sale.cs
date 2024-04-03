@@ -36,15 +36,14 @@ public partial class Sale_Close_Sale
     /// </summary>
     public int? DesireLoanId { get; set; }
 
-    /// <summary>
-    /// 1=ได้รับสินเชื่อจากสถาบันการเงินอื่น
-    /// </summary>
-    public int? ReasonId { get; set; }
+    public Guid? Master_Reason_CloseSaleId { get; set; }
 
     /// <summary>
     /// บันทึกเพิ่มเติม
     /// </summary>
     public string? Note { get; set; }
+
+    public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 }

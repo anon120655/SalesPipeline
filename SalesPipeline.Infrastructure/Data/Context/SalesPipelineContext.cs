@@ -78,6 +78,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_ReasonReturn> Master_ReasonReturns { get; set; }
 
+    public virtual DbSet<Master_Reason_CloseSale> Master_Reason_CloseSales { get; set; }
+
     public virtual DbSet<Master_Region> Master_Regions { get; set; }
 
     public virtual DbSet<Master_SLAOperation> Master_SLAOperations { get; set; }
@@ -1175,6 +1177,22 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Master_Reason_CloseSale>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Reason_CloseSale");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<Master_Region>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -1442,6 +1460,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.BranchId, "Master_Department_BranchId");
 
+            entity.HasIndex(e => e.Master_Reason_CloseSaleId, "Master_Reason_CloseSaleId");
+
             entity.HasIndex(e => e.StatusSaleId, "StatusSaleId");
 
             entity.Property(e => e.AssCenterCreateBy)
@@ -1480,6 +1500,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("จำนวนการกู้");
             entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
+            entity.Property(e => e.Master_Reason_CloseSaleId).HasComment("เหตุผลไม่ประสงค์กู้");
             entity.Property(e => e.PercentChanceLoanPass)
                 .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
                 .HasColumnType("int(11)");
@@ -1522,6 +1543,10 @@ public partial class SalesPipelineContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_ibfk_1");
 
+            entity.HasOne(d => d.Master_Reason_CloseSale).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.Master_Reason_CloseSaleId)
+                .HasConstraintName("sale_ibfk_6");
+
             entity.HasOne(d => d.StatusSale).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.StatusSaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1533,6 +1558,8 @@ public partial class SalesPipelineContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("Sale_Close_Sale");
+
+            entity.HasIndex(e => e.Master_Reason_CloseSaleId, "Master_Reason_CloseSaleId");
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
@@ -1546,9 +1573,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
                 .HasComment("บันทึกเพิ่มเติม");
-            entity.Property(e => e.ReasonId)
-                .HasComment("1=ได้รับสินเชื่อจากสถาบันการเงินอื่น")
-                .HasColumnType("int(11)");
             entity.Property(e => e.ResultMeetId)
                 .HasComment("1=รับสาย 2=ไม่รับสาย")
                 .HasColumnType("int(11)");
@@ -1558,6 +1582,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(255)
                 .HasComment("เบอร์ติดต่อ");
+
+            entity.HasOne(d => d.Master_Reason_CloseSale).WithMany(p => p.Sale_Close_Sales)
+                .HasForeignKey(d => d.Master_Reason_CloseSaleId)
+                .HasConstraintName("sale_close_sale_ibfk_2");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Close_Sales)
                 .HasForeignKey(d => d.SaleId)
@@ -2087,7 +2115,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ผู้เข้าพบ");
             entity.Property(e => e.NextActionId)
-                .HasComment("1=ทำการนัดหมาย")
+                .HasComment("1=ทำการนัดหมาย 2=รอปิดการขาย")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
@@ -2150,6 +2178,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.CreateBy, "CreateBy");
 
+            entity.HasIndex(e => e.Master_Reason_CloseSaleId, "Master_Reason_CloseSaleId");
+
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.HasIndex(e => e.StatusId, "StatusId");
@@ -2174,6 +2204,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.CreateBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_status_ibfk_3");
+
+            entity.HasOne(d => d.Master_Reason_CloseSale).WithMany(p => p.Sale_Statuses)
+                .HasForeignKey(d => d.Master_Reason_CloseSaleId)
+                .HasConstraintName("sale_status_ibfk_4");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Statuses)
                 .HasForeignKey(d => d.SaleId)

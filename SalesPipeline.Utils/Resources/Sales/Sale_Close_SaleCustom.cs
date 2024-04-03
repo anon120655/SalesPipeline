@@ -46,7 +46,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=ได้รับสินเชื่อจากสถาบันการเงินอื่น
 		/// </summary>
-		public int? ReasonId { get; set; }
+		public Guid? Master_Reason_CloseSaleId { get; set; }
 
 		/// <summary>
 		/// บันทึกเพิ่มเติม

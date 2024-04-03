@@ -334,10 +334,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				});
 
 				//เหตุผลไม่ประสงค์ขอสินเชื่อ
-				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
-															 .GroupBy(fu => fu.StatusDescription)
-															 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
-															 .ToList();
+				//var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+				//											 .GroupBy(fu => fu.StatusDescription)
+				//											 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
+				//											 .ToList();
+
+				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+											 .GroupBy(m => m.Master_Reason_CloseSaleId)
+											 .Select(group => new { Label = group.Key, Sales = group.ToList() })
+											 .ToList();
 
 				if (salesResultsNotLoan.Count > 0)
 				{
@@ -348,8 +353,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							Status = StatusModel.Active,
 							Code = Dash_PieCodeModel.ReasonNotLoan,
 							TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-							Name = $"{item.Label} ",
-							Value = item.Value
+							Name = $"{item.Sales.Select(x => x.StatusDescription).FirstOrDefault()} ",
+							Value = item.Sales.Count
 						});
 					}
 				}
@@ -704,15 +709,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 		}
 
-		public async Task<List<SelectModel>> GetGroupReasonNotLoan(int userid)
+		public async Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(int userid)
 		{
 			var user = await _repo.User.GetById(userid);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			var salesBusinessSize = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
-										 .GroupBy(m => m.StatusDescription)
-										 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+			var response = new List<Dash_PieCustom>();
+
+			var sales = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+										 .GroupBy(m => m.Master_Reason_CloseSaleId)
+										 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
 										 .ToList();
+
+			if (sales.Count > 0)
+			{
+				foreach (var item in sales)
+				{
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ReasonNotLoan,
+						TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
+						Name = $"{item.Sales.Select(x => x.StatusDescription).FirstOrDefault()} ",
+						Value = item.Sales.Count
+					});
+
+				}
+			}
+
 			return new();
 		}
 
