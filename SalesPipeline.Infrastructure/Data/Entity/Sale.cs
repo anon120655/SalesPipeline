@@ -59,6 +59,11 @@ public partial class Sale
     public Guid? Master_Reason_CloseSaleId { get; set; }
 
     /// <summary>
+    /// วันที่เริ่มติดต่อ
+    /// </summary>
+    public DateTime? ContactStartDate { get; set; }
+
+    /// <summary>
     /// วันที่นัดหมาย
     /// </summary>
     public DateTime? DateAppointment { get; set; }

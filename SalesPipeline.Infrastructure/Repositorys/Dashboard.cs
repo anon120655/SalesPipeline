@@ -597,17 +597,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale_Durations.SaleId = saleid;
 			}
 
+			DateTime contactFirst = DateTime.MinValue;
 			var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleid);
 			if (sales != null && sales.Customer != null)
 			{
 				sale_Durations.ContactName = sales.Customer.ContactName;
+				if (sales.ContactStartDate.HasValue)
+				{
+					contactFirst = sales.ContactStartDate.Value.Date;
+				}
 			}
 
 			var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == saleid).ToListAsync();
 			if (sale_Status.Count > 0)
 			{
 				var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				var contactFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 				sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
 
 				var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
@@ -737,7 +741,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			return new();
+			return response;
 		}
 
 	}

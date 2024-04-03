@@ -11,6 +11,7 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,7 +117,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<SaleCustom>(sale);
 		}
 
-		public async Task UpdateStatusOnly(Sale_StatusCustom model)
+		public async Task UpdateStatusOnly(Sale_StatusCustom model, SaleCustom? modelSale = null)
 		{
 			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId).ToListAsync();
 			if (sale_Statuses != null && sale_Statuses.Count > 0)
@@ -181,6 +182,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales.StatusSaleName = statusSaleName;
 				sales.StatusDescription = model.Description;
 				sales.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
+
+				if (modelSale != null)
+				{
+					sales.ContactStartDate = modelSale.ContactStartDate;
+				}
+
 				_db.Update(sales);
 				await _db.SaveAsync();
 
@@ -302,6 +309,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.assignrm.HasValue)
 			{
 				query = query.Where(x => x.AssUserId == model.assignrm);
+			}
+
+			if (!String.IsNullOrEmpty(model.contact_name))
+			{
+				query = query.Where(x => x.Customer.ContactName != null && x.Customer.ContactName.Contains(model.contact_name));
+			}
+
+			if (!String.IsNullOrEmpty(model.reason))
+			{
+				query = query.Where(x => x.StatusDescription != null && x.StatusDescription.Contains(model.reason));
+			}
+
+			if (!String.IsNullOrEmpty(model.assignrm_name))
+			{
+				query = query.Where(x => x.AssUserName != null && x.AssUserName.Contains(model.assignrm_name));
 			}
 
 			if (!String.IsNullOrEmpty(model.juristicnumber))

@@ -37,6 +37,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? assignmentid { get; set; }
 		public string? mcenter_code { get; set; }
 		public string? mcenter_name { get; set; }
+		public string? reason { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -132,6 +133,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(mcenter_name))
 				ParameterAll += $"&mcenter_name={mcenter_name}";
+
+			if (!String.IsNullOrEmpty(reason))
+				ParameterAll += $"&reason={reason}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -236,6 +240,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(mcenter_name), out var _mcenter_name))
 				mcenter_name = _mcenter_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
+				reason = _reason;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

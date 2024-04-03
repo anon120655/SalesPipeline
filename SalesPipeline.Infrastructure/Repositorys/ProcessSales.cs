@@ -692,6 +692,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("statussale not match");
 			}
 
+			if (model.ContactDate.HasValue)
+			{
+				if (model.ContactDate.Value.Date > DateTime.Now.Date)
+				{
+					throw new ExceptionCustom("วันที่ติดต่อต้องไม่มากกว่าวันที่ปัจจุบัน");
+				}
+			}
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
@@ -746,7 +754,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						StatusId = statusSaleId,
 						CreateBy = model.CurrentUserId,
 						CreateByName = currentUserName,
-					});
+					}, new() { ContactStartDate = model.ContactDate });
 				}
 			}
 
@@ -1132,7 +1140,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					proceedName = "ไม่ประสงค์กู้";
 					statusSaleId = StatusSaleModel.ResultsNotLoan;
-					if(!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
+					if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
 				}
 				else
 				{

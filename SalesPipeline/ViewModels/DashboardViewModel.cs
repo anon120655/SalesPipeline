@@ -172,6 +172,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetGroupReasonNotLoan(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetGroupReasonNotLoan?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
+				return new ResultModel<List<Dash_PieCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_PieCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 
 

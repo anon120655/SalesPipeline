@@ -1,5 +1,4 @@
-﻿
-@page "/dashboard/reasonnotloan"
+﻿@page "/dashboard/reasonnotloan"
 
 <PageTitle>เหตุผลไม่ประสงค์ขอสินเชื่อ</PageTitle>
 
@@ -16,7 +15,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">เหตุผลไม่ประสงค์ขอสินเชื่อ</span></p>
+							<p class="back_topic">รายงานเหตุผลไม่ประสงค์ขอสินเชื่อ</p>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -32,12 +31,31 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 4; i++)
+										@if (ItemsReason == null)
 										{
-											<tr>
-												<td class="">เหตุผล 0@(i)</td>
-												<td class="text-center">@(i)</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (ItemsReason.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in ItemsReason)
+											{
+												<tr>
+													<td class="text-start">@item.Name</td>
+													<td class="text-center">@item.Value</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
@@ -54,11 +72,11 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อลูกค้า</label>
+							<label class="form-label">ค้นหาลูกค้า</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -67,9 +85,9 @@
 						<div class="col mb-2">
 							<label class="form-label">ชื่อผู้ติดต่อ</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.contact_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -78,9 +96,9 @@
 						<div class="col mb-2">
 							<label class="form-label">เหตุผล</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.reason" class=" form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -89,16 +107,16 @@
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.assignrm_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
 							</div>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -112,28 +130,49 @@
 											<th class="text-center">วันที่เริ่มติดต่อ</th>
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">ผู้ติดต่อ</th>
-											<th class="text-center">ประเภทกิจการ</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
-											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">จังหวัด</th>
+											<th class="text-center">ศูนย์สาขา</th>
 											<th class="text-center">เหตุผล</th>
 											<th class="text-center">ผู้รับผิดชอบ</th>
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">0@(i)/04/65</td>
-												<td class="">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">ชูใจ โชคดี</td>
-												<td class="text-center">อุสาหกรรม</td>
-												<td class="text-center">ภาคกลางตอนล่าง</td>
-												<td class="text-center">สมุทสาคร</td>
-												<td class="text-center">ยโสธร</td>
-												<td class="text-center">ใช้เวลานาน</td>
-												<td class="text-center">ธงชัย ใจดี</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@GeneralUtils.DateToThString(item.ContactStartDate)</td>
+													<td class="">@item.CompanyName</td>
+													<td class="text-center">@item.Customer?.ContactName</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Department_BranchName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.StatusDescription)</td>
+													<td class="text-center fw-bold">
+														@item.AssUserName
+													</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
@@ -141,7 +180,13 @@
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>
