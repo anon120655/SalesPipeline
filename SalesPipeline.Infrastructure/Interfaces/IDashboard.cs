@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Dashboards;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Interfaces
@@ -16,5 +17,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid);
 		Task<List<Dash_PieCustom>> GetPieLoanValue(int userid);
 		Task UpdateDurationById(Guid saleid);
+		Task UpdateActivityById(Guid saleid);
 	}
 }

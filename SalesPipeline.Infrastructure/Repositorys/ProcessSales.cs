@@ -1107,6 +1107,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//proceedName = "ประสงค์กู้";
 					proceedName = "ปิดการขาย";
 					statusSaleId = StatusSaleModel.CloseSale;
+					await _repo.Dashboard.UpdateDurationById(model.SaleId);
+					await _repo.Dashboard.UpdateActivityById(model.SaleId);
 				}
 				else if (sale_Close_Sale.DesireLoanId == 2)
 				{

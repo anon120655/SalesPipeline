@@ -22,7 +22,7 @@ public partial class Sales_Activity
     /// <summary>
     /// ชื่อผู้ติดต่อ
     /// </summary>
-    public int? ContactName { get; set; }
+    public string? ContactName { get; set; }
 
     /// <summary>
     /// ติดต่อ(ครั้ง)

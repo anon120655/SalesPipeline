@@ -144,7 +144,6 @@ namespace SalesPipeline.Pages.Customers
 				{
 
 				}
-
 			}
 
 			var data = await _salesViewModel.GetList(filter);

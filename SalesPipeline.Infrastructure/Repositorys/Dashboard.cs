@@ -599,8 +599,63 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sale_Durations);
 			}
 			await _db.SaveAsync();
+		}
 
+		public async Task UpdateActivityById(Guid saleid)
+		{
+			var sales_Activities = await _repo.Context.Sales_Activities.FirstOrDefaultAsync(x => x.SaleId == saleid);
 
+			int CRUD = CRUDModel.Update;
+
+			if (sales_Activities == null)
+			{
+				CRUD = CRUDModel.Create;
+				sales_Activities = new();
+				sales_Activities.Status = StatusModel.Active;
+				sales_Activities.CreateDate = DateTime.Now;
+				sales_Activities.SaleId = saleid;
+			}
+
+			var sale_Contacts = await _repo.Context.Sale_Contacts.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Contacts.Count > 0)
+			{
+				sales_Activities.ContactName = sale_Contacts.OrderByDescending(x => x.CreateDate).FirstOrDefault()?.Name;
+				sales_Activities.Contact = sale_Contacts.Count;
+			}
+
+			var sale_Meets = await _repo.Context.Sale_Meets.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Meets.Count > 0)
+			{
+				sales_Activities.Meet = sale_Meets.Count;
+			}
+
+			var sale_Documents = await _repo.Context.Sale_Documents.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Documents.Count > 0)
+			{
+				sales_Activities.Document = sale_Documents.Count;
+			}
+
+			var sale_Results = await _repo.Context.Sale_Results.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Results.Count > 0)
+			{
+				sales_Activities.Result = sale_Results.Count;
+			}
+
+			var sale_Close_Sales = await _repo.Context.Sale_Close_Sales.Where(x => x.SaleId == saleid).ToListAsync();
+			if (sale_Close_Sales.Count > 0)
+			{
+				sales_Activities.CloseSale = sale_Close_Sales.Count;
+			}
+
+			if (CRUD == CRUDModel.Create)
+			{
+				await _db.InsterAsync(sales_Activities);
+			}
+			else
+			{
+				_db.Update(sales_Activities);
+			}
+			await _db.SaveAsync();
 		}
 
 	}

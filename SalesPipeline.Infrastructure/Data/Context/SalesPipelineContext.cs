@@ -2248,8 +2248,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ติดต่อ(ครั้ง)")
                 .HasColumnType("int(11)");
             entity.Property(e => e.ContactName)
-                .HasComment("ชื่อผู้ติดต่อ")
-                .HasColumnType("int(11)");
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Document)
                 .HasComment("ยื่นเอกสาร(ครั้ง)")

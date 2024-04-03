@@ -166,5 +166,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("UpdateActivityById")]
+		public async Task<IActionResult> UpdateActivityById([FromQuery] Guid saleid)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateActivityById(saleid);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
