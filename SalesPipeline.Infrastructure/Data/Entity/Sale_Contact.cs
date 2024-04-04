@@ -39,10 +39,10 @@ public partial class Sale_Contact
     /// </summary>
     public int? ContactResult { get; set; }
 
-    /// <summary>
-    /// 1=ทำการนัดหมาย
-    /// </summary>
-    public int? NextActionId { get; set; }
+	/// <summary>
+	/// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง
+	/// </summary>
+	public int? NextActionId { get; set; }
 
     /// <summary>
     /// วันที่นัดหมาย

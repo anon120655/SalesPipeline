@@ -30,7 +30,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (firstRender)
 			{
 				await Status_Total();
-				await Avg_Number();
+				await AvgTop_Number();
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
@@ -93,11 +93,11 @@ namespace SalesPipeline.Pages.Dashboards
 
 		}
 
-		protected async Task Avg_Number()
+		protected async Task AvgTop_Number()
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetAvg_NumberById(UserInfo.Id);
+				var data = await _dashboarViewModel.GetAvgTop_NumberById(UserInfo.Id);
 				if (data != null && data.Status && data.Data != null)
 				{
 					avg_NumberModel = data.Data;

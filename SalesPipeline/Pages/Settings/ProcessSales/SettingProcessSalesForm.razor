@@ -45,7 +45,7 @@
 
 										var saleItems = section.ProcessSale_Section_Items?.Where(x => x.Status == StatusModel.Active).ToList() ?? new();
 										string sectionName = $"Section {section.SequenceNo} Of {saleSections.Count()}";
-										
+
 										<div class="col-12">
 											<div class="row">
 												<div class="col-12 col-xl-10 mt-3">
@@ -87,7 +87,8 @@
 																				<div class="d-flex align-items-center">
 																					<small class="text-secondary-emphasis">แสดงตลอด</small>
 																					<div class="form-switch form-check ms-2">
-																						<input type="checkbox" class="form-check-input" @bind="section.ShowAlways">
+																						<input type="checkbox" class="form-check-input"
+																							   @onchange="async (e) => await SectionShowAlwaysChange(e,section.Id)" checked="@(section.ShowAlways == 1 ? true : false)">
 																					</div>
 																				</div>
 																			</li>

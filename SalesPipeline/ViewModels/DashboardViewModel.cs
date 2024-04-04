@@ -43,11 +43,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvg_NumberById(int userid)
+		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgTop_NumberById(int userid)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetAvg_NumberById?userid={userid}");
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetAvgTop_NumberById?userid={userid}");
 				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberCustom>(content);
 				return new ResultModel<Dash_Avg_NumberCustom>()
 				{

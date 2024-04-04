@@ -71,7 +71,7 @@ namespace SalesPipeline.Utils.PropertiesModel
 				new PropertiesOptions()
 				{
 					Code = "DropdownMaster",
-					Name = "Drop Down master"
+					Name = "Drop down master"
 				},
 				new PropertiesOptions()
 				{

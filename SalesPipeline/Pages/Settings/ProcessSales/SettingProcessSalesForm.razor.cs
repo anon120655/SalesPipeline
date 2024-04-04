@@ -227,6 +227,24 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 		}
 
+		protected async Task SectionShowAlwaysChange(ChangeEventArgs e, Guid sectionId)
+		{
+			var section = formModel.ProcessSale_Sections?.FirstOrDefault(r => r.Id == sectionId);
+			if (section != null && e.Value != null)
+			{
+				if (bool.TryParse(e.Value.ToString(), out bool val))
+				{
+					section.ShowAlways = val ? 1 : 0;
+				}
+				var ItemType = e.Value.ToString();
+
+
+				StateHasChanged();
+				await Task.Delay(1);
+			}
+
+		}
+
 		protected async Task CopySectionItem(Guid sectionId, Guid saleItemId)
 		{
 			var section = formModel.ProcessSale_Sections?.FirstOrDefault(r => r.Id == sectionId);
@@ -241,9 +259,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 					{
 						sequenceNo = sectionitems.Max(x => x.SequenceNo) + 1;
 					}
-					
+
 					var itemOption = new List<ProcessSale_Section_ItemOptionCustom>();
-					var processSale_Section_ItemOptions = sectionitem.ProcessSale_Section_ItemOptions?.Where(x=>x.Status == StatusModel.Active).ToList();
+					var processSale_Section_ItemOptions = sectionitem.ProcessSale_Section_ItemOptions?.Where(x => x.Status == StatusModel.Active).ToList();
 					if (processSale_Section_ItemOptions?.Count > 0)
 					{
 						foreach (var item_option in processSale_Section_ItemOptions)
@@ -313,7 +331,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			}
 
 			StateHasChanged();
-			await Task.Delay(1); 
+			await Task.Delay(1);
 			await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 		}
 

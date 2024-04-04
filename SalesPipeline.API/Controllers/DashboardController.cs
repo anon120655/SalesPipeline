@@ -54,12 +54,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetAvg_NumberById")]
-		public async Task<IActionResult> GetAvg_NumberById([FromQuery] int userid)
+		[HttpGet("GetAvgTop_NumberById")]
+		public async Task<IActionResult> GetAvgTop_NumberById([FromQuery] int userid)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetAvg_NumberById(userid);
+				var data = await _repo.Dashboard.GetAvgTop_NumberById(userid);
 				return Ok(data);
 			}
 			catch (Exception ex)

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -38,15 +39,95 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(int userid)
 		{
-			var dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
+			//var dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
 
-			if (dash_Status_Total == null || (dash_Status_Total != null && dash_Status_Total.IsUpdate))
+			//if (dash_Status_Total == null || (dash_Status_Total != null && dash_Status_Total.IsUpdate))
+			//{
+			//	await UpdateStatus_TotalById(userid);
+			//	dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
+			//}
+
+			//return _mapper.Map<Dash_Status_TotalCustom>(dash_Status_Total);
+
+			var dash_Status_Total = new Dash_Status_TotalCustom();
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				await UpdateStatus_TotalById(userid);
-				dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
+				var statusTotal = new List<SaleStatusGroupByModel>();
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+
+				if (statusTotal != null)
+				{
+					dash_Status_Total.NumCusAll = statusTotal.Sum(x => x.Count);
+					dash_Status_Total.NumCusWaitMCenterAssign = 0;
+					dash_Status_Total.NumCusMCenterAssign = 0;
+					dash_Status_Total.NumCusInProcess = 0;
+					dash_Status_Total.NumCusReturn = 0;
+					dash_Status_Total.NumCusTargeNotSuccess = 0;
+
+					foreach (var item in statusTotal)
+					{
+						if (item.StatusID == (int)StatusSaleModel.WaitAssign) dash_Status_Total.NumCusWaitMCenterAssign = item.Count;
+						if (item.StatusID == (int)StatusSaleModel.WaitContact) dash_Status_Total.NumCusMCenterAssign = item.Count;
+
+						if (item.StatusID == (int)StatusSaleModel.Contact
+							|| item.StatusID == (int)StatusSaleModel.WaitMeet
+							|| item.StatusID == (int)StatusSaleModel.Meet
+							|| item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
+							|| item.StatusID == (int)StatusSaleModel.SubmitDocument
+							|| item.StatusID == (int)StatusSaleModel.WaitApproveDocument
+							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS
+							|| item.StatusID == (int)StatusSaleModel.WaitResults
+							|| item.StatusID == (int)StatusSaleModel.Results
+							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS)
+						{
+							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
+						}
+
+						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
+
+						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
+							|| item.StatusID == (int)StatusSaleModel.ResultsNotLoan
+							|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
+						{
+							dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
+						}
+					}
+
+				}
+
 			}
 
-			return _mapper.Map<Dash_Status_TotalCustom>(dash_Status_Total);
+			return dash_Status_Total;
 		}
 
 		public async Task UpdateStatus_TotalById(int userid)
@@ -152,17 +233,65 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Dash_Avg_NumberCustom> GetAvg_NumberById(int userid)
+		public async Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(int userid)
 		{
-			var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			//var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
 
-			if (dash_Avg_Number == null || (dash_Avg_Number != null && dash_Avg_Number.IsUpdate))
+			//if (dash_Avg_Number == null || (dash_Avg_Number != null && dash_Avg_Number.IsUpdate))
+			//{
+			//	await UpdateAvg_NumberById(userid);
+			//	dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+			//}
+
+			//return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
+
+			var dash_Avg_Number = new Dash_Avg_NumberCustom();
+
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+
+			var sale_Durations = _repo.Context.Sale_Durations.Include(x => x.Sale)
+												.Where(x => x.Status == StatusModel.Active)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				await UpdateAvg_NumberById(userid);
-				dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
+				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					var avgPerDeal = ratingAverage.Where(x => x.AssCenterUserId == userid).Average(r => r.LoanAmount);
+
+					dash_Avg_Number.AvgPerDeal = avgPerDeal ?? 0;
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+					var avgPerDeal = ratingAverage.Where(x => x.BranchId == user.BranchId).Average(r => r.LoanAmount);
+
+					dash_Avg_Number.AvgPerDeal = avgPerDeal ?? 0;
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					var avgPerDeal = ratingAverage.Average(r => r.LoanAmount);
+					dash_Avg_Number.AvgPerDeal = avgPerDeal ?? 0;
+
+					//var avgTimeCloseSale = sale_Durations.Where(x=>x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
+					//									 .Average(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale));
+					//dash_Avg_Number.AvgTimeCloseSale = (int)(avgTimeCloseSale);
+
+					//var avgTimeLostSale_Du = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+						        
+					//									 .DefaultIfEmpty(0)
+					//									 .Average(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale));
+
+					//dash_Avg_Number.AvgTimeLostSale = (int)(avgTimeLostSale);
+				}
+
 			}
 
-			return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
+			return dash_Avg_Number;
 		}
 
 		public async Task UpdateAvg_NumberById(int userid)
@@ -307,11 +436,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
-				//var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+				var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
-				int salesAllCount = 50;
-				int salesCloseSaleCount = 47;
+				//int salesAllCount = 50;
+				//int salesCloseSaleCount = 47;
 
 				var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
 				var perFail = 100 - perSuccess;

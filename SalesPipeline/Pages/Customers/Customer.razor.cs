@@ -88,7 +88,7 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var statusSale = await _masterViewModel.GetStatusSale(new() { status = StatusModel.Active, isshow = 1 });
+			var statusSale = await _masterViewModel.GetStatusSale(new() { pagesize = 20, status = StatusModel.Active, isshow = 1 });
 			if (statusSale != null && statusSale.Status)
 			{
 				LookUp.StatusSale = statusSale.Data?.Items;

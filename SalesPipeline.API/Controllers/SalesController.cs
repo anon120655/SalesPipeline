@@ -158,20 +158,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[HttpGet("UpdateStatusTotalById")]
-		public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int userid)
-		{
-			try
-			{
-				await _repo.Sales.UpdateStatusTotalById(userid);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
+		//[AllowAnonymous]
+		//[HttpGet("UpdateStatusTotalById")]
+		//public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int userid)
+		//{
+		//	try
+		//	{
+		//		await _repo.Sales.UpdateStatusTotalById(userid);
+		//		return Ok();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
 		[AllowAnonymous]
 		[HttpGet("SetIsUpdateStatusTotal")]
@@ -188,20 +188,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
-		[HttpGet("UpdateStatusTotalAll")]
-		public async Task<IActionResult> UpdateStatusTotalAll()
-		{
-			try
-			{
-				await _repo.Sales.UpdateStatusTotalAll();
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
+		//[AllowAnonymous]
+		//[HttpGet("UpdateStatusTotalAll")]
+		//public async Task<IActionResult> UpdateStatusTotalAll()
+		//{
+		//	try
+		//	{
+		//		await _repo.Sales.UpdateStatusTotalAll();
+		//		return Ok();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
 	}
 }
