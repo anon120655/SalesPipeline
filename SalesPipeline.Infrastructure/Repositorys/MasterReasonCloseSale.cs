@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +35,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return name;
 		}
 
+		public async Task<PaginationView<List<Master_Reason_CloseSaleCustom>>> GetReasonCloseSale(allFilter model)
+		{
+			var query = _repo.Context.Master_Reason_CloseSales
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (!String.IsNullOrEmpty(model.val2))
+			{
+				query = query.Where(x => x.Name != null && x.Name.Contains(model.val2));
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Master_Reason_CloseSaleCustom>>()
+			{
+				Items = _mapper.Map<List<Master_Reason_CloseSaleCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
 	}
 }

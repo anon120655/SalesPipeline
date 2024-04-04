@@ -304,6 +304,26 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
+		/// เหตุผลไม่ประสงค์กู้
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetReasonCloseSale")]
+		public async Task<IActionResult> GetReasonCloseSale([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterReasonCloseSale.GetReasonCloseSale(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
 		///  สถานะการขาย
 		/// </summary>
 		/// <param name="model"></param>
