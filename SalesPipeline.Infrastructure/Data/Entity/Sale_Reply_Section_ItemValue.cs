@@ -30,6 +30,8 @@ public partial class Sale_Reply_Section_ItemValue
 
     public string? FileUrl { get; set; }
 
+    public string? FileName { get; set; }
+
     public Guid? Master_ListId { get; set; }
 
     public virtual FileUpload? File { get; set; }

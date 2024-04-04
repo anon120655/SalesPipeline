@@ -1626,7 +1626,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.NextActionId)
-                .HasComment("1=ทำการนัดหมาย")
+                .HasComment("1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
@@ -2066,6 +2066,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.PSaleSectionItemOptionId, "PSaleSectionItemOptionId");
 
+            entity.Property(e => e.FileName).HasMaxLength(255);
             entity.Property(e => e.FileUrl).HasMaxLength(255);
             entity.Property(e => e.OptionLabel).HasMaxLength(255);
             entity.Property(e => e.ReplyDate).HasColumnType("datetime");

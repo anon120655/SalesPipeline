@@ -31,6 +31,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 
         public string? FileUrl { get; set; }
 
+		public string? FileName { get; set; }
+
 		public Guid? Master_ListId { get; set; }
 
 		public virtual ProcessSale_Section_ItemOptionCustom? PSaleSectionItemOption { get; set; }

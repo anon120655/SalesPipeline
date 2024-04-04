@@ -367,11 +367,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											}
 
 											string? _fileUrl = string.Empty;
+											string? _fileName = string.Empty;
 											if (reply_section_value.FileId.HasValue)
 											{
 												var fileUploads = await _repo.Context.FileUploads.FirstOrDefaultAsync(x => x.Id == reply_section_value.FileId);
 												if (fileUploads == null) throw new ExceptionCustom("FileId not found.");
 												_fileUrl = fileUploads.Url;
+												_fileName = fileUploads.OriginalFileName;
 											}
 
 											Sale_Reply_Section_ItemValue replySectionItemValue = new();
@@ -385,6 +387,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											replySectionItemValue.ReplyTime = reply_section_value.ReplyTime;
 											replySectionItemValue.FileId = reply_section_value.FileId;
 											replySectionItemValue.FileUrl = _fileUrl;
+											replySectionItemValue.FileName = _fileName;
 											await _db.InsterAsync(replySectionItemValue);
 											await _db.SaveAsync();
 										}
@@ -1136,8 +1139,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//proceedName = "ประสงค์กู้";
 					proceedName = "ปิดการขาย";
 					statusSaleId = StatusSaleModel.CloseSale;
-					await _repo.Dashboard.UpdateDurationById(model.SaleId);
-					await _repo.Dashboard.UpdateActivityById(model.SaleId);
 				}
 				else if (sale_Close_Sale.DesireLoanId == 2)
 				{
@@ -1154,6 +1155,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					descriptionStatus = await _repo.MasterReasonCloseSale.GetNameById(model.Master_Reason_CloseSaleId.Value);
 				}
+
+				await _repo.Dashboard.UpdateDurationById(model.SaleId);
+				await _repo.Dashboard.UpdateActivityById(model.SaleId);
 
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
