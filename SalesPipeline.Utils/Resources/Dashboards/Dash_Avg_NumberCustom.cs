@@ -29,12 +29,12 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย
 		/// </summary>
-		public int AvgTimeCloseSale { get; set; }
+		public int AvgDurationCloseSale { get; set; }
 
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
 		/// </summary>
-		public int AvgTimeLostSale { get; set; }
+		public int AvgDurationLostSale { get; set; }
 
 		/// <summary>
 		/// ดีลโดยเฉลี่ยต่อองค์กร
@@ -49,7 +49,7 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		/// <summary>
 		/// ระยะเวลาเฉลี่ยในการส่งมอบ
 		/// </summary>
-		public int AvgDeliveryTime { get; set; }
+		public int AvgDeliveryDuration { get; set; }
 
 		/// <summary>
 		/// ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ

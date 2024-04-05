@@ -84,6 +84,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			}
 
+			filter.type = "avgdurationclosesale";
 			var data = await _dashboarViewModel.GetDuration(filter);
 			if (data != null && data.Status)
 			{

@@ -18,7 +18,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private CustomerCustom? formView = null;
+		private SaleCustom? formView = null;
 		private List<SaleCustom>? Items;
 		private List<SaleCustom> ItemsSelected = new();
 		private List<Assignment_MCenterCustom>? ItemsAssignment;
@@ -286,7 +286,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 			isDisabled = ItemsSelected.Count == 0;
 		}
 
-		protected void OnViewCustomer(CustomerCustom? model)
+		protected void OnViewCustomer(SaleCustom? model)
 		{
 			if (model != null)
 			{

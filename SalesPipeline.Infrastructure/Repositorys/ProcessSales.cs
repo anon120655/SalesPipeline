@@ -746,22 +746,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
-			}
-			else if (sale_Contact.NextActionId == 2)
+			}			
+			else
 			{
-				nextActionName = "ติดต่ออีกครั้ง";
+				if (sale_Contact.NextActionId == 2)
+				{
+					nextActionName = "ติดต่ออีกครั้ง";
+				}
+
+				if (sale.StatusSaleId == StatusSaleModel.WaitContact)
+				{
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					}, new() { ContactStartDate = model.ContactDate });
+				}
 			}
 
-			if (sale.StatusSaleId == StatusSaleModel.WaitContact)
-			{
-				await _repo.Sales.UpdateStatusOnly(new()
-				{
-					SaleId = model.SaleId,
-					StatusId = statusSaleId,
-					CreateBy = model.CurrentUserId,
-					CreateByName = currentUserName,
-				}, new() { ContactStartDate = model.ContactDate });
-			}
 
 
 			await CreateContactHistory(new()

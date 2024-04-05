@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
 using NPOI.OpenXmlFormats.Spreadsheet;
@@ -281,7 +282,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 															 .Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
 															 .DefaultIfEmpty()
 															 .Average();
-					dash_Avg_Number.AvgTimeCloseSale = (int)(avgTimeCloseSale);
+					dash_Avg_Number.AvgDurationCloseSale = (int)(avgTimeCloseSale);
 
 					var avgTimeLostSale = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
 															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
@@ -289,7 +290,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 															 .Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
 															 .DefaultIfEmpty()
 															 .Average();
-					dash_Avg_Number.AvgTimeLostSale = (int)(avgTimeLostSale);
+					dash_Avg_Number.AvgDurationLostSale = (int)(avgTimeLostSale);
 				}
 
 			}
@@ -439,7 +440,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+
+				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
+															 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+															 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+
 				var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
 				//int salesAllCount = 50;
@@ -692,6 +698,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.Where(x => x.Status != StatusModel.Delete)
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
+
+			if (!String.IsNullOrEmpty(model.type))
+			{
+				if (model.type.ToLower() == "avgdurationclosesale")
+				{
+					query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+				}
+				else if (model.type.ToLower() == "avgdurationlostsale")
+				{
+					query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
+															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+				}
+			}
 
 
 			if (!String.IsNullOrEmpty(model.searchtxt))

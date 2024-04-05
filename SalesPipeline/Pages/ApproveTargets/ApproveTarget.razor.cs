@@ -20,7 +20,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
-		private CustomerCustom? formView = null;
+		private SaleCustom? formView = null;
 		ModalConfirm modalConfirmApprove = default!;
 		ModalSuccessful modalSuccessfulApprove = default!;
 		ModalNotApprove modalNotApprove = default!;
@@ -220,7 +220,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 			}
 		}
 
-		protected void OnViewCustomer(CustomerCustom? model)
+		protected void OnViewCustomer(SaleCustom? model)
 		{
 			if (model != null)
 			{

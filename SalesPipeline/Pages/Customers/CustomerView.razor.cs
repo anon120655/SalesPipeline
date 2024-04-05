@@ -1,5 +1,6 @@
 using global::Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
@@ -52,6 +53,36 @@ namespace SalesPipeline.Pages.Customers
 				}
 			}
 		}
+
+		protected void Cancel()
+		{
+			_Navs.NavigateTo("/customer");
+		}
+
+		protected async Task UpdateStatusWaitResults()
+		{
+			if (id != Guid.Empty)
+			{
+				var response = await _salesViewModel.UpdateStatusOnly(new()
+				{
+					SaleId = id,
+					StatusId = StatusSaleModel.WaitResults,
+					CreateBy = UserInfo.Id
+				});
+
+				if (response.Status)
+				{
+					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+					Cancel();
+				}
+				else
+				{
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
+			}
+		}
+
 
 	}
 }

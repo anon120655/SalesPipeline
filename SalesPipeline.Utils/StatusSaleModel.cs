@@ -92,7 +92,7 @@
 		/// </summary>
 		public const short WaitAPIPHOENIXLPS = 21;
 		/// <summary>
-		/// รอผลพิจารณา
+		/// รอบันทึกผลลัพธ์
 		/// </summary>
 		public const short WaitResults = 22;
 		/// <summary>
