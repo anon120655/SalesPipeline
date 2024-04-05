@@ -18,12 +18,19 @@
 										<div class="tracking-icon status-intransit">
 											<img src="/image/icon/call.png" />
 										</div>
-										<div class="tracking-date">@GeneralUtils.DateToThString(item.CreateDate)</div>
+										<div class="tracking-date">
+											@GeneralUtils.DateToThString(item.CreateDate)
+											<span>@GeneralUtils.DateToTimeString(item.CreateDate)</span>
+										</div>
 										<div class="tracking-content">
-											<p class="fw-bold">@item.ProceedName</p>
+											<p class="fw-bold">@item.TopicName</p>
 											@if (!String.IsNullOrEmpty(item.FullName))
 											{
 												<p>ผู้เข้าพบ : @item.FullName</p>
+											}
+											@if (!String.IsNullOrEmpty(item.ProceedName))
+											{
+												<p>การดำเนินการ : @item.ProceedName</p>
 											}
 											@if (!String.IsNullOrEmpty(item.ResultContactName))
 											{
@@ -31,47 +38,51 @@
 											}
 											@if (!String.IsNullOrEmpty(item.ResultMeetName))
 											{
-												<p>ผลการเข้าพบ @item.ResultMeetName</p>
+												<p>ผลการเข้าพบ : @item.ResultMeetName</p>
 											}
 											@if (!String.IsNullOrEmpty(item.NextActionName))
 											{
-												<p>Next Action @item.NextActionName</p>
+												<p>Next Action : @item.NextActionName</p>
 											}
 											@if (item.AppointmentDate.HasValue)
 											{
-												<p>วันที่นัดหมาย @GeneralUtils.DateToThString(item.AppointmentDate)</p>
+												<p>วันที่นัดหมาย : @GeneralUtils.DateToThString(item.AppointmentDate)</p>
 											}
 											@if (item.AppointmentTime.HasValue)
 											{
-												<p>เวลาที่นัดหมาย @item.AppointmentTime น.</p>
+												<p>เวลาที่นัดหมาย : @item.AppointmentTime น.</p>
 											}
 											@if (!String.IsNullOrEmpty(item.Location))
 											{
-												<p>สถานที่ @item.Location</p>
+												<p>สถานที่ : @item.Location</p>
 											}
 											@if (item.CreditLimit.HasValue)
 											{
-												<p>วงเงิน @item.CreditLimit?.ToString("#,##0")</p>
+												<p>วงเงิน : @item.CreditLimit?.ToString("#,##0")</p>
 											}
 											@if (!String.IsNullOrEmpty(item.Percent))
 											{
-												<p>ร้อยละ @item.Percent</p>
+												<p>ร้อยละ : @item.Percent</p>
 											}
 											@if (!String.IsNullOrEmpty(item.Note))
 											{
-												<p>บันทึกเพิ่มเติม @item.Note</p>
+												<p>บันทึกเพิ่มเติม : @item.Note</p>
+											}
+											@if (!String.IsNullOrEmpty(item.NoteSystem))
+											{
+												<p>Note system : @item.NoteSystem</p>
 											}
 										</div>
 									</div>
 								}
 							}
 							@* <div class="tracking-item">
-								<div class="tracking-icon status-intransit">
-									<img src="/image/icon/call.png" />
-								</div>
-								<div class="tracking-date">Aug 10, 2018<span>05:01 PM</span></div>
-								<div class="tracking-content">DESTROYEDPER SHIPPER INSTRUCTION<span>KUALA LUMPUR (LOGISTICS HUB), MALAYSIA, MALAYSIA</span></div>
-							</div> *@
+						<div class="tracking-icon status-intransit">
+						<img src="/image/icon/call.png" />
+						</div>
+						<div class="tracking-date">Aug 10, 2018<span>05:01 PM</span></div>
+						<div class="tracking-content">DESTROYEDPER SHIPPER INSTRUCTION<span>KUALA LUMPUR (LOGISTICS HUB), MALAYSIA, MALAYSIA</span></div>
+						</div> *@
 						</div>
 					</div>
 				</div>

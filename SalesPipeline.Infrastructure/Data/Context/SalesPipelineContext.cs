@@ -369,7 +369,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchName)
                 .HasMaxLength(255)
                 .HasComment("สาขา");
-            entity.Property(e => e.CIF).HasMaxLength(255);
             entity.Property(e => e.CompanyEmail)
                 .HasMaxLength(255)
                 .HasComment("อีเมลบริษัท");
@@ -1486,6 +1485,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("สาขา")
                 .HasColumnType("int(11)");
             entity.Property(e => e.BranchName).HasMaxLength(255);
+            entity.Property(e => e.CIF).HasMaxLength(255);
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อบริษัท");
@@ -1679,12 +1679,15 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
                 .HasComment("บันทึกเพิ่มเติม");
+            entity.Property(e => e.NoteSystem)
+                .HasMaxLength(255)
+                .HasComment("บันทึกอัตโนมัติจากระบบ");
             entity.Property(e => e.Percent)
                 .HasMaxLength(255)
                 .HasComment("ร้อยละ");
             entity.Property(e => e.ProceedName)
                 .HasMaxLength(255)
-                .HasComment("การดำเนินการ");
+                .HasComment("ชื่อการดำเนินการ");
             entity.Property(e => e.ProcessSaleCode).HasMaxLength(255);
             entity.Property(e => e.ResultContactName)
                 .HasMaxLength(255)
@@ -1699,6 +1702,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("สถานะ");
             entity.Property(e => e.StatusSaleId).HasColumnType("int(11)");
+            entity.Property(e => e.TopicName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อหัวข้อ");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contact_Histories)
                 .HasForeignKey(d => d.SaleId)

@@ -83,6 +83,40 @@ namespace SalesPipeline.Pages.Customers
 			}
 		}
 
+		protected async Task ShowTabDocument()
+		{
+			if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
+			{
+				var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 50 });
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel.Sale_Documents = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task ShowTabContactHistory()
+		{
+			if (formModel.Sale_Contact_Histories == null || formModel.Sale_Contact_Histories.Count == 0)
+			{
+				var data = await _processSaleViewModel.GetListContactHistory(new() { id = id, pagesize = 50 });
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel.Sale_Contact_Histories = data.Data.Items;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
 
 	}
 }

@@ -316,6 +316,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Document.NameTh = "นายชื่อไทย";
 			formModel.Sale_Document.NameEn = "นายชื่ออังกฤษ";
 			formModel.Sale_Document.Birthday = new DateTime(2000, 03, 30);
+			formModel.Sale_Document.HouseRegistrationPath = "https://www.checkraka.com/uploaded/knowledge/article/1600993/pic8.jpg";
+			formModel.Sale_Document.OtherDocumentPath = "https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/9/2019/01/02171742/01.png";
 			formModel.Sale_Document.SignaturePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
 			formModel.Sale_Document.SignatureEmployeeLoanPath = "https://m.media-amazon.com/images/I/411AYEiEsVL._SX300_SY300_QL70_FMwebp_.jpg";
 			//formModel.Sale_Document.SignatureMCenterPath = "https://m.media-amazon.com/images/I/618-nxYP6vL._AC_UF1000,1000_QL80_.jpg";

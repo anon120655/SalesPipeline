@@ -191,39 +191,76 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sales);
 				await _db.SaveAsync();
 
-				//อนุมัติและรอการติดต่อเฉพาะ RM สร้าง
-				if (model.StatusId == StatusSaleModel.WaitContact && sales.AssUserId.HasValue)
+				if (model.StatusId == StatusSaleModel.WaitContact)
 				{
-					var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssUserId.Value);
-					if (assignment != null)
+					//อนุมัติและรอการติดต่อเฉพาะ RM สร้าง
+					if (sales.AssUserId.HasValue)
 					{
-						if (assignment.CurrentNumber >= 100)
+						var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssUserId.Value);
+						if (assignment != null)
 						{
-							throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
-						}
-
-						if (!await _repo.AssignmentRM.CheckAssignmentSaleById(sales.Id))
-						{
-							var assignmentSale = await _repo.AssignmentRM.CreateSale(new()
+							if (assignment.CurrentNumber >= 100)
 							{
-								CreateBy = model.CreateBy,
-								CreateByName = currentUserName,
-								AssignmentRMId = assignment.Id,
-								SaleId = sales.Id
-							});
+								throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
+							}
+
+							if (!await _repo.AssignmentRM.CheckAssignmentSaleById(sales.Id))
+							{
+								var assignmentSale = await _repo.AssignmentRM.CreateSale(new()
+								{
+									CreateBy = model.CreateBy,
+									CreateByName = currentUserName,
+									AssignmentRMId = assignment.Id,
+									SaleId = sales.Id
+								});
+							}
+
+							await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
 						}
 
-						await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
+						//Noti
+						await _repo.Notifys.Create(new()
+						{
+							EventId = 2,
+							FromUserId = model.CreateBy,
+							ToUserId = sales.AssUserId.Value,
+							ActionId = 2,
+							ActionName1 = sales.CompanyName
+						});
 					}
 
-					//Noti
-					await _repo.Notifys.Create(new()
+					await _repo.ProcessSale.CreateContactHistory(new()
 					{
-						EventId = 2,
-						FromUserId = model.CreateBy,
-						ToUserId = sales.AssUserId.Value,
-						ActionId = 2,
-						ActionName1 = sales.CompanyName
+						CurrentUserId = model.CreateBy,
+						SaleId = model.SaleId,
+						ProcessSaleCode = ProcessSaleCodeModel.WaitContact,
+						StatusSaleId = model.StatusId,
+						TopicName = "รอติดต่อ",
+						NoteSystem = "รอติดต่อลูกค้า"
+					});
+				}
+				else if (model.StatusId == StatusSaleModel.WaitAPIPHOENIX)
+				{
+					await _repo.ProcessSale.CreateContactHistory(new()
+					{
+						CurrentUserId = model.CreateBy,
+						SaleId = model.SaleId,
+						ProcessSaleCode = ProcessSaleCodeModel.Document,
+						StatusSaleId = model.StatusId,
+						TopicName = "ผจศ. อนุมัติคำขอสินเชื่อ",
+						NoteSystem = "รอวิเคราะห์สินเชื่อ(PHOENIX)"
+					});
+
+				}
+				else if (model.StatusId == StatusSaleModel.NotApproveLoanRequest)
+				{
+					await _repo.ProcessSale.CreateContactHistory(new()
+					{
+						CurrentUserId = model.CreateBy,
+						SaleId = model.SaleId,
+						ProcessSaleCode = ProcessSaleCodeModel.Document,
+						StatusSaleId = model.StatusId,
+						TopicName = "ผจศ. ไม่อนุมัติคำขอสินเชื่อ"
 					});
 				}
 

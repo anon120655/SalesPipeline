@@ -33,9 +33,14 @@ public partial class Sale_Contact_History
     public string? FullName { get; set; }
 
     /// <summary>
-    /// การดำเนินการ
+    /// ชื่อหัวข้อ
     /// </summary>
-    public string ProceedName { get; set; } = null!;
+    public string? TopicName { get; set; }
+
+    /// <summary>
+    /// ชื่อการดำเนินการ
+    /// </summary>
+    public string? ProceedName { get; set; }
 
     /// <summary>
     /// วันที่ติดต่อ
@@ -88,6 +93,11 @@ public partial class Sale_Contact_History
     /// ร้อยละ
     /// </summary>
     public string? Percent { get; set; }
+
+    /// <summary>
+    /// บันทึกอัตโนมัติจากระบบ
+    /// </summary>
+    public string? NoteSystem { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 

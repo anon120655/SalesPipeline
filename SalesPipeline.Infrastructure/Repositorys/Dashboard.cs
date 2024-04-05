@@ -105,11 +105,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							|| item.StatusID == (int)StatusSaleModel.Meet
 							|| item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
 							|| item.StatusID == (int)StatusSaleModel.SubmitDocument
-							|| item.StatusID == (int)StatusSaleModel.WaitApproveDocument
-							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS
+							|| item.StatusID == (int)StatusSaleModel.WaitApproveLoanRequest
+							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIX
 							|| item.StatusID == (int)StatusSaleModel.WaitResults
-							|| item.StatusID == (int)StatusSaleModel.Results
-							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS)
+							|| item.StatusID == (int)StatusSaleModel.Results)
 						{
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
@@ -200,11 +199,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							|| item.StatusID == (int)StatusSaleModel.Meet
 							|| item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
 							|| item.StatusID == (int)StatusSaleModel.SubmitDocument
-							|| item.StatusID == (int)StatusSaleModel.WaitApproveDocument
-							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS
+							|| item.StatusID == (int)StatusSaleModel.WaitApproveLoanRequest
+							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIX
 							|| item.StatusID == (int)StatusSaleModel.WaitResults
-							|| item.StatusID == (int)StatusSaleModel.Results
-							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIXLPS)
+							|| item.StatusID == (int)StatusSaleModel.Results)
 						{
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
@@ -440,42 +438,42 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
 
-				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
-															 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-															 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
+				//											 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+				//											 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
 
 				var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
-				//int salesAllCount = 50;
-				//int salesCloseSaleCount = 47;
+				//salesAllCount = 50;
+				//salesCloseSaleCount = 47;
 
-				var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
-				var perFail = 100 - perSuccess;
-
-				response.Add(new()
+				if (salesAllCount > 0 || salesCloseSaleCount > 0)
 				{
-					Status = StatusModel.Active,
-					Code = Dash_PieCodeModel.ClosingSale,
-					TitleName = "การปิดการขาย",
-					Name = "สำเร็จ",
-					Value = perSuccess
-				});
-				response.Add(new()
-				{
-					Status = StatusModel.Active,
-					Code = Dash_PieCodeModel.ClosingSale,
-					TitleName = "การปิดการขาย",
-					Name = "ไม่สำเร็จ",
-					Value = perFail
-				});
 
+					var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
+					var perFail = 100 - perSuccess;
+
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ClosingSale,
+						TitleName = "การปิดการขาย",
+						Name = "สำเร็จ",
+						Value = perSuccess
+					});
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ClosingSale,
+						TitleName = "การปิดการขาย",
+						Name = "ไม่สำเร็จ",
+						Value = perFail
+					});
+
+				}
 				//เหตุผลไม่ประสงค์ขอสินเชื่อ
-				//var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan)
-				//											 .GroupBy(fu => fu.StatusDescription)
-				//											 .Select(g => new { Label = g.Key, Value = g.Count() * 100 / _repo.Context.Sales.Count() })
-				//											 .ToList();
 
 				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan && x.Master_Reason_CloseSaleId.HasValue)
 											 .GroupBy(m => m.Master_Reason_CloseSaleId)
@@ -498,14 +496,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else
 				{
-					response.Add(new()
-					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ReasonNotLoan,
-						TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-						Name = "ไม่พบข้อมูล ",
-						Value = 100
-					});
+					//response.Add(new()
+					//{
+					//	Status = StatusModel.Active,
+					//	Code = Dash_PieCodeModel.ReasonNotLoan,
+					//	TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
+					//	Name = "ไม่พบข้อมูล ",
+					//	Value = 100
+					//});
 				}
 			}
 

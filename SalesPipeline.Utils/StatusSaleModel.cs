@@ -38,7 +38,6 @@
 		/// พนักงาน RM ส่งคืน ผจศ.
 		/// </summary>
 		public const short RMReturnMCenter = 8;
-
 		/// <summary>
 		/// รอมอบหมาย
 		/// </summary>
@@ -80,45 +79,49 @@
 		/// </summary>
 		public const short SubmitDocumentFail = 18;
 		/// <summary>
-		/// รอ ผจศ. อนุมัติเอกสาร
+		/// รอ ผจศ. อนุมัติคำขอสินเชื่อ
 		/// </summary>
-		public const short WaitApproveDocument = 19;
+		public const short WaitApproveLoanRequest = 19;
 		/// <summary>
-		/// ผจศ. ไม่อนุมัติเอกสาร
+		/// ผจศ. ไม่อนุมัติคำขอสินเชื่อ
 		/// </summary>
-		public const short NotApproveDocument = 20;
+		public const short NotApproveLoanRequest = 20;
 		/// <summary>
-		/// รอวิเคราะห์สินเชื่อ(LPS)
+		/// รอวิเคราะห์สินเชื่อ(PHOENIX)
 		/// </summary>
-		public const short WaitAPIPHOENIXLPS = 21;
+		public const short WaitAPIPHOENIX = 21;
+		/// <summary>
+		/// รอบันทึกเลข(CIF)
+		/// </summary>
+		public const short WaitCIF = 22;
 		/// <summary>
 		/// รอบันทึกผลลัพธ์
 		/// </summary>
-		public const short WaitResults = 22;
+		public const short WaitResults = 23;
 		/// <summary>
 		/// ผลลัพธ์
 		/// </summary>
-		public const short Results = 23;
+		public const short Results = 24;
 		/// <summary>
 		/// ไม่ผ่านการพิจารณา
 		/// </summary>
-		public const short ResultsNotConsidered = 24;
+		public const short ResultsNotConsidered = 25;
 		/// <summary>
 		/// ไม่ประสงค์กู้
 		/// </summary>
-		public const short ResultsNotLoan = 25;
+		public const short ResultsNotLoan = 26;
 		/// <summary>
 		/// รอปิดการขาย
 		/// </summary>
-		public const short WaitCloseSale = 26;
+		public const short WaitCloseSale = 27;
 		/// <summary>
 		/// ปิดการขาย
 		/// </summary>
-		public const short CloseSale = 27;
+		public const short CloseSale = 28;
 		/// <summary>
 		/// ปิดการขายไม่สำเร็จ
 		/// </summary>
-		public const short CloseSaleFail = 28;
+		public const short CloseSaleFail = 29;
 	}
 
 }

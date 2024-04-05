@@ -29,6 +29,8 @@ public partial class Sale
 
     public Guid CustomerId { get; set; }
 
+    public string? CIF { get; set; }
+
     /// <summary>
     /// ชื่อบริษัท
     /// </summary>

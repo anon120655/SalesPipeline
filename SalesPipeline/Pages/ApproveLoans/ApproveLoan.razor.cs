@@ -83,7 +83,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 				filter.assigncenter = UserInfo.Id;
 			}
 
-			filter.statussaleid = StatusSaleModel.WaitApproveDocument;
+			filter.statussaleid = StatusSaleModel.WaitApproveLoanRequest;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

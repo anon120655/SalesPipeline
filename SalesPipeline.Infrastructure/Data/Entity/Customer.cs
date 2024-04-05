@@ -75,8 +75,6 @@ public partial class Customer
     /// </summary>
     public string? CompanyName { get; set; }
 
-    public string? CIF { get; set; }
-
     /// <summary>
     /// เลขทะเบียนนิติบุคคล
     /// </summary>

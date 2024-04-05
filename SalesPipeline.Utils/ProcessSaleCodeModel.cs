@@ -9,6 +9,10 @@ namespace SalesPipeline.Utils
 	public class ProcessSaleCodeModel
 	{
 		/// <summary>
+		/// รอติดต่อ
+		/// </summary>
+		public const string WaitContact = "WaitContact";
+		/// <summary>
 		/// ติดต่อ
 		/// </summary>
 		public const string Contact = "Contact";

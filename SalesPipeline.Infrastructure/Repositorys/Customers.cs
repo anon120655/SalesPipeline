@@ -690,8 +690,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			if (!String.IsNullOrEmpty(model.cif))
-				query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
+			//if (!String.IsNullOrEmpty(model.cif))
+			//	query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)

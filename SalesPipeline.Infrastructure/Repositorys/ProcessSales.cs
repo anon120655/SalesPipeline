@@ -706,7 +706,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
-			string? proceedName = "ติดต่อ";
+			string? topicName = "ติดต่อ";
 			string? resultContactName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -736,7 +736,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
-				proceedName = "รอเข้าพบ";
+				topicName = "รอเข้าพบ";
 				statusSaleId = StatusSaleModel.WaitMeet;
 				nextActionName = "ทำการนัดหมาย";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -775,7 +775,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ProcessSaleCode = ProcessSaleCodeModel.Contact,
 				StatusSaleId = statusSaleId,
 				FullName = model.Name,
-				ProceedName = proceedName,
+				TopicName = topicName,
 				ContactDate = model.ContactDate,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
@@ -801,7 +801,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
-			string? proceedName = "เข้าพบ";
+			string? topicName = "เข้าพบ";
 			string? resultMeetName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -835,7 +835,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Meet.NextActionId == 1)
 			{
-				proceedName = "รอยื่นเอกสาร";
+				topicName = "รอยื่นเอกสาร";
 				statusSaleId = StatusSaleModel.WaitSubmitDocument;
 				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -867,7 +867,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ProcessSaleCode = ProcessSaleCodeModel.Meet,
 				StatusSaleId = statusSaleId,
 				FullName = model.Name,
-				ProceedName = proceedName,
+				TopicName = topicName,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
 				AppointmentDate = model.AppointmentDate,
@@ -895,7 +895,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId ?? 0);
 
 			int statusSaleId = StatusSaleModel.SubmitDocument;
-			string? proceedName = "ยื่นเอกสาร";
+			string? topicName = "ยื่นเอกสาร";
+			string? noteSystem = null;
 			string? resultContactName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -974,8 +975,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Document.SubmitType == 1)
 			{
-				proceedName = "รอลงนามอนุมัติเอกสาร";
-				statusSaleId = StatusSaleModel.WaitApproveDocument;
+				topicName = "รอลงนามอนุมัติเอกสาร";
+				noteSystem = "รอผู้จัดการศูนย์ลงนามอนุมัติเอกสาร";
+				statusSaleId = StatusSaleModel.WaitApproveLoanRequest;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -1004,9 +1006,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Document,
 				StatusSaleId = statusSaleId,
-				ProceedName = proceedName,
+				TopicName = topicName,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
+				NoteSystem = noteSystem
 			});
 
 			return _mapper.Map<Sale_DocumentCustom>(sale_Document);
@@ -1025,7 +1028,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
-			string? proceedName = "ผลลัพธ์";
+			string? topicName = "ผลลัพธ์";
+			string? proceedName = null;
 			string? resultMeetName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -1090,6 +1094,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Result,
 				StatusSaleId = statusSaleId,
+				TopicName = topicName,
 				ProceedName = proceedName,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
@@ -1115,7 +1120,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
-			string? proceedName = "เข้าพบ";
+			string? topicName = "เข้าพบ";
+			string? proceedName = null;
 			string? resultContactName = string.Empty;
 			string? descriptionStatus = null;
 
@@ -1140,13 +1146,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (sale_Close_Sale.DesireLoanId == 1)
 				{
-					//proceedName = "ประสงค์กู้";
-					proceedName = "ปิดการขาย";
+					topicName = "ปิดการขาย";
+					proceedName = "ประสงค์กู้";
 					statusSaleId = StatusSaleModel.CloseSale;
 				}
 				else if (sale_Close_Sale.DesireLoanId == 2)
 				{
-					proceedName = "ไม่ประสงค์กู้";
+					topicName = "ไม่ประสงค์กู้";
 					statusSaleId = StatusSaleModel.ResultsNotLoan;
 					if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
 				}
@@ -1181,6 +1187,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ProcessSaleCode = ProcessSaleCodeModel.CloseSale,
 				StatusSaleId = statusSaleId,
 				FullName = model.Name,
+				TopicName = topicName,
 				ProceedName = proceedName,
 				ResultContactName = resultContactName,
 				Note = model.Note,
@@ -1200,10 +1207,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.CreateDate = _dateNow;
 			sale_Contact_History.CreateBy = model.CurrentUserId;
 			sale_Contact_History.CreateByName = currentUserName;
+			sale_Contact_History.ProcessSaleCode = model.ProcessSaleCode;
 			sale_Contact_History.SaleId = model.SaleId;
 			sale_Contact_History.StatusSaleId = model.StatusSaleId;
 
 			sale_Contact_History.FullName = model.FullName;
+			sale_Contact_History.TopicName = model.TopicName;
 			sale_Contact_History.ProceedName = model.ProceedName;
 			sale_Contact_History.ContactDate = model.ContactDate;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
@@ -1216,6 +1225,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.AppointmentTime = model.AppointmentTime;
 			sale_Contact_History.Location = model.Location;
 			sale_Contact_History.Note = model.Note;
+			sale_Contact_History.NoteSystem = model.NoteSystem;
 			await _db.InsterAsync(sale_Contact_History);
 			await _db.SaveAsync();
 

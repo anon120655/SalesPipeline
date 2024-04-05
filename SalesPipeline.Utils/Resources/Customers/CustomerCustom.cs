@@ -84,8 +84,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// </summary>
 		public string? CompanyName { get; set; }
 
-		public string? CIF { get; set; }
-
 		/// <summary>
 		/// เลขทะเบียนนิติบุคคล
 		/// </summary>

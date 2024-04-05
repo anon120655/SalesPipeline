@@ -155,10 +155,8 @@ namespace SalesPipeline.Pages.Dashboards
 						labels.Add(item.Name);
 						datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("reasonnotloan", datas.ToArray(), labels.ToArray());
 				}
-
+				await _jsRuntimes.InvokeVoidAsync("reasonnotloan", datas.ToArray(), labels.ToArray());
 			}
 			else
 			{

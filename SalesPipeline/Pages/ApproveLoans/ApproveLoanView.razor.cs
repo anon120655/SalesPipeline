@@ -80,7 +80,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			var response = await _salesViewModel.UpdateStatusOnly(new()
 			{
 				SaleId = id,
-				StatusId = StatusSaleModel.NotApproveDocument,
+				StatusId = StatusSaleModel.NotApproveLoanRequest,
 				CreateBy = UserInfo.Id,
 				Description = model.Name
 			});
@@ -109,7 +109,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			var response = await _salesViewModel.UpdateStatusOnly(new()
 			{
 				SaleId = id,
-				StatusId = StatusSaleModel.WaitAPIPHOENIXLPS,
+				StatusId = StatusSaleModel.WaitAPIPHOENIX,
 				CreateBy = UserInfo.Id,
 			});
 

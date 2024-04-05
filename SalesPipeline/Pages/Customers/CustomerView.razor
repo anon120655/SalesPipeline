@@ -30,7 +30,7 @@
 												</div>
 											}
 										</div>
-										@if (formModel.StatusSaleId == StatusSaleModel.WaitAPIPHOENIXLPS)
+										@if (formModel.StatusSaleId == StatusSaleModel.WaitAPIPHOENIX)
 										{
 											<div class="row">
 												<div class="col-12 col-xl-4 text-end">
@@ -51,18 +51,14 @@
 										</div>
 									</Content>
 								</Tab>
-								<Tab Title="เอกสาร">
+								<Tab Title="เอกสาร" OnClick="ShowTabDocument">
 									<Content>
-										<div class="d-flex align-items-center justify-content-center mh_10r">
-											<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-										</div>
+										<PartialDocument formModel="formModel.Sale_Documents" />
 									</Content>
 								</Tab>
-								<Tab Title="ประวัติการติดต่อ">
+								<Tab Title="ประวัติการติดต่อ" OnClick="ShowTabContactHistory">
 									<Content>
-										<div class="d-flex align-items-center justify-content-center mh_10r">
-											<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-										</div>
+										<PartialContactHistory formModel="formModel.Sale_Contact_Histories" />
 									</Content>
 								</Tab>
 								<Tab Title="คู่ค้า">
