@@ -1127,6 +1127,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			DateTime _dateNow = DateTime.Now;
 
+
 			Sale_Close_Sale sale_Close_Sale = new();
 			sale_Close_Sale.Status = StatusModel.Active;
 			sale_Close_Sale.CreateDate = _dateNow;
