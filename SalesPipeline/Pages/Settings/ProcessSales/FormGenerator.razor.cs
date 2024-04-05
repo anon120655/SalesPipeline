@@ -338,11 +338,14 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Close_Sale.Name = "นายทดสอบ เข้าพบ01";
 			formModel.Sale_Close_Sale.Tel = "0800000001";
 			formModel.Sale_Close_Sale.ResultMeetId = 1;
-			formModel.Sale_Close_Sale.DesireLoanId = 1; //1=ประสงค์กู้ 2=ไม่ประสงค์กู้
-			//formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse("1fc04d50-f19c-11ee-998d-30e37aef72fb");
-			//367288e0-f19c-11ee-998d-30e37aef72fb กู้ธนาคารอื่นแล้ว
-			//1fc04d50-f19c-11ee-998d-30e37aef72fb ดอกเบี้ยสูง
+			formModel.Sale_Close_Sale.DesireLoanId = formModel.Nex ?? 1; //1=ประสงค์กู้ 2=ไม่ประสงค์กู้
 
+			if (formModel.Nex == 2)
+			{
+				formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse("367288e0-f19c-11ee-998d-30e37aef72fb");
+				//367288e0-f19c-11ee-998d-30e37aef72fb กู้ธนาคารอื่นแล้ว
+				//1fc04d50-f19c-11ee-998d-30e37aef72fb ดอกเบี้ยสูง
+			}
 
 			ResultModel<Sale_ReplyCustom> response;
 

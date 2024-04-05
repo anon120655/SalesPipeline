@@ -116,7 +116,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
 
 						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
-							|| item.StatusID == (int)StatusSaleModel.ResultsNotLoan
+							|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
 							|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
 						{
 							dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
@@ -210,7 +210,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
 
 						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
-							|| item.StatusID == (int)StatusSaleModel.ResultsNotLoan
+							|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
 							|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
 						{
 							dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
@@ -284,7 +284,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var avgTimeLostSale = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
 															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotLoan)
+															 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan)
 															 .Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
 															 .DefaultIfEmpty()
 															 .Average();
@@ -475,7 +475,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				//เหตุผลไม่ประสงค์ขอสินเชื่อ
 
-				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
 											 .GroupBy(m => m.Master_Reason_CloseSaleId)
 											 .Select(group => new { Label = group.Key, Sales = group.ToList() })
 											 .ToList();
@@ -707,7 +707,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
 															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+															 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan);
 				}
 			}
 
@@ -875,7 +875,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var response = new List<Dash_PieCustom>();
 
-			var sales = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.ResultsNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+			var sales = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
 										 .GroupBy(m => m.Master_Reason_CloseSaleId)
 										 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
 										 .ToList();

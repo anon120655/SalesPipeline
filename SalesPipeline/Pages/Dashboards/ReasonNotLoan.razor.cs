@@ -160,7 +160,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			}
 
-			filter.statussaleid = StatusSaleModel.ResultsNotLoan;
+			filter.statussaleid = StatusSaleModel.CloseSaleNotLoan;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

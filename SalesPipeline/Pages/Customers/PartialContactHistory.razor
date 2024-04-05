@@ -64,6 +64,10 @@
 											{
 												<p>ร้อยละ : @item.Percent</p>
 											}
+											@if (!String.IsNullOrEmpty(item.Reason))
+											{
+												<p>เหตุผล : @item.Reason</p>
+											}
 											@if (!String.IsNullOrEmpty(item.Note))
 											{
 												<p>บันทึกเพิ่มเติม : @item.Note</p>

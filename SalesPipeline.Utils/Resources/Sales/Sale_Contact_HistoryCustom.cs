@@ -96,6 +96,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? Percent { get; set; }
 
 		/// <summary>
+		/// เหตุผล
+		/// </summary>
+		public string? Reason { get; set; }
+
+		/// <summary>
 		/// บันทึกอัตโนมัติจากระบบ
 		/// </summary>
 		public string? NoteSystem { get; set; }

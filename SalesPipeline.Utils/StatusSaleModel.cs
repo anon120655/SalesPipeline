@@ -107,13 +107,13 @@
 		/// </summary>
 		public const short ResultsNotConsidered = 25;
 		/// <summary>
-		/// ไม่ประสงค์กู้
-		/// </summary>
-		public const short ResultsNotLoan = 26;
-		/// <summary>
 		/// รอปิดการขาย
 		/// </summary>
-		public const short WaitCloseSale = 27;
+		public const short WaitCloseSale = 26;
+		/// <summary>
+		/// ไม่ประสงค์กู้
+		/// </summary>
+		public const short CloseSaleNotLoan = 27;
 		/// <summary>
 		/// ปิดการขาย
 		/// </summary>
