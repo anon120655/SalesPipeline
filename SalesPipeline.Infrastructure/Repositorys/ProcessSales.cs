@@ -844,7 +844,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					StatusId = statusSaleId,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
-				});
+				}, new() { LoanAmount = model.LoanAmount });
 			}
 			else
 			{
@@ -856,7 +856,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						StatusId = statusSaleId,
 						CreateBy = model.CurrentUserId,
 						CreateByName = currentUserName,
-					});
+					}, new() { LoanAmount = model.LoanAmount });
 				}
 			}
 

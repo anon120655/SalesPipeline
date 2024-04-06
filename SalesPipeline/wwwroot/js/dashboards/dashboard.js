@@ -959,6 +959,7 @@ window.numcusloantype = (_data, _labels) => {
 }
 
 window.valuesizebusiness = (_data, _labels) => {
+	console.log(_data)
 	const data = {
 		labels: _labels,
 		datasets: [

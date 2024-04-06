@@ -186,6 +186,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (modelSale != null)
 				{
 					sales.ContactStartDate = modelSale.ContactStartDate;
+					sales.LoanAmount = modelSale.LoanAmount;
 				}
 
 				_db.Update(sales);
@@ -249,6 +250,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						StatusSaleId = model.StatusId,
 						TopicName = "ผจศ. อนุมัติคำขอสินเชื่อ",
 						NoteSystem = "รอวิเคราะห์สินเชื่อ(PHOENIX)"
+					});
+
+				}
+				else if (model.StatusId == StatusSaleModel.WaitResults)
+				{
+					await _repo.ProcessSale.CreateContactHistory(new()
+					{
+						CurrentUserId = model.CreateBy,
+						SaleId = model.SaleId,
+						ProcessSaleCode = ProcessSaleCodeModel.Document,
+						StatusSaleId = model.StatusId,
+						TopicName = "รอบันทึกผลลัพธ์",
+						NoteSystem = "ผ่านการวิเคราะห์สินเชื่อ(PHOENIX)"
 					});
 
 				}
