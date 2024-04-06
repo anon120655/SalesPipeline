@@ -315,7 +315,16 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task DurationOnStage()
 		{
-			await _jsRuntimes.InvokeVoidAsync("durationonstage", null);
+			var data = await _dashboarViewModel.GetAvgOnStage(UserInfo.Id);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeVoidAsync("durationonstage", data.Data);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 

@@ -959,7 +959,7 @@ window.numcusloantype = (_data, _labels) => {
 }
 
 window.valuesizebusiness = (_data, _labels) => {
-	console.log(_data)
+	//console.log(_data)
 	const data = {
 		labels: _labels,
 		datasets: [
@@ -1531,7 +1531,8 @@ window.centerlost = (indata) => {
 	}, 100)
 }
 
-window.durationonstage = (indata) => {
+window.durationonstage = (_data) => {
+	console.log(_data)
 	var barOptions_stacked = {
 		responsive: true,
 		maintainAspectRatio: false,
@@ -1563,15 +1564,19 @@ window.durationonstage = (indata) => {
 			type: 'bar',
 			data: {
 				labels: ["ติดต่อ", "เข้าพบ", "ยื่นเอกสาร", "ผลลัพธ์การกู้", ['ปิดการขาย', 'ไม่สำเร็จ']],
-				datasets: [{
-					data: [0, 20, 40, 45, 0],
-					backgroundColor: "#d5dce4",
-					hoverBackgroundColor: "#d5dce4",
-					datalabels: {
-						display: false
-					}
-				}, {
-					data: [20, 20, 10, 30, 45],
+				datasets: [
+				//	{
+				//	data: [0, 20, 40, 45, 0],
+				//	backgroundColor: "#d5dce4",
+				//	hoverBackgroundColor: "#d5dce4",
+				//	datalabels: {
+				//		display: false
+				//	}
+				//}
+				//	,
+					{
+					//data: [20, 20, 10, 30, 45],
+						data: [_data.contact, _data.meet, _data.document, _data.result, _data.closeSaleFail],
 					backgroundColor: "#1378D5",
 					hoverBackgroundColor: "#4587c4",
 					datalabels: {
@@ -1582,14 +1587,16 @@ window.durationonstage = (indata) => {
 							size: 9
 						}
 					}
-				}, {
-					data: [80, 60, 50, 25, 55],
-					backgroundColor: "#d5dce4",
-					hoverBackgroundColor: "#d5dce4",
-					datalabels: {
-						display: false
-					}
-				}]
+				}
+				//	, {
+				//	data: [80, 60, 50, 25, 55],
+				//	backgroundColor: "#d5dce4",
+				//	hoverBackgroundColor: "#d5dce4",
+				//	datalabels: {
+				//		display: false
+				//	}
+				//}
+				]
 			},
 
 			options: barOptions_stacked,

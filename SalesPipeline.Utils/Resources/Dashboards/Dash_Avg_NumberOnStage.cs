@@ -8,10 +8,10 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 {
 	public class Dash_Avg_NumberOnStage
 	{
-        public int Contact { get; set; }
-        public int Meet { get; set; }
-        public int Document { get; set; }
-        public int Result { get; set; }
-        public int CloseSaleFail { get; set; }
+        public double Contact { get; set; }
+        public double Meet { get; set; }
+        public double Document { get; set; }
+        public double Result { get; set; }
+        public double CloseSaleFail { get; set; }
 	}
 }

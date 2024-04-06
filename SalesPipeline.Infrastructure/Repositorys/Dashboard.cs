@@ -454,7 +454,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					
+
+					var avgContact = sale_Durations.Select(x => (x.WaitContact + x.Contact))
+													.DefaultIfEmpty()
+													.Average();
+					dash_Avg_NumberOnStage.Contact = avgContact;
+
+					var avgMeet = sale_Durations.Select(x => x.Meet)
+													.DefaultIfEmpty()
+													.Average();
+					dash_Avg_NumberOnStage.Meet = avgMeet;
+
+					var avgDocument = sale_Durations.Select(x => x.Document)
+													.DefaultIfEmpty()
+													.Average();
+					dash_Avg_NumberOnStage.Document = avgDocument;
+
+					var avgResult = sale_Durations.Select(x => x.Result)
+													.DefaultIfEmpty()
+													.Average();
+					dash_Avg_NumberOnStage.Result = avgResult;
+
+					var avgCloseSaleFail = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
+															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+															 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan)
+													.Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
+													.DefaultIfEmpty()
+													.Average();
+					dash_Avg_NumberOnStage.CloseSaleFail = avgCloseSaleFail;
 				}
 
 			}
