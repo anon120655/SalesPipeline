@@ -27,19 +27,43 @@
 				<div class="col-12 mt-3">
 					<div class="row mb-3">
 						<div class="col-6">
-							<input @bind="formModel.SaleId" type="text" class="form-control">
+							<input @bind="formModel.SaleId" type="text" class="form-control" placeholder="SaleId">
 						</div>
 					</div>
 				</div>
 				<div class="col-12 mt-3">
 					<div class="row mb-3">
-						<div class="col-6">
-							<input @bind="formModel.Nex" type="number" class="form-control">
-							<p class="text-danger mt-1">ติดต่อ : 1 = รอการเข้าพบ 2 = ติดต่ออีกครั้ง</p>
-							<p class="text-danger">เข้าพบ : 1 = นัดเก็บเอกสาร/ประสงค์กู้</p>
-							<p class="text-danger">ยื่นเอกสาร : 1 = รอรอลงนามอนุมัติเอกสาร</p>
-							<p class="text-danger">ผลลัพธ์ : 1 = ทำการนัดหมาย 2 = รอปิดการขาย</p>
-							<p class="text-danger">ปิดการขาย : 1 = ประสงค์กู้ 2 = ไม่ประสงค์กู้</p>
+						<div class="col-5">
+							<input @bind="formModel.Nex" type="number" class="form-control" placeholder="Next Action">
+							<table class="table">
+								<tbody>
+									<tr>
+										<td class="text-danger">ติดต่อ</td>
+										<td class="text-danger">1 = รอการเข้าพบ</td>
+										<td class="text-danger">2 = ติดต่ออีกครั้ง</td>
+									</tr>
+									<tr>
+										<td class="text-danger">เข้าพบ</td>
+										<td class="text-danger">1 = นัดเก็บเอกสาร/ประสงค์กู้</td>
+										<td class="text-danger">2 = เข้าพบอีกครั้ง</td>
+									</tr>
+									<tr>
+										<td class="text-danger">ยื่นเอกสาร</td>
+										<td class="text-danger">1 = รอรอลงนามอนุมัติเอกสาร</td>
+										<td class="text-danger"></td>
+									</tr>
+									<tr>
+										<td class="text-danger">ผลลัพธ์</td>
+										<td class="text-danger">1 = ทำการนัดหมาย</td>
+										<td class="text-danger">2 = รอปิดการขาย</td>
+									</tr>
+									<tr>
+										<td class="text-danger">ปิดการขาย</td>
+										<td class="text-danger">1 = ประสงค์กู้</td>
+										<td class="text-danger">2 = ไม่ประสงค์กู้</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>

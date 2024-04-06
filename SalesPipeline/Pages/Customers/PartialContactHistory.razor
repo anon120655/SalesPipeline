@@ -24,13 +24,17 @@
 										</div>
 										<div class="tracking-content">
 											<p class="fw-bold">@item.TopicName</p>
-											@if (!String.IsNullOrEmpty(item.FullName))
+											@if (!String.IsNullOrEmpty(item.ContactFullName))
 											{
-												<p>ผู้เข้าพบ : @item.FullName</p>
+												<p>ชื่อผู้ติดต่อ : @item.ContactFullName</p>
 											}
 											@if (!String.IsNullOrEmpty(item.ProceedName))
 											{
 												<p>การดำเนินการ : @item.ProceedName</p>
+											}
+											@if (!String.IsNullOrEmpty(item.MeetFullName))
+											{
+												<p>ชื่อผู้เข้าพบ : @item.MeetFullName</p>
 											}
 											@if (!String.IsNullOrEmpty(item.ResultContactName))
 											{
@@ -63,6 +67,10 @@
 											@if (!String.IsNullOrEmpty(item.Percent))
 											{
 												<p>ร้อยละ : @item.Percent</p>
+											}
+											@if (!String.IsNullOrEmpty(item.DesireLoanName))
+											{
+												<p>ความประสงค์กู้ : @item.DesireLoanName</p>
 											}
 											@if (!String.IsNullOrEmpty(item.Reason))
 											{

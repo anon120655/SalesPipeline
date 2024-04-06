@@ -51,6 +51,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_StatusSaleCustom>(query);
 		}
 
+		public async Task<string?> GetNameById(int id)
+		{
+			var name = await _repo.Context.Master_StatusSales.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public Task UpdateStatusById(UpdateModel model)
 		{
 			throw new NotImplementedException();

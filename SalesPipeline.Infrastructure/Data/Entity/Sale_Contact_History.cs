@@ -28,14 +28,14 @@ public partial class Sale_Contact_History
     public string? ProcessSaleCode { get; set; }
 
     /// <summary>
-    /// ผู้เข้าพบ
-    /// </summary>
-    public string? FullName { get; set; }
-
-    /// <summary>
     /// ชื่อหัวข้อ
     /// </summary>
     public string? TopicName { get; set; }
+
+    /// <summary>
+    /// ชื่อผู้ติดต่อ
+    /// </summary>
+    public string? ContactFullName { get; set; }
 
     /// <summary>
     /// ชื่อการดำเนินการ
@@ -53,10 +53,18 @@ public partial class Sale_Contact_History
     public string? ResultContactName { get; set; }
 
     /// <summary>
+    /// ชื่อผู้เข้าพบ
+    /// </summary>
+    public string? MeetFullName { get; set; }
+
+    /// <summary>
     /// ผลการเข้าพบ
     /// </summary>
     public string? ResultMeetName { get; set; }
 
+    /// <summary>
+    /// Next Action
+    /// </summary>
     public string? NextActionName { get; set; }
 
     /// <summary>
@@ -95,12 +103,17 @@ public partial class Sale_Contact_History
     public string? Percent { get; set; }
 
     /// <summary>
+    /// ความประสงค์กู้
+    /// </summary>
+    public string? DesireLoanName { get; set; }
+
+    /// <summary>
     /// เหตุผล
     /// </summary>
     public string? Reason { get; set; }
 
     /// <summary>
-    /// บันทึกอัตโนมัติจากระบบ
+    /// บันทึกอัตโนมัติ
     /// </summary>
     public string? NoteSystem { get; set; }
 

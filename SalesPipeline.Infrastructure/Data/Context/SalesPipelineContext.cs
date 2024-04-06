@@ -1663,25 +1663,33 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ContactDate)
                 .HasComment("วันที่ติดต่อ")
                 .HasColumnType("datetime");
+            entity.Property(e => e.ContactFullName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreditLimit)
                 .HasPrecision(18, 2)
                 .HasComment("วงเงิน");
-            entity.Property(e => e.FullName)
+            entity.Property(e => e.DesireLoanName)
                 .HasMaxLength(255)
-                .HasComment("ผู้เข้าพบ");
+                .HasComment("ความประสงค์กู้");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasComment("สถานที่");
-            entity.Property(e => e.NextActionName).HasMaxLength(255);
+            entity.Property(e => e.MeetFullName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้เข้าพบ");
+            entity.Property(e => e.NextActionName)
+                .HasMaxLength(255)
+                .HasComment("Next Action");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
                 .HasComment("บันทึกเพิ่มเติม");
             entity.Property(e => e.NoteSystem)
                 .HasMaxLength(255)
-                .HasComment("บันทึกอัตโนมัติจากระบบ");
+                .HasComment("บันทึกอัตโนมัติ");
             entity.Property(e => e.Percent)
                 .HasMaxLength(255)
                 .HasComment("ร้อยละ");
@@ -1960,7 +1968,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("บุคคลที่เข้าพบ");
             entity.Property(e => e.NextActionId)
-                .HasComment("1=นัดเก็บเอกสาร/ประสงค์กู้")
+                .HasComment("1=นัดเก็บเอกสาร/ประสงค์กู้ 2=เข้าพบอีกครั้ง")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)

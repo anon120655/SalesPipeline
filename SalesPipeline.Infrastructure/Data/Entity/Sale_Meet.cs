@@ -50,7 +50,7 @@ public partial class Sale_Meet
     public Guid? Master_ChainId { get; set; }
 
     /// <summary>
-    /// 1=นัดเก็บเอกสาร/ประสงค์กู้
+    /// 1=นัดเก็บเอกสาร/ประสงค์กู้ 2=เข้าพบอีกครั้ง
     /// </summary>
     public int? NextActionId { get; set; }
 

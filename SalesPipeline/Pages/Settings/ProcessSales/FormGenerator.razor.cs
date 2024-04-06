@@ -324,14 +324,17 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			//ผลลัพธ์
 			formModel.Sale_Result = new();
-			formModel.Sale_Result.ProceedId = 2;
-			formModel.Sale_Result.ResultMeetId = null;
+			formModel.Sale_Result.ProceedId = 3;
+			formModel.Sale_Result.ResultMeetId = 1;
 			formModel.Sale_Result.MeetName = "นายทดสอบ เข้าพบ01";
-			formModel.Sale_Result.AppointmentDate = new DateTime(2024, 03, 25);
-			formModel.Sale_Result.AppointmentTime = new TimeOnly(13, 30, 00);
 			formModel.Sale_Result.NextActionId = formModel.Nex;
-			formModel.Sale_Result.Location = "co workspace the mall";
-			formModel.Sale_Result.Note = "ชั้น 4";
+			if (formModel.Nex == 1)
+			{
+				formModel.Sale_Result.AppointmentDate = new DateTime(2024, 04, 25);
+				formModel.Sale_Result.AppointmentTime = new TimeOnly(13, 04, 00);
+				formModel.Sale_Result.Location = "co workspace the mall";
+				formModel.Sale_Result.Note = "ชั้น 4";
+			}
 
 			//ปิดการขาย
 			formModel.Sale_Close_Sale = new();
@@ -340,7 +343,11 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Close_Sale.ResultMeetId = 1;
 			formModel.Sale_Close_Sale.DesireLoanId = formModel.Nex ?? 1; //1=ประสงค์กู้ 2=ไม่ประสงค์กู้
 
-			if (formModel.Nex == 2)
+			if (formModel.Nex == 1)
+			{
+				formModel.Sale_Close_Sale.Note = "สะดวกนัดจดจำนองวันที่ 2 พ.ค.";
+			}
+			else if (formModel.Nex == 2)
 			{
 				formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse("367288e0-f19c-11ee-998d-30e37aef72fb");
 				//367288e0-f19c-11ee-998d-30e37aef72fb กู้ธนาคารอื่นแล้ว

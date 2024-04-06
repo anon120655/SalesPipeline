@@ -707,6 +707,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			int statusSaleId = StatusSaleModel.NotStatus;
 			string? topicName = "ติดต่อ";
+			//string? noteSystem = null;
 			string? resultContactName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -736,7 +737,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
-				topicName = "รอเข้าพบ";
+				//noteSystem = "รอเข้าพบ";
 				statusSaleId = StatusSaleModel.WaitMeet;
 				nextActionName = "ทำการนัดหมาย";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -774,8 +775,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Contact,
 				StatusSaleId = statusSaleId,
-				FullName = model.Name,
 				TopicName = topicName,
+				ContactFullName = model.Name,
 				ContactDate = model.ContactDate,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
@@ -783,6 +784,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				AppointmentTime = model.AppointmentTime,
 				Location = model.Location,
 				Note = model.Note,
+				//NoteSystem = noteSystem,
 			});
 
 			return _mapper.Map<Sale_ContactCustom>(sale_Contact);
@@ -802,6 +804,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			int statusSaleId = StatusSaleModel.NotStatus;
 			string? topicName = "เข้าพบ";
+			//string? noteSystem = null;
 			string? resultMeetName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -835,7 +838,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Meet.NextActionId == 1)
 			{
-				topicName = "รอยื่นเอกสาร";
+				//noteSystem = "รอยื่นเอกสาร";
 				statusSaleId = StatusSaleModel.WaitSubmitDocument;
 				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -848,6 +851,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else
 			{
+				if (sale_Meet.NextActionId == 2)
+				{
+					nextActionName = "เข้าพบอีกครั้ง";
+				}
+
 				if (sale.StatusSaleId == StatusSaleModel.WaitMeet)
 				{
 					await _repo.Sales.UpdateStatusOnly(new()
@@ -866,8 +874,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.Meet,
 				StatusSaleId = statusSaleId,
-				FullName = model.Name,
 				TopicName = topicName,
+				MeetFullName = model.Name,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
 				AppointmentDate = model.AppointmentDate,
@@ -975,7 +983,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Document.SubmitType == 1)
 			{
-				topicName = "รอลงนามอนุมัติเอกสาร";
+				nextActionName = "รอลงนามอนุมัติเอกสาร";
 				noteSystem = "รอผู้จัดการศูนย์ลงนามอนุมัติเอกสาร";
 				statusSaleId = StatusSaleModel.WaitApproveLoanRequest;
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -1041,6 +1049,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Result.SaleId = model.SaleId;
 			sale_Result.ProceedId = model.ProceedId;
 			sale_Result.NextActionId = model.NextActionId;
+			sale_Result.MeetName = model.MeetName;
 			sale_Result.AppointmentDate = model.AppointmentDate;
 			sale_Result.AppointmentTime = model.AppointmentTime;
 			sale_Result.Location = model.Location;
@@ -1065,7 +1074,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else if (model.NextActionId == 2)
 			{
 				statusSaleId = StatusSaleModel.WaitCloseSale;
-				topicName = "รอปิดการขาย";
+				//topicName = "รอปิดการขาย";
 				nextActionName = "รอปิดการขาย";
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
@@ -1097,6 +1106,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				StatusSaleId = statusSaleId,
 				TopicName = topicName,
 				ProceedName = proceedName,
+				MeetFullName = model.MeetName,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
 				AppointmentDate = model.AppointmentDate,
@@ -1122,7 +1132,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			int statusSaleId = StatusSaleModel.NotStatus;
 			string? topicName = "";
-			string? proceedName = null;
+			string? desireLoanName = null;
 			string? reason = null;
 			string? resultContactName = string.Empty;
 			string? descriptionStatus = null;
@@ -1150,13 +1160,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (sale_Close_Sale.DesireLoanId == 1)
 				{
 					topicName = "ปิดการขาย";
-					proceedName = "ประสงค์กู้";
+					desireLoanName = "ประสงค์กู้";
 					statusSaleId = StatusSaleModel.CloseSale;
 				}
 				else if (sale_Close_Sale.DesireLoanId == 2)
 				{
 					topicName = "ไม่ประสงค์กู้";
-					proceedName = "ไม่ประสงค์กู้";
+					desireLoanName = "ไม่ประสงค์กู้";
 					statusSaleId = StatusSaleModel.CloseSaleNotLoan;
 					if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
 				}
@@ -1191,12 +1201,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				SaleId = model.SaleId,
 				ProcessSaleCode = ProcessSaleCodeModel.CloseSale,
 				StatusSaleId = statusSaleId,
-				FullName = model.Name,
 				TopicName = topicName,
-				ProceedName = proceedName,
+				ContactFullName = model.Name,
 				ResultContactName = resultContactName,
+				DesireLoanName = desireLoanName,
+				Reason = reason,
 				Note = model.Note,
-				Reason = reason
 			});
 
 			return _mapper.Map<Sale_Close_SaleCustom>(sale_Close_Sale);
@@ -1217,11 +1227,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.SaleId = model.SaleId;
 			sale_Contact_History.StatusSaleId = model.StatusSaleId;
 
-			sale_Contact_History.FullName = model.FullName;
 			sale_Contact_History.TopicName = model.TopicName;
-			sale_Contact_History.ProceedName = model.ProceedName;
+			sale_Contact_History.ContactFullName = model.ContactFullName;
 			sale_Contact_History.ContactDate = model.ContactDate;
+			sale_Contact_History.ProceedName = model.ProceedName;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
+			sale_Contact_History.MeetFullName = model.MeetFullName;
 			sale_Contact_History.ResultMeetName = model.ResultMeetName;
 			sale_Contact_History.NextActionName = model.NextActionName;
 			sale_Contact_History.CreditLimit = model.CreditLimit;
@@ -1230,6 +1241,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.AppointmentDate = model.AppointmentDate;
 			sale_Contact_History.AppointmentTime = model.AppointmentTime;
 			sale_Contact_History.Location = model.Location;
+			sale_Contact_History.DesireLoanName = model.DesireLoanName;
 			sale_Contact_History.Reason = model.Reason;
 			sale_Contact_History.Note = model.Note;
 			sale_Contact_History.NoteSystem = model.NoteSystem;
