@@ -110,6 +110,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetAvgOnStage")]
+		public async Task<IActionResult> GetAvgOnStage([FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetAvgOnStage(userid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetPieCloseSaleReason")]
 		public async Task<IActionResult> GetPieCloseSaleReason([FromQuery] int userid)
 		{

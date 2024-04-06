@@ -85,6 +85,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<Dash_Avg_NumberOnStage>?> GetAvgOnStage(int userid)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetAvgOnStage?userid={userid}");
+				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberOnStage>(content);
+				return new ResultModel<Dash_Avg_NumberOnStage>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Dash_Avg_NumberOnStage>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieCloseSaleReason(int userid)
 		{
 			try

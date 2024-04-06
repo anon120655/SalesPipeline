@@ -429,6 +429,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public async Task<Dash_Avg_NumberOnStage> GetAvgOnStage(int userid)
+		{
+			var dash_Avg_NumberOnStage = new Dash_Avg_NumberOnStage();
+
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+
+			var sale_Durations = _repo.Context.Sale_Durations.Include(x => x.Sale)
+												.Where(x => x.Status == StatusModel.Active)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					
+				}
+
+			}
+
+			return dash_Avg_NumberOnStage;
+		}
+
 		public async Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid)
 		{
 			var user = await _repo.User.GetById(userid);
@@ -692,7 +725,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			query = _repo.Context.Sale_Durations.Include(x => x.Sale)
+			query = _repo.Context.Sale_Durations.Include(x => x.Sale).ThenInclude(x => x.Customer)
 												.Where(x => x.Status != StatusModel.Delete)
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
@@ -710,6 +743,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 															 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan);
 				}
 			}
+
+			if (int.TryParse(model.contact, out int _contact))
+				query = query.Where(x => x.Contact == _contact);
+
+			if (int.TryParse(model.meet, out int _meet))
+				query = query.Where(x => x.Meet == _meet);
+
+			if (int.TryParse(model.document, out int _document))
+				query = query.Where(x => x.Document == _document);
+
+			if (!String.IsNullOrEmpty(model.juristicnumber))
+				query = query.Where(x => x.Sale.Customer.JuristicPersonRegNumber != null && x.Sale.Customer.JuristicPersonRegNumber.Contains(model.juristicnumber));
 
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
