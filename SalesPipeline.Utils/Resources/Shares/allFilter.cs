@@ -38,6 +38,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? mcenter_code { get; set; }
 		public string? mcenter_name { get; set; }
 		public string? reason { get; set; }
+		public string? contact { get; set; }
+		public string? meet { get; set; }
+		public string? document { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -136,6 +139,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(reason))
 				ParameterAll += $"&reason={reason}";
+
+			if (!String.IsNullOrEmpty(contact))
+				ParameterAll += $"&contact={contact}";
+
+			if (!String.IsNullOrEmpty(meet))
+				ParameterAll += $"&meet={meet}";
+
+			if (!String.IsNullOrEmpty(document))
+				ParameterAll += $"&document={document}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -243,6 +255,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
 				reason = _reason;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(contact), out var _contact))
+				contact = _contact;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(meet), out var _meet))
+				meet = _meet;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(document), out var _document))
+				document = _document;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

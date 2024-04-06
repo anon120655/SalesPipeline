@@ -125,6 +125,7 @@ namespace SalesPipeline.Pages.ManageSystems
 					formModel.ImgUrl = $"data:image/{extension};base64,{base64String}";
 
 					if (formModel.Files == null) formModel.Files = new();
+					formModel.Files.appSet = new();
 					formModel.Files.FileName = file.Name;
 					formModel.Files.ImgBase64Only = base64String;
 					formModel.Files.MimeType = extension;

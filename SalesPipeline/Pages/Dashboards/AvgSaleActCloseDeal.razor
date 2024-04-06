@@ -16,16 +16,17 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</span></p>
+							<p class="back_topic">รายงานกิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+
 						<div class="col mb-2">
-							<label class="form-label">ชื่อลูกค้า</label>
+							<label class="form-label">ค้นหาลูกค้า</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -34,9 +35,9 @@
 						<div class="col mb-2">
 							<label class="form-label">ชื่อผู้ติดต่อ</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.contact_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -50,21 +51,36 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จำนวนครั้งการติดต่อ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.contact" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จำนวนการเข้าพบ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.meet" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จำนวนครั้งการยื่นเอกสาร</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.document" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2 mt-3">
 							<button type="button" class="btn btn-primary text-white mw_7r w-100">
@@ -89,18 +105,39 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">@(i)</td>
-												<td class="text-center">บริษัท ทดสอบ จำกัด</td>
-												<td class="">ยินดี ทดสอบระบบ</td>
-												<td class="text-center">ภาคกลางตอนบน</td>
-												<td class="text-center">ปทุมธานี</td>
-												<td class="text-center">5</td>
-												<td class="text-center">10</td>
-												<td class="text-center">15</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+											int SequenceNo = 0;
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													<td class="">@item.Sale?.CompanyName</td>
+													<td class="">@item.ContactName</td>
+													<td class="">@item.Sale?.BranchName</td>
+													<td class="text-center">@item.Contact</td>
+													<td class="text-center">@item.Meet</td>
+													<td class="text-center">@item.Document</td>
+													<td class="text-center">@(item.Contact + item.Meet + item.Document)</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
@@ -108,7 +145,13 @@
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

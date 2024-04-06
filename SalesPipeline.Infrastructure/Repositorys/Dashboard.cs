@@ -806,6 +806,56 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 		}
 
+		public async Task<PaginationView<List<Sales_ActivityCustom>>> GetActivity(allFilter model)
+		{
+			IQueryable<Sales_Activity> query;
+			string? roleCode = null;
+
+			if (model.userid.HasValue)
+			{
+				var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
+				if (roleList != null)
+				{
+					roleCode = roleList.Code;
+				}
+			}
+
+			query = _repo.Context.Sales_Activities.Include(x => x.Sale)
+												.Where(x => x.Status != StatusModel.Delete)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+			query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
+
+			if (!String.IsNullOrEmpty(model.contact_name))
+				query = query.Where(x => x.ContactName != null && x.ContactName.Contains(model.contact_name));
+
+			if (!String.IsNullOrEmpty(model.assignrm_name))
+				query = query.Where(x => x.Sale.AssUserName != null && x.Sale.AssUserName.Contains(model.assignrm_name));
+
+			if (int.TryParse(model.contact, out int _contact))
+				query = query.Where(x => x.Contact == _contact);
+
+			if (int.TryParse(model.meet, out int _meet))
+				query = query.Where(x => x.Meet == _meet);
+
+			if (int.TryParse(model.document, out int _document))
+				query = query.Where(x => x.Document == _document);
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sales_ActivityCustom>>()
+			{
+				Items = _mapper.Map<List<Sales_ActivityCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
 		public async Task UpdateActivityById(Guid saleid)
 		{
 			var sales_Activities = await _repo.Context.Sales_Activities.FirstOrDefaultAsync(x => x.SaleId == saleid);

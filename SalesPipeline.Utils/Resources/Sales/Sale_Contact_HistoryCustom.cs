@@ -114,7 +114,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? Reason { get; set; }
 
 		/// <summary>
-		/// บันทึกอัตโนมัติ
+		/// Note system
 		/// </summary>
 		public string? NoteSystem { get; set; }
 	}

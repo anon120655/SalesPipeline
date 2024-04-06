@@ -181,6 +181,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetActivity")]
+		public async Task<IActionResult> GetActivity(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetActivity(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("UpdateActivityById")]
 		public async Task<IActionResult> UpdateActivityById([FromQuery] Guid saleid)
 		{
