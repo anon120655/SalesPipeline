@@ -9,6 +9,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//Status_Total
 		Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model);
 		Task UpdateStatus_TotalById(allFilter model);
+		//SalesPipeline
+		Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
 		Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model);
 		Task UpdateAvg_NumberById(allFilter model);

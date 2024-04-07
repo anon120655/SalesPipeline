@@ -54,6 +54,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("Get_SalesPipelineById")]
+		public async Task<IActionResult> Get_SalesPipelineById(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.Get_SalesPipelineById(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetAvgTop_NumberById")]
 		public async Task<IActionResult> GetAvgTop_NumberById(allFilter model)
 		{

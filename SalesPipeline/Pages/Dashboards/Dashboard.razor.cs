@@ -14,6 +14,7 @@ namespace SalesPipeline.Pages.Dashboards
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private Dash_Status_TotalCustom status_TotalModel = new();
+		private Dash_SalesPipelineModel salesPipelineModel = new();
 		private Dash_Avg_NumberCustom avg_NumberModel = new();
 		private List<Dash_Map_ThailandCustom> map_ThailandModel = new();
 
@@ -30,6 +31,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (firstRender)
 			{
 				await Status_Total();
+				await Get_SalesPipeline();
 				await AvgTop_Number();
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
@@ -83,6 +85,24 @@ namespace SalesPipeline.Pages.Dashboards
 				if (data != null && data.Status && data.Data != null)
 				{
 					status_TotalModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+		}
+
+		protected async Task Get_SalesPipeline()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.Get_SalesPipelineById(new() { userid = UserInfo.Id });
+				if (data != null && data.Status && data.Data != null)
+				{
+					salesPipelineModel = data.Data;
 				}
 				else
 				{

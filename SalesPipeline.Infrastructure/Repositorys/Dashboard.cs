@@ -225,6 +225,70 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var statusTotal = new List<SaleStatusGroupByModel>();
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
+							   .Select(group => new SaleStatusGroupByModel()
+							   {
+								   StatusID = group.Key,
+								   Count = group.Count()
+							   }).OrderBy(x => x.StatusID).ToListAsync();
+				}
+
+				if (statusTotal != null)
+				{
+					dash_SalesPipeline.CusAll = statusTotal.Sum(x => x.Count); ;
+					dash_SalesPipeline.Interested = 0;
+					dash_SalesPipeline.SubmitApproval = 0;
+					dash_SalesPipeline.Approval = 0;
+					dash_SalesPipeline.CloseSale = 0;
+
+					foreach (var item in statusTotal)
+					{
+						if (item.StatusID == (int)StatusSaleModel.WaitMeet
+							|| item.StatusID == (int)StatusSaleModel.Meet)
+						{
+							dash_SalesPipeline.Interested = dash_SalesPipeline.Interested + item.Count;
+						}
+						if (item.StatusID == (int)StatusSaleModel.WaitApproveLoanRequest) dash_SalesPipeline.SubmitApproval = item.Count;
+
+						if (item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIX
+							|| item.StatusID == (int)StatusSaleModel.WaitCIF
+							|| item.StatusID == (int)StatusSaleModel.WaitResults)
+						{
+							dash_SalesPipeline.Approval = dash_SalesPipeline.Approval + item.Count;
+						}
+
+						if (item.StatusID == (int)StatusSaleModel.CloseSale) dash_SalesPipeline.CloseSale = item.Count;
+
+					}
+				}
+			}
+
+			return dash_SalesPipeline;
+		}
+
 		public async Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model)
 		{
 			//var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
@@ -549,7 +613,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (salesResultsNotLoan.Count > 0)
 				{
-					foreach (var item in salesResultsNotLoan)
+					var usesalesResultsNotLoan = salesResultsNotLoan.OrderByDescending(x => x.Sales.Count).Take(6);
+					foreach (var item in usesalesResultsNotLoan)
 					{
 						response.Add(new()
 						{
@@ -597,7 +662,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (salesBusinessSize.Count > 0)
 					{
-						foreach (var item in salesBusinessSize)
+						var useLoop = salesBusinessSize.OrderByDescending(x => x.Customers.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -616,7 +682,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesBusinessType.Count > 0)
 					{
-						foreach (var item in salesBusinessType)
+						var useLoop = salesBusinessType.OrderByDescending(x => x.Customers.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -635,8 +702,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesISICCode.Count > 0)
 					{
-						var useSalesISICCode = salesISICCode.OrderByDescending(x => x.Customers.Count).Take(6);
-						foreach (var item in useSalesISICCode)
+						var useLoop = salesISICCode.OrderByDescending(x => x.Customers.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -655,7 +722,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesLoanType.Count > 0)
 					{
-						foreach (var item in salesBusinessType)
+						var useLoop = salesLoanType.OrderByDescending(x => x.Customers.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -694,7 +762,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (salesBusinessSize.Count > 0)
 					{
-						foreach (var item in salesBusinessSize)
+						var useLoop = salesBusinessSize.OrderByDescending(x => x.Sales.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -713,7 +782,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesBusinessType.Count > 0)
 					{
-						foreach (var item in salesBusinessType)
+						var useLoop = salesBusinessType.OrderByDescending(x => x.Sales.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -732,8 +802,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesISICCode.Count > 0)
 					{
-						var useSalesISICCode = salesISICCode.OrderByDescending(x => x.Sales.Count).Take(6);
-						foreach (var item in useSalesISICCode)
+						var useLoop = salesISICCode.OrderByDescending(x => x.Sales.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
@@ -752,7 +822,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .ToList();
 					if (salesLoanType.Count > 0)
 					{
-						foreach (var item in salesBusinessType)
+						var useLoop = salesLoanType.OrderByDescending(x => x.Sales.Count).Take(6);
+						foreach (var item in useLoop)
 						{
 							response.Add(new()
 							{
