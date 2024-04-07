@@ -79,7 +79,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetStatus_TotalById(UserInfo.Id);
+				var data = await _dashboarViewModel.GetStatus_TotalById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
 					status_TotalModel = data.Data;
@@ -97,7 +97,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetAvgTop_NumberById(UserInfo.Id);
+				var data = await _dashboarViewModel.GetAvgTop_NumberById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
 					avg_NumberModel = data.Data;
@@ -114,7 +114,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetMap_ThailandById(UserInfo.Id);
+				var data = await _dashboarViewModel.GetMap_ThailandById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
 					map_ThailandModel = data.Data;
@@ -135,7 +135,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task CloseSaleAndReasonNotLoan()
 		{
-			var data = await _dashboarViewModel.GetPieCloseSaleReason(UserInfo.Id);
+			var data = await _dashboarViewModel.GetPieCloseSaleReason(new() { userid = UserInfo.Id });
 			if (data != null && data.Status && data.Data != null)
 			{
 				var closesale = data.Data.Where(x => x.Code == Dash_PieCodeModel.ClosingSale).ToList();
@@ -172,7 +172,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task NumberCustomer()
 		{
-			var data = await _dashboarViewModel.GetPieNumberCustomer(UserInfo.Id);
+			var data = await _dashboarViewModel.GetPieNumberCustomer(new() { userid = UserInfo.Id });
 			if (data != null && data.Status && data.Data != null)
 			{
 				//var labels = new[] { "ใช้เวลานาน ", "ขาดการติดต่อ ", "กู้ธนาคารอื่นแล้ว ", "ดอกเบี้ยสูง " };
@@ -240,7 +240,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task LoanValue()
 		{
-			var data = await _dashboarViewModel.GetPieLoanValue(UserInfo.Id);
+			var data = await _dashboarViewModel.GetPieLoanValue(new() { userid = UserInfo.Id });
 			if (data != null && data.Status && data.Data != null)
 			{
 				var chartModel = new ChartJsDataLabelsModel();
@@ -315,7 +315,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task DurationOnStage()
 		{
-			var data = await _dashboarViewModel.GetAvgOnStage(UserInfo.Id);
+			var data = await _dashboarViewModel.GetAvgOnStage(new() { userid = UserInfo.Id });
 			if (data != null && data.Status && data.Data != null)
 			{
 				await _jsRuntimes.InvokeVoidAsync("durationonstage", data.Data);

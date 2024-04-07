@@ -13,6 +13,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public Guid id { get; set; }
 		public Guid? customerid { get; set; }
 		public int? statussaleid { get; set; }
+		public Guid? saleid { get; set; }
 		public int? userid { get; set; }
 		public int? assigncenter { get; set; }
 		public int? assignrm { get; set; }
@@ -62,11 +63,17 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (id != Guid.Empty)
 				ParameterAll += $"&id={id}";
 
+			if (saleid != Guid.Empty)
+				ParameterAll += $"&saleid={saleid}";
+
 			if (customerid.HasValue && customerid != Guid.Empty)
 				ParameterAll += $"&customerid={customerid}";
 
 			if (statussaleid > 0)
 				ParameterAll += $"&statussaleid={statussaleid}";
+
+			if (userid > 0)
+				ParameterAll += $"&userid={userid}";
 
 			if (assigncenter > 0)
 				ParameterAll += $"&assigncenter={assigncenter}";

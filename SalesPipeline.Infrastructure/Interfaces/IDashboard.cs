@@ -7,21 +7,29 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IDashboard
 	{
 		//Status_Total
-		Task<Dash_Status_TotalCustom> GetStatus_TotalById(int userid);
-		Task UpdateStatus_TotalById(int userid);
+		Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model);
+		Task UpdateStatus_TotalById(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
-		Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(int userid);
-		Task UpdateAvg_NumberById(int userid);
-		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(int userid);
-		Task UpdateMap_ThailandById(int userid);
-		Task<Dash_Avg_NumberOnStage> GetAvgOnStage(int userid);
-		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid);
-		Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid);
-		Task<List<Dash_PieCustom>> GetPieLoanValue(int userid);
+		Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model);
+		Task UpdateAvg_NumberById(allFilter model);
+		//10 อันดับ ศูนย์ยอดขายสูงสุด ,10 อันดับ ศูนย์ยอดขายสูงสุด
+		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model);
+		Task UpdateMap_ThailandById(allFilter model);
+		//ระยะเวลาที่ใช้ในแต่ละสเตจ
+		Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model);
+		//ลูกค้าที่ปิดการขาย ,เหตุผลไม่ประสงค์ขอสินเชื่อ
+		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(allFilter model);
+		//จำนวนลูกค้าตาม...
+		Task<List<Dash_PieCustom>> GetPieNumberCustomer(allFilter model);
+		//มูลค่าสินเชื่อตาม...
+		Task<List<Dash_PieCustom>> GetPieLoanValue(allFilter model);
+		//ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
 		Task<PaginationView<List<Sale_DurationCustom>>> GetDuration(allFilter model);
-		Task UpdateDurationById(Guid saleid);
+		Task UpdateDurationById(allFilter model);
+		//กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย ,ระยะเวลาที่ใช้ในแต่ละสเตจ
 		Task<PaginationView<List<Sales_ActivityCustom>>> GetActivity(allFilter model);
-		Task UpdateActivityById(Guid saleid);
-		Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(int userid);
+		Task UpdateActivityById(allFilter model);
+		//เหตุผลไม่ประสงค์ขอสินเชื่อ
+		Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(allFilter model);
 	}
 }

@@ -118,7 +118,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelReason()
 		{
-			var data = await _dashboarViewModel.GetGroupReasonNotLoan(UserInfo.Id);
+			var data = await _dashboarViewModel.GetGroupReasonNotLoan(new() { userid = UserInfo.Id });
 			if (data != null && data.Status)
 			{
 				ItemsReason = data.Data;

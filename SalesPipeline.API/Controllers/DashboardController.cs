@@ -26,12 +26,12 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
-		[HttpGet("GetStatus_TotalById")]
-		public async Task<IActionResult> GetStatus_TotalById([FromQuery] int userid)
+		[HttpPost("GetStatus_TotalById")]
+		public async Task<IActionResult> GetStatus_TotalById(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetStatus_TotalById(userid);
+				var data = await _repo.Dashboard.GetStatus_TotalById(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -40,12 +40,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("UpdateStatus_TotalById")]
-		public async Task<IActionResult> UpdateStatus_TotalById([FromQuery] int userid)
+		[HttpPost("UpdateStatus_TotalById")]
+		public async Task<IActionResult> UpdateStatus_TotalById(allFilter model)
 		{
 			try
 			{
-				await _repo.Dashboard.UpdateStatus_TotalById(userid);
+				await _repo.Dashboard.UpdateStatus_TotalById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -54,12 +54,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetAvgTop_NumberById")]
-		public async Task<IActionResult> GetAvgTop_NumberById([FromQuery] int userid)
+		[HttpPost("GetAvgTop_NumberById")]
+		public async Task<IActionResult> GetAvgTop_NumberById(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetAvgTop_NumberById(userid);
+				var data = await _repo.Dashboard.GetAvgTop_NumberById(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -68,12 +68,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("UpdateAvg_NumberById")]
-		public async Task<IActionResult> UpdateAvg_NumberById([FromQuery] int userid)
+		[HttpPost("UpdateAvg_NumberById")]
+		public async Task<IActionResult> UpdateAvg_NumberById(allFilter model)
 		{
 			try
 			{
-				await _repo.Dashboard.UpdateAvg_NumberById(userid);
+				await _repo.Dashboard.UpdateAvg_NumberById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -82,12 +82,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetMap_ThailandById")]
-		public async Task<IActionResult> GetMap_ThailandById([FromQuery] int userid)
+		[HttpPost("GetMap_ThailandById")]
+		public async Task<IActionResult> GetMap_ThailandById(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetMap_ThailandById(userid);
+				var data = await _repo.Dashboard.GetMap_ThailandById(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -96,12 +96,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("UpdateMap_ThailandById")]
-		public async Task<IActionResult> UpdateMap_ThailandById([FromQuery] int userid)
+		[HttpPost("UpdateMap_ThailandById")]
+		public async Task<IActionResult> UpdateMap_ThailandById(allFilter model)
 		{
 			try
 			{
-				await _repo.Dashboard.UpdateMap_ThailandById(userid);
+				await _repo.Dashboard.UpdateMap_ThailandById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -110,12 +110,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetAvgOnStage")]
-		public async Task<IActionResult> GetAvgOnStage([FromQuery] int userid)
+		[HttpPost("GetAvgOnStage")]
+		public async Task<IActionResult> GetAvgOnStage(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetAvgOnStage(userid);
+				var data = await _repo.Dashboard.GetAvgOnStage(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -124,12 +124,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetPieCloseSaleReason")]
-		public async Task<IActionResult> GetPieCloseSaleReason([FromQuery] int userid)
+		[HttpPost("GetPieCloseSaleReason")]
+		public async Task<IActionResult> GetPieCloseSaleReason(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetPieCloseSaleReason(userid);
+				var data = await _repo.Dashboard.GetPieCloseSaleReason(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -138,12 +138,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetPieNumberCustomer")]
-		public async Task<IActionResult> GetPieNumberCustomer([FromQuery] int userid)
+		[HttpPost("GetPieNumberCustomer")]
+		public async Task<IActionResult> GetPieNumberCustomer(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetPieNumberCustomer(userid);
+				var data = await _repo.Dashboard.GetPieNumberCustomer(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -152,12 +152,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetPieLoanValue")]
-		public async Task<IActionResult> GetPieLoanValue([FromQuery] int userid)
+		[HttpPost("GetPieLoanValue")]
+		public async Task<IActionResult> GetPieLoanValue(allFilter model)
 		{
 			try
 			{
-				var data = await _repo.Dashboard.GetPieLoanValue(userid);
+				var data = await _repo.Dashboard.GetPieLoanValue(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -181,12 +181,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("UpdateDurationById")]
-		public async Task<IActionResult> UpdateDurationById([FromQuery] Guid saleid)
+		[HttpPost("UpdateDurationById")]
+		public async Task<IActionResult> UpdateDurationById(allFilter model)
 		{
 			try
 			{
-				await _repo.Dashboard.UpdateDurationById(saleid);
+				await _repo.Dashboard.UpdateDurationById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -210,12 +210,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("UpdateActivityById")]
-		public async Task<IActionResult> UpdateActivityById([FromQuery] Guid saleid)
+		[HttpPost("UpdateActivityById")]
+		public async Task<IActionResult> UpdateActivityById(allFilter model)
 		{
 			try
 			{
-				await _repo.Dashboard.UpdateActivityById(saleid);
+				await _repo.Dashboard.UpdateActivityById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -224,12 +224,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetGroupReasonNotLoan")]
-		public async Task<IActionResult> GetGroupReasonNotLoan([FromQuery] int userid)
+		[HttpPost("GetGroupReasonNotLoan")]
+		public async Task<IActionResult> GetGroupReasonNotLoan(allFilter model)
 		{
 			try
 			{
-				var response = await _repo.Dashboard.GetGroupReasonNotLoan(userid);
+				var response = await _repo.Dashboard.GetGroupReasonNotLoan(model);
 
 				return Ok(response);
 			}

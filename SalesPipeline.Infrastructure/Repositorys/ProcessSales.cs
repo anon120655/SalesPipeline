@@ -1177,8 +1177,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					reason = descriptionStatus;
 				}
 
-				await _repo.Dashboard.UpdateDurationById(model.SaleId);
-				await _repo.Dashboard.UpdateActivityById(model.SaleId);
+				await _repo.Dashboard.UpdateDurationById(new() { saleid = model.SaleId });
+				await _repo.Dashboard.UpdateActivityById(new() { saleid = model.SaleId });
 
 				await _repo.Sales.UpdateStatusOnly(new()
 				{

@@ -1,25 +1,13 @@
-﻿using Asp.Versioning;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -38,7 +26,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(int userid)
+		public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model)
 		{
 			//var dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
 
@@ -50,8 +38,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//return _mapper.Map<Dash_Status_TotalCustom>(dash_Status_Total);
 
+			if (!model.userid.HasValue) return new();
+
 			var dash_Status_Total = new Dash_Status_TotalCustom();
-			var user = await _repo.User.GetById(userid);
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
@@ -60,7 +50,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
+					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
 							   {
 								   StatusID = group.Key,
@@ -130,109 +120,112 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return dash_Status_Total;
 		}
 
-		public async Task UpdateStatus_TotalById(int userid)
+		public async Task UpdateStatus_TotalById(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (model.userid.HasValue)
 			{
-				var dash_Status_Total = await _repo.Context.Dash_Status_Totals
-																   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == userid);
+				var user = await _repo.User.GetById(model.userid.Value);
+				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-				int CRUD = CRUDModel.Update;
-
-				if (dash_Status_Total == null)
+				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					CRUD = CRUDModel.Create;
-					dash_Status_Total = new();
-					dash_Status_Total.Status = StatusModel.Active;
-					dash_Status_Total.UserId = userid;
-				}
+					var dash_Status_Total = await _repo.Context.Dash_Status_Totals
+																	   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
 
-				var statusTotal = new List<SaleStatusGroupByModel>();
+					int CRUD = CRUDModel.Update;
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
-				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
-
-				if (statusTotal != null)
-				{
-					dash_Status_Total.NumCusAll = statusTotal.Sum(x => x.Count);
-					dash_Status_Total.NumCusWaitMCenterAssign = 0;
-					dash_Status_Total.NumCusMCenterAssign = 0;
-					dash_Status_Total.NumCusInProcess = 0;
-					dash_Status_Total.NumCusReturn = 0;
-					dash_Status_Total.NumCusTargeNotSuccess = 0;
-
-					foreach (var item in statusTotal)
+					if (dash_Status_Total == null)
 					{
-						if (item.StatusID == (int)StatusSaleModel.WaitAssign) dash_Status_Total.NumCusWaitMCenterAssign = item.Count;
-						if (item.StatusID == (int)StatusSaleModel.WaitContact) dash_Status_Total.NumCusMCenterAssign = item.Count;
-
-						if (item.StatusID == (int)StatusSaleModel.Contact
-							|| item.StatusID == (int)StatusSaleModel.WaitMeet
-							|| item.StatusID == (int)StatusSaleModel.Meet
-							|| item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
-							|| item.StatusID == (int)StatusSaleModel.SubmitDocument
-							|| item.StatusID == (int)StatusSaleModel.WaitApproveLoanRequest
-							|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIX
-							|| item.StatusID == (int)StatusSaleModel.WaitResults
-							|| item.StatusID == (int)StatusSaleModel.Results)
-						{
-							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
-						}
-
-						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
-
-						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
-							|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
-							|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
-						{
-							dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
-						}
+						CRUD = CRUDModel.Create;
+						dash_Status_Total = new();
+						dash_Status_Total.Status = StatusModel.Active;
+						dash_Status_Total.UserId = model.userid.Value;
 					}
 
-				}
+					var statusTotal = new List<SaleStatusGroupByModel>();
 
-				dash_Status_Total.IsUpdate = false;
-				if (CRUD == CRUDModel.Create)
-				{
-					await _db.InsterAsync(dash_Status_Total);
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+					{
+						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
+								   .Select(group => new SaleStatusGroupByModel()
+								   {
+									   StatusID = group.Key,
+									   Count = group.Count()
+								   }).OrderBy(x => x.StatusID).ToListAsync();
+					}
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+					{
+						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+								   .Select(group => new SaleStatusGroupByModel()
+								   {
+									   StatusID = group.Key,
+									   Count = group.Count()
+								   }).OrderBy(x => x.StatusID).ToListAsync();
+					}
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+					{
+						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
+								   .Select(group => new SaleStatusGroupByModel()
+								   {
+									   StatusID = group.Key,
+									   Count = group.Count()
+								   }).OrderBy(x => x.StatusID).ToListAsync();
+					}
+
+					if (statusTotal != null)
+					{
+						dash_Status_Total.NumCusAll = statusTotal.Sum(x => x.Count);
+						dash_Status_Total.NumCusWaitMCenterAssign = 0;
+						dash_Status_Total.NumCusMCenterAssign = 0;
+						dash_Status_Total.NumCusInProcess = 0;
+						dash_Status_Total.NumCusReturn = 0;
+						dash_Status_Total.NumCusTargeNotSuccess = 0;
+
+						foreach (var item in statusTotal)
+						{
+							if (item.StatusID == (int)StatusSaleModel.WaitAssign) dash_Status_Total.NumCusWaitMCenterAssign = item.Count;
+							if (item.StatusID == (int)StatusSaleModel.WaitContact) dash_Status_Total.NumCusMCenterAssign = item.Count;
+
+							if (item.StatusID == (int)StatusSaleModel.Contact
+								|| item.StatusID == (int)StatusSaleModel.WaitMeet
+								|| item.StatusID == (int)StatusSaleModel.Meet
+								|| item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
+								|| item.StatusID == (int)StatusSaleModel.SubmitDocument
+								|| item.StatusID == (int)StatusSaleModel.WaitApproveLoanRequest
+								|| item.StatusID == (int)StatusSaleModel.WaitAPIPHOENIX
+								|| item.StatusID == (int)StatusSaleModel.WaitResults
+								|| item.StatusID == (int)StatusSaleModel.Results)
+							{
+								dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
+							}
+
+							if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
+
+							if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
+								|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
+								|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
+							{
+								dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
+							}
+						}
+
+					}
+
+					dash_Status_Total.IsUpdate = false;
+					if (CRUD == CRUDModel.Create)
+					{
+						await _db.InsterAsync(dash_Status_Total);
+					}
+					else
+					{
+						_db.Update(dash_Status_Total);
+					}
+					await _db.SaveAsync();
 				}
-				else
-				{
-					_db.Update(dash_Status_Total);
-				}
-				await _db.SaveAsync();
 			}
 		}
 
-		public async Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(int userid)
+		public async Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model)
 		{
 			//var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
 
@@ -244,9 +237,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//return _mapper.Map<Dash_Avg_NumberCustom>(dash_Avg_Number);
 
+			if (!model.userid.HasValue) return new();
+
 			var dash_Avg_Number = new Dash_Avg_NumberCustom();
 
-			var user = await _repo.User.GetById(userid);
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 
@@ -261,7 +256,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-					var avgPerDeal = ratingAverage.Where(x => x.AssCenterUserId == userid).Select(s => s.LoanAmount).DefaultIfEmpty().Average();
+					var avgPerDeal = ratingAverage.Where(x => x.AssCenterUserId == model.userid.Value).Select(s => s.LoanAmount).DefaultIfEmpty().Average();
 
 					dash_Avg_Number.AvgPerDeal = avgPerDeal ?? 0;
 				}
@@ -296,144 +291,154 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return dash_Avg_Number;
 		}
 
-		public async Task UpdateAvg_NumberById(int userid)
+		public async Task UpdateAvg_NumberById(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (model.userid.HasValue)
 			{
-				var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
-																   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == userid);
+				var user = await _repo.User.GetById(model.userid.Value);
+				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-				int CRUD = CRUDModel.Update;
-
-				if (dash_Avg_Number == null)
+				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					CRUD = CRUDModel.Create;
-					dash_Avg_Number = new();
-					dash_Avg_Number.Status = StatusModel.Active;
-					dash_Avg_Number.UserId = userid;
-				}
+					var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
+																	   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
 
-				var statusTotal = new List<SaleStatusGroupByModel>();
+					int CRUD = CRUDModel.Update;
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
-				{
-					decimal? RatingAverage = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == userid)
-																	  .AverageAsync(r => r.LoanAmount);
+					if (dash_Avg_Number == null)
+					{
+						CRUD = CRUDModel.Create;
+						dash_Avg_Number = new();
+						dash_Avg_Number.Status = StatusModel.Active;
+						dash_Avg_Number.UserId = model.userid.Value;
+					}
 
-					dash_Avg_Number.AvgPerDeal = RatingAverage ?? 0;
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
+					var statusTotal = new List<SaleStatusGroupByModel>();
 
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-				}
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+					{
+						decimal? RatingAverage = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value)
+																		  .AverageAsync(r => r.LoanAmount);
 
-				if (statusTotal != null)
-				{
+						dash_Avg_Number.AvgPerDeal = RatingAverage ?? 0;
+					}
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+					{
 
-				}
+					}
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+					{
+					}
 
-				dash_Avg_Number.IsUpdate = false;
-				if (CRUD == CRUDModel.Create)
-				{
-					await _db.InsterAsync(dash_Avg_Number);
+					if (statusTotal != null)
+					{
+
+					}
+
+					dash_Avg_Number.IsUpdate = false;
+					if (CRUD == CRUDModel.Create)
+					{
+						await _db.InsterAsync(dash_Avg_Number);
+					}
+					else
+					{
+						_db.Update(dash_Avg_Number);
+					}
+					await _db.SaveAsync();
 				}
-				else
-				{
-					_db.Update(dash_Avg_Number);
-				}
-				await _db.SaveAsync();
 			}
 		}
 
-		public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(int userid)
+		public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model)
 		{
-			var dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == userid).ToListAsync();
+			if (!model.userid.HasValue) return new();
+
+			var dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
 
 			if (dash_Map_Thailands.Count == 0 || (dash_Map_Thailands.Count > 0 && dash_Map_Thailands.First().IsUpdate))
 			{
-				await UpdateMap_ThailandById(userid);
-				dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == userid).ToListAsync();
+				await UpdateMap_ThailandById(model);
+				dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
 			}
 
 			return _mapper.Map<List<Dash_Map_ThailandCustom>>(dash_Map_Thailands);
 		}
 
-		public async Task UpdateMap_ThailandById(int userid)
+		public async Task UpdateMap_ThailandById(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (model.userid.HasValue)
 			{
-				var dash_Map_Thailands = _repo.Context.Dash_Map_Thailands.Where(x => x.Status == StatusModel.Active && x.UserId == userid).ToList();
-				if (dash_Map_Thailands.Count > 0)
-				{
-					_db.DeleteRange(dash_Map_Thailands);
-					await _db.SaveAsync();
-				}
+				var user = await _repo.User.GetById(model.userid.Value);
+				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					Random rnd = new Random();
-					//1=ยอดขายสูงสุด
-					for (int i = 1; i <= 10; i++)
+					var dash_Map_Thailands = _repo.Context.Dash_Map_Thailands.Where(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value).ToList();
+					if (dash_Map_Thailands.Count > 0)
 					{
-						int month = rnd.Next(1, 77);
-						var province = await _repo.Thailand.GetProvinceByid(month);
-
-						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
-						dash_Map_Thailand.Status = StatusModel.Active;
-						dash_Map_Thailand.CreateDate = DateTime.Now;
-						dash_Map_Thailand.IsUpdate = false;
-						dash_Map_Thailand.UserId = userid;
-						dash_Map_Thailand.Type = 1;
-						if (province != null)
-						{
-							dash_Map_Thailand.ProvinceId = province.ProvinceID;
-							dash_Map_Thailand.ProvinceName = province.ProvinceName;
-						}
-						dash_Map_Thailand.SalesAmount = 1000000 * i;
-						await _db.InsterAsync(dash_Map_Thailand);
+						_db.DeleteRange(dash_Map_Thailands);
 						await _db.SaveAsync();
 					}
 
-					//2=แพ้ให้กับคู่แข่งสูงสุด
-					for (int i = 1; i <= 10; i++)
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 					{
-						int month = rnd.Next(1, 77);
-						var province = await _repo.Thailand.GetProvinceByid(month);
-
-						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
-						dash_Map_Thailand.Status = StatusModel.Active;
-						dash_Map_Thailand.CreateDate = DateTime.Now;
-						dash_Map_Thailand.IsUpdate = false;
-						dash_Map_Thailand.UserId = userid;
-						dash_Map_Thailand.Type = 2;
-						if (province != null)
+						Random rnd = new Random();
+						//1=ยอดขายสูงสุด
+						for (int i = 1; i <= 10; i++)
 						{
-							dash_Map_Thailand.ProvinceId = province.ProvinceID;
-							dash_Map_Thailand.ProvinceName = province.ProvinceName;
+							int month = rnd.Next(1, 77);
+							var province = await _repo.Thailand.GetProvinceByid(month);
+
+							var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+							dash_Map_Thailand.Status = StatusModel.Active;
+							dash_Map_Thailand.CreateDate = DateTime.Now;
+							dash_Map_Thailand.IsUpdate = false;
+							dash_Map_Thailand.UserId = model.userid.Value;
+							dash_Map_Thailand.Type = 1;
+							if (province != null)
+							{
+								dash_Map_Thailand.ProvinceId = province.ProvinceID;
+								dash_Map_Thailand.ProvinceName = province.ProvinceName;
+							}
+							dash_Map_Thailand.SalesAmount = 1000000 * i;
+							await _db.InsterAsync(dash_Map_Thailand);
+							await _db.SaveAsync();
 						}
-						dash_Map_Thailand.SalesAmount = 10000 * i;
-						await _db.InsterAsync(dash_Map_Thailand);
-						await _db.SaveAsync();
+
+						//2=แพ้ให้กับคู่แข่งสูงสุด
+						for (int i = 1; i <= 10; i++)
+						{
+							int month = rnd.Next(1, 77);
+							var province = await _repo.Thailand.GetProvinceByid(month);
+
+							var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+							dash_Map_Thailand.Status = StatusModel.Active;
+							dash_Map_Thailand.CreateDate = DateTime.Now;
+							dash_Map_Thailand.IsUpdate = false;
+							dash_Map_Thailand.UserId = model.userid.Value;
+							dash_Map_Thailand.Type = 2;
+							if (province != null)
+							{
+								dash_Map_Thailand.ProvinceId = province.ProvinceID;
+								dash_Map_Thailand.ProvinceName = province.ProvinceName;
+							}
+							dash_Map_Thailand.SalesAmount = 10000 * i;
+							await _db.InsterAsync(dash_Map_Thailand);
+							await _db.SaveAsync();
+						}
 					}
 				}
+
 			}
-
 		}
 
-		public async Task<Dash_Avg_NumberOnStage> GetAvgOnStage(int userid)
+		public async Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
 			var dash_Avg_NumberOnStage = new Dash_Avg_NumberOnStage();
 
-			var user = await _repo.User.GetById(userid);
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 
@@ -489,9 +494,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return dash_Avg_NumberOnStage;
 		}
 
-		public async Task<List<Dash_PieCustom>> GetPieCloseSaleReason(int userid)
+		public async Task<List<Dash_PieCustom>> GetPieCloseSaleReason(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			var response = new List<Dash_PieCustom>();
@@ -570,9 +577,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
-		public async Task<List<Dash_PieCustom>> GetPieNumberCustomer(int userid)
+		public async Task<List<Dash_PieCustom>> GetPieNumberCustomer(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			var response = new List<Dash_PieCustom>();
@@ -620,14 +629,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					response.Add(new()
+					var salesISICCode = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+												 .GroupBy(m => m.Master_ISICCodeId)
+												 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+												 .ToList();
+					if (salesISICCode.Count > 0)
 					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.NumCusISICCode,
-						TitleName = "จำนวนลูกค้าตาม ISIC Code",
-						Name = "ไม่พบข้อมูล ",
-						Value = 100
-					});
+						var useSalesISICCode = salesISICCode.OrderByDescending(x => x.Customers.Count).Take(6);
+						foreach (var item in useSalesISICCode)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.NumCusISICCode,
+								TitleName = "จำนวนลูกค้าตาม ISIC Code",
+								Name = $"{item.Customers.Select(x => x.Master_ISICCodeName).FirstOrDefault()} ",
+								Value = item.Customers.Count
+							});
+						}
+					}
 
 					var salesLoanType = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
 												 .GroupBy(m => m.Master_LoanTypeId)
@@ -654,9 +674,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
-		public async Task<List<Dash_PieCustom>> GetPieLoanValue(int userid)
+		public async Task<List<Dash_PieCustom>> GetPieLoanValue(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			var response = new List<Dash_PieCustom>();
@@ -704,14 +726,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					response.Add(new()
+					var salesISICCode = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0)
+												 .GroupBy(m => m.Customer.Master_ISICCodeId)
+												 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
+												 .ToList();
+					if (salesISICCode.Count > 0)
 					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ValueISICCode,
-						TitleName = "มูลค่าสินเชื่อตาม ISIC Code",
-						Name = "ไม่พบข้อมูล ",
-						Value = 100
-					});
+						var useSalesISICCode = salesISICCode.OrderByDescending(x => x.Sales.Count).Take(6);
+						foreach (var item in useSalesISICCode)
+						{
+							response.Add(new()
+							{
+								Status = StatusModel.Active,
+								Code = Dash_PieCodeModel.ValueISICCode,
+								TitleName = "มูลค่าสินเชื่อตาม ISIC Code",
+								Name = $"{item.Sales.Select(x => x.Customer.Master_ISICCodeName).FirstOrDefault()} ",
+								Value = item.Sales.Sum(s => s.LoanAmount)
+							});
+						}
+					}
 
 					var salesLoanType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
 												 .GroupBy(m => m.Customer.Master_LoanTypeId)
@@ -804,78 +837,81 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task UpdateDurationById(Guid saleid)
+		public async Task UpdateDurationById(allFilter model)
 		{
-			var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x => x.SaleId == saleid);
-
-			int CRUD = CRUDModel.Update;
-
-			if (sale_Durations == null)
+			if (model.saleid.HasValue)
 			{
-				CRUD = CRUDModel.Create;
-				sale_Durations = new();
-				sale_Durations.Status = StatusModel.Active;
-				sale_Durations.CreateDate = DateTime.Now;
-				sale_Durations.SaleId = saleid;
-			}
+				var sale_Durations = await _repo.Context.Sale_Durations.FirstOrDefaultAsync(x => x.SaleId == model.saleid.Value);
 
-			DateTime contactFirst = DateTime.MinValue;
-			var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleid);
-			if (sales != null && sales.Customer != null)
-			{
-				sale_Durations.ContactName = sales.Customer.ContactName;
-				if (sales.ContactStartDate.HasValue)
+				int CRUD = CRUDModel.Update;
+
+				if (sale_Durations == null)
 				{
-					contactFirst = sales.ContactStartDate.Value.Date;
+					CRUD = CRUDModel.Create;
+					sale_Durations = new();
+					sale_Durations.Status = StatusModel.Active;
+					sale_Durations.CreateDate = DateTime.Now;
+					sale_Durations.SaleId = model.saleid.Value;
 				}
+
+				DateTime contactFirst = DateTime.MinValue;
+				var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == model.saleid.Value);
+				if (sales != null && sales.Customer != null)
+				{
+					sale_Durations.ContactName = sales.Customer.ContactName;
+					if (sales.ContactStartDate.HasValue)
+					{
+						contactFirst = sales.ContactStartDate.Value.Date;
+					}
+				}
+
+				sale_Durations.WaitContact = 0;
+				sale_Durations.Contact = 0;
+				sale_Durations.Meet = 0;
+				sale_Durations.Document = 0;
+				sale_Durations.Result = 0;
+				sale_Durations.CloseSale = 0;
+
+				var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Status.Count > 0)
+				{
+					var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (contactFirst != DateTime.MinValue && waitContactLast != DateTime.MinValue)
+						sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
+
+					var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
+						sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
+
+					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (documentFirst != DateTime.MinValue && meetLast != DateTime.MinValue)
+						sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
+
+					var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (resultFirst != DateTime.MinValue && documentLast != DateTime.MinValue)
+						sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
+
+					var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (closeSaleFirst != DateTime.MinValue && resultLast != DateTime.MinValue)
+						sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
+
+					sale_Durations.ContactStartDate = contactFirst;
+				}
+
+				if (CRUD == CRUDModel.Create)
+				{
+					await _db.InsterAsync(sale_Durations);
+				}
+				else
+				{
+					_db.Update(sale_Durations);
+				}
+				await _db.SaveAsync();
 			}
-
-			sale_Durations.WaitContact = 0;
-			sale_Durations.Contact = 0;
-			sale_Durations.Meet = 0;
-			sale_Durations.Document = 0;
-			sale_Durations.Result = 0;
-			sale_Durations.CloseSale = 0;
-
-			var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Status.Count > 0)
-			{
-				var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				if (contactFirst != DateTime.MinValue && waitContactLast != DateTime.MinValue)
-					sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
-
-				var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
-					sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
-
-				var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				if (documentFirst != DateTime.MinValue && meetLast != DateTime.MinValue)
-					sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
-
-				var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				if (resultFirst != DateTime.MinValue && documentLast != DateTime.MinValue)
-					sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
-
-				var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-				if (closeSaleFirst != DateTime.MinValue && resultLast != DateTime.MinValue)
-					sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
-
-				sale_Durations.ContactStartDate = contactFirst;
-			}
-
-			if (CRUD == CRUDModel.Create)
-			{
-				await _db.InsterAsync(sale_Durations);
-			}
-			else
-			{
-				_db.Update(sale_Durations);
-			}
-			await _db.SaveAsync();
 		}
 
 		public async Task<PaginationView<List<Sales_ActivityCustom>>> GetActivity(allFilter model)
@@ -928,71 +964,76 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task UpdateActivityById(Guid saleid)
+		public async Task UpdateActivityById(allFilter model)
 		{
-			var sales_Activities = await _repo.Context.Sales_Activities.FirstOrDefaultAsync(x => x.SaleId == saleid);
-
-			int CRUD = CRUDModel.Update;
-
-			if (sales_Activities == null)
+			if (model.saleid.HasValue)
 			{
-				CRUD = CRUDModel.Create;
-				sales_Activities = new();
-				sales_Activities.Status = StatusModel.Active;
-				sales_Activities.CreateDate = DateTime.Now;
-				sales_Activities.SaleId = saleid;
-			}
+				var sales_Activities = await _repo.Context.Sales_Activities.FirstOrDefaultAsync(x => x.SaleId == model.saleid.Value);
 
-			var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == saleid);
-			if (sales != null && sales.Customer != null)
-			{
-				sales_Activities.ContactName = sales.Customer.ContactName;
-			}
+				int CRUD = CRUDModel.Update;
 
-			var sale_Contacts = await _repo.Context.Sale_Contacts.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Contacts.Count > 0)
-			{
-				sales_Activities.Contact = sale_Contacts.Count;
-			}
+				if (sales_Activities == null)
+				{
+					CRUD = CRUDModel.Create;
+					sales_Activities = new();
+					sales_Activities.Status = StatusModel.Active;
+					sales_Activities.CreateDate = DateTime.Now;
+					sales_Activities.SaleId = model.saleid.Value;
+				}
 
-			var sale_Meets = await _repo.Context.Sale_Meets.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Meets.Count > 0)
-			{
-				sales_Activities.Meet = sale_Meets.Count;
-			}
+				var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == model.saleid.Value);
+				if (sales != null && sales.Customer != null)
+				{
+					sales_Activities.ContactName = sales.Customer.ContactName;
+				}
 
-			var sale_Documents = await _repo.Context.Sale_Documents.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Documents.Count > 0)
-			{
-				sales_Activities.Document = sale_Documents.Count;
-			}
+				var sale_Contacts = await _repo.Context.Sale_Contacts.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Contacts.Count > 0)
+				{
+					sales_Activities.Contact = sale_Contacts.Count;
+				}
 
-			var sale_Results = await _repo.Context.Sale_Results.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Results.Count > 0)
-			{
-				sales_Activities.Result = sale_Results.Count;
-			}
+				var sale_Meets = await _repo.Context.Sale_Meets.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Meets.Count > 0)
+				{
+					sales_Activities.Meet = sale_Meets.Count;
+				}
 
-			var sale_Close_Sales = await _repo.Context.Sale_Close_Sales.Where(x => x.SaleId == saleid).ToListAsync();
-			if (sale_Close_Sales.Count > 0)
-			{
-				sales_Activities.CloseSale = sale_Close_Sales.Count;
-			}
+				var sale_Documents = await _repo.Context.Sale_Documents.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Documents.Count > 0)
+				{
+					sales_Activities.Document = sale_Documents.Count;
+				}
 
-			if (CRUD == CRUDModel.Create)
-			{
-				await _db.InsterAsync(sales_Activities);
+				var sale_Results = await _repo.Context.Sale_Results.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Results.Count > 0)
+				{
+					sales_Activities.Result = sale_Results.Count;
+				}
+
+				var sale_Close_Sales = await _repo.Context.Sale_Close_Sales.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Close_Sales.Count > 0)
+				{
+					sales_Activities.CloseSale = sale_Close_Sales.Count;
+				}
+
+				if (CRUD == CRUDModel.Create)
+				{
+					await _db.InsterAsync(sales_Activities);
+				}
+				else
+				{
+					_db.Update(sales_Activities);
+				}
+				await _db.SaveAsync();
 			}
-			else
-			{
-				_db.Update(sales_Activities);
-			}
-			await _db.SaveAsync();
 		}
 
-		public async Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(int userid)
+		public async Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(allFilter model)
 		{
-			var user = await _repo.User.GetById(userid);
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			var response = new List<Dash_PieCustom>();

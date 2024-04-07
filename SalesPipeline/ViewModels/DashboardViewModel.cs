@@ -22,11 +22,13 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<Dash_Status_TotalCustom>?> GetStatus_TotalById(int userid)
+		public async Task<ResultModel<Dash_Status_TotalCustom>?> GetStatus_TotalById(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetStatus_TotalById?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetStatus_TotalById", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<Dash_Status_TotalCustom>(content);
 				return new ResultModel<Dash_Status_TotalCustom>()
 				{
@@ -43,11 +45,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgTop_NumberById(int userid)
+		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgTop_NumberById(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetAvgTop_NumberById?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgTop_NumberById", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberCustom>(content);
 				return new ResultModel<Dash_Avg_NumberCustom>()
 				{
@@ -64,11 +68,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Dash_Map_ThailandCustom>>?> GetMap_ThailandById(int userid)
+		public async Task<ResultModel<List<Dash_Map_ThailandCustom>>?> GetMap_ThailandById(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetMap_ThailandById?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetMap_ThailandById", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<Dash_Map_ThailandCustom>>(content);
 				return new ResultModel<List<Dash_Map_ThailandCustom>>()
 				{
@@ -85,11 +91,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Dash_Avg_NumberOnStage>?> GetAvgOnStage(int userid)
+		public async Task<ResultModel<Dash_Avg_NumberOnStage>?> GetAvgOnStage(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetAvgOnStage?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgOnStage", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberOnStage>(content);
 				return new ResultModel<Dash_Avg_NumberOnStage>()
 				{
@@ -106,11 +114,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieCloseSaleReason(int userid)
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieCloseSaleReason(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieCloseSaleReason?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetPieCloseSaleReason", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
 				return new ResultModel<List<Dash_PieCustom>>()
 				{
@@ -175,11 +185,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieNumberCustomer(int userid)
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieNumberCustomer(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieNumberCustomer?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetPieNumberCustomer", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
 				return new ResultModel<List<Dash_PieCustom>>()
 				{
@@ -196,11 +208,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieLoanValue(int userid)
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieLoanValue(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetPieLoanValue?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetPieLoanValue", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
 				return new ResultModel<List<Dash_PieCustom>>()
 				{
@@ -217,11 +231,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Dash_PieCustom>>?> GetGroupReasonNotLoan(int userid)
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetGroupReasonNotLoan(allFilter model)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Dashboard/GetGroupReasonNotLoan?userid={userid}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetGroupReasonNotLoan", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
 				return new ResultModel<List<Dash_PieCustom>>()
 				{
