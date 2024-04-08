@@ -9,6 +9,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -435,6 +436,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
+
+					//var avgDurationCloseSale = _repo.Context.Sales_Activities.Include(x => x.Sale)
+					//									.Where(x => x.Status != StatusModel.Delete)
+					//									.OrderByDescending(x => x.CreateDate)
+					//									.AsQueryable();
+
+					//dash_Avg_Number.AvgDurationCloseSale = avgDurationCloseSale;
+
 					var avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
 												 .GroupBy(m => m.AssUserId)
 												 .Select(group => new
