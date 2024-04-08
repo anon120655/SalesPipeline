@@ -68,6 +68,7 @@ namespace SalesPipeline.Pages.Dashboards
 			//มูลค่าสินเชื่อตาม...
 			await LoanValue();
 
+			StateHasChanged();
 			if (UserInfo.RoleCode != RoleCodes.MCENTER)
 			{
 				//ระยะเวลาที่ใช้ในแต่ละสเตจ
@@ -75,6 +76,8 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 
 			StateHasChanged();
+
+			await AvgBottom_Number();
 		}
 
 		protected async Task Status_Total()
@@ -118,6 +121,23 @@ namespace SalesPipeline.Pages.Dashboards
 			if (UserInfo.Id > 0)
 			{
 				var data = await _dashboarViewModel.GetAvgTop_NumberById(new() { userid = UserInfo.Id });
+				if (data != null && data.Status && data.Data != null)
+				{
+					avg_NumberModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task AvgBottom_Number()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.GetAvgBottom_NumberById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
 					avg_NumberModel = data.Data;

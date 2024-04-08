@@ -96,6 +96,35 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgBottom_NumberById")]
+		public async Task<IActionResult> GetAvgBottom_NumberById(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetAvgBottom_NumberById(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("GetListDealRMById")]
+		public async Task<IActionResult> GetListDealRMById(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetListDealRMById(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetMap_ThailandById")]
 		public async Task<IActionResult> GetMap_ThailandById(allFilter model)
 		{

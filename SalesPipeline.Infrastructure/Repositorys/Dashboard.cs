@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -411,6 +412,81 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 			}
+		}
+
+		public async Task<Dash_Avg_NumberCustom> GetAvgBottom_NumberById(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var dash_Avg_Number = new Dash_Avg_NumberCustom();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					var avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
+												 .GroupBy(m => m.AssUserId)
+												 .Select(group => new
+												 {
+													 GroupID = group.Key,
+													 Sales = group.Count(),
+												 })
+												 .DefaultIfEmpty()
+												 .Average(a => a.Sales);
+
+					dash_Avg_Number.AvgDealRM = (int)(avgDealRM);
+				}
+			}
+
+			return dash_Avg_Number;
+		}
+
+		public async Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model)
+		{
+			string? roleCode = null;
+
+			//if (model.userid.HasValue)
+			//{
+			//	var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
+			//	if (roleList != null)
+			//	{
+			//		roleCode = roleList.Code;
+			//	}
+			//}
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
+										 .GroupBy(m => m.AssUserId)
+										 .Select(group => new SaleGroupByModel()
+										 {
+											 GroupID = group.Key,
+											 Sales = _mapper.Map<List<SaleCustom>>(group.ToList())
+										 });
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.Sales != null && x.Sales.Select(x => x.AssUserName).Contains(model.searchtxt));
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			//var itemslist = items.ToList();
+
+			return new PaginationView<List<SaleGroupByModel>>()
+			{
+				Items = _mapper.Map<List<SaleGroupByModel>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 		public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model)

@@ -1,5 +1,4 @@
-﻿
-@page "/dashboard/avgdealrm"
+﻿@page "/dashboard/avgdealrm"
 
 <PageTitle>ดีลโดยเฉลี่ยต่อพนักงานขาย</PageTitle>
 
@@ -23,7 +22,7 @@
 						<div class="col mb-2">
 							<label class="form-label">ชื่อหนักงาน</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
 									<button class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
@@ -38,19 +37,19 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
 						</div>
+						<div class="col mb-2">
+							<label class="form-label">ศูนย์สาขา</label>
+							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
+								<option selected>ทั้งหมด</option>
+							</select>
+						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -68,26 +67,47 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td class="text-center">นาย เอ</td>
-											<td class="text-center">การเกษตร</td>
-											<td class="text-center">60</td>
-										</tr>
-										<tr>
-											<td class="text-center">นาย บี</td>
-											<td class="text-center">การเกษตร</td>
-											<td class="text-center">23</td>
-										</tr>
-										<tr>
-											<td class="text-center">นาย ซี</td>
-											<td class="text-center">การเกษตร</td>
-											<td class="text-center">16</td>
-										</tr>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.Sales?.FirstOrDefault()?.AssUserName</td>
+													<td class="text-center">@item.Sales?.FirstOrDefault()?.BranchName</td>
+													<td class="text-center">@item.Sales?.Count</td>
+												</tr>
+											}
+										}
 									</tbody>
 								</table>
 							</div>
 						</div>
 						<div class="col-12 col-xl"></div>
+					</div>
+					<div>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

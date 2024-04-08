@@ -91,6 +91,53 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgBottom_NumberById(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgBottom_NumberById", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberCustom>(content);
+				return new ResultModel<Dash_Avg_NumberCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Dash_Avg_NumberCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<SaleGroupByModel>>>> GetListDealRMById(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetListDealRMById", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<SaleGroupByModel>>>(content);
+
+				return new ResultModel<PaginationView<List<SaleGroupByModel>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<SaleGroupByModel>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<List<Dash_Map_ThailandCustom>>?> GetMap_ThailandById(allFilter model)
 		{
 			try
