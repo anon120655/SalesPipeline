@@ -13,6 +13,7 @@ namespace SalesPipeline.Pages.Dashboards
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
+		private allFilter filter = new();
 		private Dash_Status_TotalCustom status_TotalModel = new();
 		private Dash_SalesPipelineModel salesPipelineModel = new();
 		private Dash_AvgTop_NumberCustom avgTop_NumberModel = new();

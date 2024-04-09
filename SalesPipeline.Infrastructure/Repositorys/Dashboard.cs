@@ -105,7 +105,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
 
-						if (item.StatusID == (int)StatusSaleModel.RMReturnMCenter) dash_Status_Total.NumCusReturn = item.Count;
+						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
+						{
+							dash_Status_Total.NumCusReturn = item.Count;
+						}
+						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH) && item.StatusID == (int)StatusSaleModel.MCenterReturnBranch)
+						{
+							dash_Status_Total.NumCusReturn = item.Count;
+						}
+						else if ((user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN)) && item.StatusID == (int)StatusSaleModel.BranchReturnLCenter)
+						{
+							dash_Status_Total.NumCusReturn = item.Count;
+						}
 
 						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
 							|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan

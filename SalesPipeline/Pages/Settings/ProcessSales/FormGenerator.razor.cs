@@ -6,6 +6,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System;
 
 namespace SalesPipeline.Pages.Settings.ProcessSales
 {
@@ -281,6 +282,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			_errorMessage = null;
 			ShowLoading();
 
+			Random random = new Random();
+
 			formModel.CurrentUserId = UserInfo.Id;
 
 			//ติดต่อ
@@ -302,7 +305,11 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Meet.MeetDate = DateTime.Now;
 			formModel.Sale_Meet.MeetId = 1;
 			formModel.Sale_Meet.NextActionId = formModel.Nex;
-			formModel.Sale_Meet.LoanAmount = 500000;
+
+			List<decimal> loanAmountlist = new List<decimal>() { 100000, 200000, 300000, 500000, 700000, 1000000, 1500000, 2000000, 5000000, 10000000 };
+			int loanAmount = random.Next(loanAmountlist.Count);
+			formModel.Sale_Meet.LoanAmount = loanAmountlist[loanAmount];
+
 			formModel.Sale_Meet.AppointmentDate = new DateTime(2024, 03, 30);
 			formModel.Sale_Meet.AppointmentTime = new TimeOnly(13, 30, 00);
 			formModel.Sale_Meet.Location = "สตาบัค ในตัวเมือง2";

@@ -377,6 +377,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.AssUserName != null && x.AssUserName.Contains(model.assignrm_name));
 			}
 
+			if (model.isloanamount == 1)
+			{
+				query = query.Where(x => x.LoanAmount.HasValue && x.LoanAmount.Value > 0);
+			}
+
 			if (!String.IsNullOrEmpty(model.juristicnumber))
 			{
 				query = query.Where(x => x.Customer != null

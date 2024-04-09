@@ -17,7 +17,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int? userid { get; set; }
 		public int? assigncenter { get; set; }
 		public int? assignrm { get; set; }
-		public string? assignrm_name { get; set; }
+        public string? assignrm_name { get; set; }
 		public string? contact_name { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
@@ -38,6 +38,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? assignmentid { get; set; }
 		public string? mcenter_code { get; set; }
 		public string? mcenter_name { get; set; }
+		public short? isloanamount { get; set; }
+		public decimal? loanamount { get; set; }
 		public string? reason { get; set; }
 		public string? contact { get; set; }
 		public string? meet { get; set; }
@@ -143,6 +145,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(mcenter_name))
 				ParameterAll += $"&mcenter_name={mcenter_name}";
+
+			if (loanamount > 0)
+				ParameterAll += $"&loanamount={loanamount}";
+
+			if (isloanamount.HasValue)
+				ParameterAll += $"&isloanamount={isloanamount}";
 
 			if (!String.IsNullOrEmpty(reason))
 				ParameterAll += $"&reason={reason}";
@@ -259,6 +267,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(mcenter_name), out var _mcenter_name))
 				mcenter_name = _mcenter_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(loanamount), out var _loanamount))
+				loanamount = Convert.ToDecimal(_loanamount); ;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isloanamount), out var _isloanamount))
+				isloanamount = Convert.ToInt16(_isloanamount);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
 				reason = _reason;
