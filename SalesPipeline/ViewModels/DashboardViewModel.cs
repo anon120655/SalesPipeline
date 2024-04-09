@@ -68,22 +68,22 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgTop_NumberById(allFilter model)
+		public async Task<ResultModel<Dash_AvgTop_NumberCustom>?> GetAvgTop_NumberById(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgTop_NumberById", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberCustom>(content);
-				return new ResultModel<Dash_Avg_NumberCustom>()
+				var dataMap = JsonConvert.DeserializeObject<Dash_AvgTop_NumberCustom>(content);
+				return new ResultModel<Dash_AvgTop_NumberCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Dash_Avg_NumberCustom>
+				return new ResultModel<Dash_AvgTop_NumberCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -91,22 +91,22 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Dash_Avg_NumberCustom>?> GetAvgBottom_NumberById(allFilter model)
+		public async Task<ResultModel<Dash_AvgBottom_NumberCustom>?> GetAvgBottom_NumberById(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgBottom_NumberById", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Dash_Avg_NumberCustom>(content);
-				return new ResultModel<Dash_Avg_NumberCustom>()
+				var dataMap = JsonConvert.DeserializeObject<Dash_AvgBottom_NumberCustom>(content);
+				return new ResultModel<Dash_AvgBottom_NumberCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Dash_Avg_NumberCustom>
+				return new ResultModel<Dash_AvgBottom_NumberCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

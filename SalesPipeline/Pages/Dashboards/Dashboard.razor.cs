@@ -15,7 +15,8 @@ namespace SalesPipeline.Pages.Dashboards
 		private User_PermissionCustom _permission = new();
 		private Dash_Status_TotalCustom status_TotalModel = new();
 		private Dash_SalesPipelineModel salesPipelineModel = new();
-		private Dash_Avg_NumberCustom avg_NumberModel = new();
+		private Dash_AvgTop_NumberCustom avgTop_NumberModel = new();
+		private Dash_AvgBottom_NumberCustom avgBottom_NumberModel = new();
 		private List<Dash_Map_ThailandCustom> map_ThailandModel = new();
 
 		protected override async Task OnInitializedAsync()
@@ -123,7 +124,7 @@ namespace SalesPipeline.Pages.Dashboards
 				var data = await _dashboarViewModel.GetAvgTop_NumberById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
-					avg_NumberModel = data.Data;
+					avgTop_NumberModel = data.Data;
 				}
 				else
 				{
@@ -140,7 +141,7 @@ namespace SalesPipeline.Pages.Dashboards
 				var data = await _dashboarViewModel.GetAvgBottom_NumberById(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
-					avg_NumberModel = data.Data;
+					avgBottom_NumberModel = data.Data;
 				}
 				else
 				{

@@ -291,7 +291,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return dash_SalesPipeline;
 		}
 
-		public async Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model)
+		public async Task<Dash_AvgTop_NumberCustom> GetAvgTop_NumberById(allFilter model)
 		{
 			//var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers.FirstOrDefaultAsync(x => x.UserId == userid);
 
@@ -305,7 +305,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!model.userid.HasValue) return new();
 
-			var dash_Avg_Number = new Dash_Avg_NumberCustom();
+			var dash_Avg_Number = new Dash_AvgTop_NumberCustom();
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
@@ -415,11 +415,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Dash_Avg_NumberCustom> GetAvgBottom_NumberById(allFilter model)
+		public async Task<Dash_AvgBottom_NumberCustom> GetAvgBottom_NumberById(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
 
-			var dash_Avg_Number = new Dash_Avg_NumberCustom();
+			var dash_Avg_Number = new Dash_AvgBottom_NumberCustom();
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
@@ -436,13 +436,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
+					var avgSaleActcloseDeal = _repo.Context.Sales_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
+															 .Select(x => (x.Contact + x.Meet + x.Document))
+															 .DefaultIfEmpty()
+															 .Average();
 
-					//var avgDurationCloseSale = _repo.Context.Sales_Activities.Include(x => x.Sale)
-					//									.Where(x => x.Status != StatusModel.Delete)
-					//									.OrderByDescending(x => x.CreateDate)
-					//									.AsQueryable();
-
-					//dash_Avg_Number.AvgDurationCloseSale = avgDurationCloseSale;
+					dash_Avg_Number.AvgSaleActcloseDeal = (int)avgSaleActcloseDeal;
 
 					var avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
 												 .GroupBy(m => m.AssUserId)
@@ -1217,6 +1216,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return response;
 		}
+
+		public async Task<PaginationView<List<GroupByModel>>> GetGroupDealBranch(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var response = new List<Dash_PieCustom>();
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0)
+										 .GroupBy(m => m.BranchId)
+										 .Select(group => new GroupByModel()
+										 {
+											 GroupID = group.Key ?? 0,
+											 Name = group.First().BranchName,
+											 Count = group.Count()
+										 });
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<GroupByModel>>()
+			{
+				Items = await items.ToListAsync(),
+				Pager = pager
+			};
+		}
+
 
 	}
 }

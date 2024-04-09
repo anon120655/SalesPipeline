@@ -12,10 +12,10 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//SalesPipeline
 		Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
-		Task<Dash_Avg_NumberCustom> GetAvgTop_NumberById(allFilter model);
+		Task<Dash_AvgTop_NumberCustom> GetAvgTop_NumberById(allFilter model);
 		Task UpdateAvg_NumberById(allFilter model);
 		//ดีลโดยเฉลี่ยต่อองค์กร ,กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย ,ระยะเวลาเฉลี่ยในการส่งมอบ ,ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ
-		Task<Dash_Avg_NumberCustom> GetAvgBottom_NumberById(allFilter model);
+		Task<Dash_AvgBottom_NumberCustom> GetAvgBottom_NumberById(allFilter model);
 		//จำนวนดีลของพนักงานสินเชื่อแต่ละคน
 		Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model);
 		//10 อันดับ ศูนย์ยอดขายสูงสุด ,10 อันดับ ศูนย์ยอดขายสูงสุด
@@ -37,5 +37,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateActivityById(allFilter model);
 		//เหตุผลไม่ประสงค์ขอสินเชื่อ
 		Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(allFilter model);
+		//เหตุผลไม่ประสงค์ขอสินเชื่อ
+		Task<PaginationView<List<GroupByModel>>> GetGroupDealBranch(allFilter model);
 	}
 }

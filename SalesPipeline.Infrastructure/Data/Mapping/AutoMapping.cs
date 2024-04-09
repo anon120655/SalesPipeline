@@ -20,7 +20,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 		{
 			//Dashboard
 			CreateMap<Entity.Dash_Status_Total, Dash_Status_TotalCustom>().ReverseMap();
-			CreateMap<Entity.Dash_Avg_Number, Dash_Avg_NumberCustom>().ReverseMap();
+			CreateMap<Entity.Dash_Avg_Number, Dash_AvgTop_NumberCustom>().ReverseMap();
 			CreateMap<Entity.Dash_Map_Thailand, Dash_Map_ThailandCustom>().ReverseMap();
 			CreateMap<Entity.Dash_Pie, Dash_PieCustom>().ReverseMap();
 

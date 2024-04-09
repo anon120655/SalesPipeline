@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Dashboards
 {
-	public class Dash_Avg_NumberCustom
+	public class Dash_AvgBottom_NumberCustom
 	{
 		public Guid Id { get; set; }
 
@@ -20,21 +20,6 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		public bool IsUpdate { get; set; }
 
 		public int UserId { get; set; }
-
-		/// <summary>
-		/// มูลค่าเฉลี่ยต่อหนึ่งดีล
-		/// </summary>
-		public decimal AvgPerDeal { get; set; }
-
-		/// <summary>
-		/// ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย
-		/// </summary>
-		public int AvgDurationCloseSale { get; set; }
-
-		/// <summary>
-		/// ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
-		/// </summary>
-		public int AvgDurationLostSale { get; set; }
 
 		/// <summary>
 		/// ดีลโดยเฉลี่ยต่อองค์กร
