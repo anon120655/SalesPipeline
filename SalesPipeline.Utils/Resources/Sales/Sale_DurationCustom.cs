@@ -40,6 +40,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int Contact { get; set; }
 
 		/// <summary>
+		/// รอเข้าพบ(วัน)
+		/// </summary>
+		public int WaitMeet { get; set; }
+
+		/// <summary>
 		/// เข้าพบ(วัน)
 		/// </summary>
 		public int Meet { get; set; }

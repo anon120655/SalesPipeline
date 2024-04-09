@@ -297,5 +297,35 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetSalesFunnel")]
+		public async Task<IActionResult> GetSalesFunnel(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetSalesFunnel(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("GetPieRM")]
+		public async Task<IActionResult> GetPieRM(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetPieRM(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

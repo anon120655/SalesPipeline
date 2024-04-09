@@ -8,8 +8,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 {
 	public class GroupByModel
 	{
-		public int GroupID { get; set; }
+		public string? GroupID { get; set; }
 		public string? Name { get; set; }
-        public int Count { get; set; }
+        public int Value { get; set; }
     }
 }

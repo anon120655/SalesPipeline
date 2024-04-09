@@ -112,10 +112,10 @@ public partial class Sale_Contact_History
     /// </summary>
     public string? Reason { get; set; }
 
-	/// <summary>
-	/// Note system
-	/// </summary>
-	public string? NoteSystem { get; set; }
+    /// <summary>
+    /// Note system
+    /// </summary>
+    public string? NoteSystem { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 

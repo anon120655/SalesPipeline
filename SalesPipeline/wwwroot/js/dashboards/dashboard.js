@@ -75,6 +75,8 @@ window.closesale = (_data) => {
 		var success_data = _data[0];
 		var fail_data = _data[1];
 
+		//console.log(success_data)
+		//console.log(fail_data)
 		var height = 150;
 		const data = {
 			labels: [`${success_data.name} `, `${fail_data.name} `],
@@ -107,7 +109,7 @@ window.closesale = (_data) => {
 
 				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-				//console.log(chart.data.datasets[0].data[2])
+				//console.log('sumclosesale= ',sum)
 				//console.log(chart.data.datasets[0].data[3])
 				chart.data.datasets.forEach((dataset, i) => {
 					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {

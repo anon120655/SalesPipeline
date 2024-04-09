@@ -40,5 +40,8 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		public string? Name { get; set; }
 
 		public decimal? Value { get; set; }
+
+		//public decimal? Percent { get; set; }
+
 	}
 }

@@ -1689,7 +1689,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("บันทึกเพิ่มเติม");
             entity.Property(e => e.NoteSystem)
                 .HasMaxLength(255)
-                .HasComment("บันทึกอัตโนมัติ");
+                .HasComment("Note system");
             entity.Property(e => e.Percent)
                 .HasMaxLength(255)
                 .HasComment("ร้อยละ");
@@ -1925,6 +1925,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.WaitContact)
                 .HasComment("รอการติดต่อ(วัน)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.WaitMeet)
+                .HasComment("รอเข้าพบ(วัน)")
                 .HasColumnType("int(11)");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Durations)

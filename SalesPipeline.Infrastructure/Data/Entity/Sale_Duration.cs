@@ -40,6 +40,11 @@ public partial class Sale_Duration
     public int Contact { get; set; }
 
     /// <summary>
+    /// รอเข้าพบ(วัน)
+    /// </summary>
+    public int WaitMeet { get; set; }
+
+    /// <summary>
     /// เข้าพบ(วัน)
     /// </summary>
     public int Meet { get; set; }

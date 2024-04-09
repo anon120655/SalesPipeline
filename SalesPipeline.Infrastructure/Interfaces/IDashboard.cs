@@ -39,5 +39,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(allFilter model);
 		//เหตุผลไม่ประสงค์ขอสินเชื่อ
 		Task<PaginationView<List<GroupByModel>>> GetGroupDealBranch(allFilter model);
+		//SalesPipeline
+		Task<SalesFunnelModel> GetSalesFunnel(allFilter model);
+		//รายได้จำแนกตามประเภทธุรกิจ ,สัดส่วนการปิดการขาย ,เหตุผลที่ปิดการขายไม่สำเร็จ
+		Task<List<Dash_PieCustom>> GetPieRM(allFilter model);
 	}
 }

@@ -9,7 +9,7 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 {
 	public class SaleGroupByModel
 	{
-        public int? GroupID { get; set; }
+        public string? GroupID { get; set; }
         public List<SaleCustom>? Sales { get; set; }
 	}
 }

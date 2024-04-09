@@ -19,6 +19,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int? assignrm { get; set; }
         public string? assignrm_name { get; set; }
 		public string? contact_name { get; set; }
+		public string? rolecode { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
 		public string? cif { get; set; }
@@ -88,6 +89,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(contact_name))
 				ParameterAll += $"&contact_name={contact_name}";
+
+			if (!String.IsNullOrEmpty(rolecode))
+				ParameterAll += $"&rolecode={rolecode}";
 
 			if (status.HasValue)
 				ParameterAll += $"&status={status}";
@@ -213,6 +217,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(contact_name), out var _contact_name))
 				contact_name = _contact_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(rolecode), out var _rolecode))
+				rolecode = _rolecode;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(status), out var _status))
 				status = Convert.ToInt16(_status);

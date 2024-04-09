@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Azure;
+using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -488,7 +491,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										 .GroupBy(m => m.AssUserId)
 										 .Select(group => new SaleGroupByModel()
 										 {
-											 GroupID = group.Key,
+											 GroupID = group.Key.ToString(),
 											 Sales = _mapper.Map<List<SaleCustom>>(group.ToList())
 										 });
 
@@ -664,73 +667,129 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active);
+				response = await GetDataPieCloseSale(model, response);
+				response = await GetDataPieReasonFail(model, response);
+			}
 
-				//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
-				//											 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-				//											 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+			return response;
+		}
 
-				var salesCloseSaleCount = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+		private async Task<List<Dash_PieCustom>> GetDataPieCloseSale(allFilter model, List<Dash_PieCustom> response)
+		{
 
-				//salesAllCount = 50;
-				//salesCloseSaleCount = 47;
+			//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
+			//											 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+			//											 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
 
-				if (salesAllCount > 0 || salesCloseSaleCount > 0)
+			var queryAll = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			if (model.rolecode != null)
+			{
+				if (model.rolecode.StartsWith(RoleCodes.RM))
 				{
+					queryAll = queryAll.Where(x => x.AssUserId == model.userid);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
+				{
+					queryAll = queryAll.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
 
-					var perSuccess = ((decimal)salesCloseSaleCount / salesAllCount) * 100;
-					var perFail = 100 - perSuccess;
+			var salesAllCount = await queryAll.CountAsync();
 
+			var queryCloseSale = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
+			if (model.rolecode != null)
+			{
+				if (model.rolecode.StartsWith(RoleCodes.RM))
+				{
+					queryCloseSale = queryCloseSale.Where(x => x.AssUserId == model.userid);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
+				{
+					queryCloseSale = queryCloseSale.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
+
+			var salesCloseSaleCount = await queryCloseSale.CountAsync();
+
+			//salesAllCount = 50;
+			//salesCloseSaleCount = 47;
+
+			if (salesAllCount > 0 || salesCloseSaleCount > 0)
+			{
+				var sumSuccessFail = salesCloseSaleCount + salesAllCount;
+				var perSuccess = ((decimal)salesCloseSaleCount) * 100 / sumSuccessFail;
+				var perFail = ((decimal)salesAllCount) * 100 / sumSuccessFail;
+
+				perSuccess = decimal.Round(perSuccess, 2, MidpointRounding.AwayFromZero);
+				perFail = decimal.Round(perFail, 2, MidpointRounding.AwayFromZero);
+
+				response.Add(new()
+				{
+					Status = StatusModel.Active,
+					Code = Dash_PieCodeModel.ClosingSale,
+					Name = "ปิดการขายสำเร็จ",
+					Value = salesCloseSaleCount,
+					//Percent = perSuccess
+				});
+				response.Add(new()
+				{
+					Status = StatusModel.Active,
+					Code = Dash_PieCodeModel.ClosingSale,
+					Name = "ปิดการขายไม่สำเร็จ",
+					Value = salesAllCount,
+					//Percent = perFail
+				});
+
+			}
+
+			return response;
+		}
+
+		private async Task<List<Dash_PieCustom>> GetDataPieReasonFail(allFilter model, List<Dash_PieCustom> response)
+		{
+			//เหตุผลไม่ประสงค์ขอสินเชื่อ
+			//var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+			//							 .GroupBy(m => m.Master_Reason_CloseSaleId)
+			//							 .Select(group => new
+			//							 {
+			//								 Label = group.Key,
+			//								 Sales = group.ToList()
+			//							 })
+			//							 .ToList();
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
+
+			if (model.rolecode != null)
+			{
+				if (model.rolecode.StartsWith(RoleCodes.RM))
+				{
+					query = query.Where(x => x.AssUserId == model.userid);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
+				{
+					query = query.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
+
+			var queryUse = await query.GroupBy(m => m.Master_Reason_CloseSaleId)
+										 .Select(group => new GroupByModel()
+										 {
+											 GroupID = group.Key.ToString() ?? string.Empty,
+											 Name = group.First().StatusDescription,
+											 Value = group.Count()
+										 })
+										 .OrderByDescending(x => x.Value).Take(6).ToListAsync();
+
+			if (queryUse.Count > 0)
+			{
+				foreach (var item in queryUse)
+				{
 					response.Add(new()
 					{
 						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ClosingSale,
-						TitleName = "การปิดการขาย",
-						Name = "สำเร็จ",
-						Value = perSuccess
+						Code = Dash_PieCodeModel.ReasonNotLoan,
+						Name = item.Name,
+						Value = item.Value
 					});
-					response.Add(new()
-					{
-						Status = StatusModel.Active,
-						Code = Dash_PieCodeModel.ClosingSale,
-						TitleName = "การปิดการขาย",
-						Name = "ไม่สำเร็จ",
-						Value = perFail
-					});
-
-				}
-				//เหตุผลไม่ประสงค์ขอสินเชื่อ
-
-				var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
-											 .GroupBy(m => m.Master_Reason_CloseSaleId)
-											 .Select(group => new { Label = group.Key, Sales = group.ToList() })
-											 .ToList();
-
-				if (salesResultsNotLoan.Count > 0)
-				{
-					var usesalesResultsNotLoan = salesResultsNotLoan.OrderByDescending(x => x.Sales.Count).Take(6);
-					foreach (var item in usesalesResultsNotLoan)
-					{
-						response.Add(new()
-						{
-							Status = StatusModel.Active,
-							Code = Dash_PieCodeModel.ReasonNotLoan,
-							TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-							Name = $"{item.Sales.Select(x => x.StatusDescription).FirstOrDefault()} ",
-							Value = item.Sales.Count
-						});
-					}
-				}
-				else
-				{
-					//response.Add(new()
-					//{
-					//	Status = StatusModel.Active,
-					//	Code = Dash_PieCodeModel.ReasonNotLoan,
-					//	TitleName = "เหตุผลไม่ประสงค์ขอสินเชื่อ",
-					//	Name = "ไม่พบข้อมูล ",
-					//	Value = 100
-					//});
 				}
 			}
 
@@ -871,25 +930,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					var salesBusinessType = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-												 .GroupBy(m => m.Customer.Master_BusinessTypeId)
-												 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
-												 .ToList();
-					if (salesBusinessType.Count > 0)
-					{
-						var useLoop = salesBusinessType.OrderByDescending(x => x.Sales.Count).Take(6);
-						foreach (var item in useLoop)
-						{
-							response.Add(new()
-							{
-								Status = StatusModel.Active,
-								Code = Dash_PieCodeModel.ValueTypeBusiness,
-								TitleName = "มูลค่าสินเชื่อตามประเภทธุรกิจ",
-								Name = $"{item.Sales.Select(x => x.Customer.Master_BusinessTypeName).FirstOrDefault()} ",
-								Value = item.Sales.Sum(s => s.LoanAmount)
-							});
-						}
-					}
+					response = await GetDataTypeBusiness(model, response);
 
 					var salesISICCode = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0)
 												 .GroupBy(m => m.Customer.Master_ISICCodeId)
@@ -931,6 +972,48 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
+				}
+			}
+
+			return response;
+		}
+
+		private async Task<List<Dash_PieCustom>> GetDataTypeBusiness(allFilter model, List<Dash_PieCustom> response)
+		{
+			//var query = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
+			//							 .GroupBy(m => m.Customer.Master_BusinessTypeId)
+			//							 .Select(group => new { GroupID = group.Key, Sales = group.ToList() });
+			var query = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active);
+
+			if (model.rolecode != null)
+			{
+				if (model.rolecode.StartsWith(RoleCodes.RM))
+				{
+					query = query.Where(x => x.AssUserId == model.userid);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
+				{
+					query = query.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
+
+			var queryGroupBy = await query.GroupBy(m => m.Customer.Master_BusinessTypeId)
+										 .Select(group => new { GroupID = group.Key, Sales = group.ToList() }).ToListAsync();
+
+			//var salesBusinessTypeUse = await queryGroupBy.ToListAsync();
+			if (queryGroupBy.Count > 0)
+			{
+				//var useLoop = salesBusinessTypeUse.OrderByDescending(x => x.Sales.Count).Take(6);
+				foreach (var item in queryGroupBy)
+				{
+					response.Add(new()
+					{
+						Status = StatusModel.Active,
+						Code = Dash_PieCodeModel.ValueTypeBusiness,
+						//TitleName = "มูลค่าสินเชื่อตามประเภทธุรกิจ",
+						Name = $"{item.Sales.Select(x => x.Customer.Master_BusinessTypeName).FirstOrDefault()} ",
+						Value = item.Sales.Sum(s => s.LoanAmount)
+					});
 				}
 			}
 
@@ -1033,6 +1116,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				sale_Durations.WaitContact = 0;
 				sale_Durations.Contact = 0;
+				sale_Durations.WaitMeet = 0;
 				sale_Durations.Meet = 0;
 				sale_Durations.Document = 0;
 				sale_Durations.Result = 0;
@@ -1049,6 +1133,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
 						sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
+
+					var waitMeetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleModel.WaitMeet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
+						sale_Durations.WaitMeet = (int)(meetFirst - waitMeetLast).TotalDays;
 
 					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
@@ -1230,7 +1319,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<GroupByModel>>> GetGroupDealBranch(allFilter model)
 		{
-			if (!model.userid.HasValue) return new();
+			if (!model.userid.HasValue || String.IsNullOrEmpty(model.rolecode)) return new();
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
@@ -1241,9 +1330,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										 .GroupBy(m => m.BranchId)
 										 .Select(group => new GroupByModel()
 										 {
-											 GroupID = group.Key ?? 0,
+											 GroupID = group.Key.ToString() ?? string.Empty,
 											 Name = group.First().BranchName,
-											 Count = group.Count()
+											 Value = group.Count()
 										 });
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -1257,6 +1346,42 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<SalesFunnelModel> GetSalesFunnel(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			model.rolecode = user.Role.Code.ToUpper();
+
+			var response = new SalesFunnelModel();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+			}
+
+			return response;
+		}
+
+		public async Task<List<Dash_PieCustom>> GetPieRM(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			model.rolecode = user.Role.Code.ToUpper();
+
+			var response = new List<Dash_PieCustom>();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				response = await GetDataTypeBusiness(model, response);
+				response = await GetDataPieCloseSale(model, response);
+				response = await GetDataPieReasonFail(model, response);
+			}
+
+			return response;
+		}
 
 	}
 }
