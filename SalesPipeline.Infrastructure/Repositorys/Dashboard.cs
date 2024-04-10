@@ -1102,6 +1102,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					sale_Durations.SaleId = model.saleid.Value;
 				}
 
+				//วันที่เริ่มติดต่อ
 				DateTime contactFirst = DateTime.MinValue;
 				var sales = await _repo.Context.Sales.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == model.saleid.Value);
 				if (sales != null && sales.Customer != null)
@@ -1155,41 +1156,57 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//	sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
 					#endregion
 
-					//WaitContact(รอติดต่อ) = รอการติตต่อ -> วันที่เริ่มติดต่อ
-					var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (contactFirst != DateTime.MinValue && waitContactLast != DateTime.MinValue)
-						sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
-
-					//Contact(ติดต่อ) = ติตต่อล่าสุด -> วันที่เริ่มเข้าพบ
-					var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
-						sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
-
-					//WaitMeet(รอเข้าพบ) = รอเข้าพบล่าสุด -> ติตต่อล่าสุด
-					var waitMeetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleModel.WaitMeet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (meetFirst != DateTime.MinValue && waitMeetLast != DateTime.MinValue)
-						sale_Durations.WaitMeet = (int)(meetFirst - waitMeetLast).TotalDays;
-
-					//Meet(เข้าพบ) = พบล่าสุด -> วันที่เริ่มเอกสาร
+					//รอการติตต่อ
+					var waitContact = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอเข้าพบ
+					var waitMeet = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitMeet).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//เริ่มต้นเข้าพบ
+					var meetFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//เข้าพบล่าสุด
 					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//วันที่เริ่มยื่นเอกสาร
 					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (documentFirst != DateTime.MinValue && meetLast != DateTime.MinValue)
-						sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
+					//รอบันทึกผลลัพธ์
+					var waitResults = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitResults).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//วันที่เริ่มบันทึกผลลัพธ์
+					var resultsFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Results).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอปิดการขาย
+					var waitcloseSale = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitCloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//ปิดการขาย
+					var closeSale = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
 
-					//Document(ยื่นเอกสาร) =
-					var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (resultFirst != DateTime.MinValue && documentLast != DateTime.MinValue)
-						sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
+					//WaitContact(รอติดต่อ) = รอการติตต่อ -> วันที่เริ่มติดต่อ  cal(วันที่เริ่มติดต่อ-รอการติตต่อ)
+					if (waitContact != DateTime.MinValue && contactFirst != DateTime.MinValue)
+						sale_Durations.WaitContact = (int)(contactFirst - waitContact).TotalDays;
 
-					//Result(ผลลัพธ์) =
-					var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (closeSaleFirst != DateTime.MinValue && resultLast != DateTime.MinValue)
-						sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
+					//Contact(ติดต่อ) = วันที่เริ่มติดต่อ -> รอเข้าพบ  cal(รอเข้าพบ-วันที่เริ่มติดต่อ)
+					if (contactFirst != DateTime.MinValue && waitMeet != DateTime.MinValue)
+						sale_Durations.Contact = (int)(waitMeet - contactFirst).TotalDays;
+
+					//WaitMeet(รอเข้าพบ) = รอเข้าพบ -> เริ่มต้นเข้าพบ  cal(เริ่มต้นเข้าพบ-รอเข้าพบ)
+					if (waitMeet != DateTime.MinValue && meetFirst != DateTime.MinValue)
+						sale_Durations.WaitMeet = (int)(meetFirst - waitMeet).TotalDays;
+
+					//Meet(เข้าพบ) = เริ่มต้นเข้าพบ -> วันที่เริ่มยื่นเอกสาร  cal(วันที่เริ่มยื่นเอกสาร-เริ่มต้นเข้าพบ)
+					if (meetFirst != DateTime.MinValue && documentFirst != DateTime.MinValue)
+						sale_Durations.Meet = (int)(documentFirst - meetFirst).TotalDays;
+
+					//Document(ยื่นเอกสาร) = วันที่เริ่มยื่นเอกสาร -> รอบันทึกผลลัพธ์  cal(รอบันทึกผลลัพธ์-วันที่เริ่มยื่นเอกสาร)
+					if (documentFirst != DateTime.MinValue && waitResults != DateTime.MinValue)
+						sale_Durations.Document = (int)(waitResults - documentFirst).TotalDays;
+
+					//Result(ผลลัพธ์) = รอบันทึกผลลัพธ์ -> รอปิดการขาย  cal(ปิดการขาย-รอบันทึกผลลัพธ์)
+					if (waitResults != DateTime.MinValue && waitcloseSale != DateTime.MinValue)
+						sale_Durations.Result = (int)(waitcloseSale - waitResults).TotalDays;
+
+					//CloseSale(ปิดการขาย) = รอปิดการขาย -> ปิดการขาย  cal(ปิดการขาย-รอปิดการขาย)
+					if (waitcloseSale != DateTime.MinValue && closeSale != DateTime.MinValue)
+						sale_Durations.CloseSale = (int)(closeSale - waitcloseSale).TotalDays;
 
 					sale_Durations.ContactStartDate = contactFirst;
+
+					//cal(ปิดการขาย-รอการติตต่อ)
+					sale_Durations.TotalDay = (int)(closeSale - waitContact).TotalDays;
 				}
 
 				if (CRUD == CRUDModel.Create)

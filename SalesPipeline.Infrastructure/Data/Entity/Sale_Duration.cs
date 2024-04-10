@@ -64,5 +64,10 @@ public partial class Sale_Duration
     /// </summary>
     public int CloseSale { get; set; }
 
+    /// <summary>
+    /// รวม
+    /// </summary>
+    public int TotalDay { get; set; }
+
     public virtual Sale Sale { get; set; } = null!;
 }

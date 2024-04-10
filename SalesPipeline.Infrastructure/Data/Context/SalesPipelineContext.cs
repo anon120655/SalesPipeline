@@ -1923,6 +1923,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.TotalDay)
+                .HasComment("รวม")
+                .HasColumnType("int(11)");
             entity.Property(e => e.WaitContact)
                 .HasComment("รอการติดต่อ(วัน)")
                 .HasColumnType("int(11)");

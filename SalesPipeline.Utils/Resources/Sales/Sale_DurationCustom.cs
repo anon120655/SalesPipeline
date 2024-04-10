@@ -64,6 +64,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public int CloseSale { get; set; }
 
+		/// <summary>
+		/// รวม
+		/// </summary>
+		public int TotalDay { get; set; }
+
 		public virtual SaleCustom? Sale { get; set; }
 	}
 }

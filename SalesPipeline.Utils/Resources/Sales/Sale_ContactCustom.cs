@@ -43,7 +43,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? ContactResult { get; set; }
 
 		/// <summary>
-		/// 1=ทำการนัดหมาย
+		/// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง
 		/// </summary>
 		public int? NextActionId { get; set; }
 

@@ -737,11 +737,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
+				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now,
+					CreateDate = createDate,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { ContactStartDate = model.ContactDate });
@@ -753,7 +754,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now.AddSeconds(1),
+					CreateDate = createDate.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -810,6 +811,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("statussale not match");
 			}
 
+			if (model.MeetDate.HasValue)
+			{
+				if (model.MeetDate.Value.Date > DateTime.Now.Date)
+				{
+					throw new ExceptionCustom("วันที่เข้าพบต้องไม่มากกว่าวันที่ปัจจุบัน");
+				}
+			}
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
@@ -848,11 +857,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Meet.NextActionId == 1)
 			{
+				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now,
+					CreateDate = createDate,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { LoanAmount = model.LoanAmount });
@@ -864,7 +874,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now.AddSeconds(1),
+					CreateDate = createDate.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { LoanAmount = model.LoanAmount });
@@ -1003,11 +1013,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Document.SubmitType == 1)
 			{
+				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now,
+					CreateDate = createDate,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -1019,7 +1030,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now.AddSeconds(1),
+					CreateDate = createDate.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -1103,11 +1114,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (model.NextActionId == 2)
 			{
+				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now,
+					CreateDate = createDate,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -1119,7 +1131,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
-					CreateDate = DateTime.Now.AddSeconds(1),
+					CreateDate = createDate.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -1178,7 +1190,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			string? descriptionStatus = null;
 
 			DateTime _dateNow = DateTime.Now;
-
 
 			Sale_Close_Sale sale_Close_Sale = new();
 			sale_Close_Sale.Status = StatusModel.Active;
