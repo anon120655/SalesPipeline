@@ -1124,30 +1124,66 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
 				if (sale_Status.Count > 0)
 				{
+
+					#region "sale_Durations old"
+					//var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (contactFirst != DateTime.MinValue && waitContactLast != DateTime.MinValue)
+					//	sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
+
+					//var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
+					//	sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
+
+					//var waitMeetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleModel.WaitMeet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (meetFirst != DateTime.MinValue && waitMeetLast != DateTime.MinValue)
+					//	sale_Durations.WaitMeet = (int)(meetFirst - waitMeetLast).TotalDays;
+
+					//var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (documentFirst != DateTime.MinValue && meetLast != DateTime.MinValue)
+					//	sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
+
+					//var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (resultFirst != DateTime.MinValue && documentLast != DateTime.MinValue)
+					//	sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
+
+					//var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//if (closeSaleFirst != DateTime.MinValue && resultLast != DateTime.MinValue)
+					//	sale_Durations.Result = (int)(closeSaleFirst - resultLast).TotalDays;
+					#endregion
+
+					//WaitContact(รอติดต่อ) = รอการติตต่อ -> วันที่เริ่มติดต่อ
 					var waitContactLast = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (contactFirst != DateTime.MinValue && waitContactLast != DateTime.MinValue)
 						sale_Durations.WaitContact = (int)(contactFirst - waitContactLast).TotalDays;
 
+					//Contact(ติดต่อ) = ติตต่อล่าสุด -> วันที่เริ่มเข้าพบ
 					var contactLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Contact).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
 						sale_Durations.Contact = (int)(meetFirst - contactLast).TotalDays;
 
+					//WaitMeet(รอเข้าพบ) = รอเข้าพบล่าสุด -> ติตต่อล่าสุด
 					var waitMeetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleModel.WaitMeet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (meetFirst != DateTime.MinValue && waitMeetLast != DateTime.MinValue)
 						sale_Durations.WaitMeet = (int)(meetFirst - waitMeetLast).TotalDays;
 
+					//Meet(เข้าพบ) = พบล่าสุด -> วันที่เริ่มเอกสาร
 					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (documentFirst != DateTime.MinValue && meetLast != DateTime.MinValue)
 						sale_Durations.Meet = (int)(documentFirst - meetLast).TotalDays;
 
+					//Document(ยื่นเอกสาร) =
 					var documentLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					var resultFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (resultFirst != DateTime.MinValue && documentLast != DateTime.MinValue)
 						sale_Durations.Document = (int)(resultFirst - documentLast).TotalDays;
 
+					//Result(ผลลัพธ์) =
 					var resultLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Result).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					var closeSaleFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					if (closeSaleFirst != DateTime.MinValue && resultLast != DateTime.MinValue)

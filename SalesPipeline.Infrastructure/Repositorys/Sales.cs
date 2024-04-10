@@ -156,6 +156,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			DateTime _dateNow = DateTime.Now;
+			if (model.CreateDate != DateTime.MinValue)
+			{
+				_dateNow = model.CreateDate;
+			}
+
+
 			var sale_Status = new Data.Entity.Sale_Status();
 			sale_Status.Status = StatusModel.Active;
 			sale_Status.CreateDate = _dateNow;
@@ -185,7 +191,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (modelSale != null)
 				{
-					sales.ContactStartDate = modelSale.ContactStartDate;
+					if (!sales.ContactStartDate.HasValue)
+					{
+						sales.ContactStartDate = modelSale.ContactStartDate;
+					}
 					sales.LoanAmount = modelSale.LoanAmount;
 				}
 

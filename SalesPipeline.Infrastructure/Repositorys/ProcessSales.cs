@@ -737,6 +737,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateDate = DateTime.Now,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				}, new() { ContactStartDate = model.ContactDate });
+
 				//noteSystem = "รอเข้าพบ";
 				statusSaleId = StatusSaleModel.WaitMeet;
 				nextActionName = "ทำการนัดหมาย";
@@ -744,9 +753,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
+					CreateDate = DateTime.Now.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
-				}, new() { ContactStartDate = model.ContactDate });
+				});
 			}
 			else
 			{
@@ -838,6 +848,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Meet.NextActionId == 1)
 			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateDate = DateTime.Now,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				}, new() { LoanAmount = model.LoanAmount });
+
 				//noteSystem = "รอยื่นเอกสาร";
 				statusSaleId = StatusSaleModel.WaitSubmitDocument;
 				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
@@ -845,6 +864,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
+					CreateDate = DateTime.Now.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { LoanAmount = model.LoanAmount });
@@ -983,6 +1003,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Document.SubmitType == 1)
 			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateDate = DateTime.Now,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+
 				nextActionName = "รอลงนามอนุมัติเอกสาร";
 				noteSystem = "รอผู้จัดการศูนย์ลงนามอนุมัติเอกสาร";
 				statusSaleId = StatusSaleModel.WaitApproveLoanRequest;
@@ -990,6 +1019,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
+					CreateDate = DateTime.Now.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
@@ -1073,6 +1103,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (model.NextActionId == 2)
 			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateDate = DateTime.Now,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+
 				statusSaleId = StatusSaleModel.WaitCloseSale;
 				//topicName = "รอปิดการขาย";
 				nextActionName = "รอปิดการขาย";
@@ -1080,6 +1119,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
+					CreateDate = DateTime.Now.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
