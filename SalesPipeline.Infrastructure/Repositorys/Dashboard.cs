@@ -621,26 +621,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-
 					var avgContact = sale_Durations.Select(x => (x.WaitContact + x.Contact))
 													.DefaultIfEmpty()
 													.Average();
-					dash_Avg_NumberOnStage.Contact = avgContact;
+					dash_Avg_NumberOnStage.Contact = double.Round(avgContact, 2, MidpointRounding.AwayFromZero);
 
 					var avgMeet = sale_Durations.Select(x => x.Meet)
 													.DefaultIfEmpty()
 													.Average();
-					dash_Avg_NumberOnStage.Meet = avgMeet;
+					dash_Avg_NumberOnStage.Meet = double.Round(avgMeet, 2, MidpointRounding.AwayFromZero);
 
 					var avgDocument = sale_Durations.Select(x => x.Document)
 													.DefaultIfEmpty()
 													.Average();
-					dash_Avg_NumberOnStage.Document = avgDocument;
+					dash_Avg_NumberOnStage.Document = double.Round(avgDocument, 2, MidpointRounding.AwayFromZero);
 
 					var avgResult = sale_Durations.Select(x => x.Result)
 													.DefaultIfEmpty()
 													.Average();
-					dash_Avg_NumberOnStage.Result = avgResult;
+					dash_Avg_NumberOnStage.Result = double.Round(avgResult, 2, MidpointRounding.AwayFromZero);
 
 					var avgCloseSaleFail = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
 															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
@@ -648,7 +647,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
 													.DefaultIfEmpty()
 													.Average();
-					dash_Avg_NumberOnStage.CloseSaleFail = avgCloseSaleFail;
+					dash_Avg_NumberOnStage.CloseSaleFail = double.Round(avgCloseSaleFail, 2, MidpointRounding.AwayFromZero);
 				}
 
 			}
@@ -1136,7 +1135,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var waitMeetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleModel.WaitMeet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
 					//var meetFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					if (meetFirst != DateTime.MinValue && contactLast != DateTime.MinValue)
+					if (meetFirst != DateTime.MinValue && waitMeetLast != DateTime.MinValue)
 						sale_Durations.WaitMeet = (int)(meetFirst - waitMeetLast).TotalDays;
 
 					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();

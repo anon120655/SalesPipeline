@@ -746,7 +746,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					StatusId = statusSaleId,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
-				});
+				}, new() { ContactStartDate = model.ContactDate });
 			}
 			else
 			{

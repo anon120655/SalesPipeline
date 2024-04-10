@@ -356,9 +356,13 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			}
 			else if (formModel.Nex == 2)
 			{
-				formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse("367288e0-f19c-11ee-998d-30e37aef72fb");
-				//367288e0-f19c-11ee-998d-30e37aef72fb กู้ธนาคารอื่นแล้ว
-				//1fc04d50-f19c-11ee-998d-30e37aef72fb ดอกเบี้ยสูง
+				List<string> master_Reasonlist = new List<string>() { "367288e0-f19c-11ee-998d-30e37aef72fb", //กู้ธนาคารอื่นแล้ว
+																	  "1fc04d50-f19c-11ee-998d-30e37aef72fb", //ดอกเบี้ยสูง
+																	  "26418276-f19c-11ee-998d-30e37aef72fb", //ขาดการติดต่อ
+																	  "27657e4e-f19c-11ee-998d-30e37aef72fb", //ใช้เวลานาน
+																	};
+				int master_Reason = random.Next(master_Reasonlist.Count);
+				formModel.Sale_Close_Sale.Master_Reason_CloseSaleId = Guid.Parse(master_Reasonlist[master_Reason]);
 			}
 
 			ResultModel<Sale_ReplyCustom> response;
