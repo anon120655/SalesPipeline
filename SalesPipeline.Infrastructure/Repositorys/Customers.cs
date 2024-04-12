@@ -289,10 +289,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (user.BranchId.HasValue)
 					{
 						var userMcencer = await _repo.User.GetMcencerByBranchId(user.BranchId.Value);
-						if (userMcencer == null) throw new ExceptionCustom("mcencer branchId not found!");
-
-						assCenterUserId = userMcencer.Id;
-						assCenterUserName = userMcencer.FullName;
+						if (userMcencer != null)
+						{
+							assCenterUserId = userMcencer.Id;
+							assCenterUserName = userMcencer.FullName;
+						}
 					}
 
 					statusSaleId = StatusSaleModel.WaitApprove;

@@ -243,7 +243,13 @@ namespace SalesPipeline.API.Controllers
 				{
 					if (rolecode == RoleCodes.RM)
 					{
-						currentUserId = 13;
+						var user = await _repo.User.GetUserRMByProvinceId(provinceId);
+						if (user == null)
+						{
+							throw new ExceptionCustom($"ไม่พบข้อมูล provinceId={provinceId}");
+						}
+
+						currentUserId = user.Id;
 						employeeName = $"RM_{provinceId}_{i} ทดสอบ";
 
 						var checkAssignmentRM = await _repo.AssignmentRM.CheckAssignmentByUserId(currentUserId);

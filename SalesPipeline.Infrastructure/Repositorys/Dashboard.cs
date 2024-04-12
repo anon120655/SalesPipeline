@@ -457,15 +457,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					dash_Avg_Number.AvgSaleActcloseDeal = (int)avgSaleActcloseDeal;
 
-					var avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
-												 .GroupBy(m => m.AssUserId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key,
-													 Sales = group.Count(),
-												 })
-												 .DefaultIfEmpty()
-												 .Average(a => a.Sales);
+					double avgDealRM = 0;
+					var avgDealRMQuery = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue).FirstOrDefault();
+					if (avgDealRMQuery != null)
+					{
+						avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
+												.GroupBy(m => m.AssUserId)
+												.Select(group => new
+												{
+													GroupID = group.Key,
+													Count = group.Count(),
+												})
+												.DefaultIfEmpty()
+												.Average(a => a.Count);
+					}
+
 
 					dash_Avg_Number.AvgDealRM = (int)(avgDealRM);
 				}

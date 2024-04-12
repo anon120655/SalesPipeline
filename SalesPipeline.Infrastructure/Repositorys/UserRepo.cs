@@ -62,7 +62,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.BranchId.HasValue)
 			{
-				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active 
+				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active
 				&& x.RoleId == model.RoleId
 				&& x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
 				if (usersBranch != null)
@@ -436,6 +436,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			//7=ผู้จัดการศูนย์
 			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 7 && x.BranchId == id).FirstOrDefaultAsync();
+			return _mapper.Map<UserCustom>(query);
+		}
+
+		public async Task<UserCustom> GetUserRMByProvinceId(int id)
+		{
+			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 8 && x.ProvinceId == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
 		}
 
