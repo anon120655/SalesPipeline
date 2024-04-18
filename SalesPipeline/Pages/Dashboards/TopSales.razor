@@ -16,7 +16,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">10 อันดับ ศูนย์ยอดขายสูงสุด</span></p>
+							<p class="back_topic">รายงาน 10 อันดับ ศูนย์ยอดขายสูงสุด</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -49,12 +49,31 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">5,000,000</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="">@item.ProvinceName</td>
+													<td class="text-center">@item.SalesAmount.ToString("#,##0.00")</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>

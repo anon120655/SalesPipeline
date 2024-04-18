@@ -21,6 +21,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//10 อันดับ ศูนย์ยอดขายสูงสุด ,10 อันดับ ศูนย์ยอดขายสูงสุด
 		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model);
 		Task UpdateMap_ThailandById(allFilter model);
+		Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetTopSale(allFilter model);
 		//ระยะเวลาที่ใช้ในแต่ละสเตจ
 		Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model);
 		//ลูกค้าที่ปิดการขาย ,เหตุผลไม่ประสงค์ขอสินเชื่อ

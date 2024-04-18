@@ -153,6 +153,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetTopSale")]
+		public async Task<IActionResult> GetTopSale(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetTopSale(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetAvgOnStage")]
 		public async Task<IActionResult> GetAvgOnStage(allFilter model)
 		{

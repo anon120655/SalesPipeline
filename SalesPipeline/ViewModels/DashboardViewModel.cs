@@ -161,6 +161,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<Dash_Map_ThailandCustom>>>?> GetTopSale(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetTopSale", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Dash_Map_ThailandCustom>>>(content);
+				return new ResultModel<PaginationView<List<Dash_Map_ThailandCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Dash_Map_ThailandCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<Dash_Avg_NumberOnStage>?> GetAvgOnStage(allFilter model)
 		{
 			try

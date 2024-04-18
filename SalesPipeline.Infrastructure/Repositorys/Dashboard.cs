@@ -600,6 +600,50 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetTopSale(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			
+				var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
+
+				if (user.Role.Code != null)
+				{
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+					{
+						query = query.Where(x => x.AssUserId == model.userid);
+					}
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+					{
+						query = query.Where(x => x.AssCenterUserId == model.userid);
+					}
+				}
+
+				var queryGroup =  query.GroupBy(m => m.ProvinceId)
+											 .Select(group => new Dash_Map_ThailandCustom()
+											 {
+												 Type = 1,
+												 ProvinceId = group.Key ?? 0,
+												 ProvinceName = group.First().ProvinceName ?? string.Empty,
+												 SalesAmount = group.Sum(s => s.LoanAmount) ?? 0
+											 })
+											 .OrderByDescending(x => x.SalesAmount).AsQueryable();
+			
+
+			var pager = new Pager(queryGroup.Count(), model.page, model.pagesize, null);
+
+			var items = queryGroup.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Dash_Map_ThailandCustom>>()
+			{
+				Items = _mapper.Map<List<Dash_Map_ThailandCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
 		public async Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
