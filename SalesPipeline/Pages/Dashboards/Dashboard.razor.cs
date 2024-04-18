@@ -18,7 +18,8 @@ namespace SalesPipeline.Pages.Dashboards
 		private Dash_SalesPipelineModel salesPipelineModel = new();
 		private Dash_AvgTop_NumberCustom avgTop_NumberModel = new();
 		private Dash_AvgBottom_NumberCustom avgBottom_NumberModel = new();
-		private List<Dash_Map_ThailandCustom> map_ThailandModel = new();
+		private List<Dash_Map_ThailandCustom> topSaleModel = new();
+		private List<Dash_Map_ThailandCustom> lostSaleModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -57,7 +58,9 @@ namespace SalesPipeline.Pages.Dashboards
 			if (UserInfo.RoleCode != RoleCodes.MCENTER)
 			{
 				//10 อันดับ
-				await Map_Thailand();
+				await TopSaleMap_Thailand();
+				StateHasChanged();
+				await LostSaleMap_Thailand();
 				StateHasChanged();
 			}
 
@@ -152,20 +155,39 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task Map_Thailand()
+		protected async Task TopSaleMap_Thailand()
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetMap_ThailandById(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetTopSale(new() { userid = UserInfo.Id });
 				if (data != null && data.Status && data.Data != null)
 				{
-					map_ThailandModel = data.Data;
+					topSaleModel = data.Data.Items;
 					StateHasChanged();
 					await Task.Delay(10);
 
 					await TopSalesCenter();
-					await CenterLost();
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task LostSaleMap_Thailand()
+		{
+			if (UserInfo.Id > 0)
+			{
+				var data = await _dashboarViewModel.GetLostSale(new() { userid = UserInfo.Id });
+				if (data != null && data.Status && data.Data != null)
+				{
+					lostSaleModel = data.Data.Items;
 					StateHasChanged();
+					await Task.Delay(10);
+
+					await CenterLost();
 				}
 				else
 				{

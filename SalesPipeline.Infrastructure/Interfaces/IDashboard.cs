@@ -22,6 +22,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model);
 		Task UpdateMap_ThailandById(allFilter model);
 		Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetTopSale(allFilter model);
+		Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetLostSale(allFilter model);
 		//ระยะเวลาที่ใช้ในแต่ละสเตจ
 		Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model);
 		//ลูกค้าที่ปิดการขาย ,เหตุผลไม่ประสงค์ขอสินเชื่อ

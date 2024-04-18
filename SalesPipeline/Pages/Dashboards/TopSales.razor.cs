@@ -23,7 +23,6 @@ namespace SalesPipeline.Pages.Dashboards
 
 		}
 
-
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)

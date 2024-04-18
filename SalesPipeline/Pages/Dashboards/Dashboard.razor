@@ -293,12 +293,10 @@
 											<div class="d-flex align-items-end mt-2">
 												<div class="mapbox">
 													<div class="row maptop10">
-														@if (map_ThailandModel.Count > 0)
+														@if (topSaleModel.Count > 0)
 														{
-															var map_ThailandType1 = map_ThailandModel.Where(x => x.Type == 1).OrderByDescending(x => x.SalesAmount).ToList();
-
 															<div class="col-12 col-xl">
-																<MapThailand map_ThailandModel="map_ThailandType1" Type="1" />
+																<MapThailand map_ThailandModel="topSaleModel" Type="1" />
 															</div>
 															<div class="col-12 col-xl-6">
 																<table class="tbl_top10 table table-bordered border-white table-striped">
@@ -309,9 +307,9 @@
 																		</tr>
 																	</thead>
 																	<tbody>
-																		@if (map_ThailandType1.Count > 0)
+																		@if (topSaleModel.Count > 0)
 																		{
-																			foreach (var item in map_ThailandType1)
+																			foreach (var item in topSaleModel)
 																			{
 																				<tr>
 																					<td>@item.ProvinceName</td>
@@ -323,12 +321,12 @@
 																</table>
 															</div>
 															<div class="col-12">
-																@if (map_ThailandType1.Count > 0)
+																@if (topSaleModel.Count > 0)
 																{
 																	<ul class="map-info">
-																		<li class="left info"><span class="number">@map_ThailandType1.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="left info"><span class="number">@topSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
 																		<li class="center"><div class="progress-map"></div></li>
-																		<li class="right info"><span class="number">@map_ThailandType1.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="right info"><span class="number">@topSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
 																	</ul>
 																}
 															</div>
@@ -358,12 +356,10 @@
 											<div class="d-flex align-items-end mt-2">
 												<div class="mapbox">
 													<div class="row mapcenterlost10">
-														@if (map_ThailandModel.Count > 0)
+														@if (lostSaleModel.Count > 0)
 														{
-															var map_ThailandType2 = map_ThailandModel.Where(x => x.Type == 2).OrderBy(x => x.SalesAmount).ToList();
-
 															<div class="col-12 col-xl">
-																<MapThailand map_ThailandModel="map_ThailandType2" />
+																<MapThailand map_ThailandModel="lostSaleModel" />
 															</div>
 															<div class="col-12 col-xl-6">
 																<table class="tbl_top10 table table-bordered border-white table-striped">
@@ -374,9 +370,9 @@
 																		</tr>
 																	</thead>
 																	<tbody>
-																		@if (map_ThailandType2.Count > 0)
+																		@if (lostSaleModel.Count > 0)
 																		{
-																			foreach (var item in map_ThailandType2)
+																			foreach (var item in lostSaleModel)
 																			{
 																				<tr>
 																					<td>@item.ProvinceName</td>
@@ -388,12 +384,12 @@
 																</table>
 															</div>
 															<div class="col-12">
-																@if (map_ThailandType2.Count > 0)
+																@if (lostSaleModel.Count > 0)
 																{
 																	<ul class="map-info">
-																		<li class="left info"><span class="number">@map_ThailandType2.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="left info"><span class="number">@lostSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
 																		<li class="center"><div class="progress-map"></div></li>
-																		<li class="right info"><span class="number">@map_ThailandType2.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="right info"><span class="number">@lostSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
 																	</ul>
 																}
 															</div>

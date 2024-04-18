@@ -484,15 +484,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			string? roleCode = null;
 
-			//if (model.userid.HasValue)
-			//{
-			//	var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
-			//	if (roleList != null)
-			//	{
-			//		roleCode = roleList.Code;
-			//	}
-			//}
-
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
 										 .GroupBy(m => m.AssUserId)
 										 .Select(group => new SaleGroupByModel()
@@ -632,6 +623,53 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											 })
 											 .OrderByDescending(x => x.SalesAmount).AsQueryable();
 			
+
+			var pager = new Pager(queryGroup.Count(), model.page, model.pagesize, null);
+
+			var items = queryGroup.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Dash_Map_ThailandCustom>>()
+			{
+				Items = _mapper.Map<List<Dash_Map_ThailandCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
+		public async Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetLostSale(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active 
+			&& (x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan
+			 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+			 || x.StatusSaleId == StatusSaleModel.CloseSaleFail));
+
+			if (user.Role.Code != null)
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				{
+					query = query.Where(x => x.AssUserId == model.userid);
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					query = query.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
+
+			var queryGroup = query.GroupBy(m => m.ProvinceId)
+										 .Select(group => new Dash_Map_ThailandCustom()
+										 {
+											 Type = 1,
+											 ProvinceId = group.Key ?? 0,
+											 ProvinceName = group.First().ProvinceName ?? string.Empty,
+											 SalesAmount = group.Sum(s => s.LoanAmount) ?? 0
+										 })
+										 .OrderBy(x => x.SalesAmount).AsQueryable();
+
 
 			var pager = new Pager(queryGroup.Count(), model.page, model.pagesize, null);
 

@@ -167,6 +167,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetLostSale")]
+		public async Task<IActionResult> GetLostSale(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetLostSale(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetAvgOnStage")]
 		public async Task<IActionResult> GetAvgOnStage(allFilter model)
 		{
