@@ -78,7 +78,7 @@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.BranchName" type="text" class="form-control">
+												<input @bind="formModel.BranchName" type="text" class="form-control" disabled>
 												<ValidationMessage For="@(() => formModel.BranchName)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
@@ -90,12 +90,12 @@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.EmployeeName" type="text" class="form-control">
+												<input @bind="formModel.EmployeeName" type="text" class="form-control" disabled>
 												<ValidationMessage For="@(() => formModel.EmployeeName)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.EmployeeId" type="text" class="form-control">
+												<input @bind="formModel.EmployeeId" type="text" class="form-control" disabled>
 												<ValidationMessage For="@(() => formModel.EmployeeId)" />
 											</div>
 										</div>

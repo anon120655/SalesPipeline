@@ -396,8 +396,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("วันที่เข้ามาติดต่อ")
                 .HasColumnType("datetime");
             entity.Property(e => e.EmployeeId)
-                .HasComment("รหัสพนักงาน")
-                .HasColumnType("int(11)");
+                .HasMaxLength(10)
+                .HasComment("รหัสพนักงาน");
             entity.Property(e => e.EmployeeName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อพนักงาน");

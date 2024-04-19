@@ -14,8 +14,10 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
 		Task<Dash_AvgTop_NumberCustom> GetAvgTop_NumberById(allFilter model);
 		Task UpdateAvg_NumberById(allFilter model);
-		//ดีลโดยเฉลี่ยต่อองค์กร ,กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย ,ระยะเวลาเฉลี่ยในการส่งมอบ ,ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ
+		//ดีลโดยเฉลี่ยต่อสาขา ,กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย ,ระยะเวลาเฉลี่ยในการส่งมอบ ,ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ
 		Task<Dash_AvgBottom_NumberCustom> GetAvgBottom_NumberById(allFilter model);
+		//list ดีลโดยเฉลี่ยต่อสาขา
+		Task<PaginationView<List<GroupByModel>>> GetListDealBranchById(allFilter model);
 		//จำนวนดีลของพนักงานสินเชื่อแต่ละคน
 		Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model);
 		//10 อันดับ ศูนย์ยอดขายสูงสุด ,10 อันดับ ศูนย์ยอดขายสูงสุด

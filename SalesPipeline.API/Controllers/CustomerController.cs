@@ -316,7 +316,7 @@ namespace SalesPipeline.API.Controllers
 						Master_ContactChannelId = contactChannel[contactChannelRandom],
 						BranchName = $"สาขา_{i}",
 						ProvincialOffice = $"สนจ_{i}",
-						EmployeeId = int.Parse($"50000{i}"),
+						EmployeeId = $"50000{i}",
 						EmployeeName = employeeName,
 						ContactName = $"ผู้ติดต่อ_{i} ทดสอบ",
 						ContactTel = $"08{i.ToString("00000000")}",

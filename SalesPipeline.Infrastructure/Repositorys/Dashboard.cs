@@ -450,6 +450,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
+
+					var avgDealBranch = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue)
+											.GroupBy(m => m.BranchId)
+											.Select(group => new
+											{
+												GroupID = group.Key,
+												Count = group.Count(),
+											})
+											.DefaultIfEmpty()
+											.Average(a => a.Count);
+
+					dash_Avg_Number.AvgDealBranch = (int)avgDealBranch;
+
 					var avgSaleActcloseDeal = _repo.Context.Sales_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
 															 .Select(x => (x.Contact + x.Meet + x.Document))
 															 .DefaultIfEmpty()
@@ -478,6 +491,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			return dash_Avg_Number;
+		}
+
+		public async Task<PaginationView<List<GroupByModel>>> GetListDealBranchById(allFilter model)
+		{
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue)
+										 .GroupBy(m => m.BranchId)
+										 .Select(group => new GroupByModel()
+										 {
+											 GroupID = group.Key.ToString() ?? string.Empty,
+											 Name = group.First().BranchName,
+											 Value = group.Count()
+										 });
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<GroupByModel>>()
+			{
+				Items = _mapper.Map<List<GroupByModel>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 		public async Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model)

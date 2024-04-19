@@ -66,7 +66,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// รหัสพนักงาน
 		/// </summary>
-		public int? EmployeeId { get; set; }
+		public string? EmployeeId { get; set; }
 
 		/// <summary>
 		/// ชื่อผู้ติดต่อ

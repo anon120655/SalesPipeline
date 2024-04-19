@@ -210,6 +210,10 @@ namespace SalesPipeline.ViewModels
 								data.BranchName = datauserMap.BranchName;
 								data.PositionId = datauserMap.PositionId;
 								data.RoleId = datauserMap.RoleId;
+								data.EmployeeId = datauserMap.EmployeeId;
+								data.TitleName = datauserMap.TitleName;
+								data.FirstName = datauserMap.FirstName;
+								data.LastName = datauserMap.LastName;
 
 								if (datauserMap.Master_Department_Branch != null)								
 									data.Master_Department_BranchName = datauserMap.Master_Department_Branch.Name;

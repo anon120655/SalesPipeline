@@ -194,6 +194,22 @@ namespace SalesPipeline.Pages.Customers
 			{
 				formModel.Customer_Shareholders = new() { new() { Id = Guid.NewGuid() } };
 			}
+
+			if (!formModel.DateContact.HasValue)
+			{
+				formModel.DateContact = DateTime.Now.Date;
+			}
+
+			formModel.EmployeeId = UserInfo.EmployeeId;
+			formModel.EmployeeName = UserInfo.FullName;
+			formModel.BranchName = UserInfo.BranchName;
+			if (UserInfo.RoleCode != null)
+			{
+				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN || UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
+				{
+					formModel.BranchName = "สายงานธุรกิจสินเชื่อ";
+				}
+			}
 		}
 
 		protected async Task SetAddress()

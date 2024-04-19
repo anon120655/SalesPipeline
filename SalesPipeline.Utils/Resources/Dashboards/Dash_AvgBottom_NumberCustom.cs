@@ -22,9 +22,9 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 		public int UserId { get; set; }
 
 		/// <summary>
-		/// ดีลโดยเฉลี่ยต่อองค์กร
+		/// ดีลโดยเฉลี่ยต่อสาขา
 		/// </summary>
-		public int AvgDealOrg { get; set; }
+		public int AvgDealBranch { get; set; }
 
 		/// <summary>
 		/// กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย

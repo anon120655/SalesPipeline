@@ -110,6 +110,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetListDealBranchById")]
+		public async Task<IActionResult> GetListDealBranchById(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetListDealBranchById(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetListDealRMById")]
 		public async Task<IActionResult> GetListDealRMById(allFilter model)
 		{

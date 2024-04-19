@@ -39,6 +39,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				throw new ExceptionCustom($"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว");
 			}
+
+			if (model.DateContact.HasValue)
+			{
+				if (model.DateContact.Value.Date > DateTime.Now.Date)
+				{
+					throw new ExceptionCustom($"วันที่เข้ามาติดต่อ ต้องไม่มากกว่าวันที่ปัจจุบัน");
+				}
+			}
 		}
 
 		public Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model)
