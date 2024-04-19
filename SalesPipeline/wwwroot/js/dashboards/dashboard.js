@@ -197,9 +197,12 @@ window.closesale = (_data) => {
 			plugins: [pieLabelsLine],
 		};
 
+		let chart; // define chart variable outside of function
+
 		var ctx = document.getElementById("closesale");
 		if (ctx != null) {
-			const chart = new Chart(ctx, config);
+			if (chart) chart.destroy();
+			chart = new Chart(ctx, config);
 			if (chart != null) {
 				chart.canvas.parentNode.style.height = height + 'px';
 			}
@@ -338,9 +341,12 @@ window.reasonnotloan = (_data, _labels) => {
 			plugins: [pieLabelsLine],
 		};
 
+		let chart; // define chart variable outside of function
+
 		var ctx = document.getElementById("reasonnotloan");
 		if (ctx != null) {
-			const chart = new Chart(ctx, config);
+			if (chart) chart.destroy();
+			chart = new Chart(ctx, config);
 			if (chart != null) {
 				chart.canvas.parentNode.style.height = height + 'px';
 			}
@@ -422,9 +428,12 @@ window.targetsales = (indata) => {
 		}
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("targetsales");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = height + 'px';
 			chart.canvas.parentNode.style.width = width + 'px';
@@ -558,9 +567,12 @@ window.numcussizebusiness = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("numcussizebusiness");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -689,9 +701,12 @@ window.numcustypebusiness = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("numcustypebusiness");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -820,9 +835,12 @@ window.numcusisiccode = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("numcusisiccode");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -951,9 +969,12 @@ window.numcusloantype = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("numcusloantype");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1081,9 +1102,13 @@ window.valuesizebusiness = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
 	var ctx = document.getElementById("valuesizebusiness");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+
+		if (chart) chart.destroy();
+
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1210,9 +1235,12 @@ window.valuetypebusiness = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
 	var ctx = document.getElementById("valuetypebusiness");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1339,9 +1367,13 @@ window.valueisiccode = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
 	var ctx = document.getElementById("valueisiccode");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+
+		if (chart) chart.destroy();
+
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1468,9 +1500,12 @@ window.valueloantype = (_data, _labels) => {
 		plugins: [pieLabelsLine],
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("valueloantype");
 	if (ctx != null) {
-		const chart = new Chart(ctx, config);
+		if (chart) chart.destroy();
+		chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1560,51 +1595,56 @@ window.durationonstage = (_data) => {
 		}
 	};
 
+	let chart; // define chart variable outside of function
+
 	var ctx = document.getElementById("durationonstage");
 	if (ctx != null) {
-		var chart = new Chart(ctx, {
+
+		if (chart) chart.destroy();
+
+		chart = new Chart(ctx, {
 			type: 'bar',
 			data: {
 				labels: ["ติดต่อ", "เข้าพบ", "ยื่นเอกสาร", "ผลลัพธ์การกู้", ['ปิดการขาย', 'ไม่สำเร็จ']],
 				datasets: [
 					{
-					//data: [0, 20, 40, 45, 0],
+						//data: [0, 20, 40, 45, 0],
 						data: [0
 							, (_data.contact),
 							(_data.contact + _data.meet),
 							(_data.contact + _data.meet + _data.document), 0],
-					backgroundColor: "#d5dce4",
-					hoverBackgroundColor: "#d5dce4",
-					datalabels: {
-						display: false
-					}
-				}
-					,
-					{
-					//data: [20, 20, 10, 30, 45],
-						data: [_data.contact, _data.meet, _data.document, _data.result, _data.closeSaleFail],
-					backgroundColor: "#1378D5",
-					hoverBackgroundColor: "#4587c4",
-					datalabels: {
-						display: true,
-						color: "#ffffff",
-						font: {
-							family: 'prompt-regular',
-							size: 9
+						backgroundColor: "#d5dce4",
+						hoverBackgroundColor: "#d5dce4",
+						datalabels: {
+							display: false
 						}
 					}
-				}
-					, {
-					//data: [80, 60, 50, 25, 55],
-						data: [(_data.meet + _data.document + _data.result),
-							(_data.document + _data.result),
-							_data.result, 0, 0],
-					backgroundColor: "#d5dce4",
-					hoverBackgroundColor: "#d5dce4",
-					datalabels: {
-						display: false
+					,
+					{
+						//data: [20, 20, 10, 30, 45],
+						data: [_data.contact, _data.meet, _data.document, _data.result, _data.closeSaleFail],
+						backgroundColor: "#1378D5",
+						hoverBackgroundColor: "#4587c4",
+						datalabels: {
+							display: true,
+							color: "#ffffff",
+							font: {
+								family: 'prompt-regular',
+								size: 9
+							}
+						}
 					}
-				}
+					, {
+						//data: [80, 60, 50, 25, 55],
+						data: [(_data.meet + _data.document + _data.result),
+						(_data.document + _data.result),
+						_data.result, 0, 0],
+						backgroundColor: "#d5dce4",
+						hoverBackgroundColor: "#d5dce4",
+						datalabels: {
+							display: false
+						}
+					}
 				]
 			},
 

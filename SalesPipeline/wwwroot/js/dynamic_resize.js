@@ -1,7 +1,7 @@
 ﻿
 //แก้กรณี moblie คลิกเมนูแลวเมนูไม่ collapse 
 $(document).on("click", ".nav_click", function () {
-	console.log('nav_click..')
+	//console.log('nav_click..')
 	let portWidth = window.innerWidth;
 	if (portWidth >= 200 && portWidth <= 768) {
 		$('.sidebarToggleClick').click()

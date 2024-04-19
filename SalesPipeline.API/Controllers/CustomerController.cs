@@ -241,6 +241,7 @@ namespace SalesPipeline.API.Controllers
 
 				for (int i = 1; i <= number; i++)
 				{
+					bool checkCreate = true;
 					if (rolecode == RoleCodes.RM)
 					{
 						var user = await _repo.User.GetUserRMByProvinceId(provinceId);
@@ -288,102 +289,109 @@ namespace SalesPipeline.API.Controllers
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
 					}
-
-					if (statusSaleId.HasValue)
+					else
 					{
-						_statusSaleId = statusSaleId.Value;
+						checkCreate = false;
 					}
 
-					var random = new Random();
-					String juristicPersonRegNumber = random.Next(000000000, 999999999).ToString("D12");
-					int contactChannelRandom = random.Next(contactChannel.Count);
-					int businessTypeRandom = random.Next(businessType.Count);
-					int businessSizeRandom = random.Next(businessSize.Count);
-					int ISICCodeRandom = random.Next(ISICCode.Count);
-					int YieldRandom = random.Next(Yield.Count);
-					int ChainRandom = random.Next(Chain.Count);
-					int LoanTypeRandom = random.Next(LoanType.Count);
-
-					var data = await _repo.Customer.Create(new()
+					if (checkCreate)
 					{
-						StatusSaleId = _statusSaleId,
-						CurrentUserId = currentUserId, //RM
-						Status = StatusModel.Active,
-						CreateBy = currentUserId,
-						UpdateBy = currentUserId,
-						InsertRoleCode = rolecode,
-						DateContact = DateTime.Now.AddDays(-i),
-						Master_ContactChannelId = contactChannel[contactChannelRandom],
-						BranchName = $"สาขา_{i}",
-						ProvincialOffice = $"สนจ_{i}",
-						EmployeeId = $"50000{i}",
-						EmployeeName = employeeName,
-						ContactName = $"ผู้ติดต่อ_{i} ทดสอบ",
-						ContactTel = $"08{i.ToString("00000000")}",
-						CompanyName = $"บริษัท ทดสอบ_{juristicPersonRegNumber.Substring(8)} จำกัด",
-						JuristicPersonRegNumber = $"1{juristicPersonRegNumber}",
-						Master_BusinessTypeId = businessType[businessTypeRandom],
-						Master_BusinessSizeId = businessSize[businessSizeRandom],
-						Master_ISICCodeId = ISICCode[ISICCodeRandom],
-						Master_YieldId = Yield[YieldRandom],
-						Master_ChainId = Chain[ChainRandom],
-						Master_LoanTypeId = LoanType[LoanTypeRandom],
-						CompanyEmail = $"company_{i}@email.com",
-						CompanyTel = $"02{i.ToString("0000000")}",
-						ParentCompanyGroup = $"บริษัทแม่_{i}",
-						HouseNo = $"10/{i}",
-						VillageNo = int.Parse(i.ToString()),
-						ProvinceId = provinceId,
-						AmphurId = amphurId,
-						TambolId = tambolId,
-						ZipCode = $"3{i.ToString("0000")}",
-						ShareholderMeetDay = DateTime.Now,
-						RegisteredCapital = "1000000",
-						CreditScore = $"5{i.ToString("000")}",
-						FiscalYear = $"2567",
-						StatementDate = DateTime.Now,
-						TradeAccReceivable = $"ลูกหนี้การค้า_{i}",
-						TradeAccRecProceedsNet = $"ตั่วเงินรับ-สุทธิ_{i}",
-						Inventories = $"1{i.ToString("0000")}",
-						LoansShort = 1000000,
-						TotalCurrentAssets = 2000000,
-						LoansLong = 3000000,
-						LandBuildingEquipment = 4000000,
-						TotalNotCurrentAssets = 5000000,
-						AssetsTotal = 6000000,
-						TradeAccPay = $"เจ้าหนี้การค้า_{i}",
-						TradeAccPayLoansShot = 10000000,
-						TradeAccPayTotalCurrentLia = 20000000,
-						TradeAccPayLoansLong = 30000000,
-						TradeAccPayTotalNotCurrentLia = 40000000,
-						TradeAccPayForLoansShot = 50000000,
-						TradeAccPayTotalLiabilitie = 60000000,
-						RegisterCapitalOrdinary = 70000000,
-						RegisterCapitalPaid = 180000000,
-						ProfitLossAccumulate = 90000000,
-						TotalShareholders = 10000000,
-						TotalLiabilitieShareholders = 20000000,
-						TotalIncome = 30000000,
-						CostSales = 40000000,
-						GrossProfit = 150000000,
-						OperatingExpenses = 160000000,
-						ProfitLossBeforeDepExp = 70000000,
-						ProfitLossBeforeInterestTax = 80000000,
-						NetProfitLoss = 90000000,
-						InterestLoan = $"สินเชื่อที่สนใจ_{i}",
-						InterestLoanSpecify = $"ระบุ_{i}",
-						InterestObjectiveLoan = $"จุดประสงค์การกู้_{i}",
-						InterestCreditLimit = 1000000000,
-						InterestNote = $"หมายเหตุ_{i}",
-						Customer_Committees = new() {
+						if (statusSaleId.HasValue)
+						{
+							_statusSaleId = statusSaleId.Value;
+						}
+
+						var random = new Random();
+						String juristicPersonRegNumber = random.Next(000000000, 999999999).ToString("D12");
+						int contactChannelRandom = random.Next(contactChannel.Count);
+						int businessTypeRandom = random.Next(businessType.Count);
+						int businessSizeRandom = random.Next(businessSize.Count);
+						int ISICCodeRandom = random.Next(ISICCode.Count);
+						int YieldRandom = random.Next(Yield.Count);
+						int ChainRandom = random.Next(Chain.Count);
+						int LoanTypeRandom = random.Next(LoanType.Count);
+
+						var data = await _repo.Customer.Create(new()
+						{
+							StatusSaleId = _statusSaleId,
+							CurrentUserId = currentUserId, //RM
+							Status = StatusModel.Active,
+							CreateBy = currentUserId,
+							UpdateBy = currentUserId,
+							InsertRoleCode = rolecode,
+							DateContact = DateTime.Now.AddDays(-i),
+							Master_ContactChannelId = contactChannel[contactChannelRandom],
+							BranchName = $"สาขา_{i}",
+							ProvincialOffice = $"สนจ_{i}",
+							EmployeeId = $"50000{i}",
+							EmployeeName = employeeName,
+							ContactName = $"ผู้ติดต่อ_{i} ทดสอบ",
+							ContactTel = $"08{i.ToString("00000000")}",
+							CompanyName = $"บริษัท ทดสอบ_{juristicPersonRegNumber.Substring(8)} จำกัด",
+							JuristicPersonRegNumber = $"1{juristicPersonRegNumber}",
+							Master_BusinessTypeId = businessType[businessTypeRandom],
+							Master_BusinessSizeId = businessSize[businessSizeRandom],
+							Master_ISICCodeId = ISICCode[ISICCodeRandom],
+							Master_YieldId = Yield[YieldRandom],
+							Master_ChainId = Chain[ChainRandom],
+							Master_LoanTypeId = LoanType[LoanTypeRandom],
+							CompanyEmail = $"company_{i}@email.com",
+							CompanyTel = $"02{i.ToString("0000000")}",
+							ParentCompanyGroup = $"บริษัทแม่_{i}",
+							HouseNo = $"10/{i}",
+							VillageNo = int.Parse(i.ToString()),
+							ProvinceId = provinceId,
+							AmphurId = amphurId,
+							TambolId = tambolId,
+							ZipCode = $"3{i.ToString("0000")}",
+							ShareholderMeetDay = DateTime.Now,
+							RegisteredCapital = "1000000",
+							CreditScore = $"5{i.ToString("000")}",
+							FiscalYear = $"2567",
+							StatementDate = DateTime.Now,
+							TradeAccReceivable = $"ลูกหนี้การค้า_{i}",
+							TradeAccRecProceedsNet = $"ตั่วเงินรับ-สุทธิ_{i}",
+							Inventories = $"1{i.ToString("0000")}",
+							LoansShort = 1000000,
+							TotalCurrentAssets = 2000000,
+							LoansLong = 3000000,
+							LandBuildingEquipment = 4000000,
+							TotalNotCurrentAssets = 5000000,
+							AssetsTotal = 6000000,
+							TradeAccPay = $"เจ้าหนี้การค้า_{i}",
+							TradeAccPayLoansShot = 10000000,
+							TradeAccPayTotalCurrentLia = 20000000,
+							TradeAccPayLoansLong = 30000000,
+							TradeAccPayTotalNotCurrentLia = 40000000,
+							TradeAccPayForLoansShot = 50000000,
+							TradeAccPayTotalLiabilitie = 60000000,
+							RegisterCapitalOrdinary = 70000000,
+							RegisterCapitalPaid = 180000000,
+							ProfitLossAccumulate = 90000000,
+							TotalShareholders = 10000000,
+							TotalLiabilitieShareholders = 20000000,
+							TotalIncome = 30000000,
+							CostSales = 40000000,
+							GrossProfit = 150000000,
+							OperatingExpenses = 160000000,
+							ProfitLossBeforeDepExp = 70000000,
+							ProfitLossBeforeInterestTax = 80000000,
+							NetProfitLoss = 90000000,
+							InterestLoan = $"สินเชื่อที่สนใจ_{i}",
+							InterestLoanSpecify = $"ระบุ_{i}",
+							InterestObjectiveLoan = $"จุดประสงค์การกู้_{i}",
+							InterestCreditLimit = 1000000000,
+							InterestNote = $"หมายเหตุ_{i}",
+							Customer_Committees = new() {
 							new() { Name = $"คณะกรรมการ_1" },
 							new() { Name = $"คณะกรรมการ_2" }
 						},
-						Customer_Shareholders = new() {
+							Customer_Shareholders = new() {
 							new() { Name = $"ผู้ถือหุ้น_1" , Nationality="ไทย", Proportion = "40%", NumberShareholder = 40 ,TotalShareValue = 400000 },
 							new() { Name = $"ผู้ถือหุ้น_2" , Nationality="ไทย", Proportion = "60%", NumberShareholder = 60 ,TotalShareValue = 600000 }
 						}
-					});
+						});
+					}
 				}
 
 				return Ok();
