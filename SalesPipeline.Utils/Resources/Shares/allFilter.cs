@@ -19,6 +19,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int? assignrm { get; set; }
         public string? assignrm_name { get; set; }
 		public string? contact_name { get; set; }
+		public string? code { get; set; }
 		public string? rolecode { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
@@ -89,6 +90,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(contact_name))
 				ParameterAll += $"&contact_name={contact_name}";
+
+			if (!String.IsNullOrEmpty(code))
+				ParameterAll += $"&code={code}";
 
 			if (!String.IsNullOrEmpty(rolecode))
 				ParameterAll += $"&rolecode={rolecode}";
@@ -217,6 +221,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(contact_name), out var _contact_name))
 				contact_name = _contact_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(code), out var _code))
+				code = _code;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(rolecode), out var _rolecode))
 				rolecode = _rolecode;

@@ -223,6 +223,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetListNumberCustomer")]
+		public async Task<IActionResult> GetListNumberCustomer(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetListNumberCustomer(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetPieLoanValue")]
 		public async Task<IActionResult> GetPieLoanValue(allFilter model)
 		{

@@ -324,6 +324,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Dash_PieCustom>>?> GetListNumberCustomer(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetListNumberCustomer", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<Dash_PieCustom>>(content);
+				return new ResultModel<List<Dash_PieCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Dash_PieCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<List<Dash_PieCustom>>?> GetPieLoanValue(allFilter model)
 		{
 			try

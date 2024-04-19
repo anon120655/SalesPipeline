@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
@@ -21,6 +22,7 @@ namespace SalesPipeline.Pages.Dashboards
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
 
+			filter.sort = OrderByModel.DESC;
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -39,22 +41,23 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetInitManual()
 		{
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "DisplaySort");
 			await Task.Delay(10);
-			//var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
-			//if (businessType != null && businessType.Status)
-			//{
-			//	LookUp.BusinessType = businessType.Data?.Items;
-			//}
-			//else
-			//{
-			//	_errorMessage = businessType?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
 
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 
-			//StateHasChanged();
-			//await Task.Delay(10);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			StateHasChanged();
+			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -113,6 +116,35 @@ namespace SalesPipeline.Pages.Dashboards
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnProvince(ChangeEventArgs e)
+		{
+			filter.provinceid = null;
+			if (e.Value != null)
+			{
+				if (int.TryParse(e.Value.ToString(), out int id))
+				{
+					filter.provinceid = id;
+				}
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
+		}
+
+		protected async Task OnSort(ChangeEventArgs e)
+		{
+			filter.sort = null;
+			if (e.Value != null)
+			{
+				filter.sort = e.Value.ToString();
+
+				await SetModel();
+				StateHasChanged();
+				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			}
 		}
 
 	}

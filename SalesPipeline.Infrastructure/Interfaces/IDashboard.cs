@@ -29,6 +29,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(allFilter model);
 		//จำนวนลูกค้าตาม...
 		Task<List<Dash_PieCustom>> GetPieNumberCustomer(allFilter model);
+		Task<List<Dash_PieCustom>> GetListNumberCustomer(allFilter model);
 		//มูลค่าสินเชื่อตาม...
 		Task<List<Dash_PieCustom>> GetPieLoanValue(allFilter model);
 		//ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง

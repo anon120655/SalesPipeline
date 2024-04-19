@@ -598,22 +598,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			
-				var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
 
-				if (user.Role.Code != null)
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
+
+			if (user.Role.Code != null)
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-					{
-						query = query.Where(x => x.AssUserId == model.userid);
-					}
-					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
-					{
-						query = query.Where(x => x.AssCenterUserId == model.userid);
-					}
+					query = query.Where(x => x.AssUserId == model.userid);
 				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+					query = query.Where(x => x.AssCenterUserId == model.userid);
+				}
+			}
 
-				var queryGroup =  query.GroupBy(m => m.ProvinceId)
+			if (model.provinceid > 0)
+			{
+				query = query.Where(x => x.ProvinceId == model.provinceid);
+			}
+
+			var queryGroup = query.GroupBy(m => m.ProvinceId)
 											 .Select(group => new Dash_Map_ThailandCustom()
 											 {
 												 Type = 1,
@@ -621,8 +626,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 ProvinceName = group.First().ProvinceName ?? string.Empty,
 												 SalesAmount = group.Sum(s => s.LoanAmount) ?? 0
 											 })
-											 .OrderByDescending(x => x.SalesAmount).AsQueryable();
-			
+											 .OrderByDescending(x => x.SalesAmount);
+
+			if (!String.IsNullOrEmpty(model.sort))
+			{
+				if (model.sort == OrderByModel.ASC)
+				{
+					queryGroup = queryGroup.OrderBy(x => x.SalesAmount);
+				}
+				else if (model.sort == OrderByModel.DESC)
+				{
+					queryGroup = queryGroup.OrderByDescending(x => x.SalesAmount);
+				}
+			}
 
 			var pager = new Pager(queryGroup.Count(), model.page, model.pagesize, null);
 
@@ -643,7 +659,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active 
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active
 			&& (x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan
 			 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
 			 || x.StatusSaleId == StatusSaleModel.CloseSaleFail));
@@ -660,6 +676,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.provinceid > 0)
+			{
+				query = query.Where(x => x.ProvinceId == model.provinceid);
+			}
+
 			var queryGroup = query.GroupBy(m => m.ProvinceId)
 										 .Select(group => new Dash_Map_ThailandCustom()
 										 {
@@ -670,6 +691,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										 })
 										 .OrderBy(x => x.SalesAmount).AsQueryable();
 
+			if (!String.IsNullOrEmpty(model.sort))
+			{
+				if (model.sort == OrderByModel.ASC)
+				{
+					queryGroup = queryGroup.OrderBy(x => x.SalesAmount);
+				}
+				else if (model.sort == OrderByModel.DESC)
+				{
+					queryGroup = queryGroup.OrderByDescending(x => x.SalesAmount);
+				}
+			}
 
 			var pager = new Pager(queryGroup.Count(), model.page, model.pagesize, null);
 
@@ -976,6 +1008,118 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							});
 						}
 					}
+
+				}
+			}
+
+			return response;
+		}
+
+		public async Task<List<Dash_PieCustom>> GetListNumberCustomer(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var response = new List<Dash_PieCustom>();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					if (model.code == Dash_PieCodeModel.NumCusSizeBusiness)
+					{
+						var salesBusinessSize = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+													 .GroupBy(m => m.Master_BusinessSizeId)
+													 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+													 .ToList();
+
+						if (salesBusinessSize.Count > 0)
+						{
+							var useLoop = salesBusinessSize.OrderByDescending(x => x.Customers.Count);
+							foreach (var item in useLoop)
+							{
+								response.Add(new()
+								{
+									Status = StatusModel.Active,
+									Code = Dash_PieCodeModel.NumCusSizeBusiness,
+									TitleName = "จำนวนลูกค้าตามขนาดธุรกิจ",
+									Name = $"{item.Customers.Select(x => x.Master_BusinessSizeName).FirstOrDefault()} ",
+									Value = item.Customers.Count
+								});
+							}
+						}
+					}
+					else if (model.code == Dash_PieCodeModel.NumCusTypeBusiness)
+					{
+						var salesBusinessType = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+													 .GroupBy(m => m.Master_BusinessTypeId)
+													 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+													 .ToList();
+						if (salesBusinessType.Count > 0)
+						{
+							var useLoop = salesBusinessType.OrderByDescending(x => x.Customers.Count);
+							foreach (var item in useLoop)
+							{
+								response.Add(new()
+								{
+									Status = StatusModel.Active,
+									Code = Dash_PieCodeModel.NumCusTypeBusiness,
+									TitleName = "จำนวนลูกค้าตามประเภทธุรกิจ",
+									Name = $"{item.Customers.Select(x => x.Master_BusinessTypeName).FirstOrDefault()} ",
+									Value = item.Customers.Count
+								});
+							}
+						}
+					}
+					else if (model.code == Dash_PieCodeModel.NumCusISICCode)
+					{
+						var salesISICCode = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+													 .GroupBy(m => m.Master_ISICCodeId)
+													 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+													 .ToList();
+						if (salesISICCode.Count > 0)
+						{
+							var useLoop = salesISICCode.OrderByDescending(x => x.Customers.Count);
+							foreach (var item in useLoop)
+							{
+								response.Add(new()
+								{
+									Status = StatusModel.Active,
+									Code = Dash_PieCodeModel.NumCusISICCode,
+									TitleName = "จำนวนลูกค้าตาม ISIC Code",
+									Name = $"{item.Customers.Select(x => x.Master_ISICCodeName).FirstOrDefault()} ",
+									Value = item.Customers.Count
+								});
+							}
+						}
+
+					}
+					else if (model.code == Dash_PieCodeModel.NumCusLoanType)
+					{
+						var salesLoanType = _repo.Context.Customers.Where(x => x.Status == StatusModel.Active)
+													 .GroupBy(m => m.Master_LoanTypeId)
+													 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+													 .ToList();
+						if (salesLoanType.Count > 0)
+						{
+							var useLoop = salesLoanType.OrderByDescending(x => x.Customers.Count);
+							foreach (var item in useLoop)
+							{
+								response.Add(new()
+								{
+									Status = StatusModel.Active,
+									Code = Dash_PieCodeModel.NumCusLoanType,
+									TitleName = "จำนวนลูกค้าตามประเภทสินเชื่อ",
+									Name = $"{item.Customers.Select(x => x.Master_LoanTypeName).FirstOrDefault()} ",
+									Value = item.Customers.Count
+								});
+							}
+						}
+
+					}
+
 
 				}
 			}

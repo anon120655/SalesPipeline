@@ -1,7 +1,7 @@
 ﻿
 @page "/dashboard/lostsales"
 
-<PageTitle>10 อันดับ ศูนย์ที่แพ้ให้กับคู่แข่งสูงสุด</PageTitle>
+<PageTitle>10 อันดับ จังหวัดที่แพ้ให้กับคู่แข่งสูงสุด</PageTitle>
 
 
 <MessageError errorMessage="@_errorMessage" />
@@ -17,20 +17,29 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน 10 อันดับ ศูนย์ยอดขายสูงสุด</p>
+							<p class="back_topic">รายงาน 10 อันดับ จังหวัดที่แพ้ให้กับคู่แข่งสูงสุด</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">จังหวัด</label>
+							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">เรียง</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @onchange="OnSort" id="DisplaySort" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ค่าเริ่มต้น</option>
+								<option value="@OrderByModel.ASC">น้อย ไป มาก</option>
+								<option value="@OrderByModel.DESC">มาก ไป น้อย</option>
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
@@ -45,7 +54,7 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">จังหวัด</th>
 											<th class="text-center">ยอดขาย</th>
 										</tr>
 									</thead>
