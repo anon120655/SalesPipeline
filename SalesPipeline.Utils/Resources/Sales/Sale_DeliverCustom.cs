@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Sales
 {
-	public class Sales_ActivityCustom
+	public class Sale_DeliverCustom
 	{
 		public Guid Id { get; set; }
 
@@ -27,28 +27,21 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// ติดต่อ(ครั้ง)
 		/// </summary>
-		public int Contact { get; set; }
+		public int LoanToBranch { get; set; }
 
 		/// <summary>
 		/// เข้าพบ(ครั้ง)
 		/// </summary>
-		public int Meet { get; set; }
+		public int BranchToMcenter { get; set; }
 
 		/// <summary>
 		/// ยื่นเอกสาร(ครั้ง)
 		/// </summary>
-		public int Document { get; set; }
-
-		/// <summary>
-		/// ผลลัพธ์(ครั้ง)
-		/// </summary>
-		public int Result { get; set; }
+		public int McenterToRM { get; set; }
 
 		/// <summary>
 		/// ปิดการขาย(ครั้ง)
 		/// </summary>
 		public int CloseSale { get; set; }
-
-		public virtual SaleCustom? Sale { get; set; }
 	}
 }

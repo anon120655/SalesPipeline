@@ -38,7 +38,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<Sale_DurationCustom>>> GetDuration(allFilter model);
 		Task UpdateDurationById(allFilter model);
 		//กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย ,ระยะเวลาที่ใช้ในแต่ละสเตจ
-		Task<PaginationView<List<Sales_ActivityCustom>>> GetActivity(allFilter model);
+		Task<PaginationView<List<Sale_ActivityCustom>>> GetActivity(allFilter model);
 		Task UpdateActivityById(allFilter model);
 		//เหตุผลไม่ประสงค์ขอสินเชื่อ
 		Task<List<Dash_PieCustom>> GetGroupReasonNotLoan(allFilter model);

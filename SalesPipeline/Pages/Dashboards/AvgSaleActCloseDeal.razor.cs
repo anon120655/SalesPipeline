@@ -12,7 +12,7 @@ namespace SalesPipeline.Pages.Dashboards
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<Sales_ActivityCustom>? Items;
+		private List<Sale_ActivityCustom>? Items;
 		public Pager? Pager;
 
 		protected override async Task OnInitializedAsync()

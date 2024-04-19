@@ -104,11 +104,15 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale> Sales { get; set; }
 
+    public virtual DbSet<Sale_Activity> Sale_Activities { get; set; }
+
     public virtual DbSet<Sale_Close_Sale> Sale_Close_Sales { get; set; }
 
     public virtual DbSet<Sale_Contact> Sale_Contacts { get; set; }
 
     public virtual DbSet<Sale_Contact_History> Sale_Contact_Histories { get; set; }
+
+    public virtual DbSet<Sale_Deliver> Sale_Delivers { get; set; }
 
     public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
 
@@ -131,8 +135,6 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Sale_Status> Sale_Statuses { get; set; }
 
     public virtual DbSet<Sale_Status_Total> Sale_Status_Totals { get; set; }
-
-    public virtual DbSet<Sales_Activity> Sales_Activities { get; set; }
 
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
@@ -1556,6 +1558,43 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("sale_ibfk_2");
         });
 
+        modelBuilder.Entity<Sale_Activity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Activity", tb => tb.HasComment("จำนวนครั้งการดำเนินการแต่ละขั้นตอน"));
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CloseSale)
+                .HasComment("ปิดการขาย(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Contact)
+                .HasComment("ติดต่อ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Document)
+                .HasComment("ยื่นเอกสาร(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Meet)
+                .HasComment("เข้าพบ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Result)
+                .HasComment("ผลลัพธ์(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Activities)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_activity_ibfk_1");
+        });
+
         modelBuilder.Entity<Sale_Close_Sale>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -1726,6 +1765,33 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.StatusSaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_contact_history_ibfk_2");
+        });
+
+        modelBuilder.Entity<Sale_Deliver>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Deliver", tb => tb.HasComment("ระยะเวลาในการส่งมอบ"));
+
+            entity.Property(e => e.BranchToMcenter)
+                .HasComment("เข้าพบ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CloseSale)
+                .HasComment("ปิดการขาย(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.LoanToBranch)
+                .HasComment("ติดต่อ(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.McenterToRM)
+                .HasComment("ยื่นเอกสาร(ครั้ง)")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
         });
 
         modelBuilder.Entity<Sale_Document>(entity =>
@@ -2292,43 +2358,6 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_status_total_ibfk_1");
-        });
-
-        modelBuilder.Entity<Sales_Activity>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Sales_Activity", tb => tb.HasComment("จำนวนครั้งการดำเนินการแต่ละขั้นตอน"));
-
-            entity.HasIndex(e => e.SaleId, "SaleId");
-
-            entity.Property(e => e.CloseSale)
-                .HasComment("ปิดการขาย(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.Contact)
-                .HasComment("ติดต่อ(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.ContactName)
-                .HasMaxLength(255)
-                .HasComment("ชื่อผู้ติดต่อ");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Document)
-                .HasComment("ยื่นเอกสาร(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.Meet)
-                .HasComment("เข้าพบ(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.Result)
-                .HasComment("ผลลัพธ์(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.Sale).WithMany(p => p.Sales_Activities)
-                .HasForeignKey(d => d.SaleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("sales_activity_ibfk_1");
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

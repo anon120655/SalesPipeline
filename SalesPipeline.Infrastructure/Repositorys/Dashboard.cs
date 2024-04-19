@@ -463,7 +463,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					dash_Avg_Number.AvgDealBranch = (int)avgDealBranch;
 
-					var avgSaleActcloseDeal = _repo.Context.Sales_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
+					var avgSaleActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
 															 .Select(x => (x.Contact + x.Meet + x.Document))
 															 .DefaultIfEmpty()
 															 .Average();
@@ -1488,9 +1488,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<PaginationView<List<Sales_ActivityCustom>>> GetActivity(allFilter model)
+		public async Task<PaginationView<List<Sale_ActivityCustom>>> GetActivity(allFilter model)
 		{
-			IQueryable<Sales_Activity> query;
+			IQueryable<Sale_Activity> query;
 			string? roleCode = null;
 
 			if (model.userid.HasValue)
@@ -1502,7 +1502,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			query = _repo.Context.Sales_Activities.Include(x => x.Sale)
+			query = _repo.Context.Sale_Activities.Include(x => x.Sale)
 												.Where(x => x.Status != StatusModel.Delete)
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
@@ -1531,9 +1531,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Sales_ActivityCustom>>()
+			return new PaginationView<List<Sale_ActivityCustom>>()
 			{
-				Items = _mapper.Map<List<Sales_ActivityCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Sale_ActivityCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}
@@ -1542,7 +1542,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (model.saleid.HasValue)
 			{
-				var sales_Activities = await _repo.Context.Sales_Activities.FirstOrDefaultAsync(x => x.SaleId == model.saleid.Value);
+				var sales_Activities = await _repo.Context.Sale_Activities.FirstOrDefaultAsync(x => x.SaleId == model.saleid.Value);
 
 				int CRUD = CRUDModel.Update;
 

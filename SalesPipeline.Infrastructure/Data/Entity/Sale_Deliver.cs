@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// จำนวนครั้งการดำเนินการแต่ละขั้นตอน
+/// ระยะเวลาในการส่งมอบ
 /// </summary>
-public partial class Sales_Activity
+public partial class Sale_Deliver
 {
     public Guid Id { get; set; }
 
@@ -27,27 +27,20 @@ public partial class Sales_Activity
     /// <summary>
     /// ติดต่อ(ครั้ง)
     /// </summary>
-    public int Contact { get; set; }
+    public int LoanToBranch { get; set; }
 
     /// <summary>
     /// เข้าพบ(ครั้ง)
     /// </summary>
-    public int Meet { get; set; }
+    public int BranchToMcenter { get; set; }
 
     /// <summary>
     /// ยื่นเอกสาร(ครั้ง)
     /// </summary>
-    public int Document { get; set; }
-
-    /// <summary>
-    /// ผลลัพธ์(ครั้ง)
-    /// </summary>
-    public int Result { get; set; }
+    public int McenterToRM { get; set; }
 
     /// <summary>
     /// ปิดการขาย(ครั้ง)
     /// </summary>
     public int CloseSale { get; set; }
-
-    public virtual Sale Sale { get; set; } = null!;
 }
