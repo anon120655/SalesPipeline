@@ -2,6 +2,7 @@
 using Azure;
 using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
@@ -1697,6 +1698,112 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				response = await GetDataTypeBusiness(model, response);
 				response = await GetDataPieCloseSale(model, response);
 				response = await GetDataPieReasonFail(model, response);
+			}
+
+			return response;
+		}
+
+		public async Task<List<GroupByModel>> GetAvgTopBar(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			model.rolecode = user.Role.Code.ToUpper();
+
+			var response = new List<GroupByModel>();
+
+			var query = _repo.Context.Sales
+									 .Where(x => x.Status == StatusModel.Active)
+									 .OrderByDescending(x => x.CreateDate)
+									 .AsQueryable();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					var avgcountry = query.Select(x => x.LoanAmount)
+													.DefaultIfEmpty()
+													.Average();
+					if (avgcountry.HasValue)
+					{
+						response.Add(new()
+						{
+							GroupID = "country",
+							Name = "ประเทศ",
+							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+
+					//var queryRegion = await query.Where(x => x.LoanAmount > 0).GroupBy(g => g.Master_Department_BranchId)
+					//							 .Select(group => new
+					//							 {
+					//								 GroupID = group.Key.ToString(),
+					//								 Name = "",
+					//								 Value = group.Sum(s => s.LoanAmount)
+					//							 }).AverageAsync(a => a.Value);
+
+					var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+												 .Select(group => new
+												 {
+													 GroupID = group.Key.ToString(),
+													 Value = group.Sum(s => s.LoanAmount)
+												 }).ToListAsync();
+					if (queryRegion.Count > 0)
+					{
+						var avg = queryRegion.Average(a => a.Value) ?? 0;
+						response.Add(new()
+						{
+							GroupID = "region",
+							Name = "ภูมิภาคทั้งหมด",
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+
+					var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+												 .Select(group => new
+												 {
+													 GroupID = group.Key.ToString(),
+													 Value = group.Sum(s => s.LoanAmount)
+												 }).ToListAsync();
+					if (queryBranch.Count > 0)
+					{
+						var avg = queryBranch.Average(a => a.Value) ?? 0;
+						response.Add(new()
+						{
+							GroupID = "branch",
+							Name = "ศูนย์สาขาทั้งหมด",
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+
+					var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
+												 .Select(group => new
+												 {
+													 GroupID = group.Key.ToString(),
+													 Value = group.Sum(s => s.LoanAmount)
+												 }).ToListAsync();
+					if (queryRM.Count > 0)
+					{
+						var avg = queryRM.Average(a => a.Value) ?? 0;
+						response.Add(new()
+						{
+							GroupID = "rm",
+							Name = "RM ทั้งหมด",
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+
+				}
+
 			}
 
 			return response;

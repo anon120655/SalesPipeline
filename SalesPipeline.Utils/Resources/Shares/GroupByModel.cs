@@ -10,6 +10,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 	{
 		public string? GroupID { get; set; }
 		public string? Name { get; set; }
-        public int Value { get; set; }
+        public decimal Value { get; set; }
     }
 }

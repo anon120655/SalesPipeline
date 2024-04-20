@@ -48,5 +48,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<SalesFunnelModel> GetSalesFunnel(allFilter model);
 		//รายได้จำแนกตามประเภทธุรกิจ ,สัดส่วนการปิดการขาย ,เหตุผลที่ปิดการขายไม่สำเร็จ
 		Task<List<Dash_PieCustom>> GetPieRM(allFilter model);
+		//มูลค่าเฉลี่ยต่อหนึ่งดีล ประเทศ,ภูมิภาคทั้งหมด,ศูนย์สาขาทั้งหมด,RM ทั้งหมด
+		Task<List<GroupByModel>> GetAvgTopBar(allFilter model);
 	}
 }

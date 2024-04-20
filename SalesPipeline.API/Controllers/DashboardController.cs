@@ -383,5 +383,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgTopBar")]
+		public async Task<IActionResult> GetAvgTopBar(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgTopBar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

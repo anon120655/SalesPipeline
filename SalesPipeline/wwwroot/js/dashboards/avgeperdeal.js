@@ -1,9 +1,12 @@
-﻿window.avgdeal_bar1 = (indata) => {
+﻿window.avgdeal_bar1 = (_data, _labels) => {
+
+	console.log(_data, _labels)
+
 	const data = {
-		labels: ["ประเทศ", "ภูมิภาค A", "สาขา 1,สาขา 2", "RM ทั้งหมด "],
+		labels: _labels,
 		datasets: [{
 			label: '',
-			data: [75000, 70000, 80000, 50000, 90000],
+			data: _data,
 			barThickness: 80,
 			backgroundColor: [
 				'#1f4e78',
@@ -44,7 +47,7 @@
 	}
 }
 
-window.avgdeal_bar2 = (indata) => {
+window.avgdeal_bar2 = (_data) => {
 	const data = {
 		datasets: [{
 			label: '',
@@ -116,7 +119,8 @@ window.avgdeal_bar2 = (indata) => {
 		};
 	}
 }
-window.avgdeal_bar3 = (indata) => {
+
+window.avgdeal_bar3 = (_data) => {
 	const data = {
 		labels: ["ประเทศ", "ภูมิภาค A", "สาขา 1", "สาขา 2", "สาขา 3"],
 		datasets: [{
@@ -162,7 +166,8 @@ window.avgdeal_bar3 = (indata) => {
 		}
 	}
 }
-window.avgdeal_bar4 = (indata) => {
+
+window.avgdeal_bar4 = (_data) => {
 	const data = {
 		labels: ["ประเทศ", "สาขา 1", "RM 1", "RM 2", "RM 3"],
 		datasets: [{

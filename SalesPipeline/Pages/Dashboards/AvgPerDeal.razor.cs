@@ -306,7 +306,28 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task AvgDeal_Bar1()
 		{
-			await _jsRuntimes.InvokeVoidAsync("avgdeal_bar1", null);
+			var data = await _dashboarViewModel.GetAvgTopBar(new() { userid = UserInfo.Id });
+			if (data != null && data.Status)
+			{
+				var labels = new List<string?>();
+				var datas = new List<decimal>();
+
+				if (data.Data?.Count > 0)
+				{
+					foreach (var item in data.Data)
+					{
+						labels.Add(item.Name);
+						datas.Add(item.Value);
+					}
+				}
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar1", datas.ToArray(), labels.ToArray());
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 		}
 
 		protected async Task AvgDeal_Bar2()
