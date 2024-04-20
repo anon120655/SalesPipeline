@@ -1,6 +1,7 @@
 ﻿window.avgdeal_bar1 = (_data, _labels) => {
 
-	console.log(_data, _labels)
+	console.log(_data)
+	console.log(_labels)
 
 	const data = {
 		labels: _labels,
