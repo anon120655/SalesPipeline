@@ -309,18 +309,21 @@ namespace SalesPipeline.Pages.Dashboards
 			var data = await _dashboarViewModel.GetAvgTopBar(new() { userid = UserInfo.Id });
 			if (data != null && data.Status)
 			{
-				var labels = new List<string?>();
-				var datas = new List<decimal>();
+				var datas = new List<ChartJSDataModel>();
 
 				if (data.Data?.Count > 0)
 				{
 					foreach (var item in data.Data)
 					{
-						labels.Add(item.Name);
-						datas.Add(item.Value);
+						datas.Add(new()
+						{
+							id = item.GroupID,
+							x = item.Name ?? string.Empty,
+							y = item.Value
+						});
 					}
 				}
-				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar1", datas.ToArray(), labels.ToArray());
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar1", datas);
 			}
 			else
 			{
@@ -359,7 +362,37 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task AvgDeal_Bar3()
 		{
-			await _jsRuntimes.InvokeVoidAsync("avgdeal_bar3", null);
+			List<string?> department_BranchList = new() { "788b8633-cd3b-11ee-ac10-30e37aef72fb", "7550476c-c1b1-11ee-bf19-0205965f5884" };
+			List<string?> branchList = new() { "3", "143", "62" };
+			var data = await _dashboarViewModel.GetAvgBranchBar(new()
+			{
+				userid = UserInfo.Id,
+				//Selecteds = department_BranchList,
+				//Selecteds2 = branchList
+			});
+			if (data != null && data.Status)
+			{
+				var datas = new List<ChartJSDataModel>();
+
+				if (data.Data?.Count > 0)
+				{
+					foreach (var item in data.Data)
+					{
+						datas.Add(new()
+						{
+							id = item.GroupID,
+							x = item.Name ?? string.Empty,
+							y = item.Value
+						});
+					}
+				}
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar3", datas);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task AvgDeal_Bar4()

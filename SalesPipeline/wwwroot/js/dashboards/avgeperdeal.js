@@ -1,10 +1,10 @@
-﻿window.avgdeal_bar1 = (_data, _labels) => {
+﻿window.avgdeal_bar1 = (_data) => {
 
 	//console.log(_data)
 	//console.log(_labels)
 
 	const data = {
-		labels: _labels,
+		//labels: _labels,
 		datasets: [{
 			label: '',
 			data: _data,
@@ -49,7 +49,6 @@
 }
 
 window.avgdeal_bar2 = (_data) => {
-	console.log(_data)
 
 	const data = {
 		//labels: _labels,
@@ -126,6 +125,9 @@ window.avgdeal_bar2 = (_data) => {
 }
 
 window.avgdeal_bar3 = (_data) => {
+
+	console.log(_data)
+
 	const data = {
 		labels: ["ประเทศ", "ภูมิภาค A", "สาขา 1", "สาขา 2", "สาขา 3"],
 		datasets: [{

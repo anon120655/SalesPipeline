@@ -462,6 +462,52 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<GroupByModel>>?> GetAvgBranchBar(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgBranchBar", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<GroupByModel>>(content);
+				return new ResultModel<List<GroupByModel>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<GroupByModel>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<GroupByModel>>?> GetAvgRMBar(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetAvgRMBar", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<GroupByModel>>(content);
+				return new ResultModel<List<GroupByModel>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<GroupByModel>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 
 

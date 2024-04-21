@@ -54,6 +54,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }
 		public List<string?>? Selecteds { get; set; }
+		public List<string?>? Selecteds2 { get; set; }
+		public List<string?>? Selecteds3 { get; set; }
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -190,6 +192,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 				ParameterAll += $"&ids={joined}";
 			}
 
+			if (Selecteds2?.Count > 0)
+			{
+				string joined = string.Join(",", Selecteds2);
+				ParameterAll += $"&ids2={joined}";
+			}
+
+			if (Selecteds3?.Count > 0)
+			{
+				string joined = string.Join(",", Selecteds3);
+				ParameterAll += $"&ids3={joined}";
+			}
+
 			if (startdate.HasValue)
 				ParameterAll += $"&startdate={GeneralUtils.DateToStrParameter(startdate)}";
 
@@ -317,6 +331,19 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("enddate", out var _enddate))
 				enddate = GeneralUtils.DateNotNullToEn(_enddate, "yyyy-MM-dd", Culture: "en-US");
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("ids", out var _Selecteds))
+			{
+				Selecteds = new();
+				List<string> Category = _Selecteds.ToString().Split(',').ToList<string>();
+				if (Category.Count > 0)
+				{
+					foreach (var item in Category)
+					{
+						Selecteds.Add(item);
+					}
+				}
+			}
 		}
 
 

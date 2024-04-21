@@ -413,5 +413,35 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgBranchBar")]
+		public async Task<IActionResult> GetAvgBranchBar(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgBranchBar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("GetAvgRMBar")]
+		public async Task<IActionResult> GetAvgRMBar(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgRMBar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

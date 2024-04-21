@@ -50,6 +50,11 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Dash_PieCustom>> GetPieRM(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ประเทศ,ภูมิภาคทั้งหมด,ศูนย์สาขาทั้งหมด,RM ทั้งหมด
 		Task<List<GroupByModel>> GetAvgTopBar(allFilter model);
+		//กิจการสาขาภาค
 		Task<List<GroupByModel>> GetAvgRegionBar(allFilter model);
+		//สาขา
+		Task<List<GroupByModel>> GetAvgBranchBar(allFilter model);
+		//RM
+		Task<List<GroupByModel>> GetAvgRMBar(allFilter model);
 	}
 }
