@@ -55,7 +55,6 @@ namespace SalesPipeline.Pages.Dashboards
 			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
 			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
-				//LookUp.DepartmentBranch = new() { new() { Name = "ทั้งหมด" } };
 				LookUp.DepartmentBranch = new();
 				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
@@ -77,7 +76,6 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnDepBranchs(string[] _ids, string _name)
 		{
-			LookUp.DepartmentBranch = new();
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
 			filterAvg.DepartmentBranch = new();
@@ -203,7 +201,7 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnRMUser(string[] _ids, string _name)
 		{
-			if (filterAvg.RMUser == null) filterAvg.RMUser = new();
+			filterAvg.RMUser = new();
 
 			if (_ids != null)
 			{
