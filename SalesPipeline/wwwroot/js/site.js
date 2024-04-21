@@ -25,7 +25,6 @@ window.AddCursorWait = () => {
 }
 
 window.RemoveCursorWait = () => {
-	console.log('RemoveCursorWait...')
 	$("body").removeClass("waiting");
 	//document.documentElement.style.cursor = 'wait';
 }

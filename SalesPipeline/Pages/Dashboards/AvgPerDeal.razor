@@ -34,110 +34,34 @@
 										}
 									}
 								</select>
-								@* <Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
-									<DropdownToggleButton Class="text-start">
-										@filterRegionsTitle
-										@if (isLoadingDepBranchs)
-										{
-											<div class="spinner-border spinner-border-sm float-end" role="status">
-												<span class="visually-hidden">Loading...</span>
-											</div>
-										}
-									</DropdownToggleButton>
-									<DropdownMenu Class="overflow-auto maxh_20r">
-										@if (LookUp.DepartmentBranch?.Count > 0)
-										{
-											foreach (var item in LookUp.DepartmentBranch ?? new())
-											{
-												var isCheck = filterAvg.DepartmentBranch?.Any(x => x.Value == item.Id.ToString()) ?? false;
-
-												<DropdownItem>
-													<label>
-														<input @oninput=@(async(e) => await OnDepBranchs(e.Value,item)) type="checkbox" class="form-check-input" value="@item.Id" checked=@isCheck> @item.Name
-													</label>
-												</DropdownItem>
-											}
-										}
-									</DropdownMenu>
-								</Dropdown> *@
 							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สาขา</label>
 							<div class="">
-								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
-									<DropdownToggleButton Class="text-start">@filterBranchsTitle
-										@if (isLoadingDepBranchs)
+								<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="สาขาภาคทั้งหมด" multiple data-actions-box="true" data-live-search="true">
+									@if (LookUp.Branchs?.Count > 0)
+									{
+										foreach (var item in LookUp.Branchs)
 										{
-											<div class="spinner-border spinner-border-sm float-end" role="status">
-												<span class="visually-hidden">Loading...</span>
-											</div>
+											<option value="@item.BranchID">@item.BranchName</option>
 										}
-									</DropdownToggleButton>
-									<DropdownMenu Class="overflow-auto maxh_20r">
-										<DropdownItem Class="">
-											<label>
-												<input type="text" class="form-control" />
-											</label>
-										</DropdownItem>
-										@if (LookUp.Branchs?.Count > 0)
-										{
-											foreach (var item in LookUp.Branchs)
-											{
-												var isCheck = filterAvg.Branchs?.Any(x => x.Value == item.BranchID.ToString()) ?? false;
-
-												<DropdownItem>
-													<label>
-														<input @oninput=@(async(e) => await OnBranch(e.Value,item)) type="checkbox" class="form-check-input" value="@item.BranchID" checked=@isCheck> @item.BranchName
-													</label>
-												</DropdownItem>
-											}
-										}
-										else
-										{
-											<DropdownItem>
-												<label class="text-black-50">ไม่พบข้อมูล</label>
-											</DropdownItem>
-										}
-									</DropdownMenu>
-								</Dropdown>
+									}
+								</select>
 							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
 							<div class="">
-								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
-									<DropdownToggleButton Class="text-start">
-										@filterRMUserTitle
-										@if (isLoadingDepBranchs)
+								<select id="RMUser" class="selectpicker selectInit" data-style="select_btn_set" title="ผูรับผิดชอบทั้งหมด" multiple data-actions-box="true" data-live-search="true">
+									@if (LookUp.RMUser?.Count > 0)
+									{
+										foreach (var item in LookUp.RMUser)
 										{
-											<div class="spinner-border spinner-border-sm float-end" role="status">
-												<span class="visually-hidden">Loading...</span>
-											</div>
+											<option value="@item.Id">@item.User?.FullName</option>
 										}
-									</DropdownToggleButton>
-									<DropdownMenu>
-										@if (LookUp.RMUser?.Count > 0)
-										{
-											@foreach (var item in LookUp.RMUser)
-											{
-												var isCheck = filterAvg.RMUser?.Any(x => x.Value == item.Id.ToString()) ?? false;
-
-												<DropdownItem>
-													<label>
-														<input @oninput=@(async(e) => await OnRMUser(e.Value,item)) type="checkbox" class="form-check-input" value="@item.Id" checked=@isCheck> @item.User?.FullName
-													</label>
-												</DropdownItem>
-											}
-										}
-										else
-										{
-											<DropdownItem>
-												<label class="text-black-50">ไม่พบข้อมูล</label>
-											</DropdownItem>
-										}
-									</DropdownMenu>
-								</Dropdown>
+									}
+								</select>
 							</div>
 						</div>
 						<div class="col mb-2">

@@ -39,6 +39,7 @@ namespace SalesPipeline.Pages.Dashboards
 				if (iSloadJs)
 				{
 					await SetInitManual();
+					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
 					await SetModelAll();
 				}
@@ -61,7 +62,7 @@ namespace SalesPipeline.Pages.Dashboards
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
 					StateHasChanged();
 					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs2", "#DepBranchs");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs", "#DepBranchs");
 				}
 			}
 			else
@@ -73,109 +74,22 @@ namespace SalesPipeline.Pages.Dashboards
 			StateHasChanged();
 		}
 
-		public async Task OnDepBranchs(object? valChecked, Master_Department_BranchCustom model)
-		{
-			if (valChecked != null)
-			{
-				isLoadingDepBranchs = true;
-
-				bool isChecked = (bool)valChecked ? true : false;
-
-				filterRegionsTitle = "เลือก";
-				LookUp.Branchs = new();
-				LookUp.RMUser = new();
-				filterAvg.Branchs = new();
-				filterAvg.RMUser = new();
-
-				if (filterAvg.DepartmentBranch == null) filterAvg.DepartmentBranch = new();
-
-				if (model.Id == Guid.Empty)
-				{
-					filterAvg.DepartmentBranch.Clear();
-					if (isChecked)
-					{
-						foreach (var item in LookUp.DepartmentBranch ?? new())
-						{
-							filterAvg.DepartmentBranch.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
-						}
-					}
-				}
-				else
-				{
-					var data = filterAvg.DepartmentBranch.FirstOrDefault(x => x.Value == model.Id.ToString());
-					if (data == null)
-					{
-						filterAvg.DepartmentBranch.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
-					}
-					else
-					{
-						filterAvg.DepartmentBranch.Remove(data);
-					}
-				}
-
-
-				if (filterAvg.DepartmentBranch.Count > 0)
-				{
-					var removeAll = filterAvg.DepartmentBranch.FirstOrDefault(x => x.Value == "0");
-					if (removeAll != null)
-						filterAvg.DepartmentBranch.Remove(removeAll);
-
-					if (filterAvg.DepartmentBranch.Count == LookUp.DepartmentBranch?.Count(x => x.Id != Guid.Empty))
-					{
-						filterRegionsTitle = $"ทั้งหมด ({filterAvg.DepartmentBranch.Count})";
-						filterAvg.DepartmentBranch.Add(new SelectModel() { Value = "0" });
-					}
-					else if (filterAvg.DepartmentBranch.Count <= 1)
-					{
-						filterRegionsTitle = string.Join(", ", filterAvg.DepartmentBranch.Select(x => x.Name).ToList());
-						filterRegionsTitle = GeneralUtils.LimitTo(filterRegionsTitle, 20) ?? string.Empty;
-					}
-					else
-					{
-						filterRegionsTitle = $"เลือก ({filterAvg.DepartmentBranch.Count})";
-					}
-
-					var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
-					{
-						status = StatusModel.Active,
-						Selecteds = filterAvg.DepartmentBranch.Select(x => x.Value).ToList()
-					});
-					if (dataBranchs != null && dataBranchs.Status)
-					{
-						if (dataBranchs.Data?.Count > 0)
-						{
-							LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
-							LookUp.Branchs.AddRange(dataBranchs.Data);
-						}
-					}
-					else
-					{
-						_errorMessage = dataBranchs?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
-				}
-
-				isLoadingDepBranchs = false;
-				StateHasChanged();
-			}
-		}
-
 		[JSInvokable]
-		public async Task OnDepBranchs2(string[] _ids,string _name)
+		public async Task OnDepBranchs(string[] _ids, string _name)
 		{
+			LookUp.DepartmentBranch = new();
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
+			filterAvg.DepartmentBranch = new();
 			filterAvg.Branchs = new();
 			filterAvg.RMUser = new();
+			StateHasChanged();
 
-			if (filterAvg.DepartmentBranch == null) filterAvg.DepartmentBranch = new();
-
-			filterAvg.DepartmentBranch.Clear();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
 
 			if (_ids != null)
 			{
-				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
-
 				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
 				if (selection != null)
 				{
@@ -191,6 +105,8 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (filterAvg.DepartmentBranch.Count > 0)
 			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
 				var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
 				{
 					status = StatusModel.Active,
@@ -202,7 +118,10 @@ namespace SalesPipeline.Pages.Dashboards
 					{
 						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
 						LookUp.Branchs.AddRange(dataBranchs.Data);
-						await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "RMUser", 100);
 					}
 				}
 				else
@@ -210,160 +129,105 @@ namespace SalesPipeline.Pages.Dashboards
 					_errorMessage = dataBranchs?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
 			}
 
+		}
+
+		[JSInvokable]
+		public async Task OnBranch(string[] _ids, string _name)
+		{
+			LookUp.RMUser = new();
+			filterAvg.Branchs = new();
+			filterAvg.RMUser = new();
 			StateHasChanged();
-		}
 
-		public async Task OnBranch(object? valChecked, InfoBranchCustom model)
-		{
-			if (valChecked != null)
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
+
+			if (_ids != null)
 			{
-				isLoadingDepBranchs = true;
-
-				bool isChecked = (bool)valChecked ? true : false;
-
-				filterBranchsTitle = "เลือก";
-				LookUp.RMUser = new();
-				filterAvg.RMUser = new();
-
-				if (filterAvg.Branchs == null) filterAvg.Branchs = new();
-
-				if (model.BranchID == 0)
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
 				{
-					filterAvg.Branchs.Clear();
-					if (isChecked)
+					foreach (var item in selection)
 					{
-						foreach (var item in LookUp.Branchs ?? new())
+						filterAvg.Branchs.Add(new()
 						{
-							filterAvg.Branchs.Add(new SelectModel() { Value = item.BranchID.ToString(), Name = item.BranchName });
+							ID = item
+						});
+					}
+				}
+			}
+
+			if (filterAvg.Branchs.Count > 0)
+			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
+				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
+				{
+					pagesize = 100,
+					status = StatusModel.Active,
+					Selecteds = filterAvg.Branchs.Select(x => x.ID).ToList()
+				});
+				if (dataUsersRM != null && dataUsersRM.Status)
+				{
+					if (dataUsersRM.Data?.Items.Count > 0)
+					{
+						if (dataUsersRM.Data.Items?.Count > 0)
+						{
+							LookUp.RMUser = new();
+							LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
+							StateHasChanged();
+							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRMUser", "#RMUser");
+							await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "RMUser", 100);
 						}
 					}
 				}
 				else
 				{
-					var data = filterAvg.Branchs.FirstOrDefault(x => x.Value == model.BranchID.ToString());
-					if (data == null)
-					{
-						filterAvg.Branchs.Add(new SelectModel() { Value = model.BranchID.ToString(), Name = model.BranchName });
-					}
-					else
-					{
-						filterAvg.Branchs.Remove(data);
-					}
+					_errorMessage = dataUsersRM?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
-
-				if (filterAvg.Branchs.Count > 0)
-				{
-					var removeAll = filterAvg.Branchs.FirstOrDefault(x => x.Value == "0");
-					if (removeAll != null)
-						filterAvg.Branchs.Remove(removeAll);
-
-					if (filterAvg.Branchs.Count == LookUp.Branchs?.Count(x => x.BranchID != 0))
-					{
-						filterBranchsTitle = $"ทั้งหมด ({filterAvg.Branchs.Count})";
-						filterAvg.Branchs.Add(new SelectModel() { Value = "0" });
-					}
-					else if (filterAvg.Branchs.Count <= 1)
-					{
-						filterBranchsTitle = string.Join(", ", filterAvg.Branchs.Select(x => x.Name).ToList());
-						filterBranchsTitle = GeneralUtils.LimitTo(filterBranchsTitle, 20) ?? string.Empty;
-					}
-					else
-					{
-						filterBranchsTitle = $"เลือก ({filterAvg.Branchs.Count})";
-					}
-
-					var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
-					{
-						pagesize = 100,
-						status = StatusModel.Active,
-						Selecteds = filterAvg.Branchs.Select(x => x.Value).ToList()
-					});
-					if (dataUsersRM != null && dataUsersRM.Status)
-					{
-						if (dataUsersRM.Data?.Items.Count > 0)
-						{
-							if (dataUsersRM.Data.Items?.Count > 0)
-							{
-								LookUp.RMUser = new() { new() { User = new() { FullName = "ทั้งหมด" } } };
-								LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
-							}
-						}
-					}
-					else
-					{
-						_errorMessage = dataUsersRM?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
-				}
-
-				isLoadingDepBranchs = false;
-				StateHasChanged();
-
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
 			}
 		}
 
-		public async Task OnRMUser(object? valChecked, Assignment_RMCustom model)
+		[JSInvokable]
+		public async Task OnRMUser(string[] _ids, string _name)
 		{
-			await Task.Delay(1);
-			if (valChecked != null)
+			if (filterAvg.RMUser == null) filterAvg.RMUser = new();
+
+			if (_ids != null)
 			{
-				bool isChecked = (bool)valChecked ? true : false;
-
-				filterRMUserTitle = "เลือก";
-
-				if (filterAvg.RMUser == null) filterAvg.RMUser = new();
-
-				if (model.Id == Guid.Empty)
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
 				{
-					filterAvg.RMUser.Clear();
-					if (isChecked)
+					foreach (var item in selection)
 					{
-						foreach (var item in LookUp.RMUser ?? new())
+						filterAvg.RMUser.Add(new()
 						{
-							filterAvg.RMUser.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.User?.FirstName });
-						}
+							ID = item
+						});
 					}
 				}
-				else
-				{
-					var data = filterAvg.RMUser.FirstOrDefault(x => x.Value == model.Id.ToString());
-					if (data == null)
-					{
-						filterAvg.RMUser.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.User?.FirstName });
-					}
-					else
-					{
-						filterAvg.RMUser.Remove(data);
-					}
-				}
-
-				if (filterAvg.RMUser.Count > 0)
-				{
-					var removeAll = filterAvg.RMUser.FirstOrDefault(x => x.Value == "0");
-					if (removeAll != null)
-						filterAvg.RMUser.Remove(removeAll);
-
-					if (filterAvg.RMUser.Count == LookUp.RMUser?.Count(x => x.Id != Guid.Empty))
-					{
-						filterRMUserTitle = $"ทั้งหมด ({filterAvg.RMUser.Count})";
-						filterAvg.RMUser.Add(new SelectModel() { Value = "0" });
-					}
-					else if (filterAvg.RMUser.Count <= 2)
-					{
-						filterRMUserTitle = string.Join(", ", filterAvg.RMUser.Select(x => x.Name).ToList());
-					}
-					else
-					{
-						filterRMUserTitle = $"เลือก ({filterAvg.RMUser.Count})";
-					}
-				}
-
-				StateHasChanged();
 			}
 
+			if (filterAvg.RMUser.Count > 0)
+			{
 
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
 		}
 
 		protected async Task SetModelAll()
