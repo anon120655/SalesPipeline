@@ -28,7 +28,6 @@ namespace SalesPipeline.Pages.Dashboards
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			await SetInitManual();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -39,10 +38,12 @@ namespace SalesPipeline.Pages.Dashboards
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/avgeperdeal.js");
 				if (iSloadJs)
 				{
+					await SetInitManual();
+
 					await SetModelAll();
 				}
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				//await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
 				firstRender = false;
 			}
@@ -53,10 +54,14 @@ namespace SalesPipeline.Pages.Dashboards
 			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
 			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
-				LookUp.DepartmentBranch = new() { new() { Name = "ทั้งหมด" } };
+				//LookUp.DepartmentBranch = new() { new() { Name = "ทั้งหมด" } };
+				LookUp.DepartmentBranch = new();
 				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs2", "#DepBranchs");
 				}
 			}
 			else
@@ -153,6 +158,61 @@ namespace SalesPipeline.Pages.Dashboards
 				isLoadingDepBranchs = false;
 				StateHasChanged();
 			}
+		}
+
+		[JSInvokable]
+		public async Task OnDepBranchs2(string[] _ids,string _name)
+		{
+			LookUp.Branchs = new();
+			LookUp.RMUser = new();
+			filterAvg.Branchs = new();
+			filterAvg.RMUser = new();
+
+			if (filterAvg.DepartmentBranch == null) filterAvg.DepartmentBranch = new();
+
+			filterAvg.DepartmentBranch.Clear();
+
+			if (_ids != null)
+			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						filterAvg.DepartmentBranch.Add(new()
+						{
+							ID = item
+						});
+					}
+				}
+			}
+
+			if (filterAvg.DepartmentBranch.Count > 0)
+			{
+				var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
+				{
+					status = StatusModel.Active,
+					Selecteds = filterAvg.DepartmentBranch.Select(x => x.ID).ToList()
+				});
+				if (dataBranchs != null && dataBranchs.Status)
+				{
+					if (dataBranchs.Data?.Count > 0)
+					{
+						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						LookUp.Branchs.AddRange(dataBranchs.Data);
+						await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+					}
+				}
+				else
+				{
+					_errorMessage = dataBranchs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+			StateHasChanged();
 		}
 
 		public async Task OnBranch(object? valChecked, InfoBranchCustom model)

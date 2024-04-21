@@ -19,8 +19,15 @@ window.ChangeCursorPointer = () => {
 	document.documentElement.style.cursor = 'pointer';
 }
 
-window.ChangeCursorWait = () => {
-	document.documentElement.style.cursor = 'wait';
+window.AddCursorWait = () => {
+	$("body").addClass("waiting");
+	//document.documentElement.style.cursor = 'wait';
+}
+
+window.RemoveCursorWait = () => {
+	console.log('RemoveCursorWait...')
+	$("body").removeClass("waiting");
+	//document.documentElement.style.cursor = 'wait';
 }
 
 window.ChangeUrl = function (url) {
