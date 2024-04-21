@@ -398,5 +398,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgRegionBar")]
+		public async Task<IActionResult> GetAvgRegionBar(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgRegionBar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

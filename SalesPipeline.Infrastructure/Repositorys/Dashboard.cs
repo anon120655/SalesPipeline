@@ -1809,5 +1809,73 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task<List<GroupByModel>> GetAvgRegionBar(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			model.rolecode = user.Role.Code.ToUpper();
+
+			var response = new List<GroupByModel>();
+
+			var query = _repo.Context.Sales
+									 .Where(x => x.Status == StatusModel.Active)
+									 .OrderByDescending(x => x.CreateDate)
+									 .AsQueryable();
+
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				{
+				}
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				{
+					var avgcountry = query.Select(x => x.LoanAmount)
+													.DefaultIfEmpty()
+													.Average();
+					if (avgcountry.HasValue)
+					{
+						response.Add(new()
+						{
+							GroupID = "country",
+							Name = "ประเทศ",
+							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+
+					var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+												 .Select(group => new
+												 {
+													 GroupID = group.Key.ToString(),
+													 Name = group.First().Master_Department_BranchName,
+													 Value = group.Sum(s => s.LoanAmount)
+												 }).ToListAsync();
+					if (queryRegion.Count > 0)
+					{
+						foreach (var item in queryRegion)
+						{
+							var avg = item.Value ?? 0;
+							response.Add(new()
+							{
+								GroupID = "region",
+								Name = item.Name,
+								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+							});
+						}
+					}
+
+				}
+
+			}
+
+			return response;
+		}
+
 	}
 }

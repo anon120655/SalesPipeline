@@ -1,7 +1,7 @@
 ﻿window.avgdeal_bar1 = (_data, _labels) => {
 
-	console.log(_data)
-	console.log(_labels)
+	//console.log(_data)
+	//console.log(_labels)
 
 	const data = {
 		labels: _labels,
@@ -49,17 +49,21 @@
 }
 
 window.avgdeal_bar2 = (_data) => {
+	console.log(_data)
+
 	const data = {
+		//labels: _labels,
 		datasets: [{
 			label: '',
-			data: [
-				{ x: 'ประเทศ', y: 75000, id: 1 },
-				{ x: 'ภูมิภาค A', y: 80000, id: 2 },
-				{ x: 'ภูมิภาค B', y: 75000, id: 3 },
-				{ x: 'ภูมิภาค C', y: 50000, id: 4 },
-				{ x: 'ภูมิภาค D', y: 90000, id: 5 },
-				{ x: 'ภูมิภาค E', y: 75000, id: 6 },
-			],
+			//data: [
+			//	{ x: 'ประเทศ', y: 75000, id: 1 },
+			//	{ x: 'ภูมิภาค A', y: 80000, id: 2 },
+			//	{ x: 'ภูมิภาค B', y: 75000, id: 3 },
+			//	{ x: 'ภูมิภาค C', y: 50000, id: 4 },
+			//	{ x: 'ภูมิภาค D', y: 90000, id: 5 },
+			//	{ x: 'ภูมิภาค E', y: 75000, id: 6 },
+			//],
+			data: _data,
 			barThickness: 15,
 			backgroundColor: [
 				'#4471c4',

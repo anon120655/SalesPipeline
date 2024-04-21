@@ -327,12 +327,34 @@ namespace SalesPipeline.Pages.Dashboards
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
-
 		}
 
 		protected async Task AvgDeal_Bar2()
 		{
-			await _jsRuntimes.InvokeVoidAsync("avgdeal_bar2", null);
+			var data = await _dashboarViewModel.GetAvgRegionBar(new() { userid = UserInfo.Id });
+			if (data != null && data.Status)
+			{
+				var datas = new List<ChartJSDataModel>();
+
+				if (data.Data?.Count > 0)
+				{
+					foreach (var item in data.Data)
+					{
+						datas.Add(new()
+						{
+							id = item.GroupID,
+							x = item.Name ?? string.Empty,
+							y = item.Value
+						});
+					}
+				}
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar2", datas);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task AvgDeal_Bar3()
