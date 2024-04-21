@@ -183,6 +183,11 @@ html, body {
     min-width: 20rem !important;
 }
 
+
+.maxh_20r {
+    max-height: 20rem !important;
+}
+
 .w_7r {
     width: 7rem;
 }

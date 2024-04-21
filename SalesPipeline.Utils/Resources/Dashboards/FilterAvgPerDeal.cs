@@ -9,8 +9,11 @@ namespace SalesPipeline.Utils.Resources.Dashboards
 {
 	public class FilterAvgPerDeal
 	{
-		public List<SelectModel>? Regions { get; set; }
+		public List<SelectModel>? DepartmentBranch { get; set; }
 		public List<SelectModel>? Branchs { get; set; }
 		public List<SelectModel>? RMUser { get; set; }
+
+		public DateTime? startdate { get; set; }
+		public DateTime? enddate { get; set; }
 	}
 }

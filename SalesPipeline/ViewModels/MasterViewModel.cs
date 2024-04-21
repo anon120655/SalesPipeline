@@ -379,6 +379,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<InfoBranchCustom>>> GetBranchByDepBranchId(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBranchByDepBranchId?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<List<InfoBranchCustom>>(content);
+
+				return new ResultModel<List<InfoBranchCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<InfoBranchCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		//ฝ่ายกิจการสาขา
 		public async Task<ResultModel<Master_Department_BranchCustom>> CreateDepBranch(Master_Department_BranchCustom model)
 		{

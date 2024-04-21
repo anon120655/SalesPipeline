@@ -423,6 +423,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetBranchByDepBranchId")]
+		public async Task<IActionResult> GetBranchByDepBranchId([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Thailand.GetBranchByDepBranchId(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("Positions")]
 		public async Task<IActionResult> Positions([FromQuery] allFilter model)
 		{

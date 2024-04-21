@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Crypto;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
@@ -161,6 +163,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<IList<InfoBranchCustom>>(await query.ToListAsync());
 		}
 
+		public async Task<IList<InfoBranchCustom>> GetBranchByDepBranchId(allFilter model)
+		{
+			if ((model.Selecteds == null || model.Selecteds.Count == 0) && model.ids != null)
+			{
+				List<string> ids_list = model.ids.Split(',').ToList<string>();
+				if (ids_list.Count > 0)
+				{
+					model.Selecteds = new();
+					foreach (var item in ids_list)
+					{
+						model.Selecteds.Add(item);
+					}
+				}
+			}
+
+			if (model.Selecteds == null || model.Selecteds.Count == 0) return new List<InfoBranchCustom>();
+
+			var idList = model.Selecteds.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+
+			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();
+			if (infoProvinces.Count > 0)
+			{
+				var query = _repo.Context.InfoBranches.Where(x => infoProvinces.Contains(x.ProvinceID)).AsQueryable();
+				return _mapper.Map<IList<InfoBranchCustom>>(await query.ToListAsync());
+			}
+			return new List<InfoBranchCustom>();
+		}
+
 		public async Task<string?> GetBranchNameByid(int id)
 		{
 			var name = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
@@ -172,5 +202,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var InfoBranches = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).FirstOrDefaultAsync();
 			return _mapper.Map<InfoBranchCustom>(InfoBranches);
 		}
+
 	}
 }

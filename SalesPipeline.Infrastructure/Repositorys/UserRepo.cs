@@ -509,6 +509,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.branchid > 0)
+			{
+				query = query.Where(x => x.BranchId != null && x.BranchId == model.branchid);
+			}
+
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);

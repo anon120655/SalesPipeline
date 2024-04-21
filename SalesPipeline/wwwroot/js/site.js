@@ -15,6 +15,14 @@
 
 }
 
+window.ChangeCursorPointer = () => {
+	document.documentElement.style.cursor = 'pointer';
+}
+
+window.ChangeCursorWait = () => {
+	document.documentElement.style.cursor = 'wait';
+}
+
 window.ChangeUrl = function (url) {
 	history.pushState(null, '', url);
 }

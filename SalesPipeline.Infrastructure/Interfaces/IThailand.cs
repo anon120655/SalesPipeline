@@ -1,5 +1,6 @@
 ﻿using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model);
 		Task<InfoBranchCustom> UpdateBranch(InfoBranchCustom model);
 		Task<IList<InfoBranchCustom>> GetBranch(int provinceID);
+		Task<IList<InfoBranchCustom>> GetBranchByDepBranchId(allFilter model);
 		Task<InfoBranchCustom?> GetBranchByid(int id);
 		Task<string?> GetBranchNameByid(int id);
 	}

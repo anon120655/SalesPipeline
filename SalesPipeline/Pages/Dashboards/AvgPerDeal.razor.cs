@@ -6,6 +6,8 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.Resources.Assignments;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -15,6 +17,7 @@ namespace SalesPipeline.Pages.Dashboards
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private FilterAvgPerDeal filterAvg = new();
+		private bool isLoadingDepBranchs = false;
 
 		public string filterRegionsTitle = "เลือก";
 		public string filterBranchsTitle = "เลือก";
@@ -47,28 +50,30 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetInitManual()
 		{
-			var dataRegions = await _masterViewModel.Regions(new allFilter() { status = StatusModel.Active });
-			if (dataRegions != null && dataRegions.Status)
+			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
-				LookUp.Regions = new() { new() { Id = 0, Name = "ทั้งหมด" } };
-				if (dataRegions.Data?.Count > 0)
+				LookUp.DepartmentBranch = new() { new() { Name = "ทั้งหมด" } };
+				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
-					LookUp.Regions.AddRange(dataRegions.Data);
+					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
 				}
 			}
 			else
 			{
-				_errorMessage = dataRegions?.errorMessage;
+				_errorMessage = dataDepBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
 			StateHasChanged();
 		}
 
-		public async Task OnRegion(object? valChecked, Master_RegionCustom model)
+		public async Task OnDepBranchs(object? valChecked, Master_Department_BranchCustom model)
 		{
 			if (valChecked != null)
 			{
+				isLoadingDepBranchs = true;
+
 				bool isChecked = (bool)valChecked ? true : false;
 
 				filterRegionsTitle = "เลือก";
@@ -77,163 +82,169 @@ namespace SalesPipeline.Pages.Dashboards
 				filterAvg.Branchs = new();
 				filterAvg.RMUser = new();
 
-				if (filterAvg.Regions == null) filterAvg.Regions = new();
+				if (filterAvg.DepartmentBranch == null) filterAvg.DepartmentBranch = new();
 
-				if (model.Id == 0)
+				if (model.Id == Guid.Empty)
 				{
-					filterAvg.Regions.Clear();
+					filterAvg.DepartmentBranch.Clear();
 					if (isChecked)
 					{
-						foreach (var item in LookUp.Regions ?? new())
+						foreach (var item in LookUp.DepartmentBranch ?? new())
 						{
-							filterAvg.Regions.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
+							filterAvg.DepartmentBranch.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
 						}
 					}
 				}
 				else
 				{
-					var data = filterAvg.Regions.FirstOrDefault(x => x.Value == model.Id.ToString());
+					var data = filterAvg.DepartmentBranch.FirstOrDefault(x => x.Value == model.Id.ToString());
 					if (data == null)
 					{
-						filterAvg.Regions.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
+						filterAvg.DepartmentBranch.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
 					}
 					else
 					{
-						filterAvg.Regions.Remove(data);
+						filterAvg.DepartmentBranch.Remove(data);
 					}
 				}
 
 
-				if (filterAvg.Regions.Count > 0)
+				if (filterAvg.DepartmentBranch.Count > 0)
 				{
-					var removeAll = filterAvg.Regions.FirstOrDefault(x => x.Value == "0");
+					var removeAll = filterAvg.DepartmentBranch.FirstOrDefault(x => x.Value == "0");
 					if (removeAll != null)
-						filterAvg.Regions.Remove(removeAll);
+						filterAvg.DepartmentBranch.Remove(removeAll);
 
-					if (filterAvg.Regions.Count == LookUp.Regions?.Count(x => x.Id != 0))
+					if (filterAvg.DepartmentBranch.Count == LookUp.DepartmentBranch?.Count(x => x.Id != Guid.Empty))
 					{
-						filterRegionsTitle = $"ทั้งหมด ({filterAvg.Regions.Count})";
-						filterAvg.Regions.Add(new SelectModel() { Value = "0" });
+						filterRegionsTitle = $"ทั้งหมด ({filterAvg.DepartmentBranch.Count})";
+						filterAvg.DepartmentBranch.Add(new SelectModel() { Value = "0" });
 					}
-					else if (filterAvg.Regions.Count <= 2)
+					else if (filterAvg.DepartmentBranch.Count <= 1)
 					{
-						filterRegionsTitle = string.Join(", ", filterAvg.Regions.Select(x => x.Name).ToList());
+						filterRegionsTitle = string.Join(", ", filterAvg.DepartmentBranch.Select(x => x.Name).ToList());
+						filterRegionsTitle = GeneralUtils.LimitTo(filterRegionsTitle, 20) ?? string.Empty;
 					}
 					else
 					{
-						filterRegionsTitle = $"เลือก ({filterAvg.Regions.Count})";
+						filterRegionsTitle = $"เลือก ({filterAvg.DepartmentBranch.Count})";
 					}
 
-					//var dataBranchs = await _masterViewModel.Branchs(new allFilter()
-					//{
-					//	status = StatusModel.Active,
-					//	Selecteds = filterAvg.Regions.Select(x => x.Value).ToList()
-					//});
-					//if (dataBranchs != null && dataBranchs.Status)
-					//{
-					//	if (dataBranchs.Data?.Count > 0)
-					//	{
-					//		LookUp.Branchs = new() { new() { Id = Guid.NewGuid(), Name = "ทั้งหมด" } };
-					//		LookUp.Branchs.AddRange(dataBranchs.Data);
-					//	}
-					//}
-					//else
-					//{
-					//	_errorMessage = dataBranchs?.errorMessage;
-					//	_utilsViewModel.AlertWarning(_errorMessage);
-					//}
+					var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
+					{
+						status = StatusModel.Active,
+						Selecteds = filterAvg.DepartmentBranch.Select(x => x.Value).ToList()
+					});
+					if (dataBranchs != null && dataBranchs.Status)
+					{
+						if (dataBranchs.Data?.Count > 0)
+						{
+							LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+							LookUp.Branchs.AddRange(dataBranchs.Data);
+						}
+					}
+					else
+					{
+						_errorMessage = dataBranchs?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
 				}
 
+				isLoadingDepBranchs = false;
 				StateHasChanged();
 			}
 		}
 
-		public async Task OnBranch(object? valChecked)
+		public async Task OnBranch(object? valChecked, InfoBranchCustom model)
 		{
 			if (valChecked != null)
 			{
-				//bool isChecked = (bool)valChecked ? true : false;
+				isLoadingDepBranchs = true;
 
-				//filterBranchsTitle = "เลือก";
-				//LookUp.RMUser = new();
-				//filterAvg.RMUser = new();
+				bool isChecked = (bool)valChecked ? true : false;
 
-				//if (filterAvg.Branchs == null) filterAvg.Branchs = new();
+				filterBranchsTitle = "เลือก";
+				LookUp.RMUser = new();
+				filterAvg.RMUser = new();
 
-				//if (model.Id == 0)
-				//{
-				//	filterAvg.Branchs.Clear();
-				//	if (isChecked)
-				//	{
-				//		foreach (var item in LookUp.Branchs ?? new())
-				//		{
-				//			filterAvg.Branchs.Add(new SelectModel() { Value = item.Id.ToString(), Name = item.Name });
-				//		}
-				//	}
-				//}
-				//else
-				//{
-				//	var data = filterAvg.Branchs.FirstOrDefault(x => x.Value == model.Id.ToString());
-				//	if (data == null)
-				//	{
-				//		filterAvg.Branchs.Add(new SelectModel() { Value = model.Id.ToString(), Name = model.Name });
-				//	}
-				//	else
-				//	{
-				//		filterAvg.Branchs.Remove(data);
-				//	}
-				//}
+				if (filterAvg.Branchs == null) filterAvg.Branchs = new();
 
-				//if (filterAvg.Branchs.Count > 0)
-				//{
-				//	var removeAll = filterAvg.Branchs.FirstOrDefault(x => x.Value == "0");
-				//	if (removeAll != null)
-				//		filterAvg.Branchs.Remove(removeAll);
+				if (model.BranchID == 0)
+				{
+					filterAvg.Branchs.Clear();
+					if (isChecked)
+					{
+						foreach (var item in LookUp.Branchs ?? new())
+						{
+							filterAvg.Branchs.Add(new SelectModel() { Value = item.BranchID.ToString(), Name = item.BranchName });
+						}
+					}
+				}
+				else
+				{
+					var data = filterAvg.Branchs.FirstOrDefault(x => x.Value == model.BranchID.ToString());
+					if (data == null)
+					{
+						filterAvg.Branchs.Add(new SelectModel() { Value = model.BranchID.ToString(), Name = model.BranchName });
+					}
+					else
+					{
+						filterAvg.Branchs.Remove(data);
+					}
+				}
 
-				//	if (filterAvg.Branchs.Count == LookUp.Branchs?.Count(x => x.Id != 0))
-				//	{
-				//		filterBranchsTitle = $"ทั้งหมด ({filterAvg.Branchs.Count})";
-				//		filterAvg.Branchs.Add(new SelectModel() { Value = "0" });
-				//	}
-				//	else if (filterAvg.Branchs.Count <= 2)
-				//	{
-				//		filterBranchsTitle = string.Join(", ", filterAvg.Branchs.Select(x => x.Name).ToList());
-				//	}
-				//	else
-				//	{
-				//		filterBranchsTitle = $"เลือก ({filterAvg.Branchs.Count})";
-				//	}
+				if (filterAvg.Branchs.Count > 0)
+				{
+					var removeAll = filterAvg.Branchs.FirstOrDefault(x => x.Value == "0");
+					if (removeAll != null)
+						filterAvg.Branchs.Remove(removeAll);
 
-				//	var dataUsersRM = await _userViewModel.GetUsersRM(new allFilter()
-				//	{
-				//		pagesize = 100,
-				//		status = StatusModel.Active,
-				//		Selecteds = filterAvg.Branchs.Select(x => x.Value).ToList()
-				//	});
-				//	if (dataUsersRM != null && dataUsersRM.Status)
-				//	{
-				//		if (dataUsersRM.Data?.Items.Count > 0)
-				//		{
-				//			if (dataUsersRM.Data.Items?.Count > 0)
-				//			{
-				//				LookUp.RMUser = new() { new() { Id = 0, User = new() { FullName = "ทั้งหมด" } } };
-				//				LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
-				//			}
-				//		}
-				//	}
-				//	else
-				//	{
-				//		_errorMessage = dataUsersRM?.errorMessage;
-				//		_utilsViewModel.AlertWarning(_errorMessage);
-				//	}
-				//}
+					if (filterAvg.Branchs.Count == LookUp.Branchs?.Count(x => x.BranchID != 0))
+					{
+						filterBranchsTitle = $"ทั้งหมด ({filterAvg.Branchs.Count})";
+						filterAvg.Branchs.Add(new SelectModel() { Value = "0" });
+					}
+					else if (filterAvg.Branchs.Count <= 1)
+					{
+						filterBranchsTitle = string.Join(", ", filterAvg.Branchs.Select(x => x.Name).ToList());
+						filterBranchsTitle = GeneralUtils.LimitTo(filterBranchsTitle, 20) ?? string.Empty;
+					}
+					else
+					{
+						filterBranchsTitle = $"เลือก ({filterAvg.Branchs.Count})";
+					}
 
-				//StateHasChanged();
+					var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
+					{
+						pagesize = 100,
+						status = StatusModel.Active,
+						Selecteds = filterAvg.Branchs.Select(x => x.Value).ToList()
+					});
+					if (dataUsersRM != null && dataUsersRM.Status)
+					{
+						if (dataUsersRM.Data?.Items.Count > 0)
+						{
+							if (dataUsersRM.Data.Items?.Count > 0)
+							{
+								LookUp.RMUser = new() { new() { User = new() { FullName = "ทั้งหมด" } } };
+								LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
+							}
+						}
+					}
+					else
+					{
+						_errorMessage = dataUsersRM?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
+				}
+
+				isLoadingDepBranchs = false;
+				StateHasChanged();
 
 			}
 		}
 
-		public async Task OnRMUser(object? valChecked, User_BranchCustom model)
+		public async Task OnRMUser(object? valChecked, Assignment_RMCustom model)
 		{
 			await Task.Delay(1);
 			if (valChecked != null)
@@ -244,7 +255,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 				if (filterAvg.RMUser == null) filterAvg.RMUser = new();
 
-				if (model.Id == 0)
+				if (model.Id == Guid.Empty)
 				{
 					filterAvg.RMUser.Clear();
 					if (isChecked)
@@ -274,7 +285,7 @@ namespace SalesPipeline.Pages.Dashboards
 					if (removeAll != null)
 						filterAvg.RMUser.Remove(removeAll);
 
-					if (filterAvg.RMUser.Count == LookUp.RMUser?.Count(x => x.Id != 0))
+					if (filterAvg.RMUser.Count == LookUp.RMUser?.Count(x => x.Id != Guid.Empty))
 					{
 						filterRMUserTitle = $"ทั้งหมด ({filterAvg.RMUser.Count})";
 						filterAvg.RMUser.Add(new SelectModel() { Value = "0" });
@@ -397,7 +408,37 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task AvgDeal_Bar4()
 		{
-			await _jsRuntimes.InvokeVoidAsync("avgdeal_bar4", null);
+			List<string?> branchList = new() { "3", "143", "62" };
+			List<string?> rmList = new() { "13", "14" };
+			var data = await _dashboarViewModel.GetAvgRMBar(new()
+			{
+				userid = UserInfo.Id,
+				//Selecteds = branchList,
+				//Selecteds2 = rmList
+			});
+			if (data != null && data.Status)
+			{
+				var datas = new List<ChartJSDataModel>();
+
+				if (data.Data?.Count > 0)
+				{
+					foreach (var item in data.Data)
+					{
+						datas.Add(new()
+						{
+							id = item.GroupID,
+							x = item.Name ?? string.Empty,
+							y = item.Value
+						});
+					}
+				}
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_bar4", datas);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task Dropdown_Level()

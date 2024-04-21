@@ -18,22 +18,33 @@
 							<p class="back_topic">รายงาน มูลค่าเฉลี่ยต่อหนึ่งดีล</p>
 						</div>
 					</div>
+					@* <div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Loading...</span>
+				</div> *@
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">กิจการสาขาภาค</label>
 							<div class="">
-								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select">
-									<DropdownToggleButton Class="text-start">@filterRegionsTitle</DropdownToggleButton>
-									<DropdownMenu>
-										@if (LookUp.Regions?.Count > 0)
+								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
+									<DropdownToggleButton Class="text-start">
+										@filterRegionsTitle
+										@if (isLoadingDepBranchs)
 										{
-											foreach (var item in LookUp.Regions ?? new())
+											<div class="spinner-border spinner-border-sm float-end" role="status">
+												<span class="visually-hidden">Loading...</span>
+											</div>
+										}
+									</DropdownToggleButton>
+									<DropdownMenu Class="overflow-auto maxh_20r">
+										@if (LookUp.DepartmentBranch?.Count > 0)
+										{
+											foreach (var item in LookUp.DepartmentBranch ?? new())
 											{
-												var isCheck = filterAvg.Regions?.Any(x => x.Value == item.Id.ToString()) ?? false;
+												var isCheck = filterAvg.DepartmentBranch?.Any(x => x.Value == item.Id.ToString()) ?? false;
 
 												<DropdownItem>
 													<label>
-														<input @oninput=@(async(e) => await OnRegion(e.Value,item)) type="checkbox" class="form-check-input" value="@item.Id" checked=@isCheck> @item.Name
+														<input @oninput=@(async(e) => await OnDepBranchs(e.Value,item)) type="checkbox" class="form-check-input" value="@item.Id" checked=@isCheck> @item.Name
 													</label>
 												</DropdownItem>
 											}
@@ -45,18 +56,25 @@
 						<div class="col mb-2">
 							<label class="form-label">สาขา</label>
 							<div class="">
-								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select">
-									<DropdownToggleButton Class="text-start">@filterBranchsTitle</DropdownToggleButton>
-									<DropdownMenu>
-										@* @if (LookUp.Branchs?.Count > 0)
+								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
+									<DropdownToggleButton Class="text-start">@filterBranchsTitle
+										@if (isLoadingDepBranchs)
+										{
+											<div class="spinner-border spinner-border-sm float-end" role="status">
+												<span class="visually-hidden">Loading...</span>
+											</div>
+										}
+									</DropdownToggleButton>
+									<DropdownMenu Class="overflow-auto maxh_20r">
+										@if (LookUp.Branchs?.Count > 0)
 										{
 											foreach (var item in LookUp.Branchs)
 											{
-												var isCheck = filterAvg.Branchs?.Any(x => x.Value == item.Id.ToString()) ?? false;
+												var isCheck = filterAvg.Branchs?.Any(x => x.Value == item.BranchID.ToString()) ?? false;
 
 												<DropdownItem>
 													<label>
-														<input @oninput=@(async(e) => await OnBranch(e.Value,item)) type="checkbox" class="form-check-input" value="@item.Id" checked=@isCheck> @item.Name
+														<input @oninput=@(async(e) => await OnBranch(e.Value,item)) type="checkbox" class="form-check-input" value="@item.BranchID" checked=@isCheck> @item.BranchName
 													</label>
 												</DropdownItem>
 											}
@@ -66,7 +84,7 @@
 											<DropdownItem>
 												<label class="text-black-50">ไม่พบข้อมูล</label>
 											</DropdownItem>
-										} *@
+										}
 									</DropdownMenu>
 								</Dropdown>
 							</div>
@@ -74,8 +92,16 @@
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
 							<div class="">
-								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select">
-									<DropdownToggleButton Class="text-start">@filterRMUserTitle</DropdownToggleButton>
+								<Dropdown AutoCloseBehavior="DropdownAutoCloseBehavior.Outside" Class="multiple_select" Disabled=isLoadingDepBranchs>
+									<DropdownToggleButton Class="text-start">
+										@filterRMUserTitle
+										@if (isLoadingDepBranchs)
+										{
+											<div class="spinner-border spinner-border-sm float-end" role="status">
+												<span class="visually-hidden">Loading...</span>
+											</div>
+										}
+									</DropdownToggleButton>
 									<DropdownMenu>
 										@if (LookUp.RMUser?.Count > 0)
 										{
@@ -102,15 +128,11 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">เริ่มต้น</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<input type="date" class="form-control" value="@(filterAvg.startdate.HasValue ? filterAvg.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สิ้นสุด</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<input type="date" class="form-control" value="@(filterAvg.enddate.HasValue ? filterAvg.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2 mt-3">
 							<button type="button" class="btn btn-primary text-white mw_7r w-100">

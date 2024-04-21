@@ -12,6 +12,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? employeeid { get; set; }
 		public string? fullname { get; set; }
 		public string? type { get; set; }
+		public int? branchid { get; set; }
 		public string? spositions { get; set; }
 		public List<string?>? PositionsList { get; set; }
 		public string? suserlevels { get; set; }
@@ -47,7 +48,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 			if (!String.IsNullOrEmpty(type))
 				ParameterAll += $"&type={type}";
 
-			if (PositionsList != null && PositionsList.Count(x=> !String.IsNullOrEmpty(x)) > 0)
+			if (branchid > 0)
+				ParameterAll += $"&branchid={branchid}";
+
+			if (PositionsList != null && PositionsList.Count(x => !String.IsNullOrEmpty(x)) > 0)
 			{
 				string joined = string.Join(",", PositionsList);
 				ParameterAll += $"&spositions={joined}";

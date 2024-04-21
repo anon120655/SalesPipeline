@@ -50,6 +50,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
 		public string? ids { get; set; }
+		public string? ids2 { get; set; }
+		public string? ids3 { get; set; }
 		public string? sort { get; set; }
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }

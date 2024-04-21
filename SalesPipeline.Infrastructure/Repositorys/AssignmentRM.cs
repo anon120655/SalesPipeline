@@ -344,9 +344,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
-			if (model.amphurid.HasValue)
+			if (!String.IsNullOrEmpty(model.branch))
 			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
+				if (int.TryParse(model.branch, out int branchid))
+				{
+					query = query.Where(x => x.BranchId != null && x.BranchId == branchid);
+				}
+			}
+
+			if (model.Selecteds != null && model.Selecteds.Count > 0)
+			{
+				var idList = model.Selecteds.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => idList.Contains(x.BranchId));
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
