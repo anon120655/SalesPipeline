@@ -71,30 +71,416 @@ window.closesale = (_data) => {
 	if (_data.length == 0) {
 		$("#closesale_empty").removeClass("d-none")
 	} else {
-		if (_data.length != 2) return
-		var success_data = _data[0];
-		var fail_data = _data[1];
+		let chartId = "closesale";
+		const canvas = document.getElementById(chartId);
+		if (canvas != null && canvas != undefined) {
+			let chartStatus = Chart.getChart(chartId);
+			if (chartStatus != undefined) {
+				chartStatus.destroy();
+			}
 
-		//console.log(success_data)
-		//console.log(fail_data)
+			if (_data.length != 2) return
+			var success_data = _data[0];
+			var fail_data = _data[1];
+
+			//console.log(success_data)
+			//console.log(fail_data)
+			var height = 150;
+			const data = {
+				labels: [`${success_data.name} `, `${fail_data.name} `],
+				datasets: [
+					{
+						data: [success_data.value, fail_data.value],
+						backgroundColor: [
+							"#1A68AF",
+							"#88C9FF",
+						],
+						borderColor: [
+							"#1A68AF",
+							"#88C9FF",
+						],
+					},
+				],
+			};
+
+			// pieLabelsLine plugin
+			const pieLabelsLine = {
+				id: "pieLabelsLine",
+				afterDraw(chart) {
+					const {
+						ctx,
+						chartArea: { width, height },
+					} = chart;
+
+					const cx = chart._metasets[0].data[0].x;
+					const cy = chart._metasets[0].data[0].y;
+
+					const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+
+					//console.log('sumclosesale= ',sum)
+					//console.log(chart.data.datasets[0].data[3])
+					chart.data.datasets.forEach((dataset, i) => {
+						chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+							const { x: a, y: b } = datapoint.tooltipPosition();
+
+							const x = 2 * a - cx;
+							const y = 2 * b - cy;
+
+							// draw line
+							const halfwidth = width / 2;
+							const halfheight = height / 2;
+							const xLine = x >= halfwidth ? x + 10 : x - 10;
+							const yLine = y >= halfheight ? y + 10 : y - 10;
+
+							const extraLine = x >= halfwidth ? 5 : -5;
+
+							ctx.beginPath();
+							ctx.moveTo(x, y);
+							//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+							ctx.fill();
+							ctx.moveTo(x, y);
+							ctx.lineTo(xLine, yLine);
+							ctx.lineTo(xLine + extraLine, yLine);
+							// ctx.strokeStyle = dataset.backgroundColor[index];
+							ctx.strokeStyle = "black";
+							ctx.stroke();
+
+							// text
+							const textWidth = ctx.measureText(chart.data.labels[index]).width;
+							ctx.font = "9px prompt-regular";
+							// control the position
+							const textXPosition = x >= halfwidth ? "left" : "right";
+							const plusFivePx = x >= halfwidth ? 5 : -5;
+							ctx.textAlign = textXPosition;
+							ctx.textBaseline = "middle";
+							// ctx.fillStyle = dataset.backgroundColor[index];
+							ctx.fillStyle = "black";
+
+							ctx.fillText(
+								chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+								xLine + extraLine + plusFivePx,
+								yLine
+							);
+						});
+					});
+				},
+			};
+			// config
+			const config = {
+				type: "pie",
+				data,
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					layout: {
+						padding: 20,
+					},
+					scales: {
+						y: {
+							display: false,
+							beginAtZero: true,
+							ticks: {
+								display: false,
+							},
+							grid: {
+								display: false,
+							},
+						},
+						x: {
+							display: false,
+							ticks: {
+								display: false,
+							},
+							grid: {
+								display: false,
+							},
+						},
+					},
+					plugins: {
+						legend: {
+							display: false,
+						},
+					},
+				},
+				plugins: [pieLabelsLine],
+			};
+
+
+			const ctx = canvas.getContext('2d');
+			const chart = new Chart(ctx, config);
+			if (chart != null) {
+				chart.canvas.parentNode.style.height = height + 'px';
+			}
+		}
+	}
+}
+
+window.reasonnotloan = (_data, _labels) => {
+	//console.log(_data.length)
+	//console.log(_labels)
+	$("#reasonnotloan_empty").addClass("d-none")
+	if (_data.length == 0) {
+		$("#reasonnotloan_empty").removeClass("d-none")
+	} else {
+		let chartId = "reasonnotloan";
+		const canvas = document.getElementById(chartId);
+		if (canvas != null && canvas != undefined) {
+			let chartStatus = Chart.getChart(chartId);
+			if (chartStatus != undefined) {
+				chartStatus.destroy();
+			}
+
+			var height = 150;
+			const data = {
+				labels: _labels,
+				datasets: [
+					{
+						data: _data,
+						backgroundColor: [
+							"#88C9FF",
+							"#bbd0eb",
+							"#8BAAF9",
+							"#1A68AF",
+						],
+						borderColor: [
+							"#88C9FF",
+							"#bbd0eb",
+							"#8BAAF9",
+							"#1A68AF",
+						],
+					},
+				],
+			};
+
+			// pieLabelsLine plugin
+			const pieLabelsLine = {
+				id: "pieLabelsLine",
+				afterDraw(chart) {
+					const {
+						ctx,
+						chartArea: { width, height },
+					} = chart;
+
+					const cx = chart._metasets[0].data[0].x;
+					const cy = chart._metasets[0].data[0].y;
+
+					const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+
+					//console.log(chart.data.datasets[0].data[2])
+					//console.log(chart.data.datasets[0].data[3])
+					chart.data.datasets.forEach((dataset, i) => {
+						chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+							const { x: a, y: b } = datapoint.tooltipPosition();
+
+							const x = 2 * a - cx;
+							const y = 2 * b - cy;
+
+							// draw line
+							const halfwidth = width / 2;
+							const halfheight = height / 2;
+							const xLine = x >= halfwidth ? x + 10 : x - 10;
+							const yLine = y >= halfheight ? y + 10 : y - 10;
+
+							const extraLine = x >= halfwidth ? 5 : -5;
+
+							ctx.beginPath();
+							ctx.moveTo(x, y);
+							//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+							ctx.fill();
+							ctx.moveTo(x, y);
+							ctx.lineTo(xLine, yLine);
+							ctx.lineTo(xLine + extraLine, yLine);
+							// ctx.strokeStyle = dataset.backgroundColor[index];
+							ctx.strokeStyle = "black";
+							ctx.stroke();
+
+							// text
+							const textWidth = ctx.measureText(chart.data.labels[index]).width;
+							ctx.font = "9px prompt-regular";
+							// control the position
+							const textXPosition = x >= halfwidth ? "left" : "right";
+							const plusFivePx = x >= halfwidth ? 5 : -5;
+							ctx.textAlign = textXPosition;
+							ctx.textBaseline = "middle";
+							// ctx.fillStyle = dataset.backgroundColor[index];
+							ctx.fillStyle = "black";
+
+							ctx.fillText(
+								chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+								xLine + extraLine + plusFivePx,
+								yLine
+							);
+						});
+					});
+				},
+			};
+			// config
+			const config = {
+				type: "pie",
+				data,
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					layout: {
+						padding: 30,
+					},
+					scales: {
+						y: {
+							display: false,
+							beginAtZero: true,
+							ticks: {
+								display: false,
+							},
+							grid: {
+								display: false,
+							},
+						},
+						x: {
+							display: false,
+							ticks: {
+								display: false,
+							},
+							grid: {
+								display: false,
+							},
+						},
+					},
+					plugins: {
+						legend: {
+							display: false,
+						},
+					},
+				},
+				plugins: [pieLabelsLine],
+			};
+
+			const ctx = canvas.getContext('2d');
+			const chart = new Chart(ctx, config);
+			if (chart != null) {
+				chart.canvas.parentNode.style.height = height + 'px';
+			}
+		}
+	}
+}
+
+window.targetsales = (indata) => {
+	let chartId = "targetsales";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
+
+		var width = 100;
 		var height = 150;
 		const data = {
-			labels: [`${success_data.name} `, `${fail_data.name} `],
+			labels: [""],
+			datasets: [{
+				label: '150,000,000',
+				//backgroundColor: "#CCE8FF",
+				backgroundColor: 'rgba(46, 117, 183, 0.2)',
+				data: [150000000],
+				barThickness: 50,
+				xAxisID: "bar-x-axis1",
+				borderWidth: 0,
+			}, {
+				label: '135,000,000',
+				backgroundColor: "#1378D5",
+				//backgroundColor: 'rgba(255, 206, 86, 0.2)',
+				data: [135000000],
+				barThickness: 50,
+				borderWidth: 0,
+				//xAxisID: "bar-x-axis2",
+			}],
+		};
+
+		const config = {
+			type: "bar",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						display: false,
+						border: {
+							display: false,
+						},
+						stacked: true,
+						beginAtZero: true,
+						grid: {
+							drawBorder: false,
+							display: false
+						}
+					},
+					x: {
+						display: false,
+						border: {
+							display: false,
+						},
+						stacked: true,
+						grid: {
+							drawBorder: false,
+							display: false
+						}
+					},
+				},
+				//plugins: [ChartDataLabels]
+				plugins: {
+					legend: {
+						display: true,
+						labels: {
+							textAlign: 'center',
+							usePointStyle: true,
+							boxHeight: 7,
+							color: "black",
+							font: {
+								family: 'prompt-semibold',
+								size: 12
+							}
+						}
+					}
+				},
+			}
+		};
+
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
+		if (chart != null) {
+			chart.canvas.parentNode.style.height = height + 'px';
+			chart.canvas.parentNode.style.width = width + 'px';
+		}
+	}
+}
+
+window.numcussizebusiness = (_data, _labels) => {
+	let chartId = "numcussizebusiness";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
+
+		const data = {
+			labels: _labels,
 			datasets: [
 				{
-					data: [success_data.value, fail_data.value],
+					data: _data,
 					backgroundColor: [
 						"#1A68AF",
-						"#88C9FF",
+						"#97C7FF",
+						"#bbd0eb",
 					],
 					borderColor: [
 						"#1A68AF",
-						"#88C9FF",
+						"#97C7FF",
+						"#bbd0eb",
 					],
 				},
 			],
 		};
-
 		// pieLabelsLine plugin
 		const pieLabelsLine = {
 			id: "pieLabelsLine",
@@ -109,7 +495,7 @@ window.closesale = (_data) => {
 
 				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-				//console.log('sumclosesale= ',sum)
+				//console.log(chart.data.datasets[0].data[2])
 				//console.log(chart.data.datasets[0].data[3])
 				chart.data.datasets.forEach((dataset, i) => {
 					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
@@ -196,49 +582,41 @@ window.closesale = (_data) => {
 			},
 			plugins: [pieLabelsLine],
 		};
-
-		let chart; // define chart variable outside of function
-
-		var ctx = document.getElementById("closesale");
-		if (ctx != null) {
-			if (chart) chart.destroy();
-			chart = new Chart(ctx, config);
-			if (chart != null) {
-				chart.canvas.parentNode.style.height = height + 'px';
-			}
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
+		if (chart != null) {
+			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
 	}
 }
 
-window.reasonnotloan = (_data, _labels) => {
-	//console.log(_data.length)
-	//console.log(_labels)
-	$("#reasonnotloan_empty").addClass("d-none")
-	if (_data.length == 0) {
-		$("#reasonnotloan_empty").removeClass("d-none")
-	} else {
-		var height = 150;
+window.numcustypebusiness = (_data, _labels) => {
+	let chartId = "numcustypebusiness";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
+
 		const data = {
 			labels: _labels,
 			datasets: [
 				{
 					data: _data,
 					backgroundColor: [
-						"#88C9FF",
-						"#bbd0eb",
-						"#8BAAF9",
 						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
 					],
 					borderColor: [
-						"#88C9FF",
-						"#bbd0eb",
-						"#8BAAF9",
 						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
 					],
 				},
 			],
 		};
-
 		// pieLabelsLine plugin
 		const pieLabelsLine = {
 			id: "pieLabelsLine",
@@ -253,8 +631,6 @@ window.reasonnotloan = (_data, _labels) => {
 
 				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-				//console.log(chart.data.datasets[0].data[2])
-				//console.log(chart.data.datasets[0].data[3])
 				chart.data.datasets.forEach((dataset, i) => {
 					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
 						const { x: a, y: b } = datapoint.tooltipPosition();
@@ -309,7 +685,7 @@ window.reasonnotloan = (_data, _labels) => {
 				responsive: true,
 				maintainAspectRatio: false,
 				layout: {
-					padding: 30,
+					padding: 20,
 				},
 				scales: {
 					y: {
@@ -341,372 +717,8 @@ window.reasonnotloan = (_data, _labels) => {
 			plugins: [pieLabelsLine],
 		};
 
-		let chart; // define chart variable outside of function
-
-		var ctx = document.getElementById("reasonnotloan");
-		if (ctx != null) {
-			if (chart) chart.destroy();
-			chart = new Chart(ctx, config);
-			if (chart != null) {
-				chart.canvas.parentNode.style.height = height + 'px';
-			}
-		}
-	}
-}
-
-window.targetsales = (indata) => {
-	var width = 100;
-	var height = 150;
-	const data = {
-		labels: [""],
-		datasets: [{
-			label: '150,000,000',
-			//backgroundColor: "#CCE8FF",
-			backgroundColor: 'rgba(46, 117, 183, 0.2)',
-			data: [150000000],
-			barThickness: 50,
-			xAxisID: "bar-x-axis1",
-			borderWidth: 0,
-		}, {
-			label: '135,000,000',
-			backgroundColor: "#1378D5",
-			//backgroundColor: 'rgba(255, 206, 86, 0.2)',
-			data: [135000000],
-			barThickness: 50,
-			borderWidth: 0,
-			//xAxisID: "bar-x-axis2",
-		}],
-	};
-
-	const config = {
-		type: "bar",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				y: {
-					display: false,
-					border: {
-						display: false,
-					},
-					stacked: true,
-					beginAtZero: true,
-					grid: {
-						drawBorder: false,
-						display: false
-					}
-				},
-				x: {
-					display: false,
-					border: {
-						display: false,
-					},
-					stacked: true,
-					grid: {
-						drawBorder: false,
-						display: false
-					}
-				},
-			},
-			//plugins: [ChartDataLabels]
-			plugins: {
-				legend: {
-					display: true,
-					labels: {
-						textAlign: 'center',
-						usePointStyle: true,
-						boxHeight: 7,
-						color: "black",
-						font: {
-							family: 'prompt-semibold',
-							size: 12
-						}
-					}
-				}
-			},
-		}
-	};
-
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("targetsales");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
-		if (chart != null) {
-			chart.canvas.parentNode.style.height = height + 'px';
-			chart.canvas.parentNode.style.width = width + 'px';
-		}
-	}
-}
-
-window.numcussizebusiness = (_data, _labels) => {
-	//console.log(_data)
-	//console.log(_labels)
-
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
-
-
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
-
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
-
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-
-			//console.log(chart.data.datasets[0].data[2])
-			//console.log(chart.data.datasets[0].data[3])
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
-
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
-
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
-
-					const extraLine = x >= halfwidth ? 5 : -5;
-
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
-
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
-
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
-				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
-			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
-			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
-
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("numcussizebusiness");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
-		if (chart != null) {
-			chart.canvas.parentNode.style.height = 150 + 'px';
-		}
-	}
-}
-
-window.numcustypebusiness = (_data, _labels) => {
-	//console.log(_data)
-	//console.log(_labels)
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
-
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
-
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
-
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
-
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
-
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
-
-					const extraLine = x >= halfwidth ? 5 : -5;
-
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
-
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
-
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
-				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
-			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
-			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
-
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("numcustypebusiness");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -714,133 +726,133 @@ window.numcustypebusiness = (_data, _labels) => {
 }
 
 window.numcusisiccode = (_data, _labels) => {
-	//console.log(_data)
-	//console.log(_labels)
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "numcusisiccode";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
-
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("numcusisiccode");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -848,133 +860,133 @@ window.numcusisiccode = (_data, _labels) => {
 }
 
 window.numcusloantype = (_data, _labels) => {
-	//console.log(_data)
-	//console.log(_labels)
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "numcusloantype";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
-
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("numcusloantype");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -982,133 +994,134 @@ window.numcusloantype = (_data, _labels) => {
 }
 
 window.valuesizebusiness = (_data, _labels) => {
-	//console.log(_data)
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "valuesizebusiness";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-	var ctx = document.getElementById("valuesizebusiness");
-	if (ctx != null) {
-
-		if (chart) chart.destroy();
-
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1116,131 +1129,134 @@ window.valuesizebusiness = (_data, _labels) => {
 }
 
 window.valuetypebusiness = (_data, _labels) => {
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "valuetypebusiness";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-	var ctx = document.getElementById("valuetypebusiness");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1248,132 +1264,134 @@ window.valuetypebusiness = (_data, _labels) => {
 }
 
 window.valueisiccode = (_data, _labels) => {
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "valueisiccode";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-	var ctx = document.getElementById("valueisiccode");
-	if (ctx != null) {
-
-		if (chart) chart.destroy();
-
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}
@@ -1381,131 +1399,134 @@ window.valueisiccode = (_data, _labels) => {
 }
 
 window.valueloantype = (_data, _labels) => {
-	const data = {
-		labels: _labels,
-		datasets: [
-			{
-				data: _data,
-				backgroundColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-				borderColor: [
-					"#1A68AF",
-					"#97C7FF",
-					"#bbd0eb",
-				],
-			},
-		],
-	};
+	let chartId = "valueloantype";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	// pieLabelsLine plugin
-	const pieLabelsLine = {
-		id: "pieLabelsLine",
-		afterDraw(chart) {
-			const {
-				ctx,
-				chartArea: { width, height },
-			} = chart;
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#97C7FF",
+						"#bbd0eb",
+					],
+				},
+			],
+		};
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-			const cx = chart._metasets[0].data[0].x;
-			const cy = chart._metasets[0].data[0].y;
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-			const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-			chart.data.datasets.forEach((dataset, i) => {
-				chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-					const { x: a, y: b } = datapoint.tooltipPosition();
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-					const x = 2 * a - cx;
-					const y = 2 * b - cy;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-					// draw line
-					const halfwidth = width / 2;
-					const halfheight = height / 2;
-					const xLine = x >= halfwidth ? x + 10 : x - 10;
-					const yLine = y >= halfheight ? y + 10 : y - 10;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-					const extraLine = x >= halfwidth ? 5 : -5;
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-					ctx.beginPath();
-					ctx.moveTo(x, y);
-					//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-					ctx.fill();
-					ctx.moveTo(x, y);
-					ctx.lineTo(xLine, yLine);
-					ctx.lineTo(xLine + extraLine, yLine);
-					// ctx.strokeStyle = dataset.backgroundColor[index];
-					ctx.strokeStyle = "black";
-					ctx.stroke();
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-					// text
-					const textWidth = ctx.measureText(chart.data.labels[index]).width;
-					ctx.font = "9px prompt-regular";
-					// control the position
-					const textXPosition = x >= halfwidth ? "left" : "right";
-					const plusFivePx = x >= halfwidth ? 5 : -5;
-					ctx.textAlign = textXPosition;
-					ctx.textBaseline = "middle";
-					// ctx.fillStyle = dataset.backgroundColor[index];
-					ctx.fillStyle = "black";
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
 
-					ctx.fillText(
-						chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-						xLine + extraLine + plusFivePx,
-						yLine
-					);
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
+					});
 				});
-			});
-		},
-	};
-	// config
-	const config = {
-		type: "pie",
-		data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			layout: {
-				padding: 20,
 			},
-			scales: {
-				y: {
-					display: false,
-					beginAtZero: true,
-					ticks: {
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
+				},
+				scales: {
+					y: {
 						display: false,
+						beginAtZero: true,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
 					},
-					grid: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
+							display: false,
+						},
+					},
+				},
+				plugins: {
+					legend: {
 						display: false,
 					},
 				},
-				x: {
-					display: false,
-					ticks: {
-						display: false,
-					},
-					grid: {
-						display: false,
-					},
-				},
 			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
-		},
-		plugins: [pieLabelsLine],
-	};
+			plugins: [pieLabelsLine],
+		};
 
-	let chart; // define chart variable outside of function
-
-	var ctx = document.getElementById("valueloantype");
-	if (ctx != null) {
-		if (chart) chart.destroy();
-		chart = new Chart(ctx, config);
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 150 + 'px';
 		}

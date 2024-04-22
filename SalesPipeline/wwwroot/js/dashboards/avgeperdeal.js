@@ -1,109 +1,117 @@
 ﻿window.avgdeal_bar1 = (_data) => {
+	let chartId = "avgdeal_bar1";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	//console.log(_data)
-	//console.log(_labels)
+		const data = {
+			//labels: _labels,
+			datasets: [{
+				label: '',
+				data: _data,
+				barThickness: 80,
+				backgroundColor: [
+					'#1f4e78',
+					'#3971a2',
+					'#7dadde',
+					'#bbd0eb',
+				],
+				borderWidth: 1
+			}]
+		};
 
-	const data = {
-		//labels: _labels,
-		datasets: [{
-			label: '',
-			data: _data,
-			barThickness: 80,
-			backgroundColor: [
-				'#1f4e78',
-				'#3971a2',
-				'#7dadde',
-				'#bbd0eb',
-			],
-			borderWidth: 1
-		}]
-	};
-
-	const config = {
-		type: 'bar',
-		data: data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				y: {
-					beginAtZero: true
+		const config = {
+			type: 'bar',
+			data: data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
 				}
 			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			}
-		},
-	};
+		};
 
-	var ctx = document.getElementById("avgdeal_bar1");
-	if (ctx != null) {
+		const ctx = canvas.getContext('2d');
 		const chart = new Chart(ctx, config);
 		if (chart != null) {
-			chart.canvas.parentNode.style.height = '250px';
+			chart.canvas.parentNode.style.height = '200px';
 			chart.canvas.parentNode.style.width = '100%';
 		}
 	}
 }
 
 window.avgdeal_bar2 = (_data) => {
+	let chartId = "avgdeal_bar2";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	const data = {
-		//labels: _labels,
-		datasets: [{
-			label: '',
-			//data: [
-			//	{ x: 'ประเทศ', y: 75000, id: 1 },
-			//	{ x: 'ภูมิภาค A', y: 80000, id: 2 },
-			//	{ x: 'ภูมิภาค B', y: 75000, id: 3 },
-			//	{ x: 'ภูมิภาค C', y: 50000, id: 4 },
-			//	{ x: 'ภูมิภาค D', y: 90000, id: 5 },
-			//	{ x: 'ภูมิภาค E', y: 75000, id: 6 },
-			//],
-			data: _data,
-			barThickness: 15,
-			backgroundColor: [
-				'#4471c4',
-				'#4471c4',
-				'#4471c4',
-				'#4471c4',
-				'#4471c4',
-				'#4471c4',
-			],
-			borderWidth: 1
-		}]
-	};
+		const data = {
+			//labels: _labels,
+			datasets: [{
+				label: '',
+				//data: [
+				//	{ x: 'ประเทศ', y: 75000, id: 1 },
+				//	{ x: 'ภูมิภาค A', y: 80000, id: 2 },
+				//	{ x: 'ภูมิภาค B', y: 75000, id: 3 },
+				//	{ x: 'ภูมิภาค C', y: 50000, id: 4 },
+				//	{ x: 'ภูมิภาค D', y: 90000, id: 5 },
+				//	{ x: 'ภูมิภาค E', y: 75000, id: 6 },
+				//],
+				data: _data,
+				barThickness: 15,
+				backgroundColor: [
+					'#4471c4',
+					'#4471c4',
+					'#4471c4',
+					'#4471c4',
+					'#4471c4',
+					'#4471c4',
+				],
+				borderWidth: 1
+			}]
+		};
 
-	const config = {
-		type: 'bar',
-		data: data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				y: {
-					beginAtZero: true
+		const config = {
+			type: 'bar',
+			data: data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
 				}
 			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			}
-		},
-	};
+		};
 
-	var ctx = document.getElementById("avgdeal_bar2");
-	if (ctx != null) {
+		const ctx = canvas.getContext('2d');
 		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = '200px';
 			chart.canvas.parentNode.style.width = '100%';
 		}
-
-		ctx.onclick = (evt) => {
+		canvas.onclick = (evt) => {
 			const res = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
 			// If didn't click on a bar, `res` will be an empty array
