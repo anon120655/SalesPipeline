@@ -7,6 +7,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ValidationModel;
+using SalesPipeline.Utils.Resources.Dashboards;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -434,6 +435,21 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var response = await _repo.Dashboard.GetAvgRMBar(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("GetAvgRegionMonth12Bar")]
+		public async Task<IActionResult> GetAvgRegionMonth12Bar(FilterAvgPerDeal model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgRegionMonth12Bar(model);
 
 				return Ok(response);
 			}

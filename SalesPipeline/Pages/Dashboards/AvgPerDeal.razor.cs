@@ -17,7 +17,6 @@ namespace SalesPipeline.Pages.Dashboards
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private FilterAvgPerDeal filterAvg = new();
-		private bool isLoadingDepBranchs = false;
 
 		public string filterRegionsTitle = "เลือก";
 		public string filterBranchsTitle = "เลือก";
@@ -114,7 +113,7 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					if (dataBranchs.Data?.Count > 0)
 					{
-						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						LookUp.Branchs = new();
 						LookUp.Branchs.AddRange(dataBranchs.Data);
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
@@ -366,6 +365,12 @@ namespace SalesPipeline.Pages.Dashboards
 		protected async Task Dropdown_Level()
 		{
 			await _jsRuntimes.InvokeVoidAsync("dropdown_level", null);
+		}
+
+		protected async Task Search()
+		{
+			await SetModelAll();
+			StateHasChanged();
 		}
 
 

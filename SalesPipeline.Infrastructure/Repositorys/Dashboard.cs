@@ -4,6 +4,7 @@ using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using NPOI.Util;
@@ -2147,5 +2148,48 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return response;
 		}
+
+		public async Task<List<GroupByModel>> GetAvgRegionMonth12Bar(FilterAvgPerDeal model)
+		{
+			var response = new List<GroupByModel>();
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0);
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+			var sales = await query.GroupBy(g => g.CreateDate.Month)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+
+			for (int i = 1; i <= 12; i++)
+			{
+				var _sales = sales.FirstOrDefault(x => x.GroupID == i);
+				if (_sales != null)
+				{
+					response.Add(new() { GroupID = i.ToString(), Name = GeneralUtils.GetFullMonth(i), Value = _sales.Value ?? 0 });
+				}
+				else
+				{
+					response.Add(new() { GroupID = i.ToString(), Name = GeneralUtils.GetFullMonth(i) });
+				}
+			}
+
+			return response;
+		}
+
 	}
 }

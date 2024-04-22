@@ -4,15 +4,17 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Dashboards;
+using Microsoft.AspNetCore.Components;
 
 namespace SalesPipeline.Pages.Dashboards
 {
 	public partial class AvgPerDeal_Region
-    {
+	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private FilterAvgPerDeal filterAvg = new();
+		//private allFilter filter = new();
 
 		public string filterRegionsTitle = "เลือก";
 		public string filterBranchsTitle = "เลือก";
@@ -107,7 +109,7 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					if (dataBranchs.Data?.Count > 0)
 					{
-						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						LookUp.Branchs = new();
 						LookUp.Branchs.AddRange(dataBranchs.Data);
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
@@ -223,12 +225,72 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelAll()
 		{
+			filterAvg.userid = UserInfo.Id;
 			await AvgDeal_Region_Bar();
 		}
 
 		protected async Task AvgDeal_Region_Bar()
 		{
-			await _jsRuntimes.InvokeVoidAsync("avgdeal_region_bar", null);
+			var data = await _dashboarViewModel.GetAvgRegionMonth12Bar(filterAvg);
+			if (data != null && data.Status)
+			{
+				var datas = new List<ChartJSDataModel>();
+
+				if (data.Data?.Count > 0)
+				{
+					foreach (var item in data.Data)
+					{
+						datas.Add(new()
+						{
+							id = item.GroupID,
+							x = item.Name ?? string.Empty,
+							y = item.Value
+						});
+					}
+				}
+				await _jsRuntimes.InvokeVoidAsync("avgdeal_region_bar", datas);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+		}
+
+		protected async Task Search()
+		{
+			await SetModelAll();
+			StateHasChanged();
+		}
+
+		protected void OnDateStart(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filterAvg != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filterAvg.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filterAvg.startdate = null;
+				}
+			}
+		}
+
+		protected void OnDateEnd(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filterAvg != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filterAvg.enddate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filterAvg.enddate = null;
+				}
+			}
 		}
 
 	}
