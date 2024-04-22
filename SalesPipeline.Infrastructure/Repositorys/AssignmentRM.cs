@@ -352,9 +352,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.Selecteds != null && model.Selecteds.Count > 0)
+			if (model.Branchs != null && model.Branchs.Count > 0)
 			{
-				var idList = model.Selecteds.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
 				query = query.Where(x => idList.Contains(x.BranchId));
 			}
 

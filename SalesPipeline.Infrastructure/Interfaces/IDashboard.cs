@@ -57,6 +57,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//RM
 		Task<List<GroupByModel>> GetAvgRMBar(allFilter model);
 		//RM
-		Task<List<GroupByModel>> GetAvgRegionMonth12Bar(FilterAvgPerDeal model);
+		Task<List<GroupByModel>> GetAvgRegionMonth12Bar(allFilter model);
 	}
 }

@@ -445,7 +445,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPost("GetAvgRegionMonth12Bar")]
-		public async Task<IActionResult> GetAvgRegionMonth12Bar(FilterAvgPerDeal model)
+		public async Task<IActionResult> GetAvgRegionMonth12Bar(allFilter model)
 		{
 			try
 			{

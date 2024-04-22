@@ -423,7 +423,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetBranchByDepBranchId")]
+		[HttpPost("GetBranchByDepBranchId")]
 		public async Task<IActionResult> GetBranchByDepBranchId([FromQuery] allFilter model)
 		{
 			try

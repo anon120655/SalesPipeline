@@ -22,11 +22,11 @@
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">เริ่มต้น</label>
-							<input type="date" class="form-control" @onchange="OnDateStart" value="@(filterAvg.startdate.HasValue ? filterAvg.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
+							<input type="date" class="form-control" @onchange="OnDateStart" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สิ้นสุด</label>
-							<input type="date" class="form-control" @onchange="OnDateEnd" value="@(filterAvg.enddate.HasValue ? filterAvg.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
+							<input type="date" class="form-control" @onchange="OnDateEnd" value="@(filter.enddate.HasValue ? filter.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">กิจการสาขาภาค</label>
@@ -113,26 +113,59 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">0@(i)/06/65</td>
-												<td class="text-center">110140219845@(i)</td>
-												<td class="">ยินดี ทดสอบระบบ</td>
-												<td class="text-center">ภาคกลางตอนบน</td>
-												<td class="text-center">ปทุมธานี</td>
-												<td class="text-center">อื่นๆ	</td>
-												<td class="text-center">093-652-5689</td>
-												<td class="">ยินดี ทดสอบระบบ</td>
-												<td class="text-center">
-													5,000,000
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@GeneralUtils.DateToThString(item.CreateDate)</td>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="">@item.CompanyName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Department_BranchName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.ContactTel)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.AssUserName)</td>
+													<td class="text-center fw-bold">
+														@if (item.LoanAmount.HasValue)
+														{
+															<span>
+																@item.LoanAmount.Value.ToString("#,##0.00")
+															</span>
+														}
+													</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
 							</div>
-						</div>						
+						</div>
+					</div>
+					<div>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

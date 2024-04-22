@@ -508,7 +508,7 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<GroupByModel>>?> GetAvgRegionMonth12Bar(FilterAvgPerDeal model)
+		public async Task<ResultModel<List<GroupByModel>>?> GetAvgRegionMonth12Bar(allFilter model)
 		{
 			try
 			{

@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Dashboards;
 using Microsoft.AspNetCore.Components;
+using SalesPipeline.Utils.Resources.Sales;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -13,8 +14,9 @@ namespace SalesPipeline.Pages.Dashboards
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
-		private FilterAvgPerDeal filterAvg = new();
-		//private allFilter filter = new();
+		private allFilter filter = new();
+		private List<SaleCustom>? Items;
+		public Pager? Pager;
 
 		public string filterRegionsTitle = "เลือก";
 		public string filterBranchsTitle = "เลือก";
@@ -38,6 +40,9 @@ namespace SalesPipeline.Pages.Dashboards
 					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
 					await SetModelAll();
+
+					await SetQuery();
+					StateHasChanged();
 				}
 
 				StateHasChanged();
@@ -73,9 +78,9 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
-			filterAvg.DepartmentBranch = new();
-			filterAvg.Branchs = new();
-			filterAvg.RMUser = new();
+			filter.DepBranch = new();
+			filter.Branchs = new();
+			filter.RMUser = new();
 			StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
@@ -88,22 +93,19 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.DepartmentBranch.Add(new()
-						{
-							ID = item
-						});
+						filter.DepBranch.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.DepartmentBranch.Count > 0)
+			if (filter.DepBranch.Count > 0)
 			{
 				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
 
 				var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
 				{
 					status = StatusModel.Active,
-					Selecteds = filterAvg.DepartmentBranch.Select(x => x.ID).ToList()
+					DepBranch = filter.DepBranch
 				});
 				if (dataBranchs != null && dataBranchs.Status)
 				{
@@ -135,8 +137,8 @@ namespace SalesPipeline.Pages.Dashboards
 		public async Task OnBranch(string[] _ids, string _name)
 		{
 			LookUp.RMUser = new();
-			filterAvg.Branchs = new();
-			filterAvg.RMUser = new();
+			filter.Branchs = new();
+			filter.RMUser = new();
 			StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
@@ -148,15 +150,12 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.Branchs.Add(new()
-						{
-							ID = item
-						});
+						filter.Branchs.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.Branchs.Count > 0)
+			if (filter.Branchs.Count > 0)
 			{
 				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
 
@@ -164,7 +163,7 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					pagesize = 100,
 					status = StatusModel.Active,
-					Selecteds = filterAvg.Branchs.Select(x => x.ID).ToList()
+					Branchs = filter.Branchs
 				});
 				if (dataUsersRM != null && dataUsersRM.Status)
 				{
@@ -196,7 +195,7 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnRMUser(string[] _ids, string _name)
 		{
-			filterAvg.RMUser = new();
+			filter.RMUser = new();
 
 			if (_ids != null)
 			{
@@ -205,15 +204,12 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.RMUser.Add(new()
-						{
-							ID = item
-						});
+						filter.RMUser.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.RMUser.Count > 0)
+			if (filter.RMUser.Count > 0)
 			{
 
 			}
@@ -225,13 +221,13 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelAll()
 		{
-			filterAvg.userid = UserInfo.Id;
+			filter.userid = UserInfo.Id;
 			await AvgDeal_Region_Bar();
 		}
 
 		protected async Task AvgDeal_Region_Bar()
 		{
-			var data = await _dashboarViewModel.GetAvgRegionMonth12Bar(filterAvg);
+			var data = await _dashboarViewModel.GetAvgRegionMonth12Bar(filter);
 			if (data != null && data.Status)
 			{
 				var datas = new List<ChartJSDataModel>();
@@ -257,38 +253,103 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task SetQuery(string? parematerAll = null)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filter.SetUriQuery(uriQuery);
+
+			await SetModel();
+			StateHasChanged();
+		}
+
+		protected async Task SetModel()
+		{
+			if (UserInfo.RoleCode != null)
+			{
+				if (UserInfo.RoleCode == RoleCodes.MCENTER)
+				{
+					filter.assigncenter = UserInfo.Id;
+				}
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				{
+
+				}
+			}
+
+			filter.sort = OrderByModel.ASC;
+			filter.isloanamount = 1;
+			var data = await _salesViewModel.GetList(filter);
+			if (data != null && data.Status)
+			{
+				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/dashboard/avgeperdeal/region";
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+		}
+
+		protected async Task OnSelectPagesize(int _number)
+		{
+			Items = null;
+			StateHasChanged();
+			filter.page = 1;
+			filter.pagesize = _number;
+			await SetModel();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSelectPage(string parematerAll)
+		{
+			await SetQuery(parematerAll);
+			StateHasChanged();
+		}
+
 		protected async Task Search()
 		{
 			await SetModelAll();
+			await SetQuery();
 			StateHasChanged();
 		}
 
 		protected void OnDateStart(ChangeEventArgs e)
 		{
-			if (e != null && e.Value != null && filterAvg != null)
+			if (e != null && e.Value != null && filter != null)
 			{
 				if (!String.IsNullOrEmpty(e.Value.ToString()))
 				{
-					filterAvg.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+					filter.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
 				}
 				else
 				{
-					filterAvg.startdate = null;
+					filter.startdate = null;
 				}
 			}
 		}
 
 		protected void OnDateEnd(ChangeEventArgs e)
 		{
-			if (e != null && e.Value != null && filterAvg != null)
+			if (e != null && e.Value != null && filter != null)
 			{
 				if (!String.IsNullOrEmpty(e.Value.ToString()))
 				{
-					filterAvg.enddate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+					filter.enddate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
 				}
 				else
 				{
-					filterAvg.enddate = null;
+					filter.enddate = null;
 				}
 			}
 		}

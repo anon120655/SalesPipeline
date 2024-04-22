@@ -2149,7 +2149,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
-		public async Task<List<GroupByModel>> GetAvgRegionMonth12Bar(FilterAvgPerDeal model)
+		public async Task<List<GroupByModel>> GetAvgRegionMonth12Bar(allFilter model)
 		{
 			var response = new List<GroupByModel>();
 

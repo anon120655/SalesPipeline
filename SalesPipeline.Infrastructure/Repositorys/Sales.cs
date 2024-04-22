@@ -398,6 +398,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				&& x.Customer.JuristicPersonRegNumber.Contains(model.juristicnumber));
 			}
 
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
 			if (!String.IsNullOrEmpty(model.sort))
 			{
 				if (model.sort == OrderByModel.ASC)

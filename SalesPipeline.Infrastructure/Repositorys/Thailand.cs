@@ -165,22 +165,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoBranchCustom>> GetBranchByDepBranchId(allFilter model)
 		{
-			if ((model.Selecteds == null || model.Selecteds.Count == 0) && model.ids != null)
-			{
-				List<string> ids_list = model.ids.Split(',').ToList<string>();
-				if (ids_list.Count > 0)
-				{
-					model.Selecteds = new();
-					foreach (var item in ids_list)
-					{
-						model.Selecteds.Add(item);
-					}
-				}
-			}
+			//if ((model.DepBranch == null || model.DepBranch.Count == 0) && model.ids != null)
+			//{
+			//	List<string> ids_list = model.ids.Split(',').ToList<string>();
+			//	if (ids_list.Count > 0)
+			//	{
+			//		model.Selecteds = new();
+			//		foreach (var item in ids_list)
+			//		{
+			//			model.Selecteds.Add(item);
+			//		}
+			//	}
+			//}
 
-			if (model.Selecteds == null || model.Selecteds.Count == 0) return new List<InfoBranchCustom>();
+			if (model.DepBranch == null || model.DepBranch.Count == 0) return new List<InfoBranchCustom>();
 
-			var idList = model.Selecteds.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+			var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
 
 			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();
 			if (infoProvinces.Count > 0)

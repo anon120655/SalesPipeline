@@ -16,7 +16,7 @@ namespace SalesPipeline.Pages.Dashboards
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
-		private FilterAvgPerDeal filterAvg = new();
+		private allFilter filter = new();
 
 		public string filterRegionsTitle = "เลือก";
 		public string filterBranchsTitle = "เลือก";
@@ -77,9 +77,9 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
-			filterAvg.DepartmentBranch = new();
-			filterAvg.Branchs = new();
-			filterAvg.RMUser = new();
+			filter.DepBranch = new();
+			filter.Branchs = new();
+			filter.RMUser = new();
 			StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
@@ -92,22 +92,19 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.DepartmentBranch.Add(new()
-						{
-							ID = item
-						});
+						filter.DepBranch.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.DepartmentBranch.Count > 0)
+			if (filter.DepBranch.Count > 0)
 			{
 				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
 
 				var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
 				{
 					status = StatusModel.Active,
-					Selecteds = filterAvg.DepartmentBranch.Select(x => x.ID).ToList()
+					DepBranch = filter.DepBranch
 				});
 				if (dataBranchs != null && dataBranchs.Status)
 				{
@@ -139,8 +136,8 @@ namespace SalesPipeline.Pages.Dashboards
 		public async Task OnBranch(string[] _ids, string _name)
 		{
 			LookUp.RMUser = new();
-			filterAvg.Branchs = new();
-			filterAvg.RMUser = new();
+			filter.Branchs = new();
+			filter.RMUser = new();
 			StateHasChanged();
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
@@ -152,15 +149,12 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.Branchs.Add(new()
-						{
-							ID = item
-						});
+						filter.Branchs.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.Branchs.Count > 0)
+			if (filter.Branchs.Count > 0)
 			{
 				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
 
@@ -168,7 +162,7 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					pagesize = 100,
 					status = StatusModel.Active,
-					Selecteds = filterAvg.Branchs.Select(x => x.ID).ToList()
+					Branchs = filter.Branchs
 				});
 				if (dataUsersRM != null && dataUsersRM.Status)
 				{
@@ -200,7 +194,7 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnRMUser(string[] _ids, string _name)
 		{
-			filterAvg.RMUser = new();
+			filter.RMUser = new();
 
 			if (_ids != null)
 			{
@@ -209,15 +203,12 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					foreach (var item in selection)
 					{
-						filterAvg.RMUser.Add(new()
-						{
-							ID = item
-						});
+						filter.RMUser.Add(item);
 					}
 				}
 			}
 
-			if (filterAvg.RMUser.Count > 0)
+			if (filter.RMUser.Count > 0)
 			{
 
 			}

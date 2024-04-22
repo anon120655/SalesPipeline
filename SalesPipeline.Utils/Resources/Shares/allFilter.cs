@@ -58,6 +58,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<string?>? Selecteds { get; set; }
 		public List<string?>? Selecteds2 { get; set; }
 		public List<string?>? Selecteds3 { get; set; }
+		public List<string?>? DepBranch { get; set; }
+		public List<string?>? Branchs { get; set; }
+		public List<string?>? RMUser { get; set; }
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -206,6 +209,24 @@ namespace SalesPipeline.Utils.Resources.Shares
 				ParameterAll += $"&ids3={joined}";
 			}
 
+			if (DepBranch?.Count > 0)
+			{
+				string joined = string.Join(",", DepBranch);
+				ParameterAll += $"&depbranch={joined}";
+			}
+
+			if (Branchs?.Count > 0)
+			{
+				string joined = string.Join(",", Branchs);
+				ParameterAll += $"&branchs={joined}";
+			}
+
+			if (RMUser?.Count > 0)
+			{
+				string joined = string.Join(",", RMUser);
+				ParameterAll += $"&rmuser={joined}";
+			}
+
 			if (startdate.HasValue)
 				ParameterAll += $"&startdate={GeneralUtils.DateToStrParameter(startdate)}";
 
@@ -346,6 +367,46 @@ namespace SalesPipeline.Utils.Resources.Shares
 					}
 				}
 			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranch", out var _DepBranch))
+			{
+				DepBranch = new();
+				List<string> lists = _DepBranch.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						DepBranch.Add(item);
+					}
+				}
+			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("branchs", out var _Branchs))
+			{
+				Branchs = new();
+				List<string> lists = _Branchs.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						Branchs.Add(item);
+					}
+				}
+			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("rmuser", out var _RMUser))
+			{
+				RMUser = new();
+				List<string> lists = _RMUser.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						RMUser.Add(item);
+					}
+				}
+			}
+
 		}
 
 

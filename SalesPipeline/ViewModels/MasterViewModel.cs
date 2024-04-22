@@ -383,9 +383,10 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Master/GetBranchByDepBranchId?{model.SetParameter(true)}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/GetBranchByDepBranchId", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<List<InfoBranchCustom>>(content);
-
 				return new ResultModel<List<InfoBranchCustom>>()
 				{
 					Data = dataMap
