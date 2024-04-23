@@ -133,47 +133,51 @@ window.avgdeal_bar2 = (_data) => {
 }
 
 window.avgdeal_bar3 = (_data) => {
+	let chartId = "avgdeal_bar3";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	//console.log(_data)
+		const data = {
+			//labels: ["ประเทศ", "ภูมิภาค A", "สาขา 1", "สาขา 2", "สาขา 3"],
+			datasets: [{
+				label: '',
+				data: _data,
+				barThickness: 20,
+				backgroundColor: [
+					'#1f4e78',
+					'#3971a2',
+					'#7dadde',
+					'#bbd0eb',
+					"#deeaf6",
+				],
+				borderWidth: 1
+			}]
+		};
 
-	const data = {
-		//labels: ["ประเทศ", "ภูมิภาค A", "สาขา 1", "สาขา 2", "สาขา 3"],
-		datasets: [{
-			label: '',
-			data: _data,
-			barThickness: 20,
-			backgroundColor: [
-				'#1f4e78',
-				'#3971a2',
-				'#7dadde',
-				'#bbd0eb',
-				"#deeaf6",
-			],
-			borderWidth: 1
-		}]
-	};
-
-	const config = {
-		type: 'bar',
-		data: data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				y: {
-					beginAtZero: true
+		const config = {
+			type: 'bar',
+			data: data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
 				}
 			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			}
-		},
-	};
+		};
 
-	var ctx = document.getElementById("avgdeal_bar3");
-	if (ctx != null) {
+		const ctx = canvas.getContext('2d');
 		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = '200px';
@@ -183,47 +187,51 @@ window.avgdeal_bar3 = (_data) => {
 }
 
 window.avgdeal_bar4 = (_data) => {
+	let chartId = "avgdeal_bar4";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	//console.log(_data)
+		const data = {
+			//labels: ["ประเทศ", "สาขา 1", "RM 1", "RM 2", "RM 3"],
+			datasets: [{
+				label: '',
+				data: _data,
+				barThickness: 20,
+				backgroundColor: [
+					'#1f4e78',
+					'#3971a2',
+					'#7dadde',
+					'#bbd0eb',
+					"#deeaf6",
+				],
+				borderWidth: 1
+			}]
+		};
 
-	const data = {
-		//labels: ["ประเทศ", "สาขา 1", "RM 1", "RM 2", "RM 3"],
-		datasets: [{
-			label: '',
-			data: _data,
-			barThickness: 20,
-			backgroundColor: [
-				'#1f4e78',
-				'#3971a2',
-				'#7dadde',
-				'#bbd0eb',
-				"#deeaf6",
-			],
-			borderWidth: 1
-		}]
-	};
-
-	const config = {
-		type: 'bar',
-		data: data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				y: {
-					beginAtZero: true
+		const config = {
+			type: 'bar',
+			data: data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					}
 				}
 			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			}
-		},
-	};
+		};
 
-	var ctx = document.getElementById("avgdeal_bar4");
-	if (ctx != null) {
+		const ctx = canvas.getContext('2d');
 		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = '200px';

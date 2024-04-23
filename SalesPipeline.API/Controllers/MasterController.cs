@@ -424,7 +424,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPost("GetBranchByDepBranchId")]
-		public async Task<IActionResult> GetBranchByDepBranchId([FromQuery] allFilter model)
+		public async Task<IActionResult> GetBranchByDepBranchId(allFilter model)
 		{
 			try
 			{
