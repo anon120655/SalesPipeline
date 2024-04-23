@@ -391,6 +391,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.LoanAmount.HasValue && x.LoanAmount.Value > 0);
 			}
 
+			if (model.loanamount > 0)
+			{
+				query = query.Where(x => x.LoanAmount.HasValue && x.LoanAmount == model.loanamount);
+			}
+
 			if (!String.IsNullOrEmpty(model.juristicnumber))
 			{
 				query = query.Where(x => x.Customer != null
@@ -460,6 +465,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.amphurid.HasValue)
 			{
 				query = query.Where(x => x.Customer != null && x.Customer.AmphurId == model.amphurid);
+			}
+
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+			}
+
+			if (model.RMUser?.Count > 0)
+			{
+				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
 			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))

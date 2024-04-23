@@ -70,6 +70,20 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
+			if (businessType != null && businessType.Status)
+			{
+				LookUp.BusinessType = businessType.Data?.Items;
+				StateHasChanged();
+				await Task.Delay(1);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			}
+			else
+			{
+				_errorMessage = businessType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 		}
 
@@ -351,6 +365,19 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					filter.enddate = null;
 				}
+			}
+		}
+
+		protected async Task OnBusinessType(ChangeEventArgs e)
+		{
+			filter.businesstype = null;
+			if (e.Value != null)
+			{
+				filter.businesstype = e.Value.ToString();
+
+				//await SetModel();
+				//StateHasChanged();
+				//_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 			}
 		}
 

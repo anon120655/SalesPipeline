@@ -27,6 +27,10 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
+				filter.userid = UserInfo.Id;
+				filterBottom.userid = UserInfo.Id;
+				filterBottomEnd.userid = UserInfo.Id;
+
 				var UrlJs = $"/js/dashboards/avgeperdeal.js?v={_appSet.Value.Version}";
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/avgeperdeal.js");
 				if (iSloadJs)
@@ -34,10 +38,10 @@ namespace SalesPipeline.Pages.Dashboards
 					await SetInitManual();
 					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-					await SetModelAll();
+					await SetModelTop();
+					await SetModelBottom();
 				}
 
-				//await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
 				firstRender = false;
 			}
@@ -49,7 +53,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
 				LookUp.DepartmentBranch = new();
-				LookUpBottom.DepartmentBranch = new();
+				LookUpBottom.DepartmentBranch = new() { new() { Id = Guid.Empty, Name = "เลือก" } };
 				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
@@ -69,7 +73,7 @@ namespace SalesPipeline.Pages.Dashboards
 			var dataBranchs = await _masterViewModel.GetBranch(0);
 			if (dataBranchs != null && dataBranchs.Status)
 			{
-				LookUpBottomEnd.Branchs = new();
+				LookUpBottomEnd.Branchs = new() { new() { BranchID = 0, BranchName = "เลือก" } };
 				if (dataBranchs.Data?.Count > 0)
 				{
 					LookUpBottomEnd.Branchs.AddRange(dataBranchs.Data);
@@ -86,6 +90,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		}
 
+		//TOP
 		[JSInvokable]
 		public async Task OnDepBranchs(string[] _ids, string _name)
 		{
@@ -222,18 +227,12 @@ namespace SalesPipeline.Pages.Dashboards
 				}
 			}
 
-			if (filter.RMUser.Count > 0)
-			{
-
-			}
-			else
-			{
-				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
-			}
+			await Task.Delay(1);
 		}
 
+		//Bottom
 		[JSInvokable]
-		public async Task OnDepBranchsBottom(string[] _ids, string _name)
+		public async Task OnDepBranchsBottom(string _ids, string _name)
 		{
 			LookUpBottom.Branchs = new();
 			filterBottom.DepBranch = new();
@@ -244,14 +243,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (_ids != null)
 			{
-				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
-				if (selection != null)
-				{
-					foreach (var item in selection)
-					{
-						filterBottom.DepBranch.Add(item);
-					}
-				}
+				filterBottom.DepBranch.Add(_ids);
 			}
 
 			if (filterBottom.DepBranch.Count > 0)
@@ -309,7 +301,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (filterBottom.Branchs.Count > 0)
 			{
 				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
-				
+
 				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
 			}
 			else
@@ -318,8 +310,9 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		//BottomEnd
 		[JSInvokable]
-		public async Task OnBranchBottomEnd(string[] _ids, string _name)
+		public async Task OnBranchBottomEnd(string _ids, string _name)
 		{
 			LookUpBottomEnd.RMUser = new();
 			filterBottomEnd.Branchs = new();
@@ -331,14 +324,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (_ids != null)
 			{
-				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
-				if (selection != null)
-				{
-					foreach (var item in selection)
-					{
-						filterBottomEnd.Branchs.Add(item);
-					}
-				}
+				filterBottomEnd.Branchs.Add(_ids);
 			}
 
 			if (filterBottomEnd.Branchs.Count > 0)
@@ -405,13 +391,17 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task SetModelAll()
+
+		protected async Task SetModelTop()
 		{
 			await AvgDeal_Bar1();
 			await AvgDeal_Bar2();
+		}
+
+		protected async Task SetModelBottom()
+		{
 			await AvgDeal_Bar3();
 			await AvgDeal_Bar4();
-			await Dropdown_Level();
 		}
 
 		protected async Task AvgDeal_Bar1()
@@ -474,12 +464,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			List<string?> department_BranchList = new() { "788b8633-cd3b-11ee-ac10-30e37aef72fb", "7550476c-c1b1-11ee-bf19-0205965f5884" };
 			List<string?> branchList = new() { "3", "143", "62" };
-			var data = await _dashboarViewModel.GetAvgBranchBar(new()
-			{
-				userid = UserInfo.Id,
-				//Selecteds = department_BranchList,
-				//Selecteds2 = branchList
-			});
+			var data = await _dashboarViewModel.GetAvgBranchBar(filterBottom);
 			if (data != null && data.Status)
 			{
 				var datas = new List<ChartJSDataModel>();
@@ -509,12 +494,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			List<string?> branchList = new() { "3", "143", "62" };
 			List<string?> rmList = new() { "13", "14" };
-			var data = await _dashboarViewModel.GetAvgRMBar(new()
-			{
-				userid = UserInfo.Id,
-				//Selecteds = branchList,
-				//Selecteds2 = rmList
-			});
+			var data = await _dashboarViewModel.GetAvgRMBar(filterBottomEnd);
 			if (data != null && data.Status)
 			{
 				var datas = new List<ChartJSDataModel>();
@@ -547,16 +527,15 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task Search()
 		{
-			await SetModelAll();
+			await SetModelTop();
 			StateHasChanged();
 		}
 
 		protected async Task SearchBottom()
 		{
-			await SetModelAll();
+			await SetModelBottom();
 			StateHasChanged();
 		}
-
 
 	}
 }

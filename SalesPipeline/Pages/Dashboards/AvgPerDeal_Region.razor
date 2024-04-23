@@ -73,14 +73,26 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ยอดสินเชื่อ</label>
-							<select class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="input-group">
+								<input @bind="filter.loanamount" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ประเภทธุระกิจ</label>
-							<select class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select id="BusinessType" @onchange="OnBusinessType" value="@filter.businesstype" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.BusinessType?.Count > 0)
+								{
+									foreach (var item in LookUp.BusinessType)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
