@@ -1,13 +1,7 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Dashboards;
-using SalesPipeline.Utils.Resources.Masters;
-using SalesPipeline.Utils.Resources.Thailands;
-using SalesPipeline.Utils.Resources.Assignments;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -16,11 +10,11 @@ namespace SalesPipeline.Pages.Dashboards
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
+		private LookUpResource LookUpBottom = new();
+		private LookUpResource LookUpBottomEnd = new();
 		private allFilter filter = new();
-
-		public string filterRegionsTitle = "เลือก";
-		public string filterBranchsTitle = "เลือก";
-		public string filterRMUserTitle = "เลือก";
+		private allFilter filterBottom = new();
+		private allFilter filterBottomEnd = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -55,12 +49,15 @@ namespace SalesPipeline.Pages.Dashboards
 			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
 				LookUp.DepartmentBranch = new();
+				LookUpBottom.DepartmentBranch = new();
 				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					LookUpBottom.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
 					StateHasChanged();
 					await Task.Delay(1);
 					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs", "#DepBranchs");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchsBottom", "#DepBranchsBottom");
 				}
 			}
 			else
@@ -69,7 +66,24 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			StateHasChanged();
+			var dataBranchs = await _masterViewModel.GetBranch(0);
+			if (dataBranchs != null && dataBranchs.Status)
+			{
+				LookUpBottomEnd.Branchs = new();
+				if (dataBranchs.Data?.Count > 0)
+				{
+					LookUpBottomEnd.Branchs.AddRange(dataBranchs.Data);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranchBottomEnd", "#BranchBottomEnd");
+				}
+			}
+			else
+			{
+				_errorMessage = dataDepBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 		}
 
 		[JSInvokable]
@@ -209,6 +223,179 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 
 			if (filter.RMUser.Count > 0)
+			{
+
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnDepBranchsBottom(string[] _ids, string _name)
+		{
+			LookUpBottom.Branchs = new();
+			filterBottom.DepBranch = new();
+			filterBottom.Branchs = new();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "BranchBottom");
+
+			if (_ids != null)
+			{
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						filterBottom.DepBranch.Add(item);
+					}
+				}
+			}
+
+			if (filterBottom.DepBranch.Count > 0)
+			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
+				var dataBranchs = await _masterViewModel.GetBranchByDepBranchId(new allFilter()
+				{
+					status = StatusModel.Active,
+					DepBranch = filterBottom.DepBranch
+				});
+				if (dataBranchs != null && dataBranchs.Status)
+				{
+					if (dataBranchs.Data?.Count > 0)
+					{
+						LookUpBottom.Branchs = new();
+						LookUpBottom.Branchs.AddRange(dataBranchs.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranchBottom", "#BranchBottom");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "BranchBottom", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = dataBranchs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+
+		}
+
+		[JSInvokable]
+		public async Task OnBranchBottom(string[] _ids, string _name)
+		{
+			filterBottom.Branchs = new();
+			StateHasChanged();
+
+			if (_ids != null)
+			{
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						filterBottom.Branchs.Add(item);
+					}
+				}
+			}
+
+			if (filterBottom.Branchs.Count > 0)
+			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+				
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnBranchBottomEnd(string[] _ids, string _name)
+		{
+			LookUpBottomEnd.RMUser = new();
+			filterBottomEnd.Branchs = new();
+			filterBottomEnd.RMUser = new();
+			filterBottomEnd.Branchs = new();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUserBottomEnd");
+
+			if (_ids != null)
+			{
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						filterBottomEnd.Branchs.Add(item);
+					}
+				}
+			}
+
+			if (filterBottomEnd.Branchs.Count > 0)
+			{
+				await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
+				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
+				{
+					pagesize = 100,
+					status = StatusModel.Active,
+					Branchs = filterBottomEnd.Branchs
+				});
+				if (dataUsersRM != null && dataUsersRM.Status)
+				{
+					if (dataUsersRM.Data?.Items.Count > 0)
+					{
+						if (dataUsersRM.Data.Items?.Count > 0)
+						{
+							LookUpBottomEnd.RMUser = new();
+							LookUpBottomEnd.RMUser.AddRange(dataUsersRM.Data.Items);
+							StateHasChanged();
+							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRMUserBottomEnd", "#RMUserBottomEnd");
+							await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "RMUserBottomEnd", 100);
+						}
+					}
+				}
+				else
+				{
+					_errorMessage = dataUsersRM?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnRMUserBottomEnd(string[] _ids, string _name)
+		{
+			filterBottomEnd.RMUser = new();
+
+			if (_ids != null)
+			{
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						filterBottomEnd.RMUser.Add(item);
+					}
+				}
+			}
+
+			if (filterBottomEnd.RMUser.Count > 0)
 			{
 
 			}
@@ -359,6 +546,12 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		protected async Task Search()
+		{
+			await SetModelAll();
+			StateHasChanged();
+		}
+
+		protected async Task SearchBottom()
 		{
 			await SetModelAll();
 			StateHasChanged();

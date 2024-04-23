@@ -85,6 +85,75 @@
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-4">
+						</div>
+						<div class="col-8">
+							<div class="row mt-3 filter_s">
+								<div class="col mb-2">
+									<label class="form-label">กิจการสาขาภาค</label>
+									<div class="">
+										<select id="DepBranchsBottom" class="selectpicker" data-style="select_btn_set" data-actions-box="true" data-live-search="true" data-selected-text-format="count" data-max-options="1" multiple>
+											@if (LookUpBottom.DepartmentBranch?.Count > 0)
+											{
+												foreach (var item in LookUpBottom.DepartmentBranch)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label text-white">_</label>
+									<div class="">
+										<select id="BranchBottom" class="selectpicker selectInit" data-style="select_btn_set" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+											@if (LookUpBottom.Branchs?.Count > 0)
+											{
+												foreach (var item in LookUpBottom.Branchs)
+												{
+													<option value="@item.BranchID">@item.BranchName</option>
+												}
+											}
+										</select>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">สาขา</label>
+									<div class="">
+										<select id="BranchBottomEnd" class="selectpicker" data-style="select_btn_set" data-actions-box="true" data-live-search="true" data-selected-text-format="count" data-max-options="1" multiple>
+											@if (LookUpBottomEnd.Branchs?.Count > 0)
+											{
+												foreach (var item in LookUpBottomEnd.Branchs)
+												{
+													<option value="@item.BranchID">@item.BranchName</option>
+												}
+											}
+										</select>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label text-white">_</label>
+									<div class="">
+										<select id="RMUserBottomEnd" class="selectpicker selectInit" data-style="select_btn_set" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+											@if (LookUpBottomEnd.RMUser?.Count > 0)
+											{
+												foreach (var item in LookUpBottomEnd.RMUser)
+												{
+													<option value="@item.UserId">@item.User?.FullName</option>
+												}
+											}
+										</select>
+									</div>
+								</div>
+								<div class="col mb-2 mt-3">
+									<button @onclick="SearchBottom" type="button" class="btn btn-primary text-white mw_7r w-100">
+										<i class="fa fa-search fa-xs"></i> ค้นหา
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="row mt-5 filter_s">
 						<div class="col-12 col-xl-4">
 							<label class="form-label">ภูมิภาค</label>
@@ -93,32 +162,6 @@
 							</div>
 						</div>
 						<div class="col-12 col-xl-4">
-							<label class="form-label">พื้นที่</label>
-							<div>
-								<div class="dropdown">
-									<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> Menu </a>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-										<li><a class="dropdown-item" href="#">Action</a></li>
-										<li class="dropdown dropend">
-											<a class="dropdown-item dropdown-toggle" href="#" id="multilevelDropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Multilevel Action 1</a>
-											<ul class="dropdown-menu" aria-labelledby="multilevelDropdownMenu1">
-												<li><a class="dropdown-item" href="#">Action</a></li>
-												<li class="dropdown dropend">
-													<a class="dropdown-item dropdown-toggle" href="#" id="multilevelDropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Multilevel Action 2</a>
-													<ul class="dropdown-menu" aria-labelledby="multilevelDropdownMenu2">
-														<li><a class="dropdown-item" href="#">Action</a></li>
-														<li><a class="dropdown-item" href="#">Another action</a></li>
-														<li><a class="dropdown-item" href="#">Something else here</a></li>
-													</ul>
-												</li>
-												<li><a class="dropdown-item" href="#">Another action</a></li>
-												<li><a class="dropdown-item" href="#">Something else here</a></li>
-											</ul>
-										</li>
-										<li><a class="dropdown-item" href="#">Something else here</a></li>
-									</ul>
-								</div>
-							</div>
 							<div class="chart-view" style="position: relative;">
 								<canvas id="avgdeal_bar3"></canvas>
 							</div>

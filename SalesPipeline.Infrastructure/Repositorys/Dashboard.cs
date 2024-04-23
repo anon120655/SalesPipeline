@@ -1,13 +1,6 @@
 ﻿using AutoMapper;
-using Azure;
-using MathNet.Numerics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
-using NPOI.POIFS.Properties;
-using NPOI.SS.Formula.Functions;
-using NPOI.Util;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -15,7 +8,6 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {

@@ -159,7 +159,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoBranchCustom>> GetBranch(int provinceID)
 		{
-			var query = _repo.Context.InfoBranches.Where(x => x.ProvinceID == provinceID).AsQueryable();
+			var query = _repo.Context.InfoBranches.AsQueryable();
+
+			if (provinceID > 0)
+			{
+				query = query.Where(x => x.ProvinceID == provinceID);
+			}
+
 			return _mapper.Map<IList<InfoBranchCustom>>(await query.ToListAsync());
 		}
 
