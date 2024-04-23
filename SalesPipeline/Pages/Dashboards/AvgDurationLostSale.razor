@@ -21,7 +21,7 @@
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">วันที่เริ่มติดต่อ</label>
-							<input type="date" class="form-control" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
+							<input type="date" class="form-control" @onchange="OnDateStart" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ค้นหาลูกค้า</label>

@@ -1314,6 +1314,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.startdate.HasValue)
+			{
+				query = query.Where(x => x.ContactStartDate.HasValue && (x.ContactStartDate.Value.Date == model.startdate.Value.Date)).OrderByDescending(x => x.CreateDate);
+			}
+
 			if (int.TryParse(model.contact, out int _contact))
 				query = query.Where(x => x.Contact == _contact);
 
@@ -1712,6 +1717,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			var avgcountry = query.Sum(x => x.LoanAmount);
+			if (avgcountry.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "country",
+					Name = "ประเทศ",
+					Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
 				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
@@ -1755,80 +1771,66 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var avgcountry = query.Select(x => x.LoanAmount)
-													.DefaultIfEmpty()
-													.Average();
-					if (avgcountry.HasValue)
-					{
-						response.Add(new()
-						{
-							GroupID = "country",
-							Name = "ประเทศ",
-							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-
-					//var queryRegion = await query.Where(x => x.LoanAmount > 0).GroupBy(g => g.Master_Department_BranchId)
-					//							 .Select(group => new
-					//							 {
-					//								 GroupID = group.Key.ToString(),
-					//								 Name = "",
-					//								 Value = group.Sum(s => s.LoanAmount)
-					//							 }).AverageAsync(a => a.Value);
-
-					var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryRegion.Count > 0)
-					{
-						var avg = queryRegion.Average(a => a.Value) ?? 0;
-						response.Add(new()
-						{
-							GroupID = "region",
-							Name = "ภูมิภาคทั้งหมด",
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-
-					var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryBranch.Count > 0)
-					{
-						var avg = queryBranch.Average(a => a.Value) ?? 0;
-						response.Add(new()
-						{
-							GroupID = "branch",
-							Name = "ศูนย์สาขาทั้งหมด",
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-
-					var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryRM.Count > 0)
-					{
-						var avg = queryRM.Average(a => a.Value) ?? 0;
-						response.Add(new()
-						{
-							GroupID = "rm",
-							Name = "RM ทั้งหมด",
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
 
 				}
+				//var queryRegion = await query.Where(x => x.LoanAmount > 0).GroupBy(g => g.Master_Department_BranchId)
+				//							 .Select(group => new
+				//							 {
+				//								 GroupID = group.Key.ToString(),
+				//								 Name = "",
+				//								 Value = group.Sum(s => s.LoanAmount)
+				//							 }).AverageAsync(a => a.Value);
 
+				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryRegion.Count > 0)
+				{
+					var avg = queryRegion.Average(a => a.Value) ?? 0;
+					response.Add(new()
+					{
+						GroupID = "region",
+						Name = "ภูมิภาคทั้งหมด",
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
+				}
+
+				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryBranch.Count > 0)
+				{
+					var avg = queryBranch.Average(a => a.Value) ?? 0;
+					response.Add(new()
+					{
+						GroupID = "branch",
+						Name = "ศูนย์สาขาทั้งหมด",
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
+				}
+
+				var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryRM.Count > 0)
+				{
+					var avg = queryRM.Average(a => a.Value) ?? 0;
+					response.Add(new()
+					{
+						GroupID = "rm",
+						Name = "RM ทั้งหมด",
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
+				}
 			}
 
 			return response;
@@ -1848,6 +1850,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .Where(x => x.Status == StatusModel.Active)
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
+
+			var avgcountry = query.Sum(x => x.LoanAmount);
+			if (avgcountry.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "country",
+					Name = "ประเทศ",
+					Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1890,42 +1903,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var avgcountry = query.Select(x => x.LoanAmount)
-													.DefaultIfEmpty()
-													.Average();
-					if (avgcountry.HasValue)
-					{
-						response.Add(new()
-						{
-							GroupID = "country",
-							Name = "ประเทศ",
-							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-
-					var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Name = group.First().Master_Department_BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryRegion.Count > 0)
-					{
-						foreach (var item in queryRegion)
-						{
-							var avg = item.Value ?? 0;
-							response.Add(new()
-							{
-								GroupID = "region",
-								Name = item.Name,
-								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-							});
-						}
-					}
-
 				}
 
+				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Name = group.First().Master_Department_BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryRegion.Count > 0)
+				{
+					foreach (var item in queryRegion)
+					{
+						var avg = item.Value ?? 0;
+						response.Add(new()
+						{
+							GroupID = "region",
+							Name = item.Name,
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+				}
 			}
 
 			return response;
@@ -1946,6 +1945,48 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			var avgcountry = query.Sum(x => x.LoanAmount);
+			if (avgcountry.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "country",
+					Name = "ประเทศ",
+					Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+			}
+
+			if (model.RMUser?.Count > 0)
+			{
+				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+			}
+
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
@@ -1956,111 +1997,100 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var avgcountry = query.Select(x => x.LoanAmount)
-													.DefaultIfEmpty()
-													.Average();
-					if (avgcountry.HasValue)
+
+				}
+
+				Guid? department_BranchIdDefault = null;
+				if (model.Selecteds != null && model.Selecteds.Count > 0)
+				{
+					var idList = model.Selecteds.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+					query = query.Where(x => idList.Contains(x.Master_Department_BranchId));
+				}
+				else
+				{
+					//default กิจการสาขาภาคที่มีขอดขายสูงสูด
+					var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key,
+												 Name = group.First().Master_Department_BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
+
+
+					if (department_BranchMax != null && department_BranchMax.GroupID.HasValue)
 					{
+						department_BranchIdDefault = department_BranchMax.GroupID;
+						query = query.Where(x => x.Master_Department_BranchId == department_BranchIdDefault);
+					}
+				}
+
+				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Name = group.First().Master_Department_BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryRegion.Count > 0)
+				{
+					foreach (var item in queryRegion)
+					{
+						var avg = item.Value ?? 0;
 						response.Add(new()
 						{
-							GroupID = "country",
-							Name = "ประเทศ",
-							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+							GroupID = item.GroupID,
+							Name = item.Name,
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
 						});
 					}
+				}
 
-
-					Guid? department_BranchIdDefault = null;
-					if (model.Selecteds != null && model.Selecteds.Count > 0)
-					{
-						var idList = model.Selecteds.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-						query = query.Where(x => idList.Contains(x.Master_Department_BranchId));
-					}
-					else
-					{
-						//default กิจการสาขาภาคที่มีขอดขายสูงสูด
-						var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+				if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
+				{
+					var idList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
+					query = query.Where(x => idList.Contains(x.BranchId));
+				}
+				else if (department_BranchIdDefault.HasValue)
+				{
+					//default สาขาที่มีขอดขายสูงสูด 3 อันดับแรก
+					var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == department_BranchIdDefault && x.BranchId.HasValue && x.BranchId > 0)
+												 .GroupBy(m => m.BranchId)
 												 .Select(group => new
 												 {
 													 GroupID = group.Key,
-													 Name = group.First().Master_Department_BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
-
-
-						if (department_BranchMax != null && department_BranchMax.GroupID.HasValue)
-						{
-							department_BranchIdDefault = department_BranchMax.GroupID;
-							query = query.Where(x => x.Master_Department_BranchId == department_BranchIdDefault);
-						}
-					}
-
-					var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Name = group.First().Master_Department_BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryRegion.Count > 0)
-					{
-						foreach (var item in queryRegion)
-						{
-							var avg = item.Value ?? 0;
-							response.Add(new()
-							{
-								GroupID = item.GroupID,
-								Name = item.Name,
-								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-							});
-						}
-					}
-
-					if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
-					{
-						var idList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
-						query = query.Where(x => idList.Contains(x.BranchId));
-					}
-					else if (department_BranchIdDefault.HasValue)
-					{
-						//default สาขาที่มีขอดขายสูงสูด 3 อันดับแรก
-						var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == department_BranchIdDefault && x.BranchId.HasValue && x.BranchId > 0)
-													 .GroupBy(m => m.BranchId)
-													 .Select(group => new
-													 {
-														 GroupID = group.Key,
-														 Name = group.First().BranchName,
-														 Value = group.Sum(s => s.LoanAmount)
-													 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
-						if (branchMax.Count > 0)
-						{
-							query = query.Where(x => branchMax.Contains(x.BranchId));
-						}
-					}
-
-					var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
 													 Name = group.First().BranchName,
 													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).ToListAsync();
-					if (queryBranch.Count > 0)
+												 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
+					if (branchMax.Count > 0)
 					{
-						foreach (var item in queryBranch)
-						{
-							var avg = item.Value ?? 0;
-							response.Add(new()
-							{
-								GroupID = item.GroupID,
-								Name = item.Name,
-								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-							});
-						}
+						query = query.Where(x => branchMax.Contains(x.BranchId));
 					}
-
-
 				}
+
+				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Name = group.First().BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).OrderByDescending(x => x.Value).ToListAsync();
+				if (queryBranch.Count > 0)
+				{
+					foreach (var item in queryBranch)
+					{
+						var avg = item.Value ?? 0;
+						response.Add(new()
+						{
+							GroupID = item.GroupID,
+							Name = item.Name,
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+				}
+
+
+
 
 			}
 
@@ -2082,6 +2112,48 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			var avgcountry = query.Sum(x => x.LoanAmount);
+			if (avgcountry.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "country",
+					Name = "ประเทศ",
+					Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+			}
+
+			if (model.RMUser?.Count > 0)
+			{
+				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+			}
+
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
@@ -2092,111 +2164,99 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var avgcountry = query.Select(x => x.LoanAmount)
-													.DefaultIfEmpty()
-													.Average();
-					if (avgcountry.HasValue)
+
+				}
+
+
+				int? branchIdDefault = null;
+				if (model.Selecteds != null && model.Selecteds.Count > 0)
+				{
+					var idList = model.Selecteds.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+					query = query.Where(x => idList.Contains(x.BranchId));
+				}
+				else
+				{
+					//default สาขาที่มีขอดขายสูงสูด
+					var branchMax = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key,
+												 Name = group.First().BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
+
+
+					if (branchMax != null && branchMax.GroupID.HasValue)
 					{
+						branchIdDefault = branchMax.GroupID;
+						query = query.Where(x => x.BranchId == branchIdDefault);
+					}
+				}
+
+				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Name = group.First().BranchName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).ToListAsync();
+				if (queryBranch.Count > 0)
+				{
+					foreach (var item in queryBranch)
+					{
+						var avg = item.Value ?? 0;
 						response.Add(new()
 						{
-							GroupID = "country",
-							Name = "ประเทศ",
-							Value = decimal.Round(avgcountry.Value, 2, MidpointRounding.AwayFromZero)
+							GroupID = item.GroupID,
+							Name = item.Name,
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
 						});
 					}
+				}
 
-
-					int? branchIdDefault = null;
-					if (model.Selecteds != null && model.Selecteds.Count > 0)
-					{
-						var idList = model.Selecteds.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-						query = query.Where(x => idList.Contains(x.BranchId));
-					}
-					else
-					{
-						//default สาขาที่มีขอดขายสูงสูด
-						var branchMax = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+				if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
+				{
+					var intList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
+					query = query.Where(x => intList.Contains(x.AssUserId));
+				}
+				else if (branchIdDefault.HasValue)
+				{
+					//default พนักงาน rm ที่มีขอดขายสูงสูด 3 อันดับแรก
+					var rmMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId == branchIdDefault)
+												 .GroupBy(m => m.AssUserId)
 												 .Select(group => new
 												 {
 													 GroupID = group.Key,
 													 Name = group.First().BranchName,
 													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
-
-
-						if (branchMax != null && branchMax.GroupID.HasValue)
-						{
-							branchIdDefault = branchMax.GroupID;
-							query = query.Where(x => x.BranchId == branchIdDefault);
-						}
-					}
-
-					var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Name = group.First().BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).ToListAsync();
-					if (queryBranch.Count > 0)
+												 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
+					if (rmMax.Count > 0)
 					{
-						foreach (var item in queryBranch)
-						{
-							var avg = item.Value ?? 0;
-							response.Add(new()
-							{
-								GroupID = item.GroupID,
-								Name = item.Name,
-								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-							});
-						}
+						query = query.Where(x => rmMax.Contains(x.AssUserId));
 					}
-
-					if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
-					{
-						var intList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
-						query = query.Where(x => intList.Contains(x.AssUserId));
-					}
-					else if (branchIdDefault.HasValue)
-					{
-						//default พนักงาน rm ที่มีขอดขายสูงสูด 3 อันดับแรก
-						var rmMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId == branchIdDefault)
-													 .GroupBy(m => m.AssUserId)
-													 .Select(group => new
-													 {
-														 GroupID = group.Key,
-														 Name = group.First().BranchName,
-														 Value = group.Sum(s => s.LoanAmount)
-													 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
-						if (rmMax.Count > 0)
-						{
-							query = query.Where(x => rmMax.Contains(x.AssUserId));
-						}
-					}
-
-					var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key.ToString(),
-													 Name = group.First().AssUserName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).ToListAsync();
-					if (queryRM.Count > 0)
-					{
-						foreach (var item in queryRM)
-						{
-							var avg = item.Value ?? 0;
-							response.Add(new()
-							{
-								GroupID = item.GroupID,
-								Name = item.Name,
-								Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-							});
-						}
-					}
-
-
 				}
+
+				var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
+											 .Select(group => new
+											 {
+												 GroupID = group.Key.ToString(),
+												 Name = group.First().AssUserName,
+												 Value = group.Sum(s => s.LoanAmount)
+											 }).OrderByDescending(x => x.Value).ToListAsync();
+				if (queryRM.Count > 0)
+				{
+					foreach (var item in queryRM)
+					{
+						var avg = item.Value ?? 0;
+						response.Add(new()
+						{
+							GroupID = item.GroupID,
+							Name = item.Name,
+							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+						});
+					}
+				}
+
 
 			}
 

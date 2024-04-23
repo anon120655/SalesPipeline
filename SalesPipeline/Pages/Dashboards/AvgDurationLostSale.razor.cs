@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
@@ -125,6 +126,21 @@ namespace SalesPipeline.Pages.Dashboards
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected void OnDateStart(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filter != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filter.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filter.startdate = null;
+				}
+			}
 		}
 
 	}
