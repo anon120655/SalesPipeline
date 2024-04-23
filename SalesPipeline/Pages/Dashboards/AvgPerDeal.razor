@@ -66,11 +66,11 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">เริ่มต้น</label>
-							<input type="date" class="form-control" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
+							<input type="date" class="form-control" @onchange="OnDateStart" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สิ้นสุด</label>
-							<input type="date" class="form-control" value="@(filter.enddate.HasValue ? filter.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
+							<input type="date" class="form-control" @onchange="OnDateEnd" value="@(filter.enddate.HasValue ? filter.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2 mt-3">
 							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">

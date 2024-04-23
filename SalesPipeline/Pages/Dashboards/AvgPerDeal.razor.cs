@@ -2,6 +2,7 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
+using Microsoft.AspNetCore.Components;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -406,7 +407,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task AvgDeal_Bar1()
 		{
-			var data = await _dashboarViewModel.GetAvgTopBar(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetAvgTopBar(filter);
 			if (data != null && data.Status)
 			{
 				var datas = new List<ChartJSDataModel>();
@@ -434,7 +435,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task AvgDeal_Bar2()
 		{
-			var data = await _dashboarViewModel.GetAvgRegionBar(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetAvgRegionBar(filter);
 			if (data != null && data.Status)
 			{
 				var datas = new List<ChartJSDataModel>();
@@ -535,6 +536,36 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			await SetModelBottom();
 			StateHasChanged();
+		}
+
+		protected void OnDateStart(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filter != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filter.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filter.startdate = null;
+				}
+			}
+		}
+
+		protected void OnDateEnd(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filter != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filter.enddate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filter.enddate = null;
+				}
+			}
 		}
 
 	}

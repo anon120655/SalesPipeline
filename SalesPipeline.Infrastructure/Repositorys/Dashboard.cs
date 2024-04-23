@@ -1712,6 +1712,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+			}
+
+			if (model.RMUser?.Count > 0)
+			{
+				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+			}
+
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
@@ -1817,6 +1848,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .Where(x => x.Status == StatusModel.Active)
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+			}
+
+			if (model.RMUser?.Count > 0)
+			{
+				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
+				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+			}
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
