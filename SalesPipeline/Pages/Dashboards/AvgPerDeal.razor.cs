@@ -85,7 +85,7 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 			else
 			{
-				_errorMessage = dataDepBranchs?.errorMessage;
+				_errorMessage = dataBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 

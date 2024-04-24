@@ -38,22 +38,23 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetInitManual()
 		{
-			await Task.Delay(10);
-			//var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
-			//if (businessType != null && businessType.Status)
-			//{
-			//	LookUp.BusinessType = businessType.Data?.Items;
-			//}
-			//else
-			//{
-			//	_errorMessage = businessType?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
-
-
-			//StateHasChanged();
-			//await Task.Delay(10);
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+			var dataBranchs = await _masterViewModel.GetBranch(0);
+			if (dataBranchs != null && dataBranchs.Status)
+			{
+				LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+				if (dataBranchs.Data?.Count > 0)
+				{
+					LookUp.Branchs.AddRange(dataBranchs.Data);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+				}
+			}
+			else
+			{
+				_errorMessage = dataBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -125,6 +126,19 @@ namespace SalesPipeline.Pages.Dashboards
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		[JSInvokable]
+		public async Task OnBranch(string _ids, string _name)
+		{
+			filter.Branchs = new();
+			StateHasChanged();
+			await Task.Delay(1);
+
+			if (_ids != null)
+			{
+				filter.Branchs.Add(_ids);
+			}
 		}
 
 	}

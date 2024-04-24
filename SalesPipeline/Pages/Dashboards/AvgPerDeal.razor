@@ -25,7 +25,7 @@
 						<div class="col mb-2">
 							<label class="form-label">กิจการสาขาภาค</label>
 							<div class="">
-								<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="กิจการสาขาภาคทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+								<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
 									@if (LookUp.DepartmentBranch?.Count > 0)
 									{
 										foreach (var item in LookUp.DepartmentBranch)
@@ -39,7 +39,7 @@
 						<div class="col mb-2">
 							<label class="form-label">สาขา</label>
 							<div class="">
-								<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="สาขาภาคทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+								<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
 									@if (LookUp.Branchs?.Count > 0)
 									{
 										foreach (var item in LookUp.Branchs)
@@ -53,7 +53,7 @@
 						<div class="col mb-2">
 							<label class="form-label">ผู้รับผิดชอบ</label>
 							<div class="">
-								<select id="RMUser" class="selectpicker selectInit" data-style="select_btn_set" title="ผูรับผิดชอบทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+								<select id="RMUser" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
 									@if (LookUp.RMUser?.Count > 0)
 									{
 										foreach (var item in LookUp.RMUser)

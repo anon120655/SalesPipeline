@@ -8,6 +8,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -512,22 +513,43 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model)
 		{
-			string? roleCode = null;
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
 
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
-										 .GroupBy(m => m.AssUserId)
-										 .Select(group => new SaleGroupByModel()
-										 {
-											 GroupID = group.Key.ToString(),
-											 Sales = _mapper.Map<List<SaleCustom>>(group.ToList())
-										 });
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
-				query = query.Where(x => x.Sales != null && x.Sales.Select(x => x.AssUserName).Contains(model.searchtxt));
+				query = query.Where(x => x.AssUserName != null && x.AssUserName.Contains(model.searchtxt));
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+			if (model.provinceid.HasValue)
+				query = query.Where(x => x.ProvinceId.HasValue && x.ProvinceId == model.provinceid.Value);
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+			if (model.DepBranch?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
+			}
+
+			var queryUse = query.GroupBy(m => m.AssUserId)
+					 .Select(group => new SaleGroupByModel()
+					 {
+						 GroupID = group.Key.ToString(),
+						 Sales = _mapper.Map<List<SaleCustom>>(group.ToList())
+					 });
+
+			var pager = new Pager(queryUse.Count(), model.page, model.pagesize, null);
+
+			var items = queryUse.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			//var itemslist = items.ToList();
 
@@ -1314,9 +1336,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.startdate.HasValue)
+			if (model.contactstartdate.HasValue)
 			{
-				query = query.Where(x => x.ContactStartDate.HasValue && (x.ContactStartDate.Value.Date == model.startdate.Value.Date)).OrderByDescending(x => x.CreateDate);
+				query = query.Where(x => x.ContactStartDate.HasValue && (x.ContactStartDate.Value.Date == model.contactstartdate.Value.Date)).OrderByDescending(x => x.CreateDate);
 			}
 
 			if (int.TryParse(model.contact, out int _contact))
@@ -1331,7 +1353,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.juristicnumber))
 				query = query.Where(x => x.Sale.Customer.JuristicPersonRegNumber != null && x.Sale.Customer.JuristicPersonRegNumber.Contains(model.juristicnumber));
 
-
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
 
@@ -1340,6 +1361,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (!String.IsNullOrEmpty(model.assignrm_name))
 				query = query.Where(x => x.Sale.AssUserName != null && x.Sale.AssUserName.Contains(model.assignrm_name));
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Sale.BranchId.HasValue && idList.Contains(x.Sale.BranchId));
+				}
+			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
@@ -1526,6 +1556,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (int.TryParse(model.document, out int _document))
 				query = query.Where(x => x.Document == _document);
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Sale.BranchId.HasValue && idList.Contains(x.Sale.BranchId));
+				}
+			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

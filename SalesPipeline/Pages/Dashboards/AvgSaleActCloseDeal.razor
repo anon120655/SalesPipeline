@@ -44,9 +44,15 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">สาขา</label>
+							<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+								@if (LookUp.Branchs?.Count > 0)
+								{
+									foreach (var item in LookUp.Branchs)
+									{
+										<option value="@item.BranchID">@item.BranchName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
@@ -83,7 +89,7 @@
 							</div>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
