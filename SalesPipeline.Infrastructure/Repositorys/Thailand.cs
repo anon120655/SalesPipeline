@@ -186,7 +186,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch == null || model.DepBranch.Count == 0) return new List<InfoBranchCustom>();
 
-			var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
+			List<Guid?> idList = new();
+			if (model.DepBranch?.Count > 0)
+			{
+				 idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+			}
 
 			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();
 			if (infoProvinces.Count > 0)

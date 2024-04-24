@@ -1743,20 +1743,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
@@ -1877,20 +1886,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
@@ -1971,20 +1989,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
@@ -2001,10 +2028,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				Guid? department_BranchIdDefault = null;
-				if (model.Selecteds != null && model.Selecteds.Count > 0)
+				if (model.DepBranch?.Count > 0)
 				{
-					var idList = model.Selecteds.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-					query = query.Where(x => idList.Contains(x.Master_Department_BranchId));
+					var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+					if (idList.Count > 0)
+					{
+						query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					}
 				}
 				else
 				{
@@ -2046,10 +2076,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
+				if (model.Branchs?.Count > 0)
 				{
-					var idList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
-					query = query.Where(x => idList.Contains(x.BranchId));
+					var idList = GeneralUtils.ListStringToInt(model.Branchs);
+					if (idList.Count > 0)
+					{
+						query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+					}
 				}
 				else if (department_BranchIdDefault.HasValue)
 				{
@@ -2138,20 +2171,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
@@ -2167,12 +2209,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-
 				int? branchIdDefault = null;
-				if (model.Selecteds != null && model.Selecteds.Count > 0)
+				if (model.Branchs?.Count > 0)
 				{
-					var idList = model.Selecteds.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-					query = query.Where(x => idList.Contains(x.BranchId));
+					var idList = GeneralUtils.ListStringToInt(model.Branchs);
+					if (idList.Count > 0)
+					{
+						query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+					}
 				}
 				else
 				{
@@ -2214,10 +2258,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				if (model.Selecteds2 != null && model.Selecteds2.Count > 0)
+				if (model.AssUser?.Count > 0)
 				{
-					var intList = model.Selecteds2.Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
-					query = query.Where(x => intList.Contains(x.AssUserId));
+					var idList = GeneralUtils.ListStringToInt(model.AssUser);
+					if (idList.Count > 0)
+					{
+						query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+					}
 				}
 				else if (branchIdDefault.HasValue)
 				{
@@ -2289,20 +2336,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			//ประเภทธุรกิจ

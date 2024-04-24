@@ -103,7 +103,7 @@ namespace SalesPipeline.Pages.Users.User
 			await Task.Delay(1);
 			//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRoles", "#Roles");
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs", "#DepBranchs");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
 
 			await Task.Delay(1);
 			await SetAddress();
@@ -169,7 +169,7 @@ namespace SalesPipeline.Pages.Users.User
 						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 
 						if (formModel.ProvinceId.HasValue)
 						{
@@ -185,7 +185,7 @@ namespace SalesPipeline.Pages.Users.User
 								LookUp.Branchs?.AddRange(branch.Data);
 								StateHasChanged();
 								await Task.Delay(10);
-								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", $"#Branch");
+								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", $"#Branch");
 
 							}
 						}
@@ -332,7 +332,7 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
-		public async Task OnDepBranchs(string _id, string _name)
+		public async Task OnDepBranch(string _id, string _name)
 		{
 			formModel.ProvinceId = null;
 			formModel.BranchId = null;
@@ -355,7 +355,7 @@ namespace SalesPipeline.Pages.Users.User
 						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
 						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 					}
@@ -369,7 +369,7 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			LookUp.Branchs = new List<InfoBranchCustom>();
 			StateHasChanged();
@@ -387,14 +387,14 @@ namespace SalesPipeline.Pages.Users.User
 					LookUp.Branchs.AddRange(branch.Data);
 
 					StateHasChanged();
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
 					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 				}
 			}
 		}
 
 		[JSInvokable]
-		public async Task BranchChange(string _branchID, string _branchName)
+		public async Task OnBranch(string _branchID, string _branchName)
 		{
 			await Task.Delay(100); 
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))

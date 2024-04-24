@@ -128,17 +128,17 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
-		protected void OnDateStart(ChangeEventArgs e)
+		protected void OnContactDateStart(ChangeEventArgs e)
 		{
 			if (e != null && e.Value != null && filter != null)
 			{
 				if (!String.IsNullOrEmpty(e.Value.ToString()))
 				{
-					filter.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+					filter.contactstartdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
 				}
 				else
 				{
-					filter.startdate = null;
+					filter.contactstartdate = null;
 				}
 			}
 		}

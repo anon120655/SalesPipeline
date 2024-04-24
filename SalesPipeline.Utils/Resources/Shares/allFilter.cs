@@ -19,7 +19,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int? assignrm { get; set; }
         public string? assignrm_name { get; set; }
 		public string? contact_name { get; set; }
-		public string? code { get; set; }
+        public DateTime? contactstartdate { get; set; }
+        public string? code { get; set; }
 		public string? rolecode { get; set; }
 		public short? status { get; set; }
 		public short? isshow { get; set; }
@@ -42,6 +43,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? mcenter_name { get; set; }
 		public short? isloanamount { get; set; }
 		public decimal? loanamount { get; set; }
+		public short? isclosesale { get; set; }
 		public string? reason { get; set; }
 		public string? contact { get; set; }
 		public string? meet { get; set; }
@@ -55,12 +57,14 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? sort { get; set; }
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }
-		public List<string?>? Selecteds { get; set; }
-		public List<string?>? Selecteds2 { get; set; }
-		public List<string?>? Selecteds3 { get; set; }
+		//public List<string?>? Selecteds { get; set; }
+		//public List<string?>? Selecteds2 { get; set; }
+		//public List<string?>? Selecteds3 { get; set; } AssUserId
 		public List<string?>? DepBranch { get; set; }
 		public List<string?>? Branchs { get; set; }
 		public List<string?>? RMUser { get; set; }
+		public List<string?>? AssUser { get; set; }
+
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -97,6 +101,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(contact_name))
 				ParameterAll += $"&contact_name={contact_name}";
+
+			if (contactstartdate.HasValue)
+				ParameterAll += $"&contactstartdate={GeneralUtils.DateToStrParameter(contactstartdate)}";
 
 			if (!String.IsNullOrEmpty(code))
 				ParameterAll += $"&code={code}";
@@ -167,6 +174,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (isloanamount.HasValue)
 				ParameterAll += $"&isloanamount={isloanamount}";
 
+			if (isclosesale.HasValue)
+				ParameterAll += $"&isclosesale={isclosesale}";
+
 			if (!String.IsNullOrEmpty(reason))
 				ParameterAll += $"&reason={reason}";
 
@@ -191,23 +201,23 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (!String.IsNullOrEmpty(sort))
 				ParameterAll += $"&sort={sort}";
 
-			if (Selecteds?.Count > 0)
-			{
-				string joined = string.Join(",", Selecteds);
-				ParameterAll += $"&ids={joined}";
-			}
+			//if (Selecteds?.Count > 0)
+			//{
+			//	string joined = string.Join(",", Selecteds);
+			//	ParameterAll += $"&ids={joined}";
+			//}
 
-			if (Selecteds2?.Count > 0)
-			{
-				string joined = string.Join(",", Selecteds2);
-				ParameterAll += $"&ids2={joined}";
-			}
+			//if (Selecteds2?.Count > 0)
+			//{
+			//	string joined = string.Join(",", Selecteds2);
+			//	ParameterAll += $"&ids2={joined}";
+			//}
 
-			if (Selecteds3?.Count > 0)
-			{
-				string joined = string.Join(",", Selecteds3);
-				ParameterAll += $"&ids3={joined}";
-			}
+			//if (Selecteds3?.Count > 0)
+			//{
+			//	string joined = string.Join(",", Selecteds3);
+			//	ParameterAll += $"&ids3={joined}";
+			//}
 
 			if (DepBranch?.Count > 0)
 			{
@@ -225,6 +235,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 			{
 				string joined = string.Join(",", RMUser);
 				ParameterAll += $"&rmuser={joined}";
+			}
+
+			if (AssUser?.Count > 0)
+			{
+				string joined = string.Join(",", AssUser);
+				ParameterAll += $"&assuser={joined}";
 			}
 
 			if (startdate.HasValue)
@@ -258,6 +274,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(contact_name), out var _contact_name))
 				contact_name = _contact_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("contactstartdate", out var _contactstartdate))
+				contactstartdate = GeneralUtils.DateNotNullToEn(_contactstartdate, "yyyy-MM-dd", Culture: "en-US");
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(code), out var _code))
 				code = _code;
@@ -325,6 +344,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isloanamount), out var _isloanamount))
 				isloanamount = Convert.ToInt16(_isloanamount);
 
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isclosesale), out var _isclosesale))
+				isclosesale = Convert.ToInt16(_isclosesale);
+
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
 				reason = _reason;
 
@@ -355,18 +377,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("enddate", out var _enddate))
 				enddate = GeneralUtils.DateNotNullToEn(_enddate, "yyyy-MM-dd", Culture: "en-US");
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("ids", out var _Selecteds))
-			{
-				Selecteds = new();
-				List<string> Category = _Selecteds.ToString().Split(',').ToList<string>();
-				if (Category.Count > 0)
-				{
-					foreach (var item in Category)
-					{
-						Selecteds.Add(item);
-					}
-				}
-			}
+			//if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("ids", out var _Selecteds))
+			//{
+			//	Selecteds = new();
+			//	List<string> Category = _Selecteds.ToString().Split(',').ToList<string>();
+			//	if (Category.Count > 0)
+			//	{
+			//		foreach (var item in Category)
+			//		{
+			//			Selecteds.Add(item);
+			//		}
+			//	}
+			//}
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranch", out var _DepBranch))
 			{
@@ -403,6 +425,19 @@ namespace SalesPipeline.Utils.Resources.Shares
 					foreach (var item in lists)
 					{
 						RMUser.Add(item);
+					}
+				}
+			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("assuser", out var _AssUser))
+			{
+				AssUser = new();
+				List<string> lists = _AssUser.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						AssUser.Add(item);
 					}
 				}
 			}

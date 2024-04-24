@@ -68,10 +68,11 @@ namespace SalesPipeline.Pages.Dashboards
 				LookUp.DepartmentBranch = new();
 				if (dataDepBranchs.Data?.Items.Count > 0)
 				{
+					LookUp.DepartmentBranch = new() { new() { Name = "ทั้งหมด" } };
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
 					StateHasChanged();
 					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "DepBranchChange", "#DepBranch");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
 				}
 			}
 			else
@@ -114,7 +115,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			}
 
-			var data = await _salesViewModel.GetList(filter);
+				var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -170,10 +171,10 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		[JSInvokable]
-		public async Task DepBranchChange(string _id, string _name)
+		public async Task OnDepBranch(string _id, string _name)
 		{
-			//formModel.ProvinceId = null;
-			//formModel.BranchId = null;
+			filter.DepBranch = new();
+			filter.provinceid = null;
 			LookUp.Provinces = new();
 			LookUp.Branchs = new();
 			StateHasChanged();
@@ -181,19 +182,19 @@ namespace SalesPipeline.Pages.Dashboards
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
-			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
+			if (_id != null && Guid.TryParse(_id, out Guid dep_BranchId))
 			{
-				//formModel.Master_Department_BranchId = department_BranchId;
+				filter.DepBranch.Add(dep_BranchId.ToString());
 
-				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+				var dataProvince = await _masterViewModel.GetProvince(dep_BranchId);
 				if (dataProvince != null && dataProvince.Status)
 				{
 					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
 					{
-						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "ทั้งหมด" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
 						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 					}
@@ -207,39 +208,18 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
-			LookUp.Branchs = new List<InfoBranchCustom>();
+			filter.provinceid = null;
 			StateHasChanged();
-
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+			await Task.Delay(1);
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
-				//filter.ProvinceId = provinceID;
-
-				var branch = await _masterViewModel.GetBranch(provinceID);
-				if (branch != null && branch.Data?.Count > 0)
-				{
-					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
-					LookUp.Branchs.AddRange(branch.Data);
-
-					StateHasChanged();
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
-				}
+				filter.provinceid = provinceID;
 			}
 		}
 
-		[JSInvokable]
-		public async Task BranchChange(string _branchID, string _branchName)
-		{
-			await Task.Delay(100);
-			if (_branchID != null && int.TryParse(_branchID, out int branchID))
-			{
-
-			}
-		}
 
 	}
 }

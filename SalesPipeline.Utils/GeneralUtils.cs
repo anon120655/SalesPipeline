@@ -762,7 +762,7 @@ namespace SalesPipeline.Utils
 
 			return partitions;
 		}
-		
+
 		public static T DeepCopyJson<T>(this T input)
 		{
 			var serialized = JsonConvert.SerializeObject(input);
@@ -778,6 +778,32 @@ namespace SalesPipeline.Utils
 			stream.Position = 0;
 
 			return (T)serializer.ReadObject(stream);
+		}
+
+		public static List<int?> ListStringToInt(List<string?> model)
+		{
+			List<int?> response = new();
+			foreach (var item in model)
+			{
+				if (int.TryParse(item, out int id) && id > 0)
+				{
+					response.Add(id);
+				}
+			}
+			return response;
+		}
+
+		public static List<Guid?> ListStringToGuid(List<string?> model)
+		{
+			List<Guid?> response = new();
+			foreach (var item in model)
+			{
+				if (Guid.TryParse(item, out Guid id) && id != Guid.Empty)
+				{
+					response.Add(id);
+				}
+			}
+			return response;
 		}
 
 	}

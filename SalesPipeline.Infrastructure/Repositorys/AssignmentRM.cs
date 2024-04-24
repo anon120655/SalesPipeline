@@ -352,10 +352,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.Branchs != null && model.Branchs.Count > 0)
+			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

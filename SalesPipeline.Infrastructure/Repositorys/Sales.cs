@@ -356,17 +356,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			if (model.statussaleid.HasValue)
+			if (model.statussaleid > 0)
 			{
 				query = query.Where(x => x.StatusSaleId == model.statussaleid);
 			}
 
-			if (model.assigncenter.HasValue)
+			//การปิดการขาย สำเร็จ/ไม่สำเร็จ
+			if (model.isclosesale > 0)
+			{
+				if (model.isclosesale == 1)
+					query = query.Where(x => x.StatusSaleId == StatusSaleModel.CloseSale);
+				if (model.isclosesale == 2)
+					query = query.Where(x => x.StatusSaleId != StatusSaleModel.CloseSale);
+			}
+
+			if (model.assigncenter > 0)
 			{
 				query = query.Where(x => x.AssCenterUserId == model.assigncenter);
 			}
 
-			if (model.assignrm.HasValue)
+			if (model.assignrm > 0)
 			{
 				query = query.Where(x => x.AssUserId == model.assignrm);
 			}
@@ -374,6 +383,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.contact_name))
 			{
 				query = query.Where(x => x.Customer.ContactName != null && x.Customer.ContactName.Contains(model.contact_name));
+			}
+
+			if (model.contactstartdate.HasValue)
+			{
+				query = query.Where(x => x.ContactStartDate.HasValue && x.ContactStartDate.Value.Date >= model.contactstartdate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 
 			if (!String.IsNullOrEmpty(model.reason))
@@ -431,7 +445,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//ISICCode
 			if (!String.IsNullOrEmpty(model.isiccode))
 			{
-				if (Guid.TryParse(model.isiccode, out Guid id))
+				if (Guid.TryParse(model.isiccode, out Guid id) && id != Guid.Empty)
 				{
 					query = query.Where(x => x.Customer != null && x.Customer.Master_ISICCodeId == id);
 				}
@@ -440,7 +454,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//ห่วงโซ่
 			if (!String.IsNullOrEmpty(model.chain))
 			{
-				if (Guid.TryParse(model.chain, out Guid id))
+				if (Guid.TryParse(model.chain, out Guid id) && id != Guid.Empty)
 				{
 					query = query.Where(x => x.Customer != null && x.Customer.Master_ChainId == id);
 				}
@@ -449,40 +463,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//ประเภทธุรกิจ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
-				if (Guid.TryParse(model.businesstype, out Guid id))
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
 				{
 					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
 				}
 			}
 
 			//จังหวัด
-			if (model.provinceid.HasValue)
+			if (model.provinceid > 0)
 			{
 				query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == model.provinceid);
 			}
 
 			//อำเภอ
-			if (model.amphurid.HasValue)
+			if (model.amphurid > 0)
 			{
 				query = query.Where(x => x.Customer != null && x.Customer.AmphurId == model.amphurid);
 			}
 
 			if (model.DepBranch?.Count > 0)
 			{
-				var idList = model.DepBranch.Select(s => Guid.TryParse(s, out Guid n) ? n : (Guid?)null).ToList();
-				query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
 			}
 
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = model.Branchs.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
 			}
 
 			if (model.RMUser?.Count > 0)
 			{
-				var idList = model.RMUser.Select(s => int.TryParse(s, out int n) ? n : (int?)null).ToList();
-				query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
 			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))

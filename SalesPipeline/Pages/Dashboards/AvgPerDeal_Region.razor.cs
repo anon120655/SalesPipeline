@@ -61,7 +61,7 @@ namespace SalesPipeline.Pages.Dashboards
 					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
 					StateHasChanged();
 					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs", "#DepBranchs");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
 				}
 			}
 			else
@@ -88,7 +88,7 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		[JSInvokable]
-		public async Task OnDepBranchs(string[] _ids, string _name)
+		public async Task OnDepBranch(string[] _ids, string _name)
 		{
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
