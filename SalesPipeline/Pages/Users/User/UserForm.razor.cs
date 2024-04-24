@@ -103,7 +103,7 @@ namespace SalesPipeline.Pages.Users.User
 			await Task.Delay(1);
 			//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRoles", "#Roles");
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepartmentBranch", "#DepartmentBranch");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranchs", "#DepBranchs");
 
 			await Task.Delay(1);
 			await SetAddress();
@@ -332,7 +332,7 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		[JSInvokable]
-		public async Task OnDepartmentBranch(string _id, string _name)
+		public async Task OnDepBranchs(string _id, string _name)
 		{
 			formModel.ProvinceId = null;
 			formModel.BranchId = null;

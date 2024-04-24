@@ -4,6 +4,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -39,17 +40,6 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetInitManual()
 		{
-			var dataLevels = await _userViewModel.GetListLevel(new() { status = StatusModel.Active });
-			if (dataLevels != null && dataLevels.Status)
-			{
-				LookUp.UserLevels = dataLevels.Data;
-			}
-			else
-			{
-				_errorMessage = dataLevels?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
 			if (businessType != null && businessType.Status)
 			{
@@ -72,36 +62,21 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var province = await _masterViewModel.GetProvince();
-			if (province != null && province.Status)
+			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
-				LookUp.Provinces = province.Data;
+				LookUp.DepartmentBranch = new();
+				if (dataDepBranchs.Data?.Items.Count > 0)
+				{
+					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "DepBranchChange", "#DepBranch");
+				}
 			}
 			else
 			{
-				_errorMessage = province?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var statusSale = await _masterViewModel.GetStatusSale(new() { pagesize = 20, status = StatusModel.Active, isshow = 1 });
-			if (statusSale != null && statusSale.Status)
-			{
-				LookUp.StatusSale = statusSale.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = statusSale?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var userRM = await _masterViewModel.GetListRM(new allFilter() { status = StatusModel.Active, pagesize = 100 });
-			if (userRM != null && userRM.Status)
-			{
-				LookUp.AssignmentUser = userRM.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = userRM?.errorMessage;
+				_errorMessage = dataDepBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
@@ -109,9 +84,6 @@ namespace SalesPipeline.Pages.Dashboards
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "StatusSale");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "AssignmentUser");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -197,19 +169,75 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task OnProvince(ChangeEventArgs e)
+		[JSInvokable]
+		public async Task DepBranchChange(string _id, string _name)
 		{
-			filter.provinceid = null;
-			if (e.Value != null)
-			{
-				if (int.TryParse(e.Value.ToString(), out int id))
-				{
-					filter.provinceid = id;
-				}
+			//formModel.ProvinceId = null;
+			//formModel.BranchId = null;
+			LookUp.Provinces = new();
+			LookUp.Branchs = new();
+			StateHasChanged();
 
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
+			{
+				//formModel.Master_Department_BranchId = department_BranchId;
+
+				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+				if (dataProvince != null && dataProvince.Status)
+				{
+					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
+					{
+						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces.AddRange(dataProvince.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = dataProvince?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		{
+			LookUp.Branchs = new List<InfoBranchCustom>();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				//filter.ProvinceId = provinceID;
+
+				var branch = await _masterViewModel.GetBranch(provinceID);
+				if (branch != null && branch.Data?.Count > 0)
+				{
+					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
+					LookUp.Branchs.AddRange(branch.Data);
+
+					StateHasChanged();
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task BranchChange(string _branchID, string _branchName)
+		{
+			await Task.Delay(100);
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
+			{
+
 			}
 		}
 

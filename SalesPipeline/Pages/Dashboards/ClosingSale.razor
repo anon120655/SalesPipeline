@@ -57,14 +57,21 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">กิจการสาขาภาค</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<div class="">
+								<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="กิจการสาขาภาคทั้งหมด" data-actions-box="true" data-live-search="true" data-selected-text-format="count" multiple>
+									@if (LookUp.DepartmentBranch?.Count > 0)
+									{
+										foreach (var item in LookUp.DepartmentBranch)
+										{
+											<option value="@item.Id">@item.Name</option>
+										}
+									}
+								</select>
+							</div>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option value="">ทั้งหมด</option>
+							@* <select @bind="formModel.ProvinceId" id="Province" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 								@if (LookUp.Provinces?.Count > 0)
 								{
 									foreach (var item in LookUp.Provinces)
@@ -72,7 +79,7 @@
 										<option value="@item.ProvinceID">@item.ProvinceName</option>
 									}
 								}
-							</select>
+							</select> *@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">การปิดการขาย</label>

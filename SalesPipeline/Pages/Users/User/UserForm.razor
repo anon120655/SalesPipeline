@@ -115,7 +115,7 @@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขา<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_Department_BranchId" id="DepBranchs" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.DepartmentBranch?.Count > 0)
 											{
