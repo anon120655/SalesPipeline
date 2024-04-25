@@ -1339,7 +1339,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			//query = query.Where(x => x.AppointmentDate.HasValue);
+			query = query.Where(x => x.AppointmentDate.HasValue);
 
 			if (model.assignrm.HasValue)
 			{
