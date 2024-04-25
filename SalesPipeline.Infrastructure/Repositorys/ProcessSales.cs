@@ -1335,11 +1335,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Sale_Contact_Histories
 												 .Include(x => x.Sale)
-												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderBy(x => x.CreateDate)
+												 .Where(x => x.Status != StatusModel.Delete && x.AppointmentDate.HasValue)
+												 .OrderBy(x => x.AppointmentDate)
 												 .AsQueryable();
 
-			query = query.Where(x => x.AppointmentDate.HasValue);
+			//query = query.Where(x => x.AppointmentDate.HasValue);
 
 			if (model.assignrm.HasValue)
 			{
@@ -1348,15 +1348,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
-				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+				query = query.Where(x => x.AppointmentDate.HasValue && x.AppointmentDate.Value.Date >= model.startdate.Value.Date).OrderBy(x => x.AppointmentDate);
 			}
 			if (!model.startdate.HasValue && model.enddate.HasValue)
 			{
-				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+				query = query.Where(x => x.AppointmentDate.HasValue && x.AppointmentDate.Value.Date <= model.enddate.Value.Date).OrderBy(x => x.AppointmentDate);
 			}
 			if (model.startdate.HasValue && model.enddate.HasValue)
 			{
-				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+				query = query.Where(x => x.AppointmentDate.HasValue && x.AppointmentDate.Value.Date >= model.startdate.Value.Date && x.AppointmentDate.Value.Date <= model.enddate.Value.Date).OrderBy(x => x.AppointmentDate);
 			}
 
 
