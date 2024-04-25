@@ -101,7 +101,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			StateHasChanged();
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -203,9 +203,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRM.amphur_name))
+				if (!String.IsNullOrEmpty(filterRM.branch))
 				{
-					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.amphur_name)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.branch)).ToList();
 				}
 
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
@@ -260,9 +260,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRMNew.amphur_name))
+				if (!String.IsNullOrEmpty(filterRMNew.branch_name))
 				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.amphur_name)).ToList();
+					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.branch_name)).ToList();
 				}
 
 				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
@@ -277,15 +277,15 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		}
 
 		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			filterRM.provinceid = null;
-			filterRM.amphurid = null;
+			filterRM.branch = null;
 			filterRMNew.provinceid = null;
-			filterRMNew.amphurid = null;
-			LookUp.Amphurs = new();
+			filterRMNew.branch = null;
+			LookUp.Branchs = new();
 			StateHasChanged();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
 			{
@@ -296,20 +296,20 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				filterRM.province_name = _provinceName;
 				filterRMNew.province_name = _provinceName;
 
-				var amphurs = await _masterViewModel.GetAmphur(provinceID);
-				if (amphurs != null && amphurs.Data?.Count > 0)
+				var branch = await _masterViewModel.GetBranch(provinceID);
+				if (branch != null && branch.Data?.Count > 0)
 				{
-					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--ทั้งหมด--" } };
-					LookUp.Amphurs.AddRange(amphurs.Data);
+					LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+					LookUp.Branchs.AddRange(branch.Data);
 
 					StateHasChanged();
 					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 				}
 				else
 				{
-					_errorMessage = amphurs?.errorMessage;
+					_errorMessage = branch?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
@@ -331,23 +331,23 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		}
 
 		[JSInvokable]
-		public async Task AmphurChange(string _amphurID, string _amphurName)
+		public async Task OnBranch(string _branchID, string _branchName)
 		{
 			await Task.Delay(1);
-			filterRM.amphurid = null;
-			filterRMNew.amphurid = null;
-			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			filterRM.branch = null;
+			filterRMNew.branch = null;
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
-				if (amphurID != 0)
+				if (branchID != 0)
 				{
 					//เปลี่ยนเป็น name เพื่อเช็คใน Items
-					filterRM.amphur_name = _amphurName;
-					filterRMNew.amphur_name = _amphurName;
+					filterRM.branch_name = _branchName;
+					filterRMNew.branch_name = _branchName;
 				}
 				else
 				{
-					filterRM.amphurid = null;
-					filterRMNew.amphurid = null;
+					filterRM.branch = null;
+					filterRMNew.branch = null;
 				}
 			}
 
@@ -627,8 +627,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				string valSearch = filterRM.searchtxt ?? string.Empty;
 				string valbusinesstype = businesstype?.ToString() ?? string.Empty;
 				string valProvince = filterRM.province_name ?? string.Empty;
-				string valAmphur = filterRM.amphur_name ?? string.Empty;
-				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype) || !String.IsNullOrEmpty(valProvince) || !String.IsNullOrEmpty(valAmphur))
+				string valBranch = filterRM.branch_name ?? string.Empty;
+				if (!String.IsNullOrEmpty(valSearch) || !String.IsNullOrEmpty(valbusinesstype) || !String.IsNullOrEmpty(valProvince) || !String.IsNullOrEmpty(valBranch))
 				{
 					if (_items != null && _items.Assignment_RM_Sales != null)
 					{
@@ -662,12 +662,12 @@ namespace SalesPipeline.Pages.Assigns.Loans
 										&& item.Sale.Customer.ProvinceName.Contains(valProvince);
 							}
 
-							if (!String.IsNullOrEmpty(valAmphur))
+							if (!String.IsNullOrEmpty(valBranch))
 							{
 								item.IsShow = item.Sale != null
 										&& item.Sale.Customer != null
-										&& item.Sale.Customer.AmphurName != null
-										&& item.Sale.Customer.AmphurName.Contains(valAmphur);
+										&& item.Sale.Customer.BranchName != null
+										&& item.Sale.Customer.BranchName.Contains(valBranch);
 							}
 
 						}

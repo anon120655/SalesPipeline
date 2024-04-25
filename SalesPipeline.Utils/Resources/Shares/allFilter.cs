@@ -36,6 +36,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? province_name { get; set; }
 		public string? amphur_name { get; set; }
 		public string? branch { get; set; }
+		public string? branch_name { get; set; }
 		public string? emp_id { get; set; }
 		public string? emp_name { get; set; }
 		public string? assignmentid { get; set; }
@@ -152,6 +153,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(branch))
 				ParameterAll += $"&branch={branch}";
+
+			if (!String.IsNullOrEmpty(branch_name))
+				ParameterAll += $"&branch_name={branch_name}";
 
 			if (!String.IsNullOrEmpty(emp_id))
 				ParameterAll += $"&emp_id={emp_id}";
