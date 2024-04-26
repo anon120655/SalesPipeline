@@ -73,19 +73,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
-			if (UserInfo.RoleCode != null)
-			{
-				if (UserInfo.RoleCode == RoleCodes.MCENTER)
-				{
-					filter.assigncenter = UserInfo.Id;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
-				{
-
-				}
-
-			}
-
+			filter.userid = UserInfo.Id;
 			var data = await _dashboarViewModel.GetActivity(filter);
 			if (data != null && data.Status)
 			{

@@ -246,27 +246,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				var statusTotal = new List<SaleStatusGroupByModel>();
 
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
-
+					query = query.Where(x => x.AssCenterUserId == user.Id);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
-
+					query = query.Where(x => x.BranchId == user.BranchId);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
 				}
+
+				statusTotal = await query.GroupBy(info => info.StatusSaleId)
+						   .Select(group => new SaleStatusGroupByModel()
+						   {
+							   StatusID = group.Key,
+							   Count = group.Count()
+						   }).OrderBy(x => x.StatusID).ToListAsync();
 
 				if (statusTotal != null)
 				{
@@ -434,21 +437,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
-
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
+					query = query.Where(x => x.AssCenterUserId == user.Id);
+					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.AssCenterUserId == user.Id);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
+					query = query.Where(x => x.BranchId == user.BranchId);
+					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.BranchId == user.BranchId);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
+				}
 
-					var avgDealBranch = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue)
-											.GroupBy(m => m.BranchId)
+				var avgDealBranch = query.Where(x => x.BranchId.HasValue).GroupBy(m => m.BranchId)
 											.Select(group => new
 											{
 												GroupID = group.Key,
@@ -457,33 +465,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											.DefaultIfEmpty()
 											.Average(a => a.Count);
 
-					dash_Avg_Number.AvgDealBranch = (int)avgDealBranch;
+				dash_Avg_Number.AvgDealBranch = (int)avgDealBranch;
 
-					var avgSaleActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale)
-															 .Select(x => (x.Contact + x.Meet + x.Document))
-															 .DefaultIfEmpty()
-															 .Average();
+				var avgSaleActcloseDeal = queryActcloseDeal.Select(x => (x.Contact + x.Meet + x.Document))
+														 .DefaultIfEmpty()
+														 .Average();
 
-					dash_Avg_Number.AvgSaleActcloseDeal = (int)avgSaleActcloseDeal;
+				dash_Avg_Number.AvgSaleActcloseDeal = (int)avgSaleActcloseDeal;
 
-					double avgDealRM = 0;
-					var avgDealRMQuery = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue).FirstOrDefault();
-					if (avgDealRMQuery != null)
-					{
-						avgDealRM = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue)
-												.GroupBy(m => m.AssUserId)
-												.Select(group => new
-												{
-													GroupID = group.Key,
-													Count = group.Count(),
-												})
-												.DefaultIfEmpty()
-												.Average(a => a.Count);
-					}
-
-
-					dash_Avg_Number.AvgDealRM = (int)(avgDealRM);
+				double avgDealRM = 0;
+				var avgDealRMQuery = query.Where(x => x.AssUserId.HasValue).FirstOrDefault();
+				if (avgDealRMQuery != null)
+				{
+					avgDealRM = query.GroupBy(m => m.AssUserId)
+											.Select(group => new
+											{
+												GroupID = group.Key,
+												Count = group.Count(),
+											})
+											.DefaultIfEmpty()
+											.Average(a => a.Count);
 				}
+
+
+				dash_Avg_Number.AvgDealRM = (int)(avgDealRM);
 			}
 
 			return dash_Avg_Number;
@@ -491,8 +496,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<GroupByModel>>> GetListDealBranchById(allFilter model)
 		{
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue)
-										 .GroupBy(m => m.BranchId)
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue);
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
+			var queryUse = query.GroupBy(m => m.BranchId)
 										 .Select(group => new GroupByModel()
 										 {
 											 GroupID = group.Key.ToString() ?? string.Empty,
@@ -500,9 +525,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											 Value = group.Count()
 										 });
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+			var pager = new Pager(queryUse.Count(), model.page, model.pagesize, null);
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+			var items = queryUse.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<GroupByModel>>()
 			{
@@ -513,8 +538,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.AssUserName != null && x.AssUserName.Contains(model.searchtxt));
@@ -550,8 +593,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var pager = new Pager(queryUse.Count(), model.page, model.pagesize, null);
 
 			var items = queryUse.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
-
-			//var itemslist = items.ToList();
 
 			return new PaginationView<List<SaleGroupByModel>>()
 			{
@@ -775,52 +816,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-
-			var sale_Durations = _repo.Context.Sale_Durations.Include(x => x.Sale)
+			var query = _repo.Context.Sale_Durations.Include(x => x.Sale)
 												.Where(x => x.Status == StatusModel.Active)
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
 			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
-				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
-
 				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 				{
+					query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 				{
+					query = query.Where(x => x.Sale.BranchId == user.BranchId);
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
-					var avgContact = sale_Durations.Select(x => (x.WaitContact + x.Contact))
-													.DefaultIfEmpty()
-													.Average();
-					dash_Avg_NumberOnStage.Contact = double.Round(avgContact, 2, MidpointRounding.AwayFromZero);
-
-					var avgMeet = sale_Durations.Select(x => x.Meet)
-													.DefaultIfEmpty()
-													.Average();
-					dash_Avg_NumberOnStage.Meet = double.Round(avgMeet, 2, MidpointRounding.AwayFromZero);
-
-					var avgDocument = sale_Durations.Select(x => x.Document)
-													.DefaultIfEmpty()
-													.Average();
-					dash_Avg_NumberOnStage.Document = double.Round(avgDocument, 2, MidpointRounding.AwayFromZero);
-
-					var avgResult = sale_Durations.Select(x => x.Result)
-													.DefaultIfEmpty()
-													.Average();
-					dash_Avg_NumberOnStage.Result = double.Round(avgResult, 2, MidpointRounding.AwayFromZero);
-
-					var avgCloseSaleFail = sale_Durations.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
-															 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-															 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan)
-													.Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
-													.DefaultIfEmpty()
-													.Average();
-					dash_Avg_NumberOnStage.CloseSaleFail = double.Round(avgCloseSaleFail, 2, MidpointRounding.AwayFromZero);
 				}
+
+				var avgContact = query.Select(x => (x.WaitContact + x.Contact))
+													.DefaultIfEmpty()
+													.Average();
+				dash_Avg_NumberOnStage.Contact = double.Round(avgContact, 2, MidpointRounding.AwayFromZero);
+
+				var avgMeet = query.Select(x => x.Meet)
+												.DefaultIfEmpty()
+												.Average();
+				dash_Avg_NumberOnStage.Meet = double.Round(avgMeet, 2, MidpointRounding.AwayFromZero);
+
+				var avgDocument = query.Select(x => x.Document)
+												.DefaultIfEmpty()
+												.Average();
+				dash_Avg_NumberOnStage.Document = double.Round(avgDocument, 2, MidpointRounding.AwayFromZero);
+
+				var avgResult = query.Select(x => x.Result)
+												.DefaultIfEmpty()
+												.Average();
+				dash_Avg_NumberOnStage.Result = double.Round(avgResult, 2, MidpointRounding.AwayFromZero);
+
+				var avgCloseSaleFail = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.RMReturnMCenter
+														 || x.Sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+														 || x.Sale.StatusSaleId == StatusSaleModel.CloseSaleNotLoan)
+												.Select(x => (x.WaitContact + x.Contact + x.Meet + x.Document + x.Result + x.CloseSale))
+												.DefaultIfEmpty()
+												.Average();
+				dash_Avg_NumberOnStage.CloseSaleFail = double.Round(avgCloseSaleFail, 2, MidpointRounding.AwayFromZero);
 
 			}
 
@@ -847,25 +888,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		private async Task<List<Dash_PieCustom>> GetDataPieCloseSale(allFilter model, List<Dash_PieCustom> response)
 		{
+			if (!model.userid.HasValue) return new();
 
-			//var salesAllCount = await _repo.Context.Sales.CountAsync(x => x.StatusSaleId == StatusSaleModel.RMReturnMCenter
-			//											 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
-			//											 || x.StatusSaleId == StatusSaleModel.ResultsNotLoan);
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
 
-			var queryAll = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+
 			if (model.rolecode != null)
 			{
 				if (model.rolecode.StartsWith(RoleCodes.RM))
 				{
-					queryAll = queryAll.Where(x => x.AssUserId == model.userid);
+					query = query.Where(x => x.AssUserId == user.Id);
 				}
 				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
 				{
-					queryAll = queryAll.Where(x => x.AssCenterUserId == model.userid);
+					query = query.Where(x => x.AssCenterUserId == user.Id);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.LOAN))
+				{
+					query = query.Where(x => x.BranchId == user.BranchId);
 				}
 			}
 
-			var salesAllCount = await queryAll.CountAsync();
+			var salesAllCount = await query.CountAsync();
 
 			var queryCloseSale = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 			if (model.rolecode != null)
@@ -918,6 +966,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		private async Task<List<Dash_PieCustom>> GetDataPieReasonFail(allFilter model, List<Dash_PieCustom> response)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
+
 			//เหตุผลไม่ประสงค์ขอสินเชื่อ
 			//var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
 			//							 .GroupBy(m => m.Master_Reason_CloseSaleId)
@@ -927,17 +984,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//								 Sales = group.ToList()
 			//							 })
 			//							 .ToList();
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
 			if (model.rolecode != null)
 			{
 				if (model.rolecode.StartsWith(RoleCodes.RM))
 				{
-					query = query.Where(x => x.AssUserId == model.userid);
+					query = query.Where(x => x.AssUserId == user.Id);
 				}
 				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
 				{
-					query = query.Where(x => x.AssCenterUserId == model.userid);
+					query = query.Where(x => x.AssCenterUserId == user.Id);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
+				{
+					query = query.Where(x => x.BranchId == user.BranchId);
 				}
 			}
 
@@ -1263,20 +1323,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		private async Task<List<Dash_PieCustom>> GetDataTypeBusiness(allFilter model, List<Dash_PieCustom> response)
 		{
-			//var query = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active)
-			//							 .GroupBy(m => m.Customer.Master_BusinessTypeId)
-			//							 .Select(group => new { GroupID = group.Key, Sales = group.ToList() });
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
 			var query = _repo.Context.Sales.Include(x => x.Customer).Where(x => x.Status == StatusModel.Active);
 
 			if (model.rolecode != null)
 			{
 				if (model.rolecode.StartsWith(RoleCodes.RM))
 				{
-					query = query.Where(x => x.AssUserId == model.userid);
+					query = query.Where(x => x.AssUserId == user.Id);
 				}
 				else if (model.rolecode.StartsWith(RoleCodes.MCENTER))
 				{
-					query = query.Where(x => x.AssCenterUserId == model.userid);
+					query = query.Where(x => x.AssCenterUserId == user.Id);
+				}
+				else if (model.rolecode.StartsWith(RoleCodes.BRANCH))
+				{
+					query = query.Where(x => x.BranchId == user.BranchId);
 				}
 			}
 
@@ -1305,22 +1373,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<Sale_DurationCustom>>> GetDuration(allFilter model)
 		{
-			IQueryable<Sale_Duration> query;
-			string? roleCode = null;
+			if (!model.userid.HasValue) return new();
 
-			if (model.userid.HasValue)
-			{
-				var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
-				if (roleList != null)
-				{
-					roleCode = roleList.Code;
-				}
-			}
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+
+			IQueryable<Sale_Duration> query;
 
 			query = _repo.Context.Sale_Durations.Include(x => x.Sale).ThenInclude(x => x.Customer)
 												.Where(x => x.Status != StatusModel.Delete)
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
+
+			if (user.Role.Code.StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+			}
 
 			if (!String.IsNullOrEmpty(model.type))
 			{
@@ -1520,17 +1594,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<Sale_ActivityCustom>>> GetActivity(allFilter model)
 		{
-			IQueryable<Sale_Activity> query;
-			string? roleCode = null;
+			if (!model.userid.HasValue) return new();
 
-			if (model.userid.HasValue)
-			{
-				var roleList = await _repo.User.GetRoleByUserId(model.userid.Value);
-				if (roleList != null)
-				{
-					roleCode = roleList.Code;
-				}
-			}
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+
+			IQueryable<Sale_Activity> query;
 
 			query = _repo.Context.Sale_Activities.Include(x => x.Sale)
 												.Where(x => x.Status != StatusModel.Delete)
@@ -1538,6 +1609,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.AsQueryable();
 
 			query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+
+
+			if (user.Role.Code.StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
@@ -1646,19 +1727,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (!model.userid.HasValue) return new();
 
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var response = new List<Dash_PieCustom>();
 
-			var sales = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
-										 .GroupBy(m => m.Master_Reason_CloseSaleId)
+			var queryUse = query.GroupBy(m => m.Master_Reason_CloseSaleId)
 										 .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
 										 .ToList();
 
-			if (sales.Count > 0)
+			if (queryUse.Count > 0)
 			{
-				foreach (var item in sales)
+				foreach (var item in queryUse)
 				{
 					response.Add(new()
 					{
@@ -1677,15 +1773,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<GroupByModel>>> GetGroupDealBranch(allFilter model)
 		{
-			if (!model.userid.HasValue || String.IsNullOrEmpty(model.rolecode)) return new();
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0);
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var response = new List<Dash_PieCustom>();
 
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0)
-										 .GroupBy(m => m.BranchId)
+			var queryUse = query.GroupBy(m => m.BranchId)
 										 .Select(group => new GroupByModel()
 										 {
 											 GroupID = group.Key.ToString() ?? string.Empty,
@@ -1693,9 +1804,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 											 Value = group.Count()
 										 });
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+			var pager = new Pager(queryUse.Count(), model.page, model.pagesize, null);
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+			var items = queryUse.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<GroupByModel>>()
 			{
@@ -1756,6 +1867,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
 			{
@@ -1807,79 +1930,57 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryRegion.Count > 0)
 			{
-				var ratingAverage = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
-
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				var avg = queryRegion.Average(a => a.Value) ?? 0;
+				response.Add(new()
 				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-
-				}
-				//var queryRegion = await query.Where(x => x.LoanAmount > 0).GroupBy(g => g.Master_Department_BranchId)
-				//							 .Select(group => new
-				//							 {
-				//								 GroupID = group.Key.ToString(),
-				//								 Name = "",
-				//								 Value = group.Sum(s => s.LoanAmount)
-				//							 }).AverageAsync(a => a.Value);
-
-				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryRegion.Count > 0)
-				{
-					var avg = queryRegion.Average(a => a.Value) ?? 0;
-					response.Add(new()
-					{
-						GroupID = "region",
-						Name = "ภูมิภาคทั้งหมด",
-						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-					});
-				}
-
-				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryBranch.Count > 0)
-				{
-					var avg = queryBranch.Average(a => a.Value) ?? 0;
-					response.Add(new()
-					{
-						GroupID = "branch",
-						Name = "ศูนย์สาขาทั้งหมด",
-						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-					});
-				}
-
-				var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryRM.Count > 0)
-				{
-					var avg = queryRM.Average(a => a.Value) ?? 0;
-					response.Add(new()
-					{
-						GroupID = "rm",
-						Name = "RM ทั้งหมด",
-						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-					});
-				}
+					GroupID = "region",
+					Name = "ภูมิภาคทั้งหมด",
+					Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+				});
 			}
+
+			var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryBranch.Count > 0)
+			{
+				var avg = queryBranch.Average(a => a.Value) ?? 0;
+				response.Add(new()
+				{
+					GroupID = "branch",
+					Name = "ศูนย์สาขาทั้งหมด",
+					Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
+			var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryRM.Count > 0)
+			{
+				var avg = queryRM.Average(a => a.Value) ?? 0;
+				response.Add(new()
+				{
+					GroupID = "rm",
+					Name = "RM ทั้งหมด",
+					Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
 
 			return response;
 		}
@@ -1899,6 +2000,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
 			{
@@ -1950,39 +2063,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Name = group.First().Master_Department_BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryRegion.Count > 0)
 			{
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				foreach (var item in queryRegion)
 				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-				}
-
-				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Name = group.First().Master_Department_BranchName,
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryRegion.Count > 0)
-				{
-					foreach (var item in queryRegion)
+					var avg = item.Value ?? 0;
+					response.Add(new()
 					{
-						var avg = item.Value ?? 0;
-						response.Add(new()
-						{
-							GroupID = "region",
-							Name = item.Name,
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
+						GroupID = "region",
+						Name = item.Name,
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
 				}
 			}
+
 
 			return response;
 		}
@@ -2002,6 +2103,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
 			{
@@ -2053,117 +2166,99 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			Guid? department_BranchIdDefault = null;
+			if (model.DepBranch?.Count > 0)
 			{
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				if (idList.Count > 0)
 				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
 				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
+			}
+			else
+			{
+				//default กิจการสาขาภาคที่มีขอดขายสูงสูด
+				var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key,
+											 Name = group.First().Master_Department_BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
 
-				}
 
-				Guid? department_BranchIdDefault = null;
-				if (model.DepBranch?.Count > 0)
+				if (department_BranchMax != null && department_BranchMax.GroupID.HasValue)
 				{
-					var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
-					if (idList.Count > 0)
+					department_BranchIdDefault = department_BranchMax.GroupID;
+					query = query.Where(x => x.Master_Department_BranchId == department_BranchIdDefault);
+				}
+			}
+
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Name = group.First().Master_Department_BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryRegion.Count > 0)
+			{
+				foreach (var item in queryRegion)
+				{
+					var avg = item.Value ?? 0;
+					response.Add(new()
 					{
-						query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-					}
+						GroupID = item.GroupID,
+						Name = item.Name,
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
 				}
-				else
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
 				{
-					//default กิจการสาขาภาคที่มีขอดขายสูงสูด
-					var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
+			}
+			else if (department_BranchIdDefault.HasValue)
+			{
+				//default สาขาที่มีขอดขายสูงสูด 3 อันดับแรก
+				var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == department_BranchIdDefault && x.BranchId.HasValue && x.BranchId > 0)
+											 .GroupBy(m => m.BranchId)
 											 .Select(group => new
 											 {
 												 GroupID = group.Key,
-												 Name = group.First().Master_Department_BranchName,
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
-
-
-					if (department_BranchMax != null && department_BranchMax.GroupID.HasValue)
-					{
-						department_BranchIdDefault = department_BranchMax.GroupID;
-						query = query.Where(x => x.Master_Department_BranchId == department_BranchIdDefault);
-					}
-				}
-
-				var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Name = group.First().Master_Department_BranchName,
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryRegion.Count > 0)
-				{
-					foreach (var item in queryRegion)
-					{
-						var avg = item.Value ?? 0;
-						response.Add(new()
-						{
-							GroupID = item.GroupID,
-							Name = item.Name,
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-				}
-
-				if (model.Branchs?.Count > 0)
-				{
-					var idList = GeneralUtils.ListStringToInt(model.Branchs);
-					if (idList.Count > 0)
-					{
-						query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
-					}
-				}
-				else if (department_BranchIdDefault.HasValue)
-				{
-					//default สาขาที่มีขอดขายสูงสูด 3 อันดับแรก
-					var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == department_BranchIdDefault && x.BranchId.HasValue && x.BranchId > 0)
-												 .GroupBy(m => m.BranchId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key,
-													 Name = group.First().BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
-					if (branchMax.Count > 0)
-					{
-						query = query.Where(x => branchMax.Contains(x.BranchId));
-					}
-				}
-
-				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
 												 Name = group.First().BranchName,
 												 Value = group.Sum(s => s.LoanAmount)
-											 }).OrderByDescending(x => x.Value).ToListAsync();
-				if (queryBranch.Count > 0)
+											 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
+				if (branchMax.Count > 0)
 				{
-					foreach (var item in queryBranch)
-					{
-						var avg = item.Value ?? 0;
-						response.Add(new()
-						{
-							GroupID = item.GroupID,
-							Name = item.Name,
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
+					query = query.Where(x => branchMax.Contains(x.BranchId));
 				}
+			}
 
-
-
-
+			var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Name = group.First().BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).OrderByDescending(x => x.Value).ToListAsync();
+			if (queryBranch.Count > 0)
+			{
+				foreach (var item in queryBranch)
+				{
+					var avg = item.Value ?? 0;
+					response.Add(new()
+					{
+						GroupID = item.GroupID,
+						Name = item.Name,
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
+				}
 			}
 
 			return response;
@@ -2184,6 +2279,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
 			{
@@ -2235,115 +2342,99 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			int? branchIdDefault = null;
+			if (model.Branchs?.Count > 0)
 			{
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
 				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
 				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
-				{
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
+			}
+			else
+			{
+				//default สาขาที่มีขอดขายสูงสูด
+				var branchMax = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key,
+											 Name = group.First().BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
 
-				}
 
-				int? branchIdDefault = null;
-				if (model.Branchs?.Count > 0)
+				if (branchMax != null && branchMax.GroupID.HasValue)
 				{
-					var idList = GeneralUtils.ListStringToInt(model.Branchs);
-					if (idList.Count > 0)
+					branchIdDefault = branchMax.GroupID;
+					query = query.Where(x => x.BranchId == branchIdDefault);
+				}
+			}
+
+			var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Name = group.First().BranchName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).ToListAsync();
+			if (queryBranch.Count > 0)
+			{
+				foreach (var item in queryBranch)
+				{
+					var avg = item.Value ?? 0;
+					response.Add(new()
 					{
-						query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
-					}
+						GroupID = item.GroupID,
+						Name = item.Name,
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
 				}
-				else
+			}
+
+			if (model.AssUser?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.AssUser);
+				if (idList.Count > 0)
 				{
-					//default สาขาที่มีขอดขายสูงสูด
-					var branchMax = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
+			}
+			else if (branchIdDefault.HasValue)
+			{
+				//default พนักงาน rm ที่มีขอดขายสูงสูด 3 อันดับแรก
+				var rmMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId == branchIdDefault)
+											 .GroupBy(m => m.AssUserId)
 											 .Select(group => new
 											 {
 												 GroupID = group.Key,
 												 Name = group.First().BranchName,
 												 Value = group.Sum(s => s.LoanAmount)
-											 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
-
-
-					if (branchMax != null && branchMax.GroupID.HasValue)
-					{
-						branchIdDefault = branchMax.GroupID;
-						query = query.Where(x => x.BranchId == branchIdDefault);
-					}
-				}
-
-				var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Name = group.First().BranchName,
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).ToListAsync();
-				if (queryBranch.Count > 0)
+											 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
+				if (rmMax.Count > 0)
 				{
-					foreach (var item in queryBranch)
-					{
-						var avg = item.Value ?? 0;
-						response.Add(new()
-						{
-							GroupID = item.GroupID,
-							Name = item.Name,
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
+					query = query.Where(x => rmMax.Contains(x.AssUserId));
 				}
+			}
 
-				if (model.AssUser?.Count > 0)
+			var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
+										 .Select(group => new
+										 {
+											 GroupID = group.Key.ToString(),
+											 Name = group.First().AssUserName,
+											 Value = group.Sum(s => s.LoanAmount)
+										 }).OrderByDescending(x => x.Value).ToListAsync();
+			if (queryRM.Count > 0)
+			{
+				foreach (var item in queryRM)
 				{
-					var idList = GeneralUtils.ListStringToInt(model.AssUser);
-					if (idList.Count > 0)
+					var avg = item.Value ?? 0;
+					response.Add(new()
 					{
-						query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
-					}
+						GroupID = item.GroupID,
+						Name = item.Name,
+						Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+					});
 				}
-				else if (branchIdDefault.HasValue)
-				{
-					//default พนักงาน rm ที่มีขอดขายสูงสูด 3 อันดับแรก
-					var rmMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId == branchIdDefault)
-												 .GroupBy(m => m.AssUserId)
-												 .Select(group => new
-												 {
-													 GroupID = group.Key,
-													 Name = group.First().BranchName,
-													 Value = group.Sum(s => s.LoanAmount)
-												 }).OrderByDescending(x => x.Value).Select(x => x.GroupID).Take(3).ToListAsync();
-					if (rmMax.Count > 0)
-					{
-						query = query.Where(x => rmMax.Contains(x.AssUserId));
-					}
-				}
-
-				var queryRM = await query.Where(x => x.LoanAmount > 0 && x.AssUserId.HasValue).GroupBy(g => g.AssUserId)
-											 .Select(group => new
-											 {
-												 GroupID = group.Key.ToString(),
-												 Name = group.First().AssUserName,
-												 Value = group.Sum(s => s.LoanAmount)
-											 }).OrderByDescending(x => x.Value).ToListAsync();
-				if (queryRM.Count > 0)
-				{
-					foreach (var item in queryRM)
-					{
-						var avg = item.Value ?? 0;
-						response.Add(new()
-						{
-							GroupID = item.GroupID,
-							Name = item.Name,
-							Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-						});
-					}
-				}
-
-
 			}
 
 			return response;
@@ -2351,9 +2442,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<List<GroupByModel>> GetAvgRegionMonth12Bar(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
 			var response = new List<GroupByModel>();
 
 			var query = _repo.Context.Sales.Include(i => i.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0);
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{

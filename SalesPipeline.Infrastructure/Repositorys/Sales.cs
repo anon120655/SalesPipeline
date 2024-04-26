@@ -569,15 +569,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Sale_ReturnCustom>>> GetListReturn(allFilter model)
 		{
 			IQueryable<Sale_Return> query;
-			string? roleCode = null;
-			if (model.assigncenter.HasValue)
-			{
-				var roleList = await _repo.User.GetRoleByUserId(model.assigncenter.Value);
-				if (roleList != null)
-				{
-					roleCode = roleList.Code;
-				}
-			}
 
 			query = _repo.Context.Sale_Returns.Where(x => x.Status != StatusModel.Delete)
 												.OrderByDescending(x => x.CreateDate)
