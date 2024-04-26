@@ -370,6 +370,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query = query.Where(x => x.StatusSaleId != StatusSaleModel.CloseSale);
 			}
 
+			var queryList = query.ToList();
+
 			//การพิจารณา ผ่าน/ไม่ผ่าน
 			if (model.isconsidered > 0)
 			{
@@ -388,6 +390,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.AssUserId == model.assignrm);
 			}
+
+			var queryList2 = query.ToList();
 
 			if (!String.IsNullOrEmpty(model.contact_name))
 			{

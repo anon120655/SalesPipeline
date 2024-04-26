@@ -65,7 +65,7 @@ var colorsWarning = [
 ];
 
 window.closesale = (_data) => {
-	//console.log(indata.length)
+	//console.log(_data)
 
 	$("#closesale_empty").addClass("d-none")
 	if (_data.length == 0) {
