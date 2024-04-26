@@ -33,8 +33,9 @@
 				</div>
 				<div class="col-12 mt-3">
 					<div class="row mb-3">
-						<div class="col-5">
+						<div class="col-10">
 							<input @bind="formModel.Nex" type="number" class="form-control" placeholder="Next Action">
+							<input @bind="formModel.ProceedId" type="number" class="form-control my-3" placeholder="ProceedId">
 							<table class="table">
 								<tbody>
 									<tr>
@@ -56,6 +57,13 @@
 										<td class="text-danger">ผลลัพธ์</td>
 										<td class="text-danger">1 = ทำการนัดหมาย</td>
 										<td class="text-danger">2 = รอปิดการขาย</td>
+									</tr>
+									<tr>
+										<td class="text-danger">ผลลัพธ์(ProceedId)</td>
+										<td class="text-danger">1 = แจ้งข้อมูลเพิ่มเติม</td>
+										<td class="text-danger">2 = ติดต่อขอเอกสาร</td>
+										<td class="text-danger">3 = เข้าพบรับเอกสาร</td>
+										<td class="text-danger">4 = ไม่ผ่านการพิจารณา</td>
 									</tr>
 									<tr>
 										<td class="text-danger">ปิดการขาย</td>

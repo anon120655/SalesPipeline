@@ -45,6 +45,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public short? isloanamount { get; set; }
 		public decimal? loanamount { get; set; }
 		public short? isclosesale { get; set; }
+		public short? isconsidered { get; set; }
 		public string? reason { get; set; }
 		public string? contact { get; set; }
 		public string? meet { get; set; }
@@ -181,6 +182,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (isclosesale.HasValue)
 				ParameterAll += $"&isclosesale={isclosesale}";
+
+			if (isconsidered.HasValue)
+				ParameterAll += $"&isconsidered={isconsidered}";
 
 			if (!String.IsNullOrEmpty(reason))
 				ParameterAll += $"&reason={reason}";
@@ -354,6 +358,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isclosesale), out var _isclosesale))
 				isclosesale = Convert.ToInt16(_isclosesale);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isconsidered), out var _isconsidered))
+				isconsidered = Convert.ToInt16(_isconsidered);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
 				reason = _reason;

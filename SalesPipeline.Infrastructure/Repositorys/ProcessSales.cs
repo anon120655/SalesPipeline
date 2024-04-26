@@ -703,6 +703,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
+
+			if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
@@ -818,6 +822,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					throw new ExceptionCustom("วันที่เข้าพบต้องไม่มากกว่าวันที่ปัจจุบัน");
 				}
 			}
+
+			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
+
+			if (model.MeetId != 1 && model.MeetId != 2) throw new ExceptionCustom("meetId not match");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -1074,6 +1082,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("statussale not match");
 			}
 
+			if (model.ProceedId != 1 && model.ProceedId != 2 && model.ProceedId != 3 && model.ProceedId != 4) throw new ExceptionCustom("proceedId not match");
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
@@ -1102,19 +1112,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			resultMeetName = model.ResultMeetId == 1 ? "เข้าพบสำเร็จ" : model.ResultMeetId == 2 ? "เข้าพบไม่สำเร็จ" : "";
 
-			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร
+			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
 			if (model.ProceedId == 1 || model.ProceedId == 2 || model.ProceedId == 3)
 			{
-				proceedName = model.ProceedId == 1 ? "แจ้งข้อมูลเพิ่มเติม" : model.ProceedId == 2 ? "ติดต่อขอเอกสาร" : model.ProceedId == 3 ? "เข้าพบรับเอกสาร" : string.Empty;
+				proceedName = model.ProceedId == 1 ? "แจ้งข้อมูลเพิ่มเติม"
+					: model.ProceedId == 2 ? "ติดต่อขอเอกสาร"
+					: model.ProceedId == 3 ? "เข้าพบรับเอกสาร"
+					: model.ProceedId == 4 ? "ไม่ผ่านการพิจารณา"
+					: string.Empty;
 			}
 
-			if (model.NextActionId == 1)
+			DateTime createDate = DateTime.Now;
+
+			if (model.ProceedId == 4)
 			{
-				nextActionName = "ทำการนัดหมาย";
-			}
-			else if (model.NextActionId == 2)
-			{
-				DateTime createDate = DateTime.Now;
+				statusSaleId = StatusSaleModel.ResultsNotConsidered;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -1123,31 +1135,50 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
-
-				statusSaleId = StatusSaleModel.WaitCloseSale;
-				//topicName = "รอปิดการขาย";
-				nextActionName = "รอปิดการขาย";
-				await _repo.Sales.UpdateStatusOnly(new()
-				{
-					SaleId = model.SaleId,
-					StatusId = statusSaleId,
-					CreateDate = createDate.AddSeconds(1),
-					CreateBy = model.CurrentUserId,
-					CreateByName = currentUserName,
-				});
 			}
 			else
 			{
-				if (sale.StatusSaleId == StatusSaleModel.WaitResults)
+				if (model.NextActionId == 1)
+				{
+					nextActionName = "ทำการนัดหมาย";
+				}
+				else if (model.NextActionId == 2)
 				{
 					await _repo.Sales.UpdateStatusOnly(new()
 					{
 						SaleId = model.SaleId,
 						StatusId = statusSaleId,
+						CreateDate = createDate,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+					});
+
+					statusSaleId = StatusSaleModel.WaitCloseSale;
+					//topicName = "รอปิดการขาย";
+					nextActionName = "รอปิดการขาย";
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateDate = createDate.AddSeconds(1),
 						CreateBy = model.CurrentUserId,
 						CreateByName = currentUserName,
 					});
 				}
+				else
+				{
+					if (sale.StatusSaleId == StatusSaleModel.WaitResults)
+					{
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = model.SaleId,
+							StatusId = statusSaleId,
+							CreateBy = model.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+					}
+				}
+
 			}
 
 			await CreateContactHistory(new()
@@ -1179,6 +1210,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
+
+			if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("resultMeetId not match");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 

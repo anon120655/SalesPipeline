@@ -1616,14 +1616,15 @@ window.durationonstage = (_data) => {
 		}
 	};
 
-	let chart; // define chart variable outside of function
+	let chartId = "durationonstage";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-	var ctx = document.getElementById("durationonstage");
-	if (ctx != null) {
-
-		if (chart) chart.destroy();
-
-		chart = new Chart(ctx, {
+		const config = {
 			type: 'bar',
 			data: {
 				labels: ["ติดต่อ", "เข้าพบ", "ยื่นเอกสาร", "ผลลัพธ์การกู้", ['ปิดการขาย', 'ไม่สำเร็จ']],
@@ -1671,10 +1672,14 @@ window.durationonstage = (_data) => {
 
 			options: barOptions_stacked,
 			plugins: [ChartDataLabels]
-		});
+		};
+
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 350 + 'px';
 		}
+
 	}
 }
 

@@ -370,6 +370,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query = query.Where(x => x.StatusSaleId != StatusSaleModel.CloseSale);
 			}
 
+			//การพิจารณา ผ่าน/ไม่ผ่าน
+			if (model.isconsidered > 0)
+			{
+				//if (model.isconsidered == 1)
+				//	query = query.Where(x => x.StatusSaleId == StatusSaleModel.CloseSale);
+				if (model.isconsidered == 2)
+					query = query.Where(x => x.StatusSaleId == StatusSaleModel.NotApproveLoanRequest || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered);
+			}
+
 			if (model.assigncenter > 0)
 			{
 				query = query.Where(x => x.AssCenterUserId == model.assigncenter);

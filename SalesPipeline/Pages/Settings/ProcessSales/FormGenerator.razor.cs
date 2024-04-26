@@ -331,7 +331,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 
 			//ผลลัพธ์
 			formModel.Sale_Result = new();
-			formModel.Sale_Result.ProceedId = 3;
+			formModel.Sale_Result.ProceedId = formModel.ProceedId.HasValue ? formModel.ProceedId.Value : 0;
 			formModel.Sale_Result.ResultMeetId = 1;
 			formModel.Sale_Result.MeetName = "นายทดสอบ เข้าพบ01";
 			formModel.Sale_Result.NextActionId = formModel.Nex;

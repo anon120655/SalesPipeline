@@ -60,6 +60,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 
 		public int? Nex { get; set; }
+		public int? ProceedId { get; set; }
 
 	}
 }
