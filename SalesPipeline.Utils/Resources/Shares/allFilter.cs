@@ -31,7 +31,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? chain { get; set; }
 		public string? isiccode { get; set; }
 		public string? businesstype { get; set; }
-		public int? provinceid { get; set; }
+        public string? loantypeid { get; set; }
+        public int? provinceid { get; set; }
 		public int? amphurid { get; set; }
 		public string? province_name { get; set; }
 		public string? amphur_name { get; set; }
@@ -140,6 +141,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(businesstype))
 				ParameterAll += $"&businesstype={businesstype}";
+
+			if (!String.IsNullOrEmpty(loantypeid))
+				ParameterAll += $"&loantypeid={loantypeid}";
 
 			if (provinceid > 0)
 				ParameterAll += $"&provinceid={provinceid}";
@@ -325,6 +329,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(businesstype), out var _businesstype))
 				businesstype = _businesstype;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(loantypeid), out var _loantypeid))
+				loantypeid = _loantypeid;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(provinceid), out var _province))
 				provinceid = Convert.ToInt32(_province); ;

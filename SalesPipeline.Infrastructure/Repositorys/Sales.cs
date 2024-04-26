@@ -370,8 +370,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query = query.Where(x => x.StatusSaleId != StatusSaleModel.CloseSale);
 			}
 
-			var queryList = query.ToList();
-
 			//การพิจารณา ผ่าน/ไม่ผ่าน
 			if (model.isconsidered > 0)
 			{
@@ -390,8 +388,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.AssUserId == model.assignrm);
 			}
-
-			var queryList2 = query.ToList();
 
 			if (!String.IsNullOrEmpty(model.contact_name))
 			{
@@ -484,6 +480,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
 				{
 					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
 				}
 			}
 
