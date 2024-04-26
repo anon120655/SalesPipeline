@@ -20,9 +20,9 @@
 						<div class="col mb-2">
 							<label class="form-label">ค้นหาลูกค้า</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -30,36 +30,61 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ห่วงโซ่</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Chain?.Count > 0)
+								{
+									foreach (var item in LookUp.Chain)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">ประเภทธุรกิจ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select id="BusinessType" @onchange="OnBusinessType" value="@filter.businesstype" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.BusinessType?.Count > 0)
+								{
+									foreach (var item in LookUp.BusinessType)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select id="Branch" class="selectpickerdefault" title="ทั้งหมด" data-style="select_btn_set" data-live-search="true" value="">
+								@if (LookUp.Branchs?.Count > 0)
+								{
+									foreach (var item in LookUp.Branchs)
+									{
+										<option value="@item.BranchID">@item.BranchName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">วันที่ส่งคืน</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
+							<input type="date" class="form-control" @onchange="OnReturnDate" value="@(filter.returndate.HasValue ? filter.returndate.Value.ToString("yyyy-MM-dd"):String.Empty)">
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="((e) => Search())" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -112,8 +137,8 @@
 													<td class="text-center">
 														@if (item.Sale_Statuses != null)
 														{
-															var statusName = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnBranch);
-															<span>@GeneralUtils.DateToThString(statusName?.CreateDate)</span>
+															var sale_status = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnBranch);
+															<span>@GeneralUtils.DateToThString(sale_status?.CreateDate)</span>
 															@if (!String.IsNullOrEmpty(item.StatusDescription))
 															{
 																<TooltipCustom Text="@item.StatusDescription">

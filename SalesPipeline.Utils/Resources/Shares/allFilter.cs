@@ -58,6 +58,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? sort { get; set; }
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }
+		public DateTime? returndate { get; set; }
 		//public List<string?>? Selecteds { get; set; }
 		//public List<string?>? Selecteds2 { get; set; }
 		//public List<string?>? Selecteds3 { get; set; } AssUserId
@@ -253,6 +254,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (enddate.HasValue)
 				ParameterAll += $"&enddate={GeneralUtils.DateToStrParameter(enddate)}";
 
+			if (returndate.HasValue)
+				ParameterAll += $"&returndate={GeneralUtils.DateToStrParameter(returndate)}";
+			
 			return ParameterAll;
 		}
 
@@ -380,6 +384,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("enddate", out var _enddate))
 				enddate = GeneralUtils.DateNotNullToEn(_enddate, "yyyy-MM-dd", Culture: "en-US");
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("returndate", out var _returndate))
+				returndate = GeneralUtils.DateNotNullToEn(_returndate, "yyyy-MM-dd", Culture: "en-US");
 
 			//if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("ids", out var _Selecteds))
 			//{

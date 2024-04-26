@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
@@ -371,5 +372,13 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 			}
 		}
 
+		protected async Task OnBusinessType(ChangeEventArgs e)
+		{ 
+			filter.businesstype = null;
+			if (e.Value != null)
+			{
+				filter.businesstype = e.Value.ToString();
+			}
+		}
 	}
 }

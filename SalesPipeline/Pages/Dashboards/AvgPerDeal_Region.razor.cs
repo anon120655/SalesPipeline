@@ -375,9 +375,8 @@ namespace SalesPipeline.Pages.Dashboards
 			{
 				filter.businesstype = e.Value.ToString();
 
-				//await SetModel();
-				//StateHasChanged();
-				//_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+				await SetModel();
+				StateHasChanged();
 			}
 		}
 

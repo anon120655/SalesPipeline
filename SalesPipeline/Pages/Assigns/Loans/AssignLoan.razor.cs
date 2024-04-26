@@ -65,6 +65,17 @@ namespace SalesPipeline.Pages.Assigns.Loans
 
 		protected async Task SetInitManual()
 		{
+			var reasonReturn = await _masterViewModel.GetReasonReturns(new() { pagesize = 50 });
+			if (reasonReturn != null && reasonReturn.Status)
+			{
+				LookUp.ReasonReturn = reasonReturn.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = reasonReturn?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
 			if (businessType != null && businessType.Status)
 			{
@@ -84,17 +95,6 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			else
 			{
 				_errorMessage = province?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var reasonReturn = await _masterViewModel.GetReasonReturns(new() { pagesize = 50 });
-			if (reasonReturn != null && reasonReturn.Status)
-			{
-				LookUp.ReasonReturn = reasonReturn.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = reasonReturn?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 

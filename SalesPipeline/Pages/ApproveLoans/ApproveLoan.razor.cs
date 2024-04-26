@@ -57,7 +57,32 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 			StateHasChanged();
 			await Task.Delay(10);
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+
+			var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
+			{
+				pagesize = 100,
+				status = StatusModel.Active,
+				Branchs = new() { UserInfo.BranchId.ToString() }
+			});
+			if (dataUsersRM != null && dataUsersRM.Status)
+			{
+				if (dataUsersRM.Data?.Items.Count > 0)
+				{
+					if (dataUsersRM.Data.Items?.Count > 0)
+					{
+						LookUp.RMUser = new();
+						LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRMUser", "#RMUser");
+					}
+				}
+			}
+			else
+			{
+				_errorMessage = dataUsersRM?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 
 
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Responsible");
@@ -144,7 +169,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 		}
 
 		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			filter.provinceid = null;
 			filter.amphurid = null;
@@ -159,12 +184,12 @@ namespace SalesPipeline.Pages.ApproveLoans
 				var amphurs = await _masterViewModel.GetAmphur(provinceID);
 				if (amphurs != null && amphurs.Data?.Count > 0)
 				{
-					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "--เลือก--" } };
+					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "ทั้งหมด" } };
 					LookUp.Amphurs.AddRange(amphurs.Data);
 
 					StateHasChanged();
 					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAmphur", "#Amphur");
 					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
 				}
 				else
@@ -181,7 +206,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 		}
 
 		[JSInvokable]
-		public async Task AmphurChange(string _amphurID, string _amphurName)
+		public async Task OnAmphur(string _amphurID, string _amphurName)
 		{
 			filter.amphurid = null;
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
@@ -192,6 +217,19 @@ namespace SalesPipeline.Pages.ApproveLoans
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		[JSInvokable]
+		public async Task OnRMUser(string _ids, string _name)
+		{
+			filter.RMUser = new();
+
+			if (_ids != null)
+			{
+				filter.RMUser.Add(_ids);
+			}
+
+			await Task.Delay(1);
 		}
 
 	}

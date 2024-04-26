@@ -390,6 +390,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.ContactStartDate.HasValue && x.ContactStartDate.Value.Date >= model.contactstartdate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 
+			if (model.returndate.HasValue)
+			{
+				query = query.Where(x => x.Sale_Statuses.Any(w => w.StatusId == StatusSaleModel.MCenterReturnBranch && w.CreateDate.Date == model.returndate.Value.Date));
+			}
+
 			if (!String.IsNullOrEmpty(model.reason))
 			{
 				query = query.Where(x => x.StatusDescription != null && x.StatusDescription.Contains(model.reason));
