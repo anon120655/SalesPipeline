@@ -17,7 +17,7 @@ public partial class Sale_Result
     public Guid SaleId { get; set; }
 
     /// <summary>
-    /// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร
+    /// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
     /// </summary>
     public int? ProceedId { get; set; }
 

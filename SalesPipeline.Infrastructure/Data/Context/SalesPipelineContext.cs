@@ -2214,7 +2214,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(1000)
                 .HasComment("บันทึกเพิ่มเติม");
             entity.Property(e => e.ProceedId)
-                .HasComment("1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร")
+                .HasComment("1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา")
                 .HasColumnType("int(11)");
             entity.Property(e => e.ResultMeetId)
                 .HasComment("1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ")
