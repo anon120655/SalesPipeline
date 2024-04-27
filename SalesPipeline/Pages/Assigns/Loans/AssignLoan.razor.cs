@@ -47,6 +47,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 			stepAssign = StepAssignLoanModel.Home;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignLoan) ?? new User_PermissionCustom();
 			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -203,9 +204,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRM.branch))
+				if (!String.IsNullOrEmpty(filterRM.branchid))
 				{
-					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.branch)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.branchid)).ToList();
 				}
 
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
@@ -280,9 +281,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			filterRM.provinceid = null;
-			filterRM.branch = null;
+			filterRM.branchid = null;
 			filterRMNew.provinceid = null;
-			filterRMNew.branch = null;
+			filterRMNew.branchid = null;
 			LookUp.Branchs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
@@ -334,8 +335,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		public async Task OnBranch(string _branchID, string _branchName)
 		{
 			await Task.Delay(1);
-			filterRM.branch = null;
-			filterRMNew.branch = null;
+			filterRM.branchid = null;
+			filterRMNew.branchid = null;
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
 				if (branchID != 0)
@@ -346,8 +347,8 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				}
 				else
 				{
-					filterRM.branch = null;
-					filterRMNew.branch = null;
+					filterRM.branchid = null;
+					filterRMNew.branchid = null;
 				}
 			}
 

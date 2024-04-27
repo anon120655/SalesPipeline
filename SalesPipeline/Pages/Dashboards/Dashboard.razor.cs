@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.ViewModels;
 
 namespace SalesPipeline.Pages.Dashboards
@@ -13,6 +15,7 @@ namespace SalesPipeline.Pages.Dashboards
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
+		private LookUpResource LookUp = new();
 		private allFilter filter = new();
 		private Dash_Status_TotalCustom status_TotalModel = new();
 		private Dash_SalesPipelineModel salesPipelineModel = new();
@@ -25,19 +28,22 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
-
-
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
+				filter.userid = UserInfo.Id;
+				filter.status = StatusModel.Active;
+
+				await SetInitManual();
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
 				await Status_Total();
 				await Get_SalesPipeline();
 				await AvgTop_Number();
-
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
 				var UrlJs = $"/js/dashboards/dashboard.js?v={_appSet.Value.Version}";
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/dashboard.js");
@@ -46,10 +52,30 @@ namespace SalesPipeline.Pages.Dashboards
 					await SetModelAll();
 				}
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				StateHasChanged();
 
 				firstRender = false;
+			}
+		}
+
+		protected async Task SetInitManual()
+		{
+			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataDepBranchs != null && dataDepBranchs.Status)
+			{
+				LookUp.DepartmentBranch = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				if (dataDepBranchs.Data?.Items.Count > 0)
+				{
+					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
+				}
+			}
+			else
+			{
+				_errorMessage = dataDepBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 		}
 
@@ -89,7 +115,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetStatus_TotalById(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetStatus_TotalById(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					status_TotalModel = data.Data;
@@ -107,7 +133,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.Get_SalesPipelineById(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.Get_SalesPipelineById(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					salesPipelineModel = data.Data;
@@ -125,7 +151,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetAvgTop_NumberById(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetAvgTop_NumberById(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					avgTop_NumberModel = data.Data;
@@ -142,7 +168,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetAvgBottom_NumberById(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetAvgBottom_NumberById(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					avgBottom_NumberModel = data.Data;
@@ -159,7 +185,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetTopSale(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetTopSale(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					topSaleModel = data.Data.Items;
@@ -180,7 +206,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.Id > 0)
 			{
-				var data = await _dashboarViewModel.GetLostSale(new() { userid = UserInfo.Id });
+				var data = await _dashboarViewModel.GetLostSale(filter);
 				if (data != null && data.Status && data.Data != null)
 				{
 					lostSaleModel = data.Data.Items;
@@ -199,7 +225,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task CloseSaleAndReasonNotLoan()
 		{
-			var data = await _dashboarViewModel.GetPieCloseSaleReason(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetPieCloseSaleReason(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
 				var closesale = data.Data.Where(x => x.Code == Dash_PieCodeModel.ClosingSale).ToList();
@@ -236,7 +262,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task NumberCustomer()
 		{
-			var data = await _dashboarViewModel.GetPieNumberCustomer(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetPieNumberCustomer(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
 				//var labels = new[] { "ใช้เวลานาน ", "ขาดการติดต่อ ", "กู้ธนาคารอื่นแล้ว ", "ดอกเบี้ยสูง " };
@@ -304,7 +330,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task LoanValue()
 		{
-			var data = await _dashboarViewModel.GetPieLoanValue(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetPieLoanValue(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
 				var chartModel = new ChartJsDataLabelsModel();
@@ -379,7 +405,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task DurationOnStage()
 		{
-			var data = await _dashboarViewModel.GetAvgOnStage(new() { userid = UserInfo.Id });
+			var data = await _dashboarViewModel.GetAvgOnStage(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
 				await _jsRuntimes.InvokeVoidAsync("durationonstage", data.Data);
@@ -388,6 +414,137 @@ namespace SalesPipeline.Pages.Dashboards
 			{
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+		}
+
+		protected async Task Search()
+		{
+			await SetModelAll();
+			StateHasChanged();
+		}
+
+		[JSInvokable]
+		public async Task OnDepBranch(string _ids, string _name)
+		{
+			LookUp.Provinces = new();
+			LookUp.Branchs = new();
+			filter.DepBranch = new();
+			filter.provinceid = new();
+			filter.Branchs = new();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_ids != null)
+			{
+				filter.DepBranch.Add(_ids);
+			}
+
+			if (filter.DepBranch.Count > 0)
+			{
+				if (Guid.TryParse(_ids,out Guid depBranchId))
+				{
+					await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
+
+					var dataProvince = await _masterViewModel.GetProvince(depBranchId);
+					if (dataProvince != null && dataProvince.Status)
+					{
+						if (dataProvince.Data?.Count > 0)
+						{
+							LookUp.Provinces = new() { new() { ProvinceID = 0,ProvinceName = "ทั้งหมด" } };
+							LookUp.Provinces.AddRange(dataProvince.Data);
+							StateHasChanged();
+							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+							await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
+							await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+						}
+					}
+					else
+					{
+						_errorMessage = dataProvince?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
+					await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+				}
+			}
+			else
+			{
+				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnProvince(string _provinceID, string _provinceName)
+		{
+			filter.provinceid = null;
+			filter.Branchs = null;
+			LookUp.Branchs = new();
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				filter.provinceid = provinceID;
+
+				var branch = await _masterViewModel.GetBranch(provinceID);
+				if (branch != null && branch.Data?.Count > 0)
+				{
+					LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+					LookUp.Branchs.AddRange(branch.Data);
+
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+				}
+				else
+				{
+					_errorMessage = branch?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnBranch(string _branchID, string _branchName)
+		{
+			await Task.Delay(1);
+			filter.Branchs = null;
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
+			{
+				filter.Branchs = new();
+				filter.Branchs.Add(branchID.ToString());
+			}
+		}
+
+		protected void OnDateStart(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filter != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filter.startdate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filter.startdate = null;
+				}
+			}
+		}
+
+		protected void OnDateEnd(ChangeEventArgs e)
+		{
+			if (e != null && e.Value != null && filter != null)
+			{
+				if (!String.IsNullOrEmpty(e.Value.ToString()))
+				{
+					filter.enddate = GeneralUtils.DateNotNullToEn(e.Value.ToString(), "yyyy-MM-dd", Culture: "en-US");
+				}
+				else
+				{
+					filter.enddate = null;
+				}
 			}
 		}
 

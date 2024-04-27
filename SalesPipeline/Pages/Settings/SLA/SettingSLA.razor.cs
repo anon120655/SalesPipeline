@@ -23,6 +23,7 @@ namespace SalesPipeline.Pages.Settings.SLA
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetSLA) ?? new User_PermissionCustom();
 			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)

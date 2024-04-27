@@ -29,6 +29,7 @@ namespace SalesPipeline.Pages.ApproveTargets
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ApproveTarget) ?? new User_PermissionCustom();
 			StateHasChanged();
+			await Task.Delay(1);
 
 			filter.sort = OrderByModel.ASC;
 		}

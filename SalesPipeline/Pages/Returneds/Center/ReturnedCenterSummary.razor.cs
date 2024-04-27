@@ -302,7 +302,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 		public async Task ProvinceChange(string _provinceID, string _provinceName)
 		{
 			filter.provinceid = null;
-			filter.branch = null;
+			filter.branchid = null;
 			LookUp.Branchs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
@@ -337,10 +337,10 @@ namespace SalesPipeline.Pages.Returneds.Center
 		[JSInvokable]
 		public async Task BranchChange(string _branchID, string _branchName)
 		{
-			filter.branch = null;
+			filter.branchid = null;
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
-				filter.branch = branchID.ToString();
+				filter.branchid = branchID.ToString();
 			}
 
 			await SetModelAssigned();

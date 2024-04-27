@@ -344,9 +344,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
-			if (!String.IsNullOrEmpty(model.branch))
+			if (!String.IsNullOrEmpty(model.branchid))
 			{
-				if (int.TryParse(model.branch, out int branchid))
+				if (int.TryParse(model.branchid, out int branchid))
 				{
 					query = query.Where(x => x.BranchId != null && x.BranchId == branchid);
 				}

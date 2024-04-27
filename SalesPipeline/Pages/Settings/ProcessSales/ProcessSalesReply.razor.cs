@@ -15,7 +15,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetProcessSales) ?? new User_PermissionCustom();
 			StateHasChanged();
-
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)

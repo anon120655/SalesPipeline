@@ -28,7 +28,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
-
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)

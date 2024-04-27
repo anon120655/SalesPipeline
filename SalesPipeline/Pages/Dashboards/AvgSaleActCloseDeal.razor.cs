@@ -19,7 +19,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
 			StateHasChanged();
-
+			await Task.Delay(1);
 		}
 
 
