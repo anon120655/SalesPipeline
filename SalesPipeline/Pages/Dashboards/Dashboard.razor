@@ -307,52 +307,56 @@
 											<div class="d-flex align-items-end mt-2">
 												<div class="mapbox">
 													<div class="row maptop10">
-														@if (topSaleModel.Count > 0)
-														{
-															<div class="col-12 col-xl">
+														<div class="col-12 col-xl">
+															@if (topSaleModel.Count > 0)
+															{
 																<MapThailand map_ThailandModel="topSaleModel" Type="1" />
-															</div>
-															<div class="col-12 col-xl-6">
-																<table class="tbl_top10 table table-bordered border-white table-striped">
-																	<thead class="">
-																		<tr>
-																			<th scope="col">จังหวัด</th>
-																			<th scope="col">ยอดขาย</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		@if (topSaleModel.Count > 0)
+															}
+															else
+															{
+																<MapThailand map_ThailandModel="new()" Type="1" />
+															}
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">จังหวัด</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (topSaleModel.Count > 0)
+																	{
+																		foreach (var item in topSaleModel)
 																		{
-																			foreach (var item in topSaleModel)
-																			{
-																				<tr>
-																					<td>@item.ProvinceName</td>
-																					<td>@item.SalesAmount.ToString("#,##0")</td>
-																				</tr>
-																			}
+																			<tr>
+																				<td>@item.ProvinceName</td>
+																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			</tr>
 																		}
-																	</tbody>
-																</table>
-															</div>
-															<div class="col-12">
-																@if (topSaleModel.Count > 0)
-																{
-																	<ul class="map-info">
-																		<li class="left info"><span class="number">@topSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																		<li class="center"><div class="progress-map"></div></li>
-																		<li class="right info"><span class="number">@topSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-																	</ul>
-																}
-															</div>
-														}
-														else
-														{
-															<div class="col-12 mh_20r">
-																<div class="text-center">
-																	<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-2xl"></i>
-																</div>
-															</div>
-														}
+																	}
+																	else
+																	{
+																		<tr class="text-center align-middle">
+																			<td colspan="100">
+																				ไม่พบข้อมูล
+																			</td>
+																		</tr>
+																	}
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															@if (topSaleModel.Count > 0)
+															{
+																<ul class="map-info">
+																	<li class="left info"><span class="number">@topSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	<li class="center"><div class="progress-map"></div></li>
+																	<li class="right info"><span class="number">@topSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																</ul>
+															}
+														</div>
 													</div>
 												</div>
 											</div>
@@ -370,52 +374,56 @@
 											<div class="d-flex align-items-end mt-2">
 												<div class="mapbox">
 													<div class="row mapcenterlost10">
-														@if (lostSaleModel.Count > 0)
-														{
-															<div class="col-12 col-xl">
-																<MapThailand map_ThailandModel="lostSaleModel" />
-															</div>
-															<div class="col-12 col-xl-6">
-																<table class="tbl_top10 table table-bordered border-white table-striped">
-																	<thead class="">
-																		<tr>
-																			<th scope="col">จังหวัด</th>
-																			<th scope="col">ยอดขาย</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		@if (lostSaleModel.Count > 0)
+														<div class="col-12 col-xl">
+															@if (lostSaleModel.Count > 0)
+															{
+																<MapThailand map_ThailandModel="lostSaleModel" Type="1" />
+															}
+															else
+															{
+																<MapThailand map_ThailandModel="new()" Type="1" />
+															}
+														</div>
+														<div class="col-12 col-xl-6">
+															<table class="tbl_top10 table table-bordered border-white table-striped">
+																<thead class="">
+																	<tr>
+																		<th scope="col">จังหวัด</th>
+																		<th scope="col">ยอดขาย</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	@if (lostSaleModel.Count > 0)
+																	{
+																		foreach (var item in lostSaleModel)
 																		{
-																			foreach (var item in lostSaleModel)
-																			{
-																				<tr>
-																					<td>@item.ProvinceName</td>
-																					<td>@item.SalesAmount.ToString("#,##0")</td>
-																				</tr>
-																			}
+																			<tr>
+																				<td>@item.ProvinceName</td>
+																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			</tr>
 																		}
-																	</tbody>
-																</table>
-															</div>
-															<div class="col-12">
-																@if (lostSaleModel.Count > 0)
-																{
-																	<ul class="map-info">
-																		<li class="left info"><span class="number">@lostSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																		<li class="center"><div class="progress-map"></div></li>
-																		<li class="right info"><span class="number">@lostSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-																	</ul>
-																}
-															</div>
-														}
-														else
-														{
-															<div class="col-12 mh_20r">
-																<div class="text-center">
-																	<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-2xl"></i>
-																</div>
-															</div>
-														}
+																	}
+																	else
+																	{
+																		<tr class="text-center align-middle">
+																			<td colspan="100">
+																				ไม่พบข้อมูล
+																			</td>
+																		</tr>
+																	}
+																</tbody>
+															</table>
+														</div>
+														<div class="col-12">
+															@if (lostSaleModel.Count > 0)
+															{
+																<ul class="map-info">
+																	<li class="left info"><span class="number">@lostSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	<li class="center"><div class="progress-map"></div></li>
+																	<li class="right info"><span class="number">@lostSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																</ul>
+															}
+														</div>
 													</div>
 												</div>
 											</div>

@@ -88,6 +88,9 @@ namespace SalesPipeline.Pages.Dashboards
 				StateHasChanged();
 				await LostSaleMap_Thailand();
 				StateHasChanged();
+				//ระยะเวลาที่ใช้ในแต่ละสเตจ
+				await DurationOnStage();
+				//StateHasChanged();
 			}
 
 			//การปิดการขาย เหตุผลไม่ประสงค์ขอสินเชื่อ
@@ -98,13 +101,6 @@ namespace SalesPipeline.Pages.Dashboards
 			await NumberCustomer();
 			//มูลค่าสินเชื่อตาม...
 			await LoanValue();
-
-			StateHasChanged();
-			if (UserInfo.RoleCode != RoleCodes.MCENTER)
-			{
-				//ระยะเวลาที่ใช้ในแต่ละสเตจ
-				await DurationOnStage();
-			}
 
 			StateHasChanged();
 
@@ -436,7 +432,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (filter.DepBranchs.Count > 0)
 			{
-				if (Guid.TryParse(_ids,out Guid depBranchId))
+				if (Guid.TryParse(_ids, out Guid depBranchId))
 				{
 					await _jsRuntimes.InvokeVoidAsync("AddCursorWait");
 
@@ -445,7 +441,7 @@ namespace SalesPipeline.Pages.Dashboards
 					{
 						if (dataProvince.Data?.Count > 0)
 						{
-							LookUp.Provinces = new() { new() { ProvinceID = 0,ProvinceName = "ทั้งหมด" } };
+							LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "ทั้งหมด" } };
 							LookUp.Provinces.AddRange(dataProvince.Data);
 							StateHasChanged();
 							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");

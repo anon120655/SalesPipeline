@@ -870,85 +870,85 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
-		public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model)
-		{
-			if (!model.userid.HasValue) return new();
+		//public async Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model)
+		//{
+		//	if (!model.userid.HasValue) return new();
 
-			var dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
+		//	var dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
 
-			if (dash_Map_Thailands.Count == 0 || (dash_Map_Thailands.Count > 0 && dash_Map_Thailands.First().IsUpdate))
-			{
-				await UpdateMap_ThailandById(model);
-				dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
-			}
+		//	if (dash_Map_Thailands.Count == 0 || (dash_Map_Thailands.Count > 0 && dash_Map_Thailands.First().IsUpdate))
+		//	{
+		//		await UpdateMap_ThailandById(model);
+		//		dash_Map_Thailands = await _repo.Context.Dash_Map_Thailands.Where(x => x.UserId == model.userid.Value).ToListAsync();
+		//	}
 
-			return _mapper.Map<List<Dash_Map_ThailandCustom>>(dash_Map_Thailands);
-		}
+		//	return _mapper.Map<List<Dash_Map_ThailandCustom>>(dash_Map_Thailands);
+		//}
 
-		public async Task UpdateMap_ThailandById(allFilter model)
-		{
-			if (model.userid.HasValue)
-			{
-				var user = await _repo.User.GetById(model.userid.Value);
-				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+		//public async Task UpdateMap_ThailandById(allFilter model)
+		//{
+		//	if (model.userid.HasValue)
+		//	{
+		//		var user = await _repo.User.GetById(model.userid.Value);
+		//		if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-				var dash_Map_Thailands = _repo.Context.Dash_Map_Thailands.Where(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value).ToList();
-				if (dash_Map_Thailands.Count > 0)
-				{
-					_db.DeleteRange(dash_Map_Thailands);
-					await _db.SaveAsync();
-				}
+		//		var dash_Map_Thailands = _repo.Context.Dash_Map_Thailands.Where(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value).ToList();
+		//		if (dash_Map_Thailands.Count > 0)
+		//		{
+		//			_db.DeleteRange(dash_Map_Thailands);
+		//			await _db.SaveAsync();
+		//		}
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-					Random rnd = new Random();
-					//1=ยอดขายสูงสุด
-					for (int i = 1; i <= 10; i++)
-					{
-						int month = rnd.Next(1, 77);
-						var province = await _repo.Thailand.GetProvinceByid(month);
+		//		if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+		//		{
+		//			Random rnd = new Random();
+		//			//1=ยอดขายสูงสุด
+		//			for (int i = 1; i <= 10; i++)
+		//			{
+		//				int month = rnd.Next(1, 77);
+		//				var province = await _repo.Thailand.GetProvinceByid(month);
 
-						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
-						dash_Map_Thailand.Status = StatusModel.Active;
-						dash_Map_Thailand.CreateDate = DateTime.Now;
-						dash_Map_Thailand.IsUpdate = false;
-						dash_Map_Thailand.UserId = model.userid.Value;
-						dash_Map_Thailand.Type = 1;
-						if (province != null)
-						{
-							dash_Map_Thailand.ProvinceId = province.ProvinceID;
-							dash_Map_Thailand.ProvinceName = province.ProvinceName;
-						}
-						dash_Map_Thailand.SalesAmount = 1000000 * i;
-						await _db.InsterAsync(dash_Map_Thailand);
-						await _db.SaveAsync();
-					}
+		//				var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+		//				dash_Map_Thailand.Status = StatusModel.Active;
+		//				dash_Map_Thailand.CreateDate = DateTime.Now;
+		//				dash_Map_Thailand.IsUpdate = false;
+		//				dash_Map_Thailand.UserId = model.userid.Value;
+		//				dash_Map_Thailand.Type = 1;
+		//				if (province != null)
+		//				{
+		//					dash_Map_Thailand.ProvinceId = province.ProvinceID;
+		//					dash_Map_Thailand.ProvinceName = province.ProvinceName;
+		//				}
+		//				dash_Map_Thailand.SalesAmount = 1000000 * i;
+		//				await _db.InsterAsync(dash_Map_Thailand);
+		//				await _db.SaveAsync();
+		//			}
 
-					//2=แพ้ให้กับคู่แข่งสูงสุด
-					for (int i = 1; i <= 10; i++)
-					{
-						int month = rnd.Next(1, 77);
-						var province = await _repo.Thailand.GetProvinceByid(month);
+		//			//2=แพ้ให้กับคู่แข่งสูงสุด
+		//			for (int i = 1; i <= 10; i++)
+		//			{
+		//				int month = rnd.Next(1, 77);
+		//				var province = await _repo.Thailand.GetProvinceByid(month);
 
-						var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
-						dash_Map_Thailand.Status = StatusModel.Active;
-						dash_Map_Thailand.CreateDate = DateTime.Now;
-						dash_Map_Thailand.IsUpdate = false;
-						dash_Map_Thailand.UserId = model.userid.Value;
-						dash_Map_Thailand.Type = 2;
-						if (province != null)
-						{
-							dash_Map_Thailand.ProvinceId = province.ProvinceID;
-							dash_Map_Thailand.ProvinceName = province.ProvinceName;
-						}
-						dash_Map_Thailand.SalesAmount = 10000 * i;
-						await _db.InsterAsync(dash_Map_Thailand);
-						await _db.SaveAsync();
-					}
-				}
+		//				var dash_Map_Thailand = new Data.Entity.Dash_Map_Thailand();
+		//				dash_Map_Thailand.Status = StatusModel.Active;
+		//				dash_Map_Thailand.CreateDate = DateTime.Now;
+		//				dash_Map_Thailand.IsUpdate = false;
+		//				dash_Map_Thailand.UserId = model.userid.Value;
+		//				dash_Map_Thailand.Type = 2;
+		//				if (province != null)
+		//				{
+		//					dash_Map_Thailand.ProvinceId = province.ProvinceID;
+		//					dash_Map_Thailand.ProvinceName = province.ProvinceName;
+		//				}
+		//				dash_Map_Thailand.SalesAmount = 10000 * i;
+		//				await _db.InsterAsync(dash_Map_Thailand);
+		//				await _db.SaveAsync();
+		//			}
+		//		}
 
-			}
-		}
+		//	}
+		//}
 
 		public async Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetTopSale(allFilter model)
 		{

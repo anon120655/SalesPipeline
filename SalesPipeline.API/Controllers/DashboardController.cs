@@ -140,33 +140,33 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPost("GetMap_ThailandById")]
-		public async Task<IActionResult> GetMap_ThailandById(allFilter model)
-		{
-			try
-			{
-				var data = await _repo.Dashboard.GetMap_ThailandById(model);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
+		//[HttpPost("GetMap_ThailandById")]
+		//public async Task<IActionResult> GetMap_ThailandById(allFilter model)
+		//{
+		//	try
+		//	{
+		//		var data = await _repo.Dashboard.GetMap_ThailandById(model);
+		//		return Ok(data);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
-		[HttpPost("UpdateMap_ThailandById")]
-		public async Task<IActionResult> UpdateMap_ThailandById(allFilter model)
-		{
-			try
-			{
-				await _repo.Dashboard.UpdateMap_ThailandById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
+		//[HttpPost("UpdateMap_ThailandById")]
+		//public async Task<IActionResult> UpdateMap_ThailandById(allFilter model)
+		//{
+		//	try
+		//	{
+		//		await _repo.Dashboard.UpdateMap_ThailandById(model);
+		//		return Ok();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
 		[HttpPost("GetTopSale")]
 		public async Task<IActionResult> GetTopSale(allFilter model)

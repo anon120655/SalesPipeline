@@ -1694,6 +1694,7 @@ window.durationonstage = (_data) => {
 		const chart = new Chart(ctx, config);
 		if (chart != null) {
 			chart.canvas.parentNode.style.height = 350 + 'px';
+			chart.canvas.parentNode.style.width = '95%';
 		}
 
 	}

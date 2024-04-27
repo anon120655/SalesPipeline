@@ -21,8 +21,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//จำนวนดีลของพนักงานสินเชื่อแต่ละคน
 		Task<PaginationView<List<SaleGroupByModel>>> GetListDealRMById(allFilter model);
 		//10 อันดับ ศูนย์ยอดขายสูงสุด ,10 อันดับ ศูนย์ยอดขายสูงสุด
-		Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model);
-		Task UpdateMap_ThailandById(allFilter model);
+		//Task<List<Dash_Map_ThailandCustom>> GetMap_ThailandById(allFilter model);
+		//Task UpdateMap_ThailandById(allFilter model);
 		Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetTopSale(allFilter model);
 		Task<PaginationView<List<Dash_Map_ThailandCustom>>> GetLostSale(allFilter model);
 		//ระยะเวลาที่ใช้ในแต่ละสเตจ
