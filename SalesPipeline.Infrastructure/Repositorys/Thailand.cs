@@ -184,12 +184,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//	}
 			//}
 
-			if (model.DepBranch == null || model.DepBranch.Count == 0) return new List<InfoBranchCustom>();
+			if (model.DepBranchs == null || model.DepBranchs.Count == 0) return new List<InfoBranchCustom>();
 
 			List<Guid?> idList = new();
-			if (model.DepBranch?.Count > 0)
+			if (model.DepBranchs?.Count > 0)
 			{
-				 idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				 idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 			}
 
 			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();

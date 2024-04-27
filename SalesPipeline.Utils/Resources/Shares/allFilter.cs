@@ -64,10 +64,11 @@ namespace SalesPipeline.Utils.Resources.Shares
 		//public List<string?>? Selecteds { get; set; }
 		//public List<string?>? Selecteds2 { get; set; }
 		//public List<string?>? Selecteds3 { get; set; } AssUserId
-		public List<string?>? DepBranch { get; set; }
+		public List<string?>? DepBranchs { get; set; }
+		public List<string?>? Provinces { get; set; }
 		public List<string?>? Branchs { get; set; }
-		public List<string?>? RMUser { get; set; }
-		public List<string?>? AssUser { get; set; }
+		public List<string?>? RMUsers { get; set; }
+		public List<string?>? AssUsers { get; set; }
 
 
 		public string SetParameter(bool? isPage = null)
@@ -232,10 +233,16 @@ namespace SalesPipeline.Utils.Resources.Shares
 			//	ParameterAll += $"&ids3={joined}";
 			//}
 
-			if (DepBranch?.Count > 0)
+			if (DepBranchs?.Count > 0)
 			{
-				string joined = string.Join(",", DepBranch);
-				ParameterAll += $"&depbranch={joined}";
+				string joined = string.Join(",", DepBranchs);
+				ParameterAll += $"&depbranchs={joined}";
+			}
+
+			if (Provinces?.Count > 0)
+			{
+				string joined = string.Join(",", Provinces);
+				ParameterAll += $"&provinces={joined}";
 			}
 
 			if (Branchs?.Count > 0)
@@ -244,15 +251,15 @@ namespace SalesPipeline.Utils.Resources.Shares
 				ParameterAll += $"&branchs={joined}";
 			}
 
-			if (RMUser?.Count > 0)
+			if (RMUsers?.Count > 0)
 			{
-				string joined = string.Join(",", RMUser);
-				ParameterAll += $"&rmuser={joined}";
+				string joined = string.Join(",", RMUsers);
+				ParameterAll += $"&rmusers={joined}";
 			}
 
-			if (AssUser?.Count > 0)
+			if (AssUsers?.Count > 0)
 			{
-				string joined = string.Join(",", AssUser);
+				string joined = string.Join(",", AssUsers);
 				ParameterAll += $"&assuser={joined}";
 			}
 
@@ -415,15 +422,28 @@ namespace SalesPipeline.Utils.Resources.Shares
 			//	}
 			//}
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranch", out var _DepBranch))
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranchs", out var _DepBranchs))
 			{
-				DepBranch = new();
-				List<string> lists = _DepBranch.ToString().Split(',').ToList<string>();
+				DepBranchs = new();
+				List<string> lists = _DepBranchs.ToString().Split(',').ToList<string>();
 				if (lists.Count > 0)
 				{
 					foreach (var item in lists)
 					{
-						DepBranch.Add(item);
+						DepBranchs.Add(item);
+					}
+				}
+			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("provinces", out var _Provinces))
+			{
+				Provinces = new();
+				List<string> lists = _Provinces.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						Provinces.Add(item);
 					}
 				}
 			}
@@ -441,28 +461,28 @@ namespace SalesPipeline.Utils.Resources.Shares
 				}
 			}
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("rmuser", out var _RMUser))
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("rmusers", out var _RMUsers))
 			{
-				RMUser = new();
-				List<string> lists = _RMUser.ToString().Split(',').ToList<string>();
+				RMUsers = new();
+				List<string> lists = _RMUsers.ToString().Split(',').ToList<string>();
 				if (lists.Count > 0)
 				{
 					foreach (var item in lists)
 					{
-						RMUser.Add(item);
+						RMUsers.Add(item);
 					}
 				}
 			}
 
-			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("assuser", out var _AssUser))
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("assusers", out var _AssUsers))
 			{
-				AssUser = new();
-				List<string> lists = _AssUser.ToString().Split(',').ToList<string>();
+				AssUsers = new();
+				List<string> lists = _AssUsers.ToString().Split(',').ToList<string>();
 				if (lists.Count > 0)
 				{
 					foreach (var item in lists)
 					{
-						AssUser.Add(item);
+						AssUsers.Add(item);
 					}
 				}
 			}

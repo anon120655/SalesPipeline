@@ -504,15 +504,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Customer != null && x.Customer.AmphurId == model.amphurid);
 			}
 
-			if (model.DepBranch?.Count > 0)
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
 			{
-				var idList = GeneralUtils.ListStringToGuid(model.DepBranch);
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
 					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
 				}
 			}
 
+			//จังหวัด[]
+			if (model.Provinces?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Provinces);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.ProvinceId.HasValue && idList.Contains(x.ProvinceId));
+				}
+			}
+
+			//สาขา[]
 			if (model.Branchs?.Count > 0)
 			{
 				var idList = GeneralUtils.ListStringToInt(model.Branchs);
@@ -522,9 +534,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.RMUser?.Count > 0)
+			if (model.RMUsers?.Count > 0)
 			{
-				var idList = GeneralUtils.ListStringToInt(model.RMUser);
+				var idList = GeneralUtils.ListStringToInt(model.RMUsers);
 				if (idList.Count > 0)
 				{
 					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));

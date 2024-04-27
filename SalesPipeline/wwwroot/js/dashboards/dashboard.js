@@ -67,300 +67,296 @@ var colorsWarning = [
 window.closesale = (_data) => {
 	//console.log(_data)
 
-	$("#closesale_empty").addClass("d-none")
-	if (_data.length == 0) {
-		$("#closesale_empty").removeClass("d-none")
-	} else {
-		let chartId = "closesale";
-		const canvas = document.getElementById(chartId);
-		if (canvas != null && canvas != undefined) {
-			let chartStatus = Chart.getChart(chartId);
-			if (chartStatus != undefined) {
-				chartStatus.destroy();
-			}
+	//$("#closesale_empty").addClass("d-none")
+	//if (_data.length == 0) {
+	//	$("#closesale_empty").removeClass("d-none")
+	//} else {
+	let chartId = "closesale";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-			if (_data.length != 2) return
-			var success_data = _data[0];
-			var fail_data = _data[1];
+		if (_data.length == 0) return
 
-			//console.log(success_data)
-			//console.log(fail_data)
-			var height = 150;
-			const data = {
-				labels: [`${success_data.name} `, `${fail_data.name} `],
-				datasets: [
-					{
-						data: [success_data.value, fail_data.value],
-						backgroundColor: [
-							"#1A68AF",
-							"#88C9FF",
-						],
-						borderColor: [
-							"#1A68AF",
-							"#88C9FF",
-						],
-					},
-				],
-			};
+		var success_data = _data[0];
+		var fail_data = _data[1];
 
-			// pieLabelsLine plugin
-			const pieLabelsLine = {
-				id: "pieLabelsLine",
-				afterDraw(chart) {
-					const {
-						ctx,
-						chartArea: { width, height },
-					} = chart;
+		var height = 150;
+		const data = {
+			labels: [`${success_data.name} `, `${fail_data.name} `],
+			datasets: [
+				{
+					data: [success_data.value, fail_data.value],
+					backgroundColor: [
+						"#1A68AF",
+						"#88C9FF",
+					],
+					borderColor: [
+						"#1A68AF",
+						"#88C9FF",
+					],
+				},
+			],
+		};
 
-					const cx = chart._metasets[0].data[0].x;
-					const cy = chart._metasets[0].data[0].y;
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-					const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-					//console.log('sumclosesale= ',sum)
-					//console.log(chart.data.datasets[0].data[3])
-					chart.data.datasets.forEach((dataset, i) => {
-						chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-							const { x: a, y: b } = datapoint.tooltipPosition();
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-							const x = 2 * a - cx;
-							const y = 2 * b - cy;
+				//console.log('sumclosesale= ',sum)
+				//console.log(chart.data.datasets[0].data[3])
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-							// draw line
-							const halfwidth = width / 2;
-							const halfheight = height / 2;
-							const xLine = x >= halfwidth ? x + 10 : x - 10;
-							const yLine = y >= halfheight ? y + 10 : y - 10;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-							const extraLine = x >= halfwidth ? 5 : -5;
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-							ctx.beginPath();
-							ctx.moveTo(x, y);
-							//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-							ctx.fill();
-							ctx.moveTo(x, y);
-							ctx.lineTo(xLine, yLine);
-							ctx.lineTo(xLine + extraLine, yLine);
-							// ctx.strokeStyle = dataset.backgroundColor[index];
-							ctx.strokeStyle = "black";
-							ctx.stroke();
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-							// text
-							const textWidth = ctx.measureText(chart.data.labels[index]).width;
-							ctx.font = "9px prompt-regular";
-							// control the position
-							const textXPosition = x >= halfwidth ? "left" : "right";
-							const plusFivePx = x >= halfwidth ? 5 : -5;
-							ctx.textAlign = textXPosition;
-							ctx.textBaseline = "middle";
-							// ctx.fillStyle = dataset.backgroundColor[index];
-							ctx.fillStyle = "black";
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
 
-							ctx.fillText(
-								chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-								xLine + extraLine + plusFivePx,
-								yLine
-							);
-						});
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
+
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
 					});
+				});
+			},
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 20,
 				},
-			};
-			// config
-			const config = {
-				type: "pie",
-				data,
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					layout: {
-						padding: 20,
-					},
-					scales: {
-						y: {
+				scales: {
+					y: {
+						display: false,
+						beginAtZero: true,
+						ticks: {
 							display: false,
-							beginAtZero: true,
-							ticks: {
-								display: false,
-							},
-							grid: {
-								display: false,
-							},
 						},
-						x: {
+						grid: {
 							display: false,
-							ticks: {
-								display: false,
-							},
-							grid: {
-								display: false,
-							},
 						},
 					},
-					plugins: {
-						legend: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
 							display: false,
 						},
 					},
 				},
-				plugins: [pieLabelsLine],
-			};
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			},
+			plugins: [pieLabelsLine],
+		};
 
 
-			const ctx = canvas.getContext('2d');
-			const chart = new Chart(ctx, config);
-			if (chart != null) {
-				chart.canvas.parentNode.style.height = height + 'px';
-			}
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
+		if (chart != null) {
+			chart.canvas.parentNode.style.height = height + 'px';
 		}
 	}
+	//}
 }
 
 window.reasonnotloan = (_data, _labels) => {
-	//console.log(_data.length)
-	//console.log(_labels)
-	$("#reasonnotloan_empty").addClass("d-none")
-	if (_data.length == 0) {
-		$("#reasonnotloan_empty").removeClass("d-none")
-	} else {
-		let chartId = "reasonnotloan";
-		const canvas = document.getElementById(chartId);
-		if (canvas != null && canvas != undefined) {
-			let chartStatus = Chart.getChart(chartId);
-			if (chartStatus != undefined) {
-				chartStatus.destroy();
-			}
 
-			var height = 150;
-			const data = {
-				labels: _labels,
-				datasets: [
-					{
-						data: _data,
-						backgroundColor: [
-							"#88C9FF",
-							"#bbd0eb",
-							"#8BAAF9",
-							"#1A68AF",
-						],
-						borderColor: [
-							"#88C9FF",
-							"#bbd0eb",
-							"#8BAAF9",
-							"#1A68AF",
-						],
-					},
-				],
-			};
+	let chartId = "reasonnotloan";
+	const canvas = document.getElementById(chartId);
+	if (canvas != null && canvas != undefined) {
+		let chartStatus = Chart.getChart(chartId);
+		if (chartStatus != undefined) {
+			chartStatus.destroy();
+		}
 
-			// pieLabelsLine plugin
-			const pieLabelsLine = {
-				id: "pieLabelsLine",
-				afterDraw(chart) {
-					const {
-						ctx,
-						chartArea: { width, height },
-					} = chart;
+		if (_data.length  == 0) return
 
-					const cx = chart._metasets[0].data[0].x;
-					const cy = chart._metasets[0].data[0].y;
+		var height = 150;
+		const data = {
+			labels: _labels,
+			datasets: [
+				{
+					data: _data,
+					backgroundColor: [
+						"#88C9FF",
+						"#bbd0eb",
+						"#8BAAF9",
+						"#1A68AF",
+					],
+					borderColor: [
+						"#88C9FF",
+						"#bbd0eb",
+						"#8BAAF9",
+						"#1A68AF",
+					],
+				},
+			],
+		};
 
-					const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+		// pieLabelsLine plugin
+		const pieLabelsLine = {
+			id: "pieLabelsLine",
+			afterDraw(chart) {
+				const {
+					ctx,
+					chartArea: { width, height },
+				} = chart;
 
-					//console.log(chart.data.datasets[0].data[2])
-					//console.log(chart.data.datasets[0].data[3])
-					chart.data.datasets.forEach((dataset, i) => {
-						chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
-							const { x: a, y: b } = datapoint.tooltipPosition();
+				const cx = chart._metasets[0].data[0].x;
+				const cy = chart._metasets[0].data[0].y;
 
-							const x = 2 * a - cx;
-							const y = 2 * b - cy;
+				const sum = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-							// draw line
-							const halfwidth = width / 2;
-							const halfheight = height / 2;
-							const xLine = x >= halfwidth ? x + 10 : x - 10;
-							const yLine = y >= halfheight ? y + 10 : y - 10;
+				//console.log(chart.data.datasets[0].data[2])
+				//console.log(chart.data.datasets[0].data[3])
+				chart.data.datasets.forEach((dataset, i) => {
+					chart.getDatasetMeta(i).data.forEach((datapoint, index) => {
+						const { x: a, y: b } = datapoint.tooltipPosition();
 
-							const extraLine = x >= halfwidth ? 5 : -5;
+						const x = 2 * a - cx;
+						const y = 2 * b - cy;
 
-							ctx.beginPath();
-							ctx.moveTo(x, y);
-							//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
-							ctx.fill();
-							ctx.moveTo(x, y);
-							ctx.lineTo(xLine, yLine);
-							ctx.lineTo(xLine + extraLine, yLine);
-							// ctx.strokeStyle = dataset.backgroundColor[index];
-							ctx.strokeStyle = "black";
-							ctx.stroke();
+						// draw line
+						const halfwidth = width / 2;
+						const halfheight = height / 2;
+						const xLine = x >= halfwidth ? x + 10 : x - 10;
+						const yLine = y >= halfheight ? y + 10 : y - 10;
 
-							// text
-							const textWidth = ctx.measureText(chart.data.labels[index]).width;
-							ctx.font = "9px prompt-regular";
-							// control the position
-							const textXPosition = x >= halfwidth ? "left" : "right";
-							const plusFivePx = x >= halfwidth ? 5 : -5;
-							ctx.textAlign = textXPosition;
-							ctx.textBaseline = "middle";
-							// ctx.fillStyle = dataset.backgroundColor[index];
-							ctx.fillStyle = "black";
+						const extraLine = x >= halfwidth ? 5 : -5;
 
-							ctx.fillText(
-								chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
-								xLine + extraLine + plusFivePx,
-								yLine
-							);
-						});
+						ctx.beginPath();
+						ctx.moveTo(x, y);
+						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
+						ctx.fill();
+						ctx.moveTo(x, y);
+						ctx.lineTo(xLine, yLine);
+						ctx.lineTo(xLine + extraLine, yLine);
+						// ctx.strokeStyle = dataset.backgroundColor[index];
+						ctx.strokeStyle = "black";
+						ctx.stroke();
+
+						// text
+						const textWidth = ctx.measureText(chart.data.labels[index]).width;
+						ctx.font = "9px prompt-regular";
+						// control the position
+						const textXPosition = x >= halfwidth ? "left" : "right";
+						const plusFivePx = x >= halfwidth ? 5 : -5;
+						ctx.textAlign = textXPosition;
+						ctx.textBaseline = "middle";
+						// ctx.fillStyle = dataset.backgroundColor[index];
+						ctx.fillStyle = "black";
+
+						ctx.fillText(
+							chart.data.labels[index] + ((chart.data.datasets[0].data[index] * 100) / sum).toFixed(1) + "%",
+							xLine + extraLine + plusFivePx,
+							yLine
+						);
 					});
+				});
+			},
+		};
+		// config
+		const config = {
+			type: "pie",
+			data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				layout: {
+					padding: 30,
 				},
-			};
-			// config
-			const config = {
-				type: "pie",
-				data,
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					layout: {
-						padding: 30,
-					},
-					scales: {
-						y: {
+				scales: {
+					y: {
+						display: false,
+						beginAtZero: true,
+						ticks: {
 							display: false,
-							beginAtZero: true,
-							ticks: {
-								display: false,
-							},
-							grid: {
-								display: false,
-							},
 						},
-						x: {
+						grid: {
 							display: false,
-							ticks: {
-								display: false,
-							},
-							grid: {
-								display: false,
-							},
 						},
 					},
-					plugins: {
-						legend: {
+					x: {
+						display: false,
+						ticks: {
+							display: false,
+						},
+						grid: {
 							display: false,
 						},
 					},
 				},
-				plugins: [pieLabelsLine],
-			};
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			},
+			plugins: [pieLabelsLine],
+		};
 
-			const ctx = canvas.getContext('2d');
-			const chart = new Chart(ctx, config);
-			if (chart != null) {
-				chart.canvas.parentNode.style.height = height + 'px';
-			}
+		const ctx = canvas.getContext('2d');
+		const chart = new Chart(ctx, config);
+		if (chart != null) {
+			chart.canvas.parentNode.style.height = height + 'px';
 		}
 	}
+
 }
 
 window.targetsales = (indata) => {
@@ -462,6 +458,8 @@ window.numcussizebusiness = (_data, _labels) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
 
 		const data = {
 			labels: _labels,
@@ -599,6 +597,8 @@ window.numcustypebusiness = (_data, _labels) => {
 			chartStatus.destroy();
 		}
 
+		if (_data.length == 0) return
+
 		const data = {
 			labels: _labels,
 			datasets: [
@@ -733,6 +733,9 @@ window.numcusisiccode = (_data, _labels) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
+
 		const data = {
 			labels: _labels,
 			datasets: [
@@ -867,6 +870,9 @@ window.numcusloantype = (_data, _labels) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
+
 		const data = {
 			labels: _labels,
 			datasets: [
@@ -1001,6 +1007,8 @@ window.valuesizebusiness = (_data, _labels) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
 
 		const data = {
 			labels: _labels,
@@ -1137,6 +1145,8 @@ window.valuetypebusiness = (_data, _labels) => {
 			chartStatus.destroy();
 		}
 
+		if (_data.length == 0) return
+
 		const data = {
 			labels: _labels,
 			datasets: [
@@ -1272,6 +1282,8 @@ window.valueisiccode = (_data, _labels) => {
 			chartStatus.destroy();
 		}
 
+		if (_data.length == 0) return
+
 		const data = {
 			labels: _labels,
 			datasets: [
@@ -1406,6 +1418,8 @@ window.valueloantype = (_data, _labels) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
 
 		const data = {
 			labels: _labels,
@@ -1623,6 +1637,8 @@ window.durationonstage = (_data) => {
 		if (chartStatus != undefined) {
 			chartStatus.destroy();
 		}
+
+		if (_data.length == 0) return
 
 		const config = {
 			type: 'bar',

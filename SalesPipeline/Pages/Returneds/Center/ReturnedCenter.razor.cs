@@ -217,7 +217,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 		{
 			LookUp.RMUser = new();
 			filter.Branchs = new();
-			filter.RMUser = new();
+			filter.RMUsers = new();
 			StateHasChanged();
 			await Task.Delay(1);
 

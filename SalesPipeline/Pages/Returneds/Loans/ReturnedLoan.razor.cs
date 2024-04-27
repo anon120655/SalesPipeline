@@ -214,7 +214,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		{
 			LookUp.RMUser = new();
 			filter.Branchs = new();
-			filter.RMUser = new();
+			filter.RMUsers = new();
 			StateHasChanged();
 			await Task.Delay(1);
 

@@ -223,11 +223,11 @@ namespace SalesPipeline.Pages.ApproveLoans
 		[JSInvokable]
 		public async Task OnRMUser(string _ids, string _name)
 		{
-			filter.RMUser = new();
+			filter.RMUsers = new();
 
 			if (_ids != null)
 			{
-				filter.RMUser.Add(_ids);
+				filter.RMUsers.Add(_ids);
 			}
 
 			await Task.Delay(1);

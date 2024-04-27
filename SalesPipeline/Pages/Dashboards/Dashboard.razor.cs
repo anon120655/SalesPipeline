@@ -41,10 +41,6 @@ namespace SalesPipeline.Pages.Dashboards
 				await SetInitManual();
 				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-				await Status_Total();
-				await Get_SalesPipeline();
-				await AvgTop_Number();
-
 				var UrlJs = $"/js/dashboards/dashboard.js?v={_appSet.Value.Version}";
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/dashboard.js");
 				if (iSloadJs)
@@ -81,6 +77,10 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelAll()
 		{
+			await Status_Total();
+			await Get_SalesPipeline();
+			await AvgTop_Number();
+
 			if (UserInfo.RoleCode != RoleCodes.MCENTER)
 			{
 				//10 อันดับ
@@ -109,6 +109,7 @@ namespace SalesPipeline.Pages.Dashboards
 			StateHasChanged();
 
 			await AvgBottom_Number();
+			StateHasChanged();
 		}
 
 		protected async Task Status_Total()
@@ -277,9 +278,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("numcussizebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var numCusTypeBusiness = data.Data.Where(x => x.Code == Dash_PieCodeModel.NumCusTypeBusiness).ToList();
@@ -290,9 +290,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("numcustypebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("numcustypebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var numCusISICCode = data.Data.Where(x => x.Code == Dash_PieCodeModel.NumCusISICCode).ToList();
@@ -303,9 +302,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("numcusisiccode", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("numcusisiccode", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var numCusLoanType = data.Data.Where(x => x.Code == Dash_PieCodeModel.NumCusLoanType).ToList();
@@ -316,9 +314,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("numcusloantype", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("numcusloantype", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 			}
 			else
@@ -343,9 +340,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("valuesizebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("valuesizebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var valueTypeBusiness = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueTypeBusiness).ToList();
@@ -356,9 +352,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("valuetypebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("valuetypebusiness", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var valueISICCode = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueISICCode).ToList();
@@ -369,9 +364,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("valueisiccode", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("valueisiccode", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 
 				chartModel = new();
 				var valueLoanType = data.Data.Where(x => x.Code == Dash_PieCodeModel.ValueLoanType).ToList();
@@ -382,9 +376,8 @@ namespace SalesPipeline.Pages.Dashboards
 						chartModel.labels.Add(item.Name);
 						chartModel.datas.Add(item.Value ?? 0);
 					}
-
-					await _jsRuntimes.InvokeVoidAsync("valueloantype", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 				}
+				await _jsRuntimes.InvokeVoidAsync("valueloantype", chartModel.datas.ToArray(), chartModel.labels.ToArray());
 			}
 			else
 			{
@@ -428,8 +421,8 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			LookUp.Provinces = new();
 			LookUp.Branchs = new();
-			filter.DepBranch = new();
-			filter.provinceid = new();
+			filter.DepBranchs = new();
+			filter.Provinces = new();
 			filter.Branchs = new();
 			StateHasChanged();
 
@@ -438,10 +431,10 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (_ids != null)
 			{
-				filter.DepBranch.Add(_ids);
+				filter.DepBranchs.Add(_ids);
 			}
 
-			if (filter.DepBranch.Count > 0)
+			if (filter.DepBranchs.Count > 0)
 			{
 				if (Guid.TryParse(_ids,out Guid depBranchId))
 				{
@@ -475,33 +468,38 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		[JSInvokable]
-		public async Task OnProvince(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _ids, string _provinceName)
 		{
-			filter.provinceid = null;
-			filter.Branchs = null;
 			LookUp.Branchs = new();
+			filter.Provinces = new();
+			filter.Branchs = new();
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
-			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			if (_ids != null)
 			{
-				filter.provinceid = provinceID;
+				filter.Provinces.Add(_ids);
+			}
 
-				var branch = await _masterViewModel.GetBranch(provinceID);
-				if (branch != null && branch.Data?.Count > 0)
+			if (filter.Provinces.Count > 0)
+			{
+				if (_ids != null && int.TryParse(_ids, out int provinceID))
 				{
-					LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
-					LookUp.Branchs.AddRange(branch.Data);
-
-					StateHasChanged();
-					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
-				}
-				else
-				{
-					_errorMessage = branch?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
+					var branch = await _masterViewModel.GetBranch(provinceID);
+					if (branch != null && branch.Data?.Count > 0)
+					{
+						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						LookUp.Branchs.AddRange(branch.Data);
+						StateHasChanged();
+						await Task.Delay(10);
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+					}
+					else
+					{
+						_errorMessage = branch?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
 				}
 			}
 		}
@@ -510,10 +508,9 @@ namespace SalesPipeline.Pages.Dashboards
 		public async Task OnBranch(string _branchID, string _branchName)
 		{
 			await Task.Delay(1);
-			filter.Branchs = null;
+			filter.Branchs = new();
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
-				filter.Branchs = new();
 				filter.Branchs.Add(branchID.ToString());
 			}
 		}

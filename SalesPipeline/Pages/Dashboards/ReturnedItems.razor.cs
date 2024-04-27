@@ -208,7 +208,7 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnDepBranch(string _id, string _name)
 		{
-			filter.DepBranch = new();
+			filter.DepBranchs = new();
 			filter.provinceid = null;
 			LookUp.Provinces = new();
 			LookUp.Branchs = new();
@@ -219,7 +219,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (_id != null && Guid.TryParse(_id, out Guid dep_BranchId))
 			{
-				filter.DepBranch.Add(dep_BranchId.ToString());
+				filter.DepBranchs.Add(dep_BranchId.ToString());
 
 				var dataProvince = await _masterViewModel.GetProvince(dep_BranchId);
 				if (dataProvince != null && dataProvince.Status)
@@ -282,7 +282,7 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			LookUp.RMUser = new();
 			filter.Branchs = new();
-			filter.RMUser = new();
+			filter.RMUsers = new();
 			StateHasChanged();
 			await Task.Delay(1);
 
