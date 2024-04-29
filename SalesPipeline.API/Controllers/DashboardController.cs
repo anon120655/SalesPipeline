@@ -384,6 +384,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgDuration")]
+		public async Task<IActionResult> GetAvgDuration(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgDuration(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetAvgTopBar")]
 		public async Task<IActionResult> GetAvgTopBar(allFilter model)
 		{
