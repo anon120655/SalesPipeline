@@ -45,6 +45,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? mcenter_name { get; set; }
 		public short? isloanamount { get; set; }
 		public decimal? loanamount { get; set; }
+		public decimal? amounttarget { get; set; }
+		public short? achieve_goal { get; set; }
 		public short? isclosesale { get; set; }
 		public short? isconsidered { get; set; }
 		public string? reason { get; set; }
@@ -181,6 +183,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (loanamount > 0)
 				ParameterAll += $"&loanamount={loanamount}";
+
+			if (amounttarget > 0)
+				ParameterAll += $"&amounttarget={amounttarget}";
+
+			if (achieve_goal.HasValue)
+				ParameterAll += $"&achieve_goal={achieve_goal}";
 
 			if (isloanamount.HasValue)
 				ParameterAll += $"&isloanamount={isloanamount}";
@@ -363,6 +371,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(mcenter_name), out var _mcenter_name))
 				mcenter_name = _mcenter_name;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(amounttarget), out var _amounttarget))
+				amounttarget = Convert.ToDecimal(_amounttarget); ;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(achieve_goal), out var _achieve_goal))
+				achieve_goal = Convert.ToInt16(_achieve_goal);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(loanamount), out var _loanamount))
 				loanamount = Convert.ToDecimal(_loanamount); ;

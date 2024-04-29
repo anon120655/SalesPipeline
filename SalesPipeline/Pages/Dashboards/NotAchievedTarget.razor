@@ -24,7 +24,7 @@
 							<div class="input-group">
 								<input @bind="filter.emp_id" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -35,7 +35,7 @@
 							<div class="input-group">
 								<input @bind="filter.emp_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -70,11 +70,11 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">เป้ายอดขาย</label>
+							<label class="form-label">ยอดเป้าหมาย</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.amounttarget" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -82,12 +82,14 @@
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">การบรรลุเป้าหมาย</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<select @bind="filter.achieve_goal" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+								<option value="0">ทั้งหมด</option>
+								<option value="1">สำเร็จ</option>
+								<option value="2">ยังไม่สำเร็จ</option>
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -131,8 +133,12 @@
 												<tr>
 													<td class="text-center">@item.User?.EmployeeId</td>
 													<td class="">@item.User?.FullName</td>
-													<td class="text-center">@item.User?.Master_Department_BranchId</td>
-													<td class="text-center">@item.User?.BranchId</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(GetDepBranchName(item.User?.Master_Department_BranchId))
+													</td>
+													<td class="text-center">
+														@item.User?.BranchName
+													</td>
 													<td class="text-center">@item.AmountTarget.ToString("#,##0.00")</td>
 													<td class="text-center">
 														@if (item.AmountActual >= item.AmountTarget)
@@ -142,7 +148,7 @@
 														else
 														{
 															<span class="text-danger">@item.AmountActual.ToString("#,##0.00")</span>
-														}														
+														}
 													</td>
 													<td class="text-center">
 														@if (item.AmountActual >= item.AmountTarget)
@@ -151,7 +157,7 @@
 														}
 														else
 														{
-															<span class="text-danger">ไม่สำเร็จ</span>
+															<span class="text-danger">ยังไม่สำเร็จ</span>
 														}
 													</td>
 												</tr>

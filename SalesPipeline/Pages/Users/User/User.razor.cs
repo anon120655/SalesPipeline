@@ -140,7 +140,7 @@ namespace SalesPipeline.Pages.Users.User
 			return null;
 		}
 
-		protected string? GetDepartmentBranchName(Guid? id)
+		protected string? GetDepBranchName(Guid? id)
 		{
 			if (LookUp.DepartmentBranch != null && id.HasValue)
 			{
@@ -150,7 +150,7 @@ namespace SalesPipeline.Pages.Users.User
 			return null;
 		}
 
-		protected string? GetDepartmentCenterName(Guid? id)
+		protected string? GetDepCenterName(Guid? id)
 		{
 			if (LookUp.DepartmentCenter != null && id.HasValue)
 			{

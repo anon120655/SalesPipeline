@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -310,6 +311,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.User)
 				.Where(x => x.Status == StatusModel.Active);
 
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.User.EmployeeId != null && x.User.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.User.FullName != null && x.User.FullName.Contains(model.emp_name));
+			}
+
+			if (model.amounttarget > 0)
+			{
+				query = query.Where(x => x.AmountTarget == model.amounttarget.Value);
+			}
+
+			if (model.achieve_goal > 0)
+			{
+				if (model.achieve_goal == 1)
+				{
+					query = query.Where(x => x.AmountActual >= x.AmountTarget);
+				}
+				else if (model.achieve_goal == 2)
+				{
+					query = query.Where(x => x.AmountActual < x.AmountTarget);
+				}
+			}
+
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 			{
 				var queryGroupRM = await _repo.Context.Sales.Where(x => x.AssCenterUserId == user.Id && x.AssUserId.HasValue)
@@ -318,7 +346,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						   {
 							   StatusID = group.Key ?? 0
 						   }).OrderBy(x => x.StatusID).ToListAsync();
-
 
 				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
 			}

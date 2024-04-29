@@ -27,12 +27,14 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
-				await SetQuery();
-				StateHasChanged();
 				await SetInitManual();
 				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+
+				await SetQuery();
+				StateHasChanged();
+
 				firstRender = false;
 			}
 		}
@@ -61,57 +63,27 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var chain = await _masterViewModel.GetChains(new() { status = StatusModel.Active });
-			if (chain != null && chain.Status)
+			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataDepBranchs != null && dataDepBranchs.Status)
 			{
-				LookUp.Chain = chain.Data?.Items;
+				LookUp.DepartmentBranch = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				if (dataDepBranchs.Data?.Items.Count > 0)
+				{
+					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
+				}
 			}
 			else
 			{
-				_errorMessage = chain?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var province = await _masterViewModel.GetProvince();
-			if (province != null && province.Status)
-			{
-				LookUp.Provinces = province.Data;
-			}
-			else
-			{
-				_errorMessage = province?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var statusSale = await _masterViewModel.GetStatusSale(new() { pagesize = 20, status = StatusModel.Active, isshow = 1 });
-			if (statusSale != null && statusSale.Status)
-			{
-				LookUp.StatusSale = statusSale.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = statusSale?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			var userRM = await _masterViewModel.GetListRM(new allFilter() { status = StatusModel.Active, pagesize = 100 });
-			if (userRM != null && userRM.Status)
-			{
-				LookUp.AssignmentUser = userRM.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = userRM?.errorMessage;
+				_errorMessage = dataDepBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
 			StateHasChanged();
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Province");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "StatusSale");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "AssignmentUser");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -186,19 +158,6 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
-		protected async Task OnChain(ChangeEventArgs e)
-		{
-			filter.chain = null;
-			if (e.Value != null)
-			{
-				filter.chain = e.Value.ToString();
-
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-			}
-		}
-
 		protected async Task OnBusinessType(ChangeEventArgs e)
 		{
 			filter.businesstype = null;
@@ -212,36 +171,92 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task OnProvince(ChangeEventArgs e)
+		[JSInvokable]
+		public async Task OnDepBranch(string _id, string _name)
 		{
+			filter.DepBranchs = new();
 			filter.provinceid = null;
-			if (e.Value != null)
-			{
-				if (int.TryParse(e.Value.ToString(), out int id))
-				{
-					filter.provinceid = id;
-				}
+			filter.Branchs = new();
+			LookUp.Provinces = new();
+			LookUp.Branchs = new();
+			StateHasChanged();
 
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_id != null && Guid.TryParse(_id, out Guid dep_BranchId))
+			{
+				filter.DepBranchs.Add(dep_BranchId.ToString());
+
+				var dataProvince = await _masterViewModel.GetProvince(dep_BranchId);
+				if (dataProvince != null && dataProvince.Status)
+				{
+					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
+					{
+						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "ทั้งหมด" } };
+						LookUp.Provinces.AddRange(dataProvince.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = dataProvince?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
 			}
 		}
 
-		protected async Task OnStatusSale(ChangeEventArgs e)
+		[JSInvokable]
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
-			filter.statussaleid = null;
-			if (e.Value != null)
+			LookUp.Branchs = new();
+			filter.provinceid = null;
+			filter.Branchs = new();
+			StateHasChanged();
+			await Task.Delay(1);
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID) && provinceID > 0)
 			{
-				if (int.TryParse(e.Value.ToString(), out int saleid))
+				filter.provinceid = provinceID;
+
+				var dataBranchs = await _masterViewModel.GetBranch(provinceID);
+				if (dataBranchs != null && dataBranchs.Status)
 				{
-					filter.statussaleid = saleid;
+					if (dataBranchs.Data?.Count > 0)
+					{
+						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						LookUp.Branchs.AddRange(dataBranchs.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = dataBranchs?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+		}
 
-			await SetModel();
+		[JSInvokable]
+		public async Task OnBranch(string _ids, string _name)
+		{
+			LookUp.RMUser = new();
+			filter.Branchs = new();
+			filter.RMUsers = new();
 			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			await Task.Delay(1);
+
+			if (_ids != null)
+			{
+				filter.Branchs.Add(_ids);
+			}
 		}
 
 	}

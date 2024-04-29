@@ -15,7 +15,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">เป้ายอดการขาย</span></p>
+							<p class="back_topic">รายงานเป้ายอดการขาย</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -55,15 +55,20 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">กิจการสาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">กิจการสาขาภาค</label>
+							<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+								@if (LookUp.DepartmentBranch?.Count > 0)
+								{
+									foreach (var item in LookUp.DepartmentBranch)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
-							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-								<option value="">ทั้งหมด</option>
+							<select id="Province" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-live-search="true">
 								@if (LookUp.Provinces?.Count > 0)
 								{
 									foreach (var item in LookUp.Provinces)
@@ -74,17 +79,23 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
+							<label class="form-label">สาขา</label>
+							<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+								@if (LookUp.Branchs?.Count > 0)
+								{
+									foreach (var item in LookUp.Branchs)
+									{
+										<option value="@item.BranchID">@item.BranchName</option>
+									}
+								}
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ผู้รับผิดชอบ</label>
+							<label class="form-label">ชื่อผู้รับผิดชอบ</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.assignrm_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="Search" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>

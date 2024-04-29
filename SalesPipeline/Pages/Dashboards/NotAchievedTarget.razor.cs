@@ -121,6 +121,16 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
+		protected string? GetDepBranchName(Guid? id)
+		{
+			if (LookUp.DepartmentBranch != null && id.HasValue)
+			{
+				return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
+			}
+
+			return null;
+		}
+
 
 		[JSInvokable]
 		public async Task OnDepBranch(string _ids, string _name)

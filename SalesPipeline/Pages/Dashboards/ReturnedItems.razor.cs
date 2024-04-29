@@ -27,12 +27,13 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
-				await SetQuery();
-				StateHasChanged();
 				await SetInitManual();
 				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				await SetQuery();
+				StateHasChanged();
+
 				firstRender = false;
 			}
 		}
@@ -147,19 +148,6 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
-		protected async Task OnChain(ChangeEventArgs e)
-		{
-			filter.chain = null;
-			if (e.Value != null)
-			{
-				filter.chain = e.Value.ToString();
-
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-			}
-		}
-
 		protected async Task OnBusinessType(ChangeEventArgs e)
 		{
 			filter.businesstype = null;
@@ -173,43 +161,12 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
-		protected async Task OnProvince(ChangeEventArgs e)
-		{
-			filter.provinceid = null;
-			if (e.Value != null)
-			{
-				if (int.TryParse(e.Value.ToString(), out int id))
-				{
-					filter.provinceid = id;
-				}
-
-				await SetModel();
-				StateHasChanged();
-				_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-			}
-		}
-
-		protected async Task OnStatusSale(ChangeEventArgs e)
-		{
-			filter.statussaleid = null;
-			if (e.Value != null)
-			{
-				if (int.TryParse(e.Value.ToString(), out int saleid))
-				{
-					filter.statussaleid = saleid;
-				}
-			}
-
-			await SetModel();
-			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-		}
-
 		[JSInvokable]
 		public async Task OnDepBranch(string _id, string _name)
 		{
 			filter.DepBranchs = new();
 			filter.provinceid = null;
+			filter.Branchs = new();
 			LookUp.Provinces = new();
 			LookUp.Branchs = new();
 			StateHasChanged();

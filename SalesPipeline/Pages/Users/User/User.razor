@@ -136,11 +136,11 @@
 													<td class="text-center">
 														@if (item.Master_Department_BranchId.HasValue)
 														{
-															@GeneralUtils.EmptyTo(GetDepartmentBranchName(item.Master_Department_BranchId))
+															@GeneralUtils.EmptyTo(GetDepBranchName(item.Master_Department_BranchId))
 														}
 														else if (item.Master_Department_CenterId.HasValue)
 														{
-															@GeneralUtils.EmptyTo(GetDepartmentCenterName(item.Master_Department_CenterId))
+															@GeneralUtils.EmptyTo(GetDepCenterName(item.Master_Department_CenterId))
 														}
 													</td>
 													<td class="text-center">@GetPositionName(item.PositionId)</td>
