@@ -1,6 +1,7 @@
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Dashboards
@@ -9,8 +10,10 @@ namespace SalesPipeline.Pages.Dashboards
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
-		private LookUpResource LookUp = new();
 		private allFilter filter = new();
+		private LookUpResource LookUp = new();
+		private List<User_Target_SaleCustom>? Items;
+		public Pager? Pager;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -19,7 +22,6 @@ namespace SalesPipeline.Pages.Dashboards
 			await Task.Delay(1);
 		}
 
-
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
@@ -27,7 +29,11 @@ namespace SalesPipeline.Pages.Dashboards
 				filter.userid = UserInfo.Id;
 
 				await SetInitManual();
+				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
+				await SetQuery();
+				StateHasChanged();
 
 				StateHasChanged();
 				firstRender = false;
@@ -54,6 +60,65 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+		}
+
+		protected async Task SetQuery(string? parematerAll = null)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filter.SetUriQuery(uriQuery);
+
+			await SetModel();
+			StateHasChanged();
+		}
+
+		protected async Task SetModel()
+		{
+			filter.userid = UserInfo.Id;
+			filter.type = "avgdurationclosesale";
+			var data = await _dashboarViewModel.GetListTarget_SaleById(filter);
+			if (data != null && data.Status)
+			{
+				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/dashboard/notachievedtarget";
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+		}
+
+		protected async Task OnSelectPagesize(int _number)
+		{
+			Items = null;
+			StateHasChanged();
+			filter.page = 1;
+			filter.pagesize = _number;
+			await SetModel();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSelectPage(string parematerAll)
+		{
+			await SetQuery(parematerAll);
+			StateHasChanged();
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 
@@ -113,6 +178,7 @@ namespace SalesPipeline.Pages.Dashboards
 		[JSInvokable]
 		public async Task OnBranch(string _ids, string _name)
 		{
+			await Task.Delay(1);
 			LookUp.RMUser = new();
 			filter.Branchs = new();
 			filter.RMUsers = new();

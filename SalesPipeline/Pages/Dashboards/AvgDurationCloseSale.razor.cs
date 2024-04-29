@@ -27,10 +27,11 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
-				await SetQuery();
-				StateHasChanged();
 				await SetInitManual();
 				await Task.Delay(10);
+
+				await SetQuery();
+				StateHasChanged();
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;

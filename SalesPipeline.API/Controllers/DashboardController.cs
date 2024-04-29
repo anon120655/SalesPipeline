@@ -55,6 +55,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetListTarget_SaleById")]
+		public async Task<IActionResult> GetListTarget_SaleById(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetListTarget_SaleById(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("Get_SalesPipelineById")]
 		public async Task<IActionResult> Get_SalesPipelineById(allFilter model)
 		{

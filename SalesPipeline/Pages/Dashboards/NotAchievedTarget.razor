@@ -1,5 +1,4 @@
-﻿
-@page "/dashboard/notachievedtarget"
+﻿@page "/dashboard/notachievedtarget"
 
 <PageTitle>พนักงานที่ไม่บรรลุเป้าหมาย</PageTitle>
 
@@ -99,7 +98,6 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
 											<th class="text-center">กิจการสาขาภาค</th>
@@ -110,33 +108,68 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td class="text-center">1</td>
-											<td class="text-center">501000</td>
-											<td class="text-center">ทดสอบ ระบบ</td>
-											<td class="text-center">ภาคกลางตอนล่าง</td>
-											<td class="text-center">อยุธยา</td>
-											<td class="text-center">100,000</td>
-											<td class="text-center text-danger">80,000</td>
-											<td class="text-center text-danger">ยังไม่สำเร็จ</td>
-										</tr>
-										<tr>
-											<td class="text-center">2</td>
-											<td class="text-center">502000</td>
-											<td class="text-center">ทดสอบ ระบบ</td>
-											<td class="text-center">ภาคกลางตอนล่าง</td>
-											<td class="text-center">อยุธยา</td>
-											<td class="text-center">100,000</td>
-											<td class="text-center">120,000</td>
-											<td class="text-center">สำเร็จ</td>
-										</tr>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.User?.EmployeeId</td>
+													<td class="">@item.User?.FullName</td>
+													<td class="text-center">@item.User?.Master_Department_BranchId</td>
+													<td class="text-center">@item.User?.BranchId</td>
+													<td class="text-center">@item.AmountTarget.ToString("#,##0.00")</td>
+													<td class="text-center">
+														@if (item.AmountActual >= item.AmountTarget)
+														{
+															<span>@item.AmountActual.ToString("#,##0.00")</span>
+														}
+														else
+														{
+															<span class="text-danger">@item.AmountActual.ToString("#,##0.00")</span>
+														}														
+													</td>
+													<td class="text-center">
+														@if (item.AmountActual >= item.AmountTarget)
+														{
+															<span>สำเร็จ</span>
+														}
+														else
+														{
+															<span class="text-danger">ไม่สำเร็จ</span>
+														}
+													</td>
+												</tr>
+											}
+										}
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

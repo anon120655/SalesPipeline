@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Sales;
@@ -38,6 +39,29 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<Dash_Status_TotalCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<User_Target_SaleCustom>>>?> GetListTarget_SaleById(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetListTarget_SaleById", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<User_Target_SaleCustom>>>(content);
+				return new ResultModel<PaginationView<List<User_Target_SaleCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<User_Target_SaleCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

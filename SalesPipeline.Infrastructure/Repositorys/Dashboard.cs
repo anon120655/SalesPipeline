@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -294,6 +295,80 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 			}
+		}
+
+		public async Task<PaginationView<List<User_Target_SaleCustom>>> GetListTarget_SaleById(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var dash_SalesPipeline = new Dash_SalesPipelineModel();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var query = _repo.Context.User_Target_Sales
+				.Include(x => x.User)
+				.Where(x => x.Status == StatusModel.Active);
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				var queryGroupRM = await _repo.Context.Sales.Where(x => x.AssCenterUserId == user.Id && x.AssUserId.HasValue)
+						   .GroupBy(info => info.AssUserId)
+						   .Select(group => new SaleStatusGroupByModel()
+						   {
+							   StatusID = group.Key ?? 0
+						   }).OrderBy(x => x.StatusID).ToListAsync();
+
+
+				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.User.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.Master_Department_BranchId.HasValue && idList.Contains(x.User.Master_Department_BranchId));
+				}
+			}
+
+			//จังหวัด[]
+			if (model.Provinces?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Provinces);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.ProvinceId.HasValue && idList.Contains(x.User.ProvinceId));
+				}
+			}
+
+			//สาขา[]
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.BranchId.HasValue && idList.Contains(x.User.BranchId));
+				}
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<User_Target_SaleCustom>>()
+			{
+				Items = _mapper.Map<List<User_Target_SaleCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 		public async Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model)
@@ -839,15 +914,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.provinceid.HasValue)
 				query = query.Where(x => x.ProvinceId.HasValue && x.ProvinceId == model.provinceid.Value);
-
-			if (model.DepBranchs?.Count > 0)
-			{
-				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
-				if (idList.Count > 0)
-				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-				}
-			}
 
 			var queryUse = query.GroupBy(m => m.AssUserId)
 					 .Select(group => new SaleGroupByModel()
@@ -3000,15 +3066,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			Guid? department_BranchIdDefault = null;
-			if (model.DepBranchs?.Count > 0)
-			{
-				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
-				if (idList.Count > 0)
-				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-				}
-			}
-			else
+			if (model.DepBranchs == null || model.DepBranchs?.Count == 0)
 			{
 				//default กิจการสาขาภาคที่มีขอดขายสูงสูด
 				var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)

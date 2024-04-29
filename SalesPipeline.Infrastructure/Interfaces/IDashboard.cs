@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Dashboards;
+﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -9,6 +10,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		//Status_Total
 		Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model);
 		Task UpdateStatus_TotalById(allFilter model);
+		//list เป้าหมายการขาย
+		Task<PaginationView<List<User_Target_SaleCustom>>> GetListTarget_SaleById(allFilter model);
 		//SalesPipeline
 		Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง
