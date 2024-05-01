@@ -238,6 +238,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetSumTargetActual")]
+		public async Task<IActionResult> GetSumTargetActual(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Dashboard.GetSumTargetActual(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetPieNumberCustomer")]
 		public async Task<IActionResult> GetPieNumberCustomer(allFilter model)
 		{

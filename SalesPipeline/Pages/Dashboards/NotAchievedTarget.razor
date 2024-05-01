@@ -139,15 +139,15 @@
 													<td class="text-center">
 														@item.User?.BranchName
 													</td>
-													<td class="text-center">@item.AmountTarget.ToString("#,##0.00")</td>
+													<td class="text-center">@item.AmountTarget.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">
 														@if (item.AmountActual >= item.AmountTarget)
 														{
-															<span>@item.AmountActual.ToString("#,##0.00")</span>
+															<span>@item.AmountActual.ToString(GeneralTxt.FormatDecimal2)</span>
 														}
 														else
 														{
-															<span class="text-danger">@item.AmountActual.ToString("#,##0.00")</span>
+															<span class="text-danger">@item.AmountActual.ToString(GeneralTxt.FormatDecimal2)</span>
 														}
 													</td>
 													<td class="text-center">

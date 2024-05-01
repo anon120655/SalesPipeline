@@ -32,6 +32,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Dash_Avg_NumberOnStage> GetAvgOnStage(allFilter model);
 		//ลูกค้าที่ปิดการขาย ,เหตุผลไม่ประสงค์ขอสินเชื่อ
 		Task<List<Dash_PieCustom>> GetPieCloseSaleReason(allFilter model);
+		//เป้ายอดการขาย
+		Task<User_Target_SaleCustom> GetSumTargetActual(allFilter model);
 		//จำนวนลูกค้าตาม...
 		Task<List<Dash_PieCustom>> GetPieNumberCustomer(allFilter model);
 		Task<List<Dash_PieCustom>> GetListNumberCustomer(allFilter model);

@@ -254,7 +254,16 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task TargetSales()
 		{
-			await _jsRuntimes.InvokeVoidAsync("targetsales", null);
+			var data = await _dashboarViewModel.GetSumTargetActual(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeVoidAsync("targetsales", data.Data);
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task NumberCustomer()

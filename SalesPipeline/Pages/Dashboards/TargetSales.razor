@@ -160,7 +160,7 @@
 														@if (item.LoanAmount.HasValue)
 														{
 															<span>
-																@item.LoanAmount.Value.ToString("#,##0.00")
+																@item.LoanAmount.Value.ToString(GeneralTxt.FormatDecimal2)
 															</span>
 														}
 													</td>

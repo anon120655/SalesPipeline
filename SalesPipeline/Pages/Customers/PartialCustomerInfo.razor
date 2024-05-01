@@ -334,7 +334,7 @@
 						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">มูลค่าหุ้นทั้งหมด : </label>
 						<div class="col-6 col-md-7 col-xl-3">
 							<label class="col-form-label">
-								@item.TotalShareValue?.ToString("#,##0.00")
+								@item.TotalShareValue?.ToString(GeneralTxt.FormatDecimal2)
 							</label>
 						</div>
 					</div>
@@ -413,7 +413,7 @@
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LoansShort?.ToString("#,##0.00")
+						@formModel.Customer.LoansShort?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -421,7 +421,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalCurrentAssets?.ToString("#,##0.00")
+						@formModel.Customer.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -429,12 +429,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะยาว : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LoansLong?.ToString("#,##0.00")
+						@formModel.Customer.LoansLong?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LandBuildingEquipment?.ToString("#,##0.00")
+						@formModel.Customer.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -442,7 +442,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ไม่หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalNotCurrentAssets?.ToString("#,##0.00")
+						@formModel.Customer.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -450,7 +450,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.AssetsTotal?.ToString("#,##0.00")
+						@formModel.Customer.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -463,7 +463,7 @@
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayLoansShot?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -471,7 +471,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินหมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalCurrentLia?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -479,7 +479,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะยาว : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayLoansLong?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -487,12 +487,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินไม่หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalNotCurrentLia?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayForLoansShot?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -500,7 +500,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สิน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalLiabilitie?.ToString("#,##0.00")
+						@formModel.Customer.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -508,12 +508,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนสามัญ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.RegisterCapitalOrdinary?.ToString("#,##0.00")
+						@formModel.Customer.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.RegisterCapitalPaid?.ToString("#,##0.00")
+						@formModel.Customer.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -521,7 +521,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สะสม : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossAccumulate?.ToString("#,##0.00")
+						@formModel.Customer.ProfitLossAccumulate?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -529,7 +529,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมส่วนของผู้ถือหุ้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalShareholders?.ToString("#,##0.00")
+						@formModel.Customer.TotalShareholders?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -537,7 +537,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินและส่วนของผู้ถือหุ้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalLiabilitieShareholders?.ToString("#,##0.00")
+						@formModel.Customer.TotalLiabilitieShareholders?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -545,12 +545,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รายได้รวม : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalIncome?.ToString("#,##0.00")
+						@formModel.Customer.TotalIncome?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CostSales?.ToString("#,##0.00")
+						@formModel.Customer.CostSales?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -558,12 +558,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไรขั้นต้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.GrossProfit?.ToString("#,##0.00")
+						@formModel.Customer.GrossProfit?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.OperatingExpenses?.ToString("#,##0.00")
+						@formModel.Customer.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -571,7 +571,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossBeforeDepExp?.ToString("#,##0.00")
+						@formModel.Customer.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -579,7 +579,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossBeforeInterestTax?.ToString("#,##0.00")
+						@formModel.Customer.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -587,7 +587,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สุทธิ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.NetProfitLoss?.ToString("#,##0.00")
+						@formModel.Customer.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>
@@ -629,7 +629,7 @@
 		<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วงเงิน : </label>
 		<div class="col-6 col-md-7 col-xl-3">
 		<label class="col-form-label">
-		@formModel.Customer.InterestCreditLimit?.ToString("#,##0.00")
+		@formModel.Customer.InterestCreditLimit?.ToString(GeneralTxt.FormatDecimal2)
 		</label>
 		</div>
 		</div> *@

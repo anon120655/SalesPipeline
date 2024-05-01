@@ -33,5 +33,22 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public decimal AmountActual { get; set; }
 
 		public virtual UserCustom? User { get; set; }
+
+		public string? AmountTargetStr
+		{
+			get
+			{
+				return AmountTarget.ToString(GeneralTxt.FormatDecimal2);
+			}
+		}
+
+		public string? AmountActualStr
+		{
+			get
+			{
+				return AmountActual.ToString(GeneralTxt.FormatDecimal2);
+			}
+		}
+
 	}
 }

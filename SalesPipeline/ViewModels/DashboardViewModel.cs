@@ -300,6 +300,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<User_Target_SaleCustom>?> GetSumTargetActual(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetSumTargetActual", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<User_Target_SaleCustom>(content);
+				return new ResultModel<User_Target_SaleCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<User_Target_SaleCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Sale_DurationCustom>>>> GetDuration(allFilter model)
 		{
 			try

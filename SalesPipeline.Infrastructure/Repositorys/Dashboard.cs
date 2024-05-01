@@ -1358,6 +1358,102 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task<User_Target_SaleCustom> GetSumTargetActual(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var response = new User_Target_SaleCustom();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			var query = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.User.EmployeeId != null && x.User.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.User.FullName != null && x.User.FullName.Contains(model.emp_name));
+			}
+
+			if (model.amounttarget > 0)
+			{
+				query = query.Where(x => x.AmountTarget == model.amounttarget.Value);
+			}
+
+			if (model.achieve_goal > 0)
+			{
+				if (model.achieve_goal == 1)
+				{
+					query = query.Where(x => x.AmountActual >= x.AmountTarget);
+				}
+				else if (model.achieve_goal == 2)
+				{
+					query = query.Where(x => x.AmountActual < x.AmountTarget);
+				}
+			}
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			{
+				var queryGroupRM = await _repo.Context.Sales.Where(x => x.AssCenterUserId == user.Id && x.AssUserId.HasValue)
+						   .GroupBy(info => info.AssUserId)
+						   .Select(group => new SaleStatusGroupByModel()
+						   {
+							   StatusID = group.Key ?? 0
+						   }).OrderBy(x => x.StatusID).ToListAsync();
+
+				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			{
+				query = query.Where(x => x.User.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.Master_Department_BranchId.HasValue && idList.Contains(x.User.Master_Department_BranchId));
+				}
+			}
+
+			//จังหวัด[]
+			if (model.Provinces?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Provinces);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.ProvinceId.HasValue && idList.Contains(x.User.ProvinceId));
+				}
+			}
+
+			//สาขา[]
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.User.BranchId.HasValue && idList.Contains(x.User.BranchId));
+				}
+			}
+
+			var sumTarget = query.Sum(x=>x.AmountTarget);
+			var sumActual = query.Sum(x=>x.AmountActual);
+
+			response.AmountTarget = sumTarget;
+			response.AmountActual = sumActual;
+
+			return response;
+		}
+
 		private async Task<List<Dash_PieCustom>> GetDataPieCloseSale(allFilter model, List<Dash_PieCustom> response)
 		{
 			if (!model.userid.HasValue) return new();

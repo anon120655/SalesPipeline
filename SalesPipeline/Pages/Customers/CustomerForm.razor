@@ -423,7 +423,7 @@
 													<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 														<input type="text" class="form-control"
 															   @onchange="@((ChangeEventArgs e) => item.TotalShareValue = GeneralUtils.ToDecimal(e.Value))"
-															   value="@item.TotalShareValue?.ToString("#,##0.00")">
+															   value="@item.TotalShareValue?.ToString(GeneralTxt.FormatDecimal2)">
 													</div>
 												</div>
 												index++;
@@ -495,7 +495,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.LoansShort = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.LoansShort?.ToString("#,##0.00")">
+													   value="@formModel.LoansShort?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.LoansShort)" />
 											</div>
 										</div>
@@ -504,7 +504,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TotalCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TotalCurrentAssets?.ToString("#,##0.00")">
+													   value="@formModel.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TotalCurrentAssets)" />
 											</div>
 										</div>
@@ -513,7 +513,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.LoansLong = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.LoansLong?.ToString("#,##0.00")">
+													   value="@formModel.LoansLong?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.LoansLong)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์</label>
@@ -527,7 +527,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TotalNotCurrentAssets = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TotalNotCurrentAssets?.ToString("#,##0.00")">
+													   value="@formModel.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TotalNotCurrentAssets)" />
 											</div>
 										</div>
@@ -536,7 +536,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.AssetsTotal = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.AssetsTotal?.ToString("#,##0.00")">
+													   value="@formModel.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.AssetsTotal)" />
 											</div>
 										</div>
@@ -550,7 +550,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansShot = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayLoansShot?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayLoansShot)" />
 											</div>
 										</div>
@@ -559,7 +559,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalCurrentLia = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayTotalCurrentLia?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayTotalCurrentLia)" />
 											</div>
 										</div>
@@ -568,7 +568,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayLoansLong = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayLoansLong?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayLoansLong)" />
 											</div>
 										</div>
@@ -577,14 +577,14 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalNotCurrentLia = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayTotalNotCurrentLia?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayTotalNotCurrentLia)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayForLoansShot = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayForLoansShot?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayForLoansShot)" />
 											</div>
 										</div>
@@ -593,7 +593,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPayTotalLiabilitie = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TradeAccPayTotalLiabilitie?.ToString("#,##0.00")">
+													   value="@formModel.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPayTotalLiabilitie)" />
 											</div>
 										</div>
@@ -602,14 +602,14 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalOrdinary = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.RegisterCapitalOrdinary?.ToString("#,##0.00")">
+													   value="@formModel.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.RegisterCapitalOrdinary)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.RegisterCapitalPaid = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.RegisterCapitalPaid?.ToString("#,##0.00")">
+													   value="@formModel.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.RegisterCapitalPaid)" />
 											</div>
 										</div>
@@ -618,7 +618,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossAccumulate = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.ProfitLossAccumulate?.ToString("#,##0.00")">
+													   value="@formModel.ProfitLossAccumulate?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.ProfitLossAccumulate)" />
 											</div>
 										</div>
@@ -627,7 +627,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TotalShareholders = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TotalShareholders?.ToString("#,##0.00")">
+													   value="@formModel.TotalShareholders?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TotalShareholders)" />
 											</div>
 										</div>
@@ -636,7 +636,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TotalLiabilitieShareholders = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TotalLiabilitieShareholders?.ToString("#,##0.00")">
+													   value="@formModel.TotalLiabilitieShareholders?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TotalLiabilitieShareholders)" />
 											</div>
 										</div>
@@ -645,14 +645,14 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.TotalIncome = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.TotalIncome?.ToString("#,##0.00")">
+													   value="@formModel.TotalIncome?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TotalIncome)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.CostSales = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.CostSales?.ToString("#,##0.00")">
+													   value="@formModel.CostSales?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.CostSales)" />
 											</div>
 										</div>
@@ -661,14 +661,14 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.GrossProfit = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.GrossProfit?.ToString("#,##0.00")">
+													   value="@formModel.GrossProfit?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.GrossProfit)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.OperatingExpenses = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.OperatingExpenses?.ToString("#,##0.00")">
+													   value="@formModel.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.OperatingExpenses)" />
 											</div>
 										</div>
@@ -677,7 +677,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeDepExp = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.ProfitLossBeforeDepExp?.ToString("#,##0.00")">
+													   value="@formModel.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.ProfitLossBeforeDepExp)" />
 											</div>
 										</div>
@@ -686,7 +686,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.ProfitLossBeforeInterestTax = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.ProfitLossBeforeInterestTax?.ToString("#,##0.00")">
+													   value="@formModel.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.ProfitLossBeforeInterestTax)" />
 											</div>
 										</div>
@@ -695,7 +695,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.NetProfitLoss = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.NetProfitLoss?.ToString("#,##0.00")">
+													   value="@formModel.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.NetProfitLoss)" />
 											</div>
 										</div>
@@ -736,7 +736,7 @@
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input type="text" class="form-control"
 													   @onchange="@((ChangeEventArgs e) => formModel.InterestCreditLimit = GeneralUtils.ToDecimal(e.Value))"
-													   value="@formModel.InterestCreditLimit?.ToString("#,##0.00")">
+													   value="@formModel.InterestCreditLimit?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.InterestCreditLimit)" />
 											</div>
 										</div> *@

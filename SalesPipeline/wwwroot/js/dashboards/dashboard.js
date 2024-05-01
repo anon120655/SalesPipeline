@@ -359,7 +359,7 @@ window.reasonnotloan = (_data, _labels) => {
 
 }
 
-window.targetsales = (indata) => {
+window.targetsales = (_data) => {
 	let chartId = "targetsales";
 	const canvas = document.getElementById(chartId);
 	if (canvas != null && canvas != undefined) {
@@ -373,7 +373,7 @@ window.targetsales = (indata) => {
 		const data = {
 			labels: [""],
 			datasets: [{
-				label: '150,000,000',
+				label: _data.amountTargetStr,
 				//backgroundColor: "#CCE8FF",
 				backgroundColor: 'rgba(46, 117, 183, 0.2)',
 				data: [150000000],
@@ -381,7 +381,7 @@ window.targetsales = (indata) => {
 				xAxisID: "bar-x-axis1",
 				borderWidth: 0,
 			}, {
-				label: '135,000,000',
+				label: _data.amountActualStr,
 				backgroundColor: "#1378D5",
 				//backgroundColor: 'rgba(255, 206, 86, 0.2)',
 				data: [135000000],
@@ -395,6 +395,7 @@ window.targetsales = (indata) => {
 			type: "bar",
 			data,
 			options: {
+				events: [], //remove hover data
 				responsive: true,
 				maintainAspectRatio: false,
 				scales: {
