@@ -28,6 +28,10 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (firstRender)
 			{
+				await SetInitManual();
+				StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
 				filter.userid = UserInfo.Id;
 				filterBottom.userid = UserInfo.Id;
 				filterBottomEnd.userid = UserInfo.Id;
@@ -36,11 +40,15 @@ namespace SalesPipeline.Pages.Dashboards
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/avgeperdeal.js");
 				if (iSloadJs)
 				{
-					await SetInitManual();
-					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
-
 					await SetModelTop();
+					StateHasChanged();
+					await Task.Delay(1);
+
 					await SetModelBottom();
+					StateHasChanged();
+					await Task.Delay(1);
+
+					await SetInitBranch();
 				}
 
 				StateHasChanged();
@@ -70,6 +78,12 @@ namespace SalesPipeline.Pages.Dashboards
 				_errorMessage = dataDepBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+		}
+
+		protected async Task SetInitBranch()
+		{
+			await Task.Delay(500);
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "BranchBottomEnd");
 
 			var dataBranchs = await _masterViewModel.GetBranch(0);
 			if (dataBranchs != null && dataBranchs.Status)
@@ -81,6 +95,7 @@ namespace SalesPipeline.Pages.Dashboards
 					StateHasChanged();
 					await Task.Delay(1);
 					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranchBottomEnd", "#BranchBottomEnd");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "BranchBottomEnd", 100);
 				}
 			}
 			else
@@ -88,7 +103,6 @@ namespace SalesPipeline.Pages.Dashboards
 				_errorMessage = dataBranchs?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
-
 		}
 
 		//TOP

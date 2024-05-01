@@ -117,7 +117,7 @@
 											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">กิจการสาขาภาค</th>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">เบอร์โทรศัพท์</th>
 											<th class="text-center">ผู้รับผิดชอบ</th>
@@ -150,7 +150,7 @@
 													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
 													<td class="">@item.CompanyName</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Department_BranchName)</td>
-													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
 													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.ContactTel)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.AssUserName)</td>
