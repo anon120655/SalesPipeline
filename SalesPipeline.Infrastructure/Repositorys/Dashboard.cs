@@ -1367,52 +1367,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-			var query = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
+			var queryTarget = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
 
-			if (!String.IsNullOrEmpty(model.emp_id))
-			{
-				query = query.Where(x => x.User.EmployeeId != null && x.User.EmployeeId.Contains(model.emp_id));
-			}
-
-			if (!String.IsNullOrEmpty(model.emp_name))
-			{
-				query = query.Where(x => x.User.FullName != null && x.User.FullName.Contains(model.emp_name));
-			}
-
-			if (model.amounttarget > 0)
-			{
-				query = query.Where(x => x.AmountTarget == model.amounttarget.Value);
-			}
-
-			if (model.achieve_goal > 0)
-			{
-				if (model.achieve_goal == 1)
-				{
-					query = query.Where(x => x.AmountActual >= x.AmountTarget);
-				}
-				else if (model.achieve_goal == 2)
-				{
-					query = query.Where(x => x.AmountActual < x.AmountTarget);
-				}
-			}
+			var query = _repo.Context.Sales
+				.Include(x => x.AssUser).ThenInclude(x => x.User_Target_Sales)
+				.Where(x => x.Status == StatusModel.Active && x.AssUser != null);
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
 			{
-				var queryGroupRM = await _repo.Context.Sales.Where(x => x.AssCenterUserId == user.Id && x.AssUserId.HasValue)
-						   .GroupBy(info => info.AssUserId)
-						   .Select(group => new SaleStatusGroupByModel()
-						   {
-							   StatusID = group.Key ?? 0
-						   }).OrderBy(x => x.StatusID).ToListAsync();
-
-				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
+				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
 			{
-				query = query.Where(x => x.User.BranchId == user.BranchId);
+				query = query.Where(x => x.BranchId == user.BranchId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
+			}
+
+			if (model.startdate.HasValue && !model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (!model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			}
+			if (model.startdate.HasValue && model.enddate.HasValue)
+			{
+				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 
 			//กิจการสาขาภาค[]
@@ -1421,7 +1404,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.User.Master_Department_BranchId.HasValue && idList.Contains(x.User.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
 				}
 			}
 
@@ -1431,7 +1414,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToInt(model.Provinces);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.User.ProvinceId.HasValue && idList.Contains(x.User.ProvinceId));
+					query = query.Where(x => x.ProvinceId.HasValue && idList.Contains(x.ProvinceId));
 				}
 			}
 
@@ -1441,13 +1424,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToInt(model.Branchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.User.BranchId.HasValue && idList.Contains(x.User.BranchId));
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
 				}
 			}
 
-			var sumTarget = query.Sum(x=>x.AmountTarget);
-			var sumActual = query.Sum(x=>x.AmountActual);
+			//var sumTarget = query.Sum(x=> x.AmountTarget);
+			//var sumActual = query.Sum(x=>x.AmountActual);
 
+			int _year = DateTime.Now.Year;
+			if (model.startdate.HasValue)
+			{
+				_year = model.startdate.Value.Year;
+			}
+
+			var sumTarget = queryTarget.Where(x => x.Year == _year).Sum(s => s.AmountTarget);
+
+			var sumActual = query.Sum(x => x.LoanAmount ?? 0);
+
+			response.Status = StatusModel.Active;
+			response.UserId = user.Id;
+			response.Year = _year;
 			response.AmountTarget = sumTarget;
 			response.AmountActual = sumActual;
 

@@ -112,6 +112,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Contact_History> Sale_Contact_Histories { get; set; }
 
+    public virtual DbSet<Sale_Contact_Info> Sale_Contact_Infos { get; set; }
+
     public virtual DbSet<Sale_Deliver> Sale_Delivers { get; set; }
 
     public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
@@ -119,6 +121,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<Sale_Duration> Sale_Durations { get; set; }
 
     public virtual DbSet<Sale_Meet> Sale_Meets { get; set; }
+
+    public virtual DbSet<Sale_Partner> Sale_Partners { get; set; }
 
     public virtual DbSet<Sale_Reply> Sale_Replies { get; set; }
 
@@ -1769,6 +1773,33 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("sale_contact_history_ibfk_2");
         });
 
+        modelBuilder.Entity<Sale_Contact_Info>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Contact_Info", tb => tb.HasComment("ข้อมูลผู้ติดต่อ"));
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.FullName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.Position)
+                .HasMaxLength(255)
+                .HasComment("ตำแหน่ง");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel).HasMaxLength(255);
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contact_Infos)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_contact_info_ibfk_1");
+        });
+
         modelBuilder.Entity<Sale_Deliver>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -2058,6 +2089,61 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_meet_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Partner>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Partner", tb => tb.HasComment("คู่ค้า"));
+
+            entity.HasIndex(e => e.Master_BusinessSizeId, "Master_BusinessSizeId");
+
+            entity.HasIndex(e => e.Master_BusinessTypeId, "Master_BusinessTypeId");
+
+            entity.HasIndex(e => e.Master_ChainId, "Master_ChainId");
+
+            entity.HasIndex(e => e.Master_YieldId, "Master_YieldId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อคู่ค้า");
+            entity.Property(e => e.Master_BusinessSizeId).HasComment("ขนาดธุรกิจ");
+            entity.Property(e => e.Master_BusinessSizeName).HasMaxLength(255);
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
+            entity.Property(e => e.Master_ChainId).HasComment("ห่วงโซ่คุณค่า ");
+            entity.Property(e => e.Master_ChainName).HasMaxLength(255);
+            entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
+            entity.Property(e => e.Master_YieldName).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel).HasMaxLength(255);
+
+            entity.HasOne(d => d.Master_BusinessSize).WithMany(p => p.Sale_Partners)
+                .HasForeignKey(d => d.Master_BusinessSizeId)
+                .HasConstraintName("sale_partner_ibfk_5");
+
+            entity.HasOne(d => d.Master_BusinessType).WithMany(p => p.Sale_Partners)
+                .HasForeignKey(d => d.Master_BusinessTypeId)
+                .HasConstraintName("sale_partner_ibfk_2");
+
+            entity.HasOne(d => d.Master_Chain).WithMany(p => p.Sale_Partners)
+                .HasForeignKey(d => d.Master_ChainId)
+                .HasConstraintName("sale_partner_ibfk_4");
+
+            entity.HasOne(d => d.Master_Yield).WithMany(p => p.Sale_Partners)
+                .HasForeignKey(d => d.Master_YieldId)
+                .HasConstraintName("sale_partner_ibfk_3");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Partners)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_partner_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Reply>(entity =>
@@ -2575,6 +2661,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UserId)
                 .HasComment("พนักงาน")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.Year).HasColumnType("int(11)");
 
             entity.HasOne(d => d.User).WithMany(p => p.User_Target_Sales)
                 .HasForeignKey(d => d.UserId)

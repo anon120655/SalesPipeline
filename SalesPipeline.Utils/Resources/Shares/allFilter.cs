@@ -49,6 +49,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public short? achieve_goal { get; set; }
 		public short? isclosesale { get; set; }
 		public short? isconsidered { get; set; }
+		public short? isoverdue { get; set; }
 		public string? reason { get; set; }
 		public string? contact { get; set; }
 		public string? meet { get; set; }
@@ -198,6 +199,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (isconsidered.HasValue)
 				ParameterAll += $"&isconsidered={isconsidered}";
+
+			if (isoverdue.HasValue)
+				ParameterAll += $"&isoverdue={isoverdue}";
 
 			if (!String.IsNullOrEmpty(reason))
 				ParameterAll += $"&reason={reason}";
@@ -389,6 +393,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isconsidered), out var _isconsidered))
 				isconsidered = Convert.ToInt16(_isconsidered);
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(isoverdue), out var _isoverdue))
+				isoverdue = Convert.ToInt16(_isoverdue);
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(reason), out var _reason))
 				reason = _reason;

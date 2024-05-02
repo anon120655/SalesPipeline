@@ -22,8 +22,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// </summary>
 		public int UserId { get; set; }
 
+		public int Year { get; set; }
+
 		/// <summary>
-		/// ยอดเป้าหมาย
+		/// ยอดเป้าหมาย 
 		/// </summary>
 		public decimal AmountTarget { get; set; }
 
@@ -38,7 +40,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		{
 			get
 			{
-				return AmountTarget.ToString(GeneralTxt.FormatDecimal2);
+				return AmountTarget.ToString(GeneralTxt.FormatDecimal);
 			}
 		}
 
@@ -46,7 +48,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		{
 			get
 			{
-				return AmountActual.ToString(GeneralTxt.FormatDecimal2);
+				return AmountActual.ToString(GeneralTxt.FormatDecimal);
 			}
 		}
 

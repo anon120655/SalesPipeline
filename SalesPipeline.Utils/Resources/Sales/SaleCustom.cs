@@ -142,8 +142,12 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public virtual List<Sale_StatusCustom>? Sale_Statuses { get; set; }
 
+		public virtual ICollection<Sale_ContactCustom>? Sale_Contacts { get; set; }
 		public virtual List<Sale_Contact_HistoryCustom>? Sale_Contact_Histories { get; set; }
+		public virtual ICollection<Sale_MeetCustom>? Sale_Meets { get; set; }
 		public virtual List<Sale_DocumentCustom>? Sale_Documents { get; set; }
+		public virtual ICollection<Sale_ResultCustom>? Sale_Results { get; set; }
+
 
 		//Custom
 		public bool IsSelected { get; set; }

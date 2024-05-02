@@ -782,7 +782,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-
+			await _repo.Sales.CreateInfo(new()
+			{
+				SaleId = model.SaleId,
+				FullName = model.Name,
+				Tel = model.Tel
+			});
 
 			await CreateContactHistory(new()
 			{
@@ -905,6 +910,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}, new() { LoanAmount = model.LoanAmount });
 				}
 			}
+
+			await _repo.Sales.CreateInfo(new()
+			{
+				SaleId = model.SaleId,
+				FullName = model.Name,
+				Tel = model.Tel
+			});
 
 			await CreateContactHistory(new()
 			{

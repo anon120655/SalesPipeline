@@ -26,4 +26,6 @@ public partial class Master_BusinessSize
     public string? Name { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+
+    public virtual ICollection<Sale_Partner> Sale_Partners { get; set; } = new List<Sale_Partner>();
 }

@@ -7,6 +7,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -346,6 +347,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.AsQueryable();
 			}
 
+			if (model.isoverdue == 1)
+			{
+				var _dnow = DateTime.Now.Date;
+				query = query.Include(x => x.Sale_Contacts.Where(c => c.AppointmentDate.HasValue))
+							 .Include(x => x.Sale_Meets.Where(c => c.AppointmentDate.HasValue))
+							 .Include(x => x.Sale_Results.Where(c => c.AppointmentDate.HasValue))
+							 .Where(x => (x.Sale_Contacts.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow))
+							 || x.Sale_Meets.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
+							 || x.Sale_Results.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow));
+			}
+
 			if (model.customerid.HasValue && model.customerid != Guid.Empty)
 			{
 				query = query.Where(x => x.CustomerId == model.customerid.Value);
@@ -652,81 +664,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		//public async Task UpdateStatusTotalById(int userid)
-		//{
-		//	var statusTotal = await _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete && x.AssUserId == userid).GroupBy(info => info.StatusSaleId)
-		//				.Select(group => new
-		//				{
-		//					StatusID = group.Key,
-		//					Count = group.Count()
-		//				}).OrderBy(x => x.StatusID).ToListAsync();
-
-		//	int allCustomer = statusTotal.Sum(x => x.Count);
-		//	int waitContact = 0;
-		//	int contact = 0;
-		//	int waitMeet = 0;
-		//	int meet = 0;
-		//	int submitDocument = 0;
-		//	int results = 0;
-		//	int closeSale = 0;
-
-		//	foreach (var item in statusTotal)
-		//	{
-		//		if (item.StatusID == (int)StatusSaleModel.WaitContact) waitContact = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.Contact) contact = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.WaitMeet) waitMeet = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.Meet) meet = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.SubmitDocument) submitDocument = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.Results) results = item.Count;
-		//		if (item.StatusID == (int)StatusSaleModel.CloseSale) closeSale = item.Count;
-		//	}
-
-		//	int CRUD = CRUDModel.Update;
-
-		//	var sale_Status_Totals = await _repo.Context.Sale_Status_Totals.Where(x => x.UserId == userid).FirstOrDefaultAsync();
-		//	if (sale_Status_Totals == null)
-		//	{
-		//		CRUD = CRUDModel.Create;
-		//		sale_Status_Totals = new();
-		//		sale_Status_Totals.Status = StatusModel.Active;
-		//		sale_Status_Totals.CreateDate = DateTime.Now;
-		//		sale_Status_Totals.UserId = userid;
-		//	}
-
-		//	sale_Status_Totals.AllCustomer = allCustomer;
-		//	sale_Status_Totals.WaitContact = waitContact;
-		//	sale_Status_Totals.Contact = contact;
-		//	sale_Status_Totals.WaitMeet = waitMeet;
-		//	sale_Status_Totals.Meet = meet;
-		//	sale_Status_Totals.SubmitDocument = submitDocument;
-		//	sale_Status_Totals.Results = results;
-		//	sale_Status_Totals.CloseSale = closeSale;
-		//	sale_Status_Totals.IsUpdate = false;
-
-		//	if (CRUD == CRUDModel.Create)
-		//	{
-		//		await _db.InsterAsync(sale_Status_Totals);
-		//		await _db.SaveAsync();
-		//	}
-		//	else
-		//	{
-		//		_db.Update(sale_Status_Totals);
-		//		await _db.SaveAsync();
-		//	}
-		//}
-
-		//public async Task UpdateStatusTotalAll()
-		//{
-		//	var sale_Status_Totals = await _repo.Context.Sale_Status_Totals.Where(x => x.Status != StatusModel.Delete && x.IsUpdate).ToListAsync();
-		//	if (sale_Status_Totals.Count > 0)
-		//	{
-		//		foreach (var item in sale_Status_Totals)
-		//		{
-		//			await _repo.Sales.UpdateStatusTotalById(item.UserId);
-		//		}
-		//	}
-		//}
-
 		public async Task<Sale_Status_TotalCustom> GetStatusTotalById(int userid)
 		{
 			//var query = await _repo.Context.Sale_Status_Totals
@@ -765,5 +702,194 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task<Sale_Contact_InfoCustom> CreateInfo(Sale_Contact_InfoCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			var sale_Contact_Info = new Data.Entity.Sale_Contact_Info();
+			sale_Contact_Info.Status = StatusModel.Active;
+			sale_Contact_Info.CreateDate = _dateNow;
+			sale_Contact_Info.SaleId = model.SaleId;
+			sale_Contact_Info.FullName = model.FullName;
+			sale_Contact_Info.Position = model.Position;
+			sale_Contact_Info.Tel = model.Tel;
+			sale_Contact_Info.Email = model.Email;
+
+			await _db.InsterAsync(sale_Contact_Info);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);
+		}
+
+		public async Task<Sale_Contact_InfoCustom> UpdateInfo(Sale_Contact_InfoCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			var sale_Contact_Info = await _repo.Context.Sale_Contact_Infos
+				.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+			if (sale_Contact_Info != null)
+			{
+				sale_Contact_Info.FullName = model.FullName;
+				sale_Contact_Info.Position = model.Position;
+				sale_Contact_Info.Tel = model.Tel;
+				sale_Contact_Info.Email = model.Email;
+
+				_db.Update(sale_Contact_Info);
+				await _db.SaveAsync();
+			}
+			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);
+		}
+
+		public async Task<Sale_Contact_InfoCustom> GetInfoById(Guid id)
+		{
+			var query = await _repo.Context.Sale_Contact_Infos
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<Sale_Contact_InfoCustom>(query);
+		}
+
+		public async Task<PaginationView<List<Sale_Contact_InfoCustom>>> GetListInfo(allFilter model)
+		{
+			var query = _repo.Context.Sale_Contact_Infos
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_Contact_InfoCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_Contact_InfoCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
+		public async Task<Sale_PartnerCustom> CreatePartner(Sale_PartnerCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			string? master_BusinessTypeName = null;
+			string? master_YieldName = null;
+			string? master_ChainName = null;
+			string? master_BusinessSizeName = null;
+
+			if (model.Master_BusinessTypeId.HasValue)
+			{
+				master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
+			}
+			if (model.Master_YieldId.HasValue)
+			{
+				master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
+			}
+			if (model.Master_ChainId.HasValue)
+			{
+				master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+			}
+			if (model.Master_BusinessSizeId.HasValue)
+			{
+				master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
+			}
+
+			var sale_Partner = new Data.Entity.Sale_Partner();
+			sale_Partner.Status = StatusModel.Active;
+			sale_Partner.CreateDate = _dateNow;
+			sale_Partner.SaleId = model.SaleId;
+			sale_Partner.FullName = model.FullName;
+			sale_Partner.Master_BusinessTypeId = model.Master_BusinessTypeId;
+			sale_Partner.Master_BusinessTypeName = master_BusinessTypeName;
+			sale_Partner.Master_YieldId = model.Master_YieldId;
+			sale_Partner.Master_YieldName = master_YieldName;
+			sale_Partner.Master_ChainId = model.Master_ChainId;
+			sale_Partner.Master_ChainName = master_ChainName;
+			sale_Partner.Master_BusinessSizeId = model.Master_BusinessSizeId;
+			sale_Partner.Master_BusinessSizeName = master_BusinessSizeName;
+			sale_Partner.Tel = model.Tel;
+
+			await _db.InsterAsync(sale_Partner);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_PartnerCustom>(sale_Partner);
+		}
+
+		public async Task<Sale_PartnerCustom> UpdatePartner(Sale_PartnerCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			var sale_Partner = await _repo.Context.Sale_Partners
+				.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+			if (sale_Partner != null)
+			{
+				string? master_BusinessTypeName = null;
+				string? master_YieldName = null;
+				string? master_ChainName = null;
+				string? master_BusinessSizeName = null;
+
+				if (model.Master_BusinessTypeId.HasValue)
+				{
+					master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
+				}
+				if (model.Master_YieldId.HasValue)
+				{
+					master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
+				}
+				if (model.Master_ChainId.HasValue)
+				{
+					master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+				}
+				if (model.Master_BusinessSizeId.HasValue)
+				{
+					master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
+				}
+
+				sale_Partner.FullName = model.FullName;
+				sale_Partner.Master_BusinessTypeId = model.Master_BusinessTypeId;
+				sale_Partner.Master_BusinessTypeName = master_BusinessTypeName;
+				sale_Partner.Master_YieldId = model.Master_YieldId;
+				sale_Partner.Master_YieldName = master_YieldName;
+				sale_Partner.Master_ChainId = model.Master_ChainId;
+				sale_Partner.Master_ChainName = master_ChainName;
+				sale_Partner.Master_BusinessSizeId = model.Master_BusinessSizeId;
+				sale_Partner.Master_BusinessSizeName = master_BusinessSizeName;
+				sale_Partner.Tel = model.Tel;
+
+				_db.Update(sale_Partner);
+				await _db.SaveAsync();
+			}
+			return _mapper.Map<Sale_PartnerCustom>(sale_Partner);
+		}
+
+		public async Task<Sale_PartnerCustom> GetPartnerById(Guid id)
+		{
+			var query = await _repo.Context.Sale_Partners
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return _mapper.Map<Sale_PartnerCustom>(query);
+		}
+
+		public async Task<PaginationView<List<Sale_PartnerCustom>>> GetListPartner(allFilter model)
+		{
+			var query = _repo.Context.Sale_Partners
+												 .Where(x => x.Status != StatusModel.Delete)
+												 .OrderBy(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_PartnerCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_PartnerCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
 	}
 }

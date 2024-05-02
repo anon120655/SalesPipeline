@@ -22,6 +22,8 @@ public partial class User_Target_Sale
     /// </summary>
     public int UserId { get; set; }
 
+    public int Year { get; set; }
+
     /// <summary>
     /// ยอดเป้าหมาย
     /// </summary>

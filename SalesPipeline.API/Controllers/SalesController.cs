@@ -7,6 +7,7 @@ using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
@@ -33,7 +34,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลและสถานะลูกค้าทั้งหมด
 		/// </summary>
-		[AllowAnonymous]
 		[HttpPost("GetList")]
 		public async Task<IActionResult> GetList(allFilter model)
 		{
@@ -52,7 +52,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลและสถานะลูกค้า ById
 		/// </summary>
-		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
@@ -123,7 +122,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// รายชื่อลูกค้าที่ส่งคืน
 		/// </summary>
-		[AllowAnonymous]
 		[HttpGet("GetListReturn")]
 		public async Task<IActionResult> GetListReturn([FromQuery] allFilter model)
 		{
@@ -173,7 +171,6 @@ namespace SalesPipeline.API.Controllers
 		//	}
 		//}
 
-		[AllowAnonymous]
 		[HttpGet("SetIsUpdateStatusTotal")]
 		public async Task<IActionResult> SetIsUpdateStatusTotal([FromQuery] int userid)
 		{
@@ -188,20 +185,145 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		//[AllowAnonymous]
-		//[HttpGet("UpdateStatusTotalAll")]
-		//public async Task<IActionResult> UpdateStatusTotalAll()
-		//{
-		//	try
-		//	{
-		//		await _repo.Sales.UpdateStatusTotalAll();
-		//		return Ok();
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return new ErrorResultCustom(new ErrorCustom(), ex);
-		//	}
-		//}
+		/// <summary>
+		/// เพิ่มข้อมูลผู้ติดต่อ
+		/// </summary>
+		[HttpPost("CreateInfo")]
+		public async Task<IActionResult> CreateInfo(Sale_Contact_InfoCustom model)
+		{
+			try
+			{
+				var data = await _repo.Sales.CreateInfo(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// แก้ไขข้อมูลผู้ติดต่อ
+		/// </summary>
+		[HttpPut("UpdateInfo")]
+		public async Task<IActionResult> UpdateInfo(Sale_Contact_InfoCustom model)
+		{
+			try
+			{
+				var data = await _repo.Sales.UpdateInfo(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลผู้ติดต่อ ById
+		/// </summary>
+		[HttpGet("GetInfoById")]
+		public async Task<IActionResult> GetInfoById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetInfoById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ข้อมูลผู้ติดต่อทั้งหมด
+		/// </summary>
+		[HttpPost("GetListInfo")]
+		public async Task<IActionResult> GetListInfo(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Sales.GetListInfo(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// เพิ่มคู่ค้า
+		/// </summary>
+		[HttpPost("CreatePartner")]
+		public async Task<IActionResult> CreatePartner(Sale_PartnerCustom model)
+		{
+			try
+			{
+				var data = await _repo.Sales.CreatePartner(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// แก้ไขคู่ค้า
+		/// </summary>
+		[HttpPut("UpdatePartner")]
+		public async Task<IActionResult> UpdatePartner(Sale_PartnerCustom model)
+		{
+			try
+			{
+				var data = await _repo.Sales.UpdatePartner(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// คู่ค้า ById
+		/// </summary>
+		[HttpGet("GetPartnerById")]
+		public async Task<IActionResult> GetPartnerById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetPartnerById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// คู่ค้าทั้งหมด
+		/// </summary>
+		[HttpPost("GetListPartner")]
+		public async Task<IActionResult> GetListPartner(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Sales.GetListPartner(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+
 
 	}
 }

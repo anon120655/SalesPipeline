@@ -10,6 +10,7 @@ namespace SalesPipeline.Utils
 	{
 		public const String ErrorTxt = "CUSTOMERROR_206";
 		public const String ExceptionTxtDefault = "เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ";
+		public const String FormatDecimal = "#,##0";
 		public const String FormatDecimal2 = "#,##0.00";
 	}
 }
