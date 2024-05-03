@@ -32,9 +32,24 @@ public partial class Sale_Result
     public int? NextActionId { get; set; }
 
     /// <summary>
+    /// วันที่ติดต่อ
+    /// </summary>
+    public DateTime? DateContact { get; set; }
+
+    /// <summary>
+    /// ช่องทางการติดต่อ
+    /// </summary>
+    public Guid? Master_ContactChannelId { get; set; }
+
+    /// <summary>
     /// ผู้เข้าพบ
     /// </summary>
     public string? MeetName { get; set; }
+
+    /// <summary>
+    /// เบอร์โทร
+    /// </summary>
+    public string? Tel { get; set; }
 
     /// <summary>
     /// เอกสาร
@@ -60,6 +75,8 @@ public partial class Sale_Result
     /// บันทึกเพิ่มเติม
     /// </summary>
     public string? Note { get; set; }
+
+    public virtual Master_ContactChannel? Master_ContactChannel { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 }

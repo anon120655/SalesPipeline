@@ -2275,6 +2275,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Result");
 
+            entity.HasIndex(e => e.Master_ContactChannelId, "Master_ContactChannelId");
+
             entity.HasIndex(e => e.ProceedId, "Master_ProceedId");
 
             entity.HasIndex(e => e.SaleId, "SaleId");
@@ -2289,9 +2291,13 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("เอกสาร");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DateContact)
+                .HasComment("วันที่ติดต่อ")
+                .HasColumnType("datetime");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasComment("สถานที่");
+            entity.Property(e => e.Master_ContactChannelId).HasComment("ช่องทางการติดต่อ");
             entity.Property(e => e.MeetName)
                 .HasMaxLength(255)
                 .HasComment("ผู้เข้าพบ");
@@ -2310,6 +2316,13 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.Tel)
+                .HasMaxLength(255)
+                .HasComment("เบอร์โทร");
+
+            entity.HasOne(d => d.Master_ContactChannel).WithMany(p => p.Sale_Results)
+                .HasForeignKey(d => d.Master_ContactChannelId)
+                .HasConstraintName("sale_result_ibfk_2");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Results)
                 .HasForeignKey(d => d.SaleId)

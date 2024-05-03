@@ -24,7 +24,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// บุคคลที่เข้าพบ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? MeetId { get; set; }
 
 		/// <summary>
@@ -61,7 +61,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// จำนวนการกู้
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public decimal? LoanAmount { get; set; }
 
 		/// <summary>

@@ -24,27 +24,31 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// ชื่อผู้ติดต่อ
 		/// </summary>
+		//[Required(ErrorMessage = "ระบุชื่อผู้ติดต่อ")]
 		public string? Name { get; set; }
 
 		/// <summary>
 		/// เบอร์ติดต่อ
 		/// </summary>
+		//[Required(ErrorMessage = "ระบุเบอร์ติดต่อ")]
 		public string? Tel { get; set; }
 
 		/// <summary>
 		/// วันที่ติดต่อ
 		/// </summary>
+		//[Required(ErrorMessage = "ระบุวันที่ติดต่อ")]
 		public DateTime? ContactDate { get; set; }
 
 		/// <summary>
 		/// 1=รับสาย 2=ไม่รับสาย
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุชื่อผู้ติดต่อ")]
 		public int? ContactResult { get; set; }
 
 		/// <summary>
 		/// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง
 		/// </summary>
+		//[Required(ErrorMessage = "Next Action")]
 		public int? NextActionId { get; set; }
 
 		/// <summary>

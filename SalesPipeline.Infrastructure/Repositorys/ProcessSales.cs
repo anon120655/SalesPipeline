@@ -399,7 +399,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				//_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
@@ -703,9 +703,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
-
+			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้ติดต่อ");
+			if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์ติดต่อ");
+			if (!model.ContactDate.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
+			if (!model.ContactResult.HasValue) throw new ExceptionCustom("ระบุผลการติดต่อ");
+			if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
 			if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
+			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -741,6 +745,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
+				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
+
 				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
@@ -828,9 +836,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้เข้าพบ");
+			if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์ติดต่อ");
+			if (!model.MeetDate.HasValue) throw new ExceptionCustom("ระบุวันที่เข้าพบ");
+			if (!model.MeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+			if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+			if (model.MeetId != 1 && model.MeetId != 2) throw new ExceptionCustom("meetId not match");
 			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
 
-			if (model.MeetId != 1 && model.MeetId != 2) throw new ExceptionCustom("meetId not match");
+			if (!model.LoanAmount.HasValue || model.LoanAmount <= 0) throw new ExceptionCustom("ระบุจำนวนการกู้");
+			if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+			if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+			if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -947,6 +964,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
+
+			if (String.IsNullOrEmpty(model.NameTh)) throw new ExceptionCustom("ระบุชื่อภาษาไทย");
+			if (!model.Birthday.HasValue) throw new ExceptionCustom("ระบุวันเกิด");
+			if (String.IsNullOrEmpty(model.Religion)) throw new ExceptionCustom("ระบุศาสนา");
+			if (String.IsNullOrEmpty(model.HouseNo)) throw new ExceptionCustom("ระบุบ้านเลขที่");
+			if (String.IsNullOrEmpty(model.VillageNo)) throw new ExceptionCustom("ระบุหมู่ที่");
+			if (!model.ProvinceId.HasValue) throw new ExceptionCustom("ระบุจังหวัด");
+			if (!model.AmphurId.HasValue) throw new ExceptionCustom("ระบุอำเภอ");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
@@ -1094,7 +1119,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("statussale not match");
 			}
 
+			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
+			if (!model.ProceedId.HasValue) throw new ExceptionCustom("ระบุการดำเนินการ");
 			if (model.ProceedId != 1 && model.ProceedId != 2 && model.ProceedId != 3 && model.ProceedId != 4) throw new ExceptionCustom("proceedId not match");
+			if (model.ProceedId == 1 || model.ProceedId == 4)
+			{
+				if (String.IsNullOrEmpty(model.Note)) throw new ExceptionCustom("ระบุหมายเหตุ");
+			}
+			else if (model.ProceedId == 2)
+			{
+				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+				if (!model.DateContact.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
+				if (!model.Master_ContactChannelId.HasValue) throw new ExceptionCustom("ระบุช่องทางการติดต่อ");
+				if (String.IsNullOrEmpty(model.MeetName)) throw new ExceptionCustom("ระบุผู้ติดต่อ");
+				if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์โทร");
+				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+			}
+			else if (model.ProceedId == 3)
+			{
+				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+			}
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -1112,7 +1159,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Result.SaleId = model.SaleId;
 			sale_Result.ProceedId = model.ProceedId;
 			sale_Result.NextActionId = model.NextActionId;
+			sale_Result.DateContact = model.DateContact;
+			sale_Result.Master_ContactChannelId = model.Master_ContactChannelId;
 			sale_Result.MeetName = model.MeetName;
+			sale_Result.Tel = model.Tel;
 			sale_Result.AppointmentDate = model.AppointmentDate;
 			sale_Result.AppointmentTime = model.AppointmentTime;
 			sale_Result.Location = model.Location;
@@ -1153,6 +1203,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.NextActionId == 1)
 				{
 					nextActionName = "ทำการนัดหมาย";
+					if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+					if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+					if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 				}
 				else if (model.NextActionId == 2)
 				{

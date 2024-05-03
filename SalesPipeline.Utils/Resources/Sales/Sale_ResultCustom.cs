@@ -24,7 +24,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ProceedId { get; set; }
 
 		/// <summary>
@@ -38,9 +38,24 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? NextActionId { get; set; }
 
 		/// <summary>
+		/// วันที่ติดต่อ
+		/// </summary>
+		public DateTime? DateContact { get; set; }
+
+		/// <summary>
+		/// ช่องทางการติดต่อ
+		/// </summary>
+		public Guid? Master_ContactChannelId { get; set; }
+
+		/// <summary>
 		/// ผู้เข้าพบ
 		/// </summary>
 		public string? MeetName { get; set; }
+
+		/// <summary>
+		/// เบอร์โทร
+		/// </summary>
+		public string? Tel { get; set; }
 
 		/// <summary>
 		/// เอกสาร

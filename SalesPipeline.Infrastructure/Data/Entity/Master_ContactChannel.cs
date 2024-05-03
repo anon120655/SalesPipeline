@@ -26,4 +26,6 @@ public partial class Master_ContactChannel
     public string? Name { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+
+    public virtual ICollection<Sale_Result> Sale_Results { get; set; } = new List<Sale_Result>();
 }

@@ -34,13 +34,13 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=รับสาย 2=ไม่รับสาย
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ResultMeetId { get; set; }
 
 		/// <summary>
 		/// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? DesireLoanId { get; set; }
 
 		/// <summary>
