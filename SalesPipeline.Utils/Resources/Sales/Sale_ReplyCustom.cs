@@ -61,6 +61,10 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public int? Nex { get; set; }
 		public int? ProceedId { get; set; }
+		public DateTime? AppointmentDate { get; set; }
+		public TimeOnly? AppointmentTime { get; set; }
+		public string? Location { get; set; }
+		public string? Note { get; set; }
 
 	}
 }

@@ -297,6 +297,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<bool> CheckStatusById(Guid id,int statusid)
+		{
+			return await _repo.Context.Sale_Statuses.AnyAsync(x => x.Status == StatusModel.Active && x.SaleId == id && x.StatusId == statusid);
+		}
+
 		public async Task<SaleCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Sales
@@ -891,5 +896,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Pager = pager
 			};
 		}
+
 	}
 }

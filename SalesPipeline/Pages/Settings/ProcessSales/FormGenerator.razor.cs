@@ -293,10 +293,10 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Contact.ContactDate = DateTime.Now;
 			formModel.Sale_Contact.ContactResult = 1;
 			formModel.Sale_Contact.NextActionId = formModel.Nex;
-			formModel.Sale_Contact.AppointmentDate = new DateTime(2024, 03, 25);
-			formModel.Sale_Contact.AppointmentTime = new TimeOnly(11, 30, 00);
-			formModel.Sale_Contact.Location = "อเมซอล ในตัวเมือง2";
-			formModel.Sale_Contact.Note = "ลูกค้าสั่งกาแฟอเมริกาโน่";
+			formModel.Sale_Contact.AppointmentDate = formModel.AppointmentDate;
+			formModel.Sale_Contact.AppointmentTime = formModel.AppointmentTime;
+			formModel.Sale_Contact.Location = formModel.Location;
+			formModel.Sale_Contact.Note = formModel.Note;
 
 			//เข้าพบ
 			formModel.Sale_Meet = new();
@@ -309,11 +309,10 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			List<decimal> loanAmountlist = new List<decimal>() { 100000, 200000, 300000, 500000, 700000, 1000000, 1500000, 2000000, 5000000, 10000000 };
 			int loanAmount = random.Next(loanAmountlist.Count);
 			formModel.Sale_Meet.LoanAmount = loanAmountlist[loanAmount];
-
-			formModel.Sale_Meet.AppointmentDate = new DateTime(2024, 03, 30);
-			formModel.Sale_Meet.AppointmentTime = new TimeOnly(13, 30, 00);
-			formModel.Sale_Meet.Location = "สตาบัค ในตัวเมือง2";
-			formModel.Sale_Meet.Note = "นัดหมายส่งเอกสาร";
+			formModel.Sale_Meet.AppointmentDate = formModel.AppointmentDate;
+			formModel.Sale_Meet.AppointmentTime = formModel.AppointmentTime;
+			formModel.Sale_Meet.Location = formModel.Location;
+			formModel.Sale_Meet.Note = formModel.Note;
 
 			//ยื่นเอกสาร
 			formModel.Sale_Document = new();
@@ -323,6 +322,11 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Document.NameTh = "นายชื่อไทย";
 			formModel.Sale_Document.NameEn = "นายชื่ออังกฤษ";
 			formModel.Sale_Document.Birthday = new DateTime(2000, 03, 30);
+			formModel.Sale_Document.Religion = "พุทธ";
+			formModel.Sale_Document.HouseNo = "10/5";
+			formModel.Sale_Document.VillageNo = "9";
+			formModel.Sale_Document.ProvinceId = 1;
+			formModel.Sale_Document.AmphurId = 1;
 			formModel.Sale_Document.HouseRegistrationPath = "https://www.checkraka.com/uploaded/knowledge/article/1600993/pic8.jpg";
 			formModel.Sale_Document.OtherDocumentPath = "https://wp-assets.dotproperty-kh.com/wp-content/uploads/sites/9/2019/01/02171742/01.png";
 			formModel.Sale_Document.SignaturePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
@@ -332,16 +336,19 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			//ผลลัพธ์
 			formModel.Sale_Result = new();
 			formModel.Sale_Result.ProceedId = formModel.ProceedId.HasValue ? formModel.ProceedId.Value : 0;
+			if (formModel.ProceedId == 2)
+			{
+				formModel.Sale_Result.DateContact = DateTime.Now;
+				formModel.Sale_Result.Master_ContactChannelId = Guid.Parse("0b679ac7-b698-11ee-8c9b-0205965f5884"); //Line
+			}
 			formModel.Sale_Result.ResultMeetId = 1;
 			formModel.Sale_Result.MeetName = "นายทดสอบ เข้าพบ01";
+			formModel.Sale_Result.Tel = "0800000001";
 			formModel.Sale_Result.NextActionId = formModel.Nex;
-			if (formModel.Nex == 1)
-			{
-				formModel.Sale_Result.AppointmentDate = new DateTime(2024, 04, 25);
-				formModel.Sale_Result.AppointmentTime = new TimeOnly(13, 04, 00);
-				formModel.Sale_Result.Location = "co workspace the mall";
-				formModel.Sale_Result.Note = "ชั้น 4";
-			}
+			formModel.Sale_Result.AppointmentDate = formModel.AppointmentDate;
+			formModel.Sale_Result.AppointmentTime = formModel.AppointmentTime;
+			formModel.Sale_Result.Location = formModel.Location;
+			formModel.Sale_Result.Note = formModel.Note;
 
 			//ปิดการขาย
 			formModel.Sale_Close_Sale = new();

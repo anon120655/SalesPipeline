@@ -9,6 +9,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -399,7 +400,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				//_transaction.Commit();
+				_transaction.Commit();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
@@ -743,13 +744,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				statusSaleId = StatusSaleModel.Contact;
 			}
 
+			DateTime createDate = DateTime.Now;
+			if (!await _repo.Sales.CheckStatusById(model.SaleId, statusSaleId))
+			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				}, new() { ContactStartDate = model.ContactDate });
+			}
+
 			if (sale_Contact.NextActionId == 1)
 			{
 				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
 				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
 				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
-				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -776,17 +788,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (sale_Contact.NextActionId == 2)
 				{
 					nextActionName = "ติดต่ออีกครั้ง";
-				}
-
-				if (sale.StatusSaleId == StatusSaleModel.WaitContact)
-				{
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = model.SaleId,
-						StatusId = statusSaleId,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-					}, new() { ContactStartDate = model.ContactDate });
 				}
 			}
 
@@ -885,9 +886,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				resultMeetName = model.MeetId == 1 ? "เข้าพบสำเร็จ" : "เข้าพบไม่สำเร็จ";
 			}
 
-			if (sale_Meet.NextActionId == 1)
+			DateTime createDate = DateTime.Now;
+			if (!await _repo.Sales.CheckStatusById(model.SaleId, statusSaleId))
 			{
-				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -896,7 +897,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { LoanAmount = model.LoanAmount });
+			}
 
+			if (sale_Meet.NextActionId == 1)
+			{
 				//noteSystem = "รอยื่นเอกสาร";
 				statusSaleId = StatusSaleModel.WaitSubmitDocument;
 				nextActionName = "นัดเก็บเอกสาร/ประสงค์กู้";
@@ -907,24 +911,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateDate = createDate.AddSeconds(1),
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
-				}, new() { LoanAmount = model.LoanAmount });
+				});
 			}
 			else
 			{
 				if (sale_Meet.NextActionId == 2)
 				{
 					nextActionName = "เข้าพบอีกครั้ง";
-				}
-
-				if (sale.StatusSaleId == StatusSaleModel.WaitMeet)
-				{
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = model.SaleId,
-						StatusId = statusSaleId,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-					}, new() { LoanAmount = model.LoanAmount });
 				}
 			}
 
@@ -1056,9 +1049,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale_Document);
 			await _db.SaveAsync();
 
-			if (sale_Document.SubmitType == 1)
+			DateTime createDate = DateTime.Now;
+			if (!await _repo.Sales.CheckStatusById(model.SaleId, statusSaleId))
 			{
-				DateTime createDate = DateTime.Now;
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
 					SaleId = model.SaleId,
@@ -1067,7 +1060,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				});
+			}
 
+			if (sale_Document.SubmitType == 1)
+			{
 				nextActionName = "รอลงนามอนุมัติเอกสาร";
 				noteSystem = "รอผู้จัดการศูนย์ลงนามอนุมัติเอกสาร";
 				statusSaleId = StatusSaleModel.WaitApproveLoanRequest;
@@ -1080,19 +1076,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateByName = currentUserName,
 				});
 			}
-			else
-			{
-				if (sale.StatusSaleId == StatusSaleModel.WaitSubmitDocument)
-				{
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = model.SaleId,
-						StatusId = statusSaleId,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-					});
-				}
-			}
+
 
 			await CreateContactHistory(new()
 			{
@@ -1128,19 +1112,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (model.ProceedId == 2)
 			{
-				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
-				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
 				if (!model.DateContact.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
 				if (!model.Master_ContactChannelId.HasValue) throw new ExceptionCustom("ระบุช่องทางการติดต่อ");
 				if (String.IsNullOrEmpty(model.MeetName)) throw new ExceptionCustom("ระบุผู้ติดต่อ");
 				if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์โทร");
 				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
 				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 			}
 			else if (model.ProceedId == 3)
 			{
 				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
 				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 			}
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
@@ -1185,6 +1173,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			DateTime createDate = DateTime.Now;
+			if (!await _repo.Sales.CheckStatusById(model.SaleId, statusSaleId))
+			{
+				await _repo.Sales.UpdateStatusOnly(new()
+				{
+					SaleId = model.SaleId,
+					StatusId = statusSaleId,
+					CreateDate = createDate,
+					CreateBy = model.CurrentUserId,
+					CreateByName = currentUserName,
+				});
+			}
 
 			if (model.ProceedId == 4)
 			{
@@ -1203,21 +1202,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.NextActionId == 1)
 				{
 					nextActionName = "ทำการนัดหมาย";
-					if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-					if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
-					if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 				}
 				else if (model.NextActionId == 2)
 				{
-					await _repo.Sales.UpdateStatusOnly(new()
-					{
-						SaleId = model.SaleId,
-						StatusId = statusSaleId,
-						CreateDate = createDate,
-						CreateBy = model.CurrentUserId,
-						CreateByName = currentUserName,
-					});
-
 					statusSaleId = StatusSaleModel.WaitCloseSale;
 					//topicName = "รอปิดการขาย";
 					nextActionName = "รอปิดการขาย";
@@ -1230,20 +1217,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						CreateByName = currentUserName,
 					});
 				}
-				else
-				{
-					if (sale.StatusSaleId == StatusSaleModel.WaitResults)
-					{
-						await _repo.Sales.UpdateStatusOnly(new()
-						{
-							SaleId = model.SaleId,
-							StatusId = statusSaleId,
-							CreateBy = model.CurrentUserId,
-							CreateByName = currentUserName,
-						});
-					}
-				}
-
 			}
 
 			await CreateContactHistory(new()
