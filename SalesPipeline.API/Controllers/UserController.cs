@@ -316,7 +316,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpGet("GetUserTargetList")]
-		public async Task<IActionResult> GetUserTargetList([FromQuery] UserFilter model)
+		public async Task<IActionResult> GetUserTargetList([FromQuery] allFilter model)
 		{
 			try
 			{
