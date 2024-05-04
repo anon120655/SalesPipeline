@@ -17,6 +17,12 @@ public partial class User_Target_Sale
 
     public DateTime CreateDate { get; set; }
 
+    public int CreateBy { get; set; }
+
+    public DateTime UpdateDate { get; set; }
+
+    public int UpdateBy { get; set; }
+
     /// <summary>
     /// พนักงาน
     /// </summary>
@@ -33,6 +39,8 @@ public partial class User_Target_Sale
     /// ยอดที่ทำได้
     /// </summary>
     public decimal AmountActual { get; set; }
+
+    public virtual User CreateByNavigation { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

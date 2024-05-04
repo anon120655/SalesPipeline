@@ -315,8 +315,8 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetUserTargetList")]
-		public async Task<IActionResult> GetUserTargetList([FromQuery] allFilter model)
+		[HttpPost("GetUserTargetList")]
+		public async Task<IActionResult> GetUserTargetList(allFilter model)
 		{
 			try
 			{
@@ -330,5 +330,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPut("UpdateUserTarget")]
+		public async Task<IActionResult> UpdateUserTarget(User_Main model)
+		{
+			try
+			{
+				await _repo.User.UpdateUserTarget(model);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 	}
 }

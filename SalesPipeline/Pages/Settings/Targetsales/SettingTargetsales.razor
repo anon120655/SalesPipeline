@@ -84,7 +84,7 @@
 						<div class="col mb-2">
 							<label class="form-label">ปี</label>
 							<div class="">
-								<select @bind="filter.year" class="form-select">
+								<select @onchange="OnYear" class="form-select">
 									@if (LookUp.Years?.Count > 0)
 									{
 										foreach (var item in LookUp.Years)
@@ -104,16 +104,27 @@
 					<div class="row my-2 mb-3 d-flex align-items-center justify-content-end">
 						<div class="col-12 col-xl-8">
 						</div>
-						<div class="col">
-							<button @onclick="Search" type="button" class="btn btn-secondary text-white mw_7r">
-								<i class="fa fa-search fa-xs"></i> ยกเลิก
-							</button>
-						</div>
-						<div class="col">
-							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r">
-								<i class="fa fa-search fa-xs"></i> กำหนดยอด
-							</button>
-						</div>
+						@if (!isSetting)
+						{
+							<div class="col">
+								<button @onclick="SetSetting" type="button" class="btn btn-primary text-white mw_7r">
+									ตั้งค่ายอดเป้าหมาย
+								</button>
+							</div>
+						}
+						else
+						{
+							<div class="col">
+								<button @onclick="SetSetting" type="button" class="btn btn-secondary text-white mw_7r">
+									ยกเลิก
+								</button>
+							</div>
+							<div class="col">
+								<button @onclick="OnShowModal" type="button" class="btn btn-primary text-white mw_7r">
+									กำหนดยอด
+								</button>
+							</div>
+						}
 						<div class="col">
 							<span>จำนวน : @(ItemsSelected.Count())</span>
 						</div>
@@ -153,23 +164,30 @@
 										}
 										else
 										{
-											@* int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
-									int SequenceNo = 0; *@
+											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+											int SequenceNo = 0;
 											foreach (var item in Items)
 											{
 												User_Target_SaleCustom user_Target = new();
-												if (item.User_Target_Sales != null && item.User_Target_Sales.Count > 0)
+												if (item.User_Target_SaleUsers != null && item.User_Target_SaleUsers.Count > 0)
 												{
-													user_Target = item.User_Target_Sales.FirstOrDefault() ?? new();
+													user_Target = item.User_Target_SaleUsers.FirstOrDefault() ?? new();
 												}
 
 												<tr>
-													<td class="text-center">
-														<div class="form-check d-flex justify-content-center">
-															<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
-																   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
-														</div>
-													</td>
+													@if (!isSetting)
+													{
+														<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													}
+													else
+													{
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
+																	   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
+															</div>
+														</td>
+													}
 													<td class="text-center">@filter.year</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
@@ -178,6 +196,7 @@
 													<td class="">@item.BranchName</td>
 													<td class="text-center">@user_Target.AmountTarget.ToString(GeneralTxt.FormatDecimal2)</td>
 												</tr>
+												SequenceNo++;
 											}
 										}
 									</tbody>
@@ -198,6 +217,39 @@
 			</div>
 		</div>
 	</div>
+
+	<Modal @ref="modalTarget"
+		   Title=""
+		   IsVerticallyCentered="true"
+		   OnHidden="OnModalHidden"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<div class="row mb-4 text-center">
+				<h4 class="fw-bold">กำหนดยอดเป้าหมาย</h4>
+			</div>
+			<div class="row mb-4 text-center mx-3 d-flex align-items-center">
+				<div class="col">
+					<input type="text" class="form-control"
+						   @onchange="@((ChangeEventArgs e) => amountTarget = GeneralUtils.ToDecimal(e.Value))"
+						   value="@amountTarget.ToString(GeneralTxt.FormatDecimal2)">
+				</div>
+			</div>
+			@if (!String.IsNullOrEmpty(_errorMessage))
+			{
+				<MessageError errorMessage="@_errorMessage" />
+			}
+			<div class="row my-3 text-center">
+				<div class="d-flex justify-content-evenly align-items-center">
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideModal">กลับ</Button>
+					</div>
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Save">ยืนยัน</Button>
+					</div>
+				</div>
+			</div>
+		</BodyTemplate>
+	</Modal>
 }
 else
 {

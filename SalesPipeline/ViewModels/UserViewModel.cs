@@ -319,7 +319,9 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/User/GetUserTargetList?{model.SetParameter(true)}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/User/GetUserTargetList", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<UserCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<UserCustom>>>()
@@ -330,6 +332,25 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<PaginationView<List<UserCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>> UpdateUserTarget(User_Main model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				await _httpClient.PutAsync($"/v1/User/UpdateUserTarget", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

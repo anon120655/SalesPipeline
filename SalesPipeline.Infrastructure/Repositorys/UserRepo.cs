@@ -731,8 +731,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)
 		{
+			int _year = DateTime.Now.Year;
+			//ปี
+			if (!string.IsNullOrEmpty(model.year))
+			{
+				if (int.TryParse(model.year, out int year))
+				{
+					_year = year;
+				}
+			}
+
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.User_Target_Sales)
+										   .Include(x => x.User_Target_SaleUsers.Where(w => w.Year == _year))
 										   .Include(x => x.Master_Department_Branch)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
@@ -790,22 +800,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			//ปี
-			if (model.Years?.Count > 0)
-			{
-				var idList = GeneralUtils.ListStringToInt(model.Years);
-				if (idList.Count > 0)
-				{
-					foreach (var year in idList)
-					{
-						if (year != null)
-						{
-							query = query.Where(x => x.User_Target_Sales.Select(s => s.Year).Contains(year.Value));
-						}
-					}
-				}
-			}
-
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
@@ -816,5 +810,46 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Pager = pager
 			};
 		}
+
+		public async Task UpdateUserTarget(User_Main model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				DateTime _dateNow = DateTime.Now;
+
+				foreach (var item in model.ItemsTarget)
+				{
+					int CRUD = CRUDModel.Update;
+					var user_Target_Sales = await _repo.Context.User_Target_Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == item.UserId && x.Year == item.Year);
+					if (user_Target_Sales == null)
+					{
+						CRUD = CRUDModel.Create;
+						user_Target_Sales = new();
+						user_Target_Sales.CreateDate = _dateNow;
+						user_Target_Sales.CreateBy = model.CurrentUserId;
+					}
+					user_Target_Sales.UpdateDate = _dateNow;
+					user_Target_Sales.UpdateBy = model.CurrentUserId;
+
+					user_Target_Sales.UserId = item.UserId;
+					user_Target_Sales.Year = item.Year;
+					user_Target_Sales.AmountTarget = item.AmountTarget;
+
+					if (CRUD == CRUDModel.Create)
+					{
+						await _db.InsterAsync(user_Target_Sales);
+					}
+					else
+					{
+						_db.Update(user_Target_Sales);
+					}
+					await _db.SaveAsync();
+				}
+
+				_transaction.Commit();
+			}
+		}
+
+
 	}
 }

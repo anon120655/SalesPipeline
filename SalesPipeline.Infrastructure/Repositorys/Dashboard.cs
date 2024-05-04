@@ -1370,7 +1370,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var queryTarget = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
 
 			var query = _repo.Context.Sales
-				.Include(x => x.AssUser).ThenInclude(x => x.User_Target_Sales)
+				.Include(x => x.AssUser).ThenInclude(x => x.User_Target_SaleUsers)
 				.Where(x => x.Status == StatusModel.Active && x.AssUser != null);
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))

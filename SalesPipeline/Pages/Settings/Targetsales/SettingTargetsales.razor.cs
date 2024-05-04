@@ -6,6 +6,9 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using Microsoft.AspNetCore.Components;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Assignments;
+using System.Linq;
+using BlazorBootstrap;
 
 namespace SalesPipeline.Pages.Settings.Targetsales
 {
@@ -19,6 +22,9 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		private List<UserCustom>? Items;
 		private List<UserCustom> ItemsSelected = new();
 		public Pager? Pager;
+		public bool isSetting = false;
+		public decimal amountTarget { get; set; } = 0;
+		protected Modal modalTarget = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -113,6 +119,17 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 				{
 					Pager.UrlAction = "/setting/targetsales";
 				}
+
+				if (Items != null && ItemsSelected.Count > 0)
+				{
+					foreach (var item in Items)
+					{
+						if (ItemsSelected.Select(x => x.Id).Contains(item.Id))
+						{
+							item.IsSelected = true;
+						}
+					}
+				}
 			}
 			else
 			{
@@ -128,6 +145,14 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task SetSetting()
+		{
+			ItemsSelected = new();
+			isSetting = !isSetting;
+			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async Task OnSelectPagesize(int _number)
@@ -233,19 +258,23 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			}
 		}
 
-		[JSInvokable]
-		public async Task OnYear(string _ids, string _name)
+		public async Task OnYear(ChangeEventArgs e)
 		{
-			filter.Years = new();
 			filter.year = null;
 			StateHasChanged();
 			await Task.Delay(1);
 
-			if (_ids != null)
+			if (e.Value != null)
 			{
-				filter.Years.Add(_ids);
-				filter.year = _ids;
+				if (int.TryParse(e.Value.ToString(), out int year))
+				{
+					filter.year = year.ToString();
+				}
 			}
+
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 		protected void OnCheckCustomer(UserCustom model, object? checkedValue)
@@ -259,6 +288,66 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			{
 				model.IsSelected = false;
 				ItemsSelected.Remove(model);
+			}
+		}
+
+		private async Task OnModalHidden()
+		{
+			await Task.Delay(1);
+		}
+
+		public async Task OnShowModal()
+		{
+			amountTarget = 0;
+			StateHasChanged();
+			await Task.Delay(1);
+			await modalTarget.ShowAsync();
+		}
+
+		public async Task OnHideModal()
+		{
+			await modalTarget.HideAsync();
+		}
+
+
+		protected async Task Save()
+		{
+			_errorMessage = null;
+
+			if (ItemsSelected != null && ItemsSelected.Count > 0 && int.TryParse(filter.year,out int year))
+			{
+				List<User_Target_SaleCustom> itemsTarget = new();
+				foreach (var item in ItemsSelected)
+				{
+					if (!itemsTarget.Select(x => x.UserId).Contains(item.Id))
+					{
+						itemsTarget.Add(new()
+						{
+							UserId = item.Id,
+							Year = year,
+							AmountTarget = amountTarget
+						});
+					}
+				}
+
+				var response = await _userViewModel.UpdateUserTarget(new()
+				{
+					CurrentUserId = UserInfo.Id,
+					ItemsTarget = itemsTarget
+				});
+
+				if (response.Status)
+				{
+					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+					await OnHideModal();
+					await SetSetting();
+					await SetModel();
+				}
+				else
+				{
+					_errorMessage = response.errorMessage;
+					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+				}
 			}
 		}
 

@@ -120,7 +120,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
-		public virtual List<User_Target_SaleCustom>? User_Target_Sales { get; set; }
+		public virtual List<User_Target_SaleCustom>? User_Target_SaleUsers { get; set; }
 
 		//Custom
 		public bool IsSelected { get; set; }

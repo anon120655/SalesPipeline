@@ -2674,6 +2674,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("User_Target_Sale", tb => tb.HasComment("เป้ายอดการขาย"));
 
+            entity.HasIndex(e => e.CreateBy, "CreateBy");
+
             entity.HasIndex(e => e.UserId, "UserId");
 
             entity.Property(e => e.AmountActual)
@@ -2682,16 +2684,24 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AmountTarget)
                 .HasPrecision(18, 2)
                 .HasComment("ยอดเป้าหมาย");
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UserId)
                 .HasComment("พนักงาน")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Year).HasColumnType("int(11)");
 
-            entity.HasOne(d => d.User).WithMany(p => p.User_Target_Sales)
+            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.User_Target_SaleCreateByNavigations)
+                .HasForeignKey(d => d.CreateBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_target_sale_ibfk_2");
+
+            entity.HasOne(d => d.User).WithMany(p => p.User_Target_SaleUsers)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("user_target_sale_ibfk_1");
