@@ -1,5 +1,4 @@
-﻿
-@page "/setting/targetsales"
+﻿@page "/setting/targetsales"
 
 <PageTitle>เป้าหมายการขาย</PageTitle>
 
@@ -85,7 +84,7 @@
 						<div class="col mb-2">
 							<label class="form-label">ปี</label>
 							<div class="">
-								<select id="Year" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+								<select @bind="filter.year" class="form-select">
 									@if (LookUp.Years?.Count > 0)
 									{
 										foreach (var item in LookUp.Years)
@@ -126,7 +125,7 @@
 									<thead>
 										<tr>
 											<th class="text-center"></th>
-											<th class="text-center">ลำดับที่</th>
+											<th class="text-center">ปี</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อพนักงาน</th>
 											<th class="text-center">กิจการสาขาภาค</th>
@@ -154,14 +153,14 @@
 										}
 										else
 										{
-											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
-											int SequenceNo = 0;
+											@* int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+									int SequenceNo = 0; *@
 											foreach (var item in Items)
 											{
 												User_Target_SaleCustom user_Target = new();
 												if (item.User_Target_Sales != null && item.User_Target_Sales.Count > 0)
 												{
-													
+													user_Target = item.User_Target_Sales.FirstOrDefault() ?? new();
 												}
 
 												<tr>
@@ -171,7 +170,7 @@
 																   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
 														</div>
 													</td>
-													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													<td class="text-center">@filter.year</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@item.FullName</td>
 													<td class="">@item.Master_Department_Branch?.Name</td>
@@ -179,7 +178,6 @@
 													<td class="">@item.BranchName</td>
 													<td class="text-center">@user_Target.AmountTarget.ToString(GeneralTxt.FormatDecimal2)</td>
 												</tr>
-												SequenceNo++;
 											}
 										}
 									</tbody>

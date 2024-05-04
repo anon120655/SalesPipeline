@@ -61,6 +61,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? ids2 { get; set; }
 		public string? ids3 { get; set; }
 		public string? sort { get; set; }
+		public string? year { get; set; }
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }
 		public DateTime? returndate { get; set; }
@@ -228,23 +229,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (!String.IsNullOrEmpty(sort))
 				ParameterAll += $"&sort={sort}";
 
-			//if (Selecteds?.Count > 0)
-			//{
-			//	string joined = string.Join(",", Selecteds);
-			//	ParameterAll += $"&ids={joined}";
-			//}
-
-			//if (Selecteds2?.Count > 0)
-			//{
-			//	string joined = string.Join(",", Selecteds2);
-			//	ParameterAll += $"&ids2={joined}";
-			//}
-
-			//if (Selecteds3?.Count > 0)
-			//{
-			//	string joined = string.Join(",", Selecteds3);
-			//	ParameterAll += $"&ids3={joined}";
-			//}
+			if (!String.IsNullOrEmpty(year))
+				ParameterAll += $"&year={year}";
 
 			if (DepBranchs?.Count > 0)
 			{
@@ -428,6 +414,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(sort), out var _sort))
 				sort = _sort;
 
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(year), out var _year))
+				year = _year;
+
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("startdate", out var _startdate))
 				startdate = GeneralUtils.DateNotNullToEn(_startdate, "yyyy-MM-dd", Culture: "en-US");
 
@@ -436,19 +425,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("returndate", out var _returndate))
 				returndate = GeneralUtils.DateNotNullToEn(_returndate, "yyyy-MM-dd", Culture: "en-US");
-
-			//if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("ids", out var _Selecteds))
-			//{
-			//	Selecteds = new();
-			//	List<string> Category = _Selecteds.ToString().Split(',').ToList<string>();
-			//	if (Category.Count > 0)
-			//	{
-			//		foreach (var item in Category)
-			//		{
-			//			Selecteds.Add(item);
-			//		}
-			//	}
-			//}
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranchs", out var _DepBranchs))
 			{
@@ -529,7 +505,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 			}
 
 		}
-
 
 	}
 }

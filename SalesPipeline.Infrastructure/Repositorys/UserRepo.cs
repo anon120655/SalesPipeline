@@ -758,7 +758,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
 
 			if (!String.IsNullOrEmpty(model.emp_name))
-				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_name));
+				query = query.Where(x => x.FullName != null && x.FullName.Contains(model.emp_name));
 
 			//กิจการสาขาภาค[]
 			if (model.DepBranchs?.Count > 0)

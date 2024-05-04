@@ -65,13 +65,14 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			var dataYear = await _masterViewModel.GetYear(new allFilter() { status = StatusModel.Active });
 			if (dataYear != null && dataYear.Status)
 			{
-				LookUp.Years = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				//LookUp.Years = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				LookUp.Years = new();
 				if (dataYear.Data?.Count > 0)
 				{
 					LookUp.Years.AddRange(dataYear.Data);
 					StateHasChanged();
 					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnYear", "#Year");
+					//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnYear", "#Year");
 				}
 			}
 			else
@@ -91,6 +92,11 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 				uriQuery = $"?{parematerAll}";
 
 			filter.SetUriQuery(uriQuery);
+
+			if (String.IsNullOrEmpty(filter.year))
+			{
+				filter.year = DateTime.Now.Year.ToString();
+			}
 
 			await SetModel();
 			StateHasChanged();
@@ -144,7 +150,7 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		public async Task OnDepBranch(string _id, string _name)
 		{
 			filter.DepBranchs = new();
-			filter.provinceid = null;
+			filter.Provinces = new();
 			LookUp.Provinces = new();
 			LookUp.Branchs = new();
 			StateHasChanged();
@@ -181,7 +187,7 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			LookUp.Branchs = new();
-			filter.provinceid = null;
+			filter.Provinces = new();
 			filter.Branchs = new();
 			StateHasChanged();
 			await Task.Delay(1);
@@ -190,7 +196,7 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 
 			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID) && provinceID > 0)
 			{
-				filter.provinceid = provinceID;
+				filter.Provinces.Add(provinceID.ToString());
 
 				var dataBranchs = await _masterViewModel.GetBranch(provinceID);
 				if (dataBranchs != null && dataBranchs.Status)
@@ -231,12 +237,14 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		public async Task OnYear(string _ids, string _name)
 		{
 			filter.Years = new();
+			filter.year = null;
 			StateHasChanged();
 			await Task.Delay(1);
 
 			if (_ids != null)
 			{
 				filter.Years.Add(_ids);
+				filter.year = _ids;
 			}
 		}
 
