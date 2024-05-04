@@ -712,11 +712,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
 			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
 
+			if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+			if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+			if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
 			string? topicName = "ติดต่อ";
-			//string? noteSystem = null;
 			string? resultContactName = string.Empty;
 			string? nextActionName = string.Empty;
 
@@ -751,6 +754,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					SaleId = model.SaleId,
 					StatusId = statusSaleId,
+					CreateDate = createDate,
 					CreateBy = model.CurrentUserId,
 					CreateByName = currentUserName,
 				}, new() { ContactStartDate = model.ContactDate });
@@ -758,20 +762,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale_Contact.NextActionId == 1)
 			{
-				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
-				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
-
-				await _repo.Sales.UpdateStatusOnly(new()
-				{
-					SaleId = model.SaleId,
-					StatusId = statusSaleId,
-					CreateDate = createDate,
-					CreateBy = model.CurrentUserId,
-					CreateByName = currentUserName,
-				}, new() { ContactStartDate = model.ContactDate });
-
-				//noteSystem = "รอเข้าพบ";
 				statusSaleId = StatusSaleModel.WaitMeet;
 				nextActionName = "ทำการนัดหมาย";
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -813,7 +803,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				AppointmentTime = model.AppointmentTime,
 				Location = model.Location,
 				Note = model.Note,
-				//NoteSystem = noteSystem,
 			});
 
 			return _mapper.Map<Sale_ContactCustom>(sale_Contact);

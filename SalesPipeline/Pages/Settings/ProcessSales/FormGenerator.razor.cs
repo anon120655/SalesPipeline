@@ -15,6 +15,8 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 		[Parameter]
 		public Guid id { get; set; }
 		[Parameter]
+		public Guid? saleid { get; set; }
+		[Parameter]
 		public Guid id_reply { get; set; }
 
 		string? _errorMessage = null;
@@ -88,6 +90,10 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			{
 				if (data.Data != null)
 				{
+					if (saleid.HasValue)
+					{
+						formModel.SaleId = saleid.Value;
+					}
 					var masterLists = await _masterViewModel.MasterLists(new() { status = StatusModel.Active });
 					if (masterLists != null && masterLists.Status)
 					{
@@ -387,7 +393,7 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			{
 				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
 				HideLoading();
-				Cancel();
+				_Navs.NavigateTo($"/setting/processsales/formgenerator/create/{id}/{formModel.SaleId}");
 			}
 			else
 			{

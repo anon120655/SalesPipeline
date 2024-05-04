@@ -1,4 +1,4 @@
-﻿@page "/setting/processsales/formgenerator/create/{id:guid}"
+﻿@page "/setting/processsales/formgenerator/create/{id:guid}/{saleid:guid?}"
 @page "/setting/processsales/formgenerator/update/{id_reply:guid}"
 
 <PageTitle>Form Generator</PageTitle>
@@ -68,6 +68,11 @@
 										<td class="text-danger">2 = ติดต่อขอเอกสาร</td>
 										<td class="text-danger">3 = เข้าพบรับเอกสาร</td>
 										<td class="text-danger">4 = ไม่ผ่านการพิจารณา</td>
+									</tr>
+									<tr>
+										<td class="text-danger">ผลลัพธ์(Next Action)</td>
+										<td class="text-danger">1 = ทำการนัดหมาย </td>
+										<td class="text-danger">2 = รอปิดการขาย</td>
 									</tr>
 									<tr>
 										<td class="text-danger">ปิดการขาย</td>
