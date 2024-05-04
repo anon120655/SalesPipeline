@@ -315,5 +315,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetUserTargetList")]
+		public async Task<IActionResult> GetUserTargetList([FromQuery] UserFilter model)
+		{
+			try
+			{
+				var response = await _repo.User.GetUserTargetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

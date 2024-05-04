@@ -120,10 +120,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
-		//public virtual ICollection<Assignment_RMCustom>? Assignment_RMs { get; set; }
+		public virtual List<User_Target_SaleCustom>? User_Target_Sales { get; set; }
 
-
-		//Custom --------------------------------------
+		//Custom
+		public bool IsSelected { get; set; }
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }
 		public string? FirstNames
@@ -162,7 +162,5 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 			}
 		}
 
-		//[UserAtt(FieldName = "AssignmentId")]
-		//public Guid? AssignmentId { get; set; }
 	}
 }

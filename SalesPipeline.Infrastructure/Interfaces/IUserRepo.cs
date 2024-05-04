@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+﻿using NPOI.Util;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Interfaces
@@ -25,6 +26,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<User_RoleCustom> GetRoleById(int id);
 		Task<string?> GetRoleCodeById(int id);
 		Task<User_RoleCustom?> GetRoleByUserId(int id);
-		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model);
+		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model); 
+		Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model);
 	}
 }

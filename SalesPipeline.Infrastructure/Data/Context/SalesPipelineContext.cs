@@ -88,6 +88,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_TypeLoanRequest> Master_TypeLoanRequests { get; set; }
 
+    public virtual DbSet<Master_Year> Master_Years { get; set; }
+
     public virtual DbSet<Master_Yield> Master_Yields { get; set; }
 
     public virtual DbSet<MenuItem> MenuItems { get; set; }
@@ -1272,6 +1274,19 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Year>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Year");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
         });
 
         modelBuilder.Entity<Master_Yield>(entity =>

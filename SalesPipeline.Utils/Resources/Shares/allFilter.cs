@@ -72,6 +72,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<string?>? Branchs { get; set; }
 		public List<string?>? RMUsers { get; set; }
 		public List<string?>? AssUsers { get; set; }
+		public List<string?>? Years { get; set; }
 
 
 		public string SetParameter(bool? isPage = null)
@@ -273,6 +274,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 			{
 				string joined = string.Join(",", AssUsers);
 				ParameterAll += $"&assuser={joined}";
+			}
+
+			if (Years?.Count > 0)
+			{
+				string joined = string.Join(",", Years);
+				ParameterAll += $"&years={joined}";
 			}
 
 			if (startdate.HasValue)
@@ -504,6 +511,19 @@ namespace SalesPipeline.Utils.Resources.Shares
 					foreach (var item in lists)
 					{
 						AssUsers.Add(item);
+					}
+				}
+			}
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("years", out var _Years))
+			{
+				Years = new();
+				List<string> lists = _Years.ToString().Split(',').ToList<string>();
+				if (lists.Count > 0)
+				{
+					foreach (var item in lists)
+					{
+						Years.Add(item);
 					}
 				}
 			}

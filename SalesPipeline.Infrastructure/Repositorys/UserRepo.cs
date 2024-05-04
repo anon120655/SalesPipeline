@@ -12,6 +12,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -728,5 +729,92 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)
+		{
+			var query = _repo.Context.Users.Include(x => x.Role)
+										   .Include(x => x.User_Target_Sales)
+										   .Include(x => x.Master_Department_Branch)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
+										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+										   .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (!String.IsNullOrEmpty(model.type))
+			{
+				if (model.type == UserTypes.Admin)
+				{
+					query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
+				}
+				else if (model.type == UserTypes.User)
+				{
+					query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_name));
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+				}
+			}
+
+			//จังหวัด[]
+			if (model.Provinces?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Provinces);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.ProvinceId.HasValue && idList.Contains(x.ProvinceId));
+				}
+			}
+
+			//สาขา[]
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
+			}
+
+			//ปี
+			if (model.Years?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Years);
+				if (idList.Count > 0)
+				{
+					foreach (var year in idList)
+					{
+						if (year != null)
+						{
+							query = query.Where(x => x.User_Target_Sales.Select(s => s.Year).Contains(year.Value));
+						}
+					}
+				}
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<UserCustom>>()
+			{
+				Items = _mapper.Map<List<UserCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
 	}
 }

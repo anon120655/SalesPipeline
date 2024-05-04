@@ -1,24 +1,28 @@
 using Microsoft.JSInterop;
-using SalesPipeline.Utils;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Dashboards;
-using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils;
+using Microsoft.AspNetCore.Components;
+using SalesPipeline.Utils.Resources.Sales;
 
-namespace SalesPipeline.Pages.Dashboards
+namespace SalesPipeline.Pages.Settings.Targetsales
 {
-	public partial class AvgDealRm
+	public partial class SettingTargetsales
 	{
+
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<SaleGroupByModel>? Items;
+		private List<UserCustom>? Items;
+		private List<UserCustom> ItemsSelected = new();
 		public Pager? Pager;
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Dashboard) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetTargetsales) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 		}
@@ -28,7 +32,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (firstRender)
 			{
 				await SetInitManual();
-				await Task.Delay(10);
+				StateHasChanged();
 				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
 				await SetQuery();
@@ -58,11 +62,30 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataYear = await _masterViewModel.GetYear(new allFilter() { status = StatusModel.Active });
+			if (dataYear != null && dataYear.Status)
+			{
+				LookUp.Years = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				if (dataYear.Data?.Count > 0)
+				{
+					LookUp.Years.AddRange(dataYear.Data);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnYear", "#Year");
+				}
+			}
+			else
+			{
+				_errorMessage = dataYear?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
 		{
-			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+			string uriQuery = String.Empty;
+
+			uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
 
 			if (parematerAll != null)
 				uriQuery = $"?{parematerAll}";
@@ -75,15 +98,14 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
-			filter.userid = UserInfo.Id;
-			var data = await _dashboarViewModel.GetListDealRMById(filter);
+			var data = await _userViewModel.GetUserTargetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/dashboard/avgdealrm";
+					Pager.UrlAction = "/setting/targetsales";
 				}
 			}
 			else
@@ -93,6 +115,13 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 
 			StateHasChanged();
+		}
+
+		protected async Task Search()
+		{
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 		protected async Task OnSelectPagesize(int _number)
@@ -109,13 +138,6 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			await SetQuery(parematerAll);
 			StateHasChanged();
-		}
-
-		protected async Task Search()
-		{
-			await SetModel();
-			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 		[JSInvokable]
@@ -205,6 +227,32 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		[JSInvokable]
+		public async Task OnYear(string _ids, string _name)
+		{
+			filter.Years = new();
+			StateHasChanged();
+			await Task.Delay(1);
+
+			if (_ids != null)
+			{
+				filter.Years.Add(_ids);
+			}
+		}
+
+		protected void OnCheckCustomer(UserCustom model, object? checkedValue)
+		{
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				model.IsSelected = true;
+				ItemsSelected.Add(model);
+			}
+			else
+			{
+				model.IsSelected = false;
+				ItemsSelected.Remove(model);
+			}
+		}
 
 	}
 }

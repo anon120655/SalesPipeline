@@ -53,6 +53,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_ISICCode, Master_ISICCodeCustom>().ReverseMap();
 			CreateMap<Entity.Master_Reason_CloseSale, Master_Reason_CloseSaleCustom>().ReverseMap();
 			CreateMap<Entity.Master_StatusSale, Master_StatusSaleCustom>().ReverseMap();
+			CreateMap<Entity.Master_Year, Master_YearCustom>().ReverseMap();
 
 			//Thailand
 			CreateMap<Entity.InfoProvince, InfoProvinceCustom>().ReverseMap();

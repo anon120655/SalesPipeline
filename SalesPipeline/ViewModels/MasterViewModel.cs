@@ -402,6 +402,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Master_YearCustom>>> GetYear(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/GetYear", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<Master_YearCustom>>(content);
+				return new ResultModel<List<Master_YearCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Master_YearCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		//ฝ่ายกิจการสาขา
 		public async Task<ResultModel<Master_Department_BranchCustom>> CreateDepBranch(Master_Department_BranchCustom model)
 		{

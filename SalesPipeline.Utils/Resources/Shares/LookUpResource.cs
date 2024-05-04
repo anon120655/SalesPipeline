@@ -31,6 +31,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_ISICCodeCustom>? ISICCode { get; set; }
 		public List<Master_LoanTypeCustom>? LoanType { get; set; }
 		public List<Master_ReasonReturnCustom>? ReasonReturn { get; set; }
+		public List<Master_YearCustom>? Years { get; set; }
 		public List<Master_StatusSaleCustom>? StatusSale { get; set; }
 		public List<InfoProvinceCustom>? Provinces { get; set; }
 		public List<InfoAmphurCustom>? Amphurs { get; set; }

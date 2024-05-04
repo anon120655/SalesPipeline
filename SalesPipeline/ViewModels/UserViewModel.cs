@@ -315,6 +315,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<UserCustom>>>> GetUserTargetList(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/User/GetUserTargetList?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<UserCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<UserCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<UserCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 	}
 }

@@ -45,6 +45,7 @@
 		public const int SetReason = 250400;
 		public const int SetSLA = 250500;
 		public const int SetProcessSales = 250600;
+		public const int SetTargetsales = 250700;
 
 	}
 }

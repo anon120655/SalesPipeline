@@ -36,6 +36,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public virtual UserCustom? User { get; set; }
 
+
+		//Custom
 		public string? AmountTargetStr
 		{
 			get

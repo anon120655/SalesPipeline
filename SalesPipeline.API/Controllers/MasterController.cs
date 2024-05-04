@@ -423,6 +423,26 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ปี
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost("GetYear")]
+		public async Task<IActionResult> GetYear([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master.Year(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("GetBranchByDepBranchId")]
 		public async Task<IActionResult> GetBranchByDepBranchId(allFilter model)
 		{
