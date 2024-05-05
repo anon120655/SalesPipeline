@@ -83,9 +83,9 @@ public partial class Sale
     /// <summary>
     /// กิจการสาขาภาค
     /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
+    public Guid? Master_Branch_RegionId { get; set; }
 
-    public string? Master_Department_BranchName { get; set; }
+    public string? Master_Branch_RegionName { get; set; }
 
     /// <summary>
     /// จังหวัด
@@ -140,6 +140,8 @@ public partial class Sale
     public virtual InfoBranch? Branch { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
+
+    public virtual Master_Branch_Region? Master_Branch_Region { get; set; }
 
     public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 

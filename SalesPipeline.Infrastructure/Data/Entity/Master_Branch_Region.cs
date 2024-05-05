@@ -30,5 +30,7 @@ public partial class Master_Branch_Region
 
     public string? Name { get; set; }
 
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -127,7 +127,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("currentuserid not match assuserid");
 
 						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
-						sales.Master_Department_BranchId = null;
+						sales.Master_Branch_RegionId = null;
 						//sales.Master_Department_BranchName = null;
 						sales.ProvinceId = null;
 						//sales.ProvinceName = null;
@@ -193,7 +193,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sales.AssCenterUser = null;
 
 						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
-						sales.Master_Department_BranchId = null;
+						sales.Master_Branch_RegionId = null;
 						//sales.Master_Department_BranchName = null;
 						sales.ProvinceId = null;
 						//sales.ProvinceName = null;

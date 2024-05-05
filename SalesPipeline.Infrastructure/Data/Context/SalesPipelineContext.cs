@@ -1428,9 +1428,11 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.AssUserId, "AssignedUserId");
 
+            entity.HasIndex(e => e.BranchId, "BranchId");
+
             entity.HasIndex(e => e.CustomerId, "CustomerId");
 
-            entity.HasIndex(e => e.BranchId, "Master_Department_BranchId");
+            entity.HasIndex(e => e.Master_Branch_RegionId, "Master_Branch_RegionId");
 
             entity.HasIndex(e => e.Master_Reason_CloseSaleId, "Master_Reason_CloseSaleId");
 
@@ -1474,8 +1476,8 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.LoanAmount)
                 .HasPrecision(18, 2)
                 .HasComment("จำนวนการกู้");
-            entity.Property(e => e.Master_Department_BranchId).HasComment("กิจการสาขาภาค");
-            entity.Property(e => e.Master_Department_BranchName).HasMaxLength(255);
+            entity.Property(e => e.Master_Branch_RegionId).HasComment("กิจการสาขาภาค");
+            entity.Property(e => e.Master_Branch_RegionName).HasMaxLength(255);
             entity.Property(e => e.Master_Reason_CloseSaleId).HasComment("เหตุผลไม่ประสงค์กู้");
             entity.Property(e => e.PercentChanceLoanPass)
                 .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
@@ -1512,12 +1514,16 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("sale_ibfk_5");
+                .HasConstraintName("sale_ibfk_8");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_ibfk_1");
+
+            entity.HasOne(d => d.Master_Branch_Region).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.Master_Branch_RegionId)
+                .HasConstraintName("sale_ibfk_7");
 
             entity.HasOne(d => d.Master_Reason_CloseSale).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.Master_Reason_CloseSaleId)
@@ -2472,9 +2478,9 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.LevelId, "LevelId");
 
-            entity.HasIndex(e => e.Master_DepartmentId, "Master_DepartmentId");
+            entity.HasIndex(e => e.Master_Branch_RegionId, "Master_Branch_Region");
 
-            entity.HasIndex(e => e.Master_Branch_RegionId, "Master_Department_Branch");
+            entity.HasIndex(e => e.Master_DepartmentId, "Master_DepartmentId");
 
             entity.HasIndex(e => e.PositionId, "PositionId");
 

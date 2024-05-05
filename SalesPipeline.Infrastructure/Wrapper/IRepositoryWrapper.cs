@@ -25,7 +25,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMaster Master { get; }
 		IDashboard Dashboard { get; }
 		IMasterDepartment MasterDepartment { get; }
-		IMasterDepBranch MasterDepBranch { get; }
+		IMasterBranchReg MasterBranchReg { get; }
 		IMasterLoanTypes MasterLoanTypes { get; }
 		IMasterReasonReturns MasterReasonReturn { get; }
 		IMasterSLAOperations MasterSLAOperation { get; }

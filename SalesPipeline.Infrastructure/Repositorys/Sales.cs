@@ -40,7 +40,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
-			var master_Department_BranchName = await _repo.MasterDepBranch.GetNameById(model.Master_Department_BranchId ?? Guid.Empty);
+			var master_Branch_RegionName = await _repo.MasterBranchReg.GetNameById(model.Master_Branch_RegionId ?? Guid.Empty);
 			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
 			var branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId ?? 0);
 
@@ -57,8 +57,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
-			sale.Master_Department_BranchId = model.Master_Department_BranchId;
-			sale.Master_Department_BranchName = master_Department_BranchName;
+			sale.Master_Branch_RegionId = model.Master_Branch_RegionId;
+			sale.Master_Branch_RegionName = master_Branch_RegionName;
 			sale.ProvinceId = model.ProvinceId;
 			sale.ProvinceName = provinceName;
 			sale.BranchId = model.BranchId;
@@ -527,7 +527,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 

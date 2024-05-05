@@ -88,9 +88,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// กิจการสาขาภาค
 		/// </summary>
-		public Guid? Master_Department_BranchId { get; set; }
+		public Guid? Master_Branch_RegionId { get; set; }
 
-		public string? Master_Department_BranchName { get; set; }
+		public string? Master_Branch_RegionName { get; set; }
 
 		/// <summary>
 		/// จังหวัด

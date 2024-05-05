@@ -37,6 +37,8 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		{
 			if (firstRender)
 			{
+				filter.userid = UserInfo.Id;
+
 				await SetInitManual();
 				StateHasChanged();
 				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");

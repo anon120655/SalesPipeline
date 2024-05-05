@@ -185,10 +185,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (assignment_Branch.User != null)
 						{
-							sale.Master_Department_BranchId = assignment_Branch.User.Master_Branch_RegionId;
+							sale.Master_Branch_RegionId = assignment_Branch.User.Master_Branch_RegionId;
 							if (assignment_Branch.User.Master_Branch_Region != null)
 							{
-								sale.Master_Department_BranchName = assignment_Branch.User.Master_Branch_Region.Name;
+								sale.Master_Branch_RegionName = assignment_Branch.User.Master_Branch_Region.Name;
 							}
 							sale.ProvinceId = assignment_Branch.User.ProvinceId;
 							sale.ProvinceName = assignment_Branch.User.ProvinceName;

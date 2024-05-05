@@ -57,7 +57,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -82,7 +82,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -121,7 +121,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
-					statusTotal = await query.Where(x => x.Master_Department_BranchId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
+					statusTotal = await query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
 							   {
 								   StatusID = group.Key,
@@ -228,7 +228,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 					{
-						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
+						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Branch_RegionId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
 								   .Select(group => new SaleStatusGroupByModel()
 								   {
 									   StatusID = group.Key,
@@ -351,7 +351,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.User.BranchId == user.BranchId);
+				query = query.Where(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -417,7 +417,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -442,7 +442,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -528,8 +528,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				saleQuery = saleQuery.Where(x => x.BranchId == user.BranchId);
-				sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.BranchId == user.BranchId);
+				saleQuery = saleQuery.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -557,8 +557,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					saleQuery = saleQuery.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-					sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.Master_Department_BranchId.HasValue && idList.Contains(x.Sale.Master_Department_BranchId));
+					saleQuery = saleQuery.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
+					sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
 				}
 			}
 
@@ -681,8 +681,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -710,8 +710,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Department_BranchId.HasValue && idList.Contains(x.Sale.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
+					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
 				}
 			}
 
@@ -802,7 +802,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -827,7 +827,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -887,7 +887,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -912,7 +912,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1055,7 +1055,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1080,7 +1080,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1157,7 +1157,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1182,7 +1182,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1260,7 +1260,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1285,7 +1285,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Sale.Master_Department_BranchId.HasValue && idList.Contains(x.Sale.Master_Department_BranchId));
+					query = query.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
 				}
 			}
 
@@ -1379,7 +1379,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1404,7 +1404,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1470,8 +1470,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-				queryCloseSale = queryCloseSale.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				queryCloseSale = queryCloseSale.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1499,8 +1499,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
-					queryCloseSale = queryCloseSale.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
+					queryCloseSale = queryCloseSale.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1592,7 +1592,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1617,7 +1617,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1684,7 +1684,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1709,7 +1709,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1830,7 +1830,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -1855,7 +1855,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -1987,7 +1987,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2012,7 +2012,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -2117,7 +2117,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2142,7 +2142,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -2212,7 +2212,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+				query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 
 			if (!String.IsNullOrEmpty(model.type))
@@ -2436,7 +2436,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+				query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
@@ -2559,7 +2559,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2607,7 +2607,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2654,7 +2654,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2679,7 +2679,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -2788,7 +2788,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Sale.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2813,7 +2813,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Sale.Master_Department_BranchId.HasValue && idList.Contains(x.Sale.Master_Department_BranchId));
+					query = query.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
 				}
 			}
 
@@ -2891,7 +2891,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2926,7 +2926,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -2948,7 +2948,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Branch_RegionId.HasValue).GroupBy(g => g.Master_Branch_RegionId)
 										 .Select(group => new
 										 {
 											 GroupID = group.Key.ToString(),
@@ -3024,7 +3024,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -3059,7 +3059,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -3081,11 +3081,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Branch_RegionId.HasValue).GroupBy(g => g.Master_Branch_RegionId)
 										 .Select(group => new
 										 {
 											 GroupID = group.Key.ToString(),
-											 Name = group.First().Master_Department_BranchName,
+											 Name = group.First().Master_Branch_RegionName,
 											 Value = group.Sum(s => s.LoanAmount)
 										 }).ToListAsync();
 			if (queryRegion.Count > 0)
@@ -3127,7 +3127,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -3162,7 +3162,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -3184,31 +3184,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			Guid? department_BranchIdDefault = null;
+			Guid? branch_RegionIdDefault = null;
 			if (model.DepBranchs == null || model.DepBranchs?.Count == 0)
 			{
 				//default กิจการสาขาภาคที่มีขอดขายสูงสูด
-				var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+				var department_BranchMax = await query.Where(x => x.LoanAmount > 0 && x.Master_Branch_RegionId.HasValue).GroupBy(g => g.Master_Branch_RegionId)
 										 .Select(group => new
 										 {
 											 GroupID = group.Key,
-											 Name = group.First().Master_Department_BranchName,
+											 Name = group.First().Master_Branch_RegionName,
 											 Value = group.Sum(s => s.LoanAmount)
 										 }).OrderByDescending(x => x.Value).FirstOrDefaultAsync();
 
 
 				if (department_BranchMax != null && department_BranchMax.GroupID.HasValue)
 				{
-					department_BranchIdDefault = department_BranchMax.GroupID;
-					query = query.Where(x => x.Master_Department_BranchId == department_BranchIdDefault);
+					branch_RegionIdDefault = department_BranchMax.GroupID;
+					query = query.Where(x => x.Master_Branch_RegionId == branch_RegionIdDefault);
 				}
 			}
 
-			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Department_BranchId.HasValue).GroupBy(g => g.Master_Department_BranchId)
+			var queryRegion = await query.Where(x => x.LoanAmount > 0 && x.Master_Branch_RegionId.HasValue).GroupBy(g => g.Master_Branch_RegionId)
 										 .Select(group => new
 										 {
 											 GroupID = group.Key.ToString(),
-											 Name = group.First().Master_Department_BranchName,
+											 Name = group.First().Master_Branch_RegionName,
 											 Value = group.Sum(s => s.LoanAmount)
 										 }).ToListAsync();
 			if (queryRegion.Count > 0)
@@ -3233,10 +3233,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
 				}
 			}
-			else if (department_BranchIdDefault.HasValue)
+			else if (branch_RegionIdDefault.HasValue)
 			{
 				//default สาขาที่มีขอดขายสูงสูด 3 อันดับแรก
-				var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == department_BranchIdDefault && x.BranchId.HasValue && x.BranchId > 0)
+				var branchMax = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Branch_RegionId == branch_RegionIdDefault && x.BranchId.HasValue && x.BranchId > 0)
 											 .GroupBy(m => m.BranchId)
 											 .Select(group => new
 											 {
@@ -3295,7 +3295,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -3330,7 +3330,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 
@@ -3467,7 +3467,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -3496,7 +3496,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 

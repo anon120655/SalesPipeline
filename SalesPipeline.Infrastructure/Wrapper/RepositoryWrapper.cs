@@ -28,7 +28,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IFileRepository Files { get; }
 		public IMaster Master { get; }
 		public IDashboard Dashboard { get; }
-		public IMasterDepBranch MasterDepBranch { get; }
+		public IMasterBranchReg MasterBranchReg { get; }
 		public IMasterDepartment MasterDepartment { get; }
 		public IMasterLoanTypes MasterLoanTypes { get; }
 		public IMasterReasonReturns MasterReasonReturn { get; }
@@ -68,7 +68,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
 			Dashboard = new Dashboard(this, _db, settings, _mapper);
-			MasterDepBranch = new MasterDepBranch(this, _db, settings, _mapper);
+			MasterBranchReg = new MasterBranchReg(this, _db, settings, _mapper);
 			MasterDepartment = new MasterDepartment(this, _db, settings, _mapper);
 			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
 			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);

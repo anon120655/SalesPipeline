@@ -281,7 +281,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
-				Guid? master_Department_BranchId = null;
+				Guid? master_Branch_RegionId = null;
 				int? provinceId = null;
 				int? branchId = null;
 				int? assCenterUserId = null;
@@ -307,7 +307,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
-					master_Department_BranchId = user.Master_Branch_RegionId;
+					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
@@ -328,7 +328,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (assignmentRM == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM!");
 						//if (assignmentRM.Assignment.User?.Master_Department_Center != null)
 						//{
-						//	if (assignmentRM.Assignment.User.Master_Department_Center.Master_Department_BranchId != masterDepCenter.Master_Department_BranchId)
+						//	if (assignmentRM.Assignment.User.Master_Department_Center.master_Branch_RegionId != masterDepCenter.master_Branch_RegionId)
 						//	{
 						//		throw new ExceptionCustom("assignedCenter not correct!");
 						//	}
@@ -338,7 +338,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitAssign;
 					assCenterUserId = user.Id;
 					assCenterUserName = userCenter.FullName;
-					master_Department_BranchId = userCenter.Master_Branch_RegionId;
+					master_Branch_RegionId = userCenter.Master_Branch_RegionId;
 					provinceId = userCenter.ProvinceId;
 					branchId = userCenter.BranchId;
 				}
@@ -346,7 +346,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
-					master_Department_BranchId = user.Master_Branch_RegionId;
+					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
@@ -365,7 +365,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
 					StatusSaleId = statusSaleId,
-					Master_Department_BranchId = master_Department_BranchId,
+					Master_Branch_RegionId = master_Branch_RegionId,
 					ProvinceId = provinceId,
 					BranchId = branchId,
 					AssCenterUserId = assCenterUserId,

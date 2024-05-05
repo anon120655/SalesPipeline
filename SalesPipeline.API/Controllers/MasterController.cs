@@ -498,7 +498,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var data = await _repo.MasterDepBranch.Create(model);
+				var data = await _repo.MasterBranchReg.Create(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -512,7 +512,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var data = await _repo.MasterDepBranch.Update(model);
+				var data = await _repo.MasterBranchReg.Update(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -526,7 +526,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				await _repo.MasterDepBranch.DeleteById(model);
+				await _repo.MasterBranchReg.DeleteById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -540,7 +540,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				await _repo.MasterDepBranch.UpdateStatusById(model);
+				await _repo.MasterBranchReg.UpdateStatusById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -554,7 +554,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var data = await _repo.MasterDepBranch.GetById(id);
+				var data = await _repo.MasterBranchReg.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -568,7 +568,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = await _repo.MasterDepBranch.GetBranchs(model);
+				var response = await _repo.MasterBranchReg.GetBranchs(model);
 
 				return Ok(response);
 			}
