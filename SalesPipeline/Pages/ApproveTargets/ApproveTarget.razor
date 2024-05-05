@@ -53,13 +53,13 @@
 								</select>
 							</div>
 							<div class="col mb-2">
-								<label class="form-label">อำเภอ</label>
-								<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-									@if (LookUp.Amphurs?.Count > 0)
+								<label class="form-label">สาขา</label>
+								<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+									@if (LookUp.Branchs?.Count > 0)
 									{
-										foreach (var item in LookUp.Amphurs)
+										foreach (var item in LookUp.Branchs)
 										{
-											<option value="@item.AmphurID">@item.AmphurName</option>
+											<option value="@item.BranchID">@item.BranchName</option>
 										}
 									}
 								</select>
