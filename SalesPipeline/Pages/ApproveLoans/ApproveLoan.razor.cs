@@ -32,11 +32,12 @@ namespace SalesPipeline.Pages.ApproveLoans
 		{
 			if (firstRender)
 			{
-				await SetQuery();
-				StateHasChanged();
 				await SetInitManual();
 				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
+				await SetQuery();
+				StateHasChanged();
 				firstRender = false;
 			}
 		}
@@ -60,33 +61,6 @@ namespace SalesPipeline.Pages.ApproveLoans
 			await Task.Delay(10);
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 
-			var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
-			{
-				pagesize = 100,
-				status = StatusModel.Active,
-				Branchs = new() { UserInfo.BranchId.ToString() }
-			});
-			if (dataUsersRM != null && dataUsersRM.Status)
-			{
-				if (dataUsersRM.Data?.Items.Count > 0)
-				{
-					if (dataUsersRM.Data.Items?.Count > 0)
-					{
-						LookUp.RMUser = new();
-						LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
-						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRMUser", "#RMUser");
-					}
-				}
-			}
-			else
-			{
-				_errorMessage = dataUsersRM?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Responsible");
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -170,54 +144,87 @@ namespace SalesPipeline.Pages.ApproveLoans
 		}
 
 		[JSInvokable]
-		public async Task OnProvince(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _ids, string _provinceName)
 		{
-			filter.provinceid = null;
-			filter.amphurid = null;
-			LookUp.Amphurs = new();
+			LookUp.Branchs = new();
+			LookUp.RMUser = new();
+			filter.Provinces = null;
+			filter.Branchs = new();
+			filter.RMUsers = new();
 			StateHasChanged();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Amphur");
+			await Task.Delay(1);
 
-			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
+
+			if (_ids != null && int.TryParse(_ids, out int provinceID) && provinceID > 0)
 			{
 				filter.provinceid = provinceID;
 
-				var amphurs = await _masterViewModel.GetAmphur(provinceID);
-				if (amphurs != null && amphurs.Data?.Count > 0)
+				var dataBranchs = await _masterViewModel.GetBranch(provinceID);
+				if (dataBranchs != null && dataBranchs.Status)
 				{
-					LookUp.Amphurs = new List<InfoAmphurCustom>() { new InfoAmphurCustom() { AmphurID = 0, AmphurName = "ทั้งหมด" } };
-					LookUp.Amphurs.AddRange(amphurs.Data);
-
-					StateHasChanged();
-					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAmphur", "#Amphur");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
+					if (dataBranchs.Data?.Count > 0)
+					{
+						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "ทั้งหมด" } };
+						//LookUp.Branchs = new();
+						LookUp.Branchs.AddRange(dataBranchs.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "RMUser", 100);
+					}
 				}
 				else
 				{
-					_errorMessage = amphurs?.errorMessage;
+					_errorMessage = dataBranchs?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
-
-			await SetModel();
-			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-
 		}
-
 		[JSInvokable]
-		public async Task OnAmphur(string _amphurID, string _amphurName)
+		public async Task OnBranch(string _ids, string _name)
 		{
-			filter.amphurid = null;
-			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
+			LookUp.RMUser = new();
+			filter.Branchs = new();
+			filter.RMUsers = new();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "RMUser");
+
+			if (_ids != null)
 			{
-				filter.amphurid = amphurID;
+				filter.Branchs.Add(_ids);
 			}
 
-			await SetModel();
-			StateHasChanged();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+			if (filter.Branchs.Count > 0)
+			{
+				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
+				{
+					pagesize = 100,
+					status = StatusModel.Active,
+					Branchs = filter.Branchs
+				});
+				if (dataUsersRM != null && dataUsersRM.Status)
+				{
+					if (dataUsersRM.Data?.Items.Count > 0)
+					{
+						if (dataUsersRM.Data.Items?.Count > 0)
+						{
+							LookUp.RMUser = new();
+							LookUp.RMUser.AddRange(dataUsersRM.Data.Items);
+							StateHasChanged();
+							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRMUser", "#RMUser");
+							await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "RMUser", 100);
+						}
+					}
+				}
+				else
+				{
+					_errorMessage = dataUsersRM?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
 		}
 
 		[JSInvokable]
