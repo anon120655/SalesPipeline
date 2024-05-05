@@ -11,6 +11,7 @@ using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq;
 
@@ -77,10 +78,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (roleCode != null)
 			{
-				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH))
+				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 				}
-				else if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
+				else if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 				{
 					model.LevelId = null;
 				}
@@ -140,8 +141,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.Tel = model.Tel;
 				user.BranchId = model.BranchId;
 				user.Master_DepartmentId = model.Master_DepartmentId;
-				user.Master_Department_BranchId = model.Master_Department_BranchId;
-				user.Master_Department_CenterId = model.Master_Department_CenterId;
+				user.Master_Branch_RegionId = model.Master_Branch_RegionId;
 				user.ProvinceId = model.ProvinceId;
 				user.ProvinceName = provinceName;
 				user.BranchId = model.BranchId;
@@ -159,7 +159,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
+						if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 						{
 							string? _code = null;
 							string? _name = null;
@@ -240,7 +240,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					if (roleCode != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
+						if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 						{
 							if (model.BranchId != user.BranchId)
 							{
@@ -283,8 +283,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Tel = model.Tel;
 					user.BranchId = model.BranchId;
 					user.Master_DepartmentId = model.Master_DepartmentId;
-					user.Master_Department_BranchId = model.Master_Department_BranchId;
-					user.Master_Department_CenterId = model.Master_Department_CenterId;
+					user.Master_Branch_RegionId = model.Master_Branch_RegionId;
 					user.ProvinceId = model.ProvinceId;
 					user.ProvinceName = provinceName;
 					user.BranchId = model.BranchId;
@@ -300,7 +299,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (user.BranchId.HasValue)
 						{
-							if (roleCode.ToUpper().StartsWith(RoleCodes.MCENTER))
+							if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 							{
 
 								string? _code = null;
@@ -425,8 +424,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> GetById(int id)
 		{
 			var query = await _repo.Context.Users
-				.Include(x => x.Master_Department_Branch)
-				.Include(x => x.Master_Department_Center)
+				.Include(x => x.Master_Branch_Region)
 				.Include(x => x.Position)
 				.Include(x => x.Role)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
@@ -460,8 +458,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.Master_Department_Branch)
-										   .Include(x => x.Master_Department_Center)
+										   .Include(x => x.Master_Branch_Region)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
@@ -731,6 +728,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
 			int _year = DateTime.Now.Year;
 			//ปี
 			if (!string.IsNullOrEmpty(model.year))
@@ -743,10 +745,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.User_Target_SaleUsers.Where(w => w.Year == _year))
-										   .Include(x => x.Master_Department_Branch)
+										   .Include(x => x.Master_Branch_Region)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x => x.BranchId == user.BranchId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+			{
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
@@ -776,7 +791,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Department_BranchId.HasValue && idList.Contains(x.Master_Department_BranchId));
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 				}
 			}
 

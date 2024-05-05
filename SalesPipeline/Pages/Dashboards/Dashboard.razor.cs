@@ -81,7 +81,7 @@ namespace SalesPipeline.Pages.Dashboards
 			await Get_SalesPipeline();
 			await AvgTop_Number();
 
-			if (UserInfo.RoleCode != RoleCodes.MCENTER)
+			if (UserInfo.RoleCode != RoleCodes.CEN_BRANCH)
 			{
 				//10 อันดับ
 				await TopSaleMap_Thailand();

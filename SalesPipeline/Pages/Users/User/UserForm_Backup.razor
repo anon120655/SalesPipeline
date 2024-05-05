@@ -112,7 +112,7 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
-								<div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
+								@* <div class="row mb-3 @(formModel.RoleId == 7 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ศูนย์<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<select @onchange="((e) => OnDepartment_Center(e.Value))" class="selectpickerdefault" value="@formModel.Master_Department_CenterId">
@@ -127,7 +127,7 @@
 										</select>
 										<ValidationMessage For="@(() => formModel.Master_Department_CenterId)" />
 									</div>
-								</div>
+								</div> *@
 
 								<div class="row mb-3 @(formModel.RoleId == 7 || formModel.RoleId == 8 ? "":"d-none" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขาที่ดูแล</label>
@@ -139,7 +139,7 @@
 								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 || formModel.RoleId == 8 ? "d-none":"" )">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @bind="formModel.Master_Department_BranchId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_Branch_RegionId" id="DepartmentBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.DepartmentBranch?.Count > 0)
 											{
@@ -149,7 +149,7 @@
 												}
 											}
 										</select>
-										<ValidationMessage For="@(() => formModel.Master_Department_BranchId)" />
+										<ValidationMessage For="@(() => formModel.Master_Branch_RegionId)" />
 									</div>
 								</div>
 								<div class="row mb-3 @(!formModel.RoleId.HasValue || formModel.RoleId == 7 ? "d-none":"" )">

@@ -14,7 +14,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<Master_Department_BranchCustom>? Items;
+		private List<Master_Branch_RegionCustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;

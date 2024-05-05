@@ -51,11 +51,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -110,7 +110,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var statusTotal = new List<SaleStatusGroupByModel>();
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 				{
 					statusTotal = await query.Where(x => x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
@@ -119,9 +119,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								   Count = group.Count()
 							   }).OrderBy(x => x.StatusID).ToListAsync();
 				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
-					statusTotal = await query.Where(x => x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+					statusTotal = await query.Where(x => x.Master_Department_BranchId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
 							   {
 								   StatusID = group.Key,
@@ -165,11 +165,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
 
-						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
+						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
-						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH) && item.StatusID == (int)StatusSaleModel.MCenterReturnBranch)
+						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG) && item.StatusID == (int)StatusSaleModel.MCenterReturnBranch)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
@@ -217,7 +217,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var statusTotal = new List<SaleStatusGroupByModel>();
 
-					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 					{
 						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
 								   .Select(group => new SaleStatusGroupByModel()
@@ -226,9 +226,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									   Count = group.Count()
 								   }).OrderBy(x => x.StatusID).ToListAsync();
 					}
-					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 					{
-						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Department_BranchId).GroupBy(info => info.StatusSaleId)
+						statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Department_BranchId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
 								   .Select(group => new SaleStatusGroupByModel()
 								   {
 									   StatusID = group.Key,
@@ -338,7 +338,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				var queryGroupRM = await _repo.Context.Sales.Where(x => x.AssCenterUserId == user.Id && x.AssUserId.HasValue)
 						   .GroupBy(info => info.AssUserId)
@@ -349,7 +349,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.User.BranchId == user.BranchId);
 			}
@@ -363,7 +363,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.User.Master_Department_BranchId.HasValue && idList.Contains(x.User.Master_Department_BranchId));
+					query = query.Where(x => x.User.Master_Branch_RegionId.HasValue && idList.Contains(x.User.Master_Branch_RegionId));
 				}
 			}
 
@@ -411,11 +411,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var statusTotal = new List<SaleStatusGroupByModel>();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -521,12 +521,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				saleQuery = saleQuery.Where(x => x.AssCenterUserId == user.Id);
 				sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				saleQuery = saleQuery.Where(x => x.BranchId == user.BranchId);
 				sale_DurationsQuery = sale_DurationsQuery.Where(x => x.Sale.BranchId == user.BranchId);
@@ -628,14 +628,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var statusTotal = new List<SaleStatusGroupByModel>();
 
-					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 					{
 						decimal? RatingAverage = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value)
 																		  .AverageAsync(r => r.LoanAmount);
 
 						dash_Avg_Number.AvgPerDeal = RatingAverage ?? 0;
 					}
-					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+					else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 					{
 
 					}
@@ -674,12 +674,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 			var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.BranchId == user.BranchId);
@@ -796,11 +796,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -881,11 +881,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1049,11 +1049,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1151,11 +1151,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			 || x.StatusSaleId == StatusSaleModel.CloseSaleFail));
 
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1254,11 +1254,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.AsQueryable();
 
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.Sale.BranchId == user.BranchId);
 			}
@@ -1373,11 +1373,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.AssUser).ThenInclude(x => x.User_Target_SaleUsers)
 				.Where(x => x.Status == StatusModel.Active && x.AssUser != null);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1463,12 +1463,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var queryCloseSale = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 				queryCloseSale = queryCloseSale.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 				queryCloseSale = queryCloseSale.Where(x => x.BranchId == user.BranchId);
@@ -1586,11 +1586,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//							 .ToList();
 
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1678,11 +1678,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1824,11 +1824,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -1981,11 +1981,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -2111,11 +2111,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -2206,11 +2206,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			if (user.Role.Code.StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.Sale.BranchId == user.BranchId);
 			}
@@ -2430,11 +2430,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
 
 
-			if (user.Role.Code.StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.Sale.BranchId == user.BranchId);
 			}
@@ -2553,11 +2553,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -2601,11 +2601,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -2648,11 +2648,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var statusTotal = new List<SaleStatusGroupByModel>();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -2782,11 +2782,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.Sale.BranchId == user.BranchId);
 			}
@@ -2885,11 +2885,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -3018,11 +3018,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -3121,11 +3121,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -3289,11 +3289,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}
@@ -3461,11 +3461,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(i => i.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0);
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.BranchId == user.BranchId);
 			}

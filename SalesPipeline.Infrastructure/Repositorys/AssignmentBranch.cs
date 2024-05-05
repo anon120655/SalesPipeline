@@ -169,7 +169,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task Assign(AssignModel model)
 		{
 			var assignment_Branch = await _repo.Context.Assignment_Branches
-				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
+				.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMBranch.Id);
 			if (assignment_Branch != null)
 			{
@@ -185,10 +185,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (assignment_Branch.User != null)
 						{
-							sale.Master_Department_BranchId = assignment_Branch.User.Master_Department_BranchId;
-							if (assignment_Branch.User.Master_Department_Branch != null)
+							sale.Master_Department_BranchId = assignment_Branch.User.Master_Branch_RegionId;
+							if (assignment_Branch.User.Master_Branch_Region != null)
 							{
-								sale.Master_Department_BranchName = assignment_Branch.User.Master_Department_Branch.Name;
+								sale.Master_Department_BranchName = assignment_Branch.User.Master_Branch_Region.Name;
 							}
 							sale.ProvinceId = assignment_Branch.User.ProvinceId;
 							sale.ProvinceName = assignment_Branch.User.ProvinceName;
@@ -224,7 +224,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersBranch = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_Branches)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.BRANCH02 && x.Assignment_Branches.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.BRANCH_REG_02 && x.Assignment_Branches.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 

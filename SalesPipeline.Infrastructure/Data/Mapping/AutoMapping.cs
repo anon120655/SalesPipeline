@@ -37,11 +37,9 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_TypeLoanRequest, Master_TypeLoanRequestCustom>().ReverseMap();
 			CreateMap<Entity.Master_Proceed, Master_ProceedCustom>().ReverseMap();
 			CreateMap<Entity.Master_Position, Master_PositionCustom>().ReverseMap();
-			CreateMap<Entity.Master_Region, Master_RegionCustom>().ReverseMap();
 			CreateMap<Entity.MenuItem, MenuItemCustom>().ReverseMap();
 			CreateMap<Entity.Master_Department, Master_DepartmentCustom>().ReverseMap();
-			CreateMap<Entity.Master_Department_Branch, Master_Department_BranchCustom>().ReverseMap();
-			CreateMap<Entity.Master_Department_Center, Master_Department_CenterCustom>().ReverseMap();
+			CreateMap<Entity.Master_Branch_Region, Master_Branch_RegionCustom>().ReverseMap();
 			CreateMap<Entity.Master_LoanType, Master_LoanTypeCustom>().ReverseMap();
 			CreateMap<Entity.Master_ReasonReturn, Master_ReasonReturnCustom>().ReverseMap();
 			CreateMap<Entity.Master_SLAOperation, Master_SLAOperationCustom>().ReverseMap();

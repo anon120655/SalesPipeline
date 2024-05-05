@@ -80,17 +80,6 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivCenter = await _masterViewModel.GetDepCenter(new allFilter() { status = StatusModel.Active });
-			if (dataGetDivCenter != null && dataGetDivCenter.Status)
-			{
-				LookUp.DepartmentCenter = dataGetDivCenter.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = dataGetDivCenter?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			StateHasChanged();
 		}
 
@@ -145,16 +134,6 @@ namespace SalesPipeline.Pages.Users.User
 			if (LookUp.DepartmentBranch != null && id.HasValue)
 			{
 				return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
-			}
-
-			return null;
-		}
-
-		protected string? GetDepCenterName(Guid? id)
-		{
-			if (LookUp.DepartmentCenter != null && id.HasValue)
-			{
-				return LookUp.DepartmentCenter.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;

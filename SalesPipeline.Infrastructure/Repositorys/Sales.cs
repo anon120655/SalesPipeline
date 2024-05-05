@@ -346,7 +346,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													.Include(x => x.Customer)
-													.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Department_Branch)
+													.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Branch_Region)
 													.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();

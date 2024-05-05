@@ -260,7 +260,7 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
 						}
 					}
-					else if (rolecode == RoleCodes.MCENTER)
+					else if (rolecode == RoleCodes.CEN_BRANCH)
 					{
 						currentUserId = 11;
 						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
@@ -283,7 +283,7 @@ namespace SalesPipeline.API.Controllers
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitVerifyBranch;
 					}
-					else if (rolecode == RoleCodes.BRANCH)
+					else if (rolecode == RoleCodes.BRANCH_REG)
 					{
 						currentUserId = 9;
 						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";

@@ -93,16 +93,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<IList<Master_PositionCustom>>(await query.ToListAsync());
 		}
 
-		public async Task<IList<Master_RegionCustom>> Regions(allFilter model)
-		{
-			var query = _repo.Context.Master_Regions
-				.Where(x => x.Status != StatusModel.Delete)
-				.OrderBy(x => x.Id)
-				.AsQueryable();
-
-			return _mapper.Map<IList<Master_RegionCustom>>(await query.ToListAsync());
-		}
-
 		public async Task<IList<Master_YearCustom>> Year(allFilter model)
 		{
 			var query = _repo.Context.Master_Years

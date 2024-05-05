@@ -51,12 +51,7 @@ public partial class User
     /// <summary>
     /// กิจการสาขาภาค
     /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
-
-    /// <summary>
-    /// ศูนย์ธุรกิจสินเชื่อ
-    /// </summary>
-    public Guid? Master_Department_CenterId { get; set; }
+    public Guid? Master_Branch_RegionId { get; set; }
 
     /// <summary>
     /// จังหวัด
@@ -116,11 +111,9 @@ public partial class User
 
     public virtual User_Level? Level { get; set; }
 
+    public virtual Master_Branch_Region? Master_Branch_Region { get; set; }
+
     public virtual Master_Department? Master_Department { get; set; }
-
-    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
-
-    public virtual Master_Department_Center? Master_Department_Center { get; set; }
 
     public virtual ICollection<Notification> NotificationFromUsers { get; set; } = new List<Notification>();
 

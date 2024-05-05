@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ศูนย์ธุรกิจสินเชื่อ
+/// กิจการสาขาภาค
 /// </summary>
-public partial class Master_Department_Center
+public partial class Master_Branch_Region
 {
     public Guid Id { get; set; }
 
@@ -24,20 +24,11 @@ public partial class Master_Department_Center
     public int UpdateBy { get; set; }
 
     /// <summary>
-    /// FK กิจการสาขาภาค
-    /// </summary>
-    public Guid? Master_Department_BranchId { get; set; }
-
-    public string? Master_Department_BranchName { get; set; }
-
-    /// <summary>
     /// รหัส
     /// </summary>
     public string Code { get; set; } = null!;
 
     public string? Name { get; set; }
-
-    public virtual Master_Department_Branch? Master_Department_Branch { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

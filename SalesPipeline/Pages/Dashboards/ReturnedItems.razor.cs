@@ -91,12 +91,12 @@ namespace SalesPipeline.Pages.Dashboards
 		{
 			if (UserInfo.RoleCode != null)
 			{
-				if (UserInfo.RoleCode == RoleCodes.MCENTER)
+				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)
 				{
 					filter.assigncenter = UserInfo.Id;
 					filter.statussaleid = StatusSaleModel.RMReturnMCenter;
 				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
 				{
 					filter.statussaleid = StatusSaleModel.MCenterReturnBranch;
 				}

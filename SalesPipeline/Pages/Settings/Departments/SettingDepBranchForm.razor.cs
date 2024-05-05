@@ -36,7 +36,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 		string? _errorMessage = null;
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
-		private Master_Department_BranchCustom formModel = new();
+		private Master_Branch_RegionCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -84,7 +84,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_Department_BranchCustom> response;
+			ResultModel<Master_Branch_RegionCustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 

@@ -44,26 +44,6 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ฝ่ายธุรกิจสินเชื่อ
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpGet("GetDepCenter")]
-		public async Task<IActionResult> GetDepCenter([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterDepCenter.GetList(model);
-
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		/// <summary>
 		/// ประเภทสินเชื่อ
 		/// </summary>
 		/// <param name="model"></param>
@@ -471,19 +451,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("Regions")]
-		public async Task<IActionResult> Regions([FromQuery] allFilter model)
-		{
-			try
-			{
-				return Ok(await _repo.Master.Regions(model));
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		[AllowAnonymous]
 		[HttpGet("MasterLists")]
 		public async Task<IActionResult> MasterLists([FromQuery] allFilter model)
@@ -527,7 +494,7 @@ namespace SalesPipeline.API.Controllers
 
 		//ฝ่ายกิจการสาขา
 		[HttpPost("CreateDepBranch")]
-		public async Task<IActionResult> CreateDepBranch(Master_Department_BranchCustom model)
+		public async Task<IActionResult> CreateDepBranch(Master_Branch_RegionCustom model)
 		{
 			try
 			{
@@ -541,7 +508,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPut("UpdateDepBranch")]
-		public async Task<IActionResult> UpdateDepBranch(Master_Department_BranchCustom model)
+		public async Task<IActionResult> UpdateDepBranch(Master_Branch_RegionCustom model)
 		{
 			try
 			{
@@ -604,77 +571,6 @@ namespace SalesPipeline.API.Controllers
 				var response = await _repo.MasterDepBranch.GetBranchs(model);
 
 				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		//ศูนย์ธุรกิจสินเชื่อ
-		[HttpPost("CreateDepCenter")]
-		public async Task<IActionResult> CreateDepCenter(Master_Department_CenterCustom model)
-		{
-			try
-			{
-				var data = await _repo.MasterDepCenter.Create(model);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpPut("UpdateDepCenter")]
-		public async Task<IActionResult> UpdateDepCenter(Master_Department_CenterCustom model)
-		{
-			try
-			{
-				var data = await _repo.MasterDepCenter.Update(model);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpDelete("DeleteDepCenterById")]
-		public async Task<IActionResult> DeleteDepCenterById([FromQuery] UpdateModel model)
-		{
-			try
-			{
-				await _repo.MasterDepCenter.DeleteById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpPut("UpdateStatusDepCenterById")]
-		public async Task<IActionResult> UpdateStatusDepCenterById(UpdateModel model)
-		{
-			try
-			{
-				await _repo.MasterDepCenter.UpdateStatusById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetDepCenterById")]
-		public async Task<IActionResult> GetDepCenterById([FromQuery] Guid id)
-		{
-			try
-			{
-				var data = await _repo.MasterDepCenter.GetById(id);
-				return Ok(data);
 			}
 			catch (Exception ex)
 			{

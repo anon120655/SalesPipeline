@@ -31,13 +31,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		//ฝ่ายกิจการสาขา
-		public async Task<Master_Department_BranchCustom> Create(Master_Department_BranchCustom model)
+		public async Task<Master_Branch_RegionCustom> Create(Master_Branch_RegionCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				var masterDivisionBranch = new Data.Entity.Master_Department_Branch()
+				var master_Branch_Region = new Data.Entity.Master_Branch_Region()
 				{
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
@@ -47,42 +47,42 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					Code = model.Code,
 					Name = model.Name,
 				};
-				await _db.InsterAsync(masterDivisionBranch);
+				await _db.InsterAsync(master_Branch_Region);
 				await _db.SaveAsync();
 
 				_transaction.Commit();
 
-				return _mapper.Map<Master_Department_BranchCustom>(masterDivisionBranch);
+				return _mapper.Map<Master_Branch_RegionCustom>(master_Branch_Region);
 			}
 		}
 
-		public async Task<Master_Department_BranchCustom> Update(Master_Department_BranchCustom model)
+		public async Task<Master_Branch_RegionCustom> Update(Master_Branch_RegionCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				var _dateNow = DateTime.Now;
 
-				var masterDivisionBranch = await _repo.Context.Master_Department_Branches.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
-				if (masterDivisionBranch != null)
+				var master_Branch_Region = await _repo.Context.Master_Branch_Regions.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (master_Branch_Region != null)
 				{
-					masterDivisionBranch.UpdateDate = _dateNow;
-					masterDivisionBranch.UpdateBy = model.CurrentUserId;
-					masterDivisionBranch.Code = model.Code;
-					masterDivisionBranch.Name = model.Name;
-					_db.Update(masterDivisionBranch);
+					master_Branch_Region.UpdateDate = _dateNow;
+					master_Branch_Region.UpdateBy = model.CurrentUserId;
+					master_Branch_Region.Code = model.Code;
+					master_Branch_Region.Name = model.Name;
+					_db.Update(master_Branch_Region);
 					await _db.SaveAsync();
 
 					_transaction.Commit();
 				}
 
-				return _mapper.Map<Master_Department_BranchCustom>(masterDivisionBranch);
+				return _mapper.Map<Master_Branch_RegionCustom>(master_Branch_Region);
 			}
 		}
 
 		public async Task DeleteById(UpdateModel model)
 		{
 			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Master_Department_Branches.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_Branch_Regions.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				query.UpdateDate = DateTime.Now;
@@ -99,7 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var _status = parsedValue ? (short)1 : (short)0;
 				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Master_Department_Branches.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				var query = await _repo.Context.Master_Branch_Regions.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 				if (query != null)
 				{
 					query.UpdateBy = model.userid;
@@ -110,24 +110,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Master_Department_BranchCustom> GetById(Guid id)
+		public async Task<Master_Branch_RegionCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_Department_Branches
+			var query = await _repo.Context.Master_Branch_Regions
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<Master_Department_BranchCustom>(query);
+			return _mapper.Map<Master_Branch_RegionCustom>(query);
 		}
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_Department_Branches.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_Branch_Regions.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 
-		public async Task<PaginationView<List<Master_Department_BranchCustom>>> GetBranchs(allFilter model)
+		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchs(allFilter model)
 		{
-			var query = _repo.Context.Master_Department_Branches
+			var query = _repo.Context.Master_Branch_Regions
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
@@ -150,9 +150,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Master_Department_BranchCustom>>()
+			return new PaginationView<List<Master_Branch_RegionCustom>>()
 			{
-				Items = _mapper.Map<List<Master_Department_BranchCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Master_Branch_RegionCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Masters
 {
-	public class Master_Department_BranchCustom : CommonModel
+	public class Master_Branch_RegionCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -33,7 +33,5 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
-
-		public virtual ICollection<Master_Department_CenterCustom>? Master_Department_Loans { get; set; }
 	}
 }

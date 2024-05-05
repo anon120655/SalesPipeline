@@ -307,12 +307,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
-					master_Department_BranchId = user.Master_Department_BranchId;
+					master_Department_BranchId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
 
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.MCENTER))
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 				{
 					var userCenter = await _repo.User.GetById(user.Id);
 					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
@@ -338,15 +338,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					statusSaleId = StatusSaleModel.WaitAssign;
 					assCenterUserId = user.Id;
 					assCenterUserName = userCenter.FullName;
-					master_Department_BranchId = userCenter.Master_Department_BranchId;
+					master_Department_BranchId = userCenter.Master_Branch_RegionId;
 					provinceId = userCenter.ProvinceId;
 					branchId = userCenter.BranchId;
 				}
 
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH))
+				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
-					master_Department_BranchId = user.Master_Department_BranchId;
+					master_Department_BranchId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}

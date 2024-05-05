@@ -63,13 +63,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// กิจการสาขาภาค
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public Guid? Master_Department_BranchId { get; set; }
-
-		/// <summary>
-		/// ศูนย์ธุรกิจสินเชื่อ
-		/// </summary>
-		[UserAtt(FieldName = "Master_Department_CenterId")]
-		public Guid? Master_Department_CenterId { get; set; }
+		public Guid? Master_Branch_RegionId { get; set; }
 
 		/// <summary>
 		/// จังหวัด
@@ -116,8 +110,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public sbyte? LoginFail { get; set; }
 
-		public virtual Master_Department_BranchCustom? Master_Department_Branch { get; set; }
-		public virtual Master_Department_CenterCustom? Master_Department_Center { get; set; }
+		public virtual Master_Branch_RegionCustom? Master_Branch_Region { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
 		public virtual List<User_Target_SaleCustom>? User_Target_SaleUsers { get; set; }

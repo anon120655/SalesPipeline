@@ -39,7 +39,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Assignment_MCenters
 				.Where(x => x.Id == id)
-				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
+				.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
 				.FirstOrDefaultAsync();
 			return _mapper.Map<Assignment_MCenterCustom>(query);
 		}
@@ -176,7 +176,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task Assign(AssignModel model)
 		{
 			var assignment_MCenter = await _repo.Context.Assignment_MCenters
-				.Include(x => x.User).ThenInclude(x => x.Master_Department_Branch)
+				.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMCenter.Id);
 			if (assignment_MCenter != null)
 			{
@@ -192,10 +192,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (assignment_MCenter.User != null)
 						{
-							sale.Master_Department_BranchId = assignment_MCenter.User.Master_Department_BranchId;
-							if (assignment_MCenter.User.Master_Department_Branch != null)
+							sale.Master_Department_BranchId = assignment_MCenter.User.Master_Branch_RegionId;
+							if (assignment_MCenter.User.Master_Branch_Region != null)
 							{
-								sale.Master_Department_BranchName = assignment_MCenter.User.Master_Department_Branch.Name;
+								sale.Master_Department_BranchName = assignment_MCenter.User.Master_Branch_Region.Name;
 							}
 							sale.ProvinceId = assignment_MCenter.User.ProvinceId;
 							sale.ProvinceName = assignment_MCenter.User.ProvinceName;
@@ -262,7 +262,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_MCenters)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.MCENTER && x.Assignment_MCenters.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.CEN_BRANCH && x.Assignment_MCenters.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 

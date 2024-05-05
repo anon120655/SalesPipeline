@@ -203,7 +203,7 @@ namespace SalesPipeline.ViewModels
 							var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
 							if (datauserMap != null)
 							{
-								data.Master_Department_BranchId = datauserMap.Master_Department_BranchId;
+								data.Master_Department_BranchId = datauserMap.Master_Branch_RegionId;
 								data.ProvinceId = datauserMap.ProvinceId;
 								data.ProvinceName = datauserMap.ProvinceName;
 								data.BranchId = datauserMap.BranchId;
@@ -215,8 +215,8 @@ namespace SalesPipeline.ViewModels
 								data.FirstName = datauserMap.FirstName;
 								data.LastName = datauserMap.LastName;
 
-								if (datauserMap.Master_Department_Branch != null)								
-									data.Master_Department_BranchName = datauserMap.Master_Department_Branch.Name;
+								if (datauserMap.Master_Branch_Region != null)								
+									data.Master_Department_BranchName = datauserMap.Master_Branch_Region.Name;
 
 								if (datauserMap.LevelId != null)
 									data.LevelName = datauserMap.LevelId.ToString();

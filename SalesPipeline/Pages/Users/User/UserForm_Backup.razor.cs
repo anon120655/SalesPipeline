@@ -55,17 +55,6 @@ namespace SalesPipeline.Pages.Users.User
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivLoans = await _masterViewModel.GetDepCenter(new allFilter() { status = StatusModel.Active });
-			if (dataGetDivLoans != null && dataGetDivLoans.Status)
-			{
-				LookUp.DepartmentCenter = dataGetDivLoans.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = dataGetDivLoans?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
 			{
@@ -158,10 +147,10 @@ namespace SalesPipeline.Pages.Users.User
 			//	}
 			//}
 
-			if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
-			{
-				department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
-			}
+			//if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
+			//{
+			//	department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
+			//}
 
 			if (department_BranchId.HasValue)
 			{
@@ -307,20 +296,20 @@ namespace SalesPipeline.Pages.Users.User
 		protected void OnDepartment_Center(object? val)
 		{
 			department_BranchName = null;
-			formModel.Master_Department_CenterId = null;
-			formModel.Master_Department_BranchId = null;
+			//formModel.Master_Department_CenterId = null;
+			formModel.Master_Branch_RegionId = null;
 			StateHasChanged();
 
 			if (val != null && Guid.TryParse(val.ToString(), out Guid department_CenterId))
 			{
-				formModel.Master_Department_CenterId = department_CenterId;
-				var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
-				if (departmentCenter != null)
-				{
-					department_BranchName = departmentCenter.Master_Department_BranchName;
-					formModel.Master_Department_BranchId = departmentCenter.Master_Department_BranchId;
-					StateHasChanged();
-				}
+				//formModel.Master_Department_CenterId = department_CenterId;
+				//var departmentCenter = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId);
+				//if (departmentCenter != null)
+				//{
+				//	department_BranchName = departmentCenter.Master_Department_BranchName;
+				//	formModel.Master_Branch_RegionId = departmentCenter.Master_Department_BranchId;
+				//	StateHasChanged();
+				//}
 			}
 		}
 
@@ -328,8 +317,7 @@ namespace SalesPipeline.Pages.Users.User
 		public async Task OnAssignment(string _id, string _name)
 		{
 			//formModel.AssignmentId = null;
-			formModel.Master_Department_CenterId = null;
-			formModel.Master_Department_BranchId = null;
+			formModel.Master_Branch_RegionId = null;
 			formModel.ProvinceId = null;
 			formModel.AmphurId = null;
 			LookUp.Provinces = new();
@@ -397,7 +385,7 @@ namespace SalesPipeline.Pages.Users.User
 
 			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
 			{
-				formModel.Master_Department_BranchId = department_BranchId;
+				formModel.Master_Branch_RegionId = department_BranchId;
 
 				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
 				if (dataProvince != null && dataProvince.Status)

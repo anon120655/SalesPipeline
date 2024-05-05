@@ -16,15 +16,13 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<MenuItemCustom>? MenuItem { get; set; }
 		public List<Master_PositionCustom>? Positions { get; set; }
 		public List<User_LevelCustom>? UserLevels { get; set; }
-		public List<Master_RegionCustom>? Regions { get; set; }
 		public List<Assignment_RMCustom>? RMUser { get; set; }
 		public List<Assignment_MCenterCustom>? AssignmentCenter { get; set; }
 		public List<Assignment_RMCustom>? AssignmentUser { get; set; }
 		public List<Master_YieldCustom>? Yield { get; set; }
 		public List<Master_ChainCustom>? Chain { get; set; }
 		public List<Master_DepartmentCustom>? Departments { get; set; }
-		public List<Master_Department_BranchCustom>? DepartmentBranch { get; set; }
-		public List<Master_Department_CenterCustom>? DepartmentCenter { get; set; }
+		public List<Master_Branch_RegionCustom>? DepartmentBranch { get; set; }
 		public List<Master_BusinessSizeCustom>? BusinessSize { get; set; }
 		public List<Master_BusinessTypeCustom>? BusinessType { get; set; }
 		public List<Master_ContactChannelCustom>? ContactChannel { get; set; }

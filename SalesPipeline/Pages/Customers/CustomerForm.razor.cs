@@ -30,7 +30,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
-			if (UserInfo.RoleCode == RoleCodes.BRANCH01)
+			if (UserInfo.RoleCode == RoleCodes.BRANCH_REG_01)
 			{
 				_permission.IsView = false;
 			}
@@ -402,12 +402,12 @@ namespace SalesPipeline.Pages.Customers
 					//Role สายงานธุรกิจสินเชื่อ --> รอมอบหมาย
 					formModel.StatusSaleId = StatusSaleModel.WaitAssign;
 				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH))
+				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
 				{
 					//Role กิจการสาขาภาค --> รอมอบหมาย(ศูนย์สาขา)
 					formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
 				}
-				else if (UserInfo.RoleCode == RoleCodes.MCENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				else if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
 				{
 					//Role ผู้จัดการศูนย์ --> รอมอบหมาย
 					formModel.StatusSaleId = StatusSaleModel.WaitAssign;

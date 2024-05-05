@@ -31,19 +31,19 @@ namespace SalesPipeline.Utils
 		/// <summary>
 		/// สายงานกิจการสาขาภาค
 		/// </summary>
-		public const string BRANCH = "BRANCH";
+		public const string BRANCH_REG = "BRANCH_REG";
 		/// <summary>
 		/// สายงานกิจการสาขาภาค 10-12
 		/// </summary>
-		public const string BRANCH01 = "BRANCH01";
+		public const string BRANCH_REG_01 = "BRANCH_REG_01";
 		/// <summary>
 		/// สายงานกิจการสาขาภาค 4-9
 		/// </summary>
-		public const string BRANCH02 = "BRANCH02";
+		public const string BRANCH_REG_02 = "BRANCH_REG_02";
 		/// <summary>
-		/// ผู้จัดการศูนย์
+		/// ผู้จัดการศูนย์สาขา
 		/// </summary>
-		public const string MCENTER = "MCENTER";
+		public const string CEN_BRANCH = "CEN_BRANCH";
 		/// <summary>
 		/// RM พนักงานขาย
 		/// </summary>
