@@ -1260,7 +1260,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -2788,7 +2788,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
-				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
