@@ -1,0 +1,165 @@
+﻿@page "/workload/overdue"
+
+<PageTitle>รายการที่มีภาระงานเกินกำหนด</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic_active">รายการที่มีภาระงานเกินกำหนด</p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+						<div class="col mb-2">
+							<label class="form-label">เลขนิติบุคคล</label>
+							<div class="input-group">
+								<input @bind="filter.juristicnumber" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ค้นหาลูกค้า</label>
+							<div class="input-group">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ประเภทธุรกิจ</label>
+							<select id="BusinessType" @onchange="OnBusinessType" value="@filter.businesstype" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.BusinessType?.Count > 0)
+								{
+									foreach (var item in LookUp.BusinessType)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สาขา</label>
+							<select id="Branch" class="selectpickerdefault" title="ทั้งหมด" data-style="select_btn_set" data-live-search="true" value="">
+								@if (LookUp.Branchs?.Count > 0)
+								{
+									foreach (var item in LookUp.Branchs)
+									{
+										<option value="@item.BranchID">@item.BranchName</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2 mt-3">
+							<button @onclick="((e) => Search())" type="button" class="btn btn-primary text-white mw_7r w-100">
+								<i class="fa fa-search fa-xs"></i> ค้นหา
+							</button>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">เลขทะเบียนนิติบุคคล</th>
+											<th class="text-center">ชื่อลูกค้า</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สาขา</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">เบอร์โทรศัพท์</th>
+											<th class="text-center">รายละเอียด</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int SequenceNo = 1;
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
+													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
+													<td class="text-center">@item.Customer?.ContactTel</td>
+													<td class="text-center">
+														<a class="btn btn-info btn-circle" href="/workload/overdue/@item.Id">
+															<i class="fa-solid fa-eye text-white fs_15e"></i>
+														</a>
+													</td>
+												</tr>
+												SequenceNo++;
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div>
+							<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+											TotalItems="@(Pager?.TotalItems ?? 0)"
+											Pager="@Pager"
+											OnShowOnPage="@OnSelectPagesize"
+											OnSelectedPage="@OnSelectPage"
+											ParameterAll="@filter?.SetParameter()">
+							</PaginationBack>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

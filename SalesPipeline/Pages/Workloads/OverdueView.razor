@@ -1,0 +1,45 @@
+﻿@page "/workload/overdue/{id:guid}"
+
+<PageTitle>รายการที่มีภาระงานเกินกำหนด</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic_active">รายการที่มีภาระงานเกินกำหนด > ประวัติการติดต่อ</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<PartialContactHistory formModel="formModel.Sale_Contact_Histories" />
+						</div>
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								@if (formModel != null)
+								{
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+										กลับ
+									</Button>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+

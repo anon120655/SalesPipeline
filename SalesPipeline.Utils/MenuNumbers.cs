@@ -21,6 +21,9 @@
 		//ประวัติการมอบหมาย
 		public const int HistoryAssign = 180000;
 
+		//รายการที่มีภาระงานเกินกำหนด
+		public const int Overdue = 190000;
+
 		//รายการส่งคืนจากพนักงาน RM
 		public const int ReturnedCenter = 200000;
 		//รายการส่งคืนจากกิจการสาขาภาค

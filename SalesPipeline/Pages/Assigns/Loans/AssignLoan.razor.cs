@@ -204,9 +204,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 					ItemsRM = ItemsRM.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRM.province_name)).ToList();
 				}
 
-				if (!String.IsNullOrEmpty(filterRM.branchid))
+				if (!String.IsNullOrEmpty(filterRM.branch_name))
 				{
-					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.branchid)).ToList();
+					ItemsRM = ItemsRM.Where(x => x.BranchName != null && x.BranchName.Contains(filterRM.branch_name)).ToList();
 				}
 
 				if (stepAssign == StepAssignLoanModel.Customer && assignmentIdPrevious.HasValue)
@@ -281,8 +281,10 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			filterRM.provinceid = null;
+			filterRM.province_name = null;
 			filterRM.branchid = null;
 			filterRMNew.provinceid = null;
+			filterRMNew.province_name = null;
 			filterRMNew.branchid = null;
 			LookUp.Branchs = new();
 			StateHasChanged();
@@ -336,7 +338,9 @@ namespace SalesPipeline.Pages.Assigns.Loans
 		{
 			await Task.Delay(1);
 			filterRM.branchid = null;
+			filterRM.branch_name = null;
 			filterRMNew.branchid = null;
+			filterRMNew.branch_name = null;
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
 				if (branchID != 0)
