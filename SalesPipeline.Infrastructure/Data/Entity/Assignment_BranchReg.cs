@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Assignment_Branch
+public partial class Assignment_BranchReg
 {
     public Guid Id { get; set; }
 

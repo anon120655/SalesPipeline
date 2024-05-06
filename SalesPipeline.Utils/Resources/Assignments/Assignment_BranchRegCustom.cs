@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Assignments
 {
-	public class Assignment_BranchCustom
+	public class Assignment_BranchRegCustom
 	{
 		public Guid Id { get; set; }
 

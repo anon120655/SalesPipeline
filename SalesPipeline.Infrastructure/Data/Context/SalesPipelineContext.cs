@@ -12,9 +12,9 @@ public partial class SalesPipelineContext : DbContext
     {
     }
 
-    public virtual DbSet<Assignment_Branch> Assignment_Branches { get; set; }
+    public virtual DbSet<Assignment_BranchReg> Assignment_BranchRegs { get; set; }
 
-    public virtual DbSet<Assignment_MCenter> Assignment_MCenters { get; set; }
+    public virtual DbSet<Assignment_CenterBranch> Assignment_CenterBranches { get; set; }
 
     public virtual DbSet<Assignment_RM> Assignment_RMs { get; set; }
 
@@ -158,11 +158,11 @@ public partial class SalesPipelineContext : DbContext
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
 
-        modelBuilder.Entity<Assignment_Branch>(entity =>
+        modelBuilder.Entity<Assignment_BranchReg>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Assignment_Branch");
+            entity.ToTable("Assignment_BranchReg");
 
             entity.HasIndex(e => e.BranchId, "BranchId");
 
@@ -193,21 +193,21 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("UserId กิจการสาขาภาค")
                 .HasColumnType("int(11)");
 
-            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_Branches)
+            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_BranchRegs)
                 .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("assignment_branch_ibfk_2");
+                .HasConstraintName("assignment_branchreg_ibfk_2");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Assignment_Branches)
+            entity.HasOne(d => d.User).WithMany(p => p.Assignment_BranchRegs)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("assignment_branch_ibfk_1");
+                .HasConstraintName("assignment_branchreg_ibfk_1");
         });
 
-        modelBuilder.Entity<Assignment_MCenter>(entity =>
+        modelBuilder.Entity<Assignment_CenterBranch>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Assignment_MCenter");
+            entity.ToTable("Assignment_CenterBranch");
 
             entity.HasIndex(e => e.BranchId, "Master_Department_BranchId");
 
@@ -241,14 +241,14 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
 
-            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_MCenters)
+            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_CenterBranches)
                 .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("assignment_mcenter_ibfk_2");
+                .HasConstraintName("assignment_centerbranch_ibfk_2");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Assignment_MCenters)
+            entity.HasOne(d => d.User).WithMany(p => p.Assignment_CenterBranches)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("assignment_mcenter_ibfk_1");
+                .HasConstraintName("assignment_centerbranch_ibfk_1");
         });
 
         modelBuilder.Entity<Assignment_RM>(entity =>
@@ -1777,8 +1777,11 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Deliver", tb => tb.HasComment("ระยะเวลาในการส่งมอบ"));
 
-            entity.Property(e => e.BranchToMcenter)
-                .HasComment("เข้าพบ(ครั้ง)")
+            entity.Property(e => e.BranchRegToCenBranch)
+                .HasComment("กิจการสาขาภาคมอบหมายผู้จัดการศูนย์สาขา")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CenBranchToRM)
+                .HasComment("ผู้จัดการศูนย์สาขามอบหมายพนักงาน RM")
                 .HasColumnType("int(11)");
             entity.Property(e => e.CloseSale)
                 .HasComment("ปิดการขาย(ครั้ง)")
@@ -1787,11 +1790,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.LoanToBranch)
-                .HasComment("ติดต่อ(ครั้ง)")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.McenterToRM)
-                .HasComment("ยื่นเอกสาร(ครั้ง)")
+            entity.Property(e => e.LoanToBranchReg)
+                .HasComment("ศูนย์ธุระกิจสินเชื่อมองหมายกิจการสาขาภาค")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")

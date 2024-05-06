@@ -20,23 +20,23 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<PaginationView<List<Assignment_BranchCustom>>>> GetListBranch(allFilter model)
+		public async Task<ResultModel<PaginationView<List<Assignment_BranchRegCustom>>>> GetListBranch(allFilter model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/AssignmentBranch/GetListBranch", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_BranchCustom>>>(content);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Assignment_BranchRegCustom>>>(content);
 
-				return new ResultModel<PaginationView<List<Assignment_BranchCustom>>>()
+				return new ResultModel<PaginationView<List<Assignment_BranchRegCustom>>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<PaginationView<List<Assignment_BranchCustom>>>
+				return new ResultModel<PaginationView<List<Assignment_BranchRegCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

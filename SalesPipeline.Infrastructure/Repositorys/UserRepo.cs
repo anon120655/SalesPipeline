@@ -244,7 +244,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (model.BranchId != user.BranchId)
 							{
-								var assignments = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+								var assignments = await _repo.Context.Assignment_CenterBranches.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
 								if (assignments != null && assignments.RMNumber > 0)
 								{
 									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
@@ -311,7 +311,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									_name = branch.BranchName;
 								}
 
-								Assignment_MCenterCustom assignmentCenterModel = new()
+								Assignment_CenterBranchCustom assignmentCenterModel = new()
 								{
 									Status = model.Status,
 									BranchId = user.BranchId,
@@ -398,7 +398,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (query.RoleId == 7)
 					{
-						var assignment = await _repo.Context.Assignment_MCenters.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+						var assignment = await _repo.Context.Assignment_CenterBranches.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
 						if (assignment != null)
 						{
 							assignment.Status = _status;

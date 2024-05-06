@@ -25,19 +25,19 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? ContactName { get; set; }
 
 		/// <summary>
-		/// ติดต่อ(ครั้ง)
+		/// ศูนย์ธุระกิจสินเชื่อมองหมายกิจการสาขาภาค
 		/// </summary>
-		public int LoanToBranch { get; set; }
+		public int LoanToBranchReg { get; set; }
 
 		/// <summary>
-		/// เข้าพบ(ครั้ง)
+		/// กิจการสาขาภาคมอบหมายผู้จัดการศูนย์สาขา
 		/// </summary>
-		public int BranchToMcenter { get; set; }
+		public int BranchRegToCenBranch { get; set; }
 
 		/// <summary>
-		/// ยื่นเอกสาร(ครั้ง)
+		/// ผู้จัดการศูนย์สาขามอบหมายพนักงาน RM
 		/// </summary>
-		public int McenterToRM { get; set; }
+		public int CenBranchToRM { get; set; }
 
 		/// <summary>
 		/// ปิดการขาย(ครั้ง)

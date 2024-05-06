@@ -93,9 +93,9 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
-    public virtual ICollection<Assignment_Branch> Assignment_Branches { get; set; } = new List<Assignment_Branch>();
+    public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
 
-    public virtual ICollection<Assignment_MCenter> Assignment_MCenters { get; set; } = new List<Assignment_MCenter>();
+    public virtual ICollection<Assignment_CenterBranch> Assignment_CenterBranches { get; set; } = new List<Assignment_CenterBranch>();
 
     public virtual ICollection<Assignment_RM_Sale> Assignment_RM_Sales { get; set; } = new List<Assignment_RM_Sale>();
 

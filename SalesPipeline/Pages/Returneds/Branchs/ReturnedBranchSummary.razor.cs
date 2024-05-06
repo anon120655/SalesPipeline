@@ -22,7 +22,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
-		private List<Assignment_MCenterCustom>? Items;
+		private List<Assignment_CenterBranchCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
 		private AssignModel AssignModel = new();
 
@@ -158,7 +158,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 			_Navs.NavigateTo("/return/branch");
 		}
 
-		protected void OnCheckEmployee(Assignment_MCenterCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_CenterBranchCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{

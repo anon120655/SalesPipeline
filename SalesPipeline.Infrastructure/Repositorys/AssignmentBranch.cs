@@ -32,15 +32,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<bool> CheckAssignmentByUserId(int id)
 		{
-			return await _repo.Context.Assignment_Branches.AnyAsync(x => x.UserId == id);
+			return await _repo.Context.Assignment_BranchRegs.AnyAsync(x => x.UserId == id);
 		}
 
 		public async Task<bool> CheckAssignmentByBranchId(int id)
 		{
-			return await _repo.Context.Assignment_Branches.AnyAsync(x => x.BranchId == id);
+			return await _repo.Context.Assignment_BranchRegs.AnyAsync(x => x.BranchId == id);
 		}
 
-		public async Task<Assignment_BranchCustom> Create(Assignment_BranchCustom model)
+		public async Task<Assignment_BranchRegCustom> Create(Assignment_BranchRegCustom model)
 		{
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
@@ -56,7 +56,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
 			}
 
-			var assignment_Branch = new Data.Entity.Assignment_Branch();
+			var assignment_Branch = new Data.Entity.Assignment_BranchReg();
 			assignment_Branch.Status = model.Status;
 			assignment_Branch.CreateDate = DateTime.Now;
 			assignment_Branch.BranchId = model.BranchId;
@@ -70,12 +70,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment_Branch);
 			await _db.SaveAsync();
 
-			return _mapper.Map<Assignment_BranchCustom>(assignment_Branch);
+			return _mapper.Map<Assignment_BranchRegCustom>(assignment_Branch);
 		}
 
-		public async Task<PaginationView<List<Assignment_BranchCustom>>> GetListBranch(allFilter model)
+		public async Task<PaginationView<List<Assignment_BranchRegCustom>>> GetListBranch(allFilter model)
 		{
-			var query = _repo.Context.Assignment_Branches.Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Assignment_BranchRegs.Where(x => x.Status != StatusModel.Delete)
 												 .Include(x => x.Branch)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
@@ -122,9 +122,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Assignment_BranchCustom>>()
+			return new PaginationView<List<Assignment_BranchRegCustom>>()
 			{
-				Items = _mapper.Map<List<Assignment_BranchCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Assignment_BranchRegCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}
@@ -168,10 +168,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task Assign(AssignModel model)
 		{
-			var assignment_Branch = await _repo.Context.Assignment_Branches
-				.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
+			var assignment_BranchReg = await _repo.Context.Assignment_BranchRegs
+				//.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region) //Include จะทำให้ update sale บางตัวไม่ได้
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMBranch.Id);
-			if (assignment_Branch != null)
+			if (assignment_BranchReg != null)
 			{
 				foreach (var item in model.Sales)
 				{
@@ -183,19 +183,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						//if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
-						if (assignment_Branch.User != null)
-						{
-							sale.Master_Branch_RegionId = assignment_Branch.User.Master_Branch_RegionId;
-							if (assignment_Branch.User.Master_Branch_Region != null)
-							{
-								sale.Master_Branch_RegionName = assignment_Branch.User.Master_Branch_Region.Name;
-							}
-							sale.ProvinceId = assignment_Branch.User.ProvinceId;
-							sale.ProvinceName = assignment_Branch.User.ProvinceName;
-						}
+						//ข้อมูลนี้จะได้มาตั้งแต่ตอนเพิ่มรายการ
+						//if (assignment_Branch.User != null)
+						//{
+						//	sale.Master_Branch_RegionId = assignment_Branch.User.Master_Branch_RegionId;
+						//	if (assignment_Branch.User.Master_Branch_Region != null)
+						//	{
+						//		sale.Master_Branch_RegionName = assignment_Branch.User.Master_Branch_Region.Name;
+						//	}
+						//	sale.ProvinceId = assignment_Branch.User.ProvinceId;
+						//	sale.ProvinceName = assignment_Branch.User.ProvinceName;
+						//}
 
-						sale.BranchId = assignment_Branch.BranchId;
-						sale.BranchName = assignment_Branch.BranchName;
+						sale.BranchId = assignment_BranchReg.BranchId;
+						sale.BranchName = assignment_BranchReg.BranchName;
 						sale.AssCenterUserId = null;
 						sale.AssCenterUserName = null;
 						sale.AssCenterCreateBy = null;
@@ -223,8 +224,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task CreateAssignmentBranchAll(allFilter model)
 		{
 			var usersBranch = await _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.Assignment_Branches)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.BRANCH_REG_02 && x.Assignment_Branches.Count == 0)
+										   .Include(x => x.Assignment_BranchRegs)
+										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.BRANCH_REG_02 && x.Assignment_BranchRegs.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 

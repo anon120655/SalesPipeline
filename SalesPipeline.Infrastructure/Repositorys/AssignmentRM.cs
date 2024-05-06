@@ -209,7 +209,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int? assignmentCenterUserId = null;
 			if (model.assigncenter.HasValue)
 			{
-				var assignment_MCenter = await _repo.Context.Assignment_MCenters.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
+				var assignment_MCenter = await _repo.Context.Assignment_CenterBranches.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
 				if (assignment_MCenter != null)
 				{
 					assignmentCenterId = assignment_MCenter.Id;
