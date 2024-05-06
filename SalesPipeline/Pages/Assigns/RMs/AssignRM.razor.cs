@@ -1,19 +1,14 @@
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NPOI.OpenXmlFormats.Spreadsheet;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Thailands;
-using System.Linq;
 
-namespace SalesPipeline.Pages.Assigns.Loans
+namespace SalesPipeline.Pages.Assigns.RMs
 {
-	public partial class AssignLoan
+	public partial class AssignRM
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;
@@ -168,7 +163,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/assign/loan";
+					Pager.UrlAction = "/assign/rm";
 				}
 				SetModelRM();
 			}
@@ -217,7 +212,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				PagerRM = new Pager(ItemsRM.Count(), filterRM.page, filterRM.pagesize, null);
 				if (PagerRM != null)
 				{
-					PagerRM.UrlAction = "/assign/loan";
+					PagerRM.UrlAction = "/assign/rm";
 					ItemsRM = ItemsRM.Skip((PagerRM.CurrentPage - 1) * PagerRM.PageSize).Take(PagerRM.PageSize).ToList();
 				}
 			}
@@ -269,7 +264,7 @@ namespace SalesPipeline.Pages.Assigns.Loans
 				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
 				if (PagerRMNew != null)
 				{
-					PagerRMNew.UrlAction = "/assign/loan";
+					PagerRMNew.UrlAction = "/assign/rm";
 					ItemsRMNew = ItemsRMNew.Skip((PagerRMNew.CurrentPage - 1) * PagerRMNew.PageSize).Take(PagerRMNew.PageSize).ToList();
 				}
 			}

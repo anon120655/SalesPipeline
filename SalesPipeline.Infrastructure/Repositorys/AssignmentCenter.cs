@@ -176,30 +176,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task Assign(AssignModel model)
 		{
 			var assignment_MCenter = await _repo.Context.Assignment_MCenters
-				.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
-				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.AssignMCenter.Id);
+				//.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region)
+				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.AssignMCenter.Id);
 			if (assignment_MCenter != null)
 			{
 				var salesCount = 0;
 				foreach (var item in model.Sales)
 				{
-					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item.Id);
+					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item.Id);
 					if (sale != null)
 					{
 						sale.AssUser = null;
+						sale.AssCenterUser = null;
 
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
-						if (assignment_MCenter.User != null)
-						{
-							sale.Master_Branch_RegionId = assignment_MCenter.User.Master_Branch_RegionId;
-							if (assignment_MCenter.User.Master_Branch_Region != null)
-							{
-								sale.Master_Branch_RegionName = assignment_MCenter.User.Master_Branch_Region.Name;
-							}
-							sale.ProvinceId = assignment_MCenter.User.ProvinceId;
-							sale.ProvinceName = assignment_MCenter.User.ProvinceName;
-						}
+						//if (assignment_MCenter.User != null)
+						//{
+						//	sale.Master_Branch_RegionId = assignment_MCenter.User.Master_Branch_RegionId;
+						//	if (assignment_MCenter.User.Master_Branch_Region != null)
+						//	{
+						//		sale.Master_Branch_RegionName = assignment_MCenter.User.Master_Branch_Region.Name;
+						//	}
+						//	sale.ProvinceId = assignment_MCenter.User.ProvinceId;
+						//	sale.ProvinceName = assignment_MCenter.User.ProvinceName;
+						//}
 
 						sale.BranchId = assignment_MCenter.BranchId;
 						sale.BranchName = assignment_MCenter.BranchName;

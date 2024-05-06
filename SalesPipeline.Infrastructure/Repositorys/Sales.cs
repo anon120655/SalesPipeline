@@ -378,6 +378,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.StatusSaleId == model.statussaleid);
 			}
 
+			if (model.StatusSales?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.StatusSales);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => idList.Contains(x.StatusSaleId));
+				}
+			}
+
 			//การปิดการขาย สำเร็จ/ไม่สำเร็จ
 			if (model.isclosesale > 0)
 			{

@@ -4,13 +4,12 @@ using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Assigns.MCenters
+namespace SalesPipeline.Pages.Assigns.CenterBranch
 {
-	public partial class AssignMCenter
+	public partial class AssignCenterBranch
 	{
 		string? _errorMessage = null;
 		private bool isLoading = false;
@@ -121,7 +120,12 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		protected async Task SetModel()
 		{
 			filter.pagesize = 100;
-			filter.statussaleid = StatusSaleModel.WaitAssignCenter;
+			//filter.statussaleid = StatusSaleModel.WaitAssignCenter;
+			filter.StatusSales = new()
+			{
+				StatusSaleModel.WaitAssignCenter.ToString(),
+				StatusSaleModel.WaitAssignCenterREG.ToString()
+			};
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -139,7 +143,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/assign/manager";
+					Pager.UrlAction = "/assign/cbranch";
 				}
 			}
 			else
@@ -373,7 +377,7 @@ namespace SalesPipeline.Pages.Assigns.MCenters
 		}
 
 		protected async Task OnBusinessType(ChangeEventArgs e)
-		{ 
+		{
 			filter.businesstype = null;
 			if (e.Value != null)
 			{

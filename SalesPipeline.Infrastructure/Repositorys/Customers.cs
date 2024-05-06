@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.GeometriesGraph;
-using NetTopologySuite.Index.HPRtree;
-using NPOI.SS.Formula.Functions;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -357,9 +352,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (userBranch_REG == null) throw new ExceptionCustom("LOAN BranchId not found");
 
 					statusSaleId = StatusSaleModel.WaitAssignCenterREG;
-					master_Branch_RegionId = user.Master_Branch_RegionId;
-					provinceId = user.ProvinceId;
-					branchId = user.BranchId;
+					master_Branch_RegionId = userBranch_REG.Master_Branch_RegionId;
+					provinceId = userBranch_REG.ProvinceId;
+					branchId = userBranch_REG.BranchId;
 				}
 
 				var saleData = new SaleCustom()
