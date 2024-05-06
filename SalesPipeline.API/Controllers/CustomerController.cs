@@ -173,7 +173,7 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
-		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, string rolecode, int? statusSaleId = null, int? assignedCenterUserId = null)
+		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, Guid? branch_RegionId, string rolecode, int? statusSaleId = null, int? assignedCenterUserId = null)
 		{
 			try
 			{
@@ -238,6 +238,18 @@ namespace SalesPipeline.API.Controllers
 				//SaleCustom? modelSale = null;
 
 				rolecode = rolecode.ToUpper();
+				if (rolecode.StartsWith("C"))
+				{
+					rolecode = RoleCodes.CEN_BRANCH;
+				}
+				else if (rolecode.StartsWith("B"))
+				{
+					rolecode = RoleCodes.BRANCH_REG;
+				}
+				else if (rolecode.StartsWith("L"))
+				{
+					rolecode = RoleCodes.LOAN;
+				}
 
 				for (int i = 1; i <= number; i++)
 				{
@@ -263,7 +275,7 @@ namespace SalesPipeline.API.Controllers
 					else if (rolecode == RoleCodes.CEN_BRANCH)
 					{
 						currentUserId = 11;
-						employeeName = $"MCenter_{provinceId}_{i} ทดสอบ";
+						employeeName = $"CEN_BRANCH_{provinceId}_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssign;
 
 						if (assignedCenterUserId.HasValue)
@@ -277,17 +289,18 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentCenter currentUserId={currentUserId}");
 						}
 					}
+					else if (rolecode == RoleCodes.BRANCH_REG)
+					{
+						currentUserId = 9;
+						employeeName = $"BRANCH_REG_{provinceId}_{i} ทดสอบ";
+						_statusSaleId = StatusSaleModel.WaitAssignCenter;
+					}
 					else if (rolecode == RoleCodes.LOAN)
 					{
 						currentUserId = 5;
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
-						_statusSaleId = StatusSaleModel.WaitVerifyBranch;
-					}
-					else if (rolecode == RoleCodes.BRANCH_REG)
-					{
-						currentUserId = 9;
-						employeeName = $"BRANCH_{provinceId}_{i} ทดสอบ";
-						_statusSaleId = StatusSaleModel.WaitAssignCenter;
+						_statusSaleId = StatusSaleModel.WaitAssignCenterREG;
+						if (!branch_RegionId.HasValue) throw new ExceptionCustom($"ไม่พบข้อมูล branch_RegionId");
 					}
 					else
 					{
@@ -313,6 +326,7 @@ namespace SalesPipeline.API.Controllers
 
 						var data = await _repo.Customer.Create(new()
 						{
+							Branch_RegionId = branch_RegionId,
 							StatusSaleId = _statusSaleId,
 							CurrentUserId = currentUserId, //RM
 							Status = StatusModel.Active,
@@ -391,6 +405,10 @@ namespace SalesPipeline.API.Controllers
 							new() { Name = $"ผู้ถือหุ้น_2" , Nationality="ไทย", Proportion = "60%", NumberShareholder = 60 ,TotalShareValue = 600000 }
 						}
 						});
+					}
+					else
+					{
+						throw new ExceptionCustom($"checkCreate false");
 					}
 				}
 

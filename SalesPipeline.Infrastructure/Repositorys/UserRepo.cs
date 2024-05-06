@@ -431,11 +431,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<UserCustom>(query);
 		}
 
-		public async Task<UserCustom> GetMcencerByBranchId(int id)
+		public async Task<UserCustom> GetByBranchRegionId(Guid id, int role)
 		{
-			//7=ผู้จัดการศูนย์
-			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 7 && x.BranchId == id).FirstOrDefaultAsync();
-			return _mapper.Map<UserCustom>(query);
+			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active);
+
+			var queryUse = await query.FirstOrDefaultAsync(x => x.RoleId == role && x.Master_Branch_RegionId == id);
+
+			return _mapper.Map<UserCustom>(queryUse);
+		}
+
+		public async Task<UserCustom> GetByBranchId(int id, int role)
+		{
+			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active);
+			
+			var queryUse = await query.FirstOrDefaultAsync(x => x.RoleId == role && x.BranchId == id);
+
+			return _mapper.Map<UserCustom>(queryUse);
 		}
 
 		public async Task<UserCustom> GetUserRMByProvinceId(int id)

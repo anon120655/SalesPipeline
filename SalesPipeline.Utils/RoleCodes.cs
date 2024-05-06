@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils
 {
+	//ADMIN  =  มองเห็นทั้งประเทศ
+	//LOAN  =  มองเห็นทั้งประเทศ
+	//BRANCH_REG  =  มองเห็นทุกจังหวัดในภาคที่ตัวเองดูแล
+	//CEN_BRANCH  =  มองเห็นเฉพาะเคสที่ตัวเองสร้าง และถูกมอบหมายจาก กิจการสาขาภาค และสาขา ที่ดูแล
+	//RM  =  มองเห็นเฉพาะเคสที่ตัวเองสร้างและถูกมอบหมาย และสาขา ที่ดูแล
 	public class RoleCodes
 	{
 		/// <summary>

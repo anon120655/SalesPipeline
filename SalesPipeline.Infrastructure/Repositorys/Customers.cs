@@ -290,17 +290,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? assUserName = null;
 
 				var user = await _repo.User.GetById(model.CurrentUserId);
-				if (user == null) throw new ExceptionCustom("currentUserId required!");
+				if (user == null) throw new ExceptionCustom("currentUserId not found!");
 
 				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					if (user.BranchId.HasValue)
 					{
-						var userMcencer = await _repo.User.GetMcencerByBranchId(user.BranchId.Value);
-						if (userMcencer != null)
+						var userCenter = await _repo.User.GetByBranchId(user.BranchId.Value, 7);
+						if (userCenter != null)
 						{
-							assCenterUserId = userMcencer.Id;
-							assCenterUserName = userMcencer.FullName;
+							assCenterUserId = userCenter.Id;
+							assCenterUserName = userCenter.FullName;
 						}
 					}
 
@@ -311,8 +311,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
-
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 				{
 					var userCenter = await _repo.User.GetById(user.Id);
 					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
@@ -342,18 +341,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					provinceId = userCenter.ProvinceId;
 					branchId = userCenter.BranchId;
 				}
-
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
 					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
-
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
 				{
-					statusSaleId = StatusSaleModel.WaitVerifyBranch;
+					if (!model.Branch_RegionId.HasValue) throw new ExceptionCustom("LOAN BranchId required!");
+
+					//ค้นหา user กิจการสาขาภาค ที่ดูแลสาขานี้
+					var userBranch_REG = await _repo.User.GetByBranchRegionId(model.Branch_RegionId.Value, 6);
+					if (userBranch_REG == null) throw new ExceptionCustom("LOAN BranchId not found");
+
+					statusSaleId = StatusSaleModel.WaitAssignCenterREG;
+					master_Branch_RegionId = user.Master_Branch_RegionId;
+					provinceId = user.ProvinceId;
+					branchId = user.BranchId;
 				}
 
 				var saleData = new SaleCustom()
