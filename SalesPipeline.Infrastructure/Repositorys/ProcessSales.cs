@@ -1401,6 +1401,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//query = query.Where(x => x.AppointmentDate.HasValue);
 
+			if (!String.IsNullOrEmpty(model.psalecode))
+			{
+				query = query.Where(x => x.ProcessSaleCode == model.psalecode);
+			}
+
 			if (model.assignrm.HasValue)
 			{
 				query = query.Where(x => x.Sale.AssUserId == model.assignrm);

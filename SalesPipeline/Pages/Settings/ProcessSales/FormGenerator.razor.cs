@@ -37,6 +37,9 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 					await SetDefaultModel();
 				}
 
+				formModel.AppointmentDate = DateTime.Now;
+				formModel.AppointmentTime = new TimeOnly(13, 30, 00);
+				formModel.Location = "ร้านกาแฟ starbucks";
 				StateHasChanged();
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
