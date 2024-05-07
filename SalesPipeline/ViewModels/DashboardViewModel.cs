@@ -578,8 +578,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<Sale_DeliverCustom>>>> GetDeliver(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Dashboard/GetDeliver", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Sale_DeliverCustom>>>(content);
 
-
+				return new ResultModel<PaginationView<List<Sale_DeliverCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Sale_DeliverCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
 
 	}
 }

@@ -155,6 +155,8 @@ public partial class Sale
 
     public virtual ICollection<Sale_Contact> Sale_Contacts { get; set; } = new List<Sale_Contact>();
 
+    public virtual ICollection<Sale_Deliver> Sale_Delivers { get; set; } = new List<Sale_Deliver>();
+
     public virtual ICollection<Sale_Document> Sale_Documents { get; set; } = new List<Sale_Document>();
 
     public virtual ICollection<Sale_Duration> Sale_Durations { get; set; } = new List<Sale_Duration>();

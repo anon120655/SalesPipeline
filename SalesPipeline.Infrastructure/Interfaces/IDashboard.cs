@@ -67,5 +67,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<GroupByModel>> GetAvgRegionMonth12Bar(allFilter model);
 		//ระยะเวลาในการส่งมอบ
 		Task UpdateDeliverById(allFilter model);
+		Task<PaginationView<List<Sale_DeliverCustom>>> GetDeliver(allFilter model);
 	}
 }

@@ -15,16 +15,16 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">ระยะเวลาเฉลี่ยในการส่งมอบ</span></p>
+							<p class="back_topic">ระยะเวลาเฉลี่ยในการส่งมอบ</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
 							<label class="form-label">เลขนิติบุคคล</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.juristicnumber" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
-									<button class="btn rounded-start-0 border border-start-0" type="button">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
 									</button>
 								</span>
@@ -33,7 +33,87 @@
 						<div class="col mb-2">
 							<label class="form-label">ชื่อลูกค้า</label>
 							<div class="input-group">
-								<input class="form-control" type="search" placeholder="">
+								<input @bind="filter.searchtxt" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">จังหวัด</label>
+							<select id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Provinces?.Count > 0)
+								{
+									foreach (var item in LookUp.Provinces)
+									{
+										<option value="@item.ProvinceID">@item.ProvinceName</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สาขา</label>
+							<select id="Branch" class="selectpickerdefault" title="ทั้งหมด" data-style="select_btn_set" data-live-search="true" value="">
+								@if (LookUp.Branchs?.Count > 0)
+								{
+									foreach (var item in LookUp.Branchs)
+									{
+										<option value="@item.BranchID">@item.BranchName</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">สสผ. ส่งมอบ (วัน)</label>
+							<div class="input-group">
+								<input @bind="filter.loantobranchreg" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ผจภ. ส่งมอบ (วัน)</label>
+							<div class="input-group">
+								<input @bind="filter.branchregtocenbranch" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ผจศ. ส่งมอบ (วัน)</label>
+							<div class="input-group">
+								<input @bind="filter.cenbranchtorm" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ปิดการขาย (วัน)</label>
+							<div class="input-group">
+								<input @bind="filter.closesale" class="form-control" type="search" placeholder="">
+								<span class="input-group-append ms-0">
+									<button @onclick="((e) => Search())" class="btn rounded-start-0 border border-start-0" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="col mb-2">
+							<label class="form-label">ผู้รับผิดชอบ</label>
+							<div class="input-group">
+								<input @bind="filter.assignrm_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
 									<button class="btn rounded-start-0 border border-start-0" type="button">
 										<i class="fa fa-search"></i>
@@ -41,44 +121,8 @@
 								</span>
 							</div>
 						</div>
-						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">สสผ. ส่งมอบ (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ผจภ. ส่งมอบ (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ผจศ. ส่งมอบ (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ปิดการขาย (วัน)</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">ผู้รับผิดชอบ</label>
-							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
-								<option selected>ทั้งหมด</option>
-							</select>
-						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
+							<button @onclick="((e) => Search())" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
@@ -89,10 +133,9 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">เลขนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">สสผ. ส่งมอบ (วัน)</th>
 											<th class="text-center">ผจภ. ส่งมอบ (วัน)</th>
 											<th class="text-center">ผจศ. ส่งมอบ (วัน)</th>
@@ -101,19 +144,37 @@
 										</tr>
 									</thead>
 									<tbody>
-										@for (int i = 1; i < 6; i++)
+										@if (Items == null)
 										{
-											<tr>
-												<td class="text-center">@(i)</td>
-												<td class="text-center">1234567990123</td>
-												<td class="text-center">บริษัท ทดสอบ จำกัด</td>
-												<td class="text-center">ปทุมธานี</td>
-												<td class="text-center">5</td>
-												<td class="text-center">5</td>
-												<td class="text-center">10</td>
-												<td class="text-center">15</td>
-												<td class="text-center">ทดสอบ ระบบ</td>
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
 											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+													<td class="">@item.Sale?.CompanyName</td>
+													<td class="text-center">@item.Sale?.BranchName</td>
+													<td class="text-center">@(item.LoanToBranchReg)</td>
+													<td class="text-center">@item.BranchRegToCenBranch</td>
+													<td class="text-center">@item.CenBranchToRM</td>
+													<td class="text-center">@(item.LoanToBranchReg + item.BranchRegToCenBranch + item.CenBranchToRM)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.AssUserName)</td>
+												</tr>
+											}
 										}
 									</tbody>
 								</table>
@@ -121,7 +182,13 @@
 						</div>
 					</div>
 					<div>
-						<PaginationMockup></PaginationMockup>
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>

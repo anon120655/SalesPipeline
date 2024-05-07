@@ -412,6 +412,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							CreateBy = item.CurrentUserId,
 							CreateByName = currentUserName,
 						});
+
+						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item_sale.SaleId });
 					}
 
 					await UpdateCurrentNumber(assignment_RM.Id);

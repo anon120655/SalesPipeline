@@ -502,5 +502,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetDeliver")]
+		public async Task<IActionResult> GetDeliver(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetDeliver(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

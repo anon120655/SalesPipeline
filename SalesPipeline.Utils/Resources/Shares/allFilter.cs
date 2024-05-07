@@ -55,6 +55,10 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public string? contact { get; set; }
 		public string? meet { get; set; }
 		public string? document { get; set; }
+		public string? loantobranchreg { get; set; }
+		public string? branchregtocenbranch { get; set; }
+		public string? cenbranchtorm { get; set; }
+		public string? closesale { get; set; }
 		public string? val1 { get; set; }
 		public string? val2 { get; set; }
 		public string? val3 { get; set; }
@@ -221,6 +225,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(document))
 				ParameterAll += $"&document={document}";
+
+			if (!String.IsNullOrEmpty(loantobranchreg))
+				ParameterAll += $"&loantobranchreg={loantobranchreg}";
+
+			if (!String.IsNullOrEmpty(branchregtocenbranch))
+				ParameterAll += $"&branchregtocenbranch={branchregtocenbranch}";
+
+			if (!String.IsNullOrEmpty(cenbranchtorm))
+				ParameterAll += $"&cenbranchtorm={cenbranchtorm}";
+
+			if (!String.IsNullOrEmpty(closesale))
+				ParameterAll += $"&closesale={closesale}";
 
 			if (!String.IsNullOrEmpty(val1))
 				ParameterAll += $"&val1={val1}";
@@ -415,6 +431,18 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(document), out var _document))
 				document = _document;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(loantobranchreg), out var _loantobranchreg))
+				loantobranchreg = _loantobranchreg;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(branchregtocenbranch), out var _branchregtocenbranch))
+				branchregtocenbranch = _branchregtocenbranch;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(cenbranchtorm), out var _cenbranchtorm))
+				cenbranchtorm = _cenbranchtorm;
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(closesale), out var _closesale))
+				closesale = _closesale;
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue(nameof(val1), out var _val1))
 				val1 = _val1;

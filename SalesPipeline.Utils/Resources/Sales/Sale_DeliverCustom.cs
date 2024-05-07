@@ -43,5 +43,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// ปิดการขาย(ครั้ง)
 		/// </summary>
 		public int CloseSale { get; set; }
+
+		public virtual SaleCustom? Sale { get; set; }
 	}
 }

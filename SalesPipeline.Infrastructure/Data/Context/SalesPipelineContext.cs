@@ -1777,6 +1777,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Deliver", tb => tb.HasComment("ระยะเวลาในการส่งมอบ"));
 
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
             entity.Property(e => e.BranchRegToCenBranch)
                 .HasComment("กิจการสาขาภาคมอบหมายผู้จัดการศูนย์สาขา")
                 .HasColumnType("int(11)");
@@ -1796,6 +1798,11 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Delivers)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_deliver_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Document>(entity =>

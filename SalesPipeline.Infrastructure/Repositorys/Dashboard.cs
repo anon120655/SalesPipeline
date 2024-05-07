@@ -672,17 +672,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
-			var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+			var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active && x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
+			var queryDeliver = _repo.Context.Sale_Delivers.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active);
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
 				query = query.Where(x => x.AssCenterUserId == user.Id);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.AssCenterUserId == user.Id);
+				queryDeliver = queryDeliver.Where(x => x.Sale.AssCenterUserId == user.Id);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
 				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				queryDeliver = queryDeliver.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 			{
@@ -692,16 +695,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+				queryDeliver = queryDeliver.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 			if (!model.startdate.HasValue && model.enddate.HasValue)
 			{
 				query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+				queryDeliver = queryDeliver.Where(x => x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 			if (model.startdate.HasValue && model.enddate.HasValue)
 			{
 				query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date && x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+				queryDeliver = queryDeliver.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date && x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 			}
 
 			//กิจการสาขาภาค[]
@@ -712,6 +718,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
 					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
+					queryDeliver = queryDeliver.Where(x => x.Sale.Master_Branch_RegionId.HasValue && idList.Contains(x.Sale.Master_Branch_RegionId));
 				}
 			}
 
@@ -723,6 +730,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					query = query.Where(x => x.ProvinceId.HasValue && idList.Contains(x.ProvinceId));
 					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.ProvinceId.HasValue && idList.Contains(x.Sale.ProvinceId));
+					queryDeliver = queryDeliver.Where(x => x.Sale.ProvinceId.HasValue && idList.Contains(x.Sale.ProvinceId));
 				}
 			}
 
@@ -734,6 +742,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
 					queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.BranchId.HasValue && idList.Contains(x.Sale.BranchId));
+					queryDeliver = queryDeliver.Where(x => x.Sale.BranchId.HasValue && idList.Contains(x.Sale.BranchId));
 				}
 			}
 
@@ -760,6 +769,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													 .Average();
 
 				dash_Avg_Number.AvgSaleActcloseDeal = (int)avgSaleActcloseDeal;
+			}
+			catch { }
+
+			try
+			{
+				var avgDeliveryDuration = queryDeliver.Select(x => (x.LoanToBranchReg + x.BranchRegToCenBranch + x.CenBranchToRM + x.CloseSale))
+													 .DefaultIfEmpty()
+													 .Average();
+
+				dash_Avg_Number.AvgDeliveryDuration = (int)avgDeliveryDuration;
 			}
 			catch { }
 
@@ -3575,6 +3594,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
 				if (sale_Status.Count > 0)
 				{
+					//รอมอบหมาย(ผจศ) และ รอมอบหมาย(ผจศ.)(จาก ศูนย์ธุรกิจสินเชื่อ)
+					DateTime _waitAssignCenterAll = DateTime.MinValue;
+
 					//รอมอบหมาย(ผจศ.)(จาก ศูนย์ธุรกิจสินเชื่อ)
 					var waitAssignCenterREG = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitAssignCenterREG).Select(x => x.CreateDate.Date).FirstOrDefault();
 					//รอมอบหมาย(ผจศ)
@@ -3586,6 +3608,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//ปิดการขาย
 					var closeSale = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
 
+					_waitAssignCenterAll = waitAssignCenterREG;
+					if (_waitAssignCenterAll == DateTime.MinValue)
+					{
+						_waitAssignCenterAll = waitAssignCenter;
+					}
+
+					//BranchRegToCenBranch กิจการสาขาภาคมอบหมายผู้จัดการศูนย์สาขา
+					//รอมอบหมาย(ผจศ) -> รอมอบหมาย RM  cal(รอมอบหมาย RM-รอมอบหมาย(ผจศ))
+					if (_waitAssignCenterAll != DateTime.MinValue && waitAssign != DateTime.MinValue)
+						sale_Delivers.BranchRegToCenBranch = (int)(waitAssign - _waitAssignCenterAll).TotalDays;
+
+					//CenBranchToRM ผู้จัดการศูนย์สาขามอบหมายพนักงาน RM
+					//รอมอบหมาย RM -> รอการติตต่อ  cal(รอการติตต่อ-รอมอบหมาย RM)
+					if (waitAssign != DateTime.MinValue && waitContact != DateTime.MinValue)
+						sale_Delivers.CenBranchToRM = (int)(waitContact - waitAssign).TotalDays;
+
+					//****** คำนวณที่หน้าบ้าน ******
+					//CloseSale ปิดการขาย
+					//รอการติตต่อ -> ปิดการขาย  cal(ปิดการขาย-รอการติตต่อ)
+					//if (waitContact != DateTime.MinValue && closeSale != DateTime.MinValue)
+					//	sale_Delivers.CloseSale = (int)(closeSale - waitContact).TotalDays;
 				}
 
 				if (CRUD == CRUDModel.Create)
@@ -3598,6 +3641,75 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				await _db.SaveAsync();
 			}
+		}
+
+		public async Task<PaginationView<List<Sale_DeliverCustom>>> GetDeliver(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+
+			IQueryable<Sale_Deliver> query;
+
+			query = _repo.Context.Sale_Delivers.Include(x => x.Sale).ThenInclude(x => x.Customer)
+												.Where(x => x.Status != StatusModel.Delete)
+												.OrderByDescending(x => x.CreateDate)
+												.AsQueryable();
+
+			if (user.Role.Code.StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x => x.Sale.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.StartsWith(RoleCodes.BRANCH_REG))
+			{
+				query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
+			}
+
+			if (int.TryParse(model.loantobranchreg, out int _loantobranchreg))
+				query = query.Where(x => x.LoanToBranchReg == _loantobranchreg);
+
+			if (int.TryParse(model.branchregtocenbranch, out int _branchregtocenbranch))
+				query = query.Where(x => x.BranchRegToCenBranch == _branchregtocenbranch);
+
+			if (int.TryParse(model.cenbranchtorm, out int _cenbranchtorm))
+				query = query.Where(x => x.CenBranchToRM == _cenbranchtorm);
+
+			if (int.TryParse(model.closesale, out int _closesale))
+				query = query.Where(x => x.CloseSale == _closesale);
+
+			if (!String.IsNullOrEmpty(model.juristicnumber))
+				query = query.Where(x => x.Sale.Customer.JuristicPersonRegNumber != null && x.Sale.Customer.JuristicPersonRegNumber.Contains(model.juristicnumber));
+
+			if (!String.IsNullOrEmpty(model.searchtxt))
+				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
+
+			if (!String.IsNullOrEmpty(model.assignrm_name))
+				query = query.Where(x => x.Sale.AssUserName != null && x.Sale.AssUserName.Contains(model.assignrm_name));
+
+			if (model.provinceid.HasValue)
+				query = query.Where(x => x.Sale.ProvinceId.HasValue && x.Sale.ProvinceId == model.provinceid.Value);
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Sale.BranchId.HasValue && idList.Contains(x.Sale.BranchId));
+				}
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Sale_DeliverCustom>>()
+			{
+				Items = _mapper.Map<List<Sale_DeliverCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 	}

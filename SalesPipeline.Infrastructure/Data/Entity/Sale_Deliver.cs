@@ -43,4 +43,6 @@ public partial class Sale_Deliver
     /// ปิดการขาย(ครั้ง)
     /// </summary>
     public int CloseSale { get; set; }
+
+    public virtual Sale Sale { get; set; } = null!;
 }

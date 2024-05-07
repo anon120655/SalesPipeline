@@ -771,8 +771,12 @@ namespace SalesPipeline.Pages.Assigns.RMs
 					}
 				}
 			}
-			ItemsRM = GeneralUtils.DeepCopyJson(ItemsAll);
-			ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);
+
+			//ItemsRM = GeneralUtils.DeepCopyJson(ItemsAll);
+			//ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);
+			SetModelRM();
+			SetModelRMNew();
+
 			IsSelectNewAssign = null;
 		}
 
