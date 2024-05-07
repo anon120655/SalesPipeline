@@ -1,0 +1,172 @@
+﻿@page "/customer/uploadfile"
+
+<PageTitle>UploadFile</PageTitle>
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/customerinfo.png" width="45" /></div>
+						<div class="p-2">
+							<p class="back_topic">เพิ่มรายการลูกค้า</p>
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="row mb-3">
+								<div class="col-12 col-sm-1"></div>
+								<div class="col-12 col-sm-10">
+									@* @if (!bClearInputFile)
+								{
+								<InputFile accept=".xlsx" OnChange="OnChooseFile" />
+								} *@
+									<div class=" dropzone @dropClass rounded">
+										<div class="drag-image h_10r mb-2">
+											@if (UserList != null && UserList.Count > 0 && _fileName != null)
+											{
+												<p>@_fileName</p>
+											}
+											else
+											{
+												<p>ลากไฟล์ประเภท CSV หรือ</p>
+												<Button Style="background-color: #1378D5;color:white;"><i class="fa-solid fa-upload"></i> นำเข้าไฟล์</Button>
+											}
+										</div>
+										<InputFile @key=@(_inputFileId) OnChange="@OnChooseFile"
+												   accept=".xlsx, .xls, .csv"
+												   @ondragenter="HandleDragEnter"
+												   @ondragleave="HandleDragLeave">Browse File</InputFile>
+									</div>
+								</div>
+								<div class="col-12 col-sm-1"></div>
+							</div>
+						</div>
+					</div>
+
+					<MessageError errorMessage="@_errorMessage" />
+
+					<div class="row mt-5">
+						<div class="col-12">
+							<div class="table-responsive">
+								<table class="table table_list table-bordered text-nowrap">
+									<thead class="table-primary">
+										<tr>
+											<th class="text-center">เลขนิติบุคคล</th>
+											<th class="text-center">ชื่อบริษัท</th>
+											<th class="text-center">ประเภทธุรกิจ</th>
+											<th class="text-center">ขนาดธุรกิจ</th>
+											<th class="text-center">ISIC Code</th>
+											<th class="text-center">ผลผลิตหลัก</th>
+											<th class="text-center">ห่วงโซ่คุณค่า</th>
+											<th class="text-center">ประเภทสินเชื่อ</th>
+											<th class="text-center">อีเมล</th>
+											<th class="text-center">โทรศัพท์</th>
+											<th class="text-center">กลุ่มบริษัทแม่</th>
+											<th class="text-center">บ้านเลขที่</th>
+											<th class="text-center">หมู่ที่</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">เขต/อำเภอ</th>
+											<th class="text-center">แขวง/ตำบล</th>
+											<th class="text-center">รหัสไปรษณีย์</th>
+											<th class="text-center">ชื่อกรรมการ</th>
+											<th class="text-center">วันประชุมผู้ถือหุ้น</th>
+											<th class="text-center">ผู้ถือหุ้น</th>
+											<th class="text-center">ทุนจดทะเบียน</th>
+											<th class="text-center">Credit Score</th>
+											<th class="text-center">ปีงบการเงิน</th>
+											<th class="text-center">วันเดือนปีงบการเงิน</th>
+											<th class="text-center">ลูกหนี้การค้า</th>
+											<th class="text-center">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</th>
+											<th class="text-center">สินค้าคงเหลือ</th>
+											<th class="text-center">เงินให้กู้ยืมระยะสั้น</th>
+											<th class="text-center">รวมสินทรัพย์หมุนเวียน</th>
+											<th class="text-center">เงินให้กู้ยืมระยะยาว</th>
+											<th class="text-center">ที่ดิน อาคาร และอุปกรณ์</th>
+											<th class="text-center">รวมสินทรัพย์ไม่หมุนเวียน</th>
+											<th class="text-center">รวมสินทรัพย์</th>
+											<th class="text-center">เจ้าหนี้การค้า</th>
+											<th class="text-center">เงินกู้ระยะสั้น</th>
+											<th class="text-center">รวมหนี้สินหมุนเวียน</th>
+											<th class="text-center">เงินกู้ระยะยาว</th>
+											<th class="text-center">รวมหนี้สินไม่หมุนเวียน</th>
+											<th class="text-center">เงินให้กู้ยืมระยะสั้น</th>
+											<th class="text-center">รวมหนี้สิน</th>
+											<th class="text-center">ทุนจดทะเบียนสามัญ</th>
+											<th class="text-center">ทุนจดทะเบียนที่ชำระแล้ว</th>
+											<th class="text-center">กำไร (ขาดทุน) สะสม</th>
+											<th class="text-center">รวมส่วนของผู้ถือหุ้น</th>
+											<th class="text-center">รวมหนี้สินและส่วนของผู้ถือหุ้น</th>
+											<th class="text-center">รายได้รวม</th>
+											<th class="text-center">ต้นทุนขาย</th>
+											<th class="text-center">กำไรขั้นต้น</th>
+											<th class="text-center">ค่าใช้จ่ายในการดำเนินงาน</th>
+											<th class="text-center">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย</th>
+											<th class="text-center">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี</th>
+											<th class="text-center">กำไร (ขาดทุน) สุทธิ</th>
+											<th class="text-center">หมายเหตุ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (UserList == null)
+										{
+											<tr class="text-start align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (UserList.Count == 0)
+										{
+											<tr class="text-start align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in UserList)
+											{
+												
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									กลับ
+								</Button>
+							</div>
+							@if (UserList?.Count > 0)
+							{
+								<div class="p-2 bd-highlight">
+									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white-50 fa-lg"></i></span>
+										}
+										ยืนยัน
+									</Button>
+								</div>
+							}
+						</div>
+						<small class="text-secondary">*ระบบจะนำเข้าเฉพาะรายการที่ผ่านการตรวจสอบ</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+

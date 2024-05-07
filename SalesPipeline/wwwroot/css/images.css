@@ -1,0 +1,76 @@
+﻿
+.banner_upload img.showfile {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.drag-image {
+	border: 1px dashed #304a74;
+	/*height: 450px;*/
+	width: 100%;
+	border-radius: 5px;
+	font-weight: 400;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column
+}
+
+	.drag-image.active {
+		border: 2px solid #fff
+	}
+
+	.drag-image .icon {
+		font-size: 30px;
+		color: #393a3a
+	}
+
+	.drag-image h6 {
+		font-size: 20px;
+		font-weight: 300;
+		color: #393a3a
+	}
+
+	.drag-image span {
+		font-size: 14px;
+		font-weight: 300;
+		color: #393a3a;
+		margin: 10px 0 15px 0
+	}
+
+	.drag-image button {
+		padding: 10px 25px;
+		font-size: 14px;
+		font-weight: 300;
+		border: none;
+		outline: none;
+		background: transparent;
+		color: #393a3a;
+		border: 1px solid #fff;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: all 0.5s
+	}
+
+		.drag-image button:hover {
+			background-color: #fff;
+			color: red
+		}
+
+	.drag-image img.showfile {
+		height: 100%;
+		/*width: 100%;*/
+		object-fit: cover;
+		border-radius: 5px
+	}
+
+/*
+.resource-bg-image {
+	height: 50vh;
+	min-height: 100px;
+	background-image: url('/image/header/group-11@2x.webp');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+*/
