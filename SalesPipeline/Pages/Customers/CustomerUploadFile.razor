@@ -89,7 +89,7 @@
 											<th class="text-center">ลูกหนี้การค้า</th>
 											<th class="text-center">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</th>
 											<th class="text-center">สินค้าคงเหลือ</th>
-											<th class="text-center">เงินให้กู้ยืมระยะสั้น</th>
+											<th class="text-center">เงินให้กู้ยืมระยะสั้น(ลูกหนี้)</th>
 											<th class="text-center">รวมสินทรัพย์หมุนเวียน</th>
 											<th class="text-center">เงินให้กู้ยืมระยะยาว</th>
 											<th class="text-center">ที่ดิน อาคาร และอุปกรณ์</th>
@@ -100,7 +100,7 @@
 											<th class="text-center">รวมหนี้สินหมุนเวียน</th>
 											<th class="text-center">เงินกู้ระยะยาว</th>
 											<th class="text-center">รวมหนี้สินไม่หมุนเวียน</th>
-											<th class="text-center">เงินให้กู้ยืมระยะสั้น</th>
+											<th class="text-center">เงินให้กู้ยืมระยะสั้น(เจ้าหนี้)</th>
 											<th class="text-center">รวมหนี้สิน</th>
 											<th class="text-center">ทุนจดทะเบียนสามัญ</th>
 											<th class="text-center">ทุนจดทะเบียนที่ชำระแล้ว</th>
@@ -139,7 +139,7 @@
 											foreach (var item in CustomerList)
 											{
 												<tr>
-													<td class="text-center">@item.DateContact</td>
+													<td class="text-center">@GeneralUtils.DateToEnStr(item.DateContact)</td>
 													<td class="">@item.Master_ContactChannelId</td>
 													<td class="text-center">@item.BranchName</td>
 													<td class="text-center">@item.ProvincialOffice</td>
@@ -147,8 +147,8 @@
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="text-center">@item.ContactName</td>
 													<td class="text-center">@item.ContactTel</td>
-													<td class="text-center">@item.CompanyName</td>
 													<td class="text-center">@item.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.CompanyName</td>
 													<td class="text-center">@item.Master_BusinessTypeId</td>
 													<td class="text-center">@item.Master_BusinessSizeId</td>
 													<td class="text-center">@item.Master_ISICCodeId</td>
@@ -164,11 +164,11 @@
 													<td class="text-center">@item.AmphurId</td>
 													<td class="text-center">@item.TambolId</td>
 													<td class="text-center">@item.ZipCode</td>
-													<td class="text-center">@item.ShareholderMeetDay</td>
+													<td class="text-center">@GeneralUtils.DateToEnStr(item.ShareholderMeetDay)</td>
 													<td class="text-center">@item.RegisteredCapital</td>
 													<td class="text-center">@item.CreditScore</td>
 													<td class="text-center">@item.FiscalYear</td>
-													<td class="text-center">@item.StatementDate</td>
+													<td class="text-center">@GeneralUtils.DateToEnStr(item.StatementDate)</td>
 													<td class="text-center">@item.TradeAccReceivable</td>
 													<td class="text-center">@item.TradeAccRecProceedsNet</td>
 													<td class="text-center">@item.Inventories</td>
@@ -179,6 +179,7 @@
 													<td class="text-center">@item.TotalNotCurrentAssets</td>
 													<td class="text-center">@item.AssetsTotal</td>
 													<td class="text-center">@item.TradeAccPay</td>
+													<td class="text-center">@item.TradeAccPayLoansShot</td>
 													<td class="text-center">@item.TradeAccPayTotalCurrentLia</td>
 													<td class="text-center">@item.TradeAccPayLoansLong</td>
 													<td class="text-center">@item.TradeAccPayTotalNotCurrentLia</td>
