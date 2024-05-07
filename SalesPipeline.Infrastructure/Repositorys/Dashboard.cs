@@ -3575,22 +3575,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
 				if (sale_Status.Count > 0)
 				{
+					//รอมอบหมาย(ผจศ.)(จาก ศูนย์ธุรกิจสินเชื่อ)
+					var waitAssignCenterREG = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitAssignCenterREG).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอมอบหมาย(ผจศ)
+					var waitAssignCenter = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitAssignCenter).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอมอบหมาย RM
+					var waitAssign = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitAssign).Select(x => x.CreateDate.Date).FirstOrDefault();
 					//รอการติตต่อ
 					var waitContact = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//รอเข้าพบ
-					var waitMeet = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitMeet).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//เริ่มต้นเข้าพบ
-					var meetFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//เข้าพบล่าสุด
-					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//วันที่เริ่มยื่นเอกสาร
-					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//รอบันทึกผลลัพธ์
-					var waitResults = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitResults).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//วันที่เริ่มบันทึกผลลัพธ์
-					var resultsFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Results).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
-					//รอปิดการขาย
-					var waitcloseSale = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitCloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
 					//ปิดการขาย
 					var closeSale = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
 
