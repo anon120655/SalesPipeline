@@ -96,6 +96,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Master_ISICCodeCustom>(query);
 		}
 
+		public async Task<Guid?> GetIDByCode(string code)
+		{
+			var query = await _repo.Context.Master_ISICCodes
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Code == code);
+
+			if (query != null)
+			{
+				return query.Id;
+			}
+
+			return null;
+		}
+
 		public async Task<string?> GetNameById(Guid id)
 		{
 			var name = await _repo.Context.Master_ISICCodes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();

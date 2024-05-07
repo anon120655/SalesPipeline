@@ -25,7 +25,7 @@
 								} *@
 									<div class=" dropzone @dropClass rounded">
 										<div class="drag-image h_10r mb-2">
-											@if (UserList != null && UserList.Count > 0 && _fileName != null)
+											@if (CustomerList != null && CustomerList.Count > 0 && _fileName != null)
 											{
 												<p>@_fileName</p>
 											}
@@ -54,6 +54,14 @@
 								<table class="table table_list table-bordered text-nowrap">
 									<thead class="table-primary">
 										<tr>
+											<th class="text-center">วันที่เข้ามาติดต่อ</th>
+											<th class="text-center">ช่องทางการติดต่อ</th>
+											<th class="text-center">สาขา</th>
+											<th class="text-center">สนจ.</th>
+											<th class="text-center">ชื่อพนักงาน</th>
+											<th class="text-center">รหัสพนักงาน</th>
+											<th class="text-center">ชื่อผู้ติดต่อ</th>
+											<th class="text-center">โทรศัพท์</th>
 											<th class="text-center">เลขนิติบุคคล</th>
 											<th class="text-center">ชื่อบริษัท</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
@@ -71,9 +79,9 @@
 											<th class="text-center">เขต/อำเภอ</th>
 											<th class="text-center">แขวง/ตำบล</th>
 											<th class="text-center">รหัสไปรษณีย์</th>
-											<th class="text-center">ชื่อกรรมการ</th>
+											@* <th class="text-center">ชื่อกรรมการ</th> *@
 											<th class="text-center">วันประชุมผู้ถือหุ้น</th>
-											<th class="text-center">ผู้ถือหุ้น</th>
+											@* <th class="text-center">ผู้ถือหุ้น</th> *@
 											<th class="text-center">ทุนจดทะเบียน</th>
 											<th class="text-center">Credit Score</th>
 											<th class="text-center">ปีงบการเงิน</th>
@@ -110,7 +118,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										@if (UserList == null)
+										@if (CustomerList == null)
 										{
 											<tr class="text-start align-middle">
 												<td colspan="100">
@@ -118,7 +126,7 @@
 												</td>
 											</tr>
 										}
-										else if (UserList.Count == 0)
+										else if (CustomerList.Count == 0)
 										{
 											<tr class="text-start align-middle">
 												<td colspan="100">
@@ -128,9 +136,68 @@
 										}
 										else
 										{
-											foreach (var item in UserList)
+											foreach (var item in CustomerList)
 											{
-												
+												<tr>
+													<td class="text-center">@item.DateContact</td>
+													<td class="">@item.Master_ContactChannelId</td>
+													<td class="text-center">@item.BranchName</td>
+													<td class="text-center">@item.ProvincialOffice</td>
+													<td class="text-center">@item.EmployeeName</td>
+													<td class="text-center">@item.EmployeeId</td>
+													<td class="text-center">@item.ContactName</td>
+													<td class="text-center">@item.ContactTel</td>
+													<td class="text-center">@item.CompanyName</td>
+													<td class="text-center">@item.JuristicPersonRegNumber</td>
+													<td class="text-center">@item.Master_BusinessTypeId</td>
+													<td class="text-center">@item.Master_BusinessSizeId</td>
+													<td class="text-center">@item.Master_ISICCodeId</td>
+													<td class="text-center">@item.Master_YieldId</td>
+													<td class="text-center">@item.Master_ChainId</td>
+													<td class="text-center">@item.Master_LoanTypeId</td>
+													<td class="text-center">@item.CompanyEmail</td>
+													<td class="text-center">@item.CompanyTel</td>
+													<td class="text-center">@item.ParentCompanyGroup</td>
+													<td class="text-center">@item.HouseNo</td>
+													<td class="text-center">@item.VillageNo</td>
+													<td class="text-center">@item.ProvinceId</td>
+													<td class="text-center">@item.AmphurId</td>
+													<td class="text-center">@item.TambolId</td>
+													<td class="text-center">@item.ZipCode</td>
+													<td class="text-center">@item.ShareholderMeetDay</td>
+													<td class="text-center">@item.RegisteredCapital</td>
+													<td class="text-center">@item.CreditScore</td>
+													<td class="text-center">@item.FiscalYear</td>
+													<td class="text-center">@item.StatementDate</td>
+													<td class="text-center">@item.TradeAccReceivable</td>
+													<td class="text-center">@item.TradeAccRecProceedsNet</td>
+													<td class="text-center">@item.Inventories</td>
+													<td class="text-center">@item.LoansShort</td>
+													<td class="text-center">@item.TotalCurrentAssets</td>
+													<td class="text-center">@item.LoansLong</td>
+													<td class="text-center">@item.LandBuildingEquipment</td>
+													<td class="text-center">@item.TotalNotCurrentAssets</td>
+													<td class="text-center">@item.AssetsTotal</td>
+													<td class="text-center">@item.TradeAccPay</td>
+													<td class="text-center">@item.TradeAccPayTotalCurrentLia</td>
+													<td class="text-center">@item.TradeAccPayLoansLong</td>
+													<td class="text-center">@item.TradeAccPayTotalNotCurrentLia</td>
+													<td class="text-center">@item.TradeAccPayForLoansShot</td>
+													<td class="text-center">@item.TradeAccPayTotalLiabilitie</td>
+													<td class="text-center">@item.RegisterCapitalOrdinary</td>
+													<td class="text-center">@item.RegisterCapitalPaid</td>
+													<td class="text-center">@item.ProfitLossAccumulate</td>
+													<td class="text-center">@item.TotalShareholders</td>
+													<td class="text-center">@item.TotalLiabilitieShareholders</td>
+													<td class="text-center">@item.TotalIncome</td>
+													<td class="text-center">@item.CostSales</td>
+													<td class="text-center">@item.GrossProfit</td>
+													<td class="text-center">@item.OperatingExpenses</td>
+													<td class="text-center">@item.ProfitLossBeforeDepExp</td>
+													<td class="text-center">@item.ProfitLossBeforeInterestTax</td>
+													<td class="text-center">@item.NetProfitLoss</td>
+													<td class="text-center">@item.InterestNote</td>
+												</tr>
 											}
 										}
 									</tbody>
@@ -145,7 +212,7 @@
 									กลับ
 								</Button>
 							</div>
-							@if (UserList?.Count > 0)
+							@if (CustomerList?.Count > 0)
 							{
 								<div class="p-2 bd-highlight">
 									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">

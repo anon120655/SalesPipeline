@@ -10,6 +10,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_ISICCodeCustom> GetById(Guid id);
+		Task<Guid?> GetIDByCode(string code);
 		Task<string?> GetNameById(Guid id);
 		Task<PaginationView<List<Master_ISICCodeCustom>>> GetList(allFilter model);
 	}
