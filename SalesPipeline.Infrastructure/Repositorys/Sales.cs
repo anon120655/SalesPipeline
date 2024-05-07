@@ -1,21 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Customers;
-using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {

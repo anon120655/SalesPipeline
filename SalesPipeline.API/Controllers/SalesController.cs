@@ -1,17 +1,12 @@
 ﻿using Asp.Versioning;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Org.BouncyCastle.Ocsp;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Customers;
-using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
-using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
