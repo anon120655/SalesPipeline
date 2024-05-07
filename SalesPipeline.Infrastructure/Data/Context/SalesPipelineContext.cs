@@ -1286,12 +1286,13 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.ToUserId, "ToUserId");
 
-            entity.Property(e => e.ActionId).HasColumnType("int(11)");
             entity.Property(e => e.ActionName1).HasMaxLength(255);
             entity.Property(e => e.ActionName2).HasMaxLength(255);
             entity.Property(e => e.ActionName3).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.EventId).HasColumnType("int(11)");
+            entity.Property(e => e.EventId)
+                .HasComment("1=รายการลูกค้าใหม่ ,2=อนุมัติคำขอ ,3=ส่งกลับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.FromUserId)
                 .HasComment("FK รหัสผู้ใช้ ที่สร้างการแจ้งเตือน")
                 .HasColumnType("int(11)");

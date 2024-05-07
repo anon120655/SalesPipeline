@@ -14,6 +14,9 @@ public partial class Notification
 
     public DateTime CreateDate { get; set; }
 
+    /// <summary>
+    /// 1=รายการลูกค้าใหม่ ,2=อนุมัติคำขอ ,3=ส่งกลับ
+    /// </summary>
     public int EventId { get; set; }
 
     /// <summary>
@@ -41,8 +44,6 @@ public partial class Notification
     public DateTime? ReadDate { get; set; }
 
     public string? RedirectUrl { get; set; }
-
-    public int ActionId { get; set; }
 
     public string? ActionName1 { get; set; }
 

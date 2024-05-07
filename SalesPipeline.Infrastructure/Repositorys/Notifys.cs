@@ -72,7 +72,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ToUserName = toUserName,
 				IsRead = 0,
 				RedirectUrl = model.RedirectUrl,
-				ActionId = model.ActionId,
 				ActionName1 = model.ActionName1,
 				ActionName2 = model.ActionName2,
 				ActionName3 = model.ActionName3,

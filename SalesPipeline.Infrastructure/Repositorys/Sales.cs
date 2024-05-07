@@ -232,10 +232,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//Noti
 						await _repo.Notifys.Create(new()
 						{
-							EventId = 2,
+							EventId = NotifyEventIdModel.NewCus,
 							FromUserId = model.CreateBy,
 							ToUserId = sales.AssUserId.Value,
-							ActionId = 2,
 							ActionName1 = sales.CompanyName
 						});
 					}
@@ -262,6 +261,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						NoteSystem = "รอวิเคราะห์สินเชื่อ(PHOENIX)"
 					});
 
+					if (sales.AssUserId.HasValue)
+					{
+						//Noti
+						await _repo.Notifys.Create(new()
+						{
+							EventId = NotifyEventIdModel.ApproveLoan,
+							FromUserId = model.CreateBy,
+							ToUserId = sales.AssUserId.Value,
+							ActionName1 = sales.CompanyName
+						});
+					}
+				}
+				else if (model.StatusId == StatusSaleModel.RMReturnMCenter)
+				{
+					if (sales.AssUserId.HasValue)
+					{
+						//Noti
+						await _repo.Notifys.Create(new()
+						{
+							EventId = NotifyEventIdModel.Return,
+							FromUserId = model.CreateBy,
+							ToUserId = sales.AssUserId.Value,
+							ActionName1 = sales.CompanyName
+						});
+					}
 				}
 				else if (model.StatusId == StatusSaleModel.WaitResults)
 				{
@@ -297,7 +321,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<bool> CheckStatusById(Guid id,int statusid)
+		public async Task<bool> CheckStatusById(Guid id, int statusid)
 		{
 			return await _repo.Context.Sale_Statuses.AnyAsync(x => x.Status == StatusModel.Active && x.SaleId == id && x.StatusId == statusid);
 		}
