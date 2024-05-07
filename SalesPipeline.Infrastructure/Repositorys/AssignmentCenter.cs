@@ -180,7 +180,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.AssignMCenter.Id);
 			if (assignment_CenterBranch != null)
 			{
-				var salesCount = 0;
+				//var salesCount = 0;
 				foreach (var item in model.Sales)
 				{
 					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item.Id);
@@ -225,11 +225,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							CreateByName = currentUserName,
 						});
 
-						salesCount++;
+						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item.Id });
+						//salesCount++;
 					}
 				}
 
-				assignment_CenterBranch.CurrentNumber = assignment_CenterBranch.CurrentNumber + salesCount;
+				int countCurrentNumber = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.AssignMCenter.UserId);
+				assignment_CenterBranch.CurrentNumber = countCurrentNumber;
+				//assignment_CenterBranch.CurrentNumber = assignment_CenterBranch.CurrentNumber + salesCount;
 				_db.Update(assignment_CenterBranch);
 				await _db.SaveAsync();
 

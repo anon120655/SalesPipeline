@@ -3550,5 +3550,63 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return response;
 		}
 
+		public async Task UpdateDeliverById(allFilter model)
+		{
+			if (model.saleid.HasValue)
+			{
+				var sale_Delivers = await _repo.Context.Sale_Delivers.FirstOrDefaultAsync(x => x.SaleId == model.saleid.Value);
+
+				int CRUD = CRUDModel.Update;
+
+				if (sale_Delivers == null)
+				{
+					CRUD = CRUDModel.Create;
+					sale_Delivers = new();
+					sale_Delivers.Status = StatusModel.Active;
+					sale_Delivers.CreateDate = DateTime.Now;
+					sale_Delivers.SaleId = model.saleid.Value;
+				}
+
+				sale_Delivers.LoanToBranchReg = 0;
+				sale_Delivers.BranchRegToCenBranch = 0;
+				sale_Delivers.CenBranchToRM = 0;
+				sale_Delivers.CloseSale = 0;
+
+				var sale_Status = await _repo.Context.Sale_Statuses.Where(x => x.SaleId == model.saleid.Value).ToListAsync();
+				if (sale_Status.Count > 0)
+				{
+					//รอการติตต่อ
+					var waitContact = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitContact).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอเข้าพบ
+					var waitMeet = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitMeet).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//เริ่มต้นเข้าพบ
+					var meetFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Meet).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//เข้าพบล่าสุด
+					var meetLast = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Meet).OrderByDescending(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//วันที่เริ่มยื่นเอกสาร
+					var documentFirst = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.Document).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอบันทึกผลลัพธ์
+					var waitResults = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitResults).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//วันที่เริ่มบันทึกผลลัพธ์
+					var resultsFirst = sale_Status.Where(x => x.StatusId == StatusSaleModel.Results).OrderBy(x => x.CreateDate).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//รอปิดการขาย
+					var waitcloseSale = sale_Status.Where(x => x.StatusId == StatusSaleModel.WaitCloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
+					//ปิดการขาย
+					var closeSale = sale_Status.Where(x => x.StatusMainId == StatusSaleMainModel.CloseSale).Select(x => x.CreateDate.Date).FirstOrDefault();
+
+				}
+
+				if (CRUD == CRUDModel.Create)
+				{
+					await _db.InsterAsync(sale_Delivers);
+				}
+				else
+				{
+					_db.Update(sale_Delivers);
+				}
+				await _db.SaveAsync();
+			}
+		}
+
 	}
 }
