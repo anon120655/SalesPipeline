@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -34,6 +35,29 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<ResponseDefaultModel>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<CustomerCustom>>> ValidateUpload(List<CustomerCustom>? model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Customer/ValidateUpload", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<CustomerCustom>>(content);
+				return new ResultModel<List<CustomerCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<CustomerCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

@@ -35,13 +35,13 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
+											<th class="text-center">ตรวจสอบ</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
 											<th class="text-center">Email</th>
 											<th class="text-center">ตำแหน่ง</th>
 											<th class="text-center">ระดับ</th>
 											<th class="text-center">ระดับหน้าที่</th>
-											<th class="text-center">ตรวจสอบ</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -66,12 +66,6 @@
 											foreach (var item in UserList)
 											{
 												<tr>
-													<td class="text-center">@item.EmployeeId</td>
-													<td class="">@item.FullName</td>
-													<td class="text-center">@item.Email</td>
-													<td class="text-center">@item.PositionId</td>
-													<td class="text-center">@item.LevelId</td>
-													<td class="text-center">@item.RoleId</td>
 													<td class="">
 														@if (item.IsValidate == true)
 														{
@@ -90,6 +84,12 @@
 															}
 														}
 													</td>
+													<td class="text-center">@item.EmployeeId</td>
+													<td class="">@item.FullName</td>
+													<td class="text-center">@item.Email</td>
+													<td class="text-center">@item.PositionId</td>
+													<td class="text-center">@item.LevelId</td>
+													<td class="text-center">@item.RoleId</td>
 												</tr>
 											}
 										}

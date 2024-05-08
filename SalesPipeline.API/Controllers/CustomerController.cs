@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Loggers;
 using SalesPipeline.Utils.Resources.Sales;
@@ -57,6 +58,21 @@ namespace SalesPipeline.API.Controllers
 				if (juristicNumber.Length != 13) throw new ExceptionCustom("ระบุข้อมูลไม่ถูกต้อง");
 
 				var data = await _repo.Customer.VerifyByNumber(juristicNumber);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpPost("ValidateUpload")]
+		public async Task<IActionResult> ValidateUpload(List<CustomerCustom> model)
+		{
+			try
+			{
+				var data = await _repo.Customer.ValidateUpload(model);
 				return Ok(data);
 			}
 			catch (Exception ex)

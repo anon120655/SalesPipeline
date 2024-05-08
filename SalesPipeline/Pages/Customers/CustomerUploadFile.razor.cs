@@ -7,6 +7,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace SalesPipeline.Pages.Customers
@@ -27,6 +28,7 @@ namespace SalesPipeline.Pages.Customers
 		List<ResultImport> resultImport = new();
 		private string dropClass = "";
 		private string? _fileName = null;
+		private List<string> header_list_key = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -102,6 +104,13 @@ namespace SalesPipeline.Pages.Customers
 								sheet = hssfwb.GetSheetAt(0);
 
 								IRow row_header = sheet.GetRow(0);
+								var row_0 = row_header.GetCell(0).ToString()?.Trim();
+								var row_1 = row_header.GetCell(1).ToString()?.Trim();
+								if (row_0 != "วันที่เข้ามาติดต่อ"
+									|| row_1 != "ช่องทางการติดต่อ")
+								{
+									throw new Exception("Template file not support.");
+								}
 
 								DateTime? DateContact = null;
 								Guid? Master_ContactChannelId = null;
@@ -128,8 +137,8 @@ namespace SalesPipeline.Pages.Customers
 								int? AmphurId = null;
 								int? TambolId = null;
 								string? ZipCode = null;
-								//string? CompanyName = null;
-								//string? CompanyName = null;
+								List<Customer_CommitteeCustom>? Customer_Committees = null;
+								List<Customer_ShareholderCustom>? Customer_Shareholders = null;
 								DateTime? ShareholderMeetDay = null;
 								string? RegisteredCapital = null;
 								string? CreditScore = null;
@@ -170,6 +179,12 @@ namespace SalesPipeline.Pages.Customers
 																  .Select(x => new { x.StringCellValue, x.ColumnIndex })
 																  .ToDictionary(x => x.StringCellValue, x => x.ColumnIndex);
 
+								header_list_key = header_list.Select(x => x.Key).ToList();
+								if (header_list_key.Count < 60)
+								{
+									throw new Exception("Template file not support.");
+								}
+
 								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
 								{
 
@@ -198,8 +213,8 @@ namespace SalesPipeline.Pages.Customers
 									AmphurId = null;
 									TambolId = null;
 									ZipCode = null;
-									//string? CompanyName = null;
-									//string? CompanyName = null;
+									Customer_Committees = new();
+									Customer_Shareholders = new();
 									ShareholderMeetDay = null;
 									RegisteredCapital = null;
 									CreditScore = null;
@@ -379,6 +394,62 @@ namespace SalesPipeline.Pages.Customers
 									{
 										ZipCode = row.GetCell(cellIndex).ToString();
 									}
+
+									int i = 1;
+									while (header_list.Keys.Any(key => key.Equals($"ชื่อกรรมการ{i}")))
+									{
+										if (header_list.TryGetValue($"ชื่อกรรมการ{i}", out cellIndex))
+										{
+											Customer_Committees.Add(new() { Name = row.GetCell(cellIndex).ToString() });
+										}
+										i++;
+									}
+
+									i = 1;
+									while (header_list.Keys.Any(key => key.Equals($"ชื่อผู้ถือหุ้น{i}")))
+									{
+										string? _Name = null;
+										string? _Nationality = null;
+										string? _Proportion = null;
+										int? _NumberShareholder = null;
+										decimal? _TotalShareValue = null;
+										if (header_list.TryGetValue($"ชื่อผู้ถือหุ้น{i}", out cellIndex))
+										{
+											_Name = row.GetCell(cellIndex).ToString();
+										}
+										if (header_list.TryGetValue($"สัญชาติ{i}", out cellIndex))
+										{
+											_Nationality = row.GetCell(cellIndex).ToString();
+										}
+										if (header_list.TryGetValue($"สัดส่วนการถือหุ้น{i}", out cellIndex))
+										{
+											_Proportion = row.GetCell(cellIndex).ToString();
+										}
+										if (header_list.TryGetValue($"จำนวนหุ้นที่ถือ{i}", out cellIndex))
+										{
+											if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+											{
+												_NumberShareholder = idMaster;
+											}
+										}
+										if (header_list.TryGetValue($"มูลค่าหุ้นทั้งหมด{i}", out cellIndex))
+										{
+											if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+											{
+												_TotalShareValue = decimalMaster;
+											}
+										}
+										Customer_Shareholders.Add(new()
+										{
+											Name = _Name,
+											Nationality = _Nationality,
+											Proportion = _Proportion,
+											NumberShareholder = _NumberShareholder,
+											TotalShareValue = _TotalShareValue
+										});
+										i++;
+									}
+
 									if (header_list.TryGetValue("วันประชุมผู้ถือหุ้น", out cellIndex))
 									{
 										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
@@ -623,9 +694,9 @@ namespace SalesPipeline.Pages.Customers
 										AmphurId = AmphurId,
 										TambolId = TambolId,
 										ZipCode = ZipCode,
-										Customer_Committees = new List<Customer_CommitteeCustom>(),
+										Customer_Committees = Customer_Committees,
 										ShareholderMeetDay = ShareholderMeetDay,
-										Customer_Shareholders = new List<Customer_ShareholderCustom>(),
+										Customer_Shareholders = Customer_Shareholders,
 										RegisteredCapital = RegisteredCapital,
 										CreditScore = CreditScore,
 										FiscalYear = FiscalYear,
@@ -662,52 +733,20 @@ namespace SalesPipeline.Pages.Customers
 									});
 								}
 
-								//int firstRowNum = sheet.FirstRowNum;
-								//for (int i = (firstRowNum + 1); i <= sheet.LastRowNum; i++)
-								//{
-								//	IRow row = sheet.GetRow(i);
-								//	if (row == null) continue;
-								//	if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
-
-								//	var EmployeeId = row.GetCell(0) != null ? row.GetCell(0).ToString() : null;
-								//	var FullName = row.GetCell(1) != null ? row.GetCell(1).ToString() : null;
-								//	var Email = row.GetCell(2) != null ? row.GetCell(2).ToString() : null;
-								//	var PositionId = row.GetCell(3) != null ? row.GetCell(3).ToString() : null;
-								//	var LevelId = row.GetCell(4) != null ? row.GetCell(4).ToString() : null;
-								//	var RoleId = row.GetCell(5) != null ? row.GetCell(5).ToString() : null;
-
-								//	int.TryParse(PositionId, out int _positionId);
-								//	int.TryParse(LevelId, out int _levelid);
-								//	int.TryParse(RoleId, out int _roleid);
-
-								//	if (EmployeeId != null)
-								//	{
-								//		var listStrLineElements = EmployeeId.Split('\n').ToList();
-								//		var EmployeeIdList = new List<string?>();
-								//	}
-
-								//	if (CustomerList == null) CustomerList = new();
-
-								//	CustomerList.Add(new()
-								//	{
-
-								//	});
-								//}
-
 								if (CustomerList?.Count > 0)
 								{
-									//var response = await _userViewModel.ValidateUpload(UserList);
+									var response = await _customerViewModel.ValidateUpload(CustomerList);
 
-									//if (response.Status)
-									//{
-									//	UserList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
-									//}
-									//else
-									//{
-									//	HideLoading();
-									//	_errorMessage = response.errorMessage;
-									//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-									//}
+									if (response.Status)
+									{
+										CustomerList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
+									}
+									else
+									{
+										HideLoading();
+										_errorMessage = response.errorMessage;
+										await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+									}
 								}
 							}
 						}

@@ -385,5 +385,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		//ใช้เช็คกรณีสร้างโดย สายงานธุรกิจสินเชื่อ เพื่อส่งให้ กิจการสาขาภาคนั้นๆ
 		public Guid? Branch_RegionId { get; set; }
 		public bool? IsValidate { get; set; }
+		public List<string?>? ValidateError { get; set; }
 	}
 }

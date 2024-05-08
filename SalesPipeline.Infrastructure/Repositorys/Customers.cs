@@ -26,27 +26,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task Validate(CustomerCustom model, bool isThrow = false)
+		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true)
 		{
+			string errorMessage = string.Empty;
+			model.IsValidate = true;
+			if (model.ValidateError == null) model.ValidateError = new();
+
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
 			var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
 			if (customer != null)
 			{
-				throw new ExceptionCustom($"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว");
+				errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
 
 			if (model.DateContact.HasValue)
 			{
 				if (model.DateContact.Value.Date > DateTime.Now.Date)
 				{
-					throw new ExceptionCustom($"วันที่เข้ามาติดต่อ ต้องไม่มากกว่าวันที่ปัจจุบัน");
+					errorMessage = $"วันที่เข้ามาติดต่อ ต้องไม่มากกว่าวันที่ปัจจุบัน";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
 				}
 			}
+			return model;
 		}
 
-		public Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model)
+		public async Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model)
 		{
-			throw new NotImplementedException();
+			for (int i = 0; i < model.Count; i++)
+			{
+				model[i] = await Validate(model[i], false);
+			}
+			return model;
 		}
 
 		public async Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber)

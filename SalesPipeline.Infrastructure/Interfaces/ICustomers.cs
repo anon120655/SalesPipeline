@@ -12,7 +12,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface ICustomers
 	{
-		Task Validate(CustomerCustom model, bool isThrow = false);
+		Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true);
 		Task<List<CustomerCustom>> ValidateUpload(List<CustomerCustom> model);
 		Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber);
 		Task<CustomerCustom> Create(CustomerCustom model);

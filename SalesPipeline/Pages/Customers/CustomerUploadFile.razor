@@ -54,67 +54,11 @@
 								<table class="table table_list table-bordered text-nowrap">
 									<thead class="table-primary">
 										<tr>
-											<th class="text-center">วันที่เข้ามาติดต่อ</th>
-											<th class="text-center">ช่องทางการติดต่อ</th>
-											<th class="text-center">สาขา</th>
-											<th class="text-center">สนจ.</th>
-											<th class="text-center">ชื่อพนักงาน</th>
-											<th class="text-center">รหัสพนักงาน</th>
-											<th class="text-center">ชื่อผู้ติดต่อ</th>
-											<th class="text-center">โทรศัพท์</th>
-											<th class="text-center">เลขนิติบุคคล</th>
-											<th class="text-center">ชื่อบริษัท</th>
-											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">ขนาดธุรกิจ</th>
-											<th class="text-center">ISIC Code</th>
-											<th class="text-center">ผลผลิตหลัก</th>
-											<th class="text-center">ห่วงโซ่คุณค่า</th>
-											<th class="text-center">ประเภทสินเชื่อ</th>
-											<th class="text-center">อีเมล</th>
-											<th class="text-center">โทรศัพท์</th>
-											<th class="text-center">กลุ่มบริษัทแม่</th>
-											<th class="text-center">บ้านเลขที่</th>
-											<th class="text-center">หมู่ที่</th>
-											<th class="text-center">จังหวัด</th>
-											<th class="text-center">เขต/อำเภอ</th>
-											<th class="text-center">แขวง/ตำบล</th>
-											<th class="text-center">รหัสไปรษณีย์</th>
-											@* <th class="text-center">ชื่อกรรมการ</th> *@
-											<th class="text-center">วันประชุมผู้ถือหุ้น</th>
-											@* <th class="text-center">ผู้ถือหุ้น</th> *@
-											<th class="text-center">ทุนจดทะเบียน</th>
-											<th class="text-center">Credit Score</th>
-											<th class="text-center">ปีงบการเงิน</th>
-											<th class="text-center">วันเดือนปีงบการเงิน</th>
-											<th class="text-center">ลูกหนี้การค้า</th>
-											<th class="text-center">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</th>
-											<th class="text-center">สินค้าคงเหลือ</th>
-											<th class="text-center">เงินให้กู้ยืมระยะสั้น(ลูกหนี้)</th>
-											<th class="text-center">รวมสินทรัพย์หมุนเวียน</th>
-											<th class="text-center">เงินให้กู้ยืมระยะยาว</th>
-											<th class="text-center">ที่ดิน อาคาร และอุปกรณ์</th>
-											<th class="text-center">รวมสินทรัพย์ไม่หมุนเวียน</th>
-											<th class="text-center">รวมสินทรัพย์</th>
-											<th class="text-center">เจ้าหนี้การค้า</th>
-											<th class="text-center">เงินกู้ระยะสั้น</th>
-											<th class="text-center">รวมหนี้สินหมุนเวียน</th>
-											<th class="text-center">เงินกู้ระยะยาว</th>
-											<th class="text-center">รวมหนี้สินไม่หมุนเวียน</th>
-											<th class="text-center">เงินให้กู้ยืมระยะสั้น(เจ้าหนี้)</th>
-											<th class="text-center">รวมหนี้สิน</th>
-											<th class="text-center">ทุนจดทะเบียนสามัญ</th>
-											<th class="text-center">ทุนจดทะเบียนที่ชำระแล้ว</th>
-											<th class="text-center">กำไร (ขาดทุน) สะสม</th>
-											<th class="text-center">รวมส่วนของผู้ถือหุ้น</th>
-											<th class="text-center">รวมหนี้สินและส่วนของผู้ถือหุ้น</th>
-											<th class="text-center">รายได้รวม</th>
-											<th class="text-center">ต้นทุนขาย</th>
-											<th class="text-center">กำไรขั้นต้น</th>
-											<th class="text-center">ค่าใช้จ่ายในการดำเนินงาน</th>
-											<th class="text-center">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย</th>
-											<th class="text-center">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี</th>
-											<th class="text-center">กำไร (ขาดทุน) สุทธิ</th>
-											<th class="text-center">หมายเหตุ</th>
+											<th class="text-center">ตรวจสอบ</th>
+											@foreach (var item in header_list_key)
+											{
+												<th class="text-center">@item</th>
+											}
 										</tr>
 									</thead>
 									<tbody>
@@ -138,7 +82,25 @@
 										{
 											foreach (var item in CustomerList)
 											{
-												<tr>
+												<tr style="@(item.IsValidate == false ? "background-color: #fff5f6;" : "")">
+													<td class="">
+														@if (item.IsValidate == true)
+														{
+															<p class="text-success text-center">ผ่าน</p>
+														}
+														else
+														{
+															if (item.ValidateError?.Count > 0)
+															{
+																<ul class="text-danger mb-0">
+																	@foreach (var item_error in item.ValidateError)
+																	{
+																		<li>@item_error</li>
+																	}
+																</ul>
+															}
+														}
+													</td>
 													<td class="text-center">@GeneralUtils.DateToEnStr(item.DateContact)</td>
 													<td class="">@item.Master_ContactChannelId</td>
 													<td class="text-center">@item.BranchName</td>
@@ -164,7 +126,25 @@
 													<td class="text-center">@item.AmphurId</td>
 													<td class="text-center">@item.TambolId</td>
 													<td class="text-center">@item.ZipCode</td>
+													@if (item.Customer_Committees?.Count > 0)
+													{
+														foreach (var item_com in item.Customer_Committees)
+														{
+															<td class="text-center">@item_com.Name</td>
+														}
+													}
 													<td class="text-center">@GeneralUtils.DateToEnStr(item.ShareholderMeetDay)</td>
+													@if (item.Customer_Shareholders?.Count > 0)
+													{
+														foreach (var item_sha in item.Customer_Shareholders)
+														{
+															<td class="text-center">@item_sha.Name</td>
+															<td class="text-center">@item_sha.Nationality</td>
+															<td class="text-center">@item_sha.Proportion</td>
+															<td class="text-center">@item_sha.NumberShareholder</td>
+															<td class="text-center">@item_sha.TotalShareValue</td>
+														}
+													}
 													<td class="text-center">@item.RegisteredCapital</td>
 													<td class="text-center">@item.CreditScore</td>
 													<td class="text-center">@item.FiscalYear</td>
@@ -213,7 +193,7 @@
 									กลับ
 								</Button>
 							</div>
-							@if (CustomerList?.Count > 0)
+							@if (CustomerList?.Where(x => x.IsValidate == true).Count() > 0)
 							{
 								<div class="p-2 bd-highlight">
 									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
