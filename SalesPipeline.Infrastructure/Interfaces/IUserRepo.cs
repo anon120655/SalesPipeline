@@ -6,7 +6,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IUserRepo
 	{
-		Task<UserCustom> Validate(UserCustom model, bool isThrow = false);
+		Task<UserCustom> Validate(UserCustom model, bool isThrow = false, bool? isSetMaster = false);
 		Task<List<UserCustom>> ValidateUpload(List<UserCustom> model);
 		Task<UserCustom> Create(UserCustom model);
 		Task<UserCustom> Update(UserCustom model);

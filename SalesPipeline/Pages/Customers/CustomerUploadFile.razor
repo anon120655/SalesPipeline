@@ -2,6 +2,8 @@
 
 <PageTitle>UploadFile</PageTitle>
 
+<MessageError errorMessage="@_errorMessage" />
+
 @if (_permission.IsView)
 {
 	<div class="container-fluid">
@@ -19,10 +21,6 @@
 							<div class="row mb-3">
 								<div class="col-12 col-sm-1"></div>
 								<div class="col-12 col-sm-10">
-									@* @if (!bClearInputFile)
-								{
-								<InputFile accept=".xlsx" OnChange="OnChooseFile" />
-								} *@
 									<div class=" dropzone @dropClass rounded">
 										<div class="drag-image h_10r mb-2">
 											@if (CustomerList != null && CustomerList.Count > 0 && _fileName != null)
@@ -45,8 +43,6 @@
 							</div>
 						</div>
 					</div>
-
-					<MessageError errorMessage="@_errorMessage" />
 
 					<div class="row mt-5">
 						<div class="col-12">

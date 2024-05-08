@@ -49,6 +49,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			throw new NotImplementedException();
 		}
 
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Master_Departments.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
 		public async Task<PaginationView<List<Master_DepartmentCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_Departments

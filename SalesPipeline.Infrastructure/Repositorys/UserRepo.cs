@@ -32,7 +32,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<UserCustom> Validate(UserCustom model, bool isThrow = true)
+		public async Task<UserCustom> Validate(UserCustom model, bool isThrow = true, bool? isSetMaster = false)
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
@@ -76,6 +76,40 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.RoleId == 3 || model.RoleId == 5)
+			{
+				if (model.LevelId < 10 || model.LevelId > 12)
+				{
+					errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(10-12)";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+			}
+			else if (model.RoleId == 4 || model.RoleId == 6)
+			{
+				if (model.LevelId < 4 || model.LevelId > 9)
+				{
+					errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(4-9)";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+			}
+
+			if (isSetMaster == true)
+			{
+				if (model.Master_DepartmentId.HasValue)
+				{
+					model.Master_DepartmentName = await _repo.MasterDepartment.GetNameById(model.Master_DepartmentId.Value);
+				}
+
+				if (model.PositionId.HasValue)
+				{
+					model.PositionName = await _repo.Context.Master_Positions.Where(x => x.Id == model.PositionId.Value).Select(x => x.Name).FirstOrDefaultAsync();
+				}
+			}
+
 			if (roleCode != null)
 			{
 				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
@@ -97,7 +131,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			for (int i = 0; i < model.Count; i++)
 			{
-				model[i] = await Validate(model[i], false);
+				model[i] = await Validate(model[i], false,true);
 			}
 			return model;
 		}
@@ -443,7 +477,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> GetByBranchId(int id, int role)
 		{
 			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active);
-			
+
 			var queryUse = await query.FirstOrDefaultAsync(x => x.RoleId == role && x.BranchId == id);
 
 			return _mapper.Map<UserCustom>(queryUse);

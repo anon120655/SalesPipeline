@@ -20,11 +20,15 @@ namespace SalesPipeline.Pages.Users.Admin
 		private bool isLoading = false;
 
 		private bool bClearInputFile = false;
+		private string _inputFileId = Guid.NewGuid().ToString();
 
 		private User_PermissionCustom _permission = new();
 		List<UserCustom>? UserList = new();
 		private Modal modalResult = default!;
 		List<ResultImport> resultImport = new();
+		private string dropClass = "";
+		private string? _fileName = null;
+		private List<string> header_list_key = new();
 
 		protected override void OnInitialized()
 		{
@@ -59,7 +63,7 @@ namespace SalesPipeline.Pages.Users.Admin
 						stream.Close();
 
 						var bytefile = ms.ToArray();
-						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "LoanUser.xlsx");
+						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "UserAdmin.xlsx");
 						if (files == null) throw new Exception("File Not Support.");
 
 						string folderName = @$"{_appSet.Value.ContentRootPath}\import\excel";
@@ -86,52 +90,133 @@ namespace SalesPipeline.Pages.Users.Admin
 								sheetCount = hssfwb.NumberOfSheets;
 								sheet = hssfwb.GetSheetAt(0);
 
-								IRow row_check = sheet.GetRow(0);
-								var row_0 = row_check.GetCell(0).ToString()?.Trim();
-								var row_1 = row_check.GetCell(1).ToString()?.Trim();
-								var row_2 = row_check.GetCell(2).ToString()?.Trim();
-								var row_3 = row_check.GetCell(3).ToString()?.Trim();
-								var row_4 = row_check.GetCell(4).ToString()?.Trim();
-								var row_5 = row_check.GetCell(5).ToString();
-								if (row_0 != "รหัสพนักงาน"
-									|| row_1 != "ชื่อ-สกุล"
-									|| row_2 != "Email"
-									|| row_3 != "ตำแหน่ง"
-									|| row_4 != "ระดับ"
-									|| row_5 != "ระดับหน้าที่")
+								IRow row_header = sheet.GetRow(0);
+								try
+								{
+									var row_0 = row_header.GetCell(0).ToString()?.Trim();
+									var row_1 = row_header.GetCell(1).ToString()?.Trim();
+									var row_2 = row_header.GetCell(2).ToString()?.Trim();
+									var row_3 = row_header.GetCell(3).ToString()?.Trim();
+									var row_4 = row_header.GetCell(4).ToString()?.Trim();
+									var row_5 = row_header.GetCell(5).ToString()?.Trim();
+									var row_6 = row_header.GetCell(6).ToString()?.Trim();
+									var row_7 = row_header.GetCell(7).ToString()?.Trim();
+									if (row_0 != "รหัสพนักงาน"
+										|| row_1 != "ชื่อ-สกุล"
+										|| row_2 != "Email"
+										|| row_3 != "Tel"
+										|| row_4 != "ตำแหน่ง"
+										|| row_5 != "ฝ่าย"
+										|| row_6 != "ระดับหน้าที่"
+										|| row_7 != "ระดับ")
+									{
+										throw new Exception("Template file not support.");
+									}
+								}
+								catch
 								{
 									throw new Exception("Template file not support.");
 								}
 
-								int firstRowNum = sheet.FirstRowNum;
-								for (int i = (firstRowNum + 1); i <= sheet.LastRowNum; i++)
+
+								Dictionary<string, int> header_list =
+														row_header.Cells
+																  .Select(x => new { x.StringCellValue, x.ColumnIndex })
+																  .ToDictionary(x => x.StringCellValue, x => x.ColumnIndex);
+
+								header_list_key = header_list.Select(x => x.Key).ToList();
+								if (header_list_key.Count < 8)
 								{
-									IRow row = sheet.GetRow(i);
-									if (row == null) continue;
-									if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
+									throw new Exception("Template file not support.");
+								}
 
-									var EmployeeId = row.GetCell(0) != null ? row.GetCell(0).ToString() : null;
-									var FullName = row.GetCell(1) != null ? row.GetCell(1).ToString() : null;
-									var Email = row.GetCell(2) != null ? row.GetCell(2).ToString() : null;
-									var PositionId = row.GetCell(3) != null ? row.GetCell(3).ToString() : null;
-									var LevelId = row.GetCell(4) != null ? row.GetCell(4).ToString() : null;
-									var RoleId = row.GetCell(5) != null ? row.GetCell(5).ToString() : null;
+								string? EmployeeId = null;
+								string? FullName = null;
+								string? Email = null;
+								string? Tel = null;
+								int? PositionId = null;
+								Guid? Master_DepartmentId = null;
+								int? RoleId = null;
+								int? LevelId = null;
 
-									int.TryParse(PositionId, out int _positionId);
-									int.TryParse(LevelId, out int _levelid);
-									int.TryParse(RoleId, out int _roleid);
+								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
+								{
+									EmployeeId = null;
+									FullName = null;
+									Email = null;
+									Tel = null;
+									PositionId = null;
+									Master_DepartmentId = null;
+									RoleId = null;
+									LevelId = null;
+
+									var row = sheet.GetRow(rowIndex);
+									int cellIndex = 0;
+									int idMaster = 0;
+									Guid guidMaster = Guid.Empty;
+
+									if (header_list.TryGetValue("รหัสพนักงาน", out cellIndex))
+									{
+										EmployeeId = row.GetCell(cellIndex).ToString();
+									}
+									if (header_list.TryGetValue("ชื่อ-สกุล", out cellIndex))
+									{
+										FullName = row.GetCell(cellIndex).ToString();
+									}
+									if (header_list.TryGetValue("Email", out cellIndex))
+									{
+										Email = row.GetCell(cellIndex).ToString();
+									}
+									if (header_list.TryGetValue("Tel", out cellIndex))
+									{
+										Tel = row.GetCell(cellIndex).ToString();
+									}
+									if (header_list.TryGetValue("ตำแหน่ง", out cellIndex))
+									{
+										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										{
+											PositionId = idMaster;
+										}
+									}
+									if (header_list.TryGetValue("ฝ่าย", out cellIndex))
+									{
+										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										{
+											Master_DepartmentId = guidMaster;
+										}
+									}
+									if (header_list.TryGetValue("ระดับหน้าที่", out cellIndex))
+									{
+										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										{
+											RoleId = idMaster;
+										}
+									}
+									if (header_list.TryGetValue("ระดับ", out cellIndex))
+									{
+										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										{
+											LevelId = idMaster;
+										}
+									}
 
 									if (UserList == null) UserList = new();
 
+									if (UserList.Select(x => x.EmployeeId).Any(x => x == EmployeeId))
+										throw new Exception("มีรหัสพนักงานซ้ำ กรุณาตรวจสอบอีกครั้ง");
+
 									UserList.Add(new UserCustom()
 									{
-										CurrentUserId = 2,
+										Status = StatusModel.Active,
+										CurrentUserId = UserInfo.Id,
 										EmployeeId = EmployeeId,
 										FullName = FullName,
 										Email = Email,
-										PositionId = _positionId > 0 ? _positionId : null,
-										LevelId = _levelid > 0 ? _levelid : null,
-										RoleId = _roleid > 0 ? _roleid : null
+										Tel = Tel,
+										PositionId = PositionId,
+										Master_DepartmentId = Master_DepartmentId,
+										RoleId = RoleId,
+										LevelId = LevelId
 									});
 								}
 
@@ -199,7 +284,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/user");
+			_Navs.NavigateTo("/admin");
 		}
 
 		protected void ShowLoading()
@@ -237,6 +322,16 @@ namespace SalesPipeline.Pages.Users.Admin
 		private void OnHiddenResult()
 		{
 			Cancel();
+		}
+
+		private void HandleDragEnter()
+		{
+			dropClass = "dropzone-drag";
+		}
+
+		private void HandleDragLeave()
+		{
+			dropClass = "";
 		}
 
 

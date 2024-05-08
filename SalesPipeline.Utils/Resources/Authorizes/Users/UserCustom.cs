@@ -62,13 +62,15 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// กิจการสาขาภาค
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[UserAtt(FieldName = "Master_Branch_RegionId")]
 		public Guid? Master_Branch_RegionId { get; set; }
 
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[UserAtt(FieldName = "ProvinceId")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -83,7 +85,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// สาขา
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[UserAtt(FieldName = "BranchId")]
 		public int? BranchId { get; set; }
 
 		public string? BranchName { get; set; }
@@ -116,6 +119,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual List<User_Target_SaleCustom>? User_Target_SaleUsers { get; set; }
 
 		//Custom
+		public string? Master_DepartmentName { get; set; }
+		public string? PositionName { get; set; }
 		public bool IsSelected { get; set; }
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }

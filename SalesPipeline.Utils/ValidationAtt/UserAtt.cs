@@ -20,32 +20,36 @@ namespace SalesPipeline.Utils.ValidationAtt
 
 				var resultValidate = new ValidationResult("กรุณาระบุข้อมูล", new[] { validationContext.MemberName });
 
-				//ต้องการใบเสร็จ / ใบกำกับภาษี
 				if (model.RoleId.HasValue)
 				{
-					if (model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 7 || model.RoleId == 8)
+					if (model.RoleId == 3 || model.RoleId == 4)
 					{
-						//กิจการสาขาภาค
-						//if (FieldName == "Master_Department_BranchId" && model.RoleId != 7 && model.RoleId != 8 && value == null)
-						//{
-						//	return resultValidate;
-						//}
-						//ศูนย์ธุรกิจสินเชื่อ
-						//if (FieldName == "Master_Department_CenterId" && model.RoleId == 7 && value == null)
-						//{
-						//	return resultValidate;
-						//}
-						if ((model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 8) && FieldName == "LevelId" && value == null)
+						if (FieldName == "LevelId" && value == null)
 						{
 							return resultValidate;
 						}
-						//if (FieldName == "ProvinceId" || FieldName == "BranchId")
-						//{
-						//	if (model.RoleId == 8 && value == null)
-						//	{
-						//		return resultValidate;
-						//	}
-						//}
+					}
+					if (model.RoleId == 5 || model.RoleId == 6 || model.RoleId == 7 || model.RoleId == 8)
+					{
+						if (FieldName == "Master_Branch_RegionId" && value == null)
+						{
+							return resultValidate;
+						}
+						if (FieldName == "ProvinceId" && value == null)
+						{
+							return resultValidate;
+						}
+						if (FieldName == "BranchId" && value == null)
+						{
+							return resultValidate;
+						}
+						if (model.RoleId != 7) //ผจศ. ไม่มีระดับ
+						{
+							if (FieldName == "LevelId" && value == null)
+							{
+								return resultValidate;
+							}
+						}
 					}
 				}
 			}

@@ -104,10 +104,18 @@ namespace SalesPipeline.Pages.Customers
 								sheet = hssfwb.GetSheetAt(0);
 
 								IRow row_header = sheet.GetRow(0);
-								var row_0 = row_header.GetCell(0).ToString()?.Trim();
-								var row_1 = row_header.GetCell(1).ToString()?.Trim();
-								if (row_0 != "วันที่เข้ามาติดต่อ"
-									|| row_1 != "ช่องทางการติดต่อ")
+
+								try
+								{
+									var row_0 = row_header.GetCell(0).ToString()?.Trim();
+									var row_1 = row_header.GetCell(1).ToString()?.Trim();
+									if (row_0 != "วันที่เข้ามาติดต่อ"
+										|| row_1 != "ช่องทางการติดต่อ")
+									{
+										throw new Exception("Template file not support.");
+									}
+								}
+								catch
 								{
 									throw new Exception("Template file not support.");
 								}
@@ -251,7 +259,6 @@ namespace SalesPipeline.Pages.Customers
 									InterestNote = null;
 
 									var row = sheet.GetRow(rowIndex);
-
 									int cellIndex = 0;
 									int idMaster = 0;
 									Guid guidMaster = Guid.Empty;
@@ -673,7 +680,7 @@ namespace SalesPipeline.Pages.Customers
 									if (CustomerList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
 										throw new Exception("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
 
-									if (string.IsNullOrEmpty(JuristicPersonRegNumber))									
+									if (string.IsNullOrEmpty(JuristicPersonRegNumber))
 										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
 
 									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length != 13)
