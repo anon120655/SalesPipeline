@@ -26,13 +26,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true)
+		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true, bool? isSetMaster = false)
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
 			if (model.ValidateError == null) model.ValidateError = new();
 
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
+
+			if (juristicPersonRegNumber == null || juristicPersonRegNumber.Length != 13)
+			{
+				errorMessage = $"เลขทะเบียนนิติบุคคลไม่ถูกต้อง";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
 			var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
 			if (customer != null)
 			{
@@ -51,6 +60,55 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					model.ValidateError.Add(errorMessage);
 				}
 			}
+
+			if (isSetMaster == true)
+			{
+				if (model.Branch_RegionId.HasValue)
+				{
+					model.Branch_RegionName = await _repo.MasterBranchReg.GetNameById(model.Branch_RegionId.Value);
+				}
+				if (model.Master_ContactChannelId.HasValue)
+				{
+					model.Master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
+				}
+				if (model.Master_BusinessTypeId.HasValue)
+				{
+					model.Master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
+				}
+				if (model.Master_BusinessSizeId.HasValue)
+				{
+					model.Master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
+				}
+				if (model.Master_ISICCodeId.HasValue)
+				{
+					model.Master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
+				}
+				if (model.Master_YieldId.HasValue)
+				{
+					model.Master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
+				}
+				if (model.Master_ChainId.HasValue)
+				{
+					model.Master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+				}
+				if (model.Master_LoanTypeId.HasValue)
+				{
+					model.Master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
+				}
+				if (model.ProvinceId.HasValue)
+				{
+					model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+				}
+				if (model.AmphurId.HasValue)
+				{
+					model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+				}
+				if (model.TambolId.HasValue)
+				{
+					model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
+				}
+			}
+
 			return model;
 		}
 
@@ -58,7 +116,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			for (int i = 0; i < model.Count; i++)
 			{
-				model[i] = await Validate(model[i], false);
+				model[i] = await Validate(model[i], false, true);
 			}
 			return model;
 		}
@@ -359,16 +417,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
 				{
-					if (!model.Branch_RegionId.HasValue) throw new ExceptionCustom("LOAN BranchId required!");
+					if (!model.Branch_RegionId.HasValue) throw new ExceptionCustom("ระบุ กิจการสาขาภาค!");
 
 					//ค้นหา user กิจการสาขาภาค ที่ดูแลสาขานี้
 					var userBranch_REG = await _repo.User.GetByBranchRegionId(model.Branch_RegionId.Value, 6);
-					if (userBranch_REG == null) throw new ExceptionCustom("LOAN BranchId not found");
+					//if (userBranch_REG == null) throw new ExceptionCustom("LOAN Branch_RegionId not found");
 
 					statusSaleId = StatusSaleModel.WaitAssignCenterREG;
-					master_Branch_RegionId = userBranch_REG.Master_Branch_RegionId;
-					provinceId = userBranch_REG.ProvinceId;
-					branchId = userBranch_REG.BranchId;
+
+					master_Branch_RegionId = model.Branch_RegionId;
+					if (userBranch_REG != null)
+					{
+						provinceId = userBranch_REG.ProvinceId;
+						branchId = userBranch_REG.BranchId;
+					}
 				}
 
 				var saleData = new SaleCustom()

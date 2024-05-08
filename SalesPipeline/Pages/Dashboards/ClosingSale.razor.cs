@@ -9,7 +9,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 namespace SalesPipeline.Pages.Dashboards
 {
 	public partial class ClosingSale
-    {
+	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
@@ -102,20 +102,8 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
-			if (UserInfo.RoleCode != null)
-			{
-				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)
-				{
-					filter.assigncenter = UserInfo.Id;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
-				{
-
-				}
-
-			}
-
-				var data = await _salesViewModel.GetList(filter);
+			filter.userid = UserInfo.Id;
+			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

@@ -1233,7 +1233,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale && sale.StatusSaleId != StatusSaleModel.CloseSale)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale || sale.StatusSaleId == StatusSaleModel.CloseSale)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}

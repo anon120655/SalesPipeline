@@ -114,7 +114,7 @@ namespace SalesPipeline.Pages.Customers
 
 								DateTime? DateContact = null;
 								Guid? Master_ContactChannelId = null;
-								string? BranchName = null;
+								Guid? Branch_RegionId = null;
 								string? ProvincialOffice = null;
 								string? EmployeeName = null;
 								string? EmployeeId = null;
@@ -190,7 +190,7 @@ namespace SalesPipeline.Pages.Customers
 
 									DateContact = null;
 									Master_ContactChannelId = null;
-									BranchName = null;
+									Branch_RegionId = null;
 									ProvincialOffice = null;
 									EmployeeName = null;
 									EmployeeId = null;
@@ -272,9 +272,12 @@ namespace SalesPipeline.Pages.Customers
 											Master_ContactChannelId = guidMaster;
 										}
 									}
-									if (header_list.TryGetValue("สาขา", out cellIndex))
+									if (header_list.TryGetValue("กิจการสาขาภาค", out cellIndex))
 									{
-										BranchName = row.GetCell(cellIndex).ToString();
+										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										{
+											Branch_RegionId = guidMaster;
+										}
 									}
 									if (header_list.TryGetValue("สนจ.", out cellIndex))
 									{
@@ -308,14 +311,14 @@ namespace SalesPipeline.Pages.Customers
 									{
 										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										{
-											Master_BusinessSizeId = guidMaster;
+											Master_BusinessTypeId = guidMaster;
 										}
 									}
 									if (header_list.TryGetValue("ขนาดธุรกิจ", out cellIndex))
 									{
 										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										{
-											Master_BusinessTypeId = guidMaster;
+											Master_BusinessSizeId = guidMaster;
 										}
 									}
 									if (header_list.TryGetValue("ISIC Code", out cellIndex))
@@ -667,11 +670,21 @@ namespace SalesPipeline.Pages.Customers
 
 									if (CustomerList == null) CustomerList = new();
 
+									if (CustomerList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
+										throw new Exception("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
+
+									if (string.IsNullOrEmpty(JuristicPersonRegNumber))									
+										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
+
+									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length != 13)
+										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ 13 หลัก");
+
+
 									CustomerList.Add(new()
 									{
 										DateContact = DateContact,
 										Master_ContactChannelId = Master_ContactChannelId,
-										BranchName = BranchName,
+										Branch_RegionId = Branch_RegionId,
 										ProvincialOffice = ProvincialOffice,
 										EmployeeName = EmployeeName,
 										EmployeeId = EmployeeId,
@@ -786,19 +799,21 @@ namespace SalesPipeline.Pages.Customers
 				_errorMessage = null;
 				ShowLoading();
 
-				//foreach (var item in CustomerList.Where(x => x.IsValidate == true).ToList())
-				//{
-				//	var resultModel = new ResultImport();
-				//	resultModel.Name = item.FullName;
+				foreach (var item in CustomerList.Where(x => x.IsValidate == true).ToList())
+				{
+					var resultModel = new ResultImport();
+					resultModel.Name = item.CompanyName;
 
-				//	var response = await _userViewModel.Create(item);
-				//	if (!response.Status)
-				//	{
-				//		resultModel.Success = false;
-				//		resultModel.errorMessage = response.errorMessage;
-				//	}
-				//	resultImport.Add(resultModel);
-				//}
+					item.CurrentUserId = UserInfo.Id;
+
+					var response = await _customerViewModel.Create(item);
+					if (!response.Status)
+					{
+						resultModel.Success = false;
+						resultModel.errorMessage = response.errorMessage;
+					}
+					resultImport.Add(resultModel);
+				}
 
 				await OnShowResult();
 			}

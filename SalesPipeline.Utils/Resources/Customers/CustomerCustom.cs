@@ -49,7 +49,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// สาขา
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? BranchName { get; set; }
 
 		/// <summary>
@@ -382,8 +382,9 @@ namespace SalesPipeline.Utils.Resources.Customers
 
 		//Custom
 		public int? StatusSaleId { get; set; }
-		//ใช้เช็คกรณีสร้างโดย สายงานธุรกิจสินเชื่อ เพื่อส่งให้ กิจการสาขาภาคนั้นๆ
+		//ใช้เช็คกรณีสร้างโดย สายงานธุรกิจสินเชื่อ หรือ Admin เพื่อส่งให้ กิจการสาขาภาคนั้นๆ
 		public Guid? Branch_RegionId { get; set; }
+		public string? Branch_RegionName { get; set; }
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }
 	}

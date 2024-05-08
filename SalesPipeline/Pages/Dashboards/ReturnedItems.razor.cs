@@ -106,6 +106,7 @@ namespace SalesPipeline.Pages.Dashboards
 				}
 			}
 
+			filter.userid = UserInfo.Id;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

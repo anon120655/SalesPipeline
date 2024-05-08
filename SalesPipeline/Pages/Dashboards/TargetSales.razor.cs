@@ -101,20 +101,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
-			if (UserInfo.RoleCode != null)
-			{
-				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)
-				{
-					filter.assigncenter = UserInfo.Id;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
-				{
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN) || UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
-				{
-				}
-			}
-
+			filter.userid = UserInfo.Id;
 			filter.isloanamount = 1;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

@@ -338,18 +338,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
 		{
-			IQueryable<Sale> query;
-			string? roleCode = null;
-			if (model.assigncenter.HasValue)
-			{
-				var roleList = await _repo.User.GetRoleByUserId(model.assigncenter.Value);
-				if (roleList != null)
-				{
-					roleCode = roleList.Code;
-				}
-			}
+			if (!model.userid.HasValue) throw new ExceptionCustom("userid require.");
 
-			if (roleCode != null && roleCode.ToUpper().StartsWith(RoleCodes.RM))
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			IQueryable<Sale> query;
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													.Include(x => x.Customer)
@@ -365,6 +361,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();
+			}
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				query = query.Where(x => x.AssUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+			{
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
 			}
 
 			if (model.isoverdue == 1)
@@ -908,6 +920,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (model.saleid.HasValue)
+			{
+				query = query.Where(x => x.SaleId == model.saleid);
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

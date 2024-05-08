@@ -82,6 +82,7 @@ namespace SalesPipeline.Pages.Workloads
 
 		protected async Task SetModel()
 		{
+			filter.userid = UserInfo.Id;
 			filter.isoverdue = 1;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

@@ -147,6 +147,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
+			filter.userid = UserInfo.Id;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

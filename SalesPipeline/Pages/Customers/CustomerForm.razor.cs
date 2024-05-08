@@ -167,6 +167,25 @@ namespace SalesPipeline.Pages.Customers
 
 			await Task.Delay(10);
 			await SetAddress();
+
+
+			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataDepBranchs != null && dataDepBranchs.Status)
+			{
+				LookUp.DepartmentBranch = new();
+				if (dataDepBranchs.Data?.Items.Count > 0)
+				{
+					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+					StateHasChanged();
+					await Task.Delay(1);
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
+				}
+			}
+			else
+			{
+				_errorMessage = dataDepBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetModel()
@@ -177,6 +196,10 @@ namespace SalesPipeline.Pages.Customers
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
+					if (formModel.Sales != null)
+					{
+						formModel.Branch_RegionId = formModel.Sales.Select(x => x.Master_Branch_RegionId).FirstOrDefault();
+					}
 				}
 				else
 				{
@@ -527,6 +550,22 @@ namespace SalesPipeline.Pages.Customers
 			await Task.Delay(10);
 			await SetInitManual();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+		}
+
+		[JSInvokable]
+		public async Task OnDepBranch(string _ids, string _name)
+		{
+			formModel.Branch_RegionId = null;
+
+			if (_ids != null)
+			{
+				if (Guid.TryParse(_ids, out Guid id))
+				{
+					formModel.Branch_RegionId = id;
+				}
+			}
+			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 

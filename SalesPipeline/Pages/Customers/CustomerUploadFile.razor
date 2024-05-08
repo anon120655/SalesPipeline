@@ -102,8 +102,8 @@
 														}
 													</td>
 													<td class="text-center">@GeneralUtils.DateToEnStr(item.DateContact)</td>
-													<td class="">@item.Master_ContactChannelId</td>
-													<td class="text-center">@item.BranchName</td>
+													<td class="">@item.Master_ContactChannelName</td>
+													<td class="text-center">@item.Branch_RegionName</td>
 													<td class="text-center">@item.ProvincialOffice</td>
 													<td class="text-center">@item.EmployeeName</td>
 													<td class="text-center">@item.EmployeeId</td>
@@ -111,20 +111,20 @@
 													<td class="text-center">@item.ContactTel</td>
 													<td class="text-center">@item.JuristicPersonRegNumber</td>
 													<td class="text-center">@item.CompanyName</td>
-													<td class="text-center">@item.Master_BusinessTypeId</td>
-													<td class="text-center">@item.Master_BusinessSizeId</td>
-													<td class="text-center">@item.Master_ISICCodeId</td>
-													<td class="text-center">@item.Master_YieldId</td>
-													<td class="text-center">@item.Master_ChainId</td>
-													<td class="text-center">@item.Master_LoanTypeId</td>
+													<td class="text-center">@item.Master_BusinessTypeName</td>
+													<td class="text-center">@item.Master_BusinessSizeName</td>
+													<td class="text-center">@item.Master_ISICCodeName</td>
+													<td class="text-center">@item.Master_YieldName</td>
+													<td class="text-center">@item.Master_ChainName</td>
+													<td class="text-center">@item.Master_LoanTypeName</td>
 													<td class="text-center">@item.CompanyEmail</td>
 													<td class="text-center">@item.CompanyTel</td>
 													<td class="text-center">@item.ParentCompanyGroup</td>
 													<td class="text-center">@item.HouseNo</td>
 													<td class="text-center">@item.VillageNo</td>
-													<td class="text-center">@item.ProvinceId</td>
-													<td class="text-center">@item.AmphurId</td>
-													<td class="text-center">@item.TambolId</td>
+													<td class="text-center">@item.ProvinceName</td>
+													<td class="text-center">@item.AmphurName</td>
+													<td class="text-center">@item.TambolName</td>
 													<td class="text-center">@item.ZipCode</td>
 													@if (item.Customer_Committees?.Count > 0)
 													{
@@ -142,7 +142,7 @@
 															<td class="text-center">@item_sha.Nationality</td>
 															<td class="text-center">@item_sha.Proportion</td>
 															<td class="text-center">@item_sha.NumberShareholder</td>
-															<td class="text-center">@item_sha.TotalShareValue</td>
+															<td class="text-center">@item_sha.TotalShareValue?.ToString(GeneralTxt.FormatDecimal2)</td>
 														}
 													}
 													<td class="text-center">@item.RegisteredCapital</td>
@@ -152,31 +152,31 @@
 													<td class="text-center">@item.TradeAccReceivable</td>
 													<td class="text-center">@item.TradeAccRecProceedsNet</td>
 													<td class="text-center">@item.Inventories</td>
-													<td class="text-center">@item.LoansShort</td>
-													<td class="text-center">@item.TotalCurrentAssets</td>
-													<td class="text-center">@item.LoansLong</td>
-													<td class="text-center">@item.LandBuildingEquipment</td>
-													<td class="text-center">@item.TotalNotCurrentAssets</td>
-													<td class="text-center">@item.AssetsTotal</td>
+													<td class="text-center">@item.LoansShort?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.LoansLong?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TradeAccPay</td>
-													<td class="text-center">@item.TradeAccPayLoansShot</td>
-													<td class="text-center">@item.TradeAccPayTotalCurrentLia</td>
-													<td class="text-center">@item.TradeAccPayLoansLong</td>
-													<td class="text-center">@item.TradeAccPayTotalNotCurrentLia</td>
-													<td class="text-center">@item.TradeAccPayForLoansShot</td>
-													<td class="text-center">@item.TradeAccPayTotalLiabilitie</td>
-													<td class="text-center">@item.RegisterCapitalOrdinary</td>
-													<td class="text-center">@item.RegisterCapitalPaid</td>
-													<td class="text-center">@item.ProfitLossAccumulate</td>
-													<td class="text-center">@item.TotalShareholders</td>
-													<td class="text-center">@item.TotalLiabilitieShareholders</td>
-													<td class="text-center">@item.TotalIncome</td>
-													<td class="text-center">@item.CostSales</td>
-													<td class="text-center">@item.GrossProfit</td>
-													<td class="text-center">@item.OperatingExpenses</td>
-													<td class="text-center">@item.ProfitLossBeforeDepExp</td>
-													<td class="text-center">@item.ProfitLossBeforeInterestTax</td>
-													<td class="text-center">@item.NetProfitLoss</td>
+													<td class="text-center">@item.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.ProfitLossAccumulate?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TotalShareholders?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TotalLiabilitieShareholders?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TotalIncome?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.CostSales?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.GrossProfit?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.InterestNote</td>
 												</tr>
 											}
@@ -212,6 +212,30 @@
 			</div>
 		</div>
 	</div>
+
+	<Modal @ref="modalResult"
+		   Title=""
+		   IsVerticallyCentered="true"
+		   OnHidden="OnHiddenResult"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<div class="row mb-4 text-center">
+				<i class="fa-solid fa-circle-check fs_5r text-primary"></i>
+			</div>
+			<div class="row mb-4 text-center">
+				<h4 class="fw-bold mb-3">ผลการบันทึก ทั้งหมด @resultImport.Count()</h4>
+				<h5 class="text-success">สำเร็จ @resultImport.Count(x => x.Success)</h5>
+				<h5 class="text-danger ms-2">ไม่สำเร็จ  @resultImport.Count(x => !x.Success)</h5>
+			</div>
+			<div class="row my-3 text-center">
+				<div class="d-flex justify-content-evenly align-items-center">
+					<div class="p-2">
+						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideResult">เสร็จสิ้น</Button>
+					</div>
+				</div>
+			</div>
+		</BodyTemplate>
+	</Modal>
 }
 else
 {

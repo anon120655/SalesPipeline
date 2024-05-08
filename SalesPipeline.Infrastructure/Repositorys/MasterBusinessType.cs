@@ -60,6 +60,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		
 		public async Task<string?> GetNameById(Guid id)
 		{
+			var idStr = id.ToString();
 			var name = await _repo.Context.Master_BusinessTypes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}

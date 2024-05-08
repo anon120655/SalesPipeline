@@ -105,6 +105,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 
 		protected async Task SetModel()
 		{
+			filter.userid = UserInfo.Id;
 			filter.statussaleid = StatusSaleModel.RMReturnMCenter;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

@@ -101,6 +101,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 
 		protected async Task SetModel()
 		{
+			filter.userid = UserInfo.Id;
 			filter.statussaleid = StatusSaleModel.MCenterReturnBranch;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

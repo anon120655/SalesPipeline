@@ -15,6 +15,7 @@ namespace SalesPipeline.Pages.Customers
 		string? _errorMessage = null;
 		private bool isLoading = false;
 		private LookUpResource LookUp = new();
+		private allFilter filter = new();
 		private List<SaleCustom>? Items;
 
 		//protected override async Task OnInitializedAsync()
@@ -36,7 +37,10 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (customerid != Guid.Empty)
 			{
-				var data = await _salesViewModel.GetList(new() { customerid = customerid, pagesize = 100 });
+				filter.userid = UserInfo.Id;
+				filter.customerid = customerid;
+				filter.pagesize = 100;
+				var data = await _salesViewModel.GetList(filter);
 				if (data != null && data.Status)
 				{
 					Items = data.Data?.Items;

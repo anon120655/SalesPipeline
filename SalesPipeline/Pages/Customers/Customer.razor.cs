@@ -134,18 +134,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task SetModel()
 		{
-			if (UserInfo.RoleCode != null)
-			{
-				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)
-				{
-					filter.assigncenter = UserInfo.Id;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
-				{
-
-				}
-			}
-
+			filter.userid = UserInfo.Id;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
