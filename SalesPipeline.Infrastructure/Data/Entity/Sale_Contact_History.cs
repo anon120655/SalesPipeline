@@ -48,6 +48,11 @@ public partial class Sale_Contact_History
     public DateTime? ContactDate { get; set; }
 
     /// <summary>
+    /// เบอร์ติดต่อ
+    /// </summary>
+    public string? ContactTel { get; set; }
+
+    /// <summary>
     /// ผลการติดต่อ
     /// </summary>
     public string? ResultContactName { get; set; }

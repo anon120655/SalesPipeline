@@ -207,5 +207,30 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ทิ้งรายการลูกค้า
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost("CreateContactDiscard")]
+		public async Task<IActionResult> CreateContactDiscard(Sale_ContactCustom model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					var data = await _repo.ProcessSale.CreateContactDiscard(model);
+
+					_transaction.Commit();
+
+					return Ok(data);
+				}
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

@@ -24,6 +24,8 @@ public partial class Master_Reason_CloseSale
 
     public virtual ICollection<Sale_Close_Sale> Sale_Close_Sales { get; set; } = new List<Sale_Close_Sale>();
 
+    public virtual ICollection<Sale_Contact> Sale_Contacts { get; set; } = new List<Sale_Contact>();
+
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();

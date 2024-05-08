@@ -1621,6 +1621,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.NextActionId, "Master_NextActionId");
 
+            entity.HasIndex(e => e.Master_Reason_CloseSaleId, "Master_Reason_CloseSaleId");
+
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.Property(e => e.AppointmentDate)
@@ -1636,6 +1638,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("1=รับสาย 2=ไม่รับสาย")
                 .HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DesireLoanId)
+                .HasComment("2=ไม่ประสงค์กู้")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasComment("สถานที่");
@@ -1643,7 +1648,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
             entity.Property(e => e.NextActionId)
-                .HasComment("1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง")
+                .HasComment("1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง 3=ส่งกลับรายการ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
@@ -1654,6 +1659,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(255)
                 .HasComment("เบอร์ติดต่อ");
+
+            entity.HasOne(d => d.Master_Reason_CloseSale).WithMany(p => p.Sale_Contacts)
+                .HasForeignKey(d => d.Master_Reason_CloseSaleId)
+                .HasConstraintName("sale_contact_ibfk_2");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Contacts)
                 .HasForeignKey(d => d.SaleId)
@@ -1683,6 +1692,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ContactFullName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.ContactTel)
+                .HasMaxLength(255)
+                .HasComment("เบอร์ติดต่อ");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");

@@ -40,6 +40,10 @@
 											{
 												<p>ผลการติดต่อ : @item.ResultContactName</p>
 											}
+											@if (!String.IsNullOrEmpty(item.ContactTel))
+											{
+												<p>เบอร์โทร : @item.ContactTel</p>
+											}
 											@if (!String.IsNullOrEmpty(item.ResultMeetName))
 											{
 												<p>ผลการเข้าพบ : @item.ResultMeetName</p>

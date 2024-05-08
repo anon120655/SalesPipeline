@@ -46,7 +46,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public int? ContactResult { get; set; }
 
 		/// <summary>
-		/// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง
+		/// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง 3=ส่งกลับรายการ
 		/// </summary>
 		//[Required(ErrorMessage = "Next Action")]
 		public int? NextActionId { get; set; }
@@ -70,5 +70,12 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// บันทึกเพิ่มเติม
 		/// </summary>
 		public string? Note { get; set; }
+
+		/// <summary>
+		/// 2=ไม่ประสงค์กู้
+		/// </summary>
+		public int? DesireLoanId { get; set; }
+
+		public Guid? Master_Reason_CloseSaleId { get; set; }
 	}
 }

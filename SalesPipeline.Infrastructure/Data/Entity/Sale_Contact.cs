@@ -40,7 +40,7 @@ public partial class Sale_Contact
     public int? ContactResult { get; set; }
 
     /// <summary>
-    /// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง
+    /// 1=ทำการนัดหมาย 2=ติดต่ออีกครั้ง 3=ส่งกลับรายการ
     /// </summary>
     public int? NextActionId { get; set; }
 
@@ -63,6 +63,15 @@ public partial class Sale_Contact
     /// บันทึกเพิ่มเติม
     /// </summary>
     public string? Note { get; set; }
+
+    /// <summary>
+    /// 2=ไม่ประสงค์กู้
+    /// </summary>
+    public int? DesireLoanId { get; set; }
+
+    public Guid? Master_Reason_CloseSaleId { get; set; }
+
+    public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 
     public virtual Sale Sale { get; set; } = null!;
 }

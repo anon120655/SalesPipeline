@@ -10,6 +10,7 @@ using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
+using System.Drawing;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -797,6 +798,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				TopicName = topicName,
 				ContactFullName = model.Name,
 				ContactDate = model.ContactDate,
+				ContactTel = model.Tel,
 				ResultContactName = resultContactName,
 				NextActionName = nextActionName,
 				AppointmentDate = model.AppointmentDate,
@@ -1342,6 +1344,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.TopicName = model.TopicName;
 			sale_Contact_History.ContactFullName = model.ContactFullName;
 			sale_Contact_History.ContactDate = model.ContactDate;
+			sale_Contact_History.ContactTel = model.ContactTel;
 			sale_Contact_History.ProceedName = model.ProceedName;
 			sale_Contact_History.ResultContactName = model.ResultContactName;
 			sale_Contact_History.MeetFullName = model.MeetFullName;
@@ -1427,6 +1430,111 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 
 			return _mapper.Map<List<Sale_Contact_HistoryCustom>>(await query.ToListAsync());
+		}
+
+		public async Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model)
+		{
+			var sale = await _repo.Sales.GetStatusById(model.SaleId);
+			if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+			if (sale.StatusSaleMainId == StatusSaleMainModel.CloseSale || sale.StatusSaleId == StatusSaleModel.CloseSale)
+			{
+				throw new ExceptionCustom("statussale not match");
+			}
+
+			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้ติดต่อ");
+			if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์ติดต่อ");
+			if (!model.ContactDate.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
+			if (!model.ContactResult.HasValue) throw new ExceptionCustom("ระบุผลการติดต่อ");
+			if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
+			if (!model.DesireLoanId.HasValue) throw new ExceptionCustom("ระบุความประสงค์กู้");
+			if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
+			if (model.NextActionId != 3) throw new ExceptionCustom("nextActionId not match");
+			if (model.DesireLoanId != 2) throw new ExceptionCustom("desireLoanId not match");
+
+			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+
+			int statusSaleId = StatusSaleModel.NotStatus;
+			string? topicName = "ติดต่อ";
+			string? resultContactName = string.Empty;
+			string? nextActionName = string.Empty;
+			string? desireLoanName = string.Empty;
+			string? descriptionStatus = null;
+
+			DateTime _dateNow = DateTime.Now;
+
+			Sale_Contact sale_Contact = new();
+			sale_Contact.Status = StatusModel.Active;
+			sale_Contact.CreateDate = _dateNow;
+			sale_Contact.SaleId = model.SaleId;
+			sale_Contact.Name = model.Name;
+			sale_Contact.Tel = model.Tel;
+			sale_Contact.ContactDate = model.ContactDate;
+			sale_Contact.ContactResult = model.ContactResult;
+			sale_Contact.NextActionId = model.NextActionId;
+			sale_Contact.Note = model.Note;
+			sale_Contact.DesireLoanId = model.DesireLoanId;
+			sale_Contact.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
+			await _db.InsterAsync(sale_Contact);
+			await _db.SaveAsync();
+
+			if (model.ContactResult == 1 || model.ContactResult == 2)
+			{
+				resultContactName = model.ContactResult == 1 ? "รับสาย" : "ไม่รับสาย";
+			}
+			if (model.NextActionId == 3)
+			{
+				nextActionName = "ส่งกลับรายการ";
+			}
+
+			if (sale_Contact.DesireLoanId == 2)
+			{
+				topicName = "ไม่ประสงค์กู้";
+				desireLoanName = "ไม่ประสงค์กู้";
+				statusSaleId = StatusSaleModel.CloseSaleNotLoan;
+				if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
+			}
+
+			if (model.Master_Reason_CloseSaleId.HasValue)
+			{
+				descriptionStatus = await _repo.MasterReasonCloseSale.GetNameById(model.Master_Reason_CloseSaleId.Value);
+			}
+
+			DateTime createDate = DateTime.Now;
+
+			if (model.DesireLoanId == 2)
+			{
+				statusSaleId = StatusSaleModel.CloseSaleNotLoan;
+			}
+			await _repo.Sales.UpdateStatusOnly(new()
+			{
+				SaleId = model.SaleId,
+				StatusId = statusSaleId,
+				CreateDate = createDate,
+				CreateBy = model.CurrentUserId,
+				CreateByName = currentUserName,
+				Description = descriptionStatus,
+				Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId
+			});
+
+			await CreateContactHistory(new()
+			{
+				CurrentUserId = model.CurrentUserId,
+				SaleId = model.SaleId,
+				ProcessSaleCode = ProcessSaleCodeModel.CloseSale,
+				StatusSaleId = statusSaleId,
+				TopicName = topicName,
+				ContactFullName = model.Name,
+				ContactDate = model.ContactDate,
+				ContactTel = model.Tel,
+				ResultContactName = resultContactName,
+				NextActionName = nextActionName,
+				DesireLoanName = desireLoanName,
+				Reason = descriptionStatus,
+				Note = model.Note
+			});
+
+			return _mapper.Map<Sale_ContactCustom>(sale_Contact);
 		}
 
 	}
