@@ -120,7 +120,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		//Custom
 		public string? Master_DepartmentName { get; set; }
+		public string? Master_Branch_RegionName { get; set; }
 		public string? PositionName { get; set; }
+		public string? RoleName { get; set; }
 		public bool IsSelected { get; set; }
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }

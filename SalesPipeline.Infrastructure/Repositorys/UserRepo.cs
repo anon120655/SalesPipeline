@@ -97,16 +97,93 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (model.PositionId.HasValue)
+			{
+				if (model.RoleId == 3 || model.RoleId == 4)
+				{
+					var positionsList = await _repo.Master.Positions(new() { type = "1" });
+					if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
+					{
+						errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
+						model.IsValidate = false;
+						model.ValidateError.Add(errorMessage);
+						if (isThrow) throw new ExceptionCustom(errorMessage);
+					}
+				}
+				if (model.RoleId >= 5 && model.RoleId <= 8)
+				{
+					var positionsList = await _repo.Master.Positions(new() { type = "2" });
+					if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
+					{
+						errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
+						model.IsValidate = false;
+						model.ValidateError.Add(errorMessage);
+						if (isThrow) throw new ExceptionCustom(errorMessage);
+					}
+				}
+			}
+
+			if (model.Master_Branch_RegionId.HasValue)
+			{
+				var provinceList = await _repo.Thailand.GetProvince(model.Master_Branch_RegionId.Value);
+				if (provinceList.Count > 0)
+				{
+					if (model.ProvinceId.HasValue)
+					{
+						if (!provinceList.Select(x => x.ProvinceID).Contains(model.ProvinceId.Value))
+						{
+							errorMessage = $"ไม่พบจังหวัดภายใต้ กิจการสาขาภาคที่ระบุ";
+							model.IsValidate = false;
+							model.ValidateError.Add(errorMessage);
+							if (isThrow) throw new ExceptionCustom(errorMessage);
+						}
+						else
+						{
+							if (model.BranchId.HasValue)
+							{
+								var branchList = await _repo.Thailand.GetBranch(model.ProvinceId.Value);
+								if (!branchList.Select(x => x.BranchID).Contains(model.BranchId.Value))
+								{
+									errorMessage = $"ไม่พบสาขาภายใต้ จังหวัดที่ระบุ";
+									model.IsValidate = false;
+									model.ValidateError.Add(errorMessage);
+									if (isThrow) throw new ExceptionCustom(errorMessage);
+								}
+							}
+						}
+					}
+				}
+			}
+
 			if (isSetMaster == true)
 			{
 				if (model.Master_DepartmentId.HasValue)
 				{
 					model.Master_DepartmentName = await _repo.MasterDepartment.GetNameById(model.Master_DepartmentId.Value);
 				}
-
 				if (model.PositionId.HasValue)
 				{
 					model.PositionName = await _repo.Context.Master_Positions.Where(x => x.Id == model.PositionId.Value).Select(x => x.Name).FirstOrDefaultAsync();
+				}
+				if (model.RoleId.HasValue)
+				{
+					var _role = await _repo.User.GetRoleById(model.RoleId.Value);
+					if (_role != null)
+					{
+						model.RoleName = _role.Name;
+					}
+				}
+				if (model.Master_Branch_RegionId.HasValue)
+				{
+					model.Master_Branch_RegionName = await _repo.MasterBranchReg.GetNameById(model.Master_Branch_RegionId.Value);
+				}
+				if (model.ProvinceId.HasValue)
+				{
+					model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+				}
+				if (model.BranchId.HasValue)
+				{
+					model.BranchName = await _repo.Thailand.GetBranchNameByid(model.BranchId.Value);
 				}
 			}
 
@@ -131,7 +208,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			for (int i = 0; i < model.Count; i++)
 			{
-				model[i] = await Validate(model[i], false,true);
+				model[i] = await Validate(model[i], false, true);
 			}
 			return model;
 		}

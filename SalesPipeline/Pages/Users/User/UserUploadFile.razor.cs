@@ -8,9 +8,9 @@ using System.Data;
 using SalesPipeline.Utils;
 using BlazorBootstrap;
 
-namespace SalesPipeline.Pages.Users.Admin
+namespace SalesPipeline.Pages.Users.User
 {
-	public partial class AdminUserUploadFile
+	public partial class UserUploadFile
 	{
 		private string? _errorMessage = null;
 		private bool isLoading = false;
@@ -28,7 +28,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected override void OnInitialized()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.RMUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 		}
 
@@ -59,7 +59,7 @@ namespace SalesPipeline.Pages.Users.Admin
 						stream.Close();
 
 						var bytefile = ms.ToArray();
-						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "UserAdminImport.xlsx");
+						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "UserImport.xlsx");
 						if (files == null) throw new Exception("File Not Support.");
 
 						string folderName = @$"{_appSet.Value.ContentRootPath}\import\excel";
@@ -97,14 +97,18 @@ namespace SalesPipeline.Pages.Users.Admin
 									var row_5 = row_header.GetCell(5).ToString()?.Trim();
 									var row_6 = row_header.GetCell(6).ToString()?.Trim();
 									var row_7 = row_header.GetCell(7).ToString()?.Trim();
+									var row_8 = row_header.GetCell(8).ToString()?.Trim();
+									var row_9 = row_header.GetCell(9).ToString()?.Trim();
 									if (row_0 != "รหัสพนักงาน"
 										|| row_1 != "ชื่อ-สกุล"
 										|| row_2 != "Email"
 										|| row_3 != "Tel"
 										|| row_4 != "ตำแหน่ง"
-										|| row_5 != "ฝ่าย"
-										|| row_6 != "ระดับหน้าที่"
-										|| row_7 != "ระดับ")
+										|| row_5 != "ระดับหน้าที่"
+										|| row_6 != "ระดับ"
+										|| row_7 != "กิจการสาขาภาค"
+										|| row_8 != "จังหวัด"
+										|| row_9 != "สาขา")
 									{
 										throw new Exception("Template file not support.");
 									}
@@ -121,7 +125,7 @@ namespace SalesPipeline.Pages.Users.Admin
 																  .ToDictionary(x => x.StringCellValue, x => x.ColumnIndex);
 
 								header_list_key = header_list.Select(x => x.Key).ToList();
-								if (header_list_key.Count < 8)
+								if (header_list_key.Count < 10)
 								{
 									throw new Exception("Template file not support.");
 								}
@@ -131,9 +135,11 @@ namespace SalesPipeline.Pages.Users.Admin
 								string? Email = null;
 								string? Tel = null;
 								int? PositionId = null;
-								Guid? Master_DepartmentId = null;
 								int? RoleId = null;
 								int? LevelId = null;
+								Guid? Master_Branch_RegionId = null;
+								int? ProvinceId = null;
+								int? BranchId = null;
 
 								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
 								{
@@ -142,9 +148,11 @@ namespace SalesPipeline.Pages.Users.Admin
 									Email = null;
 									Tel = null;
 									PositionId = null;
-									Master_DepartmentId = null;
 									RoleId = null;
 									LevelId = null;
+									Master_Branch_RegionId = null;
+									ProvinceId = null;
+									BranchId = null;
 
 									var row = sheet.GetRow(rowIndex);
 									int cellIndex = 0;
@@ -174,13 +182,6 @@ namespace SalesPipeline.Pages.Users.Admin
 											PositionId = idMaster;
 										}
 									}
-									if (header_list.TryGetValue("ฝ่าย", out cellIndex))
-									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
-										{
-											Master_DepartmentId = guidMaster;
-										}
-									}
 									if (header_list.TryGetValue("ระดับหน้าที่", out cellIndex))
 									{
 										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
@@ -193,6 +194,27 @@ namespace SalesPipeline.Pages.Users.Admin
 										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
 										{
 											LevelId = idMaster;
+										}
+									}
+									if (header_list.TryGetValue("กิจการสาขาภาค", out cellIndex))
+									{
+										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										{
+											Master_Branch_RegionId = guidMaster;
+										}
+									}
+									if (header_list.TryGetValue("จังหวัด", out cellIndex))
+									{
+										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										{
+											ProvinceId = idMaster;
+										}
+									}
+									if (header_list.TryGetValue("สาขา", out cellIndex))
+									{
+										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										{
+											BranchId = idMaster;
 										}
 									}
 
@@ -219,14 +241,22 @@ namespace SalesPipeline.Pages.Users.Admin
 									if (!RoleId.HasValue)
 										throw new Exception("ระดับหน้าที่ ไม่ครบถ้วน");
 
-									if (RoleId < 3 || RoleId > 4)
+									if (RoleId < 5 || RoleId > 8)
 									{
-										throw new Exception("ระดับหน้าที่ไม่ถูกต้อง ต้องอยู่ในช่วง(3-4)");
+										throw new Exception("ระดับหน้าที่ไม่ถูกต้อง ต้องอยู่ในช่วง(5-8)");
 									}
 
 									if (!LevelId.HasValue)
 										throw new Exception("ระดับ ไม่ครบถ้วน");
 
+									if (!Master_Branch_RegionId.HasValue)
+										throw new Exception("กิจการสาขาภาค ไม่ครบถ้วน");
+
+									if (!ProvinceId.HasValue)
+										throw new Exception("จังหวัด ไม่ครบถ้วน");
+
+									if (!BranchId.HasValue)
+										throw new Exception("สาขา ไม่ครบถ้วน");
 
 									UserList.Add(new UserCustom()
 									{
@@ -237,9 +267,11 @@ namespace SalesPipeline.Pages.Users.Admin
 										Email = Email,
 										Tel = Tel,
 										PositionId = PositionId,
-										Master_DepartmentId = Master_DepartmentId,
 										RoleId = RoleId,
-										LevelId = LevelId
+										LevelId = LevelId,
+										Master_Branch_RegionId = Master_Branch_RegionId,
+										ProvinceId = ProvinceId,
+										BranchId = BranchId,
 									});
 								}
 
@@ -307,7 +339,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/admin");
+			_Navs.NavigateTo("/user");
 		}
 
 		protected void ShowLoading()

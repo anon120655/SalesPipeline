@@ -1,6 +1,6 @@
-﻿@page "/admin/uploadfile"
+﻿@page "/user/uploadfile"
 
-<PageTitle>เพิ่มผู้ใช้งาน(แนบไฟล์)น</PageTitle>
+<PageTitle>เพิ่ม User(แนบไฟล์)</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -13,7 +13,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic">ระบบผู้ใช้งาน > (แนบไฟล์)</p>
+							<p class="back_topic">จัดการ User > (แนบไฟล์)</p>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -101,9 +101,11 @@
 													<td class="text-center">@item.Email</td>
 													<td class="text-center">@item.Tel</td>
 													<td class="text-center">@item.PositionName</td>
-													<td class="text-center">@item.Master_DepartmentName</td>
 													<td class="text-center">@item.RoleName</td>
 													<td class="text-center">@item.LevelId</td>
+													<td class="text-center">@item.Master_Branch_RegionName</td>
+													<td class="text-center">@item.ProvinceName</td>
+													<td class="text-center">@item.BranchName</td>
 												</tr>
 											}
 										}

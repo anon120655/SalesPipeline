@@ -415,7 +415,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					provinceId = user.ProvinceId;
 					branchId = user.BranchId;
 				}
-				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN) || userRole.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
 					if (!model.Branch_RegionId.HasValue) throw new ExceptionCustom("ระบุ กิจการสาขาภาค!");
 
