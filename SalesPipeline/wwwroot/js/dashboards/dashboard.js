@@ -1701,9 +1701,62 @@ window.durationonstage = (_data) => {
 	}
 }
 
-//function percentToRange(v) {
-//	return v > 95 ? 29 : v > 90 ? 28 : v > 85 ? 27 : v > 80 ? 26 : v > 75 ? 25 : v > 70 ? 24 : v > 65 ? 23 : v > 60 ? 22 : v > 55 ? 21 : v > 50 ? 20 : v > 45 ? 19 : v > 40 ? 18 : v > 35 ? 17 : v > 30 ? 16 : v > 25 ? 15 : v > 20 ? 14 : v > 15 ? 13 : v > 10 ? 12 : v > 5 ? 11 : v > 4.5 ? 10 : v > 4 ? 9 : v > 3.5 ? 8 : v > 3 ? 7 : v > 2.5 ? 6 : v > 2 ? 5 : v > 1.5 ? 4 : v > 1 ? 3 : v > 0.5 ? 2 : v > 0.1 ? 1 : 0;
-//}
+window.captureDashboard = () => {
+	var capture = document.getElementById("capture");
+	$(".hide_export").addClass("d-none")
+	$(".el_box_con").removeClass("box_content").addClass("box_content_n_shadow")
+	//PDF
+	if (capture != null) {
+		html2canvas(capture).then(canvas => {
+			let currentDate = GetCurrentDate()
+			var imgData = canvas.toDataURL('image/png');
+			var doc = new jsPDF('p', 'mm')
+
+			const imgProps = doc.getImageProperties(imgData);
+			const pdfWidth = doc.internal.pageSize.getWidth();
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+			doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+			doc.save(`Dashboard_${currentDate}.pdf`)
+			$(".hide_export").removeClass("d-none")
+			$(".el_box_con").removeClass("box_content_n_shadow").addClass("box_content")
+		});
+	}
+
+	//if (capture != null) {
+	//	html2canvas(capture).then(canvas => {
+	//		var myImage = canvas.toDataURL();
+	//		let currentDate = GetCurrentDate()
+	//		downloadURI(myImage, `Dashboard_${currentDate}.png`);
+	//		$(".hide_export").removeClass("d-none")
+	//	});
+	//}
+}
+
+function downloadURI(uri, name) {
+	var link = document.createElement("a");
+
+	link.download = name;
+	link.href = uri;
+	document.body.appendChild(link);
+	link.click();
+	//after creating link you should delete dynamic link
+	//clearDynamicLink(link); 
+}
+
+function GetCurrentDate() {
+	const date = new Date();
+
+	let day = date.getDate();
+	let month = date.getMonth() + 1;
+	let year = date.getFullYear();
+
+	if (day < 10) day = '0' + day;
+	if (month < 10) month = '0' + month;
+
+	let currentDate = `${day}-${month}-${year}`;
+	return currentDate;
+}
+
 function percentToRange(v) {
 
 	if (v > 9) return 29
@@ -1728,4 +1781,29 @@ function trimSvgWhitespace() {
 			viewBox = [box.x, box.y, box.width, box.height].join(" ");
 		svg.setAttribute("viewBox", viewBox);
 	}
+}
+
+window.jsPDF = window.jspdf.jsPDF;
+function generatePdf() {
+	let jsPdf = new jsPDF('p', 'pt', 'letter');
+	var htmlElement = document.getElementById('capture');
+	// you need to load html2canvas (and dompurify if you pass a string to html)
+	const opt = {
+		callback: function (jsPdf) {
+			jsPdf.save("Test.pdf");
+			// to open the generated PDF in browser window
+			// window.open(jsPdf.output('bloburl'));
+		},
+		margin: [72, 72, 72, 72],
+		autoPaging: 'text',
+		html2canvas: {
+			allowTaint: true,
+			dpi: 300,
+			letterRendering: true,
+			logging: false,
+			scale: .8
+		}
+	};
+
+	jsPdf.html(htmlElement, opt);
 }

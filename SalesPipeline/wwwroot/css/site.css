@@ -393,6 +393,12 @@ body.waiting * {
     padding: 0.6rem;
 }
 
+.box_content_n_shadow {
+    border-radius: 0.475rem;
+    background-color: #ffffff;
+    padding: 0.65rem;
+}
+
 .box_content {
     border-radius: 0.475rem;
     background-color: #ffffff;

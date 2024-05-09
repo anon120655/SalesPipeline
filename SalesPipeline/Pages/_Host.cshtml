@@ -60,6 +60,9 @@
 
     <div id="LoadScript">
     </div>
+
+    <script src="/js/jspdf.min.js?v=@(_appSet.Value.Version)"></script>
+
     <script src="/js/checktimeout.js?v=@(_appSet.Value.Version)"></script>
     @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
 	<script src="/lib/chartjs/chart4_4_0.js"></script>
@@ -74,7 +77,7 @@
     <script>
         Blazor.start({
             configureSignalR: function (builder) {
-                //builder.configureLogging("none");
+                builder.configureLogging("none");
             },
             reconnectionOptions: {
                 maxRetries: 60,

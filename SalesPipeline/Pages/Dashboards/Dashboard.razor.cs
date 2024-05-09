@@ -45,6 +45,9 @@ namespace SalesPipeline.Pages.Dashboards
 				var iSloadJs = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs, "/dashboard.js");
 				if (iSloadJs)
 				{
+					var UrlJs2 = $"/js/html2canvas.js?v={_appSet.Value.Version}";
+					var iSloadJs2 = await _jsRuntimes.InvokeAsync<bool>("loadJs", UrlJs2, "/html2canvas.js");
+
 					await SetModelAll();
 				}
 
@@ -550,6 +553,10 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task CaptureDashboard()
+		{
+			await _jsRuntimes.InvokeVoidAsync("captureDashboard");
+		}
 
 	}
 }

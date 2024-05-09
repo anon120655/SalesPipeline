@@ -11,645 +11,653 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 my-2">
-				<div class="box_content">
+				<div class="el_box_con box_content" id="capture">
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/monitor128x.png" width="55" /></div>
-						<div class="p-2">
+						<div class="p-2 w-100">
 							<p class="back_topic">รายงาน</p>
 						</div>
+						<div class="p-2 flex-shrink-1 el_dash hide_export">
+							<button @onclick=CaptureDashboard type="button" class="btn btn-primary text-white mw_7r w-100">
+								ส่งออก
+							</button>
+						</div>
 					</div>
-					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
-						<div class="col mb-2">
-							<label class="form-label">เริ่มต้น</label>
-							<input type="date" class="form-control" @onchange="OnDateStart" value="@(filter.startdate.HasValue ? filter.startdate.Value.ToString("yyyy-MM-dd"):String.Empty)">
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">สิ้นสุด</label>
-							<input type="date" class="form-control" @onchange="OnDateEnd" value="@(filter.enddate.HasValue ? filter.enddate.Value.ToString("yyyy-MM-dd"):String.Empty)">
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">กิจการสาขาภาค</label>
-							<div class="">
-								<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
-									@if (LookUp.DepartmentBranch?.Count > 0)
-									{
-										foreach (var item in LookUp.DepartmentBranch)
+					<div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">เริ่มต้น</label>
+								<input type="date" class="form-control" @onchange="OnDateStart">
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">สิ้นสุด</label>
+								<input type="date" class="form-control" @onchange="OnDateEnd">
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">กิจการสาขาภาค</label>
+								<div class="">
+									<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
+										@if (LookUp.DepartmentBranch?.Count > 0)
 										{
-											<option value="@item.Id">@item.Name</option>
+											foreach (var item in LookUp.DepartmentBranch)
+											{
+												<option value="@item.Id">@item.Name</option>
+											}
+										}
+									</select>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select id="Province" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-live-search="true">
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
 										}
 									}
 								</select>
 							</div>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">จังหวัด</label>
-							<select id="Province" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-live-search="true">
-								@if (LookUp.Provinces?.Count > 0)
-								{
-									foreach (var item in LookUp.Provinces)
+							<div class="col mb-2">
+								<label class="form-label">สาขา</label>
+								<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-live-search="true">
+									@if (LookUp.Branchs?.Count > 0)
 									{
-										<option value="@item.ProvinceID">@item.ProvinceName</option>
+										foreach (var item in LookUp.Branchs)
+										{
+											<option value="@item.BranchID">@item.BranchName</option>
+										}
 									}
-								}
-							</select>
-						</div>
-						<div class="col mb-2">
-							<label class="form-label">สาขา</label>
-							<select id="Branch" class="selectpicker selectInit" data-style="select_btn_set" title="ทั้งหมด" data-live-search="true">
-								@if (LookUp.Branchs?.Count > 0)
-								{
-									foreach (var item in LookUp.Branchs)
-									{
-										<option value="@item.BranchID">@item.BranchName</option>
-									}
-								}
-							</select>
-						</div>
-						<div class="col mb-2 mt-3">
-							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
-								<i class="fa fa-search fa-xs"></i> ค้นหา
-							</button>
-						</div>
-					</div>
-					<div class="row text-center mb-3">
-						<a href="/dashboard/totalimport" class="col-12 col-md-4 col-xl-2 pe-lg-1 mt-2 text-decoration-none">
-							<div role="button" class="box-text_main box-1 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto"><p class="">จำนวนลูกค้านำเข้าทั้งหมด</p></div>
-									<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusAll</h3></div>
-								</div>
+								</select>
 							</div>
-						</a>
-						<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2">
-							<div role="button" class="box-text_main box-2 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto"><p class="">รอผู้จัดการศูนย์มอบหมาย</p></div>
-									<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusWaitMCenterAssign</h3></div>
-								</div>
+							<div class="col mb-2 mt-3 el_dash hide_export">
+								<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
 							</div>
 						</div>
-						<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-md-auto pe-xl-1 mt-2">
-							<div role="button" class="box-text_main box-3 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto">
-										<p class="">ผู้จัดการศูนย์มอบหมาย</p>
+						<div class="row text-center mb-3">
+							<a href="/dashboard/totalimport" class="col-12 col-md-4 col-xl-2 pe-lg-1 mt-2 text-decoration-none">
+								<div role="button" class="box-text_main box-1 w-100 px-2">
+									<div class="box-text">
+										<div class="mb-auto"><p class="">จำนวนลูกค้านำเข้าทั้งหมด</p></div>
+										<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusAll</h3></div>
 									</div>
-									<div class="">
-										<h3 class="mw_3r">
-											@status_TotalModel.NumCusMCenterAssign
-										</h3>
+								</div>
+							</a>
+							<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2">
+								<div role="button" class="box-text_main box-2 w-100 px-2">
+									<div class="box-text">
+										<div class="mb-auto"><p class="">รอผู้จัดการศูนย์มอบหมาย</p></div>
+										<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusWaitMCenterAssign</h3></div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-12 col-md-4 col-xl-2 ps-xl-1 pe-lg-1 mt-2">
-							<div role="button" class="box-text_main box-4 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto">
-										<p class="">อยู่ในกระบวนการ</p>
-									</div>
-									<div class="">
-										<h3 class="mw_3r">@status_TotalModel.NumCusInProcess</h3>
-									</div>
-								</div>
-							</div>
-						</div>
-						<a href="/dashboard/returneditems" class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2 text-decoration-none">
-							<div role="button" class="box-text_main box-5 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto">
-										<p class="">รายการส่งกลับ</p>
-									</div>
-									<div class="">
-										<h3 class="mw_3r">@status_TotalModel.NumCusReturn</h3>
-									</div>
-								</div>
-							</div>
-						</a>
-						<a href="/dashboard/notachievedtarget" class="col-12 col-md-4 col-xl-2 ps-lg-1 mt-2 text-decoration-none">
-							<div role="button" class="box-text_main box-6 w-100 px-2">
-								<div class="box-text">
-									<div class="mb-auto">
-										<p class="">พนักงานที่ไม่บรรลุเป้าหมาย</p>
-									</div>
-									<div class="">
-										<h3 class="mw_3r">@status_TotalModel.NumCusTargeNotSuccess</h3>
-									</div>
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="row">
-						<div class="col-12 col-xl-4 pe-xl-1 mb-3">
-							<div class="box_content border border-secondary-subtle h-100">
-								<div role="button" class="box-text_main w-100 px-2">
-									<div class="box-text text-blue">
+							<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-md-auto pe-xl-1 mt-2">
+								<div role="button" class="box-text_main box-3 w-100 px-2">
+									<div class="box-text">
 										<div class="mb-auto">
-											<p class="">Sales Pipeline</p>
+											<p class="">ผู้จัดการศูนย์มอบหมาย</p>
 										</div>
-										<div class="d-flex align-items-end">
-											<div class="pipeline p-1">
-												<div class="funnel_outer">
-													<ul>
-														<li class="funnel_step_1">
-															<div>
-																<p class="step_text">จำนวนลูกค้านำเข้าทั้งหมด</p>
-																<p class="step_val">@salesPipelineModel.CusAll</p>
-															</div>
-														</li>
-														<li class="funnel_step_2">
-															<div>
-																<p class="step_text">จำนวนลูกค้าสนใจ</p>
-																<p class="step_val">@salesPipelineModel.Interested</p>
-															</div>
-														</li>
-														<li class="funnel_step_3">
-															<div>
-																<p class="step_text">ยื่นอนุมัติ</p>
-																<p class="step_val">@salesPipelineModel.SubmitApproval</p>
-															</div>
-														</li>
-														<li class="funnel_step_4">
-															<div>
-																<p class="step_text">ผ่าน</p>
-																<p class="step_val">@salesPipelineModel.Approval</p>
-															</div>
-														</li>
-														<li class="funnel_step_5">
-															<div>
-																<p class="step_text">กู้</p>
-																<p class="step_val">@salesPipelineModel.CloseSale</p>
-															</div>
-														</li>
-													</ul>
+										<div class="">
+											<h3 class="mw_3r">
+												@status_TotalModel.NumCusMCenterAssign
+											</h3>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-md-4 col-xl-2 ps-xl-1 pe-lg-1 mt-2">
+								<div role="button" class="box-text_main box-4 w-100 px-2">
+									<div class="box-text">
+										<div class="mb-auto">
+											<p class="">อยู่ในกระบวนการ</p>
+										</div>
+										<div class="">
+											<h3 class="mw_3r">@status_TotalModel.NumCusInProcess</h3>
+										</div>
+									</div>
+								</div>
+							</div>
+							<a href="/dashboard/returneditems" class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2 text-decoration-none">
+								<div role="button" class="box-text_main box-5 w-100 px-2">
+									<div class="box-text">
+										<div class="mb-auto">
+											<p class="">รายการส่งกลับ</p>
+										</div>
+										<div class="">
+											<h3 class="mw_3r">@status_TotalModel.NumCusReturn</h3>
+										</div>
+									</div>
+								</div>
+							</a>
+							<a href="/dashboard/notachievedtarget" class="col-12 col-md-4 col-xl-2 ps-lg-1 mt-2 text-decoration-none">
+								<div role="button" class="box-text_main box-6 w-100 px-2">
+									<div class="box-text">
+										<div class="mb-auto">
+											<p class="">พนักงานที่ไม่บรรลุเป้าหมาย</p>
+										</div>
+										<div class="">
+											<h3 class="mw_3r">@status_TotalModel.NumCusTargeNotSuccess</h3>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div class="row">
+							<div class="col-12 col-xl-4 pe-xl-1 mb-3">
+								<div class="el_box_con box_content border border-secondary-subtle h-100">
+									<div role="button" class="box-text_main w-100 px-2">
+										<div class="box-text text-blue">
+											<div class="mb-auto">
+												<p class="">Sales Pipeline</p>
+											</div>
+											<div class="d-flex align-items-end">
+												<div class="pipeline p-1">
+													<div class="funnel_outer">
+														<ul>
+															<li class="funnel_step_1">
+																<div>
+																	<p class="step_text">จำนวนลูกค้านำเข้าทั้งหมด</p>
+																	<p class="step_val">@salesPipelineModel.CusAll</p>
+																</div>
+															</li>
+															<li class="funnel_step_2">
+																<div>
+																	<p class="step_text">จำนวนลูกค้าสนใจ</p>
+																	<p class="step_val">@salesPipelineModel.Interested</p>
+																</div>
+															</li>
+															<li class="funnel_step_3">
+																<div>
+																	<p class="step_text">ยื่นอนุมัติ</p>
+																	<p class="step_val">@salesPipelineModel.SubmitApproval</p>
+																</div>
+															</li>
+															<li class="funnel_step_4">
+																<div>
+																	<p class="step_text">ผ่าน</p>
+																	<p class="step_val">@salesPipelineModel.Approval</p>
+																</div>
+															</li>
+															<li class="funnel_step_5">
+																<div>
+																	<p class="step_text">กู้</p>
+																	<p class="step_val">@salesPipelineModel.CloseSale</p>
+																</div>
+															</li>
+														</ul>
+													</div>
+													@* <ul>
+												<li>จำนวนลูกค้านำเข้าทั้งหมด</li>
+												<li>จำนวนลูกค้าสนใจ</li>
+												<li>ยื่นอนุมัติ</li>
+												<li>ผ่าน</li>
+												<li>กู้</li>
+												</ul> *@
 												</div>
-												@* <ul>
-											<li>จำนวนลูกค้านำเข้าทั้งหมด</li>
-											<li>จำนวนลูกค้าสนใจ</li>
-											<li>ยื่นอนุมัติ</li>
-											<li>ผ่าน</li>
-											<li>กู้</li>
-											</ul> *@
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-12 col-xl-8">
-							<div class="row text-center">
-								<a href="/dashboard/avgeperdeal" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-2">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">มูลค่าเฉลี่ยต่อหนึ่งดีล</p>
-												</div>
-												<div class="d-flex align-items-end">
-													<h5 class="mw_3r">@avgTop_NumberModel.AvgPerDeal.ToString("#,##0") บาท</h5>
-												</div>
-											</div>
-										</div>
-									</div>
-								</a>
-								<a href="/dashboard/avgdurationclosesale" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-2">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</p>
-												</div>
-												<div class="d-flex align-items-end">
-													<h5 class="mw_3r">@avgTop_NumberModel.AvgDurationCloseSale วัน</h5>
-												</div>
-											</div>
-										</div>
-									</div>
-								</a>
-								<a href="/dashboard/avgdurationlostsale" class="col-12 col-xl-4 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-2">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง</p>
-												</div>
-												<div class="d-flex align-items-end">
-													<h5 class="mw_3r">@avgTop_NumberModel.AvgDurationLostSale วัน</h5>
-												</div>
-											</div>
-										</div>
-									</div>
-								</a>
-							</div>
-							<div class="row text-center">
-								<a href="/dashboard/closingsale" class="col-12 col-xl pe-xl-1 pe-xxl-1 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-0">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">การปิดการขาย</p>
-												</div>
-												<div class="d-flex align-items-end mt-2">
-													<div class="chart-container" style="position: relative; height:33vh;max-width: 300px;">
-														<canvas id="closesale"></canvas>
+							<div class="col-12 col-xl-8">
+								<div class="row text-center">
+									<a href="/dashboard/avgeperdeal" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-2">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">มูลค่าเฉลี่ยต่อหนึ่งดีล</p>
+													</div>
+													<div class="d-flex align-items-end">
+														<h5 class="mw_3r">@avgTop_NumberModel.AvgPerDeal.ToString("#,##0") บาท</h5>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</a>
-								<a href="/dashboard/reasonnotloan" class="col-12 col-xl pe-xxl-1 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-0">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
-												</div>
-												<div class="d-flex align-items-end mt-2">
-													<div class="chart-container" style="position: relative; height:33vh; max-width:300px;">
-														<canvas id="reasonnotloan"></canvas>
+									</a>
+									<a href="/dashboard/avgdurationclosesale" class="col-12 col-xl-4 pe-xl-1 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-2">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย</p>
+													</div>
+													<div class="d-flex align-items-end">
+														<h5 class="mw_3r">@avgTop_NumberModel.AvgDurationCloseSale วัน</h5>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</a>
-								<a href="/dashboard/targetsales" id="elm_targetsales" class="col-12 col-xl-3 mb-3 text-decoration-none">
-									<div class="box_content border border-secondary-subtle">
-										<div role="button" class="box-text_main w-100 px-2">
-											<div class="box-text text-blue">
-												<div class="mb-auto">
-													<p class="">เป้ายอดการขาย</p>
-												</div>
-												<div class="d-flex align-items-end mt-2">
-													<div class="chart-container" style="position: relative; height:33vh;">
-														<canvas id="targetsales"></canvas>
-														@* <p>50,000,000</p>
-													<p>35,000,000</p> *@
+									</a>
+									<a href="/dashboard/avgdurationlostsale" class="col-12 col-xl-4 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-2">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง</p>
+													</div>
+													<div class="d-flex align-items-end">
+														<h5 class="mw_3r">@avgTop_NumberModel.AvgDurationLostSale วัน</h5>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="@(UserInfo.RoleCode == RoleCodes.CEN_BRANCH ? "d-none":"")">
-						<div class="row text-center">
-							<a href="/dashboard/topsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">10 อันดับ จังหวัดยอดขายสูงสุด</p>
-											</div>
-											<div class="d-flex align-items-end mt-2">
-												<div class="mapbox">
-													<div class="row maptop10">
-														<div class="col-12 col-xl">
-															@if (topSaleModel.Count > 0)
-															{
-																<MapThailand map_ThailandModel="topSaleModel" Type="1" />
-															}
-															else
-															{
-																<MapThailand map_ThailandModel="new()" Type="1" />
-															}
+									</a>
+								</div>
+								<div class="row text-center">
+									<a href="/dashboard/closingsale" class="col-12 col-xl pe-xl-1 pe-xxl-1 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-0">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">การปิดการขาย</p>
+													</div>
+													<div class="d-flex align-items-end mt-2">
+														<div class="chart-container" style="position: relative; height:33vh;max-width: 300px;">
+															<canvas id="closesale"></canvas>
 														</div>
-														<div class="col-12 col-xl-6">
-															<table class="tbl_top10 table table-bordered border-white table-striped">
-																<thead class="">
-																	<tr>
-																		<th scope="col">จังหวัด</th>
-																		<th scope="col">ยอดขาย</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	@if (topSaleModel.Count > 0)
-																	{
-																		foreach (var item in topSaleModel)
+													</div>
+												</div>
+											</div>
+										</div>
+									</a>
+									<a href="/dashboard/reasonnotloan" class="col-12 col-xl pe-xxl-1 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-0">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
+													</div>
+													<div class="d-flex align-items-end mt-2">
+														<div class="chart-container" style="position: relative; height:33vh; max-width:300px;">
+															<canvas id="reasonnotloan"></canvas>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</a>
+									<a href="/dashboard/targetsales" id="elm_targetsales" class="col-12 col-xl-3 mb-3 text-decoration-none">
+										<div class="el_box_con box_content border border-secondary-subtle">
+											<div role="button" class="box-text_main w-100 px-2">
+												<div class="box-text text-blue">
+													<div class="mb-auto">
+														<p class="">เป้ายอดการขาย</p>
+													</div>
+													<div class="d-flex align-items-end mt-2">
+														<div class="chart-container" style="position: relative; height:33vh;">
+															<canvas id="targetsales"></canvas>
+															@* <p>50,000,000</p>
+														<p>35,000,000</p> *@
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="@(UserInfo.RoleCode == RoleCodes.CEN_BRANCH ? "d-none":"")">
+							<div class="row text-center">
+								<a href="/dashboard/topsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
+									<div class="el_box_con box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">10 อันดับ จังหวัดยอดขายสูงสุด</p>
+												</div>
+												<div class="d-flex align-items-end mt-2">
+													<div class="mapbox">
+														<div class="row maptop10">
+															<div class="col-12 col-xl">
+																@if (topSaleModel.Count > 0)
+																{
+																	<MapThailand map_ThailandModel="topSaleModel" Type="1" />
+																}
+																else
+																{
+																	<MapThailand map_ThailandModel="new()" Type="1" />
+																}
+															</div>
+															<div class="col-12 col-xl-6">
+																<table class="tbl_top10 table table-bordered border-white table-striped">
+																	<thead class="">
+																		<tr>
+																			<th scope="col">จังหวัด</th>
+																			<th scope="col">ยอดขาย</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		@if (topSaleModel.Count > 0)
 																		{
-																			<tr>
-																				<td>@item.ProvinceName</td>
-																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			foreach (var item in topSaleModel)
+																			{
+																				<tr>
+																					<td>@item.ProvinceName</td>
+																					<td>@item.SalesAmount.ToString("#,##0")</td>
+																				</tr>
+																			}
+																		}
+																		else
+																		{
+																			<tr class="text-center align-middle">
+																				<td colspan="100">
+																					ไม่พบข้อมูล
+																				</td>
 																			</tr>
 																		}
-																	}
-																	else
-																	{
-																		<tr class="text-center align-middle">
-																			<td colspan="100">
-																				ไม่พบข้อมูล
-																			</td>
-																		</tr>
-																	}
-																</tbody>
-															</table>
-														</div>
-														<div class="col-12">
-															@if (topSaleModel.Count > 0)
-															{
-																<ul class="map-info">
-																	<li class="left info"><span class="number">@topSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																	<li class="center"><div class="progress-map"></div></li>
-																	<li class="right info"><span class="number">@topSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-																</ul>
-															}
+																	</tbody>
+																</table>
+															</div>
+															<div class="col-12">
+																@if (topSaleModel.Count > 0)
+																{
+																	<ul class="map-info">
+																		<li class="left info"><span class="number">@topSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="center"><div class="progress-map"></div></li>
+																		<li class="right info"><span class="number">@topSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	</ul>
+																}
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a href="/dashboard/lostsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">10 อันดับ จังหวัดที่แพ้ให้กับคู่แข่งสูงสุด</p>
-											</div>
-											<div class="d-flex align-items-end mt-2">
-												<div class="mapbox">
-													<div class="row mapcenterlost10">
-														<div class="col-12 col-xl">
-															@if (lostSaleModel.Count > 0)
-															{
-																<MapThailand map_ThailandModel="lostSaleModel" Type="1" />
-															}
-															else
-															{
-																<MapThailand map_ThailandModel="new()" Type="1" />
-															}
-														</div>
-														<div class="col-12 col-xl-6">
-															<table class="tbl_top10 table table-bordered border-white table-striped">
-																<thead class="">
-																	<tr>
-																		<th scope="col">จังหวัด</th>
-																		<th scope="col">ยอดขาย</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	@if (lostSaleModel.Count > 0)
-																	{
-																		foreach (var item in lostSaleModel)
+								</a>
+								<a href="/dashboard/lostsales" class="col-12 col-lg-6 col-xl-6 col-xxl-4 pe-xxl-1 mb-3 text-decoration-none">
+									<div class="el_box_con box_content border border-secondary-subtle">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">10 อันดับ จังหวัดที่แพ้ให้กับคู่แข่งสูงสุด</p>
+												</div>
+												<div class="d-flex align-items-end mt-2">
+													<div class="mapbox">
+														<div class="row mapcenterlost10">
+															<div class="col-12 col-xl">
+																@if (lostSaleModel.Count > 0)
+																{
+																	<MapThailand map_ThailandModel="lostSaleModel" Type="1" />
+																}
+																else
+																{
+																	<MapThailand map_ThailandModel="new()" Type="1" />
+																}
+															</div>
+															<div class="col-12 col-xl-6">
+																<table class="tbl_top10 table table-bordered border-white table-striped">
+																	<thead class="">
+																		<tr>
+																			<th scope="col">จังหวัด</th>
+																			<th scope="col">ยอดขาย</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		@if (lostSaleModel.Count > 0)
 																		{
-																			<tr>
-																				<td>@item.ProvinceName</td>
-																				<td>@item.SalesAmount.ToString("#,##0")</td>
+																			foreach (var item in lostSaleModel)
+																			{
+																				<tr>
+																					<td>@item.ProvinceName</td>
+																					<td>@item.SalesAmount.ToString("#,##0")</td>
+																				</tr>
+																			}
+																		}
+																		else
+																		{
+																			<tr class="text-center align-middle">
+																				<td colspan="100">
+																					ไม่พบข้อมูล
+																				</td>
 																			</tr>
 																		}
-																	}
-																	else
-																	{
-																		<tr class="text-center align-middle">
-																			<td colspan="100">
-																				ไม่พบข้อมูล
-																			</td>
-																		</tr>
-																	}
-																</tbody>
-															</table>
-														</div>
-														<div class="col-12">
-															@if (lostSaleModel.Count > 0)
-															{
-																<ul class="map-info">
-																	<li class="left info"><span class="number">@lostSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
-																	<li class="center"><div class="progress-map"></div></li>
-																	<li class="right info"><span class="number">@lostSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
-																</ul>
-															}
+																	</tbody>
+																</table>
+															</div>
+															<div class="col-12">
+																@if (lostSaleModel.Count > 0)
+																{
+																	<ul class="map-info">
+																		<li class="left info"><span class="number">@lostSaleModel.Min(x => x.SalesAmount).ToString("#,##0")</span></li>
+																		<li class="center"><div class="progress-map"></div></li>
+																		<li class="right info"><span class="number">@lostSaleModel.Max(x => x.SalesAmount).ToString("#,##0")</span></li>
+																	</ul>
+																}
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</a>
-							<a href="/dashboard/durationonstage" class="col-12 col-xl mb-3 text-decoration-none">
-								<div class="box_content border border-secondary-subtle h-100">
-									<div role="button" class="box-text_main w-100 px-2">
-										<div class="box-text text-blue">
-											<div class="mb-auto">
-												<p class="">ระยะเวลาเฉลี่ยที่ใช้ในแต่ละสเตจ</p>
-											</div>
-											<div class="d-flex align-items-end w-100">
-												<div class="" style="position: relative; height:33vh;width: 100%;">
-													<canvas id="durationonstage"></canvas>
+								</a>
+								<a href="/dashboard/durationonstage" class="col-12 col-xl mb-3 text-decoration-none">
+									<div class="el_box_con box_content border border-secondary-subtle h-100">
+										<div role="button" class="box-text_main w-100 px-2">
+											<div class="box-text text-blue">
+												<div class="mb-auto">
+													<p class="">ระยะเวลาเฉลี่ยที่ใช้ในแต่ละสเตจ</p>
+												</div>
+												<div class="d-flex align-items-end w-100">
+													<div class="" style="position: relative; height:33vh;width: 100%;">
+														<canvas id="durationonstage"></canvas>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
+								</a>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-3 mt-1 text-center">
+										<a class="col text-decoration-none" href="/dashboard/avgdealbranch">
+											<div class="el_box_con box_content border border-secondary-subtle">
+												<div role="button" class="box-text_main w-100 px-2">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">ดีลโดยเฉลี่ยต่อสาขา</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<h3 class="mw_3r">@avgBottom_NumberModel.AvgDealBranch ดีล</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
+											<div class="el_box_con box_content border border-secondary-subtle">
+												<div role="button" class="box-text_main w-100 px-2">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<h3 class="mw_3r">@avgBottom_NumberModel.AvgSaleActcloseDeal กิจกรรม</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="/dashboard/avgdeliveryduration">
+											<div class="el_box_con box_content border border-secondary-subtle">
+												<div role="button" class="box-text_main w-100 px-2">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">ระยะเวลาเฉลี่ยในการส่งมอบ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<h3 class="mw_3r">@avgBottom_NumberModel.AvgDeliveryDuration วัน</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="/dashboard/avgdealrm">
+											<div class="el_box_con box_content border border-secondary-subtle">
+												<div role="button" class="box-text_main w-100 px-2">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<h3 class="mw_3r">@avgBottom_NumberModel.AvgDealRM ดีล</h3>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+									</div>
 								</div>
-							</a>
-						</div>
-						<div class="row">
-							<div class="col">
-								<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-3 mt-1 text-center">
-									<a class="col text-decoration-none" href="/dashboard/avgdealbranch">
-										<div class="box_content border border-secondary-subtle">
-											<div role="button" class="box-text_main w-100 px-2">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">ดีลโดยเฉลี่ยต่อสาขา</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<h3 class="mw_3r">@avgBottom_NumberModel.AvgDealBranch ดีล</h3>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="/dashboard/avgsaleactclosedeal">
-										<div class="box_content border border-secondary-subtle">
-											<div role="button" class="box-text_main w-100 px-2">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">กิจกรรมการขายโดยเฉลี่ยต่อดีลที่ปิดการขาย</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<h3 class="mw_3r">@avgBottom_NumberModel.AvgSaleActcloseDeal กิจกรรม</h3>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
+										<a class="col text-decoration-none" href="/dashboard/numcussizebusiness">
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">จำนวนลูกค้าตามขนาดธุรกิจ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="numcussizebusiness"></canvas>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="/dashboard/avgdeliveryduration">
-										<div class="box_content border border-secondary-subtle">
-											<div role="button" class="box-text_main w-100 px-2">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">ระยะเวลาเฉลี่ยในการส่งมอบ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<h3 class="mw_3r">@avgBottom_NumberModel.AvgDeliveryDuration วัน</h3>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="/dashboard/avgdealrm">
-										<div class="box_content border border-secondary-subtle">
-											<div role="button" class="box-text_main w-100 px-2">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">ดีลโดยเฉลี่ยต่อพนักงานสินเชื่อ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<h3 class="mw_3r">@avgBottom_NumberModel.AvgDealRM ดีล</h3>
+										</a>
+										<a class="col text-decoration-none" href="/dashboard/numcustypebusiness">
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">จำนวนลูกค้าตามประเภทธุรกิจ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="numcustypebusiness"></canvas>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</a>
+										</a>
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">จำนวนลูกค้าตาม ISIC Code</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="numcusisiccode"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">จำนวนลูกค้าตามประเภทสินเชื่อ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="numcusloantype"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">มูลค่าสินเชื่อตามขนาดธุรกิจ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="valuesizebusiness"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">มูลค่าสินเชื่อตามประเภทธุรกิจ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="valuetypebusiness"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">มูลค่าสินเชื่อตาม ISIC Code</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="valueisiccode"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										<a class="col text-decoration-none" href="" @onclick:preventDefault>
+											<div class="el_box_con box_content border border-secondary-subtle h-100">
+												<div role="button" class="box-text_main w-100 px-0">
+													<div class="box-text text-blue">
+														<div class="mb-auto">
+															<p class="">มูลค่าสินเชื่อตามประเภทสินเชื่อ</p>
+														</div>
+														<div class="d-flex align-items-end">
+															<div class="chart-container" style="position: relative; height:33vh;">
+																<canvas id="valueloantype"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col">
-								<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
-									<a class="col text-decoration-none" href="/dashboard/numcussizebusiness">
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">จำนวนลูกค้าตามขนาดธุรกิจ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="numcussizebusiness"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="/dashboard/numcustypebusiness">
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">จำนวนลูกค้าตามประเภทธุรกิจ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="numcustypebusiness"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">จำนวนลูกค้าตาม ISIC Code</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="numcusisiccode"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">จำนวนลูกค้าตามประเภทสินเชื่อ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="numcusloantype"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 row-cols-xxl-4 g-3 mt-1 text-center">
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">มูลค่าสินเชื่อตามขนาดธุรกิจ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="valuesizebusiness"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">มูลค่าสินเชื่อตามประเภทธุรกิจ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="valuetypebusiness"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">มูลค่าสินเชื่อตาม ISIC Code</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="valueisiccode"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-									<a class="col text-decoration-none" href="" @onclick:preventDefault>
-										<div class="box_content border border-secondary-subtle h-100">
-											<div role="button" class="box-text_main w-100 px-0">
-												<div class="box-text text-blue">
-													<div class="mb-auto">
-														<p class="">มูลค่าสินเชื่อตามประเภทสินเชื่อ</p>
-													</div>
-													<div class="d-flex align-items-end">
-														<div class="chart-container" style="position: relative; height:33vh;">
-															<canvas id="valueloantype"></canvas>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</a>
-								</div>
-							</div>
-						</div>
+
 					</div>
 				</div>
 			</div>
