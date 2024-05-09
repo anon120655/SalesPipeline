@@ -517,5 +517,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("GetAvgComparePreMonth")]
+		public async Task<IActionResult> GetAvgComparePreMonth(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Dashboard.GetAvgComparePreMonth(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

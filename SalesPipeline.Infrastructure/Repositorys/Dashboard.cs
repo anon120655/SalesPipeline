@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NPOI.OpenXmlFormats.Spreadsheet;
@@ -3565,6 +3566,162 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					response.Add(new() { GroupID = i.ToString(), Name = GeneralUtils.GetFullMonth(i) });
 				}
 			}
+
+			return response;
+		}
+
+		public async Task<List<GroupByModel>> GetAvgComparePreMonth(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			model.rolecode = user.Role.Code.ToUpper();
+
+			var response = new List<GroupByModel>();
+
+			if (!model.startdate.HasValue || model.startdate.Value == DateTime.MinValue)
+			{
+				model.startdate = DateTime.Now;
+			}
+			DateTime pre_date = model.startdate.Value.AddMonths(-1);
+
+			var query = _repo.Context.Sales
+									 .Where(x => x.Status == StatusModel.Active)
+									 .OrderByDescending(x => x.CreateDate)
+									 .AsQueryable();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+			{
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
+			//if (model.startdate.HasValue && !model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
+			//if (!model.startdate.HasValue && model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
+			//if (model.startdate.HasValue && model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
+
+			if (model.DepBranchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
+				}
+			}
+
+			if (model.Branchs?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				}
+			}
+
+			if (model.RMUsers?.Count > 0)
+			{
+				var idList = GeneralUtils.ListStringToInt(model.RMUsers);
+				if (idList.Count > 0)
+				{
+					query = query.Where(x => x.AssUserId.HasValue && idList.Contains(x.AssUserId));
+				}
+			}
+
+			var avgvalue = query.Select(s => s.LoanAmount).DefaultIfEmpty().Average();
+			if (avgvalue.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "avgvalue",
+					Name = "มูลค่าเฉลี่ย",
+					Value = decimal.Round(avgvalue.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+			var avgvalue_pre = query.Where(x => x.CreateDate.Month == pre_date.Month).Select(s => s.LoanAmount).DefaultIfEmpty().Average();
+			if (avgvalue_pre.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "avgvalue_pre",
+					Name = "มูลค่าเฉลี่ย",
+					Value = decimal.Round(avgvalue_pre.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
+			var closesale = query.Where(x => x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount);
+			if (closesale.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "closesale",
+					Name = "มูลค่าดีลที่ปิดได้",
+					Value = decimal.Round(closesale.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+			var closesale_pre = query.Where(x => x.CreateDate.Month == pre_date.Month && x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount);
+			if (closesale_pre.HasValue)
+			{
+				response.Add(new()
+				{
+					GroupID = "closesale_pre",
+					Name = "มูลค่าดีลที่ปิดได้",
+					Value = decimal.Round(closesale_pre.Value, 2, MidpointRounding.AwayFromZero)
+				});
+			}
+
+			var alldeal = query.Count();
+			response.Add(new()
+			{
+				GroupID = "alldeal",
+				Name = "ดีลที่เปิดทั้งหมด",
+				Value = decimal.Round(alldeal, 0, MidpointRounding.AwayFromZero)
+			});
+
+			var alldeal_pre = query.Count(x => x.CreateDate.Month == pre_date.Month);
+			response.Add(new()
+			{
+				GroupID = "avg_close_pre",
+				Name = "ดีลที่เปิดทั้งหมด",
+				Value = decimal.Round(alldeal_pre, 0, MidpointRounding.AwayFromZero)
+			});
+
+
+			//var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
+			//							 .Select(group => new
+			//							 {
+			//								 GroupID = group.Key.ToString(),
+			//								 Name = group.First().BranchName,
+			//								 Value = group.Sum(s => s.LoanAmount)
+			//							 }).ToListAsync();
+			//if (queryBranch.Count > 0)
+			//{
+			//	foreach (var item in queryBranch)
+			//	{
+			//		var avg = item.Value ?? 0;
+			//		response.Add(new()
+			//		{
+			//			GroupID = item.GroupID,
+			//			Name = item.Name,
+			//			Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
+			//		});
+			//	}
+			//}
 
 			return response;
 		}
