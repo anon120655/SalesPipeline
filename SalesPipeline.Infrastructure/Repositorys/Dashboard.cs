@@ -3643,47 +3643,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var avgvalue = query.Select(s => s.LoanAmount).DefaultIfEmpty().Average();
-			if (avgvalue.HasValue)
+			var avgvalue = query.Select(s => s.LoanAmount).DefaultIfEmpty().Average() ?? 0;
+			response.Add(new()
 			{
-				response.Add(new()
-				{
-					GroupID = "avgvalue",
-					Name = "มูลค่าเฉลี่ย",
-					Value = decimal.Round(avgvalue.Value, 2, MidpointRounding.AwayFromZero)
-				});
-			}
-			var avgvalue_pre = query.Where(x => x.CreateDate.Month == pre_date.Month).Select(s => s.LoanAmount).DefaultIfEmpty().Average();
-			if (avgvalue_pre.HasValue)
-			{
-				response.Add(new()
-				{
-					GroupID = "avgvalue_pre",
-					Name = "มูลค่าเฉลี่ย",
-					Value = decimal.Round(avgvalue_pre.Value, 2, MidpointRounding.AwayFromZero)
-				});
-			}
+				GroupID = "avgvalue",
+				Name = "มูลค่าเฉลี่ย",
+				Value = decimal.Round(avgvalue, 2, MidpointRounding.AwayFromZero)
+			});
 
-			var closesale = query.Where(x => x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount);
-			if (closesale.HasValue)
+			var avgvalue_pre = query.Where(x => x.CreateDate.Month == pre_date.Month).Select(s => s.LoanAmount).DefaultIfEmpty().Average() ?? 0;
+			response.Add(new()
 			{
-				response.Add(new()
-				{
-					GroupID = "closesale",
-					Name = "มูลค่าดีลที่ปิดได้",
-					Value = decimal.Round(closesale.Value, 2, MidpointRounding.AwayFromZero)
-				});
-			}
-			var closesale_pre = query.Where(x => x.CreateDate.Month == pre_date.Month && x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount);
-			if (closesale_pre.HasValue)
+				GroupID = "avgvalue_pre",
+				Name = "มูลค่าเฉลี่ย",
+				Value = decimal.Round(avgvalue_pre, 2, MidpointRounding.AwayFromZero)
+			});
+
+
+			var closesale = query.Where(x => x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount) ?? 0;
+			response.Add(new()
 			{
-				response.Add(new()
-				{
-					GroupID = "closesale_pre",
-					Name = "มูลค่าดีลที่ปิดได้",
-					Value = decimal.Round(closesale_pre.Value, 2, MidpointRounding.AwayFromZero)
-				});
-			}
+				GroupID = "closesale",
+				Name = "มูลค่าดีลที่ปิดได้",
+				Value = decimal.Round(closesale, 2, MidpointRounding.AwayFromZero)
+			});
+
+			var closesale_pre = query.Where(x => x.CreateDate.Month == pre_date.Month && x.StatusSaleId == StatusSaleModel.CloseSale).Sum(s => s.LoanAmount) ?? 0;
+			response.Add(new()
+			{
+				GroupID = "closesale_pre",
+				Name = "มูลค่าดีลที่ปิดได้",
+				Value = decimal.Round(closesale_pre, 2, MidpointRounding.AwayFromZero)
+			});
+
 
 			var alldeal = query.Count();
 			response.Add(new()
@@ -3696,32 +3688,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var alldeal_pre = query.Count(x => x.CreateDate.Month == pre_date.Month);
 			response.Add(new()
 			{
-				GroupID = "avg_close_pre",
+				GroupID = "alldeal_pre",
 				Name = "ดีลที่เปิดทั้งหมด",
 				Value = decimal.Round(alldeal_pre, 0, MidpointRounding.AwayFromZero)
 			});
 
+			var alldealclose = query.Count(x => x.StatusSaleId == StatusSaleModel.CloseSale);
+			response.Add(new()
+			{
+				GroupID = "alldealclose",
+				Name = "ดีลที่ปิดได้ทั้งหมด",
+				Value = decimal.Round(alldealclose, 0, MidpointRounding.AwayFromZero)
+			});
 
-			//var queryBranch = await query.Where(x => x.LoanAmount > 0 && x.BranchId.HasValue).GroupBy(g => g.BranchId)
-			//							 .Select(group => new
-			//							 {
-			//								 GroupID = group.Key.ToString(),
-			//								 Name = group.First().BranchName,
-			//								 Value = group.Sum(s => s.LoanAmount)
-			//							 }).ToListAsync();
-			//if (queryBranch.Count > 0)
-			//{
-			//	foreach (var item in queryBranch)
-			//	{
-			//		var avg = item.Value ?? 0;
-			//		response.Add(new()
-			//		{
-			//			GroupID = item.GroupID,
-			//			Name = item.Name,
-			//			Value = decimal.Round(avg, 2, MidpointRounding.AwayFromZero)
-			//		});
-			//	}
-			//}
+			var alldealclose_pre = query.Count(x => x.CreateDate.Month == pre_date.Month && x.StatusSaleId == StatusSaleModel.CloseSale);
+			response.Add(new()
+			{
+				GroupID = "alldealclose_pre",
+				Name = "ดีลที่ปิดได้ทั้งหมด",
+				Value = decimal.Round(alldealclose_pre, 0, MidpointRounding.AwayFromZero)
+			});
 
 			return response;
 		}
