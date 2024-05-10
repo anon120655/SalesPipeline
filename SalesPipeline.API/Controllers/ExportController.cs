@@ -1558,5 +1558,185 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("ExcelNumCusTypeBusiness")]
+		public async Task<IActionResult> ExcelNumCusTypeBusiness(allFilter model)
+		{
+			try
+			{
+				string path = @$"{_appSet.ContentRootPath}\export\excel";
+				string sFileName = @"NumCusTypeBusiness.xlsx";
+
+				var memory = new MemoryStream();
+
+				path = path.Replace(@"\", "/");
+				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
+				{
+					IWorkbook workbook = new XSSFWorkbook();
+					var titleFont = workbook.CreateFont();
+					titleFont.IsBold = true;
+					var titleStyle = workbook.CreateCellStyle();
+					titleStyle.SetFont(titleFont);
+
+					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					IRow row = excelSheet1.CreateRow(0);
+
+					DataTable dt = new DataTable();
+
+					string Column1 = "ประเภทธุรกิจ";
+					string Column2 = "จำนวนดีล";
+
+					//เพิ่มคอลัมน์ลงใน Datatable
+					dt.Columns.Add(Column1);
+					dt.Columns.Add(Column2);
+
+					//เพิ่มคอลัมน์ลงใน Sheet Excel
+					int indexCell = 0;
+					foreach (DataColumn item in dt.Columns)
+					{
+						var cell = row.CreateCell(indexCell);
+						cell.CellStyle = titleStyle;
+						cell.SetCellValue(item.ColumnName.ToString());
+						excelSheet1.AutoSizeColumn(indexCell);
+						indexCell++;
+					}
+
+					//เพิ่มแถวลงใน Datatable
+					model.pagesize = 10000;
+					var data = await _repo.Dashboard.GetListNumberCustomer(model);
+					if (data != null && data.Count > 0)
+					{
+						DataRow row_data;
+						foreach (var item in data)
+						{
+							row_data = dt.NewRow();
+							row_data[Column1] = item.Name;
+							row_data[Column2] = item.Value;
+							dt.Rows.Add(row_data);
+						}
+					}
+
+					//เพิ่มแถวลงใน Sheet Excel
+					int rowIndex = 1;
+					foreach (DataRow item_row in dt.Rows)
+					{
+						row = excelSheet1.CreateRow(rowIndex);
+
+						int cellIndex = 0;
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+
+						rowIndex++;
+					}
+
+					workbook.Write(fs, false);
+				}
+				using (var stream = new FileStream(Path.Combine(path, sFileName), FileMode.Open))
+				{
+					await stream.CopyToAsync(memory);
+				}
+				memory.Position = 0;
+
+				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new ResultModel<Boolean>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				});
+			}
+		}
+
+		[HttpPost("ExcelNumCusSizeBusiness")]
+		public async Task<IActionResult> ExcelNumCusSizeBusiness(allFilter model)
+		{
+			try
+			{
+				string path = @$"{_appSet.ContentRootPath}\export\excel";
+				string sFileName = @"NumCusSizeBusiness.xlsx";
+
+				var memory = new MemoryStream();
+
+				path = path.Replace(@"\", "/");
+				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
+				{
+					IWorkbook workbook = new XSSFWorkbook();
+					var titleFont = workbook.CreateFont();
+					titleFont.IsBold = true;
+					var titleStyle = workbook.CreateCellStyle();
+					titleStyle.SetFont(titleFont);
+
+					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					IRow row = excelSheet1.CreateRow(0);
+
+					DataTable dt = new DataTable();
+
+					string Column1 = "ขนาดธุรกิจ";
+					string Column2 = "จำนวนดีล";
+
+					//เพิ่มคอลัมน์ลงใน Datatable
+					dt.Columns.Add(Column1);
+					dt.Columns.Add(Column2);
+
+					//เพิ่มคอลัมน์ลงใน Sheet Excel
+					int indexCell = 0;
+					foreach (DataColumn item in dt.Columns)
+					{
+						var cell = row.CreateCell(indexCell);
+						cell.CellStyle = titleStyle;
+						cell.SetCellValue(item.ColumnName.ToString());
+						excelSheet1.AutoSizeColumn(indexCell);
+						indexCell++;
+					}
+
+					//เพิ่มแถวลงใน Datatable
+					model.pagesize = 10000;
+					var data = await _repo.Dashboard.GetListNumberCustomer(model);
+					if (data != null && data.Count > 0)
+					{
+						DataRow row_data;
+						foreach (var item in data)
+						{
+							row_data = dt.NewRow();
+							row_data[Column1] = item.Name;
+							row_data[Column2] = item.Value;
+							dt.Rows.Add(row_data);
+						}
+					}
+
+					//เพิ่มแถวลงใน Sheet Excel
+					int rowIndex = 1;
+					foreach (DataRow item_row in dt.Rows)
+					{
+						row = excelSheet1.CreateRow(rowIndex);
+
+						int cellIndex = 0;
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+
+						rowIndex++;
+					}
+
+					workbook.Write(fs, false);
+				}
+				using (var stream = new FileStream(Path.Combine(path, sFileName), FileMode.Open))
+				{
+					await stream.CopyToAsync(memory);
+				}
+				memory.Position = 0;
+
+				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new ResultModel<Boolean>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				});
+			}
+		}
+
 	}
 }

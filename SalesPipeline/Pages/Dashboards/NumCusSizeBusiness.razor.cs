@@ -35,7 +35,9 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModel()
 		{
-			var data = await _dashboarViewModel.GetListNumberCustomer(new() { userid = UserInfo.Id, code = Dash_PieCodeModel.NumCusSizeBusiness });
+			filter.userid = UserInfo.Id;
+			filter.code = Dash_PieCodeModel.NumCusSizeBusiness;
+			var data = await _dashboarViewModel.GetListNumberCustomer(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
 				Items = data.Data;
@@ -49,5 +51,18 @@ namespace SalesPipeline.Pages.Dashboards
 			StateHasChanged();
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelNumCusSizeBusiness(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานจำนวนลูกค้าตามขนาดธุรกิจ.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
 	}
 }

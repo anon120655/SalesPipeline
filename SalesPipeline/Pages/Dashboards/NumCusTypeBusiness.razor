@@ -1,6 +1,6 @@
 ﻿@page "/dashboard/numcustypebusiness"
 
-<PageTitle>จำนวนลูกค้าตามประเภทธุรกิจ</PageTitle>
+<PageTitle>รายงานจำนวนลูกค้าตามประเภทธุรกิจ</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,18 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">จำนวนลูกค้าตามประเภทธุรกิจ</p>
+							<p class="back_topic">รายงานจำนวนลูกค้าตามประเภทธุรกิจ</p>
+						</div>
+					</div>
+					<div class="row my-4 filter_s">
+						<div class="col-12">
+							<div class="d-flex flex-row-reverse">
+								<div class="pe-2">
+									<button @onclick="ExportExcel" type="button" class="btn btn-success text-white mw_7r w-100">
+										<i class="fa-regular fa-file-excel"></i> ส่งออก
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="row mt-3">
