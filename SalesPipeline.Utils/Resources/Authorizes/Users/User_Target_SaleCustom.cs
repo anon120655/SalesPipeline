@@ -60,5 +60,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 			}
 		}
 
+		public bool IsSuccessTarger
+		{
+			get
+			{
+				return AmountActual >= AmountTarget;
+			}
+		}
+
 	}
 }

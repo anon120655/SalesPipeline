@@ -289,8 +289,8 @@ namespace SalesPipeline.API.Controllers
 					string Column1 = "รหัสพนักงาน";
 					string Column2 = "ชื่อ-สกุล";
 					string Column3 = "กิจการสาขาภาค";
-					string Column4 = "จังหวัด";
-					string Column5 = "สาขา";
+					string Column4 = "สาขา";
+					string Column5 = "ยอดเป้าหมาย";
 					string Column6 = "ยอดที่ทำได้";
 					string Column7 = "การบรรลุเป้าหมาย";
 
@@ -342,7 +342,7 @@ namespace SalesPipeline.API.Controllers
 							row_data[Column4] = GeneralUtils.EmptyTo(item.User?.BranchName, string.Empty);
 							row_data[Column5] = GeneralUtils.EmptyTo(item.AmountTarget.ToString(GeneralTxt.FormatDecimal2), string.Empty);
 							row_data[Column6] = GeneralUtils.EmptyTo(item.AmountActual.ToString(GeneralTxt.FormatDecimal2), string.Empty);
-							if (item.AmountActual >= item.AmountTarget)
+							if (item.IsSuccessTarger)
 							{
 								row_data[Column7] = "สำเร็จ";
 							}

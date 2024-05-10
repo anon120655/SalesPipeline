@@ -88,6 +88,20 @@
 								<option value="2">ยังไม่สำเร็จ</option>
 							</select>
 						</div>
+						<div class="col mb-2">
+							<label class="form-label">ปี</label>
+							<div class="">
+								<select @onchange="OnYear" class="form-select">
+									@if (LookUp.Years?.Count > 0)
+									{
+										foreach (var item in LookUp.Years)
+										{
+											<option value="@item.Name">@item.Name</option>
+										}
+									}
+								</select>
+							</div>
+						</div>
 						<div class="col mb-2 mt-3">
 							<div class="d-flex flex-row">
 								<div class="pe-3">
@@ -150,17 +164,10 @@
 													</td>
 													<td class="text-center">@item.AmountTarget.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">
-														@if (item.AmountActual >= item.AmountTarget)
-														{
-															<span>@item.AmountActual.ToString(GeneralTxt.FormatDecimal2)</span>
-														}
-														else
-														{
-															<span class="text-danger">@item.AmountActual.ToString(GeneralTxt.FormatDecimal2)</span>
-														}
+														<span class="@(!item.IsSuccessTarger ? "text-danger":"")">@item.AmountActual.ToString(GeneralTxt.FormatDecimal2)</span>
 													</td>
 													<td class="text-center">
-														@if (item.AmountActual >= item.AmountTarget)
+														@if (item.IsSuccessTarger)
 														{
 															<span>สำเร็จ</span>
 														}

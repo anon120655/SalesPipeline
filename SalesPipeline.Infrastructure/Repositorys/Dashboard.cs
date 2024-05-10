@@ -184,6 +184,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					int _year = DateTime.Now.Year;
+					if (model.startdate.HasValue)
+					{
+						_year = model.startdate.Value.Year;
+					}
 
 					var user_Target_Sales = await _repo.Context.User_Target_Sales
 						.CountAsync(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
@@ -311,9 +315,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
+			int _year = DateTime.Now.Year;
+			if (!string.IsNullOrEmpty(model.year))
+			{
+				if (int.TryParse(model.year, out int year))
+				{
+					_year = year;
+				}
+			}
+
 			var query = _repo.Context.User_Target_Sales
 				.Include(x => x.User)
-				.Where(x => x.Status == StatusModel.Active);
+				.Where(x => x.Status == StatusModel.Active && x.Year == _year);
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{

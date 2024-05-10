@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
@@ -198,6 +199,25 @@ namespace SalesPipeline.Pages.Dashboards
 			{
 				filter.Branchs.Add(_ids);
 			}
+		}
+
+		public async Task OnYear(ChangeEventArgs e)
+		{
+			filter.year = null;
+			StateHasChanged();
+			await Task.Delay(1);
+
+			if (e.Value != null)
+			{
+				if (int.TryParse(e.Value.ToString(), out int year))
+				{
+					filter.year = year.ToString();
+				}
+			}
+
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
 		protected async Task ExportExcel()
