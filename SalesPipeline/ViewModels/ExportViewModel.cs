@@ -41,5 +41,49 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<byte[]?>> ExcelReturnedItems(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostByteAsync($"/v1/Export/ExcelReturnedItems", dataJson, token: tokenJwt);
+				return new ResultModel<byte[]?>()
+				{
+					Data = content
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<byte[]?>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<byte[]?>> ExcelNotAchievedTarget(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostByteAsync($"/v1/Export/ExcelNotAchievedTarget", dataJson, token: tokenJwt);
+				return new ResultModel<byte[]?>()
+				{
+					Data = content
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<byte[]?>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 	}
 }

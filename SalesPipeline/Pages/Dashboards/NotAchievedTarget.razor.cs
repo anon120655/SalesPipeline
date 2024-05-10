@@ -200,6 +200,20 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelNotAchievedTarget(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "พนักงานที่ไม่บรรลุเป้าหมาย.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
+
 
 	}
 }
