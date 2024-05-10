@@ -235,7 +235,7 @@ namespace SalesPipeline.Pages.Dashboards
 			var data = await _exportViewModel.ExcelTotalImport(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
-				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "จำนวนลูกค้านำเข้าทั้งหมด.xlsx", Convert.ToBase64String(data.Data));
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานจำนวนลูกค้านำเข้าทั้งหมด.xlsx", Convert.ToBase64String(data.Data));
 			}
 			else
 			{

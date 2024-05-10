@@ -118,7 +118,8 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task SetModelGroup()
 		{
-			var data = await _dashboarViewModel.GetListDealBranchById(new() { userid = UserInfo.Id });
+			filter.userid = UserInfo.Id;
+			var data = await _dashboarViewModel.GetListDealBranchById(filter);
 			if (data != null && data.Status)
 			{
 				ItemsGroup = data.Data?.Items;
@@ -190,6 +191,19 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelAvgDealBranch(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานดีลโดยเฉลี่ยต่อสาขา.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
 
 	}
 }

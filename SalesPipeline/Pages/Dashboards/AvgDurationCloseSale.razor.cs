@@ -4,6 +4,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.ViewModels;
 
 namespace SalesPipeline.Pages.Dashboards
 {
@@ -129,6 +130,20 @@ namespace SalesPipeline.Pages.Dashboards
 				{
 					filter.contactstartdate = null;
 				}
+			}
+		}
+
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelAvgDurationCloseSale(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 			}
 		}
 

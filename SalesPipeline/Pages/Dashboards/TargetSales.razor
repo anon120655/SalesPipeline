@@ -1,6 +1,6 @@
 ﻿@page "/dashboard/targetsales"
 
-<PageTitle>เป้ายอดการขาย</PageTitle>
+<PageTitle>รายงานเป้ายอดการขาย</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -102,9 +102,18 @@
 							</div>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
-								<i class="fa fa-search fa-xs"></i> ค้นหา
-							</button>
+							<div class="d-flex flex-row">
+								<div class="pe-3">
+									<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+										<i class="fa fa-search fa-xs"></i> ค้นหา
+									</button>
+								</div>
+								<div class="pe-2">
+									<button @onclick="ExportExcel" type="button" class="btn btn-success text-white mw_7r w-100">
+										<i class="fa-regular fa-file-excel"></i> ส่งออก
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -119,7 +128,7 @@
 											<th class="text-center">ประเภทธุรกิจ</th>
 											<th class="text-center">กิจการสาขาภาค</th>
 											<th class="text-center">จังหวัด</th>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">ผู้รับผิดชอบ</th>
 											<th class="text-center">ยอดการกู้</th>
 										</tr>

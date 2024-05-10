@@ -1,6 +1,6 @@
 ﻿@page "/dashboard/totalimport"
 
-<PageTitle>จำนวนลูกค้านำเข้าทั้งหมด</PageTitle>
+<PageTitle>รายงานจำนวนลูกค้านำเข้าทั้งหมด</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">จำนวนลูกค้านำเข้าทั้งหมด</p>
+							<p class="back_topic">รายงานจำนวนลูกค้านำเข้าทั้งหมด</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -141,6 +141,7 @@
 														}
 													</td>
 												</tr>
+												SequenceNo++;
 											}
 										}
 									</tbody>

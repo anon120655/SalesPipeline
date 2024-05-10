@@ -1,6 +1,6 @@
 ﻿@page "/dashboard/avgdealbranch"
 
-<PageTitle>ดีลโดยเฉลี่ยต่อสาขา</PageTitle>
+<PageTitle>รายงานดีลโดยเฉลี่ยต่อสาขา</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,18 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงาน <span class="back_topic_active">ดีลโดยเฉลี่ยต่อสาขา</span></p>
+							<p class="back_topic">รายงานดีลโดยเฉลี่ยต่อสาขา</p>
+						</div>
+					</div>
+					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s text-end">						
+						<div class="col mb-2 mt-3">
+							<div class="d-flex flex-row">
+								<div class="pe-2">
+									<button @onclick="ExportExcel" type="button" class="btn btn-success text-white mw_7r w-100">
+										<i class="fa-regular fa-file-excel"></i> ส่งออก
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -25,7 +36,7 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ศูนย์สาขา</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">จำนวนดีล</th>
 										</tr>
 									</thead>
@@ -76,7 +87,7 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ศูนย์สาขา</label>
+							<label class="form-label">สาขา</label>
 							<select class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option selected>ทั้งหมด</option>
 							</select>
@@ -94,9 +105,18 @@
 							</select>
 						</div>
 						<div class="col mb-2 mt-3">
-							<button type="button" class="btn btn-primary text-white mw_7r w-100">
-								<i class="fa fa-search fa-xs"></i> ค้นหา
-							</button>
+							<div class="d-flex flex-row">
+								<div class="pe-3">
+									<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
+										<i class="fa fa-search fa-xs"></i> ค้นหา
+									</button>
+								</div>
+								<div class="pe-2">
+									<button @onclick="ExportExcel" type="button" class="btn btn-success text-white mw_7r w-100">
+										<i class="fa-regular fa-file-excel"></i> ส่งออก
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="row mt-3 filter_s d-none">

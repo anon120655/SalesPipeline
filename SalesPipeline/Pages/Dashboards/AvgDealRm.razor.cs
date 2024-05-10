@@ -205,6 +205,19 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelAvgDealRm(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานจำนวนลูกค้านำเข้าทั้งหมด.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
 
 	}
 }

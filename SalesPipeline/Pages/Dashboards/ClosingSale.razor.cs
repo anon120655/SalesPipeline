@@ -208,6 +208,19 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelClosingSale(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานลูกค้าที่ปิดการขาย.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
 
 	}
 }

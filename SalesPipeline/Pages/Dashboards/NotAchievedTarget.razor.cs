@@ -61,6 +61,24 @@ namespace SalesPipeline.Pages.Dashboards
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataYear = await _masterViewModel.GetYear(new allFilter() { status = StatusModel.Active });
+			if (dataYear != null && dataYear.Status)
+			{
+				//LookUp.Years = new() { new() { Id = Guid.Empty, Name = "ทั้งหมด" } };
+				LookUp.Years = new();
+				if (dataYear.Data?.Count > 0)
+				{
+					LookUp.Years.AddRange(dataYear.Data);
+					StateHasChanged();
+					await Task.Delay(1);
+					//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnYear", "#Year");
+				}
+			}
+			else
+			{
+				_errorMessage = dataYear?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetQuery(string? parematerAll = null)
@@ -225,7 +243,7 @@ namespace SalesPipeline.Pages.Dashboards
 			var data = await _exportViewModel.ExcelNotAchievedTarget(filter);
 			if (data != null && data.Status && data.Data != null)
 			{
-				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "พนักงานที่ไม่บรรลุเป้าหมาย.xlsx", Convert.ToBase64String(data.Data));
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานพนักงานที่ไม่บรรลุเป้าหมาย.xlsx", Convert.ToBase64String(data.Data));
 			}
 			else
 			{

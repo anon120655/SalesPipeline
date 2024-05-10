@@ -130,5 +130,20 @@ namespace SalesPipeline.Pages.Dashboards
 				}
 			}
 		}
+
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelAvgDurationLostSale(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงานระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
+
 	}
 }

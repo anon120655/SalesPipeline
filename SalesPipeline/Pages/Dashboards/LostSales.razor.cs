@@ -149,5 +149,18 @@ namespace SalesPipeline.Pages.Dashboards
 			}
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelLostSales(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "รายงาน 10 อันดับ จังหวัดที่แพ้ให้กับคู่แข่งสูงสุด.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
 	}
 }
