@@ -371,6 +371,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<byte[]?>> ExcelReasonNotLoan(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostByteAsync($"/v1/Export/ExcelReasonNotLoan", dataJson, token: tokenJwt);
+				return new ResultModel<byte[]?>()
+				{
+					Data = content
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<byte[]?>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 	}
 }
