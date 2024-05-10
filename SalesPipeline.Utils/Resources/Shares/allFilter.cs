@@ -70,6 +70,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public DateTime? startdate { get; set; }
 		public DateTime? enddate { get; set; }
 		public DateTime? returndate { get; set; }
+		public DateTime? createdate { get; set; }
 		//public List<string?>? Selecteds { get; set; }
 		//public List<string?>? Selecteds2 { get; set; }
 		//public List<string?>? Selecteds3 { get; set; } AssUserId
@@ -303,7 +304,10 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (returndate.HasValue)
 				ParameterAll += $"&returndate={GeneralUtils.DateToStrParameter(returndate)}";
-			
+
+			if (createdate.HasValue)
+				ParameterAll += $"&createdate={GeneralUtils.DateToStrParameter(createdate)}";
+
 			return ParameterAll;
 		}
 
@@ -467,6 +471,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("returndate", out var _returndate))
 				returndate = GeneralUtils.DateNotNullToEn(_returndate, "yyyy-MM-dd", Culture: "en-US");
+
+			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("createdate", out var _createdate))
+				createdate = GeneralUtils.DateNotNullToEn(_createdate, "yyyy-MM-dd", Culture: "en-US");
 
 			if (QueryHelpers.ParseQuery(uriQuery).TryGetValue("depbranchs", out var _DepBranchs))
 			{

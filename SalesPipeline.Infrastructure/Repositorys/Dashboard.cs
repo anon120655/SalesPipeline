@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using NPOI.OpenXmlFormats.Spreadsheet;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -12,8 +10,6 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -179,13 +175,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
 
-						if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
-							|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
-							|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
-						{
-							dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
-						}
+						//if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
+						//	|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
+						//	|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
+						//{
+						//	dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
+						//}
 					}
+
+					int _year = DateTime.Now.Year;
+
+					var user_Target_Sales = await _repo.Context.User_Target_Sales
+						.CountAsync(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
+
+					dash_Status_Total.NumCusTargeNotSuccess = user_Target_Sales;
 
 				}
 
@@ -397,6 +400,61 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<User_Target_SaleCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task UpdateTarget_SaleById(allFilter model)
+		{
+			if (!model.userid.HasValue) throw new ExceptionCustom("userid required");
+			if (string.IsNullOrEmpty(model.year)) throw new ExceptionCustom("year required");
+
+			if (int.TryParse(model.year, out int _year))
+			{
+				DateTime _dateNow = DateTime.Now;
+
+				var user_Target_Sales = await _repo.Context.User_Target_Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid && x.Year == _year);
+
+				var amountTarget = await _repo.Context.Sales
+					.Where(x => x.Status == StatusModel.Active && x.AssUserId == model.userid && x.LoanAmount > 0 && x.StatusSaleId == StatusSaleModel.CloseSale && x.CreateDate.Year == _year)
+					.SumAsync(x => x.LoanAmount);
+
+				int CRUD = CRUDModel.Update;
+				if (user_Target_Sales == null)
+				{
+					CRUD = CRUDModel.Create;
+					user_Target_Sales = new();
+					user_Target_Sales.CreateDate = _dateNow;
+					user_Target_Sales.CreateBy = model.CurrentUserId;
+				}
+				user_Target_Sales.UpdateDate = _dateNow;
+				user_Target_Sales.UpdateBy = model.CurrentUserId;
+
+				user_Target_Sales.UserId = model.userid.Value;
+				user_Target_Sales.Year = _year;
+				user_Target_Sales.AmountActual = amountTarget ?? 0;
+
+				if (CRUD == CRUDModel.Create)
+				{
+					await _db.InsterAsync(user_Target_Sales);
+				}
+				else
+				{
+					_db.Update(user_Target_Sales);
+				}
+				await _db.SaveAsync();
+
+			}
+
+		}
+
+		public async Task UpdateTarget_SaleAll(string year)
+		{
+			if (string.IsNullOrEmpty(year)) throw new ExceptionCustom("year required");
+
+			var user_rm = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 8).ToListAsync();
+			foreach (var user in user_rm)
+			{
+				await UpdateTarget_SaleById(new() { userid = user.Id, year = year });
+			}
 		}
 
 		public async Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model)

@@ -1290,9 +1290,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					reason = descriptionStatus;
 				}
 
-				await _repo.Dashboard.UpdateDurationById(new() { saleid = model.SaleId });
-				await _repo.Dashboard.UpdateActivityById(new() { saleid = model.SaleId });
-				await _repo.Dashboard.UpdateDeliverById(new() { saleid = model.SaleId });
 
 				await _repo.Sales.UpdateStatusOnly(new()
 				{
@@ -1303,6 +1300,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					Description = descriptionStatus,
 					Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId
 				});
+
+				await _repo.Dashboard.UpdateDurationById(new() { saleid = model.SaleId });
+				await _repo.Dashboard.UpdateActivityById(new() { saleid = model.SaleId });
+				await _repo.Dashboard.UpdateDeliverById(new() { saleid = model.SaleId });
+				await _repo.Dashboard.UpdateTarget_SaleById(new() { userid = sale.AssUserId, year = sale.CreateDate.Year.ToString() });
 			}
 			else
 			{

@@ -10,6 +10,9 @@ using SalesPipeline.Utils.ValidationModel;
 using System.Data;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Wrapper;
+using Microsoft.JSInterop;
+using System.Linq;
+using System;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -22,6 +25,7 @@ namespace SalesPipeline.API.Controllers
 	{
 		private IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
+		private LookUpResource LookUp = new();
 
 		public ExportController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
 		{
@@ -284,12 +288,11 @@ namespace SalesPipeline.API.Controllers
 
 					string Column1 = "รหัสพนักงาน";
 					string Column2 = "ชื่อ-สกุล";
-					string Column3 = "ประเภทธุรกิจ";
-					string Column4 = "กิจการสาขาภาค";
-					string Column5 = "จังหวัด";
-					string Column6 = "สาขา";
-					string Column7 = "ยอดที่ทำได้";
-					string Column8 = "การบรรลุเป้าหมาย";
+					string Column3 = "กิจการสาขาภาค";
+					string Column4 = "จังหวัด";
+					string Column5 = "สาขา";
+					string Column6 = "ยอดที่ทำได้";
+					string Column7 = "การบรรลุเป้าหมาย";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -299,7 +302,6 @@ namespace SalesPipeline.API.Controllers
 					dt.Columns.Add(Column5);
 					dt.Columns.Add(Column6);
 					dt.Columns.Add(Column7);
-					dt.Columns.Add(Column8);
 
 					//เพิ่มคอลัมน์ลงใน Sheet Excel
 					int indexCell = 0;
@@ -314,26 +316,41 @@ namespace SalesPipeline.API.Controllers
 
 					//เพิ่มแถวลงใน Datatable
 					model.pagesize = 10000;
-					var data = await _repo.Sales.GetList(model);
+					var data = await _repo.Dashboard.GetListTarget_SaleById(model);
 					if (data != null && data.Items.Count > 0)
 					{
+						var dataDepBranchs = await _repo.MasterBranchReg.GetBranchs(new allFilter() { status = StatusModel.Active });
+						if (dataDepBranchs != null)
+						{
+							LookUp.DepartmentBranch = new();
+							if (dataDepBranchs.Items.Count > 0)
+							{
+								LookUp.DepartmentBranch.AddRange(dataDepBranchs.Items);
+							}
+						}
+
 						DataRow row_data;
 						foreach (var item in data.Items)
 						{
 							row_data = dt.NewRow();
-							row_data[Column1] = GeneralUtils.EmptyTo(item.CompanyName, string.Empty);
-							row_data[Column2] = GeneralUtils.EmptyTo(item.Customer?.ContactName, string.Empty);
-							row_data[Column3] = GeneralUtils.EmptyTo(item.Customer?.Master_BusinessTypeName, string.Empty);
-							row_data[Column4] = GeneralUtils.EmptyTo(GeneralUtils.EmptyTo(item.Master_Branch_RegionName), string.Empty);
-							row_data[Column5] = GeneralUtils.EmptyTo(GeneralUtils.EmptyTo(item.ProvinceName), string.Empty);
-							row_data[Column6] = GeneralUtils.EmptyTo(GeneralUtils.EmptyTo(item.BranchName), string.Empty);
-							DateTime? createDate = null;
-							if (item.Sale_Statuses != null)
+							row_data[Column1] = GeneralUtils.EmptyTo(item.User?.EmployeeId, string.Empty);
+							row_data[Column2] = GeneralUtils.EmptyTo(item.User?.FullName, string.Empty);
+							if (LookUp.DepartmentBranch != null && item.User != null && item.User.Master_Branch_RegionId.HasValue)
 							{
-								createDate = item.Sale_Statuses.OrderByDescending(x => x.CreateDate).FirstOrDefault()?.CreateDate;
+								row_data[Column3] = LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == item.User.Master_Branch_RegionId.Value)?.Name ?? string.Empty;
 							}
-							row_data[Column7] = GeneralUtils.EmptyTo(GeneralUtils.DateToThString(createDate), string.Empty);
-							row_data[Column8] = GeneralUtils.EmptyTo(item.AssUserName, string.Empty);
+							row_data[Column4] = GeneralUtils.EmptyTo(item.User?.BranchName, string.Empty);
+							row_data[Column5] = GeneralUtils.EmptyTo(item.AmountTarget.ToString(GeneralTxt.FormatDecimal2), string.Empty);
+							row_data[Column6] = GeneralUtils.EmptyTo(item.AmountActual.ToString(GeneralTxt.FormatDecimal2), string.Empty);
+							if (item.AmountActual >= item.AmountTarget)
+							{
+								row_data[Column7] = "สำเร็จ";
+							}
+							else
+							{
+								row_data[Column7] = "ยังไม่สำเร็จ";
+							}
+
 							dt.Rows.Add(row_data);
 						}
 					}
@@ -352,7 +369,6 @@ namespace SalesPipeline.API.Controllers
 						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
 						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
 						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}

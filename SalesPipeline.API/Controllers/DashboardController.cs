@@ -69,6 +69,34 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("UpdateTarget_SaleById")]
+		public async Task<IActionResult> UpdateTarget_SaleById(allFilter model)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateTarget_SaleById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPost("UpdateTarget_SaleAll")]
+		public async Task<IActionResult> UpdateTarget_SaleAll(string year)
+		{
+			try
+			{
+				await _repo.Dashboard.UpdateTarget_SaleAll(year);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPost("Get_SalesPipelineById")]
 		public async Task<IActionResult> Get_SalesPipelineById(allFilter model)
 		{

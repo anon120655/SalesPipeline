@@ -12,6 +12,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateStatus_TotalById(allFilter model);
 		//list เป้าหมายการขาย
 		Task<PaginationView<List<User_Target_SaleCustom>>> GetListTarget_SaleById(allFilter model);
+		Task UpdateTarget_SaleById(allFilter model);
+		Task UpdateTarget_SaleAll(string year);
 		//SalesPipeline
 		Task<Dash_SalesPipelineModel> Get_SalesPipelineById(allFilter model);
 		//มูลค่าเฉลี่ยต่อหนึ่งดีล ,ระยะเวลาเฉลี่ยที่ใช้ในการปิดการขาย ,ระยะเวลาเฉลี่ยที่ใช้ในการขายที่แพ้ให้กับคู่แข่ง

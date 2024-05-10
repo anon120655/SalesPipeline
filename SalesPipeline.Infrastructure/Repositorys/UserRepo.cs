@@ -856,7 +856,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			int _year = DateTime.Now.Year;
-			//ปี
 			if (!string.IsNullOrEmpty(model.year))
 			{
 				if (int.TryParse(model.year, out int year))

@@ -1,14 +1,7 @@
-﻿using SalesPipeline.Utils.Resources.Assignments;
-using SalesPipeline.Utils.Resources.Masters;
+﻿using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationAtt;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace SalesPipeline.Utils.Resources.Authorizes.Users
 {
