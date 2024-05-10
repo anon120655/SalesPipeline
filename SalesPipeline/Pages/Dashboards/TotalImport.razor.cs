@@ -230,6 +230,20 @@ namespace SalesPipeline.Pages.Dashboards
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
+		protected async Task ExportExcel()
+		{
+			var data = await _exportViewModel.ExcelTotalImport(filter);
+			if (data != null && data.Status && data.Data != null)
+			{
+				await _jsRuntimes.InvokeAsync<object>("saveAsFile", "จำนวนลูกค้านำเข้าทั้งหมด.xlsx", Convert.ToBase64String(data.Data));
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
+
 
 	}
 }

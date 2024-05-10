@@ -15,7 +15,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงานจำนวนลูกค้านำเข้าทั้งหมด</p>
+							<p class="back_topic">จำนวนลูกค้านำเข้าทั้งหมด</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -73,6 +73,9 @@
 							<button @onclick="Search" type="button" class="btn btn-primary text-white mw_7r w-100">
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
+							<a @onclick=ExportExcel class="btn btn-warning text-white d-flex align-items-center mw_7r">
+								 ส่งออก
+							</a>
 						</div>
 					</div>
 					<div class="row mt-3">

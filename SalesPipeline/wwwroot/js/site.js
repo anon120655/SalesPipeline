@@ -101,6 +101,15 @@ window.scrollToElement = (id) => {
 	}
 }
 
+window.saveAsFile = function (fileName, byteBase64) {
+	var link = this.document.createElement('a');
+	link.download = fileName;
+	link.href = "data:application/octet-stream;base64," + byteBase64;
+	this.document.body.appendChild(link);
+	link.click();
+	this.document.body.removeChild(link);
+}
+
 $(document).on("keypress", ".numberonly", function (e) {
 	return (e.charCode != 8 && e.charCode == 0 || (e.charCode >= 48 && e.charCode <= 57) || e.charCode == 46);
 });

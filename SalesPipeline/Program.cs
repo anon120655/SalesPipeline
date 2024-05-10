@@ -55,6 +55,7 @@ builder.Services.AddScoped<AssignmentRMViewModel>();
 builder.Services.AddScoped<ReturnViewModel>();
 builder.Services.AddScoped<SystemViewModel>();
 builder.Services.AddScoped<DashboardViewModel>();
+builder.Services.AddScoped<ExportViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

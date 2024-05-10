@@ -29,5 +29,6 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected SystemViewModel _systemViewModel { get; set; } = default!;
 		[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = default!;
 		[Inject] protected DashboardViewModel _dashboarViewModel { get; set; } = default!;
+		[Inject] protected ExportViewModel _exportViewModel { get; set; } = default!;
 	}
 }
