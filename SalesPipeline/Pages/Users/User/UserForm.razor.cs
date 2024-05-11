@@ -392,6 +392,19 @@ namespace SalesPipeline.Pages.Users.User
 			}
 		}
 
+		protected async Task SentMailChangePassword()
+		{
+			var data = await _userViewModel.SentMailChangePassword(formModel);
+			if (data != null && data.Status && data.Data)
+			{
+				
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+		}
 
 
 

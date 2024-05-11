@@ -93,6 +93,8 @@ public partial class User
 
     public short? LoginFail { get; set; }
 
+    public short? IsSentMail { get; set; }
+
     public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
 
     public virtual ICollection<Assignment_CenterBranch> Assignment_CenterBranches { get; set; } = new List<Assignment_CenterBranch>();

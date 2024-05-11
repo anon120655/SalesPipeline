@@ -48,5 +48,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IUserRepo User { get; }
 		ICustomers Customer { get; }
 		ISystemRepo System { get; }
+		IEmailSender EmailSender { get; }
 	}
 }

@@ -243,3 +243,4 @@ window.avgdeal_bar4 = (_data) => {
 window.dropdown_level = () => {
 
 }
+

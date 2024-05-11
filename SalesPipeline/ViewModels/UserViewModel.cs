@@ -7,17 +7,23 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.ViewModels
 {
-    public class UserViewModel
+	public class UserViewModel
 	{
 		private readonly IHttpClientCustom _httpClient;
 		private readonly AppSettings _appSet;
 		private readonly AuthorizeViewModel _authorizeViewModel;
+		private readonly IRazorViewToStringRenderer _razorView;
+		private MailViewModel _mailViewModel;
 
-		public UserViewModel(IHttpClientCustom httpClient, IOptions<AppSettings> appset, AuthorizeViewModel authorizeViewModel)
+		public UserViewModel(IHttpClientCustom httpClient, IOptions<AppSettings> appset, AuthorizeViewModel authorizeViewModel
+			, IRazorViewToStringRenderer razorView
+			, MailViewModel mailViewModel)
 		{
 			_httpClient = httpClient;
 			_appSet = appset.Value;
 			_authorizeViewModel = authorizeViewModel;
+			_razorView = razorView;
+			_mailViewModel = mailViewModel;
 		}
 
 		public async Task<ResultModel<UserCustom>> Create(UserCustom model)
@@ -351,6 +357,35 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>> SentMailChangePassword(UserCustom model)
+		{
+			try
+			{
+				var dataMail = new UserCustom()
+				{
+					FullName = "นายทดสอบ ส่งเมล"
+				};
+				var pathView = $@"/Template/Email/ChangePassword.cshtml";
+				var htmlBody = await _razorView.RenderViewToStringAsync(pathView, dataMail);
+				await _mailViewModel.SendMail(new SendMailModel()
+				{
+					Email = "arnon.w@ibusiness.co.th",
+					Subject = $"เปลี่ยนรหัสผ่านครั้งแรก",
+					Body = htmlBody
+				});
+
+				return new ResultModel<Boolean>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Boolean>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

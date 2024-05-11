@@ -555,7 +555,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 		protected async Task CaptureDashboard()
 		{
-			await _jsRuntimes.InvokeVoidAsync("captureDashboard");
+			await _jsRuntimes.InvokeVoidAsync("captureDashboard", "Dashboard");
 		}
 
 	}

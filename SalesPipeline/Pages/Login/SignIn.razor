@@ -20,14 +20,22 @@
 									<EditForm Model="@loginModel" OnValidSubmit="SubmitLogin" class="bg-white p-2">
 										<DataAnnotationsValidator />
 										<div class="form-outline mb-4 text-start">
-											<label class="form-label text-muted" for="">Username</label>
+											<label class="form-label text-muted">Username</label>
 											<input type="text" @bind="@loginModel.Username" class="form-control" placeholder="" />
 											<ValidationMessage For="@(() => loginModel.Username)" />
 										</div>
 										<div class="form-outline mb-4 text-start">
-											<label class="form-label text-muted" for="">Password</label>
+											<label class="form-label text-muted">Password</label>
 											<input type="password" @bind="@loginModel.Password" class="form-control" />
 											<ValidationMessage For="@(() => loginModel.Password)" />
+										</div>
+										<div class="form-outline mb-4 text-start">
+											<div class="form-check">
+												<input @onchange="( (e) => OnRememberMe(e.Value))" class="form-check-input mt-0" type="checkbox" id="rememberMe">
+												<label class="form-check-label text-muted ms-2" for="rememberMe">
+													Remember me
+												</label>
+											</div>
 										</div>
 										<div class="text-center pt-1 mb-5 pb-1">
 											<Button Color="ButtonColor.Info"

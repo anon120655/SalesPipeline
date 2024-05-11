@@ -1737,6 +1737,7 @@ namespace SalesPipeline.API.Controllers
 				});
 			}
 		}
+		
 		[HttpPost("ExcelReasonNotLoan")]
 		public async Task<IActionResult> ExcelReasonNotLoan(allFilter model)
 		{
@@ -1811,6 +1812,124 @@ namespace SalesPipeline.API.Controllers
 							row_data[Column7] = GeneralUtils.EmptyTo(item.BranchName);
 							row_data[Column8] = GeneralUtils.EmptyTo(item.StatusDescription);
 							row_data[Column9] = item.AssUserName;
+							dt.Rows.Add(row_data);
+						}
+					}
+
+					//เพิ่มแถวลงใน Sheet Excel
+					int rowIndex = 1;
+					foreach (DataRow item_row in dt.Rows)
+					{
+						row = excelSheet1.CreateRow(rowIndex);
+
+						int cellIndex = 0;
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+						row.CreateCell(cellIndex++).SetCellValue(item_row[Column9].ToString());
+
+						rowIndex++;
+					}
+
+					workbook.Write(fs, false);
+				}
+				using (var stream = new FileStream(Path.Combine(path, sFileName), FileMode.Open))
+				{
+					await stream.CopyToAsync(memory);
+				}
+				memory.Position = 0;
+
+				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new ResultModel<Boolean>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				});
+			}
+		}
+
+		[HttpPost("ExcelAvgPerDeal_Region")]
+		public async Task<IActionResult> ExcelAvgPerDeal_Region(allFilter model)
+		{
+			try
+			{
+				string path = @$"{_appSet.ContentRootPath}\export\excel";
+				string sFileName = @"AvgPerDeal_Region.xlsx";
+
+				var memory = new MemoryStream();
+
+				path = path.Replace(@"\", "/");
+				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
+				{
+					IWorkbook workbook = new XSSFWorkbook();
+					var titleFont = workbook.CreateFont();
+					titleFont.IsBold = true;
+					var titleStyle = workbook.CreateCellStyle();
+					titleStyle.SetFont(titleFont);
+
+					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					IRow row = excelSheet1.CreateRow(0);
+
+					DataTable dt = new DataTable();
+
+					string Column1 = "วันที่";
+					string Column2 = "เลขทะเบียนนิติบุคคล";
+					string Column3 = "ชื่อลูกค้า";
+					string Column4 = "กิจการสาขาภาค";
+					string Column5 = "สาขา";
+					string Column6 = "ประเภทธุรกิจ";
+					string Column7 = "เบอร์โทรศัพท์";
+					string Column8 = "ผู้รับผิดชอบ";
+					string Column9 = "ยอดสินเชื่อ";
+
+					//เพิ่มคอลัมน์ลงใน Datatable
+					dt.Columns.Add(Column1);
+					dt.Columns.Add(Column2);
+					dt.Columns.Add(Column3);
+					dt.Columns.Add(Column4);
+					dt.Columns.Add(Column5);
+					dt.Columns.Add(Column6);
+					dt.Columns.Add(Column7);
+					dt.Columns.Add(Column8);
+					dt.Columns.Add(Column9);
+
+					//เพิ่มคอลัมน์ลงใน Sheet Excel
+					int indexCell = 0;
+					foreach (DataColumn item in dt.Columns)
+					{
+						var cell = row.CreateCell(indexCell);
+						cell.CellStyle = titleStyle;
+						cell.SetCellValue(item.ColumnName.ToString());
+						excelSheet1.AutoSizeColumn(indexCell);
+						indexCell++;
+					}
+
+					//เพิ่มแถวลงใน Datatable
+					model.pagesize = 10000;
+					var data = await _repo.Sales.GetList(model);
+					if (data != null && data.Items.Count > 0)
+					{
+						DataRow row_data;
+						foreach (var item in data.Items)
+						{
+							row_data = dt.NewRow();
+							row_data[Column1] = GeneralUtils.DateToThString(item.CreateDate);
+							row_data[Column2] = item.Customer?.JuristicPersonRegNumber;
+							row_data[Column3] = item.CompanyName;
+							row_data[Column4] = GeneralUtils.EmptyTo(item.Master_Branch_RegionName);
+							row_data[Column5] = GeneralUtils.EmptyTo(item.BranchName);
+							row_data[Column6] = item.Customer?.Master_BusinessTypeName;
+							row_data[Column7] = GeneralUtils.EmptyTo(item.Customer?.ContactTel);
+							row_data[Column8] = GeneralUtils.EmptyTo(item.AssUserName);
+							row_data[Column9] = item.LoanAmount.HasValue ? item.LoanAmount.Value.ToString(GeneralTxt.FormatDecimal2) : string.Empty;
 							dt.Rows.Add(row_data);
 						}
 					}

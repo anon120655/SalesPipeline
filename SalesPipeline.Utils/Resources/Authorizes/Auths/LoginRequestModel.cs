@@ -14,5 +14,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 
 		[Required]
 		public string? Password { get; set; }
+
+		[Required]
+		public bool IsRememberMe { get; set; }
 	}
 }

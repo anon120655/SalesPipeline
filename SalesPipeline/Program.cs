@@ -56,10 +56,13 @@ builder.Services.AddScoped<ReturnViewModel>();
 builder.Services.AddScoped<SystemViewModel>();
 builder.Services.AddScoped<DashboardViewModel>();
 builder.Services.AddScoped<ExportViewModel>();
+builder.Services.AddScoped<MailViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<AuthorizeViewModel>());
+
+builder.Services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
 var app = builder.Build();
 

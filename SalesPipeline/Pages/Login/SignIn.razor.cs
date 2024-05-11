@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
+using SalesPipeline.Utils.Resources.Sales;
 
 namespace SalesPipeline.Pages.Login
 {
@@ -53,6 +54,18 @@ namespace SalesPipeline.Pages.Login
 				_errorMessage = authenticate.errorMessage;
 			}
 
+		}
+
+		protected void OnRememberMe(object? checkedValue)
+		{
+			if (checkedValue != null && (bool)checkedValue)
+			{
+				loginModel.IsRememberMe = true;
+			}
+			else
+			{
+				loginModel.IsRememberMe = false;
+			}
 		}
 
 

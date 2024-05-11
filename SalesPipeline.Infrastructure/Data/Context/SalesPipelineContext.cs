@@ -44,6 +44,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<InfoTambol> InfoTambols { get; set; }
 
+    public virtual DbSet<Log_SendMail> Log_SendMails { get; set; }
+
     public virtual DbSet<Logging> Loggings { get; set; }
 
     public virtual DbSet<Master_Branch_Region> Master_Branch_Regions { get; set; }
@@ -873,6 +875,25 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TambolCode).HasMaxLength(50);
             entity.Property(e => e.TambolName).HasMaxLength(255);
             entity.Property(e => e.ZipCode).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<Log_SendMail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Log_SendMail");
+
+            entity.Property(e => e.CreateById)
+                .HasComment("ผู้สร้าง/เป็น null ได้กรณีคนนอกไม่ได้ login")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate)
+                .HasComment("วันที่สร้าง")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmailTo).HasMaxLength(1000);
+            entity.Property(e => e.Message).HasColumnType("text");
+            entity.Property(e => e.StatusMessage).HasColumnType("text");
+            entity.Property(e => e.Subject).HasMaxLength(300);
+            entity.Property(e => e.Template).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Logging>(entity =>
@@ -2525,6 +2546,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("รหัสพนักงาน");
             entity.Property(e => e.FirstName).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.IsSentMail).HasColumnType("smallint(6)");
             entity.Property(e => e.LastName).HasMaxLength(255);
             entity.Property(e => e.LevelId)
                 .HasComment("ระดับ")

@@ -51,6 +51,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IUserRepo User { get; }
 		public ICustomers Customer { get; }
 		public ISystemRepo System { get; }
+		public IEmailSender EmailSender { get; }
 
 		public RepositoryWrapper(SalesPipelineContext _context, IOptions<AppSettings> settings, IMapper mapper,
 													IHttpContextAccessor accessor, HttpClient httpClient, IJwtUtils jwtUtils)
@@ -91,6 +92,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			User = new UserRepo(this, _db, settings, _mapper);
 			Customer = new Customers(this, _db, settings, _mapper);
 			System = new SystemRepo(this, _db, settings, _mapper);
+			EmailSender = new EmailSender(this, _db, settings, _mapper, _accessor);
 		}
 
 		public IDbContextTransaction BeginTransaction()
