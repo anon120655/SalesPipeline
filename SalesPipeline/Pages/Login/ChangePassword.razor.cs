@@ -25,12 +25,12 @@ namespace SalesPipeline.Pages.Login
 				if (firstRender)
 				{
 					if (isAuthorize == true)
-					{						
+					{
 						UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
 					}
 					else
 					{
-						_Navs.NavigateTo("/signin", true);
+						GoToLogin();
 					}
 
 					StateHasChanged();
@@ -63,6 +63,11 @@ namespace SalesPipeline.Pages.Login
 				_errorMessage = response.errorMessage;
 				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 			}
+		}
+
+		protected void GoToLogin()
+		{
+			_Navs.NavigateTo("/signin", true);
 		}
 
 	}
