@@ -11,7 +11,7 @@ namespace SalesPipeline.Pages.Login
 	{
 		string? _errorMessage = null;
 		bool isLoading = false;
-		LoginRequestModel loginModel = new LoginRequestModel();
+		LoginRequestModel loginModel = new();
 
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
@@ -45,6 +45,7 @@ namespace SalesPipeline.Pages.Login
 			var authenticate = await _authorizeViewModel.LoginAsync(loginModel);
 			if (authenticate.Status)
 			{
+				isLoading = false;
 				_Navs.NavigateTo("/");
 			}
 			else

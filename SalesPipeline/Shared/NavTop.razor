@@ -1,6 +1,4 @@
-﻿@inject IOptions<AppSettings> _appSet
-@inject NavigationManager _Nav
-
+﻿
 <nav class="d-flex align-items-center sb-topnav navbar navbar-expand  bg-header">
 	<!-- Navbar Brand-->
 	<a class="navbar-brand ps-3 text-white" href="/">
@@ -30,8 +28,14 @@
 			</a>
 			<ul class="dropdown-menu dropdown-menu-end shadow-sm profile_dropdown_b" aria-labelledby="navbarDropdown">
 				<li>
+					<a @onclick="(()=> ChangePassword())" class="dropdown-item" role="button">
+						เปลี่ยนรหัสผ่าน
+					</a>
+				</li>
+				<li><hr class="dropdown-divider"></li>
+				<li>
 					<a @onclick="(()=> Logout())" class="dropdown-item" role="button">
-						Log out <img src="/image/icon/logout-anticon@2x.webp" class="mb-1 ms-2" width="20" height="20" />
+						ออกจากระบบ <img src="/image/icon/logout-anticon@2x.webp" class="mb-1 ms-2" width="20" height="20" />
 					</a>
 				</li>
 			</ul>
@@ -70,8 +74,12 @@
 
 	protected void Logout()
 	{
-		_Nav.NavigateTo("/signout");
+		_Navs.NavigateTo("/signout");
 	}
 
+	protected void ChangePassword()
+	{
+		_Navs.NavigateTo("/changepassword");
+	}
 
 }
