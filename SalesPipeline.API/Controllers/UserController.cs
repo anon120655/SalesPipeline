@@ -11,6 +11,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SalesPipeline.Infrastructure.Repositorys;
 using SalesPipeline.Utils.ValidationModel;
+using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -50,6 +51,71 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.User.Update(model);
+
+				try
+				{
+					//var t = Task.Factory.StartNew(async () =>
+					//{
+					//});
+
+					//ThreadStart action = async () =>
+					//{
+					//	var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
+					//	if (template != null)
+					//	{
+					//		string messageBody = string.Empty;
+					//		messageBody = string.Format(template.Message,
+					//									data.FullName,
+					//									GeneralUtils.getFullThaiFullShot(data.CreateDate),
+					//									GeneralUtils.DateToTimeString(data.CreateDate),
+					//									"I14bpz2v",
+					//									$"{_appSet.baseUriWeb}/changepassword");
+
+					//		await _repo.EmailSender.SendEmail(new()
+					//		{
+					//			CurrentUserId = model.CurrentUserId,
+					//			TemplateId = template.Id,
+					//			Email = data.Email,
+					//			Subject = template.Subject,
+					//			Body = messageBody
+					//		});
+					//	}
+					//};
+					//Thread thread = new Thread(action) { IsBackground = true };
+					//thread.Start();
+				}
+				catch { }
+
+				//try
+				//{
+				//	await Task.Run(async () =>
+				//	{
+				//		var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
+				//		if (template != null)
+				//		{
+				//			string messageBody = string.Empty;
+				//			messageBody = string.Format(template.Message,
+				//										data.FullName,
+				//										GeneralUtils.getFullThaiFullShot(data.CreateDate),
+				//										GeneralUtils.DateToTimeString(data.CreateDate),
+				//										"I14bpz2v",
+				//										$"{_appSet.baseUriWeb}/changepassword");
+
+				//			await _repo.EmailSender.SendEmail(new()
+				//			{
+				//				CurrentUserId = model.CurrentUserId,
+				//				TemplateId = template.Id,
+				//				Email = data.Email,
+				//				Subject = template.Subject,
+				//				Body = messageBody
+				//			});
+				//		}
+				//	});
+				//}
+				//catch
+				//{
+				//}
+
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -239,14 +305,14 @@ namespace SalesPipeline.API.Controllers
 				await Task.Delay(1);
 				List<UserCustom> UserList = new List<UserCustom>();
 
-				if (files == null) throw new Exception("Select File.");
+				if (files == null) throw new ExceptionCustom("Select File.");
 
 				int fileLimit = 100; //MB
 				int TenMegaBytes = fileLimit * 1024 * 1024;
 				var fileSize = files.Length;
 				if (fileSize > TenMegaBytes)
 				{
-					throw new Exception($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
+					throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
 				}
 
 				string folderName = @$"{_appSet.ContentRootPath}\import\excel";
@@ -255,7 +321,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					string sFileExtension = Path.GetExtension(files.FileName).ToLower();
 					if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-						throw new Exception("FileExtension Not Support.");
+						throw new ExceptionCustom("FileExtension Not Support.");
 
 					ISheet sheet;
 					string fullPath = Path.Combine(folderName, files.FileName);
@@ -266,7 +332,7 @@ namespace SalesPipeline.API.Controllers
 						int sheetCount = 0;
 						if (sFileExtension == ".xls")
 						{
-							throw new Exception("not support  Excel 97-2000 formats.");
+							throw new ExceptionCustom("not support  Excel 97-2000 formats.");
 						}
 
 						XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  

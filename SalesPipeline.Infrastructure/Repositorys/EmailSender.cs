@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
@@ -28,7 +31,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_accessor = accessor;
 		}
 
-		public async Task SendEmail(SendMailModel indata)
+		public async Task<SendMail_TemplateCustom> GetTemplate(string code)
+		{
+			var query = await _repo.Context.SendMail_Templates
+				.Where(x => x.Status == StatusModel.Active && x.Code == code).FirstOrDefaultAsync();
+			return _mapper.Map<SendMail_TemplateCustom>(query);
+		}
+
+		public async Task SendEmail(SendMailModel data)
 		{
 			ResourceEmail resource = new ResourceEmail();
 
@@ -44,11 +54,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					resource.MailPort = _setting.MailPort;
 
 					//indata
-					resource.Template = indata?.Template ?? String.Empty;
-					resource.Subject = indata?.Subject ?? String.Empty;
-					resource.Email = indata?.Email ?? String.Empty;
-					resource.Builder.HtmlBody = indata?.Body ?? String.Empty;
-					resource.CcList = indata?.CcList;
+					resource.TemplateId = data.TemplateId;
+					resource.Subject = data.Subject ?? String.Empty;
+					resource.Email = data.Email ?? String.Empty;
+					resource.Builder.HtmlBody = data.Body ?? String.Empty;
+					resource.CcList = data.CcList;
+					resource.CurrentUserId = data.CurrentUserId;
 
 					var context = _accessor.HttpContext;
 
@@ -121,28 +132,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task LogSendEmail(ResourceEmail resource)
+		public async Task LogSendEmail(ResourceEmail data)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				string EmailAll = resource.Email;
-				if (resource.CcList != null && resource.CcList.Count > 0)
+				string? emailCc = null;
+				if (data.CcList != null && data.CcList.Count > 0)
 				{
-					string EmailCC = string.Join(",", resource.CcList);
-					EmailAll = $"{EmailAll} CC {EmailCC}";
+					string EmailCC = string.Join(",", data.CcList);
+					emailCc = $"{emailCc} CC {EmailCC}";
 				}
 
-				Log_SendMail logSendMail = new Log_SendMail()
+				SendMail_Log SendMaillog = new SendMail_Log()
 				{
+					CreateById = data.CurrentUserId,
 					CreateDate = DateTime.Now,
-					Template = resource.Template ?? string.Empty,
-					EmailTo = EmailAll ?? string.Empty,
-					Subject = resource.Subject ?? string.Empty,
-					Message = resource.Builder.HtmlBody,
-					IsCompleted = resource.IsCompleted,
-					StatusMessage = resource.StatusMessage,
+					SendMail_TemplateId = data.TemplateId,
+					EmailTo = data.Email,
+					EmailToCc = emailCc,
+					Subject = data.Subject ?? string.Empty,
+					Message = data.Builder.HtmlBody,
+					IsCompleted = data.IsCompleted,
+					StatusMessage = data.StatusMessage,
 				};
-				await _db.InsterAsync(logSendMail);
+				await _db.InsterAsync(SendMaillog);
 				await _db.SaveAsync();
 
 				await _transaction.CommitAsync();

@@ -82,7 +82,12 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var userInDatabase = await this.Authenticate(new LoginRequestModel() { Username = user.Username, Password = user.Password });
+				var userInDatabase = await this.Authenticate(new LoginRequestModel()
+				{
+					Username = user.Username,
+					Password = user.Password,
+					IPAddress = user.IPAddress
+				});
 				var principal = new ClaimsPrincipal();
 
 				if (userInDatabase.Status && userInDatabase.Data != null)
@@ -215,7 +220,7 @@ namespace SalesPipeline.ViewModels
 								data.FirstName = datauserMap.FirstName;
 								data.LastName = datauserMap.LastName;
 
-								if (datauserMap.Master_Branch_Region != null)								
+								if (datauserMap.Master_Branch_Region != null)
 									data.Master_Department_BranchName = datauserMap.Master_Branch_Region.Name;
 
 								if (datauserMap.LevelId != null)

@@ -29,7 +29,12 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var response = await _repo.Authorizes.Authenticate(model);
-				
+
+				if (response != null)
+				{
+					await _repo.User.LogLogin(new() { UserId = response.Id, IPAddress = model.IPAddress });
+				}
+
 				return Ok(response);
 			}
 			catch (Exception ex)

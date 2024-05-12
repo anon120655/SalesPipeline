@@ -32,7 +32,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			int expires_in = 1; //days
 
-			//var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
 
 			// return null if user not found
@@ -54,7 +53,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.Password, user.PasswordHash, hashType: HashType.SHA384);
 				if (!verified)
 				{
-					user.LoginFail = user.LoginFail.HasValue ? user.LoginFail += 1 : 1;
+					user.LoginFail =  user.LoginFail.HasValue ? user.LoginFail += 1 : 1;
 					_db.Update(user);
 					await _db.SaveAsync();
 
@@ -65,10 +64,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.LoginFail = null;
 					_db.Update(user);
 					await _db.SaveAsync();
-
-					//var userRole = await _repo.User.GetRoleByUserId(user.Id);
-					//if (userRole == null) throw new ExceptionCustom("user not role.");
-					//if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
 
 					if (user.Role != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{

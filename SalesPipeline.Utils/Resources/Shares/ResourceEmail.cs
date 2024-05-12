@@ -14,6 +14,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 			Builder = new BodyBuilder();
 		}
 
+		public int? CurrentUserId { get; set; }
 		public string? SenderName { get; set; }
 		public string Sender { get; set; } = null!;
 		public string UserName { get; set; } = null!;
@@ -25,7 +26,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public int MailPort { get; set; }
 		public BodyBuilder Builder { get; set; }
 		public List<string>? CcList { get; set; }
-		public string? Template { get; set; }
+		public Guid? TemplateId { get; set; }
 		public bool IsCompleted { get; set; }
 		public string? StatusMessage { get; set; }
 		public string? PkId { get; set; }

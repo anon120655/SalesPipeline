@@ -15,6 +15,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -222,7 +223,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword("password", hashType: HashType.SHA384);
+				string defaultPassword = GeneralUtils.RandomString(8);
+				string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(defaultPassword, hashType: HashType.SHA384);
 
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
@@ -314,10 +316,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-
 				_transaction.Commit();
 
-				return _mapper.Map<UserCustom>(user);
+				var response = _mapper.Map<UserCustom>(user);
+
+				response.DefaultPassword = defaultPassword;
+
+				return response;
 			}
 		}
 
@@ -985,6 +990,50 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_transaction.Commit();
 			}
+		}
+
+		public async Task LogLogin(User_Login_LogCustom data)
+		{
+			try
+			{
+				var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == data.UserId);
+				if (users != null)
+				{
+					var _DateNow = DateTime.Now;
+					var logLogins = await _repo.Context.User_Login_Logs.FirstOrDefaultAsync(x => x.UserId == data.UserId && x.IPAddress == data.IPAddress
+					&& x.CreateDate.Date == _DateNow.Date
+					&& x.CreateDate.Hour == _DateNow.Hour
+					&& x.CreateDate.Minute == _DateNow.Minute);
+
+					if (logLogins == null)
+					{
+						var logLogin = new Infrastructure.Data.Entity.User_Login_Log()
+						{
+							UserId = data.UserId,
+							FullName = users.FullName,
+							IPAddress = data.IPAddress
+						};
+						_db.Inster(logLogin);
+						await _db.SaveAsync();
+					}
+
+				}
+			}
+			catch
+			{
+			}
+		}
+
+		public async Task<List<UserCustom>> GetNewUserSendMail(int? id)
+		{
+			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active && !x.IsSentMail.HasValue);
+
+			if (id.HasValue)
+			{
+				query = query.Where(x => x.Id == id);
+			}
+
+			return _mapper.Map<List<UserCustom>>(await query.ToListAsync());
 		}
 
 

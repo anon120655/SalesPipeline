@@ -89,14 +89,14 @@ namespace SalesPipeline.API.Controllers
 				await Task.Delay(1);
 				List<InfoTambolCustom> TambolList = new List<InfoTambolCustom>();
 
-				if (files == null) throw new Exception("Select File.");
+				if (files == null) throw new ExceptionCustom("Select File.");
 
 				int fileLimit = 100; //MB
 				int TenMegaBytes = fileLimit * 1024 * 1024;
 				var fileSize = files.Length;
 				if (fileSize > TenMegaBytes)
 				{
-					throw new Exception($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
+					throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
 				}
 
 				string folderName = @$"{_appSet.ContentRootPath}\import\excel";
@@ -105,7 +105,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					string sFileExtension = Path.GetExtension(files.FileName).ToLower();
 					if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-						throw new Exception("FileExtension Not Support.");
+						throw new ExceptionCustom("FileExtension Not Support.");
 
 					ISheet sheet;
 					string fullPath = Path.Combine(folderName, files.FileName);
@@ -116,7 +116,7 @@ namespace SalesPipeline.API.Controllers
 						int sheetCount = 0;
 						if (sFileExtension == ".xls")
 						{
-							throw new Exception("not support  Excel 97-2000 formats.");
+							throw new ExceptionCustom("not support  Excel 97-2000 formats.");
 						}
 
 						XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  

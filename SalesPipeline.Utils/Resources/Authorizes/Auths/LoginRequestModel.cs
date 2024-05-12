@@ -17,5 +17,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 
 		[Required]
 		public bool IsRememberMe { get; set; }
+
+		public string? IPAddress { get; set; }
 	}
 }

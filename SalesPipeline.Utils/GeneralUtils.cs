@@ -806,5 +806,12 @@ namespace SalesPipeline.Utils
 			return response;
 		}
 
+		public static string RandomString(int length)
+		{
+			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			return new string(Enumerable.Repeat(chars, length)
+			  .Select(s => s[new Random((int)DateTime.Now.Ticks).Next(s.Length)]).ToArray());
+		}
+
 	}
 }

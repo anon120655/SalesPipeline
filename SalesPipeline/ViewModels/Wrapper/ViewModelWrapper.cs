@@ -12,6 +12,8 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[CascadingParameter] protected LoginResponseModel UserInfo { get; set; } = default!;
 		[CascadingParameter] protected List<MenuItemCustom> MenuItem { get; set; } = default!;
 
+
+		[Inject] protected IHttpContextAccessor _accessor { get; set; } = default!;
 		[Inject] protected IJSRuntime _jsRuntimes { get; set; } = default!;
 		[Inject] protected NavigationManager _Navs { get; set; } = default!;
 		[Inject] protected IOptions<AppSettings> _appSet { get; set; } = default!;

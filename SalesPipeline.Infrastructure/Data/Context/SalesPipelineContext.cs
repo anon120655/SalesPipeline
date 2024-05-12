@@ -44,8 +44,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<InfoTambol> InfoTambols { get; set; }
 
-    public virtual DbSet<Log_SendMail> Log_SendMails { get; set; }
-
     public virtual DbSet<Logging> Loggings { get; set; }
 
     public virtual DbSet<Master_Branch_Region> Master_Branch_Regions { get; set; }
@@ -140,6 +138,10 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Status_Total> Sale_Status_Totals { get; set; }
 
+    public virtual DbSet<SendMail_Log> SendMail_Logs { get; set; }
+
+    public virtual DbSet<SendMail_Template> SendMail_Templates { get; set; }
+
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
     public virtual DbSet<System_Signature> System_Signatures { get; set; }
@@ -147,6 +149,8 @@ public partial class SalesPipelineContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<User_Level> User_Levels { get; set; }
+
+    public virtual DbSet<User_Login_Log> User_Login_Logs { get; set; }
 
     public virtual DbSet<User_Permission> User_Permissions { get; set; }
 
@@ -875,25 +879,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TambolCode).HasMaxLength(50);
             entity.Property(e => e.TambolName).HasMaxLength(255);
             entity.Property(e => e.ZipCode).HasMaxLength(255);
-        });
-
-        modelBuilder.Entity<Log_SendMail>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Log_SendMail");
-
-            entity.Property(e => e.CreateById)
-                .HasComment("ผู้สร้าง/เป็น null ได้กรณีคนนอกไม่ได้ login")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.CreateDate)
-                .HasComment("วันที่สร้าง")
-                .HasColumnType("datetime");
-            entity.Property(e => e.EmailTo).HasMaxLength(1000);
-            entity.Property(e => e.Message).HasColumnType("text");
-            entity.Property(e => e.StatusMessage).HasColumnType("text");
-            entity.Property(e => e.Subject).HasMaxLength(300);
-            entity.Property(e => e.Template).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Logging>(entity =>
@@ -2473,6 +2458,48 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("sale_status_total_ibfk_1");
         });
 
+        modelBuilder.Entity<SendMail_Log>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("SendMail_Log");
+
+            entity.HasIndex(e => e.SendMail_TemplateId, "SendMail_TemplateId");
+
+            entity.Property(e => e.CreateById)
+                .HasComment("ผู้สร้าง/เป็น null ได้กรณีคนนอกไม่ได้ login")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate)
+                .HasComment("วันที่สร้าง")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmailTo).HasMaxLength(100);
+            entity.Property(e => e.EmailToCc).HasMaxLength(1000);
+            entity.Property(e => e.Message).HasColumnType("text");
+            entity.Property(e => e.StatusMessage).HasColumnType("text");
+            entity.Property(e => e.Subject).HasMaxLength(300);
+
+            entity.HasOne(d => d.SendMail_Template).WithMany(p => p.SendMail_Logs)
+                .HasForeignKey(d => d.SendMail_TemplateId)
+                .HasConstraintName("sendmail_log_ibfk_1");
+        });
+
+        modelBuilder.Entity<SendMail_Template>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("SendMail_Template");
+
+            entity.Property(e => e.Code).HasMaxLength(100);
+            entity.Property(e => e.CreateDate)
+                .HasComment("วันที่สร้าง")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Message).HasColumnType("text");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Subject).HasMaxLength(300);
+        });
+
         modelBuilder.Entity<System_SLA>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -2609,6 +2636,22 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+        });
+
+        modelBuilder.Entity<User_Login_Log>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("User_Login_Log");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("current_timestamp()")
+                .HasColumnType("timestamp");
+            entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.IPAddress).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
         });
 
         modelBuilder.Entity<User_Permission>(entity =>

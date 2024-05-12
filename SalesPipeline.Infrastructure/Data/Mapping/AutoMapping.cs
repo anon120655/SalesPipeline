@@ -9,6 +9,7 @@ using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Notifications;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 
@@ -30,6 +31,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.User_Role, User_RoleCustom>().ReverseMap();
 			CreateMap<Entity.User_Permission, User_PermissionCustom>().ReverseMap();
 			CreateMap<Entity.User_Target_Sale, User_Target_SaleCustom>().ReverseMap();
+			CreateMap<Entity.User_Login_Log, User_Login_LogCustom>().ReverseMap();
 
 			//Master
 			CreateMap<Entity.Master_List, Master_ListCustom>().ReverseMap();
@@ -105,6 +107,9 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 
 			//Notification
 			CreateMap<Entity.Notification, NotificationCustom>().ReverseMap();
+
+			//SendMail
+			CreateMap<Entity.SendMail_Template, SendMail_TemplateCustom>().ReverseMap();
 
 		}
 	}

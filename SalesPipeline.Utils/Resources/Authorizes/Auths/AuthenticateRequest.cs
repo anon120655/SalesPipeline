@@ -14,5 +14,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 
 		[Required]
 		public string? Password { get; set; }
+
+		public string? IPAddress { get; set; }
 	}
 }

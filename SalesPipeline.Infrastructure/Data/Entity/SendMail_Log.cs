@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Log_SendMail
+public partial class SendMail_Log
 {
     public Guid Id { get; set; }
 
@@ -17,9 +17,11 @@ public partial class Log_SendMail
     /// </summary>
     public int? CreateById { get; set; }
 
-    public string Template { get; set; } = null!;
+    public Guid? SendMail_TemplateId { get; set; }
 
     public string EmailTo { get; set; } = null!;
+
+    public string? EmailToCc { get; set; }
 
     public string Subject { get; set; } = null!;
 
@@ -28,4 +30,6 @@ public partial class Log_SendMail
     public bool IsCompleted { get; set; }
 
     public string? StatusMessage { get; set; }
+
+    public virtual SendMail_Template? SendMail_Template { get; set; }
 }

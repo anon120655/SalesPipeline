@@ -9,6 +9,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 {
 	public class User_Main : CommonModel
 	{
-		public List<User_Target_SaleCustom> ItemsTarget { get; set; } = new();
+        public UserCustom? User { get; set; }
+        public List<User_Target_SaleCustom> ItemsTarget { get; set; } = new();
     }
 }

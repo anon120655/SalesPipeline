@@ -30,5 +30,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model); 
 		Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model);
 		Task UpdateUserTarget(User_Main model);
+		Task LogLogin(User_Login_LogCustom data);
+		Task<List<UserCustom>> GetNewUserSendMail(int? id);
 	}
 }

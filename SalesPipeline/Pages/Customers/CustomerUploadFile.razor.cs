@@ -76,7 +76,7 @@ namespace SalesPipeline.Pages.Customers
 
 						var bytefile = ms.ToArray();
 						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "CustomerLoan.xlsx");
-						if (files == null) throw new Exception("File Not Support.");
+						if (files == null) throw new ExceptionCustom("File Not Support.");
 
 						string folderName = @$"{_appSet.Value.ContentRootPath}\import\excel";
 
@@ -85,7 +85,7 @@ namespace SalesPipeline.Pages.Customers
 							_fileName = files.FileName;
 							string sFileExtension = Path.GetExtension(files.FileName).ToLower();
 							if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-								throw new Exception("FileExtension Not Support.");
+								throw new ExceptionCustom("FileExtension Not Support.");
 
 							ISheet sheet;
 							string fullPath = Path.Combine(folderName, files.FileName);
@@ -96,7 +96,7 @@ namespace SalesPipeline.Pages.Customers
 								int sheetCount = 0;
 								if (sFileExtension == ".xls")
 								{
-									throw new Exception("not support  Excel 97-2000 formats.");
+									throw new ExceptionCustom("not support  Excel 97-2000 formats.");
 								}
 
 								XSSFWorkbook hssfwb = new XSSFWorkbook(streamread); //This will read 2007 Excel format  
@@ -112,12 +112,12 @@ namespace SalesPipeline.Pages.Customers
 									if (row_0 != "วันที่เข้ามาติดต่อ"
 										|| row_1 != "ช่องทางการติดต่อ")
 									{
-										throw new Exception("Template file not support.");
+										throw new ExceptionCustom("Template file not support.");
 									}
 								}
 								catch
 								{
-									throw new Exception("Template file not support.");
+									throw new ExceptionCustom("Template file not support.");
 								}
 
 								DateTime? DateContact = null;
@@ -190,7 +190,7 @@ namespace SalesPipeline.Pages.Customers
 								header_list_key = header_list.Select(x => x.Key).ToList();
 								if (header_list_key.Count < 60)
 								{
-									throw new Exception("Template file not support.");
+									throw new ExceptionCustom("Template file not support.");
 								}
 
 								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
@@ -678,13 +678,13 @@ namespace SalesPipeline.Pages.Customers
 									if (CustomerList == null) CustomerList = new();
 
 									if (CustomerList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
-										throw new Exception("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
+										throw new ExceptionCustom("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
 
 									if (string.IsNullOrEmpty(JuristicPersonRegNumber))
-										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
+										throw new ExceptionCustom("ระบุเลขนิติบุคคลไม่ครบ");
 
 									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length != 13)
-										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ 13 หลัก");
+										throw new ExceptionCustom("ระบุเลขนิติบุคคลไม่ครบ 13 หลัก");
 
 
 									CustomerList.Add(new()
