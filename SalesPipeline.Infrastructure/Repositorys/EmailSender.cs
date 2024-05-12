@@ -170,8 +170,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var userSendMail = await _repo.User.UpdateNewUserSendMail(item.Id);
 					if (userSendMail != null)
 					{
-						string messageBody = string.Empty;
-						messageBody = string.Format(template.Message,
+						string messageBody = string.Format(template.Message,
 													item.FullName,
 													GeneralUtils.getFullThaiFullShot(item.CreateDate),
 													GeneralUtils.DateToTimeString(item.CreateDate),

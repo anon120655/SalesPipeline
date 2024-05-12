@@ -15,7 +15,7 @@ using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
+	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -361,5 +361,21 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
+
+		[HttpPost("ChangePassword")]
+		public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+		{
+			try
+			{
+				await _repo.User.ChangePassword(model);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }

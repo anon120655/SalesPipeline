@@ -813,5 +813,38 @@ namespace SalesPipeline.Utils
 			  .Select(s => s[new Random((int)DateTime.Now.Ticks).Next(s.Length)]).ToArray());
 		}
 
+		public static bool IsLetter(char c)
+		{
+			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+		}
+
+		public static bool IsDigit(char c)
+		{
+			return c >= '0' && c <= '9';
+		}
+
+		public static bool IsSymbol(char c)
+		{
+			return c > 32 && c < 127 && !IsDigit(c) && !IsLetter(c);
+		}
+
+		public static bool IsValidPassword(string password)
+		{
+			//return
+			//   password.Any(c => IsLetter(c)) &&
+			//   password.Any(c => IsDigit(c)) &&
+			//   password.Any(c => IsSymbol(c));
+			return
+			   password.Any(c => IsLetter(c)) &&
+			   password.Any(c => IsDigit(c));
+		}
+
+		public static Regex PasswordValidation()
+		{
+			string pattern = "(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{8,15})$";
+
+			return new Regex(pattern, RegexOptions.IgnoreCase);
+		}
+
 	}
 }

@@ -8,6 +8,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Text.RegularExpressions;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -985,15 +986,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task LogLogin(User_Login_LogCustom data)
+		public async Task LogLogin(User_Login_LogCustom model)
 		{
 			try
 			{
-				var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == data.UserId);
+				var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.UserId);
 				if (users != null)
 				{
 					var _DateNow = DateTime.Now;
-					var logLogins = await _repo.Context.User_Login_Logs.FirstOrDefaultAsync(x => x.UserId == data.UserId && x.IPAddress == data.IPAddress
+					var logLogins = await _repo.Context.User_Login_Logs.FirstOrDefaultAsync(x => x.UserId == model.UserId && x.IPAddress == model.IPAddress
 					&& x.CreateDate.Date == _DateNow.Date
 					&& x.CreateDate.Hour == _DateNow.Hour
 					&& x.CreateDate.Minute == _DateNow.Minute);
@@ -1002,9 +1003,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var logLogin = new Infrastructure.Data.Entity.User_Login_Log()
 						{
-							UserId = data.UserId,
+							UserId = model.UserId,
 							FullName = users.FullName,
-							IPAddress = data.IPAddress
+							IPAddress = model.IPAddress
 						};
 						_db.Inster(logLogin);
 						await _db.SaveAsync();
@@ -1043,11 +1044,45 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 			}
 
-			var response  = _mapper.Map<UserCustom>(user); ;
+			var response = _mapper.Map<UserCustom>(user); ;
 
 			response.DefaultPassword = defaultPassword;
 
 			return response;
 		}
+
+		public async Task ChangePassword(ChangePasswordModel model)
+		{
+			var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+			if (user == null) throw new ExceptionCustom($"Id not found.");
+
+			if (user.PasswordHash == null) throw new ExceptionCustom("อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
+
+			bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.OldPassword, user.PasswordHash, hashType: HashType.SHA384);
+			if (!verified)
+				throw new ExceptionCustom($"Old Password incorrect");
+
+			if (string.IsNullOrEmpty(model.NewPassword))
+				throw new ExceptionCustom($"New Password required");
+
+			//Regex vaildate_password = GeneralUtils.PasswordValidation();
+
+			if (!GeneralUtils.IsValidPassword(model.NewPassword))
+				throw new ExceptionCustom($"Password must be atleast 8 to 15 characters. It contains atleast one character and numbers.");
+
+			if (string.IsNullOrEmpty(model.ConfirmPassword))
+				throw new ExceptionCustom($"Confirm Password required");
+
+			if (model.NewPassword != model.ConfirmPassword)
+				throw new ExceptionCustom($"The password and confirmation password do not match.");
+
+			string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(model.NewPassword, hashType: HashType.SHA384);
+
+			user.PasswordHash = passwordHashGen;
+			_db.Update(user);
+			await _db.SaveAsync();
+
+		}
+
 	}
 }
