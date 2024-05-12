@@ -24,11 +24,13 @@ namespace SalesPipeline.API.Controllers
 	{
 		private IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
+		public readonly HttpClient _httpClient;
 
-		public UserController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public UserController(IRepositoryWrapper repo, IOptions<AppSettings> appSet, HttpClient httpClient)
 		{
 			_repo = repo;
 			_appSet = appSet.Value;
+			_httpClient = httpClient;
 		}
 
 		[HttpPost("Create")]
@@ -37,6 +39,19 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.User.Create(model);
+
+				try
+				{
+					var t = Task.Factory.StartNew(async () =>
+					{
+						string urlFull = $"{_appSet.baseUriApi}/v1/Mail/SendNewUser?id={data.Id}";
+						HttpResponseMessage response = await _httpClient.GetAsync(urlFull);
+						if (response.IsSuccessStatusCode)
+						{ }
+					});
+				}
+				catch { }
+
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -51,70 +66,6 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.User.Update(model);
-
-				try
-				{
-					//var t = Task.Factory.StartNew(async () =>
-					//{
-					//});
-
-					//ThreadStart action = async () =>
-					//{
-					//	var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
-					//	if (template != null)
-					//	{
-					//		string messageBody = string.Empty;
-					//		messageBody = string.Format(template.Message,
-					//									data.FullName,
-					//									GeneralUtils.getFullThaiFullShot(data.CreateDate),
-					//									GeneralUtils.DateToTimeString(data.CreateDate),
-					//									"I14bpz2v",
-					//									$"{_appSet.baseUriWeb}/changepassword");
-
-					//		await _repo.EmailSender.SendEmail(new()
-					//		{
-					//			CurrentUserId = model.CurrentUserId,
-					//			TemplateId = template.Id,
-					//			Email = data.Email,
-					//			Subject = template.Subject,
-					//			Body = messageBody
-					//		});
-					//	}
-					//};
-					//Thread thread = new Thread(action) { IsBackground = true };
-					//thread.Start();
-				}
-				catch { }
-
-				//try
-				//{
-				//	await Task.Run(async () =>
-				//	{
-				//		var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
-				//		if (template != null)
-				//		{
-				//			string messageBody = string.Empty;
-				//			messageBody = string.Format(template.Message,
-				//										data.FullName,
-				//										GeneralUtils.getFullThaiFullShot(data.CreateDate),
-				//										GeneralUtils.DateToTimeString(data.CreateDate),
-				//										"I14bpz2v",
-				//										$"{_appSet.baseUriWeb}/changepassword");
-
-				//			await _repo.EmailSender.SendEmail(new()
-				//			{
-				//				CurrentUserId = model.CurrentUserId,
-				//				TemplateId = template.Id,
-				//				Email = data.Email,
-				//				Subject = template.Subject,
-				//				Body = messageBody
-				//			});
-				//		}
-				//	});
-				//}
-				//catch
-				//{
-				//}
 
 				return Ok(data);
 			}

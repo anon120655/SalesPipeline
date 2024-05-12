@@ -1,21 +1,13 @@
 ﻿using AutoMapper;
 using BCrypt.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NPOI.SS.Formula.Functions;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Shares;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -223,8 +215,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				string defaultPassword = GeneralUtils.RandomString(8);
-				string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(defaultPassword, hashType: HashType.SHA384);
+				//นำไปไว้ตอนส่งเมล เพราะถ้าส่งเมลไม่ผ่านแล้วต้องส่งใหม่ password จะถูก gen ใหม่ทุกครั้ง
+				//string defaultPassword = GeneralUtils.RandomString(8);
+				//string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(defaultPassword, hashType: HashType.SHA384);
 
 				int id = _repo.Context.Users.Max(u => u.Id) + 1;
 
@@ -263,7 +256,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.PositionId = model.PositionId;
 				user.LevelId = model.LevelId;
 				user.RoleId = model.RoleId;
-				user.PasswordHash = passwordHashGen;
+				//user.PasswordHash = passwordHashGen;
 				await _db.InsterAsync(user);
 				await _db.SaveAsync();
 
@@ -320,7 +313,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				var response = _mapper.Map<UserCustom>(user);
 
-				response.DefaultPassword = defaultPassword;
+				//response.DefaultPassword = defaultPassword;
 
 				return response;
 			}
@@ -1026,7 +1019,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<List<UserCustom>> GetNewUserSendMail(int? id)
 		{
-			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active && !x.IsSentMail.HasValue);
+			var query = _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.IsSentMail != 1);
 
 			if (id.HasValue)
 			{
@@ -1036,6 +1029,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<List<UserCustom>>(await query.ToListAsync());
 		}
 
+		public async Task<UserCustom> UpdateNewUserSendMail(int id)
+		{
+			string defaultPassword = GeneralUtils.RandomString(8);
+			string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(defaultPassword, hashType: HashType.SHA384);
 
+			var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.IsSentMail != 1 && x.Id == id);
+			if (user != null)
+			{
+				user.IsSentMail = 1;
+				user.PasswordHash = passwordHashGen;
+				_db.Update(user);
+				await _db.SaveAsync();
+			}
+
+			var response  = _mapper.Map<UserCustom>(user); ;
+
+			response.DefaultPassword = defaultPassword;
+
+			return response;
+		}
 	}
 }

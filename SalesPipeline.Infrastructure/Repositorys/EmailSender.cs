@@ -134,31 +134,60 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task LogSendEmail(ResourceEmail data)
 		{
-			using (var _transaction = _repo.BeginTransaction())
+			string? emailCc = null;
+			if (data.CcList != null && data.CcList.Count > 0)
 			{
-				string? emailCc = null;
-				if (data.CcList != null && data.CcList.Count > 0)
+				string EmailCC = string.Join(",", data.CcList);
+				emailCc = $"{emailCc} CC {EmailCC}";
+			}
+
+			SendMail_Log SendMaillog = new SendMail_Log()
+			{
+				CreateById = data.CurrentUserId,
+				CreateDate = DateTime.Now,
+				SendMail_TemplateId = data.TemplateId,
+				EmailTo = data.Email,
+				EmailToCc = emailCc,
+				Subject = data.Subject ?? string.Empty,
+				Message = data.Builder.HtmlBody,
+				IsCompleted = data.IsCompleted,
+				StatusMessage = data.StatusMessage,
+			};
+			await _db.InsterAsync(SendMaillog);
+			await _db.SaveAsync();
+		}
+
+		public async Task SendNewUser(int? id)
+		{
+			var user = await _repo.User.GetNewUserSendMail(id);
+			if (user != null && user.Count > 0)
+			{
+				var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
+				if (template == null) throw new ExceptionCustom("template not found.");
+
+				foreach (var item in user)
 				{
-					string EmailCC = string.Join(",", data.CcList);
-					emailCc = $"{emailCc} CC {EmailCC}";
+					var userSendMail = await _repo.User.UpdateNewUserSendMail(item.Id);
+					if (userSendMail != null)
+					{
+						string messageBody = string.Empty;
+						messageBody = string.Format(template.Message,
+													item.FullName,
+													GeneralUtils.getFullThaiFullShot(item.CreateDate),
+													GeneralUtils.DateToTimeString(item.CreateDate),
+													userSendMail.DefaultPassword,
+													$"{_appSet.baseUriWeb}/changepassword");
+
+						await _repo.EmailSender.SendEmail(new()
+						{
+							CurrentUserId = item.CurrentUserId,
+							TemplateId = template.Id,
+							Email = item.Email,
+							Subject = $"{template.Subject} {item.FullName}",
+							Body = messageBody
+						});
+					}
 				}
-
-				SendMail_Log SendMaillog = new SendMail_Log()
-				{
-					CreateById = data.CurrentUserId,
-					CreateDate = DateTime.Now,
-					SendMail_TemplateId = data.TemplateId,
-					EmailTo = data.Email,
-					EmailToCc = emailCc,
-					Subject = data.Subject ?? string.Empty,
-					Message = data.Builder.HtmlBody,
-					IsCompleted = data.IsCompleted,
-					StatusMessage = data.StatusMessage,
-				};
-				await _db.InsterAsync(SendMaillog);
-				await _db.SaveAsync();
-
-				await _transaction.CommitAsync();
 			}
 		}
 

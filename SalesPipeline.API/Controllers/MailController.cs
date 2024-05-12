@@ -56,38 +56,17 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("NewUser")]
-		public async Task<IActionResult> NewUser([FromQuery] int? id)
+		[HttpGet("SendNewUser")]
+		public async Task<IActionResult> SendNewUser([FromQuery] int? id)
 		{
 			try
 			{
-				var user = await _repo.User.GetNewUserSendMail(id);
-				if (user != null && user.Count > 0)
+				using (var _transaction = _repo.BeginTransaction())
 				{
-					var template = await _repo.EmailSender.GetTemplate(EmailTemplateModel.NEWUSER);
-					if (template == null) throw new ExceptionCustom();
-					
-					foreach (var item in user)
-					{
-						string messageBody = string.Empty;
-						messageBody = string.Format(template.Message,
-													item.FullName,
-													GeneralUtils.getFullThaiFullShot(item.CreateDate),
-													GeneralUtils.DateToTimeString(item.CreateDate),
-													"I14bpz2v",
-													$"{_appSet.baseUriWeb}/changepassword");
+					await _repo.EmailSender.SendNewUser(id);
 
-						await _repo.EmailSender.SendEmail(new()
-						{
-							CurrentUserId = item.CurrentUserId,
-							TemplateId = template.Id,
-							Email = item.Email,
-							Subject = template.Subject,
-							Body = messageBody
-						});
-					}
+					await _transaction.CommitAsync();
 				}
-
 				return Ok();
 			}
 			catch (Exception ex)
