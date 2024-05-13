@@ -518,19 +518,25 @@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้า</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.TradeAccReceivable" type="text" class="form-control">
+												<input type="text" class="form-control"
+													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccReceivable = GeneralUtils.ToDecimal(e.Value))"
+													   value="@formModel.TradeAccReceivable?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccReceivable)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.TradeAccRecProceedsNet" type="text" class="form-control">
+												<input type="text" class="form-control"
+													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccRecProceedsNet = GeneralUtils.ToDecimal(e.Value))"
+													   value="@formModel.TradeAccRecProceedsNet?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccRecProceedsNet)" />
 											</div>
 										</div>
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สินค้าคงเหลือ</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.Inventories" type="text" class="form-control">
+												<input type="text" class="form-control"
+													   @onchange="@((ChangeEventArgs e) => formModel.Inventories = GeneralUtils.ToDecimal(e.Value))"
+													   value="@formModel.Inventories?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.Inventories)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น</label>
@@ -560,7 +566,9 @@
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.LandBuildingEquipment" type="text" class="form-control">
+												<input type="text" class="form-control"
+													   @onchange="@((ChangeEventArgs e) => formModel.LandBuildingEquipment = GeneralUtils.ToDecimal(e.Value))"
+													   value="@formModel.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.LandBuildingEquipment)" />
 											</div>
 										</div>
@@ -585,7 +593,9 @@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เจ้าหนี้การค้า</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.TradeAccPay" type="text" class="form-control">
+												<input type="text" class="form-control"
+													   @onchange="@((ChangeEventArgs e) => formModel.TradeAccPay = GeneralUtils.ToDecimal(e.Value))"
+													   value="@formModel.TradeAccPay?.ToString(GeneralTxt.FormatDecimal2)">
 												<ValidationMessage For="@(() => formModel.TradeAccPay)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น</label>

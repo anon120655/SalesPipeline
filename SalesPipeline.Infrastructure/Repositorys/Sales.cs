@@ -44,6 +44,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.UpdateBy = model.CurrentUserId;
 			sale.UpdateByName = currentUserName;
 			sale.CustomerId = model.CustomerId;
+			sale.CIF = model.CIF;
 			sale.CompanyName = companyName;
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
@@ -98,6 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale.UpdateBy = model.CurrentUserId;
 				sale.UpdateByName = currentUserName;
 				sale.CustomerId = model.CustomerId;
+				sale.CIF = model.CIF;
 				sale.CompanyName = companyName;
 				//sale.StatusSaleId = model.StatusSaleId; //ไม่ต้อง update กรณีแก้ไข
 				sale.DateAppointment = model.DateAppointment;

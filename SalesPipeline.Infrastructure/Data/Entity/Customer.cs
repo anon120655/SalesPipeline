@@ -70,6 +70,8 @@ public partial class Customer
     /// </summary>
     public string? ContactTel { get; set; }
 
+    public string? CIF { get; set; }
+
     /// <summary>
     /// ชื่อบริษัท
     /// </summary>
@@ -213,17 +215,17 @@ public partial class Customer
     /// <summary>
     /// ลูกหนี้การค้า
     /// </summary>
-    public string? TradeAccReceivable { get; set; }
+    public decimal? TradeAccReceivable { get; set; }
 
     /// <summary>
     /// ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ
     /// </summary>
-    public string? TradeAccRecProceedsNet { get; set; }
+    public decimal? TradeAccRecProceedsNet { get; set; }
 
     /// <summary>
     /// สินค้าคงเหลือ
     /// </summary>
-    public string? Inventories { get; set; }
+    public decimal? Inventories { get; set; }
 
     /// <summary>
     /// เงินให้กู้ยืมระยะสั้น
@@ -258,7 +260,7 @@ public partial class Customer
     /// <summary>
     /// เจ้าหนี้การค้า
     /// </summary>
-    public string? TradeAccPay { get; set; }
+    public decimal? TradeAccPay { get; set; }
 
     /// <summary>
     /// เงินกู้ระยะสั้น

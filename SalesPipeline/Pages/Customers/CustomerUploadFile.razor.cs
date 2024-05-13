@@ -843,8 +843,8 @@ namespace SalesPipeline.Pages.Customers
 
 								try
 								{
-									var row_0 = row_header.GetCell(1).ToString()?.Trim();
-									var row_1 = row_header.GetCell(2).ToString()?.Trim();
+									var row_0 = row_header.GetCell(0).ToString()?.Trim();
+									var row_1 = row_header.GetCell(1).ToString()?.Trim();
 									if (row_0 != "วันที่เข้ามาติดต่อ"
 										|| row_1 != "ช่องทางการติดต่อ")
 									{
@@ -862,15 +862,18 @@ namespace SalesPipeline.Pages.Customers
 								string? ProvincialOffice = null;
 								string? EmployeeName = null;
 								string? EmployeeId = null;
+								string? CIF = null;
 								string? ContactName = null;
 								string? ContactTel = null;
 								string? JuristicPersonRegNumber = null;
-								string? CIF = null;
 								string? CompanyName = null;
 								Guid? Master_BusinessTypeId = null;
+								string? Master_BusinessTypeName = null;
 								Guid? Master_BusinessSizeId = null;
+								string? Master_BusinessSizeName = null;
 								Guid? Master_ISICCodeId = null;
 								Guid? Master_TSICId = null;
+								string? Master_TSICName = null;
 								Guid? Master_YieldId = null;
 								Guid? Master_ChainId = null;
 								Guid? Master_LoanTypeId = null;
@@ -894,16 +897,16 @@ namespace SalesPipeline.Pages.Customers
 								string? CreditScore = null;
 								string? FiscalYear = null;
 								DateTime? StatementDate = null;
-								string? TradeAccReceivable = null;
-								string? TradeAccRecProceedsNet = null;
-								string? Inventories = null;
+								decimal? TradeAccReceivable = null;
+								decimal? TradeAccRecProceedsNet = null;
+								decimal? Inventories = null;
 								decimal? LoansShort = null;
 								decimal? TotalCurrentAssets = null;
 								decimal? LoansLong = null;
 								decimal? LandBuildingEquipment = null;
 								decimal? TotalNotCurrentAssets = null;
 								decimal? AssetsTotal = null;
-								string? TradeAccPay = null;
+								decimal? TradeAccPay = null;
 								decimal? TradeAccPayLoansShot = null;
 								decimal? TradeAccPayTotalCurrentLia = null;
 								decimal? TradeAccPayLoansLong = null;
@@ -936,7 +939,7 @@ namespace SalesPipeline.Pages.Customers
 									throw new Exception("Template file not support.");
 								}
 
-								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
+								for (var rowIndex = 2; rowIndex <= sheet.LastRowNum; rowIndex++)
 								{
 
 									DateContact = null;
@@ -945,14 +948,18 @@ namespace SalesPipeline.Pages.Customers
 									ProvincialOffice = null;
 									EmployeeName = null;
 									EmployeeId = null;
+									CIF = null;
 									ContactName = null;
 									ContactTel = null;
 									JuristicPersonRegNumber = null;
-									CIF = null;
 									CompanyName = null;
 									Master_BusinessTypeId = null;
+									Master_BusinessTypeName = null;
 									Master_BusinessSizeId = null;
+									Master_BusinessSizeName = null;
 									Master_ISICCodeId = null;
+									Master_TSICId = null;
+									Master_TSICName = null;
 									Master_TSICId = null;
 									Master_YieldId = null;
 									Master_ChainId = null;
@@ -1052,7 +1059,7 @@ namespace SalesPipeline.Pages.Customers
 									{
 										ContactName = row.GetCell(cellIndex).ToString();
 									}
-									if (header_list.TryGetValue("โทรศัพท์", out cellIndex))
+									if (header_list.TryGetValue("โทรศัพท์ผู้ติดต่อ", out cellIndex))
 									{
 										ContactTel = row.GetCell(cellIndex).ToString();
 									}
@@ -1120,7 +1127,11 @@ namespace SalesPipeline.Pages.Customers
 									{
 										if (header_list.TryGetValue($"กรรมการ คนที่ {i}", out cellIndex))
 										{
+											string? _name = row.GetCell(cellIndex).ToString();
+											//if (!string.IsNullOrEmpty(_name))
+											//{
 											Customer_Committees.Add(new() { Name = row.GetCell(cellIndex).ToString() });
+											//}
 										}
 										i++;
 									}
@@ -1129,7 +1140,9 @@ namespace SalesPipeline.Pages.Customers
 									{
 										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
 										{
-											ShareholderMeetDay = dateTimeMaster;
+											var ShareholderMeetDayStr = dateTimeMaster.ToString("dd/MM/yyyy");
+											ShareholderMeetDay = GeneralUtils.DateToEn(ShareholderMeetDayStr);
+											//ShareholderMeetDay = dateTimeMaster;
 										}
 									}
 
@@ -1146,6 +1159,9 @@ namespace SalesPipeline.Pages.Customers
 										{
 											_Name = row.GetCell(cellIndex).ToString();
 										}
+
+										//if (!string.IsNullOrEmpty(_Name))
+										//{
 										if (header_list.TryGetValue($"สัญชาติ คนที่ {i}", out cellIndex))
 										{
 											_Nationality = row.GetCell(cellIndex).ToString();
@@ -1176,15 +1192,18 @@ namespace SalesPipeline.Pages.Customers
 											NumberShareholder = _NumberShareholder,
 											TotalShareValue = _TotalShareValue
 										});
+										//}
+
 										i++;
 									}
 
 									if (header_list.TryGetValue("ประเภทกิจการ", out cellIndex))
 									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
-										{
-											Master_BusinessTypeId = guidMaster;
-										}
+										Master_BusinessTypeName = row.GetCell(cellIndex).ToString();
+										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										//{
+										//	Master_BusinessTypeId = guidMaster;
+										//}
 									}
 									if (header_list.TryGetValue("ทุนจดทะเบียนล่าสุด", out cellIndex))
 									{
@@ -1192,17 +1211,19 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ขนาดธุรกิจ", out cellIndex))
 									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
-										{
-											Master_BusinessSizeId = guidMaster;
-										}
+										Master_BusinessSizeName = row.GetCell(cellIndex).ToString();
+										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										//{
+										//	Master_BusinessSizeId = guidMaster;
+										//}
 									}
 									if (header_list.TryGetValue("ประเภทธุรกิจ (TSIC) รหัสที่ 1", out cellIndex))
 									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
-										{
-											Master_TSICId = guidMaster;
-										}
+										Master_TSICName = row.GetCell(cellIndex).ToString();
+										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										//{
+										//	Master_TSICId = guidMaster;
+										//}
 									}
 
 									if (header_list.TryGetValue("Credit Score", out cellIndex))
@@ -1215,22 +1236,33 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("วันเดือนปีงบการเงิน", out cellIndex))
 									{
-										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
-										{
-											StatementDate = dateTimeMaster;
-										}
+										var ShareholderMeetDayStr = dateTimeMaster.ToString("dd/MM/yyyy");
+										StatementDate = GeneralUtils.DateToEn(ShareholderMeetDayStr);
+										//if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
+										//{
+										//	StatementDate = dateTimeMaster;
+										//}
 									}
 									if (header_list.TryGetValue("ลูกหนี้การค้า", out cellIndex))
 									{
-										TradeAccReceivable = row.GetCell(cellIndex).ToString();
+										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										{
+											TradeAccReceivable = decimalMaster;
+										}
 									}
 									if (header_list.TryGetValue("ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ", out cellIndex))
 									{
-										TradeAccRecProceedsNet = row.GetCell(cellIndex).ToString();
+										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										{
+											TradeAccRecProceedsNet = decimalMaster;
+										}
 									}
 									if (header_list.TryGetValue("สินค้าคงเหลือ", out cellIndex))
 									{
-										Inventories = row.GetCell(cellIndex).ToString();
+										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										{
+											Inventories = decimalMaster;
+										}
 									}
 									if (header_list.TryGetValue("เงินให้กู้ยืมระยะสั้น(ลูกหนี้)", out cellIndex))
 									{
@@ -1276,7 +1308,10 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("เจ้าหนี้การค้า", out cellIndex))
 									{
-										TradeAccPay = row.GetCell(cellIndex).ToString();
+										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										{
+											TradeAccPay = decimalMaster;
+										}
 									}
 									if (header_list.TryGetValue("เงินกู้ยืมระยะสั้น", out cellIndex))
 									{
@@ -1402,7 +1437,7 @@ namespace SalesPipeline.Pages.Customers
 									{
 										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
 										{
-											ProfitLossBeforeIncomeTaxExpense  = decimalMaster;
+											ProfitLossBeforeIncomeTaxExpense = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("กำไร(ขาดทุน)สุทธิ", out cellIndex))
@@ -1425,8 +1460,8 @@ namespace SalesPipeline.Pages.Customers
 									if (string.IsNullOrEmpty(JuristicPersonRegNumber))
 										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
 
-									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length != 13)
-										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ 13 หลัก");
+									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length < 10)
+										throw new Exception("ระบุเลขนิติบุคคลไม่ถูกต้อง");
 
 
 									CustomerList.Add(new()
@@ -1437,13 +1472,18 @@ namespace SalesPipeline.Pages.Customers
 										ProvincialOffice = ProvincialOffice,
 										EmployeeName = EmployeeName,
 										EmployeeId = EmployeeId,
+										CIF = CIF,
 										ContactName = ContactName,
 										ContactTel = ContactTel,
 										JuristicPersonRegNumber = JuristicPersonRegNumber,
 										CompanyName = CompanyName,
 										Master_BusinessTypeId = Master_BusinessTypeId,
+										Master_BusinessTypeName = Master_BusinessTypeName,
 										Master_BusinessSizeId = Master_BusinessSizeId,
+										Master_BusinessSizeName = Master_BusinessSizeName,
 										Master_ISICCodeId = Master_ISICCodeId,
+										Master_TSICId = Master_TSICId,
+										Master_TSICName = Master_TSICName,
 										Master_YieldId = Master_YieldId,
 										Master_ChainId = Master_ChainId,
 										Master_LoanTypeId = Master_LoanTypeId,

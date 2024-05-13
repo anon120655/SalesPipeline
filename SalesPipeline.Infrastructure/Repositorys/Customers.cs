@@ -34,7 +34,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
 
-			if (juristicPersonRegNumber == null || juristicPersonRegNumber.Length != 13)
+			if (juristicPersonRegNumber == null || juristicPersonRegNumber.Length < 10)
 			{
 				errorMessage = $"เลขทะเบียนนิติบุคคลไม่ถูกต้อง";
 				model.IsValidate = false;
@@ -251,6 +251,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.ProvincialOffice = model.ProvincialOffice;
 				customer.EmployeeName = model.EmployeeName;
 				customer.EmployeeId = model.EmployeeId;
+				customer.CIF = model.CIF;
 				customer.ContactName = model.ContactName;
 				customer.ContactTel = model.ContactTel;
 				customer.CompanyName = model.CompanyName;
@@ -327,33 +328,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int indexCommittee = 1;
 				foreach (var item in model.Customer_Committees ?? new())
 				{
-					var customerCommittee = new Data.Entity.Customer_Committee()
+					if (!string.IsNullOrEmpty(item.Name))
 					{
-						Status = StatusModel.Active,
-						SequenceNo = indexCommittee++,
-						CustomerId = customer.Id,
-						Name = item.Name,
-					};
-					await _db.InsterAsync(customerCommittee);
-					await _db.SaveAsync();
+						var customerCommittee = new Data.Entity.Customer_Committee()
+						{
+							Status = StatusModel.Active,
+							SequenceNo = indexCommittee++,
+							CustomerId = customer.Id,
+							Name = item.Name,
+						};
+						await _db.InsterAsync(customerCommittee);
+						await _db.SaveAsync();
+					}
 				}
 
 				int indexShareholder = 1;
 				foreach (var item in model.Customer_Shareholders ?? new())
 				{
-					var customerShareholder = new Data.Entity.Customer_Shareholder()
+					if (!string.IsNullOrEmpty(item.Name))
 					{
-						Status = StatusModel.Active,
-						SequenceNo = indexShareholder++,
-						CustomerId = customer.Id,
-						Name = item.Name,
-						Nationality = item.Nationality,
-						Proportion = item.Proportion,
-						NumberShareholder = item.NumberShareholder,
-						TotalShareValue = item.TotalShareValue,
-					};
-					await _db.InsterAsync(customerShareholder);
-					await _db.SaveAsync();
+						var customerShareholder = new Data.Entity.Customer_Shareholder()
+						{
+							Status = StatusModel.Active,
+							SequenceNo = indexShareholder++,
+							CustomerId = customer.Id,
+							Name = item.Name,
+							Nationality = item.Nationality,
+							Proportion = item.Proportion,
+							NumberShareholder = item.NumberShareholder,
+							TotalShareValue = item.TotalShareValue,
+						};
+						await _db.InsterAsync(customerShareholder);
+						await _db.SaveAsync();
+					}
 				}
 
 				int statusSaleId = StatusSaleModel.WaitApprove;
@@ -557,6 +564,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.EmployeeId = model.EmployeeId;
 					customer.ContactName = model.ContactName;
 					customer.ContactTel = model.ContactTel;
+					customer.CIF = model.CIF;
 					customer.CompanyName = model.CompanyName;
 					//customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber; //ไม่ต้อง update กรณีแก้ไข
 					customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
@@ -650,68 +658,74 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					int indexCommittee = 1;
 					foreach (var item in model.Customer_Committees ?? new())
 					{
-						var customerCommittee = await _repo.Context.Customer_Committees
-															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
-						if (item.Status == StatusModel.Active)
+						if (!string.IsNullOrEmpty(item.Name))
 						{
-							int CRUD = CRUDModel.Update;
+							var customerCommittee = await _repo.Context.Customer_Committees
+															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
+							if (item.Status == StatusModel.Active)
+							{
+								int CRUD = CRUDModel.Update;
 
-							if (customerCommittee == null)
-							{
-								CRUD = CRUDModel.Create;
-								customerCommittee = new();
-							}
-							customerCommittee.Status = item.Status;
-							customerCommittee.SequenceNo = indexCommittee++;
-							customerCommittee.CustomerId = customer.Id;
-							customerCommittee.Name = item.Name;
+								if (customerCommittee == null)
+								{
+									CRUD = CRUDModel.Create;
+									customerCommittee = new();
+								}
+								customerCommittee.Status = item.Status;
+								customerCommittee.SequenceNo = indexCommittee++;
+								customerCommittee.CustomerId = customer.Id;
+								customerCommittee.Name = item.Name;
 
-							if (CRUD == CRUDModel.Create)
-							{
-								await _db.InsterAsync(customerCommittee);
+								if (CRUD == CRUDModel.Create)
+								{
+									await _db.InsterAsync(customerCommittee);
+								}
+								else
+								{
+									_db.Update(customerCommittee);
+								}
+								await _db.SaveAsync();
 							}
-							else
-							{
-								_db.Update(customerCommittee);
-							}
-							await _db.SaveAsync();
 						}
 					}
 
 					int indexShareholder = 1;
 					foreach (var item in model.Customer_Shareholders ?? new())
 					{
-						var customerShareholder = await _repo.Context.Customer_Shareholders
+						if (!string.IsNullOrEmpty(item.Name))
+						{
+							var customerShareholder = await _repo.Context.Customer_Shareholders
 															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
 
-						if (item.Status == StatusModel.Active)
-						{
-							int CRUD = CRUDModel.Update;
-
-							if (customerShareholder == null)
+							if (item.Status == StatusModel.Active)
 							{
-								CRUD = CRUDModel.Create;
-								customerShareholder = new();
-							}
+								int CRUD = CRUDModel.Update;
 
-							customerShareholder.Status = item.Status;
-							customerShareholder.SequenceNo = indexShareholder++;
-							customerShareholder.CustomerId = customer.Id;
-							customerShareholder.Name = item.Name;
-							customerShareholder.Nationality = item.Nationality;
-							customerShareholder.Proportion = item.Proportion;
-							customerShareholder.NumberShareholder = item.NumberShareholder;
-							customerShareholder.TotalShareValue = item.TotalShareValue;
+								if (customerShareholder == null)
+								{
+									CRUD = CRUDModel.Create;
+									customerShareholder = new();
+								}
 
-							if (CRUD == CRUDModel.Create)
-							{
-								await _db.InsterAsync(customerShareholder);
+								customerShareholder.Status = item.Status;
+								customerShareholder.SequenceNo = indexShareholder++;
+								customerShareholder.CustomerId = customer.Id;
+								customerShareholder.Name = item.Name;
+								customerShareholder.Nationality = item.Nationality;
+								customerShareholder.Proportion = item.Proportion;
+								customerShareholder.NumberShareholder = item.NumberShareholder;
+								customerShareholder.TotalShareValue = item.TotalShareValue;
+
+								if (CRUD == CRUDModel.Create)
+								{
+									await _db.InsterAsync(customerShareholder);
+								}
+								else
+								{
+									_db.Update(customerShareholder);
+								}
+								await _db.SaveAsync();
 							}
-							else
-							{
-								_db.Update(customerShareholder);
-							}
-							await _db.SaveAsync();
 						}
 					}
 

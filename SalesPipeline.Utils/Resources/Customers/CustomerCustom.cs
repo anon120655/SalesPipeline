@@ -79,6 +79,8 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// </summary>
 		public string? ContactTel { get; set; }
 
+		public string? CIF { get; set; }
+
 		/// <summary>
 		/// ชื่อบริษัท
 		/// </summary>
@@ -88,7 +90,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// เลขทะเบียนนิติบุคคล
 		/// </summary>
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		[MinLength(13, ErrorMessage = "ระบุข้อมูล 13 หลัก")]
+		//[MinLength(13, ErrorMessage = "ระบุข้อมูล 13 หลัก")]
 		public string? JuristicPersonRegNumber { get; set; }
 
 		/// <summary>
@@ -224,17 +226,17 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ลูกหนี้การค้า
 		/// </summary>
-		public string? TradeAccReceivable { get; set; }
+		public decimal? TradeAccReceivable { get; set; }
 
 		/// <summary>
 		/// ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ
 		/// </summary>
-		public string? TradeAccRecProceedsNet { get; set; }
+		public decimal? TradeAccRecProceedsNet { get; set; }
 
 		/// <summary>
 		/// สินค้าคงเหลือ
 		/// </summary>
-		public string? Inventories { get; set; }
+		public decimal? Inventories { get; set; }
 
 		/// <summary>
 		/// เงินให้กู้ยืมระยะสั้น
@@ -269,7 +271,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// เจ้าหนี้การค้า
 		/// </summary>
-		public string? TradeAccPay { get; set; }
+		public decimal? TradeAccPay { get; set; }
 
 		/// <summary>
 		/// เงินกู้ระยะสั้น
@@ -292,7 +294,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public decimal? TradeAccPayTotalNotCurrentLia { get; set; }
 
 		/// <summary>
-		/// เงินให้กู้ระยะสั้น
+		/// เงินให้กู้ยืมระยะสั้น
 		/// </summary>
 		public decimal? TradeAccPayForLoansShot { get; set; }
 

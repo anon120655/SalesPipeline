@@ -385,6 +385,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchName)
                 .HasMaxLength(255)
                 .HasComment("สาขา");
+            entity.Property(e => e.CIF).HasMaxLength(255);
             entity.Property(e => e.CompanyEmail)
                 .HasMaxLength(255)
                 .HasComment("อีเมลบริษัท");
@@ -445,7 +446,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("จุดประสงค์การกู้");
             entity.Property(e => e.Inventories)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("สินค้าคงเหลือ");
             entity.Property(e => e.JuristicPersonRegNumber)
                 .HasMaxLength(255)
@@ -544,7 +545,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(18, 2)
                 .HasComment("รวมส่วนของผู้ถือหุ้น");
             entity.Property(e => e.TradeAccPay)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("เจ้าหนี้การค้า");
             entity.Property(e => e.TradeAccPayForLoansShot)
                 .HasPrecision(18, 2)
@@ -565,10 +566,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(18, 2)
                 .HasComment("รวมหนี้สินไม่หมุนเวียน");
             entity.Property(e => e.TradeAccRecProceedsNet)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ");
             entity.Property(e => e.TradeAccReceivable)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("ลูกหนี้การค้า");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
