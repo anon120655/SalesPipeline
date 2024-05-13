@@ -17,6 +17,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Master_TSICCustom> GetById(Guid id);
 		Task<Guid?> GetIDByCode(string code);
 		Task<string?> GetNameById(Guid id);
+		Task<Guid?> GetIdByName(string name);
 		Task<PaginationView<List<Master_TSICCustom>>> GetList(allFilter model);
 	}
 }

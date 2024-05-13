@@ -15,9 +15,12 @@
 						<div class="p-2">
 							<p class="back_topic">ตั้งค่า <span class="back_topic_active">กระบวนการขาย</span></p>
 						</div>
-						<div class="p-2 text-end">
-							<a href="/setting/processsales/reply">Reply</a>
-						</div>						
+						@if (_appSet.Value.ServerSite == ServerSites.DEV)
+						{
+							<div class="p-2 text-end">
+								<a href="/setting/processsales/reply">Reply</a>
+							</div>
+						}
 					</div>
 					<div class="row mt-3">
 						<div class="col">
@@ -55,8 +58,13 @@
 												<tr>
 													<td class="">@item.Name</td>
 													<td class="text-center">
-														<a href="/setting/processsales/update/@item.Id">แก้ไข</a> /
-														<a href="/setting/processsales/formgenerator/create/@item.Id">forms</a>
+														<a href="/setting/processsales/update/@item.Id">แก้ไข</a>
+														@if (_appSet.Value.ServerSite == ServerSites.DEV)
+														{
+															<span>
+																/ <a href="/setting/processsales/formgenerator/create/@item.Id">forms</a>
+															</span>
+														}
 													</td>
 												</tr>
 											}

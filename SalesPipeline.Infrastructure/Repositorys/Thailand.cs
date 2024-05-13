@@ -93,6 +93,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return name;
 		}
 
+		public async Task<int?> GetProvinceIdByName(string name)
+		{
+			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceName == name).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				return query.ProvinceID;
+			}
+			return null;
+		}
+
+		public async Task<int?> GetAmphurIdByName(string name)
+		{
+			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurName == name).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				return query.AmphurID;
+			}
+			return null;
+		}
+
+		public async Task<int?> GetTambolIdByName(string name)
+		{
+			var query = await _repo.Context.InfoTambols.Where(x => x.TambolName == name).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				return query.TambolID;
+			}
+			return null;
+		}
+
 		public async Task MapZipCode(List<InfoTambolCustom> tambolList)
 		{
 			foreach (var item in tambolList)

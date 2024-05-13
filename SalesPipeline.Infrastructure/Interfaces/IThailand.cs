@@ -21,6 +21,9 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<string?> GetProvinceNameByid(int id);
 		Task<string?> GetAmphurNameByid(int id);
 		Task<string?> GetTambolNameByid(int id);
+		Task<int?> GetProvinceIdByName(string name);
+		Task<int?> GetAmphurIdByName(string name);
+		Task<int?> GetTambolIdByName(string name);
 		Task MapZipCode(List<InfoTambolCustom> tambolList);
 		Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model);
 		Task<InfoBranchCustom> UpdateBranch(InfoBranchCustom model);

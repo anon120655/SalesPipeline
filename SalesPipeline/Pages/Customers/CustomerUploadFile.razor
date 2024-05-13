@@ -108,21 +108,12 @@
 													<td class="text-center">@item.JuristicPersonRegNumber</td>
 													<td class="text-center">@item.CIF</td>
 													<td class="text-center">@item.CompanyName</td>
-													<td class="text-center">@item.Master_BusinessTypeName</td>
-													<td class="text-center">@item.Master_BusinessSizeName</td>
-													<td class="text-center">@item.Master_ISICCodeName</td>
-													<td class="text-center">@item.Master_YieldName</td>
-													<td class="text-center">@item.Master_ChainName</td>
-													<td class="text-center">@item.Master_LoanTypeName</td>
-													<td class="text-center">@item.CompanyEmail</td>
-													<td class="text-center">@item.CompanyTel</td>
-													<td class="text-center">@item.ParentCompanyGroup</td>
 													<td class="text-center">@item.HouseNo</td>
 													<td class="text-center">@item.VillageNo</td>
 													<td class="text-center">@item.Road_Soi_Village</td>
-													<td class="text-center">@item.ProvinceName</td>
-													<td class="text-center">@item.AmphurName</td>
 													<td class="text-center">@item.TambolName</td>
+													<td class="text-center">@item.AmphurName</td>
+													<td class="text-center">@item.ProvinceName</td>
 													<td class="text-center">@item.ZipCode</td>
 													@if (item.Customer_Committees?.Count > 0)
 													{
@@ -143,25 +134,35 @@
 															<td class="text-center">@item_sha.TotalShareValue?.ToString(GeneralTxt.FormatDecimal2)</td>
 														}
 													}
+													<td class="text-center">@item.Master_BusinessTypeName</td>
 													<td class="text-center">@item.RegisteredCapital</td>
+													<td class="text-center">@item.Master_BusinessSizeName</td>
+													<td class="text-center">@item.Master_TSICName</td>
+													@* <td class="text-center">@item.Master_ISICCodeName</td> *@
+													@* <td class="text-center">@item.Master_YieldName</td> *@
+													@* <td class="text-center">@item.Master_ChainName</td> *@
+													@* <td class="text-center">@item.Master_LoanTypeName</td> *@
+													@* <td class="text-center">@item.CompanyEmail</td>
+													<td class="text-center">@item.CompanyTel</td>
+													<td class="text-center">@item.ParentCompanyGroup</td> *@
 													<td class="text-center">@item.CreditScore</td>
 													<td class="text-center">@item.FiscalYear</td>
 													<td class="text-center">@GeneralUtils.DateToEnStr(item.StatementDate)</td>
-													<td class="text-center">@item.TradeAccReceivable</td>
-													<td class="text-center">@item.TradeAccRecProceedsNet</td>
-													<td class="text-center">@item.Inventories</td>
+													<td class="text-center">@item.TradeAccReceivable?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.TradeAccRecProceedsNet?.ToString(GeneralTxt.FormatDecimal2)</td>
+													<td class="text-center">@item.Inventories?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.LoansShort?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.LoansLong?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2)</td>
-													<td class="text-center">@item.TradeAccPay</td>
+													<td class="text-center">@item.TradeAccPay?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2)</td>
-													<td class="text-center">@item.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)</td>
+													@* <td class="text-center">@item.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)</td> *@
 													<td class="text-center">@item.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2)</td>
@@ -174,9 +175,9 @@
 													<td class="text-center">@item.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2)</td>
 													<td class="text-center">@item.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)</td>
-													<td class="text-center">@item.ProfitLossBeforeIncomeTaxExpense?.ToString(GeneralTxt.FormatDecimal2)</td>
+													@* <td class="text-center">@item.ProfitLossBeforeIncomeTaxExpense?.ToString(GeneralTxt.FormatDecimal2)</td> *@
 													<td class="text-center">@item.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2)</td>
-													<td class="text-center">@item.InterestNote</td>
+													@* <td class="text-center">@item.InterestNote</td> *@
 												</tr>
 											}
 										}

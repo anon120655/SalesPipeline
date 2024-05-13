@@ -116,6 +116,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return name;
 		}
 
+		public async Task<Guid?> GetIdByName(string name)
+		{
+			var query = await _repo.Context.Master_TSICs.Where(x => x.Name == name).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				return query.Id;
+			}
+			return null;
+		}
+
 		public async Task<PaginationView<List<Master_TSICCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Master_TSICs

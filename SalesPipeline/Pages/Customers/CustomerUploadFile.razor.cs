@@ -1199,7 +1199,7 @@ namespace SalesPipeline.Pages.Customers
 
 									if (header_list.TryGetValue("ประเภทกิจการ", out cellIndex))
 									{
-										Master_BusinessTypeName = row.GetCell(cellIndex).ToString();
+										Master_BusinessTypeName = row.GetCell(cellIndex).ToString()?.Trim();
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_BusinessTypeId = guidMaster;
@@ -1211,7 +1211,7 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ขนาดธุรกิจ", out cellIndex))
 									{
-										Master_BusinessSizeName = row.GetCell(cellIndex).ToString();
+										Master_BusinessSizeName = row.GetCell(cellIndex).ToString()?.Trim();
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_BusinessSizeId = guidMaster;
@@ -1219,7 +1219,8 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ประเภทธุรกิจ (TSIC) รหัสที่ 1", out cellIndex))
 									{
-										Master_TSICName = row.GetCell(cellIndex).ToString();
+										Master_TSICName = row.GetCell(cellIndex).ToString()?.Trim();
+										Master_TSICName = Master_TSICName?.Substring(8);
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_TSICId = guidMaster;
@@ -1236,12 +1237,12 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("วันเดือนปีงบการเงิน", out cellIndex))
 									{
-										var ShareholderMeetDayStr = dateTimeMaster.ToString("dd/MM/yyyy");
-										StatementDate = GeneralUtils.DateToEn(ShareholderMeetDayStr);
-										//if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
-										//{
-										//	StatementDate = dateTimeMaster;
-										//}
+										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
+										{
+											var StatementDateStr = dateTimeMaster.ToString("dd/MM/yyyy");
+											StatementDate = GeneralUtils.DateToEn(StatementDateStr);
+											//ShareholderMeetDay = dateTimeMaster;
+										}
 									}
 									if (header_list.TryGetValue("ลูกหนี้การค้า", out cellIndex))
 									{
@@ -1419,27 +1420,34 @@ namespace SalesPipeline.Pages.Customers
 											OperatingExpenses = decimalMaster;
 										}
 									}
-									if (header_list.TryGetValue("กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย", out cellIndex))
+									//if (header_list.TryGetValue("กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย", out cellIndex))
+									//{
+									//	if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+									//	{
+									//		ProfitLossBeforeDepExp = decimalMaster;
+									//	}
+									//}
+									if (header_list.TryGetValue("กำไร(ขาดทุน)ก่อนหักค่าเสื่อมราคาและค่าใช้จ่ายตัดจ่าย", out cellIndex))
 									{
 										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
 										{
 											ProfitLossBeforeDepExp = decimalMaster;
 										}
 									}
-									if (header_list.TryGetValue("กำไร(ขาดทุน)ก่อนหักค่าเสื่อมราคาและค่าใช้จ่ายตัดจ่าย", out cellIndex))
+									if (header_list.TryGetValue("กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้", out cellIndex))
 									{
 										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
 										{
 											ProfitLossBeforeInterestTax = decimalMaster;
 										}
 									}
-									if (header_list.TryGetValue("กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้", out cellIndex))
-									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
-										{
-											ProfitLossBeforeIncomeTaxExpense = decimalMaster;
-										}
-									}
+									//if (header_list.TryGetValue("กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้", out cellIndex))
+									//{
+									//	if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+									//	{
+									//		ProfitLossBeforeIncomeTaxExpense = decimalMaster;
+									//	}
+									//}
 									if (header_list.TryGetValue("กำไร(ขาดทุน)สุทธิ", out cellIndex))
 									{
 										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))

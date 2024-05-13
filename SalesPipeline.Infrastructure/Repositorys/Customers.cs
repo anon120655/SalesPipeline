@@ -75,14 +75,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					model.Master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
 				}
+				else if (!model.Master_BusinessTypeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessTypeName))
+				{
+					model.Master_BusinessTypeId = await _repo.MasterBusinessType.GetIdByName(model.Master_BusinessTypeName);
+				}
+
 				if (model.Master_BusinessSizeId.HasValue)
 				{
 					model.Master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
 				}
+				else if (!model.Master_BusinessSizeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessSizeName))
+				{
+					model.Master_BusinessSizeId = await _repo.MasterBusinessSize.GetIdByName(model.Master_BusinessSizeName);
+				}
+
 				if (model.Master_ISICCodeId.HasValue)
 				{
 					model.Master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
 				}
+
+				if (model.Master_TSICId.HasValue)
+				{
+					model.Master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
+				}
+				else if (!model.Master_TSICId.HasValue && !string.IsNullOrEmpty(model.Master_TSICName))
+				{
+					model.Master_TSICId = await _repo.MasterTSIC.GetIdByName(model.Master_TSICName);
+				}
+
 				if (model.Master_YieldId.HasValue)
 				{
 					model.Master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
@@ -95,18 +115,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					model.Master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
 				}
+
 				if (model.ProvinceId.HasValue)
 				{
 					model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 				}
+				else if (!model.ProvinceId.HasValue && !string.IsNullOrEmpty(model.ProvinceName))
+				{
+					model.ProvinceId = await _repo.Thailand.GetProvinceIdByName(model.ProvinceName);
+				}
+
 				if (model.AmphurId.HasValue)
 				{
 					model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 				}
+				else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
+				{
+					model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
+				}
+
 				if (model.TambolId.HasValue)
 				{
 					model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 				}
+				else if (!model.TambolId.HasValue && !string.IsNullOrEmpty(model.TambolName))
+				{
+					model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
+				}
+
 			}
 
 			return model;
@@ -191,22 +227,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
 				}
+
 				if (model.Master_BusinessTypeId.HasValue)
 				{
 					master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
 				}
+				else if (!model.Master_BusinessTypeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessTypeName))
+				{
+					model.Master_BusinessTypeId = await _repo.MasterBusinessType.GetIdByName(model.Master_BusinessTypeName);
+				}
+
 				if (model.Master_BusinessSizeId.HasValue)
 				{
 					master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
 				}
+				else if (!model.Master_BusinessSizeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessSizeName))
+				{
+					model.Master_BusinessSizeId = await _repo.MasterBusinessSize.GetIdByName(model.Master_BusinessSizeName);
+				}
+
 				if (model.Master_ISICCodeId.HasValue)
 				{
 					master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
 				}
+
 				if (model.Master_TSICId.HasValue)
 				{
 					master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
 				}
+				else if (!model.Master_TSICId.HasValue && !string.IsNullOrEmpty(model.Master_TSICName))
+				{
+					model.Master_TSICId = await _repo.MasterBusinessSize.GetIdByName(model.Master_TSICName);
+				}
+
 				if (model.Master_YieldId.HasValue)
 				{
 					master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
@@ -219,18 +272,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
 				}
+
 				if (model.ProvinceId.HasValue)
 				{
-					provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+					model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 				}
+				else if (!model.ProvinceId.HasValue && !string.IsNullOrEmpty(model.ProvinceName))
+				{
+					model.ProvinceId = await _repo.Thailand.GetProvinceIdByName(model.ProvinceName);
+				}
+
 				if (model.AmphurId.HasValue)
 				{
-					amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+					model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 				}
+				else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
+				{
+					model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
+				}
+
 				if (model.TambolId.HasValue)
 				{
-					tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
+					model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 				}
+				else if (!model.TambolId.HasValue && !string.IsNullOrEmpty(model.TambolName))
+				{
+					model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
+				}
+
 
 				var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
 				if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
@@ -457,6 +526,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateBy = model.CurrentUserId,
 					UpdateDate = _dateNow,
 					CustomerId = customer.Id,
+					CIF = customer.CIF,
 					StatusSaleId = statusSaleId,
 					Master_Branch_RegionId = master_Branch_RegionId,
 					ProvinceId = provinceId,
@@ -512,10 +582,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
 					}
+					else if (!model.Master_BusinessTypeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessTypeName))
+					{
+						model.Master_BusinessTypeId = await _repo.MasterBusinessType.GetIdByName(model.Master_BusinessTypeName);
+					}
+
 					if (model.Master_BusinessSizeId.HasValue)
 					{
 						master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
 					}
+					else if (!model.Master_BusinessSizeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessSizeName))
+					{
+						model.Master_BusinessSizeId = await _repo.MasterBusinessSize.GetIdByName(model.Master_BusinessSizeName);
+					}
+
 					if (model.Master_ISICCodeId.HasValue)
 					{
 						master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
@@ -536,18 +616,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
 					}
+
 					if (model.ProvinceId.HasValue)
 					{
-						provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+						model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
 					}
+					else if (!model.ProvinceId.HasValue && !string.IsNullOrEmpty(model.ProvinceName))
+					{
+						model.ProvinceId = await _repo.Thailand.GetProvinceIdByName(model.ProvinceName);
+					}
+
 					if (model.AmphurId.HasValue)
 					{
-						amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+						model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
 					}
+					else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
+					{
+						model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
+					}
+
 					if (model.TambolId.HasValue)
 					{
-						tambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
+						model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
 					}
+					else if (!model.TambolId.HasValue && !string.IsNullOrEmpty(model.TambolName))
+					{
+						model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
+					}
+
 
 					var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
 					if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");

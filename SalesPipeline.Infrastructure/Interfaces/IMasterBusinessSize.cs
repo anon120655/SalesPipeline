@@ -11,6 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateStatusById(UpdateModel model);
 		Task<Master_BusinessSizeCustom> GetById(Guid id);
 		Task<string?> GetNameById(Guid id);
+		Task<Guid?> GetIdByName(string name);
 		Task<PaginationView<List<Master_BusinessSizeCustom>>> GetList(allFilter model);
 	}
 }
