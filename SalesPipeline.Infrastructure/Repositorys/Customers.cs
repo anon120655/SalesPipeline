@@ -179,6 +179,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? master_BusinessTypeName = null;
 				string? master_BusinessSizeName = null;
 				string? master_ISICCodeName = null;
+				string? master_TSICName = null;
 				string? master_YieldName = null;
 				string? master_ChainName = null;
 				string? master_LoanTypeName = null;
@@ -201,6 +202,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (model.Master_ISICCodeId.HasValue)
 				{
 					master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
+				}
+				if (model.Master_TSICId.HasValue)
+				{
+					master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
 				}
 				if (model.Master_YieldId.HasValue)
 				{
@@ -256,6 +261,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.Master_BusinessSizeName = master_BusinessSizeName;
 				customer.Master_ISICCodeId = model.Master_ISICCodeId;
 				customer.Master_ISICCodeName = master_ISICCodeName;
+				customer.Master_TSICId = model.Master_TSICId;
+				customer.Master_TSICName = master_TSICName;
 				customer.Master_YieldId = model.Master_YieldId;
 				customer.Master_YieldName = master_YieldName;
 				customer.Master_ChainId = model.Master_ChainId;
@@ -267,6 +274,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.ParentCompanyGroup = model.ParentCompanyGroup;
 				customer.HouseNo = model.HouseNo;
 				customer.VillageNo = model.VillageNo;
+				customer.Road_Soi_Village = model.Road_Soi_Village;
 				customer.ProvinceId = model.ProvinceId;
 				customer.ProvinceName = provinceName;
 				customer.AmphurId = model.AmphurId;
@@ -306,6 +314,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.OperatingExpenses = model.OperatingExpenses;
 				customer.ProfitLossBeforeDepExp = model.ProfitLossBeforeDepExp;
 				customer.ProfitLossBeforeInterestTax = model.ProfitLossBeforeInterestTax;
+				customer.ProfitLossBeforeIncomeTaxExpense = model.ProfitLossBeforeIncomeTaxExpense;
 				customer.NetProfitLoss = model.NetProfitLoss;
 				customer.InterestLoan = model.InterestLoan;
 				customer.InterestLoanSpecify = model.InterestLoanSpecify;
@@ -480,6 +489,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					string? master_BusinessTypeName = null;
 					string? master_BusinessSizeName = null;
 					string? master_ISICCodeName = null;
+					string? master_TSICName = null;
 					string? master_YieldName = null;
 					string? master_ChainName = null;
 					string? master_LoanTypeName = null;
@@ -502,6 +512,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (model.Master_ISICCodeId.HasValue)
 					{
 						master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
+					}
+					if (model.Master_TSICId.HasValue)
+					{
+						master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
 					}
 					if (model.Master_YieldId.HasValue)
 					{
@@ -551,6 +565,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.Master_BusinessSizeName = master_BusinessSizeName;
 					customer.Master_ISICCodeId = model.Master_ISICCodeId;
 					customer.Master_ISICCodeName = master_ISICCodeName;
+					customer.Master_TSICId = model.Master_TSICId;
+					customer.Master_TSICName = master_TSICName;
 					customer.Master_YieldId = model.Master_YieldId;
 					customer.Master_YieldName = master_YieldName;
 					customer.Master_ChainId = model.Master_ChainId;
@@ -601,6 +617,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.OperatingExpenses = model.OperatingExpenses;
 					customer.ProfitLossBeforeDepExp = model.ProfitLossBeforeDepExp;
 					customer.ProfitLossBeforeInterestTax = model.ProfitLossBeforeInterestTax;
+					customer.ProfitLossBeforeIncomeTaxExpense = model.ProfitLossBeforeIncomeTaxExpense;
 					customer.NetProfitLoss = model.NetProfitLoss;
 					customer.InterestLoan = model.InterestLoan;
 					customer.InterestLoanSpecify = model.InterestLoanSpecify;

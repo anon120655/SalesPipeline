@@ -60,7 +60,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 						var bytefile = ms.ToArray();
 						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "UserAdminImport.xlsx");
-						if (files == null) throw new ExceptionCustom("File Not Support.");
+						if (files == null) throw new Exception("File Not Support.");
 
 						string folderName = @$"{_appSet.Value.ContentRootPath}\import\excel";
 
@@ -68,7 +68,7 @@ namespace SalesPipeline.Pages.Users.Admin
 						{
 							string sFileExtension = Path.GetExtension(files.FileName).ToLower();
 							if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-								throw new ExceptionCustom("FileExtension Not Support.");
+								throw new Exception("FileExtension Not Support.");
 
 							ISheet sheet;
 							string fullPath = Path.Combine(folderName, files.FileName);
@@ -79,7 +79,7 @@ namespace SalesPipeline.Pages.Users.Admin
 								int sheetCount = 0;
 								if (sFileExtension == ".xls")
 								{
-									throw new ExceptionCustom("not support  Excel 97-2000 formats.");
+									throw new Exception("not support  Excel 97-2000 formats.");
 								}
 
 								XSSFWorkbook hssfwb = new XSSFWorkbook(streamread); //This will read 2007 Excel format  
@@ -106,12 +106,12 @@ namespace SalesPipeline.Pages.Users.Admin
 										|| row_6 != "ระดับหน้าที่"
 										|| row_7 != "ระดับ")
 									{
-										throw new ExceptionCustom("Template file not support.");
+										throw new Exception("Template file not support.");
 									}
 								}
 								catch
 								{
-									throw new ExceptionCustom("Template file not support.");
+									throw new Exception("Template file not support.");
 								}
 
 
@@ -123,7 +123,7 @@ namespace SalesPipeline.Pages.Users.Admin
 								header_list_key = header_list.Select(x => x.Key).ToList();
 								if (header_list_key.Count < 8)
 								{
-									throw new ExceptionCustom("Template file not support.");
+									throw new Exception("Template file not support.");
 								}
 
 								string? EmployeeId = null;
@@ -199,33 +199,33 @@ namespace SalesPipeline.Pages.Users.Admin
 									if (UserList == null) UserList = new();
 
 									if (string.IsNullOrEmpty(EmployeeId))
-										throw new ExceptionCustom("รหัสพนักงาน ไม่ครบถ้วน");
+										throw new Exception("รหัสพนักงาน ไม่ครบถ้วน");
 
 									if (string.IsNullOrEmpty(FullName))
-										throw new ExceptionCustom("ชื่อ-สกุล ไม่ครบถ้วน");
+										throw new Exception("ชื่อ-สกุล ไม่ครบถ้วน");
 
 									if (string.IsNullOrEmpty(Email))
-										throw new ExceptionCustom("Email ไม่ครบถ้วน");
+										throw new Exception("Email ไม่ครบถ้วน");
 
 									if (string.IsNullOrEmpty(Tel))
-										throw new ExceptionCustom("Tel ไม่ครบถ้วน");
+										throw new Exception("Tel ไม่ครบถ้วน");
 
 									if (!PositionId.HasValue)
-										throw new ExceptionCustom("ตำแหน่ง ไม่ครบถ้วน");
+										throw new Exception("ตำแหน่ง ไม่ครบถ้วน");
 
 									if (UserList.Select(x => x.EmployeeId).Any(x => x == EmployeeId))
-										throw new ExceptionCustom("มีรหัสพนักงานซ้ำ กรุณาตรวจสอบอีกครั้ง");
+										throw new Exception("มีรหัสพนักงานซ้ำ กรุณาตรวจสอบอีกครั้ง");
 
 									if (!RoleId.HasValue)
-										throw new ExceptionCustom("ระดับหน้าที่ ไม่ครบถ้วน");
+										throw new Exception("ระดับหน้าที่ ไม่ครบถ้วน");
 
 									if (RoleId < 3 || RoleId > 4)
 									{
-										throw new ExceptionCustom("ระดับหน้าที่ไม่ถูกต้อง ต้องอยู่ในช่วง(3-4)");
+										throw new Exception("ระดับหน้าที่ไม่ถูกต้อง ต้องอยู่ในช่วง(3-4)");
 									}
 
 									if (!LevelId.HasValue)
-										throw new ExceptionCustom("ระดับ ไม่ครบถ้วน");
+										throw new Exception("ระดับ ไม่ครบถ้วน");
 
 
 									UserList.Add(new UserCustom()

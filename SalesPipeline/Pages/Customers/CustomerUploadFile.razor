@@ -33,7 +33,7 @@
 												<Button Style="background-color: #1378D5;color:white;"><i class="fa-solid fa-upload"></i> นำเข้าไฟล์</Button>
 											}
 										</div>
-										<InputFile @key=@(_inputFileId) OnChange="@OnChooseFile"
+										<InputFile @key=@(_inputFileId) OnChange="@OnChooseFileTemplateFCC"
 												   accept=".xlsx, .xls, .csv"
 												   @ondragenter="HandleDragEnter"
 												   @ondragleave="HandleDragLeave">Browse File</InputFile>

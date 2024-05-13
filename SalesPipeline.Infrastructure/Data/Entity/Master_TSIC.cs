@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ประเภทกิจการ
+/// ประเภทธุรกิจ (TSIC)
 /// </summary>
-public partial class Master_BusinessType
+public partial class Master_TSIC
 {
     public Guid Id { get; set; }
 
@@ -23,9 +23,9 @@ public partial class Master_BusinessType
 
     public int UpdateBy { get; set; }
 
+    public string? Code { get; set; }
+
     public string? Name { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
-
-    public virtual ICollection<Sale_Partner> Sale_Partners { get; set; } = new List<Sale_Partner>();
 }

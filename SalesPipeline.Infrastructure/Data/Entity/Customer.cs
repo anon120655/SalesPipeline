@@ -81,7 +81,7 @@ public partial class Customer
     public string? JuristicPersonRegNumber { get; set; }
 
     /// <summary>
-    /// ประเภทธุรกิจ
+    /// ประเภทกิจการ
     /// </summary>
     public Guid? Master_BusinessTypeId { get; set; }
 
@@ -100,6 +100,13 @@ public partial class Customer
     public Guid? Master_ISICCodeId { get; set; }
 
     public string? Master_ISICCodeName { get; set; }
+
+    /// <summary>
+    /// ประเภทธุรกิจ (TSIC)
+    /// </summary>
+    public Guid? Master_TSICId { get; set; }
+
+    public string? Master_TSICName { get; set; }
 
     /// <summary>
     /// ผลผลิตหลัก
@@ -136,6 +143,11 @@ public partial class Customer
     /// กลุ่มบริษัทแม่
     /// </summary>
     public string? ParentCompanyGroup { get; set; }
+
+    /// <summary>
+    /// ถนน/ซอย/หมู่บ้าน
+    /// </summary>
+    public string? Road_Soi_Village { get; set; }
 
     /// <summary>
     /// บ้านเลขที่
@@ -334,6 +346,11 @@ public partial class Customer
     public decimal? ProfitLossBeforeInterestTax { get; set; }
 
     /// <summary>
+    /// กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้
+    /// </summary>
+    public decimal? ProfitLossBeforeIncomeTaxExpense { get; set; }
+
+    /// <summary>
     /// กำไร (ขาดทุน) สุทธิ
     /// </summary>
     public decimal? NetProfitLoss { get; set; }
@@ -382,6 +399,8 @@ public partial class Customer
     public virtual Master_ISICCode? Master_ISICCode { get; set; }
 
     public virtual Master_LoanType? Master_LoanType { get; set; }
+
+    public virtual Master_TSIC? Master_TSIC { get; set; }
 
     public virtual Master_Yield? Master_Yield { get; set; }
 

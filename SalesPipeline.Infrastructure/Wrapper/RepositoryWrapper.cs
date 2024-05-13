@@ -39,6 +39,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterBusinessType MasterBusinessType { get; }
 		public IMasterContactChannel MasterContactChannel { get; }
 		public IMasterISICCode MasterISICCode { get; }
+		public IMasterTSIC MasterTSIC { get; }
 		public IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
 		public IThailand Thailand { get; }
@@ -80,6 +81,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterBusinessType = new MasterBusinessType(this, _db, settings, _mapper);
 			MasterContactChannel = new MasterContactChannel(this, _db, settings, _mapper);
 			MasterISICCode = new MasterISICCode(this, _db, settings, _mapper);
+			MasterTSIC = new MasterTSIC(this, _db, settings, _mapper);
 			MasterReasonCloseSale = new MasterReasonCloseSale(this, _db, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);

@@ -51,6 +51,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_BusinessType, Master_BusinessTypeCustom>().ReverseMap();
 			CreateMap<Entity.Master_ContactChannel, Master_ContactChannelCustom>().ReverseMap();
 			CreateMap<Entity.Master_ISICCode, Master_ISICCodeCustom>().ReverseMap();
+			CreateMap<Entity.Master_TSIC, Master_TSICCustom>().ReverseMap();
 			CreateMap<Entity.Master_Reason_CloseSale, Master_Reason_CloseSaleCustom>().ReverseMap();
 			CreateMap<Entity.Master_StatusSale, Master_StatusSaleCustom>().ReverseMap();
 			CreateMap<Entity.Master_Year, Master_YearCustom>().ReverseMap();

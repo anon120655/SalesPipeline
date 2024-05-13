@@ -27,6 +27,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<Master_BusinessTypeCustom>? BusinessType { get; set; }
 		public List<Master_ContactChannelCustom>? ContactChannel { get; set; }
 		public List<Master_ISICCodeCustom>? ISICCode { get; set; }
+		public List<Master_TSICCustom>? TSIC { get; set; }
 		public List<Master_LoanTypeCustom>? LoanType { get; set; }
 		public List<Master_ReasonReturnCustom>? ReasonReturn { get; set; }
 		public List<Master_YearCustom>? Years { get; set; }

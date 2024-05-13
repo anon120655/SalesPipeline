@@ -1,9 +1,4 @@
 ﻿using SalesPipeline.Utils.Resources.Loggers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils
 {
@@ -34,6 +29,8 @@ namespace SalesPipeline.Utils
 			public int MailPort { get; set; }
 			public bool IsSentMail { get; set; }
 			public string? DefualtMail { get; set; }
+			public bool IsSentMailCc { get; set; }
+			public string? DefualtMailCc { get; set; }
 		}
 
 		public string? Version

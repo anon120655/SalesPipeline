@@ -19,12 +19,12 @@ namespace SalesPipeline.Pages.Login
 
 			if (firstRender)
 			{
-				if (_appSet.Value.ServerSite != ServerSites.PRO)
-				{
-					loginModel.Username = "superadmin@gmail.com";
-					loginModel.Password = "password";
-					StateHasChanged();
-				}
+				//if (_appSet.Value.ServerSite != ServerSites.PRO)
+				//{
+				//	loginModel.Username = "superadmin@gmail.com";
+				//	loginModel.Password = "password";
+				//	StateHasChanged();
+				//}
 				firstRender = false;
 			}
 		}

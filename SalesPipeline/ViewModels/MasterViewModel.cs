@@ -247,6 +247,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<Master_TSICCustom>>>> GetTSIC(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetTSIC?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_TSICCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_TSICCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_TSICCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Master_StatusSaleCustom>>>> GetStatusSale(allFilter model)
 		{
 			try

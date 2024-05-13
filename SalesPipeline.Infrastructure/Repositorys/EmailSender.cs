@@ -68,11 +68,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						resource.Email = _setting.DefualtMail;
 					}
 
+					if (!String.IsNullOrEmpty(_setting.DefualtMailCc))
+					{
+						List<string> lists = _setting.DefualtMailCc.Split(',').ToList<string>();
+						if (lists.Count > 0)
+						{
+							resource.CcList = new();
+							foreach (var item in lists)
+							{
+								resource.CcList.Add(item);
+							}
+						}
+					}
+
 					if (context is not null)
 					{
 						if (context.Request.Host.Value.Contains("localhost"))
 						{
-							resource.Email = "arnon.w@ibusiness.co.th";
+							if (!resource.Email.Contains("ibusiness.co.th"))
+							{
+								resource.Email = "arnon.w@ibusiness.co.th";
+							}
 						}
 					}
 
@@ -85,7 +101,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					mimeMessage.To.Add(new MailboxAddress(resource.SenderName, resource.Email));
 					mimeMessage.Subject = resource.Subject;
 
-					if (_appSet.ServerSite.ToUpper() == ServerSites.UAT || _appSet.ServerSite.ToUpper() == ServerSites.PRO)
+					if (_appSet.EmailConfig.IsSentMailCc)
 					{
 						if (resource.CcList != null && resource.CcList.Count > 0)
 						{

@@ -96,7 +96,7 @@
 				</div>
 			</div>
 			<div class="form-group row mb-1">
-				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ : </label>
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทกิจการ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@formModel.Customer.Master_BusinessTypeName
@@ -115,24 +115,24 @@
 						@formModel.Customer.Master_ISICCodeName
 					</label>
 				</div>
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ(TSIC) : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.Customer.Master_TSICName
+					</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@formModel.Customer.Master_YieldName
 					</label>
 				</div>
-			</div>
-			<div class="form-group row mb-1">
-				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า :</label>
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@formModel.Customer.Master_ChainName
-					</label>
-				</div>
-				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล : </label>
-				<div class="col-6 col-md-7 col-xl-3">
-					<label class="col-form-label">
-						@formModel.Customer.CompanyEmail
 					</label>
 				</div>
 			</div>
@@ -145,12 +145,20 @@
 				</div>
 			</div>
 			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.Customer.CompanyEmail
+					</label>
+				</div>
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@formModel.Customer.CompanyTel
 					</label>
 				</div>
+			</div>
+			<div class="form-group row mb-1">
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
@@ -580,6 +588,14 @@
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@formModel.Customer.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)
+					</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้ : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@formModel.Customer.ProfitLossBeforeIncomeTaxExpense?.ToString(GeneralTxt.FormatDecimal2)
 					</label>
 				</div>
 			</div>

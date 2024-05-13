@@ -164,7 +164,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ประเภทธุรกิจ
+		/// ประเภทกิจการ
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -214,6 +214,26 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var response = await _repo.MasterISICCode.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		/// <summary>
+		/// ประเภทธุรกิจ (TSIC)
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpGet("GetTSIC")]
+		public async Task<IActionResult> GetTSIC([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterTSIC.GetList(model);
 
 				return Ok(response);
 			}

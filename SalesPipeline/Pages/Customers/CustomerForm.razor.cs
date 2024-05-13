@@ -105,11 +105,23 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var tSIC = await _masterViewModel.GetTSIC(new allFilter() { status = StatusModel.Active, pagesize = 50 });
+			if (tSIC != null && tSIC.Status)
+			{
+				LookUp.TSIC = tSIC.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = tSIC?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ContactChannel");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessSize");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "TSIC");
 
 			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
 			if (yields != null && yields.Status)

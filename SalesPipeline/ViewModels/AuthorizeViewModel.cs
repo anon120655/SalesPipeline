@@ -255,17 +255,17 @@ namespace SalesPipeline.ViewModels
 				}
 				else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
 				{
-					throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+					throw new Exception(GeneralTxt.ExceptionTxtDefault);
 				}
 				else
 				{
 					if (response.Content != null)
 					{
-						throw new ExceptionCustom(GeneralUtils.MapErrorModel(await response.Content.ReadAsStringAsync()));
+						throw new Exception(GeneralUtils.MapErrorModel(await response.Content.ReadAsStringAsync()));
 					}
 				}
 
-				throw new ExceptionCustom($"{response.StatusCode} กรุณาติดต่อผู้ดูแลระบบ");
+				throw new Exception($"{response.StatusCode} กรุณาติดต่อผู้ดูแลระบบ");
 			}
 			catch (Exception ex)
 			{

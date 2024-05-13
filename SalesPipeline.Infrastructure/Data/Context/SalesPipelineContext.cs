@@ -82,6 +82,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_StatusSale> Master_StatusSales { get; set; }
 
+    public virtual DbSet<Master_TSIC> Master_TSICs { get; set; }
+
     public virtual DbSet<Master_TypeLoanRequest> Master_TypeLoanRequests { get; set; }
 
     public virtual DbSet<Master_Year> Master_Years { get; set; }
@@ -365,6 +367,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Master_LoanTypeId, "Master_LoanTypeId");
 
+            entity.HasIndex(e => e.Master_TSICId, "Master_TSICId");
+
             entity.HasIndex(e => e.Master_YieldId, "Master_YieldId");
 
             entity.HasIndex(e => e.ProvinceId, "ProvinceId");
@@ -457,7 +461,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("เงินให้กู้ยืมระยะสั้น");
             entity.Property(e => e.Master_BusinessSizeId).HasComment("ขนาดธุรกิจ");
             entity.Property(e => e.Master_BusinessSizeName).HasMaxLength(255);
-            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทกิจการ");
             entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
             entity.Property(e => e.Master_ChainId).HasComment("ห่วงโซ่คุณค่า ");
             entity.Property(e => e.Master_ChainName).HasMaxLength(255);
@@ -467,6 +471,8 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Master_ISICCodeName).HasMaxLength(255);
             entity.Property(e => e.Master_LoanTypeId).HasComment("ประเภทสินเชื่อ");
             entity.Property(e => e.Master_LoanTypeName).HasMaxLength(255);
+            entity.Property(e => e.Master_TSICId).HasComment("ประเภทธุรกิจ (TSIC)");
+            entity.Property(e => e.Master_TSICName).HasMaxLength(255);
             entity.Property(e => e.Master_YieldId).HasComment("ผลผลิตหลัก");
             entity.Property(e => e.Master_YieldName).HasMaxLength(255);
             entity.Property(e => e.NetProfitLoss)
@@ -484,6 +490,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ProfitLossBeforeDepExp)
                 .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย");
+            entity.Property(e => e.ProfitLossBeforeIncomeTaxExpense)
+                .HasPrecision(18, 2)
+                .HasComment("กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้");
             entity.Property(e => e.ProfitLossBeforeInterestTax)
                 .HasPrecision(18, 2)
                 .HasComment("กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี");
@@ -503,6 +512,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.RegisteredCapital)
                 .HasMaxLength(255)
                 .HasComment("ทุนจดทะเบียน");
+            entity.Property(e => e.Road_Soi_Village)
+                .HasMaxLength(255)
+                .HasComment("ถนน/ซอย/หมู่บ้าน");
             entity.Property(e => e.ShareholderMeetDay)
                 .HasComment("วันประชุมผู้ถือหุ้น")
                 .HasColumnType("datetime");
@@ -599,6 +611,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_LoanType).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Master_LoanTypeId)
                 .HasConstraintName("customer_ibfk_11");
+
+            entity.HasOne(d => d.Master_TSIC).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Master_TSICId)
+                .HasConstraintName("customer_ibfk_12");
 
             entity.HasOne(d => d.Master_Yield).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Master_YieldId)
@@ -940,7 +956,7 @@ public partial class SalesPipelineContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Master_BusinessType", tb => tb.HasComment("ประเภทธุรกิจ"));
+            entity.ToTable("Master_BusinessType", tb => tb.HasComment("ประเภทกิจการ"));
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -1214,6 +1230,23 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+        });
+
+        modelBuilder.Entity<Master_TSIC>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_TSIC", tb => tb.HasComment("ประเภทธุรกิจ (TSIC)"));
+
+            entity.Property(e => e.Code).HasMaxLength(255);
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Master_TypeLoanRequest>(entity =>

@@ -92,7 +92,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public string? JuristicPersonRegNumber { get; set; }
 
 		/// <summary>
-		/// ประเภทธุรกิจ
+		/// ประเภทกิจการ
 		/// </summary>
 		public Guid? Master_BusinessTypeId { get; set; }
 
@@ -111,6 +111,13 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public Guid? Master_ISICCodeId { get; set; }
 
 		public string? Master_ISICCodeName { get; set; }
+
+		/// <summary>
+		/// ประเภทธุรกิจ (TSIC)
+		/// </summary>
+		public Guid? Master_TSICId { get; set; }
+
+		public string? Master_TSICName { get; set; }
 
 		/// <summary>
 		/// ผลผลิตหลัก
@@ -147,6 +154,11 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// กลุ่มบริษัทแม่
 		/// </summary>
 		public string? ParentCompanyGroup { get; set; }
+
+		/// <summary>
+		/// ถนน/ซอย/หมู่บ้าน
+		/// </summary>
+		public string? Road_Soi_Village { get; set; }
 
 		/// <summary>
 		/// บ้านเลขที่
@@ -343,6 +355,11 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี
 		/// </summary>
 		public decimal? ProfitLossBeforeInterestTax { get; set; }
+
+		/// <summary>
+		/// กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้
+		/// </summary>
+		public decimal? ProfitLossBeforeIncomeTaxExpense { get; set; }
 
 		/// <summary>
 		/// กำไร (ขาดทุน) สุทธิ

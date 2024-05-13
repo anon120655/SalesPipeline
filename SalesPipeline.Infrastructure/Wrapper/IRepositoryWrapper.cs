@@ -35,6 +35,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterBusinessType MasterBusinessType { get; }
 		IMasterContactChannel MasterContactChannel { get; }
 		IMasterISICCode MasterISICCode { get; }
+		IMasterTSIC MasterTSIC { get; }
 		IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		IMasterStatusSale MasterStatusSale { get; }
 		IThailand Thailand { get; }

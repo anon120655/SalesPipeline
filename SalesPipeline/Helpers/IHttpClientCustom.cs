@@ -114,22 +114,22 @@ namespace SalesPipeline.Helpers
 										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
 										if (txterror != null)
 										{
-											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+											throw new Exception($"{txterror.field} {txterror.message}");
 										}
 									}
 								}
-								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								throw new Exception(GeneralTxt.ExceptionTxtDefault);
 							}
 							else
 							{
 								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
 								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
 								{
-									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+									throw new Exception(GeneralTxt.ExceptionTxtDefault);
 								}
 							}
 						}
-						throw new ExceptionCustom(dataMap?.Message);
+						throw new Exception(dataMap?.Message);
 					}
 				}
 
@@ -139,25 +139,25 @@ namespace SalesPipeline.Helpers
 					{
 						if (responseClient.Content.Contains("EnableRetryOnFailure"))
 						{
-							throw new ExceptionCustom("Retry On Failure.");
+							throw new Exception("Retry On Failure.");
 						}
 						else
 						{
-							throw new ExceptionCustom("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+							throw new Exception("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
 						}
 					}
 				}
 
 				if (responseClient.StatusCode == System.Net.HttpStatusCode.Unauthorized)
 				{
-					throw new ExceptionCustom("Unauthorized!");
+					throw new Exception("Unauthorized!");
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
 			}
 		}
 
@@ -213,22 +213,22 @@ namespace SalesPipeline.Helpers
 										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
 										if (txterror != null)
 										{
-											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+											throw new Exception($"{txterror.field} {txterror.message}");
 										}
 									}
 								}
-								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								throw new Exception(GeneralTxt.ExceptionTxtDefault);
 							}
 							else
 							{
 								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
 								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
 								{
-									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+									throw new Exception(GeneralTxt.ExceptionTxtDefault);
 								}
 							}
 						}
-						throw new ExceptionCustom(dataMap?.Message);
+						throw new Exception(dataMap?.Message);
 					}
 				}
 
@@ -236,15 +236,15 @@ namespace SalesPipeline.Helpers
 				{
 					if (responseClient.Content != null)
 					{
-						throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+						throw new Exception(GeneralTxt.ExceptionTxtDefault);
 					}
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
 			}
 		}
 
@@ -296,22 +296,22 @@ namespace SalesPipeline.Helpers
 										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
 										if (txterror != null)
 										{
-											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+											throw new Exception($"{txterror.field} {txterror.message}");
 										}
 									}
 								}
-								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								throw new Exception(GeneralTxt.ExceptionTxtDefault);
 							}
 							else
 							{
 								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
 								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
 								{
-									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+									throw new Exception(GeneralTxt.ExceptionTxtDefault);
 								}
 							}
 						}
-						throw new ExceptionCustom(dataMap?.Message);
+						throw new Exception(dataMap?.Message);
 					}
 				}
 
@@ -319,15 +319,15 @@ namespace SalesPipeline.Helpers
 				{
 					if (responseClient.Content != null)
 					{
-						throw new ExceptionCustom("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+						throw new Exception("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
 					}
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
 			}
 		}
 
@@ -380,22 +380,22 @@ namespace SalesPipeline.Helpers
 										var txterror = dataMapErrorDefault.errors.FirstOrDefault();
 										if (txterror != null)
 										{
-											throw new ExceptionCustom($"{txterror.field} {txterror.message}");
+											throw new Exception($"{txterror.field} {txterror.message}");
 										}
 									}
 								}
-								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								throw new Exception(GeneralTxt.ExceptionTxtDefault);
 							}
 							else
 							{
 								var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
 								if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
 								{
-									throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+									throw new Exception(GeneralTxt.ExceptionTxtDefault);
 								}
 							}
 						}
-						throw new ExceptionCustom(dataMap?.Message);
+						throw new Exception(dataMap?.Message);
 					}
 				}
 
@@ -403,15 +403,15 @@ namespace SalesPipeline.Helpers
 				{
 					if (responseClient.Content != null)
 					{
-						throw new ExceptionCustom("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+						throw new Exception("เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
 					}
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
 			}
 		}
 
@@ -448,11 +448,11 @@ namespace SalesPipeline.Helpers
 					}
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom(GeneralUtils.GetExMessage(ex));
+				throw new Exception(GeneralUtils.GetExMessage(ex));
 			}
 		}
 
@@ -490,11 +490,11 @@ namespace SalesPipeline.Helpers
 					}
 				}
 
-				throw new ExceptionCustom($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
+				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new ExceptionCustom(GeneralUtils.GetExMessage(ex));
+				throw new Exception(GeneralUtils.GetExMessage(ex));
 			}
 		}
 
@@ -553,10 +553,10 @@ namespace SalesPipeline.Helpers
 							var dataMapErrorDefault = JsonConvert.DeserializeObject<ErrorDefaultModel>(responseClient.Content);
 							if (dataMapErrorDefault != null && dataMapErrorDefault.traceId != null)
 							{
-								throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+								throw new Exception(GeneralTxt.ExceptionTxtDefault);
 							}
 						}
-						throw new ExceptionCustom(dataMap?.Message);
+						throw new Exception(dataMap?.Message);
 					}
 				}
 
@@ -564,7 +564,7 @@ namespace SalesPipeline.Helpers
 				{
 					if (responseClient.Content != null)
 					{
-						throw new ExceptionCustom(GeneralTxt.ExceptionTxtDefault);
+						throw new Exception(GeneralTxt.ExceptionTxtDefault);
 					}
 				}
 
