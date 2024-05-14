@@ -1,0 +1,30 @@
+﻿
+@page "/setting/pre/loanapplicant"
+
+<PageTitle>ประเภทผู้ขอสินเชื่อ</PageTitle>
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">ประเภทผู้ขอสินเชื่อ</p>
+						</div>
+					</div>
+					<div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

@@ -32,7 +32,14 @@ namespace SalesPipeline.API.Controllers
 
 				if (response != null)
 				{
-					await _repo.User.LogLogin(new() { UserId = response.Id, IPAddress = model.IPAddress });
+					await _repo.User.LogLogin(new()
+					{
+						UserId = response.Id,
+						IPAddress = model.IPAddress,
+						DeviceVersion = model.DeviceVersion,
+						AppVersion = model.AppVersion,
+						ApiAccessKey = model.ApiAccessKey
+					});
 				}
 
 				return Ok(response);

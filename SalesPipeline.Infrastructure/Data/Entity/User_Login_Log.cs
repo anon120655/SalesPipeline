@@ -14,4 +14,10 @@ public partial class User_Login_Log
     public string? FullName { get; set; }
 
     public string? IPAddress { get; set; }
+
+    public string? DeviceVersion { get; set; }
+
+    public string? AppVersion { get; set; }
+
+    public string? ApiAccessKey { get; set; }
 }

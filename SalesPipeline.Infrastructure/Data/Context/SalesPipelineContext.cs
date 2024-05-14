@@ -2679,10 +2679,13 @@ public partial class SalesPipelineContext : DbContext
             entity.ToTable("User_Login_Log");
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.ApiAccessKey).HasMaxLength(300);
+            entity.Property(e => e.AppVersion).HasMaxLength(255);
             entity.Property(e => e.CreateDate)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
                 .HasColumnType("timestamp");
+            entity.Property(e => e.DeviceVersion).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.IPAddress).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnType("int(11)");

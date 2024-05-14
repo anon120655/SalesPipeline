@@ -16,5 +16,11 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? Password { get; set; }
 
 		public string? IPAddress { get; set; }
+
+		public string? DeviceVersion { get; set; }
+
+		public string? AppVersion { get; set; }
+
+		public string? ApiAccessKey { get; set; }
 	}
 }
