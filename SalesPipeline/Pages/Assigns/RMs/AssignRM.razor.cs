@@ -144,17 +144,18 @@ namespace SalesPipeline.Pages.Assigns.RMs
 		protected async Task SetModel()
 		{
 			allFilter filter = new();
-			if (UserInfo.RoleCode != null)
-			{
-				filter.assigncenter = UserInfo.Id;
+			//if (UserInfo.RoleCode != null)
+			//{
+			//	filter.assigncenter = UserInfo.Id;
 
-				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
-				{
-					filter.assigncenter = null;
-					filter.assignrm = null;
-				}
-			}
+			//	if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+			//	{
+			//		filter.assigncenter = null;
+			//		filter.assignrm = null;
+			//	}
+			//}
 
+			filter.userid = UserInfo.Id;
 			filter.pagesize = 1000;
 			var data = await _assignmentRMViewModel.GetListAutoAssign(filter);
 			if (data != null && data.Status)

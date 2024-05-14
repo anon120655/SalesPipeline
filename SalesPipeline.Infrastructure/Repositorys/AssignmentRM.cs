@@ -197,32 +197,45 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				return new();
+			}
+
 			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
 
 			//รูปแบบการมอบหมายตามเกณฑ์
-			//1. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
-			//2. หาลูกค้าที่ยังไม่ถูกมอบหมาย
+			//1. ข้อมูลพนักงาน RM เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+			//2. หาข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
 			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
 			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
 
-			Guid? assignmentCenterId = null;
-			int? assignmentCenterUserId = null;
-			if (model.assigncenter.HasValue)
-			{
-				var assignment_MCenter = await _repo.Context.Assignment_CenterBranches.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
-				if (assignment_MCenter != null)
-				{
-					assignmentCenterId = assignment_MCenter.Id;
-					assignmentCenterUserId = assignment_MCenter.UserId;
-				}
-			}
+			//Guid? assignmentCenterId = null;
+			//int? assignmentCenterUserId = null;
+			//if (model.assigncenter.HasValue)
+			//{
+			//	var assignment_MCenter = await _repo.Context.Assignment_CenterBranches.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
+			//	if (assignment_MCenter != null)
+			//	{
+			//		assignmentCenterId = assignment_MCenter.Id;
+			//		assignmentCenterUserId = assignment_MCenter.UserId;
+			//	}
+			//}
 
-			//เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+			//ข้อมูลพนักงาน RM เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
 												 .Include(x => x.User)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x=>x.BranchId == user.BranchId);
+			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
@@ -250,16 +263,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			List<Assignment_RMCustom> responseItems = new();
 
-			//ลูกค้าที่ยังไม่ถูกมอบหมาย
+			//ข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
 			var salesQuery = _repo.Context.Sales
 				.Include(x => x.Customer)
 				.Where(x => x.Status != StatusModel.Delete && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.AsQueryable();
 
-			if (assignmentCenterUserId.HasValue)
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
-				salesQuery = salesQuery.Where(x => x.AssCenterUserId == assignmentCenterUserId.Value);
+				salesQuery = salesQuery.Where(x => x.AssCenterUserId == user.Id);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
