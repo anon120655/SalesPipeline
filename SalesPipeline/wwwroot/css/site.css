@@ -718,3 +718,15 @@ body.waiting * {
 form .row {
     font-size: .9rem;
 }
+
+.field-icon {
+    float: right;
+    padding: 0px 10px 0 0;
+    margin-left: -25px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    color: #9d9d9d;
+    cursor: pointer;
+    font-size: 15pt;
+}

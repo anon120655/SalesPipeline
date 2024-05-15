@@ -11,6 +11,7 @@ namespace SalesPipeline.Pages.Login
 	{
 		string? _errorMessage = null;
 		bool isLoading = false;
+		bool toggleEye = false;
 		LoginRequestModel loginModel = new();
 
 		protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -66,6 +67,11 @@ namespace SalesPipeline.Pages.Login
 			{
 				loginModel.IsRememberMe = false;
 			}
+		}
+
+		protected void TogglePassword()
+		{
+			toggleEye = !toggleEye;
 		}
 
 
