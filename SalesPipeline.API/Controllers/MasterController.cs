@@ -993,12 +993,12 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		//ประเภทผู้ขอสินเชื่อ
-		[HttpPost("CreatePre_Loan_App")]
-		public async Task<IActionResult> CreatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		[HttpPost("CreatePre_App_Loan")]
+		public async Task<IActionResult> CreatePre_App_Loan(Master_Pre_Applicant_LoanCustom model)
 		{
 			try
 			{
-				var data = await _repo.Master_Pre_Loan_App.Create(model);
+				var data = await _repo.Master_Pre_App_Loan.Create(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -1007,12 +1007,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdatePre_Loan_App")]
-		public async Task<IActionResult> UpdatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		[HttpPut("UpdatePre_App_Loan")]
+		public async Task<IActionResult> UpdatePre_App_Loan(Master_Pre_Applicant_LoanCustom model)
 		{
 			try
 			{
-				var data = await _repo.Master_Pre_Loan_App.Update(model);
+				var data = await _repo.Master_Pre_App_Loan.Update(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -1021,12 +1021,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpDelete("DeletePre_Loan_AppById")]
-		public async Task<IActionResult> DeletePre_Loan_AppById([FromQuery] UpdateModel model)
+		[HttpDelete("DeletePre_App_LoanById")]
+		public async Task<IActionResult> DeletePre_App_LoanById([FromQuery] UpdateModel model)
 		{
 			try
 			{
-				await _repo.Master_Pre_Loan_App.DeleteById(model);
+				await _repo.Master_Pre_App_Loan.DeleteById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -1035,12 +1035,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("UpdateStatusPre_Loan_AppById")]
-		public async Task<IActionResult> UpdateStatusPre_Loan_AppById(UpdateModel model)
+		[HttpPut("UpdateStatusPre_App_LoanById")]
+		public async Task<IActionResult> UpdateStatusPre_App_LoanById(UpdateModel model)
 		{
 			try
 			{
-				await _repo.Master_Pre_Loan_App.UpdateStatusById(model);
+				await _repo.Master_Pre_App_Loan.UpdateStatusById(model);
 				return Ok();
 			}
 			catch (Exception ex)
@@ -1049,12 +1049,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetPre_Loan_AppById")]
-		public async Task<IActionResult> GetPre_Loan_AppById([FromQuery] Guid id)
+		[HttpGet("GetPre_App_LoanById")]
+		public async Task<IActionResult> GetPre_App_LoanById([FromQuery] Guid id)
 		{
 			try
 			{
-				var data = await _repo.Master_Pre_Loan_App.GetById(id);
+				var data = await _repo.Master_Pre_App_Loan.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -1063,12 +1063,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetPre_Loan_App")]
-		public async Task<IActionResult> GetPre_Loan_App([FromQuery] allFilter model)
+		[HttpGet("GetPre_App_Loan")]
+		public async Task<IActionResult> GetPre_App_Loan([FromQuery] allFilter model)
 		{
 			try
 			{
-				var response = await _repo.Master_Pre_Loan_App.GetList(model);
+				var response = await _repo.Master_Pre_App_Loan.GetList(model);
 
 				return Ok(response);
 			}

@@ -9,7 +9,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove
 {
-	public partial class LoanApplicant
+	public partial class ApplicantLoan
 	{
 		public Guid? id { get; set; }
 
@@ -17,8 +17,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private bool isLoading = false;
-		private List<Master_Pre_Loan_ApplicantCustom>? Items;
-		private Master_Pre_Loan_ApplicantCustom formModel = new();
+		private List<Master_Pre_Applicant_LoanCustom>? Items;
+		private Master_Pre_Applicant_LoanCustom formModel = new();
 
 		Modal modalForm = default!;
 		ModalConfirm modalConfirm = default!;
@@ -42,7 +42,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModel()
 		{
-			var data = await _masterViewModel.GetPre_Loan_App(filter);
+			var data = await _masterViewModel.GetPre_App_Loan(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -56,7 +56,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModelById(Guid id)
 		{
-			var data = await _masterViewModel.GetPre_Loan_AppById(id);
+			var data = await _masterViewModel.GetPre_App_LoanById(id);
 			if (data != null && data.Status)
 			{
 				if (data.Data != null)
@@ -77,17 +77,17 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_Pre_Loan_ApplicantCustom> response;
+			ResultModel<Master_Pre_Applicant_LoanCustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue && id != Guid.Empty)
 			{
-				response = await _masterViewModel.UpdatePre_Loan_App(formModel);
+				response = await _masterViewModel.UpdatePre_App_Loan(formModel);
 			}
 			else
 			{
-				response = await _masterViewModel.CreatePre_Loan_App(formModel);
+				response = await _masterViewModel.CreatePre_App_Loan(formModel);
 			}
 
 			if (response.Status)
@@ -114,7 +114,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			await modalConfirm.OnHideConfirm();
 
-			var data = await _masterViewModel.DeletePre_Loan_AppById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			var data = await _masterViewModel.DeletePre_App_LoanById(new UpdateModel() { id = id, userid = UserInfo.Id });
 			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 			{
 				_errorMessage = data?.errorMessage;
@@ -127,7 +127,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
 			{
-				var data = await _masterViewModel.UpdateStatusPre_Loan_AppById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+				var data = await _masterViewModel.UpdateStatusPre_App_LoanById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
 				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 				{
 					_errorMessage = data?.errorMessage;

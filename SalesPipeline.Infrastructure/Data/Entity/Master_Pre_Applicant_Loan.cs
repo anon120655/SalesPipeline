@@ -6,7 +6,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// <summary>
 /// ประเภทผู้ขอสินเชื่อ
 /// </summary>
-public partial class Master_Pre_Loan_Applicant
+public partial class Master_Pre_Applicant_Loan
 {
     public Guid Id { get; set; }
 

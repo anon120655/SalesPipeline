@@ -14,14 +14,14 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Master_Pre_Loan_App : IMaster_Pre_Loan_App
+	public class Master_Pre_App_Loan : IMaster_Pre_App_Loan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public Master_Pre_Loan_App(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Master_Pre_App_Loan(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
@@ -29,13 +29,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<Master_Pre_Loan_ApplicantCustom> Create(Master_Pre_Loan_ApplicantCustom model)
+		public async Task<Master_Pre_Applicant_LoanCustom> Create(Master_Pre_Applicant_LoanCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				var pre_Loan_Applicant = new Data.Entity.Master_Pre_Loan_Applicant()
+				var pre_Applicant_Loan = new Data.Entity.Master_Pre_Applicant_Loan()
 				{
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
@@ -44,41 +44,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateBy = model.CurrentUserId,
 					Name = model.Name,
 				};
-				await _db.InsterAsync(pre_Loan_Applicant);
+				await _db.InsterAsync(pre_Applicant_Loan);
 				await _db.SaveAsync();
 
 				_transaction.Commit();
 
-				return _mapper.Map<Master_Pre_Loan_ApplicantCustom>(pre_Loan_Applicant);
+				return _mapper.Map<Master_Pre_Applicant_LoanCustom>(pre_Applicant_Loan);
 			}
 		}
 
-		public async Task<Master_Pre_Loan_ApplicantCustom> Update(Master_Pre_Loan_ApplicantCustom model)
+		public async Task<Master_Pre_Applicant_LoanCustom> Update(Master_Pre_Applicant_LoanCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				var _dateNow = DateTime.Now;
 
-				var master_Pre_Loan_Applicants = await _repo.Context.Master_Pre_Loan_Applicants.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
-				if (master_Pre_Loan_Applicants != null)
+				var master_Pre_Applicant_Loan = await _repo.Context.Master_Pre_Applicant_Loans.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (master_Pre_Applicant_Loan != null)
 				{
-					master_Pre_Loan_Applicants.UpdateDate = _dateNow;
-					master_Pre_Loan_Applicants.UpdateBy = model.CurrentUserId;
-					master_Pre_Loan_Applicants.Name = model.Name;
-					_db.Update(master_Pre_Loan_Applicants);
+					master_Pre_Applicant_Loan.UpdateDate = _dateNow;
+					master_Pre_Applicant_Loan.UpdateBy = model.CurrentUserId;
+					master_Pre_Applicant_Loan.Name = model.Name;
+					_db.Update(master_Pre_Applicant_Loan);
 					await _db.SaveAsync();
 
 					_transaction.Commit();
 				}
 
-				return _mapper.Map<Master_Pre_Loan_ApplicantCustom>(master_Pre_Loan_Applicants);
+				return _mapper.Map<Master_Pre_Applicant_LoanCustom>(master_Pre_Applicant_Loan);
 			}
 		}
 
 		public async Task DeleteById(UpdateModel model)
 		{
 			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Master_Pre_Loan_Applicants.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_Pre_Applicant_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				query.UpdateDate = DateTime.Now;
@@ -95,7 +95,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var _status = parsedValue ? (short)1 : (short)0;
 				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Master_Pre_Loan_Applicants.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				var query = await _repo.Context.Master_Pre_Applicant_Loans.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 				if (query != null)
 				{
 					query.UpdateBy = model.userid;
@@ -106,24 +106,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Master_Pre_Loan_ApplicantCustom> GetById(Guid id)
+		public async Task<Master_Pre_Applicant_LoanCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_Pre_Loan_Applicants
+			var query = await _repo.Context.Master_Pre_Applicant_Loans
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<Master_Pre_Loan_ApplicantCustom>(query);
+			return _mapper.Map<Master_Pre_Applicant_LoanCustom>(query);
 		}
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_Pre_Loan_Applicants.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_Pre_Applicant_Loans.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 
-		public async Task<PaginationView<List<Master_Pre_Loan_ApplicantCustom>>> GetList(allFilter model)
+		public async Task<PaginationView<List<Master_Pre_Applicant_LoanCustom>>> GetList(allFilter model)
 		{
-			var query = _repo.Context.Master_Pre_Loan_Applicants
+			var query = _repo.Context.Master_Pre_Applicant_Loans
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
@@ -141,9 +141,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
-			return new PaginationView<List<Master_Pre_Loan_ApplicantCustom>>()
+			return new PaginationView<List<Master_Pre_Applicant_LoanCustom>>()
 			{
-				Items = _mapper.Map<List<Master_Pre_Loan_ApplicantCustom>>(await items.ToListAsync()),
+				Items = _mapper.Map<List<Master_Pre_Applicant_LoanCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
 		}

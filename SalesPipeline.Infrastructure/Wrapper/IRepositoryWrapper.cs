@@ -39,7 +39,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		IMasterStatusSale MasterStatusSale { get; }
 		IMaster_Pre_RateType Master_Pre_RateType { get; }
-		IMaster_Pre_Loan_App Master_Pre_Loan_App { get; }
+		IMaster_Pre_App_Loan Master_Pre_App_Loan { get; }
 		IThailand Thailand { get; }
 		IAssignmentBranch AssignmentBranch { get; }
 		IAssignmentCenter AssignmentCenter { get; }

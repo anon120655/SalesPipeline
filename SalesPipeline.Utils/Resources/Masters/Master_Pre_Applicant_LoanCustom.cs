@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Masters
 {
-	public class Master_Pre_Loan_ApplicantCustom : CommonModel
+	public class Master_Pre_Applicant_LoanCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
