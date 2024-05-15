@@ -25,7 +25,7 @@
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ช่องทางการติดต่อ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_ContactChannelName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_ContactChannelName)
 					</label>
 				</div>
 			</div>
@@ -33,12 +33,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.BranchName
+						@GeneralUtils.EmptyTo(formModel.Customer.BranchName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ. :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProvincialOffice
+						@GeneralUtils.EmptyTo(formModel.Customer.ProvincialOffice)
 					</label>
 				</div>
 			</div>
@@ -46,12 +46,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อพนักงาน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.EmployeeName
+						@GeneralUtils.EmptyTo(formModel.Customer.EmployeeName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสพนักงาน. :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.EmployeeId
+						@GeneralUtils.EmptyTo(formModel.Customer.EmployeeId)
 					</label>
 				</div>
 			</div>
@@ -59,12 +59,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ติดต่อ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ContactName
+						@GeneralUtils.EmptyTo(formModel.Customer.ContactName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ContactTel
+						@GeneralUtils.EmptyTo(formModel.Customer.ContactTel)
 					</label>
 				</div>
 			</div>
@@ -86,12 +86,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อบริษัท : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CompanyName
+						@GeneralUtils.EmptyTo(formModel.Customer.CompanyName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เลขทะเบียนนิติบุคคล :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.JuristicPersonRegNumber
+						@GeneralUtils.EmptyTo(formModel.Customer.JuristicPersonRegNumber)
 					</label>
 				</div>
 			</div>
@@ -99,12 +99,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทกิจการ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_BusinessTypeName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_BusinessTypeName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ขนาดธุรกิจ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_BusinessSizeName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_BusinessSizeName)
 					</label>
 				</div>
 			</div>
@@ -112,13 +112,13 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_ISICCodeName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_ISICCodeName)
 					</label>
 				</div>
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ(TSIC) : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_TSICName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_TSICName)
 					</label>
 				</div>
 			</div>
@@ -126,13 +126,13 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ผลผลิตหลัก : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_YieldName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_YieldName)
 					</label>
 				</div>
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ห่วงโซ่คุณค่า : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_ChainName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_ChainName)
 					</label>
 				</div>
 			</div>
@@ -140,7 +140,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทสินเชื่อ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Master_LoanTypeName
+						@GeneralUtils.EmptyTo(formModel.Customer.Master_LoanTypeName)
 					</label>
 				</div>
 			</div>
@@ -148,13 +148,13 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CompanyEmail
+						@GeneralUtils.EmptyTo(formModel.Customer.CompanyEmail)
 					</label>
 				</div>
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CompanyTel
+						@GeneralUtils.EmptyTo(formModel.Customer.CompanyTel)
 					</label>
 				</div>
 			</div>
@@ -162,7 +162,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ParentCompanyGroup
+						@GeneralUtils.EmptyTo(formModel.Customer.ParentCompanyGroup)
 					</label>
 				</div>
 			</div>
@@ -183,12 +183,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.HouseNo
+						@GeneralUtils.EmptyTo(formModel.Customer.HouseNo)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.VillageNo
+						@GeneralUtils.EmptyTo(formModel.Customer.VillageNo)
 					</label>
 				</div>
 			</div>
@@ -196,12 +196,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProvinceName
+						@GeneralUtils.EmptyTo(formModel.Customer.ProvinceName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.AmphurName
+						@GeneralUtils.EmptyTo(formModel.Customer.AmphurName)
 					</label>
 				</div>
 			</div>
@@ -209,12 +209,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TambolName
+						@GeneralUtils.EmptyTo(formModel.Customer.TambolName)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รหัสไปรษณีย์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ZipCode
+						@GeneralUtils.EmptyTo(formModel.Customer.ZipCode)
 					</label>
 				</div>
 			</div>
@@ -222,12 +222,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CompanyEmail
+						@GeneralUtils.EmptyTo(formModel.Customer.CompanyEmail)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">โทรศัพท์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CompanyTel
+						@GeneralUtils.EmptyTo(formModel.Customer.CompanyTel)
 					</label>
 				</div>
 			</div>
@@ -235,7 +235,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กลุ่มบริษัทแม่ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ParentCompanyGroup
+						@GeneralUtils.EmptyTo(formModel.Customer.ParentCompanyGroup)
 					</label>
 				</div>
 			</div>
@@ -314,13 +314,13 @@
 						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อผู้ถือหุ้น : </label>
 						<div class="col-6 col-md-7 col-xl-3">
 							<label class="col-form-label">
-								@item.Name
+								@GeneralUtils.EmptyTo(item.Name)
 							</label>
 						</div>
 						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สัญชาติ :</label>
 						<div class="col-6 col-md-7 col-xl-3">
 							<label class="col-form-label">
-								@item.Nationality
+								@GeneralUtils.EmptyTo(item.Nationality)
 							</label>
 						</div>
 					</div>
@@ -328,13 +328,13 @@
 						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สัดส่วนการถือหุ้น : </label>
 						<div class="col-6 col-md-7 col-xl-3">
 							<label class="col-form-label">
-								@item.Proportion
+								@GeneralUtils.EmptyTo(item.Proportion)
 							</label>
 						</div>
 						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนหุ้นที่ถือ :</label>
 						<div class="col-6 col-md-7 col-xl-3">
 							<label class="col-form-label">
-								@item.NumberShareholder
+								@GeneralUtils.EmptyTo(item.NumberShareholder)
 							</label>
 						</div>
 					</div>
@@ -377,12 +377,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.RegisteredCapital
+						@GeneralUtils.EmptyTo(formModel.Customer.RegisteredCapital)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">Credit Score :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CreditScore
+						@GeneralUtils.EmptyTo(formModel.Customer.CreditScore)
 					</label>
 				</div>
 			</div>
@@ -390,12 +390,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ปีงบการเงิน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.FiscalYear
+						@GeneralUtils.EmptyTo(formModel.Customer.FiscalYear)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วันเดือนปีงบการเงิน :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.StatementDate
+						@GeneralUtils.getFullThaiShot(formModel.Customer.StatementDate)
 					</label>
 				</div>
 			</div>
@@ -403,12 +403,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้า : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccReceivable
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccReceivable)
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccRecProceedsNet
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccRecProceedsNet)
 					</label>
 				</div>
 			</div>
@@ -416,12 +416,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สินค้าคงเหลือ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.Inventories
+						@GeneralUtils.EmptyTo(formModel.Customer.Inventories?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LoansShort?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.LoansShort?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -429,7 +429,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TotalCurrentAssets?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -437,12 +437,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะยาว : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LoansLong?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.LoansLong?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ที่ดิน อาคาร และอุปกรณ์ :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.LandBuildingEquipment?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -450,7 +450,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ไม่หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TotalNotCurrentAssets?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -458,7 +458,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมสินทรัพย์ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.AssetsTotal?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -466,12 +466,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เจ้าหนี้การค้า : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPay
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPay?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayLoansShot?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -479,7 +479,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินหมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayTotalCurrentLia?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -487,7 +487,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินกู้ระยะยาว : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayLoansLong?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -495,12 +495,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินไม่หมุนเวียน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayTotalNotCurrentLia?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เงินให้กู้ยืมระยะสั้น :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayForLoansShot?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -508,7 +508,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สิน : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TradeAccPayTotalLiabilitie?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -516,12 +516,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนสามัญ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.RegisterCapitalOrdinary?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ทุนจดทะเบียนที่ชำระแล้ว :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.RegisterCapitalPaid?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -529,7 +529,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สะสม : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossAccumulate?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.ProfitLossAccumulate?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -537,7 +537,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมส่วนของผู้ถือหุ้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalShareholders?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TotalShareholders?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -545,7 +545,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รวมหนี้สินและส่วนของผู้ถือหุ้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalLiabilitieShareholders?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TotalLiabilitieShareholders?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -553,12 +553,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">รายได้รวม : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.TotalIncome?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.TotalIncome?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ต้นทุนขาย :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.CostSales?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.CostSales?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -566,12 +566,12 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไรขั้นต้น : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.GrossProfit?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.GrossProfit?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ค่าใช้จ่ายในการดำเนินงาน :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.OperatingExpenses?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -579,7 +579,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักค่าเสื่อมและค่าใช้จ่าย : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.ProfitLossBeforeDepExp?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -587,7 +587,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) ก่อนหักดอกเบี้ยและภาษี : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.ProfitLossBeforeInterestTax?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -595,7 +595,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.ProfitLossBeforeIncomeTaxExpense?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.ProfitLossBeforeIncomeTaxExpense?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -603,7 +603,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">กำไร (ขาดทุน) สุทธิ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2)
+						@GeneralUtils.EmptyTo(formModel.Customer.NetProfitLoss?.ToString(GeneralTxt.FormatDecimal2))
 					</label>
 				</div>
 			</div>
@@ -653,7 +653,7 @@
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">หมายเหตุ : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
-						@formModel.Customer.InterestNote
+						@GeneralUtils.EmptyTo(formModel.Customer.InterestNote)
 					</label>
 				</div>
 			</div>
