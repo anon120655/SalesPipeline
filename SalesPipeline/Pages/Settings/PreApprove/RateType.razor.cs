@@ -1,5 +1,9 @@
+using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove
 {
@@ -8,6 +12,10 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
+		private bool isLoading = false;
+		private allFilter filter = new();
+		private List<Master_Pre_Interest_RateTypeCustom>? Items;
+		public Pager? Pager;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -15,6 +23,89 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			StateHasChanged();
 			await Task.Delay(1);
 		}
+
+		protected async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if (firstRender)
+			{
+				await SetModel();
+				StateHasChanged();
+				firstRender = false;
+			}
+		}
+
+		protected async Task SetModel()
+		{
+			var data = await _masterViewModel.GetPre_RateType(filter);
+			if (data != null && data.Status)
+			{
+				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/setting/pre/ratetype";
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+		}
+
+		protected async Task Save()
+		{
+			_errorMessage = null;
+			ShowLoading();
+
+			if (Items == null || Items.Count == 0)
+			{
+				_errorMessage = "ไม่พบข้อมูลประเภทอัตราดอกเบี้ย";
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+
+			if (Items != null && Items.Count > 0)
+			{
+				foreach (var item in Items)
+				{
+					item.CurrentUserId = UserInfo.Id;
+				}
+			}
+
+			var response = await _masterViewModel.UpdatePre_RateType(Items);
+
+			if (response.Status)
+			{
+				HideLoading();
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+
+				Items = new();
+				StateHasChanged();
+				await SetModel();
+				StateHasChanged();
+			}
+			else
+			{
+				HideLoading();
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
+
+		protected void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		protected void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
+		}
+
 
 	}
 }

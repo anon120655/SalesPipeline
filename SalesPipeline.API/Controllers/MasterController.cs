@@ -953,6 +953,131 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		//Pre Approve
+		//ประเภทอัตราดอกเบี้ย
+		[HttpPut("UpdatePre_RateType")]
+		public async Task<IActionResult> UpdatePre_RateType(List<Master_Pre_Interest_RateTypeCustom> model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					foreach (var item in model)
+					{
+						await _repo.Master_Pre_RateType.Update(item);
+					}
+
+					_transaction.Commit();
+				}
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPre_RateType")]
+		public async Task<IActionResult> GetPre_RateType([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master_Pre_RateType.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		//ประเภทผู้ขอสินเชื่อ
+		[HttpPost("CreatePre_Loan_App")]
+		public async Task<IActionResult> CreatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_Loan_App.Create(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdatePre_Loan_App")]
+		public async Task<IActionResult> UpdatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_Loan_App.Update(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpDelete("DeletePre_Loan_AppById")]
+		public async Task<IActionResult> DeletePre_Loan_AppById([FromQuery] UpdateModel model)
+		{
+			try
+			{
+				await _repo.Master_Pre_Loan_App.DeleteById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateStatusPre_Loan_AppById")]
+		public async Task<IActionResult> UpdateStatusPre_Loan_AppById(UpdateModel model)
+		{
+			try
+			{
+				await _repo.Master_Pre_Loan_App.UpdateStatusById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPre_Loan_AppById")]
+		public async Task<IActionResult> GetPre_Loan_AppById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_Loan_App.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPre_Loan_App")]
+		public async Task<IActionResult> GetPre_Loan_App([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master_Pre_Loan_App.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 	}
 }

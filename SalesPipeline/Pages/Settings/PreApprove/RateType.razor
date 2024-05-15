@@ -1,5 +1,4 @@
-﻿
-@page "/setting/pre/ratetype"
+﻿@page "/setting/pre/ratetype"
 
 <PageTitle>ประเภทอัตราดอกเบี้ย</PageTitle>
 
@@ -15,8 +14,73 @@
 							<p class="back_topic">ประเภทอัตราดอกเบี้ย</p>
 						</div>
 					</div>
-					<div>
-						<ComingSoon />
+					<div class="row mt-5">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="">ประเภทดอกเบี้ย</th>
+											<th class="">ชื่อเต็มประเภทดอกเบี้ย</th>
+											<th class="">อัตราดอกเบี้ย</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												bool status = item.Status == StatusModel.Active;
+
+												<tr>
+													<td class="">@item.Code</td>
+													<td class="">@item.Name</td>
+													<td class="">
+														<div class="row maxw_95per">
+															<div class="col-10 col-lg-5">
+																<input type="text" class="form-control"
+																	   @onchange="@((ChangeEventArgs e) => item.Rate = GeneralUtils.ToDecimal(e.Value))"
+																	   value="@item.Rate?.ToString(GeneralTxt.FormatDecimal3)">
+															</div>
+															<label class="col col-form-label">%</label>
+														</div>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">						
+							<div class="p-2 bd-highlight">
+								<Button @onclick=Save Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									@if (isLoading)
+									{
+										<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+									}
+									บันทึก
+								</Button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

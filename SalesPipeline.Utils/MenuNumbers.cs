@@ -32,24 +32,27 @@
 		//จัดการระบบ
 		public const int Systems = 220000;
 
+		//จัดการ User
 		public const int RMUser = 230000;
 
-		//จัดการระบบผู้ใช้งาน
-		public const int LoanPermission = 240100;
-		public const int LoanUser = 240200;
+		//รายการสินเชื่อ
+		public const int Loan = 240000;
 
+		//จัดการระบบผู้ใช้งาน
+		public const int LoanPermission = 250100;
+		public const int LoanUser = 250200;
 
 		//ตั้งค่า
-		public const int Setting = 250000;
-		public const int SetDivBranch = 250101;
-		public const int SetDivLoan = 250102;
-		public const int SetYieldChain = 250200;
-		public const int SetLoanType = 250300;
-		public const int SetReason = 250400;
-		public const int SetSLA = 250500;
-		public const int SetProcessSales = 250600;
-		public const int SetTargetsales = 250700;
-		public const int SetPreApprove = 250800;
+		public const int Setting = 260000;
+		public const int SetDivBranch = 260101;
+		public const int SetDivLoan = 260102;
+		public const int SetYieldChain = 260200;
+		public const int SetLoanType = 260300;
+		public const int SetReason = 260400;
+		public const int SetSLA = 260500;
+		public const int SetProcessSales = 260600;
+		public const int SetTargetsales = 260700;
+		public const int SetPreApprove = 260800;
 
 	}
 }

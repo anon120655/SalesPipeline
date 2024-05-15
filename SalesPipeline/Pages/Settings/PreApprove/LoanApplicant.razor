@@ -3,6 +3,8 @@
 
 <PageTitle>ประเภทผู้ขอสินเชื่อ</PageTitle>
 
+<link href="/css/switch.css" rel="stylesheet" />
+
 @if (_permission.IsView)
 {
 	<div class="container-fluid">
@@ -15,13 +17,116 @@
 							<p class="back_topic">ประเภทผู้ขอสินเชื่อ</p>
 						</div>
 					</div>
-					<div>
-						<ComingSoon />
+					<div class="row mt-3">
+						<div class="col-12 border-end">
+							<div class="row my-4 filter_s text-end">
+								<div class="col mb-2 mt-3">
+									<Button @onclick="(async()=> await OnShow())" Color="ButtonColor.Success" Class="mw_6r">
+										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+									</Button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="table-responsive border-top">
+										<table class="table table_list">
+											<thead>
+												<tr>
+													<th class="text-center">ประเภทผู้ขอสินเชื่อ</th>
+													<th class="text-center">จัดการ</th>
+													<th class="text-center">การใช้งาน</th>
+												</tr>
+											</thead>
+											<tbody>
+												@if (Items == null)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+														</td>
+													</tr>
+												}
+												else if (Items.Count == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													foreach (var item in Items)
+													{
+														bool status = item.Status == StatusModel.Active;
+
+														<tr>
+															<td class="">@item.Name</td>
+															<td class="text-center">
+																<a class="text-action" role="button" @onclick="(async()=> await OnShow(item.Id))">แก้ไข</a> /
+																<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
+															</td>
+															<td class="text-center">
+																<label class="switch">
+																	<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
+																	<span class="slider round"></span>
+																</label>
+															</td>
+														</tr>
+													}
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>						
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+
+	<Modal @ref="modalForm"
+		   Title="ชื่อประเภท"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModel" OnValidSubmit="Save">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">ชื่อประเภท</label>
+							<div class="col-7">
+								<input @bind="formModel.Name" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModel.Name)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 }
 else
 {

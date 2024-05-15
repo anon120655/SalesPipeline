@@ -1181,5 +1181,175 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		//Pre Approve
+		//ประเภทอัตราดอกเบี้ย
+		public async Task<ResultModel<bool>> UpdatePre_RateType(List<Master_Pre_Interest_RateTypeCustom>? model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/Master/UpdatePre_RateType", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_Pre_Interest_RateTypeCustom>>>> GetPre_RateType(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_RateType?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Pre_Interest_RateTypeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_Pre_Interest_RateTypeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_Pre_Interest_RateTypeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		//ประเภทผู้ขอสินเชื่อ
+		public async Task<ResultModel<Master_Pre_Loan_ApplicantCustom>> CreatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/CreatePre_Loan_App", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_Loan_ApplicantCustom>(content);
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Master_Pre_Loan_ApplicantCustom>> UpdatePre_Loan_App(Master_Pre_Loan_ApplicantCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/Master/UpdatePre_Loan_App", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_Loan_ApplicantCustom>(content);
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> DeletePre_Loan_AppById(UpdateModel model)
+		{
+			try
+			{
+				await _httpClient.DeleteAsync($"/v1/Master/DeletePre_Loan_AppById?{model.SetParameter(true)}");
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> UpdateStatusPre_Loan_AppById(UpdateModel model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				await _httpClient.PutAsync($"/v1/Master/UpdateStatusPre_Loan_AppById", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Master_Pre_Loan_ApplicantCustom>?> GetPre_Loan_AppById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_Loan_AppById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_Loan_ApplicantCustom>(content);
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_Loan_ApplicantCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_Pre_Loan_ApplicantCustom>>>> GetPre_Loan_App(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_Loan_App?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Pre_Loan_ApplicantCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_Pre_Loan_ApplicantCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_Pre_Loan_ApplicantCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+
 	}
 }

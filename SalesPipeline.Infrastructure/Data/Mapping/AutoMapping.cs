@@ -55,6 +55,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Master_Reason_CloseSale, Master_Reason_CloseSaleCustom>().ReverseMap();
 			CreateMap<Entity.Master_StatusSale, Master_StatusSaleCustom>().ReverseMap();
 			CreateMap<Entity.Master_Year, Master_YearCustom>().ReverseMap();
+			CreateMap<Entity.Master_Pre_Interest_RateType, Master_Pre_Interest_RateTypeCustom>().ReverseMap();
+			CreateMap<Entity.Master_Pre_Loan_Applicant, Master_Pre_Loan_ApplicantCustom>().ReverseMap();
 
 			//Thailand
 			CreateMap<Entity.InfoProvince, InfoProvinceCustom>().ReverseMap();

@@ -42,6 +42,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterTSIC MasterTSIC { get; }
 		public IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
+		public IMaster_Pre_RateType Master_Pre_RateType { get; }
+		public IMaster_Pre_Loan_App Master_Pre_Loan_App { get; }
 		public IThailand Thailand { get; }
 		public IAssignmentBranch AssignmentBranch { get; }
 		public IAssignmentCenter AssignmentCenter { get; }
@@ -84,6 +86,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterTSIC = new MasterTSIC(this, _db, settings, _mapper);
 			MasterReasonCloseSale = new MasterReasonCloseSale(this, _db, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
+			Master_Pre_RateType = new Master_Pre_RateType(this, _db, settings, _mapper);
+			Master_Pre_Loan_App = new Master_Pre_Loan_App(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
 			AssignmentBranch = new AssignmentBranch(this, _db, settings, _mapper);
 			AssignmentCenter = new AssignmentCenter(this, _db, settings, _mapper);

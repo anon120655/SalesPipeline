@@ -143,6 +143,11 @@ html, body {
     max-width: 20rem !important;
 }
 
+.maxw_95per {
+    max-width: 95% !important;
+}
+
+
 .mw_3r {
     min-width: 3rem !important;
 }
@@ -186,7 +191,6 @@ html, body {
 .mw_20r {
     min-width: 20rem !important;
 }
-
 
 .maxh_20r {
     max-height: 20rem !important;
