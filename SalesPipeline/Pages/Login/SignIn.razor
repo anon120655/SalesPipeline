@@ -27,7 +27,7 @@
 										<div class="form-outline mb-4 text-start">
 											<label class="form-label text-muted">Password</label>
 											<input type="@(toggleEye ? "text" : "password")" @bind="@loginModel.Password" class="form-control" />
-											<Icon @onclick="TogglePassword" Name="@(toggleEye ? IconName.EyeSlash : IconName.Eye)" Class="field-icon"></Icon>
+											<Icon @onclick="TogglePassword" Name="@(toggleEye ? IconName.Eye : IconName.EyeSlash)" Class="field-icon"></Icon>
 											<ValidationMessage For="@(() => loginModel.Password)" />
 										</div>
 										<div class="form-outline mb-4 text-start">
