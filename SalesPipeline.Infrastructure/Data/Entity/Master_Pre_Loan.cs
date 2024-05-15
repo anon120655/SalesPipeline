@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// กิจการสาขาภาค
+/// สินเชื่อ Pre Approve
 /// </summary>
-public partial class Master_Branch_Region
+public partial class Master_Pre_Loan
 {
     public Guid Id { get; set; }
 
@@ -24,15 +24,7 @@ public partial class Master_Branch_Region
     public int UpdateBy { get; set; }
 
     /// <summary>
-    /// รหัส
+    /// ชื่อสินเชื่อ
     /// </summary>
-    public string Code { get; set; } = null!;
-
     public string? Name { get; set; }
-
-    public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
-
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

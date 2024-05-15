@@ -70,6 +70,14 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_Position> Master_Positions { get; set; }
 
+    public virtual DbSet<Master_Pre_Interest_PayType> Master_Pre_Interest_PayTypes { get; set; }
+
+    public virtual DbSet<Master_Pre_Interest_RateType> Master_Pre_Interest_RateTypes { get; set; }
+
+    public virtual DbSet<Master_Pre_Loan> Master_Pre_Loans { get; set; }
+
+    public virtual DbSet<Master_Pre_Loan_Applicant> Master_Pre_Loan_Applicants { get; set; }
+
     public virtual DbSet<Master_Proceed> Master_Proceeds { get; set; }
 
     public virtual DbSet<Master_ProductProgramBank> Master_ProductProgramBanks { get; set; }
@@ -174,6 +182,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.BranchId, "BranchId");
 
+            entity.HasIndex(e => e.Master_Branch_RegionId, "Master_Branch_RegionId");
+
             entity.HasIndex(e => e.UserId, "UserId");
 
             entity.Property(e => e.BranchCode)
@@ -193,6 +203,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.EmployeeName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อพนักงาน");
+            entity.Property(e => e.Master_Branch_RegionId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -204,6 +215,10 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_BranchRegs)
                 .HasForeignKey(d => d.BranchId)
                 .HasConstraintName("assignment_branchreg_ibfk_2");
+
+            entity.HasOne(d => d.Master_Branch_Region).WithMany(p => p.Assignment_BranchRegs)
+                .HasForeignKey(d => d.Master_Branch_RegionId)
+                .HasConstraintName("assignment_branchreg_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_BranchRegs)
                 .HasForeignKey(d => d.UserId)
@@ -1126,6 +1141,78 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Type)
                 .HasComment("1=Admin 2=User")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Pre_Interest_PayType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Pre_Interest_PayType", tb => tb.HasComment("ประเภทการชำระดอกเบี้ย"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Pre_Interest_RateType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Pre_Interest_RateType", tb => tb.HasComment("ประเภทอัตราดอกเบี้ย"));
+
+            entity.Property(e => e.Code).HasMaxLength(255);
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อเต็ม");
+            entity.Property(e => e.Rate)
+                .HasPrecision(18, 3)
+                .HasComment("อัตราดอกเบี้ย");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Pre_Loan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Pre_Loan", tb => tb.HasComment("สินเชื่อ Pre Approve"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Master_Pre_Loan_Applicant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Master_Pre_Loan_Applicant", tb => tb.HasComment("ประเภทผู้ขอสินเชื่อ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });

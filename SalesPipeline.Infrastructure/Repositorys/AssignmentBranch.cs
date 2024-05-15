@@ -59,6 +59,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_Branch = new Data.Entity.Assignment_BranchReg();
 			assignment_Branch.Status = model.Status;
 			assignment_Branch.CreateDate = DateTime.Now;
+			assignment_Branch.Master_Branch_RegionId = model.Master_Branch_RegionId;
 			assignment_Branch.BranchId = model.BranchId;
 			assignment_Branch.BranchCode = model.BranchCode;
 			assignment_Branch.BranchName = model.BranchName;
@@ -195,6 +196,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//	sale.ProvinceName = assignment_Branch.User.ProvinceName;
 						//}
 
+						sale.Master_Branch_RegionId = assignment_BranchReg.Master_Branch_RegionId;
 						sale.BranchId = assignment_BranchReg.BranchId;
 						sale.BranchName = assignment_BranchReg.BranchName;
 						sale.AssCenterUserId = null;
@@ -247,6 +249,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var assignmentCenter = await _repo.AssignmentBranch.Create(new()
 						{
 							Status = StatusModel.Active,
+							Master_Branch_RegionId = item_branch.Master_Branch_RegionId,
 							BranchId = item_branch.BranchId,
 							BranchCode = _code,
 							BranchName = _name,

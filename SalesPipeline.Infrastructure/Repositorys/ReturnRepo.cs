@@ -30,7 +30,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task RMToMCenter(ReturnModel model)
+		/// <summary>
+		/// พนักงาน RM ส่งคืน ผู้จัดการศูนย์
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		public async Task RMToCenBranch(ReturnModel model)
 		{
 			int countReturn = 0;
 			foreach (var item in model.ListSale)
@@ -110,7 +115,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task MCenterToBranch(ReturnModel model)
+		/// <summary>
+		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		public async Task CenBranchToBranchReg(ReturnModel model)
 		{
 			int countReturn = 0;
 			foreach (var item in model.ListSale)
@@ -127,12 +137,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom("currentuserid not match assuserid");
 
 						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
-						sales.Master_Branch_RegionId = null;
-						//sales.Master_Department_BranchName = null;
-						sales.ProvinceId = null;
-						//sales.ProvinceName = null;
-						sales.BranchId = null;
-						//sales.BranchName = null;
 						sales.AssUserId = null;
 						//sales.AssUserName = null;
 						sales.AssCenterUserId = null;
@@ -179,7 +183,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
-		public async Task BranchToLCenter(ReturnModel model)
+		/// <summary>
+		/// กิจการสาขาภาค ส่งคืน ศูนย์ธุรกิจสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		public async Task BranchRegToLoan(ReturnModel model)
 		{
 			int countReturn = 0;
 			foreach (var item in model.ListSale)

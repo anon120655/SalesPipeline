@@ -598,6 +598,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (!String.IsNullOrEmpty(model.cif)) {
+				query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
+			}
+
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
 				|| x.Customer != null && x.Customer.JuristicPersonRegNumber != null && x.Customer.JuristicPersonRegNumber.Contains(model.searchtxt));

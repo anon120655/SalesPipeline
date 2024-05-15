@@ -14,6 +14,11 @@ public partial class Assignment_BranchReg
 
     public DateTime CreateDate { get; set; }
 
+    /// <summary>
+    /// กิจการสาขาภาค
+    /// </summary>
+    public Guid? Master_Branch_RegionId { get; set; }
+
     public int? BranchId { get; set; }
 
     /// <summary>
@@ -49,6 +54,8 @@ public partial class Assignment_BranchReg
     public int? CurrentNumber { get; set; }
 
     public virtual InfoBranch? Branch { get; set; }
+
+    public virtual Master_Branch_Region? Master_Branch_Region { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

@@ -219,9 +219,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? master_YieldName = null;
 				string? master_ChainName = null;
 				string? master_LoanTypeName = null;
-				string? provinceName = null;
-				string? amphurName = null;
-				string? tambolName = null;
+				//string? provinceName = null;
+				//string? amphurName = null;
+				//string? tambolName = null;
 
 				if (model.Master_ContactChannelId.HasValue)
 				{
@@ -346,11 +346,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.VillageNo = model.VillageNo;
 				customer.Road_Soi_Village = model.Road_Soi_Village;
 				customer.ProvinceId = model.ProvinceId;
-				customer.ProvinceName = provinceName;
+				customer.ProvinceName = model.ProvinceName;
 				customer.AmphurId = model.AmphurId;
-				customer.AmphurName = amphurName;
+				customer.AmphurName = model.AmphurName;
 				customer.TambolId = model.TambolId;
-				customer.TambolName = tambolName;
+				customer.TambolName = model.TambolName;
 				customer.ZipCode = model.ZipCode;
 				customer.ShareholderMeetDay = model.ShareholderMeetDay;
 				customer.RegisteredCapital = model.RegisteredCapital;
@@ -570,9 +570,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					string? master_YieldName = null;
 					string? master_ChainName = null;
 					string? master_LoanTypeName = null;
-					string? provinceName = null;
-					string? amphurName = null;
-					string? tambolName = null;
+					//string? provinceName = null;
+					//string? amphurName = null;
+					//string? tambolName = null;
 
 					if (model.Master_ContactChannelId.HasValue)
 					{
@@ -683,11 +683,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.HouseNo = model.HouseNo;
 					customer.VillageNo = model.VillageNo;
 					customer.ProvinceId = model.ProvinceId;
-					customer.ProvinceName = provinceName;
+					customer.ProvinceName = model.ProvinceName;
 					customer.AmphurId = model.AmphurId;
-					customer.AmphurName = amphurName;
+					customer.AmphurName = model.AmphurName;
 					customer.TambolId = model.TambolId;
-					customer.TambolName = tambolName;
+					customer.TambolName = model.TambolName;
 					customer.ZipCode = model.ZipCode;
 					customer.ShareholderMeetDay = model.ShareholderMeetDay;
 					customer.RegisteredCapital = model.RegisteredCapital;

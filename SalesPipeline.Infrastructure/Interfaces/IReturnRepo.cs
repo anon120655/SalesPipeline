@@ -9,8 +9,23 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IReturnRepo
 	{
-		Task RMToMCenter(ReturnModel model);
-		Task MCenterToBranch(ReturnModel model);
-		Task BranchToLCenter(ReturnModel model);
+		/// <summary>
+		/// พนักงาน RM ส่งคืน ผู้จัดการศูนย์
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		Task RMToCenBranch(ReturnModel model);
+		/// <summary>
+		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		Task CenBranchToBranchReg(ReturnModel model);
+		/// <summary>
+		/// กิจการสาขาภาค ส่งคืน ศูนย์ธุรกิจสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		Task BranchRegToLoan(ReturnModel model);
 	}
 }

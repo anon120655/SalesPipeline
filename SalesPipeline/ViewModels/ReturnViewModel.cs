@@ -20,13 +20,13 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<Boolean>> RMToMCenter(ReturnModel model)
+		public async Task<ResultModel<Boolean>> RMToCenBranch(ReturnModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Return/RMToMCenter", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/Return/RMToCenBranch", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{
@@ -43,13 +43,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Boolean>> MCenterToBranch(ReturnModel model)
+		public async Task<ResultModel<Boolean>> CenBranchToBranchReg(ReturnModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Return/MCenterToBranch", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/Return/CenBranchToBranchReg", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{
@@ -66,13 +66,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Boolean>> BranchToLCenter(ReturnModel model)
+		public async Task<ResultModel<Boolean>> BranchRegToLoan(ReturnModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Return/BranchToLCenter", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/Return/BranchRegToLoan", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{

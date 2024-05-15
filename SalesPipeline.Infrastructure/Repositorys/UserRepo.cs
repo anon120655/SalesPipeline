@@ -267,7 +267,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+						if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+						{
+							string? _code = null;
+							string? _name = null;
+							var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
+							if (branch != null)
+							{
+								_code = branch.BranchCode;
+								_name = branch.BranchName;
+							}
+
+							var assignmentCenter = await _repo.AssignmentBranch.Create(new()
+							{
+								Status = StatusModel.Active,
+								Master_Branch_RegionId = user.Master_Branch_RegionId,
+								BranchId = user.BranchId,
+								BranchCode = _code,
+								BranchName = _name,
+								UserId = user.Id,
+								EmployeeId = user.EmployeeId,
+								EmployeeName = user.FullName,
+								Tel = user.Tel,
+								CurrentNumber = 0
+							});
+						}
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 						{
 							string? _code = null;
 							string? _name = null;

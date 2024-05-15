@@ -17,6 +17,11 @@ namespace SalesPipeline.Utils.Resources.Assignments
 
 		public DateTime CreateDate { get; set; }
 
+		/// <summary>
+		/// กิจการสาขาภาค
+		/// </summary>
+		public Guid? Master_Branch_RegionId { get; set; }
+
 		public int? BranchId { get; set; }
 
 		/// <summary>

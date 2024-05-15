@@ -27,18 +27,18 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// RM ส่งคืน ผจศ.
+		/// พนักงาน RM ส่งคืน ผู้จัดการศูนย์
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpPost("RMToMCenter")]
-		public async Task<IActionResult> RMToMCenter(ReturnModel model)
+		[HttpPost("RMToCenBranch")]
+		public async Task<IActionResult> RMToCenBranch(ReturnModel model)
 		{
 			try
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Return.RMToMCenter(model);
+					await _repo.Return.RMToCenBranch(model);
 
 					_transaction.Commit();
 				}
@@ -51,18 +51,18 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ผจศ. ส่งคืน สาขาภาค
+		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpPost("MCenterToBranch")]
-		public async Task<IActionResult> MCenterToBranch(ReturnModel model)
+		[HttpPost("CenBranchToBranchReg")]
+		public async Task<IActionResult> CenBranchToBranchReg(ReturnModel model)
 		{
 			try
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Return.MCenterToBranch(model);
+					await _repo.Return.CenBranchToBranchReg(model);
 
 					_transaction.Commit();
 				}
@@ -75,18 +75,18 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// สาขาภาคส่งคืนศูนย์ธุรกิจสินเชื่อ
+		/// กิจการสาขาภาค ส่งคืน ศูนย์ธุรกิจสินเชื่อ
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpPost("BranchToLCenter")]
-		public async Task<IActionResult> BranchToLCenter(ReturnModel model)
+		[HttpPost("BranchRegToLoan")]
+		public async Task<IActionResult> BranchRegToLoan(ReturnModel model)
 		{
 			try
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Return.BranchToLCenter(model);
+					await _repo.Return.BranchRegToLoan(model);
 
 					_transaction.Commit();
 				}
