@@ -1024,76 +1024,78 @@ namespace SalesPipeline.Pages.Customers
 
 									if (header_list.TryGetValue("วันที่เข้ามาติดต่อ", out cellIndex))
 									{
-										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
+										var ttt = row.GetCell(cellIndex);
+										if (DateTime.TryParse(row.GetCell(cellIndex)?.ToString(), out dateTimeMaster))
 										{
 											DateContact = dateTimeMaster;
 										}
 									}
 									if (header_list.TryGetValue("ช่องทางการติดต่อ", out cellIndex))
 									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										var ttt = row.GetCell(cellIndex);
+										if (Guid.TryParse(row.GetCell(cellIndex)?.ToString(), out guidMaster))
 										{
 											Master_ContactChannelId = guidMaster;
 										}
 									}
 									if (header_list.TryGetValue("กิจการสาขาภาค", out cellIndex))
 									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
+										if (Guid.TryParse(row.GetCell(cellIndex)?.ToString(), out guidMaster))
 										{
 											Branch_RegionId = guidMaster;
 										}
 									}
 									if (header_list.TryGetValue("สนจ.", out cellIndex))
 									{
-										ProvincialOffice = row.GetCell(cellIndex).ToString();
+										ProvincialOffice = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ชื่อพนักงาน", out cellIndex))
 									{
-										EmployeeName = row.GetCell(cellIndex).ToString();
+										EmployeeName = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("รหัสพนักงาน", out cellIndex))
 									{
-										EmployeeId = row.GetCell(cellIndex).ToString();
+										EmployeeId = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ชื่อผู้ติดต่อ", out cellIndex))
 									{
-										ContactName = row.GetCell(cellIndex).ToString();
+										ContactName = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("โทรศัพท์ผู้ติดต่อ", out cellIndex))
 									{
-										ContactTel = row.GetCell(cellIndex).ToString();
+										ContactTel = row.GetCell(cellIndex)?.ToString();
 									}
 
 									if (header_list.TryGetValue("เลขทะเบียนนิติบุคคล", out cellIndex))
 									{
-										JuristicPersonRegNumber = row.GetCell(cellIndex).ToString();
+										JuristicPersonRegNumber = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("CIF", out cellIndex))
 									{
-										CIF = row.GetCell(cellIndex).ToString();
+										CIF = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ชื่อบริษัท", out cellIndex))
 									{
-										CompanyName = row.GetCell(cellIndex).ToString();
+										CompanyName = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("เลขที่", out cellIndex))
 									{
-										HouseNo = row.GetCell(cellIndex).ToString();
+										HouseNo = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("หมู่", out cellIndex))
 									{
-										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+										if (int.TryParse(row.GetCell(cellIndex)?.ToString(), out idMaster))
 										{
 											VillageNo = idMaster;
 										}
 									}
 									if (header_list.TryGetValue("ถนน/ซอย/หมู่บ้าน", out cellIndex))
 									{
-										Road_Soi_Village = row.GetCell(cellIndex).ToString();
+										Road_Soi_Village = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ตำบล", out cellIndex))
 									{
-										TambolName = row.GetCell(cellIndex).ToString();
+										TambolName = row.GetCell(cellIndex)?.ToString();
 										//if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
 										//{
 										//	TambolId = idMaster;
@@ -1101,7 +1103,7 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("อำเภอ", out cellIndex))
 									{
-										AmphurName = row.GetCell(cellIndex).ToString();
+										AmphurName = row.GetCell(cellIndex)?.ToString();
 										//if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
 										//{
 										//	AmphurId = idMaster;
@@ -1109,7 +1111,7 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("จังหวัด", out cellIndex))
 									{
-										ProvinceName = row.GetCell(cellIndex).ToString();
+										ProvinceName = row.GetCell(cellIndex)?.ToString();
 										//if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
 										//{
 										//	ProvinceId = idMaster;
@@ -1117,7 +1119,7 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("รหัสไปรษณีย์", out cellIndex))
 									{
-										ZipCode = row.GetCell(cellIndex).ToString();
+										ZipCode = row.GetCell(cellIndex)?.ToString();
 									}
 
 
@@ -1127,10 +1129,10 @@ namespace SalesPipeline.Pages.Customers
 									{
 										if (header_list.TryGetValue($"กรรมการ คนที่ {i}", out cellIndex))
 										{
-											string? _name = row.GetCell(cellIndex).ToString();
+											string? _name = row.GetCell(cellIndex)?.ToString();
 											//if (!string.IsNullOrEmpty(_name))
 											//{
-											Customer_Committees.Add(new() { Name = row.GetCell(cellIndex).ToString() });
+											Customer_Committees.Add(new() { Name = row.GetCell(cellIndex)?.ToString() });
 											//}
 										}
 										i++;
@@ -1138,7 +1140,7 @@ namespace SalesPipeline.Pages.Customers
 
 									if (header_list.TryGetValue("วันที่ประชุมผู้ถือหุ้น", out cellIndex))
 									{
-										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
+										if (DateTime.TryParse(row.GetCell(cellIndex)?.ToString(), out dateTimeMaster))
 										{
 											var ShareholderMeetDayStr = dateTimeMaster.ToString("dd/MM/yyyy");
 											ShareholderMeetDay = GeneralUtils.DateToEn(ShareholderMeetDayStr);
@@ -1157,29 +1159,29 @@ namespace SalesPipeline.Pages.Customers
 										decimal? _TotalShareValue = null;
 										if (header_list.TryGetValue($"ผู้ถือหุ้น คนที่ {i}", out cellIndex))
 										{
-											_Name = row.GetCell(cellIndex).ToString();
+											_Name = row.GetCell(cellIndex)?.ToString();
 										}
 
 										//if (!string.IsNullOrEmpty(_Name))
 										//{
 										if (header_list.TryGetValue($"สัญชาติ คนที่ {i}", out cellIndex))
 										{
-											_Nationality = row.GetCell(cellIndex).ToString();
+											_Nationality = row.GetCell(cellIndex)?.ToString();
 										}
 										if (header_list.TryGetValue($"สัดส่วนการถือหุ้น คนที่ {i}", out cellIndex))
 										{
-											_Proportion = row.GetCell(cellIndex).ToString();
+											_Proportion = row.GetCell(cellIndex)?.ToString();
 										}
 										if (header_list.TryGetValue($"จำนวนหุ้นที่ถือ คนที่ {i}", out cellIndex))
 										{
-											if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
+											if (int.TryParse(row.GetCell(cellIndex)?.ToString(), out idMaster))
 											{
 												_NumberShareholder = idMaster;
 											}
 										}
 										if (header_list.TryGetValue($"มูลค่าหุ้นทั้งหมด คนที่ {i}", out cellIndex))
 										{
-											if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+											if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 											{
 												_TotalShareValue = decimalMaster;
 											}
@@ -1199,7 +1201,7 @@ namespace SalesPipeline.Pages.Customers
 
 									if (header_list.TryGetValue("ประเภทกิจการ", out cellIndex))
 									{
-										Master_BusinessTypeName = row.GetCell(cellIndex).ToString()?.Trim();
+										Master_BusinessTypeName = row.GetCell(cellIndex)?.ToString()?.Trim();
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_BusinessTypeId = guidMaster;
@@ -1207,11 +1209,11 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ทุนจดทะเบียนล่าสุด", out cellIndex))
 									{
-										RegisteredCapital = row.GetCell(cellIndex).ToString();
+										RegisteredCapital = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ขนาดธุรกิจ", out cellIndex))
 									{
-										Master_BusinessSizeName = row.GetCell(cellIndex).ToString()?.Trim();
+										Master_BusinessSizeName = row.GetCell(cellIndex)?.ToString()?.Trim();
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_BusinessSizeId = guidMaster;
@@ -1219,8 +1221,11 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ประเภทธุรกิจ (TSIC) รหัสที่ 1", out cellIndex))
 									{
-										Master_TSICName = row.GetCell(cellIndex).ToString()?.Trim();
-										Master_TSICName = Master_TSICName?.Substring(8);
+										Master_TSICName = row.GetCell(cellIndex)?.ToString()?.Trim();
+										if (Master_TSICName?.Length >= 8)
+										{
+											Master_TSICName = Master_TSICName?.Substring(8);
+										}
 										//if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
 										//{
 										//	Master_TSICId = guidMaster;
@@ -1229,15 +1234,15 @@ namespace SalesPipeline.Pages.Customers
 
 									if (header_list.TryGetValue("Credit Score", out cellIndex))
 									{
-										CreditScore = row.GetCell(cellIndex).ToString();
+										CreditScore = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("ปีงบการเงิน", out cellIndex))
 									{
-										FiscalYear = row.GetCell(cellIndex).ToString();
+										FiscalYear = row.GetCell(cellIndex)?.ToString();
 									}
 									if (header_list.TryGetValue("วันเดือนปีงบการเงิน", out cellIndex))
 									{
-										if (DateTime.TryParse(row.GetCell(cellIndex).ToString(), out dateTimeMaster))
+										if (DateTime.TryParse(row.GetCell(cellIndex)?.ToString(), out dateTimeMaster))
 										{
 											var StatementDateStr = dateTimeMaster.ToString("dd/MM/yyyy");
 											StatementDate = GeneralUtils.DateToEn(StatementDateStr);
@@ -1246,98 +1251,98 @@ namespace SalesPipeline.Pages.Customers
 									}
 									if (header_list.TryGetValue("ลูกหนี้การค้า", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccReceivable = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ลูกหนี้การค้าและตั่วเงินรับ-สุทธิ", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccRecProceedsNet = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("สินค้าคงเหลือ", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											Inventories = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("เงินให้กู้ยืมระยะสั้น(ลูกหนี้)", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											LoansShort = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมสินทรัพย์หมุนเวียน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TotalCurrentAssets = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("เงินให้กู้ยืมระยะยาว", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											LoansLong = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ที่ดิน,อาคาร และอุปกรณ์-สุทธิ", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											LandBuildingEquipment = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมสินทรัพย์ไม่หมุนเวียน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TotalNotCurrentAssets = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมสินทรัพย์", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											AssetsTotal = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("เจ้าหนี้การค้า", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPay = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("เงินกู้ยืมระยะสั้น", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayLoansShot = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมหนี้สินหมุนเวียน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayTotalCurrentLia = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("เงินกู้ยืมระยะยาว", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayLoansLong = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมหนี้สินไม่หมุนเวียน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayTotalNotCurrentLia = decimalMaster;
 										}
@@ -1345,77 +1350,77 @@ namespace SalesPipeline.Pages.Customers
 									//ใน excel ไม่มี
 									if (header_list.TryGetValue("เงินให้กู้ยืมระยะสั้น(เจ้าหนี้)", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayForLoansShot = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมหนี้สิน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TradeAccPayTotalLiabilitie = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ทุนจดทะเบียนสามัญ", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											RegisterCapitalOrdinary = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ทุนจดทะเบียนที่ชำระแล้ว", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											RegisterCapitalPaid = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("กำไร (ขาดทุน)สะสม", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											ProfitLossAccumulate = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมส่วนของผู้ถือหุ้น", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TotalShareholders = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รวมหนี้สินและส่วนของผู้ถือหุ้น", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TotalLiabilitieShareholders = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("รายได้รวม", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											TotalIncome = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ต้นทุนขาย", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											CostSales = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("กำไรขั้นต้น", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											GrossProfit = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("ค่าใช้จ่ายในการดำเนินงาน", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											OperatingExpenses = decimalMaster;
 										}
@@ -1429,14 +1434,14 @@ namespace SalesPipeline.Pages.Customers
 									//}
 									if (header_list.TryGetValue("กำไร(ขาดทุน)ก่อนหักค่าเสื่อมราคาและค่าใช้จ่ายตัดจ่าย", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											ProfitLossBeforeDepExp = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("กำไร(ขาดทุน) ก่อนหักดอกเบี้ยและภาษีเงินได้", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											ProfitLossBeforeInterestTax = decimalMaster;
 										}
@@ -1450,14 +1455,14 @@ namespace SalesPipeline.Pages.Customers
 									//}
 									if (header_list.TryGetValue("กำไร(ขาดทุน)สุทธิ", out cellIndex))
 									{
-										if (decimal.TryParse(row.GetCell(cellIndex).ToString(), out decimalMaster))
+										if (decimal.TryParse(row.GetCell(cellIndex)?.ToString(), out decimalMaster))
 										{
 											NetProfitLoss = decimalMaster;
 										}
 									}
 									if (header_list.TryGetValue("หมายเหตุ", out cellIndex))
 									{
-										InterestNote = row.GetCell(cellIndex).ToString();
+										InterestNote = row.GetCell(cellIndex)?.ToString();
 									}
 
 									if (CustomerList == null) CustomerList = new();
@@ -1465,87 +1470,89 @@ namespace SalesPipeline.Pages.Customers
 									if (CustomerList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
 										throw new Exception("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
 
-									if (string.IsNullOrEmpty(JuristicPersonRegNumber))
-										throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
+									//if (string.IsNullOrEmpty(JuristicPersonRegNumber))
+									//	throw new Exception("ระบุเลขนิติบุคคลไม่ครบ");
 
-									if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length < 10)
-										throw new Exception("ระบุเลขนิติบุคคลไม่ถูกต้อง");
+									//if (JuristicPersonRegNumber != null && JuristicPersonRegNumber.Length < 10)
+									//	throw new Exception("ระบุเลขนิติบุคคลไม่ถูกต้อง");
 
-
-									CustomerList.Add(new()
+									if (!string.IsNullOrEmpty(JuristicPersonRegNumber))
 									{
-										DateContact = DateContact,
-										Master_ContactChannelId = Master_ContactChannelId,
-										Branch_RegionId = Branch_RegionId,
-										ProvincialOffice = ProvincialOffice,
-										EmployeeName = EmployeeName,
-										EmployeeId = EmployeeId,
-										CIF = CIF,
-										ContactName = ContactName,
-										ContactTel = ContactTel,
-										JuristicPersonRegNumber = JuristicPersonRegNumber,
-										CompanyName = CompanyName,
-										Master_BusinessTypeId = Master_BusinessTypeId,
-										Master_BusinessTypeName = Master_BusinessTypeName,
-										Master_BusinessSizeId = Master_BusinessSizeId,
-										Master_BusinessSizeName = Master_BusinessSizeName,
-										Master_ISICCodeId = Master_ISICCodeId,
-										Master_TSICId = Master_TSICId,
-										Master_TSICName = Master_TSICName,
-										Master_YieldId = Master_YieldId,
-										Master_ChainId = Master_ChainId,
-										Master_LoanTypeId = Master_LoanTypeId,
-										CompanyEmail = CompanyEmail,
-										CompanyTel = CompanyTel,
-										ParentCompanyGroup = ParentCompanyGroup,
-										HouseNo = HouseNo,
-										VillageNo = VillageNo,
-										Road_Soi_Village = Road_Soi_Village,
-										ProvinceId = ProvinceId,
-										AmphurId = AmphurId,
-										TambolId = TambolId,
-										ProvinceName = ProvinceName,
-										AmphurName = AmphurName,
-										TambolName = TambolName,
-										ZipCode = ZipCode,
-										Customer_Committees = Customer_Committees,
-										ShareholderMeetDay = ShareholderMeetDay,
-										Customer_Shareholders = Customer_Shareholders,
-										RegisteredCapital = RegisteredCapital,
-										CreditScore = CreditScore,
-										FiscalYear = FiscalYear,
-										StatementDate = StatementDate,
-										TradeAccReceivable = TradeAccReceivable,
-										TradeAccRecProceedsNet = TradeAccRecProceedsNet,
-										Inventories = Inventories,
-										LoansShort = LoansShort,
-										TotalCurrentAssets = TotalCurrentAssets,
-										LoansLong = LoansLong,
-										LandBuildingEquipment = LandBuildingEquipment,
-										TotalNotCurrentAssets = TotalNotCurrentAssets,
-										AssetsTotal = AssetsTotal,
-										TradeAccPay = TradeAccPay,
-										TradeAccPayLoansShot = TradeAccPayLoansShot,
-										TradeAccPayTotalCurrentLia = TradeAccPayTotalCurrentLia,
-										TradeAccPayLoansLong = TradeAccPayLoansLong,
-										TradeAccPayTotalNotCurrentLia = TradeAccPayTotalNotCurrentLia,
-										TradeAccPayForLoansShot = TradeAccPayForLoansShot,
-										TradeAccPayTotalLiabilitie = TradeAccPayTotalLiabilitie,
-										RegisterCapitalOrdinary = RegisterCapitalOrdinary,
-										RegisterCapitalPaid = RegisterCapitalPaid,
-										ProfitLossAccumulate = ProfitLossAccumulate,
-										TotalShareholders = TotalShareholders,
-										TotalLiabilitieShareholders = TotalLiabilitieShareholders,
-										TotalIncome = TotalIncome,
-										CostSales = CostSales,
-										GrossProfit = GrossProfit,
-										OperatingExpenses = OperatingExpenses,
-										ProfitLossBeforeDepExp = ProfitLossBeforeDepExp,
-										ProfitLossBeforeInterestTax = ProfitLossBeforeInterestTax,
-										ProfitLossBeforeIncomeTaxExpense = ProfitLossBeforeIncomeTaxExpense,
-										NetProfitLoss = NetProfitLoss,
-										InterestNote = InterestNote
-									});
+										CustomerList.Add(new()
+										{
+											DateContact = DateContact,
+											Master_ContactChannelId = Master_ContactChannelId,
+											Branch_RegionId = Branch_RegionId,
+											ProvincialOffice = ProvincialOffice,
+											EmployeeName = EmployeeName,
+											EmployeeId = EmployeeId,
+											CIF = CIF,
+											ContactName = ContactName,
+											ContactTel = ContactTel,
+											JuristicPersonRegNumber = JuristicPersonRegNumber,
+											CompanyName = CompanyName,
+											Master_BusinessTypeId = Master_BusinessTypeId,
+											Master_BusinessTypeName = Master_BusinessTypeName,
+											Master_BusinessSizeId = Master_BusinessSizeId,
+											Master_BusinessSizeName = Master_BusinessSizeName,
+											Master_ISICCodeId = Master_ISICCodeId,
+											Master_TSICId = Master_TSICId,
+											Master_TSICName = Master_TSICName,
+											Master_YieldId = Master_YieldId,
+											Master_ChainId = Master_ChainId,
+											Master_LoanTypeId = Master_LoanTypeId,
+											CompanyEmail = CompanyEmail,
+											CompanyTel = CompanyTel,
+											ParentCompanyGroup = ParentCompanyGroup,
+											HouseNo = HouseNo,
+											VillageNo = VillageNo,
+											Road_Soi_Village = Road_Soi_Village,
+											ProvinceId = ProvinceId,
+											AmphurId = AmphurId,
+											TambolId = TambolId,
+											ProvinceName = ProvinceName,
+											AmphurName = AmphurName,
+											TambolName = TambolName,
+											ZipCode = ZipCode,
+											Customer_Committees = Customer_Committees,
+											ShareholderMeetDay = ShareholderMeetDay,
+											Customer_Shareholders = Customer_Shareholders,
+											RegisteredCapital = RegisteredCapital,
+											CreditScore = CreditScore,
+											FiscalYear = FiscalYear,
+											StatementDate = StatementDate,
+											TradeAccReceivable = TradeAccReceivable,
+											TradeAccRecProceedsNet = TradeAccRecProceedsNet,
+											Inventories = Inventories,
+											LoansShort = LoansShort,
+											TotalCurrentAssets = TotalCurrentAssets,
+											LoansLong = LoansLong,
+											LandBuildingEquipment = LandBuildingEquipment,
+											TotalNotCurrentAssets = TotalNotCurrentAssets,
+											AssetsTotal = AssetsTotal,
+											TradeAccPay = TradeAccPay,
+											TradeAccPayLoansShot = TradeAccPayLoansShot,
+											TradeAccPayTotalCurrentLia = TradeAccPayTotalCurrentLia,
+											TradeAccPayLoansLong = TradeAccPayLoansLong,
+											TradeAccPayTotalNotCurrentLia = TradeAccPayTotalNotCurrentLia,
+											TradeAccPayForLoansShot = TradeAccPayForLoansShot,
+											TradeAccPayTotalLiabilitie = TradeAccPayTotalLiabilitie,
+											RegisterCapitalOrdinary = RegisterCapitalOrdinary,
+											RegisterCapitalPaid = RegisterCapitalPaid,
+											ProfitLossAccumulate = ProfitLossAccumulate,
+											TotalShareholders = TotalShareholders,
+											TotalLiabilitieShareholders = TotalLiabilitieShareholders,
+											TotalIncome = TotalIncome,
+											CostSales = CostSales,
+											GrossProfit = GrossProfit,
+											OperatingExpenses = OperatingExpenses,
+											ProfitLossBeforeDepExp = ProfitLossBeforeDepExp,
+											ProfitLossBeforeInterestTax = ProfitLossBeforeInterestTax,
+											ProfitLossBeforeIncomeTaxExpense = ProfitLossBeforeIncomeTaxExpense,
+											NetProfitLoss = NetProfitLoss,
+											InterestNote = InterestNote
+										});
+									}
 								}
 
 								if (CustomerList?.Count > 0)

@@ -1246,7 +1246,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
-			string? topicName = "";
+			string? topicName = "รอปิดการขาย";
 			string? desireLoanName = null;
 			string? reason = null;
 			string? resultContactName = string.Empty;
@@ -1274,6 +1274,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			resultContactName = model.ResultMeetId == 1 ? "รับสาย" : model.ResultMeetId == 2 ? "ไม่รับสาย" : "";
 
+			if (model.ResultMeetId == 2)
+			{
+				if (String.IsNullOrEmpty(model.Note)) throw new ExceptionCustom("ระบุหมายเหตุ");
+			}
+
+			if (model.ResultMeetId == 2 && model.NextActionId == 1)
+			{
+				throw new ExceptionCustom("ไม่สามารถปิดการขาย เนื่องจากลูกค้าไม่รับสาย");
+			}
+
 			if (model.NextActionId == 2)
 			{
 				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
@@ -1293,6 +1303,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						topicName = "ปิดการขาย";
 						desireLoanName = "ประสงค์กู้";
 						statusSaleId = StatusSaleModel.CloseSale;
+						nextActionName = null;
+						model.AppointmentDate = null;
+						model.AppointmentTime = null;
+						model.Location = null;
 					}
 					else if (sale_Close_Sale.DesireLoanId == 2)
 					{
