@@ -114,13 +114,15 @@
 						}
 						else
 						{
+							bool isSetTarget = ItemsSelected.Count() == 0 ? true : false;
+
 							<div class="col">
 								<button @onclick="SetSetting" type="button" class="btn btn-secondary text-white mw_7r">
 									ยกเลิก
 								</button>
 							</div>
 							<div class="col">
-								<button @onclick="OnShowModal" type="button" class="btn btn-primary text-white mw_7r">
+								<button @onclick="OnShowModal" type="button" class="btn btn-primary text-white mw_7r" disabled=@isSetTarget >
 									กำหนดยอด
 								</button>
 							</div>
