@@ -31,6 +31,7 @@ namespace SalesPipeline.Shared
 
 		private List<UserOnlineModel> UserOnlineModels = new();
 		private List<MenuItemCustom> MenuItem = new();
+		public string? baseUriWeb { get; set; }
 		public string? baseUriApi { get; set; }
 
 		private string? _UserKey;
@@ -40,6 +41,7 @@ namespace SalesPipeline.Shared
 		private int counterDate;
 		protected override async Task OnInitializedAsync()
 		{
+			baseUriWeb = _appSet.Value.baseUriWeb;
 			baseUriApi = _appSet.Value.baseUriApi;
 			//Create Connection SignalR
 			string? baseUrlWeb = _appSet?.Value?.baseUriWeb;

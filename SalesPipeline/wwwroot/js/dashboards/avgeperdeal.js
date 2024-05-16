@@ -52,6 +52,7 @@
 }
 
 window.avgdeal_bar2 = (_data) => {
+	//console.log(baseUriWeb)
 	let chartId = "avgdeal_bar2";
 	const canvas = document.getElementById(chartId);
 	if (canvas != null && canvas != undefined) {
@@ -120,13 +121,13 @@ window.avgdeal_bar2 = (_data) => {
 			}
 
 			var id = chart.data.datasets[0].data[res[0].index].id;
-			console.log('id=' + id)
+			//console.log('id=' + id)
 			var title = chart.data.datasets[0].data[res[0].index].x;
-			console.log('title=' + title)
+			//console.log('title=' + title)
 			var values = chart.data.datasets[0].data[res[0].index].y;
-			console.log('value=' + values)
+			//console.log('value=' + values)
 
-			const nextURL = `https://localhost:7235/dashboard/avgeperdeal/region?id=${id}`;
+			const nextURL = `${baseUriWeb}/dashboard/avgeperdeal/region?id=${id}`;
 			window.location.href = nextURL;
 		};
 	}

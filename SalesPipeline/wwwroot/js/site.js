@@ -1,10 +1,13 @@
 ﻿
 //new PDF
 window.jsPDF = window.jspdf.jsPDF;
+var baseUriWeb = '';
+var _baseUriApi = '';
 
 window.AfterRenderMainLayout = () => {
 
-	//_baseUriApi = $('#baseUriApi').val()
+	baseUriWeb = $('#baseUriWeb').val()
+	_baseUriApi = $('#baseUriApi').val()
 
 	setTimeout(function () {
 		var sidebarToggleAll = document.querySelectorAll('.sidebarToggleClick');
