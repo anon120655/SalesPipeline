@@ -1,0 +1,40 @@
+﻿@if (formModel != null && formModel.Count > 0)
+{
+	<div class="container">
+		<div class="row my-3">
+			<div class="col-12">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">ชื่อผู้ติดต่อ</th>
+							<th scope="col">ตำแหน่ง</th>
+							<th scope="col">เบอร์โทร</th>
+							<th scope="col">อีเมล</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in formModel)
+						{
+							<tr>
+								<td>@GeneralUtils.EmptyTo(item.FullName)</td>
+								<td>@GeneralUtils.EmptyTo(item.Position)</td>
+								<td>@GeneralUtils.EmptyTo(item.Tel)</td>
+								<td>@GeneralUtils.EmptyTo(item.Email)</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<div class="d-flex align-items-center justify-content-center mh_10r">
+		<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+	</div>
+}
+@code {
+	[Parameter]
+	public List<Sale_Contact_InfoCustom>? formModel { get; set; }
+}

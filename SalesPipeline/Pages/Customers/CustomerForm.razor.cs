@@ -367,14 +367,14 @@ namespace SalesPipeline.Pages.Customers
 		{
 			_errorMessage = null;
 
-			if (String.IsNullOrEmpty(formModel.JuristicPersonRegNumber) || formModel.JuristicPersonRegNumber.Length != 13)
+			if (String.IsNullOrEmpty(formModel.JuristicPersonRegNumber) || formModel.JuristicPersonRegNumber.Length < 10)
 			{
 				if (String.IsNullOrEmpty(formModel.JuristicPersonRegNumber))
 				{
 					_errorMessage = "ระบุเลขนิติบุคคล";
 					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 				}
-				else if (formModel.JuristicPersonRegNumber.Length != 13)
+				else if (formModel.JuristicPersonRegNumber.Length < 10)
 				{
 					_errorMessage = "ระบุเลขนิติบุคคลไม่ถูกต้อง";
 					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);

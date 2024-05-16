@@ -730,3 +730,8 @@ form .row {
     cursor: pointer;
     font-size: 15pt;
 }
+
+.cursor_none {
+    cursor: context-menu;
+    margin: 15px 0;
+}

@@ -150,10 +150,10 @@
 												<tr>
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.CIF)</td>
-													<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
-													<td class="text-center">@item.CompanyName</td>
-													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="">@item.Customer?.Master_ChainName</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.JuristicPersonRegNumber)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.CompanyName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.Master_BusinessTypeName)</td>
+													<td class="">@GeneralUtils.EmptyTo(item.Customer?.Master_ChainName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Branch_RegionName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>

@@ -84,6 +84,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อบริษัท
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? CompanyName { get; set; }
 
 		/// <summary>

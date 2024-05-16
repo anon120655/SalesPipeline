@@ -55,7 +55,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				if (juristicNumber.Length != 13) throw new ExceptionCustom("ระบุข้อมูลไม่ถูกต้อง");
+				if (juristicNumber.Length < 10) throw new ExceptionCustom("ระบุข้อมูลไม่ถูกต้อง");
 
 				var data = await _repo.Customer.VerifyByNumber(juristicNumber);
 				return Ok(data);

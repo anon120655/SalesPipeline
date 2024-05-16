@@ -112,5 +112,53 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<Sale_Contact_InfoCustom>>>> GetListInfo(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Sales/GetListInfo", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Sale_Contact_InfoCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Sale_Contact_InfoCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Sale_Contact_InfoCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Sale_PartnerCustom>>>> GetListPartner(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Sales/GetListPartner", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Sale_PartnerCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Sale_PartnerCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Sale_PartnerCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 	}
 }

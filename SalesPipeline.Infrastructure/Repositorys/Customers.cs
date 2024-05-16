@@ -61,6 +61,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
+			if (string.IsNullOrEmpty(model.CompanyName))
+			{
+					errorMessage = $"ระบุ ชื่อบริษัท";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+			}
+
 			if (isSetMaster == true)
 			{
 				if (model.Branch_RegionId.HasValue)

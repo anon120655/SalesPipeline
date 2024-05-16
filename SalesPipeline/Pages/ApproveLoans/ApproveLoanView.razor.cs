@@ -179,6 +179,23 @@ namespace SalesPipeline.Pages.ApproveLoans
 			}
 		}
 
+		protected async Task ShowTabContactInfo()
+		{
+			if (formModel.Sale_Contact_Infos == null || formModel.Sale_Contact_Infos.Count == 0)
+			{
+				var data = await _salesViewModel.GetListInfo(new() { id = id, pagesize = 200, saleid = formModel.Id });
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel.Sale_Contact_Infos = data.Data.Items;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
 		protected async Task ShowTabDocument()
 		{
 			if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
@@ -204,6 +221,23 @@ namespace SalesPipeline.Pages.ApproveLoans
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel.Sale_Contact_Histories = data.Data.Items;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task ShowTabPartneInfo()
+		{
+			if (formModel.Sale_Partners == null || formModel.Sale_Partners.Count == 0)
+			{
+				var data = await _salesViewModel.GetListPartner(new() { id = id, pagesize = 200, saleid = formModel.Id });
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel.Sale_Partners = data.Data.Items;
 				}
 				else
 				{
