@@ -2722,6 +2722,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.TitleName).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UrlSignature)
+                .HasMaxLength(300)
+                .HasComment("url ลายเซ็น");
 
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)

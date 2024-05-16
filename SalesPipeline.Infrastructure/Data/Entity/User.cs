@@ -95,6 +95,11 @@ public partial class User
 
     public short? IsSentMail { get; set; }
 
+    /// <summary>
+    /// url ลายเซ็น
+    /// </summary>
+    public string? UrlSignature { get; set; }
+
     public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
 
     public virtual ICollection<Assignment_CenterBranch> Assignment_CenterBranches { get; set; } = new List<Assignment_CenterBranch>();

@@ -54,6 +54,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						systemSignature.ImgThumbnailUrl = uploadModel.ImageThumbnailUrl;
 						_db.Update(systemSignature);
 						await _db.SaveAsync();
+
+
+						var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.CurrentUserId);
+						if (users != null)
+						{
+							users.UrlSignature = systemSignature.ImgUrl;
+							_db.Update(users);
+							await _db.SaveAsync();
+						}
 					}
 				}
 
@@ -63,11 +72,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<System_SignatureCustom> GetSignatureLast()
+		public async Task<System_SignatureCustom> GetSignatureLast(int userid)
 		{
 			var query = await _repo.Context.System_Signatures
 				.OrderByDescending(o => o.CreateDate)
-				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete);
+				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.CreateBy == userid);
 
 			return _mapper.Map<System_SignatureCustom>(query);
 		}

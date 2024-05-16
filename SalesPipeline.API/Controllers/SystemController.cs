@@ -42,12 +42,12 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpGet("GetSignatureLast")]
-		public async Task<IActionResult> GetSignatureLast()
+		public async Task<IActionResult> GetSignatureLast([FromQuery] int userid)
 		{
 			try
 			{
-				var data = await _repo.System.GetSignatureLast();
-				return Ok(data);
+				var data = await _repo.System.GetSignatureLast(userid);
+				return Ok(data ?? new());
 			}
 			catch (Exception ex)
 			{

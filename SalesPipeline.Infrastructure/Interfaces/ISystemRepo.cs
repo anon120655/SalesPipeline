@@ -12,7 +12,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface ISystemRepo
 	{
 		Task<System_SignatureCustom> CreateSignature(System_SignatureCustom model);
-		Task<System_SignatureCustom> GetSignatureLast();
+		Task<System_SignatureCustom> GetSignatureLast(int userid);
 		Task<System_SLACustom> CreateSLA(System_SLACustom model);
 		Task<System_SLACustom> UpdateSLA(System_SLACustom model);
 		Task DeleteSLAById(UpdateModel model);

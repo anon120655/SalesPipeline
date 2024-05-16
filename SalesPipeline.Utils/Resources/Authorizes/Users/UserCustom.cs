@@ -108,6 +108,11 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public short? IsSentMail { get; set; }
 
+		/// <summary>
+		/// url ลายเซ็น
+		/// </summary>
+		public string? UrlSignature { get; set; }
+
 		public virtual Master_Branch_RegionCustom? Master_Branch_Region { get; set; }
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }

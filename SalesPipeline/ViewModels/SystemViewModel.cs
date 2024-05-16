@@ -44,11 +44,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<System_SignatureCustom>?> GetSignatureLast()
+		public async Task<ResultModel<System_SignatureCustom>?> GetSignatureLast(int userid)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/System/GetSignatureLast");
+				var content = await _httpClient.GetAsync($"/v1/System/GetSignatureLast?userid={userid}");
 				var dataMap = JsonConvert.DeserializeObject<System_SignatureCustom>(content);
 				return new ResultModel<System_SignatureCustom>()
 				{

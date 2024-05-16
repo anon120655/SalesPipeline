@@ -41,7 +41,7 @@ namespace SalesPipeline.Pages.ManageSystems
 
 		protected async Task SetModel()
 		{
-			var data = await _systemViewModel.GetSignatureLast();
+			var data = await _systemViewModel.GetSignatureLast(UserInfo.Id);
 			if (data != null && data.Status && data.Data != null)
 			{
 				formModel = data.Data;
@@ -66,6 +66,7 @@ namespace SalesPipeline.Pages.ManageSystems
 			}
 			else
 			{
+				formModel.Files.appSet = _appSet.Value;
 				formModel.CurrentUserId = UserInfo.Id;
 
 				var response = await _systemViewModel.CreateSignature(formModel);
