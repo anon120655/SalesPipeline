@@ -59,15 +59,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.BranchId.HasValue)
 			{
-				var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active
-				&& x.RoleId == model.RoleId
-				&& x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
-				if (usersBranch != null)
+				if (roleCode != null && !roleCode.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					errorMessage = $"มีพนักงานสาขานี้แล้ว";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
-					if (isThrow) throw new ExceptionCustom(errorMessage);
+					var usersBranch = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active
+							&& x.RoleId == model.RoleId
+							&& x.BranchId == model.BranchId && x.Id != model.Id).FirstOrDefaultAsync();
+					if (usersBranch != null)
+					{
+						errorMessage = $"มีพนักงานสาขานี้แล้ว";
+						model.IsValidate = false;
+						model.ValidateError.Add(errorMessage);
+						if (isThrow) throw new ExceptionCustom(errorMessage);
+					}
 				}
 			}
 

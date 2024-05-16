@@ -32,16 +32,36 @@ public partial class Sale_Close_Sale
     public int? ResultMeetId { get; set; }
 
     /// <summary>
-    /// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+    /// 1=ปิดการขาย 2=ติดต่ออีกครั้ง
     /// </summary>
-    public int? DesireLoanId { get; set; }
+    public int? NextActionId { get; set; }
 
-    public Guid? Master_Reason_CloseSaleId { get; set; }
+    /// <summary>
+    /// วันที่นัดหมาย
+    /// </summary>
+    public DateTime? AppointmentDate { get; set; }
+
+    /// <summary>
+    /// เวลาที่นัดหมาย
+    /// </summary>
+    public TimeOnly? AppointmentTime { get; set; }
+
+    /// <summary>
+    /// สถานที่
+    /// </summary>
+    public string? Location { get; set; }
 
     /// <summary>
     /// บันทึกเพิ่มเติม
     /// </summary>
     public string? Note { get; set; }
+
+    /// <summary>
+    /// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+    /// </summary>
+    public int? DesireLoanId { get; set; }
+
+    public Guid? Master_Reason_CloseSaleId { get; set; }
 
     public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 

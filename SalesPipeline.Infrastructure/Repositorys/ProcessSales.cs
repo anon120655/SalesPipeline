@@ -1241,6 +1241,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("resultMeetId not match");
+			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -1250,6 +1251,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			string? reason = null;
 			string? resultContactName = string.Empty;
 			string? descriptionStatus = null;
+			string? nextActionName = string.Empty;
 
 			DateTime _dateNow = DateTime.Now;
 
@@ -1260,55 +1262,71 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Close_Sale.Name = model.Name;
 			sale_Close_Sale.Tel = model.Tel;
 			sale_Close_Sale.ResultMeetId = model.ResultMeetId;
+			sale_Close_Sale.NextActionId = model.NextActionId;
+			sale_Close_Sale.AppointmentDate = model.AppointmentDate;
+			sale_Close_Sale.AppointmentTime = model.AppointmentTime;
+			sale_Close_Sale.Location = model.Location;
+			sale_Close_Sale.Note = model.Note;
 			sale_Close_Sale.DesireLoanId = model.DesireLoanId;
 			sale_Close_Sale.Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId;
-			sale_Close_Sale.Note = model.Note;
 			await _db.InsterAsync(sale_Close_Sale);
 			await _db.SaveAsync();
 
-			resultContactName = model.ResultMeetId == 1 ? "เข้าพบสำเร็จ" : model.ResultMeetId == 2 ? "" : "";
+			resultContactName = model.ResultMeetId == 1 ? "รับสาย" : model.ResultMeetId == 2 ? "ไม่รับสาย" : "";
 
-			if (sale_Close_Sale.DesireLoanId == 1 || sale_Close_Sale.DesireLoanId == 2)
+			if (model.NextActionId == 2)
 			{
-				if (sale_Close_Sale.DesireLoanId == 1)
-				{
-					topicName = "ปิดการขาย";
-					desireLoanName = "ประสงค์กู้";
-					statusSaleId = StatusSaleModel.CloseSale;
-				}
-				else if (sale_Close_Sale.DesireLoanId == 2)
-				{
-					topicName = "ไม่ประสงค์กู้";
-					desireLoanName = "ไม่ประสงค์กู้";
-					statusSaleId = StatusSaleModel.CloseSaleNotLoan;
-					if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
-				}
+				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
-				if (model.Master_Reason_CloseSaleId.HasValue)
-				{
-					descriptionStatus = await _repo.MasterReasonCloseSale.GetNameById(model.Master_Reason_CloseSaleId.Value);
-					reason = descriptionStatus;
-				}
-
-
-				await _repo.Sales.UpdateStatusOnly(new()
-				{
-					SaleId = model.SaleId,
-					StatusId = statusSaleId,
-					CreateBy = model.CurrentUserId,
-					CreateByName = currentUserName,
-					Description = descriptionStatus,
-					Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId
-				});
-
-				await _repo.Dashboard.UpdateDurationById(new() { saleid = model.SaleId });
-				await _repo.Dashboard.UpdateActivityById(new() { saleid = model.SaleId });
-				await _repo.Dashboard.UpdateDeliverById(new() { saleid = model.SaleId });
-				await _repo.Dashboard.UpdateTarget_SaleById(new() { userid = sale.AssUserId, year = sale.CreateDate.Year.ToString() });
+				nextActionName = "ติดต่ออีกครั้ง";
 			}
 			else
 			{
-				throw new ExceptionCustom("desireLoanId not match");
+				nextActionName = "ปิดการขาย";
+
+				if (sale_Close_Sale.DesireLoanId == 1 || sale_Close_Sale.DesireLoanId == 2)
+				{
+					if (sale_Close_Sale.DesireLoanId == 1)
+					{
+						topicName = "ปิดการขาย";
+						desireLoanName = "ประสงค์กู้";
+						statusSaleId = StatusSaleModel.CloseSale;
+					}
+					else if (sale_Close_Sale.DesireLoanId == 2)
+					{
+						topicName = "ไม่ประสงค์กู้";
+						desireLoanName = "ไม่ประสงค์กู้";
+						statusSaleId = StatusSaleModel.CloseSaleNotLoan;
+						if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
+					}
+
+					if (model.Master_Reason_CloseSaleId.HasValue)
+					{
+						descriptionStatus = await _repo.MasterReasonCloseSale.GetNameById(model.Master_Reason_CloseSaleId.Value);
+						reason = descriptionStatus;
+					}
+
+					await _repo.Sales.UpdateStatusOnly(new()
+					{
+						SaleId = model.SaleId,
+						StatusId = statusSaleId,
+						CreateBy = model.CurrentUserId,
+						CreateByName = currentUserName,
+						Description = descriptionStatus,
+						Master_Reason_CloseSaleId = model.Master_Reason_CloseSaleId
+					});
+
+					await _repo.Dashboard.UpdateDurationById(new() { saleid = model.SaleId });
+					await _repo.Dashboard.UpdateActivityById(new() { saleid = model.SaleId });
+					await _repo.Dashboard.UpdateDeliverById(new() { saleid = model.SaleId });
+					await _repo.Dashboard.UpdateTarget_SaleById(new() { userid = sale.AssUserId, year = sale.CreateDate.Year.ToString() });
+				}
+				else
+				{
+					throw new ExceptionCustom("desireLoanId not match");
+				}
 			}
 
 			await CreateContactHistory(new()
@@ -1322,6 +1340,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				ResultContactName = resultContactName,
 				DesireLoanName = desireLoanName,
 				Reason = reason,
+				NextActionName = nextActionName,
+				AppointmentDate = model.AppointmentDate,
+				AppointmentTime = model.AppointmentTime,
+				Location = model.Location,
 				Note = model.Note,
 			});
 

@@ -1710,13 +1710,25 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
+            entity.Property(e => e.AppointmentDate)
+                .HasComment("วันที่นัดหมาย")
+                .HasColumnType("datetime");
+            entity.Property(e => e.AppointmentTime)
+                .HasComment("เวลาที่นัดหมาย")
+                .HasColumnType("time");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DesireLoanId)
                 .HasComment("1=ประสงค์กู้ 2=ไม่ประสงค์กู้")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .HasComment("สถานที่");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.NextActionId)
+                .HasComment("1=ปิดการขาย 2=ติดต่ออีกครั้ง")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Note)
                 .HasMaxLength(1000)
                 .HasComment("บันทึกเพิ่มเติม");

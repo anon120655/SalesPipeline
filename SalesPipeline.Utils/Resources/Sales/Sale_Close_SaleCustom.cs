@@ -34,23 +34,38 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// <summary>
 		/// 1=รับสาย 2=ไม่รับสาย
 		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ResultMeetId { get; set; }
 
 		/// <summary>
-		/// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+		/// 1=ปิดการขาย 2=ติดต่ออีกครั้ง
 		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public int? DesireLoanId { get; set; }
+		public int? NextActionId { get; set; }
 
 		/// <summary>
-		/// 1=ได้รับสินเชื่อจากสถาบันการเงินอื่น
+		/// วันที่นัดหมาย
 		/// </summary>
-		public Guid? Master_Reason_CloseSaleId { get; set; }
+		public DateTime? AppointmentDate { get; set; }
+
+		/// <summary>
+		/// เวลาที่นัดหมาย
+		/// </summary>
+		public TimeOnly? AppointmentTime { get; set; }
+
+		/// <summary>
+		/// สถานที่
+		/// </summary>
+		public string? Location { get; set; }
 
 		/// <summary>
 		/// บันทึกเพิ่มเติม
 		/// </summary>
 		public string? Note { get; set; }
+
+		/// <summary>
+		/// 1=ประสงค์กู้ 2=ไม่ประสงค์กู้
+		/// </summary>
+		public int? DesireLoanId { get; set; }
+
+		public Guid? Master_Reason_CloseSaleId { get; set; }
 	}
 }
