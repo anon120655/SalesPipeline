@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ประเภทการชำระดอกเบี้ย
+/// ประเภทผู้ขอในระยะที่
 /// </summary>
-public partial class Master_Pre_Interest_PayType
+public partial class Loan_Period_AppLoan
 {
     public Guid Id { get; set; }
 
@@ -17,13 +17,9 @@ public partial class Master_Pre_Interest_PayType
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
+    public int Loan_PeriodId { get; set; }
 
-    public DateTime UpdateDate { get; set; }
+    public Guid Master_Pre_Applicant_LoanId { get; set; }
 
-    public int UpdateBy { get; set; }
-
-    public string? Name { get; set; }
-
-    public virtual ICollection<Loan> Loans { get; set; } = new List<Loan>();
+    public string? Master_Pre_Applicant_LoanName { get; set; }
 }

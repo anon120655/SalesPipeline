@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// สินเชื่อ Pre Approve
+/// รายละเอียดงวดสินเชื่อ
 /// </summary>
-public partial class Master_Pre_Loan
+public partial class Loan_Period
 {
     public Guid Id { get; set; }
 
@@ -17,14 +17,20 @@ public partial class Master_Pre_Loan
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public DateTime UpdateDate { get; set; }
-
-    public int UpdateBy { get; set; }
-
     /// <summary>
     /// ชื่อสินเชื่อ
     /// </summary>
     public string? Name { get; set; }
+
+    /// <summary>
+    /// FK สินเชื่อ
+    /// </summary>
+    public Guid LoanId { get; set; }
+
+    /// <summary>
+    /// ระยะที่
+    /// </summary>
+    public int PeriodNo { get; set; }
+
+    public virtual Loan Loan { get; set; } = null!;
 }

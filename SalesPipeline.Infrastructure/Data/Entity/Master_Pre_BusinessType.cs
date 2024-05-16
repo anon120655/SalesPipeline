@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ประเภทการชำระดอกเบี้ย
+/// ประเภทธุรกิจ pre approve
 /// </summary>
-public partial class Master_Pre_Interest_PayType
+public partial class Master_Pre_BusinessType
 {
     public Guid Id { get; set; }
 
@@ -24,6 +24,4 @@ public partial class Master_Pre_Interest_PayType
     public int UpdateBy { get; set; }
 
     public string? Name { get; set; }
-
-    public virtual ICollection<Loan> Loans { get; set; } = new List<Loan>();
 }

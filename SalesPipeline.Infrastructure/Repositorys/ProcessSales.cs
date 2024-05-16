@@ -1235,13 +1235,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
-			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale || sale.StatusSaleId == StatusSaleModel.CloseSale)
+			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale)
 			{
 				throw new ExceptionCustom("statussale not match");
 			}
+			if (sale.StatusSaleId == StatusSaleModel.CloseSale)
+			{
+				throw new ExceptionCustom("ปิดการขายแล้ว");
+			}
 
-			if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("resultMeetId not match");
-			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
+
+			//if (!model.ContactDate.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
+			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้ติดต่อ");
+			if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์ติดต่อ");
+
+			if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("ระบุผลการติดต่อไม่ถูกต้อง");
+			if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("ระบุ Next Action ไม่ถูกต้อง");
 
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
@@ -1261,6 +1270,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Close_Sale.SaleId = model.SaleId;
 			sale_Close_Sale.Name = model.Name;
 			sale_Close_Sale.Tel = model.Tel;
+			sale_Close_Sale.ContactDate = model.ContactDate;
 			sale_Close_Sale.ResultMeetId = model.ResultMeetId;
 			sale_Close_Sale.NextActionId = model.NextActionId;
 			sale_Close_Sale.AppointmentDate = model.AppointmentDate;
@@ -1274,10 +1284,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			resultContactName = model.ResultMeetId == 1 ? "รับสาย" : model.ResultMeetId == 2 ? "ไม่รับสาย" : "";
 
-			if (model.ResultMeetId == 2)
-			{
-				if (String.IsNullOrEmpty(model.Note)) throw new ExceptionCustom("ระบุหมายเหตุ");
-			}
+			//if (model.ResultMeetId == 2)
+			//{
+			//	if (String.IsNullOrEmpty(model.Note)) throw new ExceptionCustom("ระบุหมายเหตุ");
+			//}
 
 			if (model.ResultMeetId == 2 && model.NextActionId == 1)
 			{
@@ -1339,9 +1349,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else
 				{
-					throw new ExceptionCustom("desireLoanId not match");
+					throw new ExceptionCustom("ระบุความประสงค์กู้ไม่ถูกต้อง");
 				}
 			}
+
+			await _repo.Sales.CreateInfo(new()
+			{
+				SaleId = model.SaleId,
+				FullName = model.Name,
+				Tel = model.Tel
+			});
 
 			await CreateContactHistory(new()
 			{
@@ -1351,6 +1368,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				StatusSaleId = statusSaleId,
 				TopicName = topicName,
 				ContactFullName = model.Name,
+				ContactDate = model.ContactDate,
+				ContactTel = model.Tel,
 				ResultContactName = resultContactName,
 				DesireLoanName = desireLoanName,
 				Reason = reason,
