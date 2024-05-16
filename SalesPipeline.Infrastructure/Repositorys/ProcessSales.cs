@@ -694,7 +694,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale.StatusSaleMainId != StatusSaleMainModel.Contact)
 			{
-				throw new ExceptionCustom("statussale not match");
+				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 
 			if (model.ContactDate.HasValue)
@@ -817,7 +817,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale.StatusSaleMainId != StatusSaleMainModel.Meet)
 			{
-				throw new ExceptionCustom("statussale not match");
+				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 
 			if (model.MeetDate.HasValue)
@@ -946,7 +946,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale.StatusSaleMainId != StatusSaleMainModel.Document)
 			{
-				throw new ExceptionCustom("statussale not match");
+				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 
 			if (String.IsNullOrEmpty(model.NameTh)) throw new ExceptionCustom("ระบุชื่อภาษาไทย");
@@ -1091,7 +1091,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale.StatusSaleMainId != StatusSaleMainModel.Result)
 			{
-				throw new ExceptionCustom("statussale not match");
+				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 
 			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
@@ -1237,13 +1237,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (sale.StatusSaleMainId != StatusSaleMainModel.CloseSale)
 			{
-				throw new ExceptionCustom("statussale not match");
+				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 			if (sale.StatusSaleId == StatusSaleModel.CloseSale)
 			{
 				throw new ExceptionCustom("ปิดการขายแล้ว");
 			}
-
 
 			//if (!model.ContactDate.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
 			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้ติดต่อ");
@@ -1291,14 +1290,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.ResultMeetId == 2 && model.NextActionId == 1)
 			{
-				throw new ExceptionCustom("ไม่สามารถปิดการขาย เนื่องจากลูกค้าไม่รับสาย");
+				throw new ExceptionCustom("ไม่สามารถเลือกปิดการขาย เนื่องจากลูกค้าไม่รับสาย");
 			}
 
 			if (model.NextActionId == 2)
 			{
 				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
 				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
-				if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
+				//if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
 				nextActionName = "ติดต่ออีกครั้ง";
 			}
