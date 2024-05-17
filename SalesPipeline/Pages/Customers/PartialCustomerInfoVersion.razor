@@ -257,16 +257,18 @@
 				int index = 1;
 				foreach (var item in formModel.Customer.Customer_Committees)
 				{
-					Guid ID = item.Id;
-					<div class="form-group row mb-1">
-						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index </label>
-						<div class="col-6 col-md-7 col-xl-6">
-							<label class="col-form-label">
-								@item.Name
-							</label>
+					if (!String.IsNullOrEmpty(item.Name))
+					{
+						<div class="form-group row mb-1">
+							<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ชื่อกรรมการ คนที่ @index </label>
+							<div class="col-6 col-md-7 col-xl-6">
+								<label class="col-form-label">
+									@item.Name
+								</label>
+							</div>
 						</div>
-					</div>
-					index++;
+						index++;
+					}
 				}
 			}
 			else
