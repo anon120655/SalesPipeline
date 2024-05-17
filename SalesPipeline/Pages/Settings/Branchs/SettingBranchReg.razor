@@ -1,4 +1,4 @@
-﻿@page "/setting/dep/branch"
+﻿@page "/setting/branchreg"
 
 <PageTitle>ตั้งค่ากิจการสาขา</PageTitle>
 
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 						<div class="col mb-2 mt-3 text-end">
-							<a href="/setting/dep/branch/create" class="btn btn-primary text-white mw_6r w-100">
+							<a href="/setting/branchreg/create" class="btn btn-primary text-white mw_6r w-100">
 								<i class="fa-solid fa-plus"></i> เพิ่มรายการ
 							</a>
 						</div>
@@ -86,7 +86,7 @@
 													<td class="text-center">@item.Code</td>
 													<td class="">@item.Name</td>
 													<td class="text-center">
-														<a href="/setting/dep/branch/update/@item.Id">แก้ไข</a> /
+														<a href="/setting/branchreg/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
 													</td>
 													<td class="text-center">

@@ -1,34 +1,13 @@
-using global::System;
-using global::System.Collections.Generic;
-using global::System.Linq;
-using global::System.Threading.Tasks;
 using global::Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
-using SalesPipeline;
-using SalesPipeline.Shared;
-using SalesPipeline.Shared.Modals;
-using SalesPipeline.ViewModels;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources;
 using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
-using SalesPipeline.Utils.PropertiesModel;
-using BlazorAnimate;
-using BlazorBootstrap;
 
-namespace SalesPipeline.Pages.Settings.Departments
+namespace SalesPipeline.Pages.Settings.Branchs
 {
-    public partial class SettingDepBranchForm
+	public partial class SettingBranchRegForm
 	{
 		[Parameter]
 		public Guid? id { get; set; }
@@ -112,7 +91,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/setting/dep/branch");
+			_Navs.NavigateTo("/setting/branchreg");
 		}
 
 		protected void ShowLoading()

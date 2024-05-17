@@ -6,9 +6,9 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Settings.Departments
+namespace SalesPipeline.Pages.Settings.Branchs
 {
-	public partial class SettingDepBranch
+	public partial class SettingBranchReg
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -63,7 +63,7 @@ namespace SalesPipeline.Pages.Settings.Departments
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/setting/dep/branch";
+					Pager.UrlAction = "/setting/branchreg";
 				}
 			}
 			else
