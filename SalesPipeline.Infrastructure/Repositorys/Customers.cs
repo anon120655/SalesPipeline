@@ -46,6 +46,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
 			if (customer != null)
 			{
+				model.Id = customer.Id;
 				errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
 				model.IsValidate = false;
 				model.ValidateError.Add(errorMessage);

@@ -61,6 +61,23 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ข้อมูลและสถานะลูกค้า ById
+		/// </summary>
+		[HttpGet("GetByCustomerId")]
+		public async Task<IActionResult> GetByCustomerId([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetByCustomerId(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		//[ApiExplorerSettings(IgnoreApi = true)]
 		[HttpPost("UpdateStatusOnly")]
 		public async Task<IActionResult> UpdateStatusOnly(Sale_StatusCustom model)

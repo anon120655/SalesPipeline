@@ -330,6 +330,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<SaleCustom>(query);
 		}
 
+		public async Task<SaleCustom> GetByCustomerId(Guid id)
+		{
+			var query = await _repo.Context.Sales
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
+				.Include(x => x.StatusSale)
+				//.Include(x => x.Sale_Contact_Histories.OrderBy(x => x.CreateDate))
+				.Where(x => x.CustomerId == id).FirstOrDefaultAsync();
+			return _mapper.Map<SaleCustom>(query);
+		}
+
 		public async Task<SaleCustom> GetStatusById(Guid id)
 		{
 			var query = await _repo.Context.Sales

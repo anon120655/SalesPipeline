@@ -4,6 +4,14 @@
 
 <MessageError errorMessage="@_errorMessage" />
 
+<style>
+	@@media (min-width: 1200px) {
+    .modal-xl {
+			--bs-modal-width: 1340px;
+		}
+	}
+</style>
+
 @if (_permission.IsView)
 {
 	<div class="container-fluid">
@@ -23,7 +31,7 @@
 								<div class="col-12 col-sm-10">
 									<div class=" dropzone @dropClass rounded">
 										<div class="drag-image h_10r mb-2">
-											@if (CustomerList != null && CustomerList.Count > 0 && _fileName != null)
+											@if (customerImportList != null && customerImportList.Count > 0 && _fileName != null)
 											{
 												<p>@_fileName</p>
 											}
@@ -58,7 +66,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										@if (CustomerList == null)
+										@if (customerImportList == null)
 										{
 											<tr class="text-start align-middle">
 												<td colspan="100">
@@ -66,7 +74,7 @@
 												</td>
 											</tr>
 										}
-										else if (CustomerList.Count == 0)
+										else if (customerImportList.Count == 0)
 										{
 											<tr class="text-start align-middle">
 												<td colspan="100">
@@ -76,7 +84,7 @@
 										}
 										else
 										{
-											foreach (var item in CustomerList)
+											foreach (var item in customerImportList)
 											{
 												<tr style="@(item.IsValidate == false ? "background-color: #fff5f6;" : "")">
 													<td class="">
@@ -199,7 +207,7 @@
 									กลับ
 								</Button>
 							</div>
-							@if (CustomerList?.Where(x => x.IsValidate == true).Count() > 0)
+							@if (customerImportList?.Where(x => x.IsValidate == true).Count() > 0)
 							{
 								<div class="p-2 bd-highlight">
 									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
@@ -253,17 +261,33 @@
 			<div class="row mb-4 text-center">
 				<h5 class="fw-bold mb-3">เลือกจัดเก็บเวอร์ชันข้อมูล</h5>
 			</div>
-			<div class="row my-3 text-center">
+			<div class="row mb-2 fs_0_75r">
+				<div class="col-12 col-lg-6">
+					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 450px;">
+						<PartialCustomerInfoVersion formModel="saleCurrentModel" />
+					</div>
+				</div>
+				<div class="col-12 col-lg-6">
+					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 450px;">
+						<PartialCustomerInfoVersion formModel="saleExportModel" />
+					</div>
+				</div>
+			</div>
+			<div class="my-2 text-center">
 				<div class="d-flex bd-highlight align-items-center justify-content-center">
 					<div class="p-2 bd-highlight">
-						<Button @onclick=OnHideVersion Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+						<Button @onclick=OnHideVersion Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 							กลับ
 						</Button>
 					</div>
-					<div class="p-2">
-						<div class="p-2">
-							<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideVersion">จัดเก็บ</Button>
-						</div>
+					<div class="p-2 bd-highlight">
+						<Button Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+							@if (isLoading)
+							{
+								<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+							}
+							จัดเก็บ
+						</Button>
 					</div>
 				</div>
 			</div>

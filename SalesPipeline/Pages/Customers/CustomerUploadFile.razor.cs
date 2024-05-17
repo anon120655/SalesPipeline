@@ -6,6 +6,7 @@ using NPOI.XSSF.UserModel;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -19,7 +20,10 @@ namespace SalesPipeline.Pages.Customers
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
-		List<CustomerCustom>? CustomerList = new();
+		List<CustomerCustom>? customerImportList = new();
+
+		private SaleCustom saleCurrentModel = new();
+		private SaleCustom saleExportModel = new();
 
 		//ใส่กรณี clear file แล้ว input ไม่ update
 		private string _inputFileId = Guid.NewGuid().ToString();
@@ -789,7 +793,7 @@ namespace SalesPipeline.Pages.Customers
 			_fileName = null;
 			dropClass = "";
 			_errorMessage = null;
-			CustomerList = null;
+			customerImportList = null;
 			var file = inputFileChangeEvent.File;
 
 			int _SizeLimit = 10; //MB
@@ -1467,9 +1471,9 @@ namespace SalesPipeline.Pages.Customers
 										InterestNote = row.GetCell(cellIndex)?.ToString();
 									}
 
-									if (CustomerList == null) CustomerList = new();
+									if (customerImportList == null) customerImportList = new();
 
-									if (CustomerList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
+									if (customerImportList.Select(x => x.JuristicPersonRegNumber).Any(x => x == JuristicPersonRegNumber))
 										throw new Exception("มีเลขนิติบุคคลซ้ำ กรุณาตรวจสอบอีกครั้ง");
 
 									//if (string.IsNullOrEmpty(JuristicPersonRegNumber))
@@ -1480,7 +1484,7 @@ namespace SalesPipeline.Pages.Customers
 
 									if (!string.IsNullOrEmpty(JuristicPersonRegNumber))
 									{
-										CustomerList.Add(new()
+										customerImportList.Add(new()
 										{
 											DateContact = DateContact,
 											Master_ContactChannelId = Master_ContactChannelId,
@@ -1557,13 +1561,13 @@ namespace SalesPipeline.Pages.Customers
 									}
 								}
 
-								if (CustomerList?.Count > 0)
+								if (customerImportList?.Count > 0)
 								{
-									var response = await _customerViewModel.ValidateUpload(CustomerList);
+									var response = await _customerViewModel.ValidateUpload(customerImportList);
 
 									if (response.Status)
 									{
-										CustomerList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
+										customerImportList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
 									}
 									else
 									{
@@ -1600,7 +1604,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			//UserList = UserList?.Where(x => x.IsValidate == true).ToList();
 
-			if (CustomerList == null || CustomerList.Count(x => x.IsValidate == true) == 0)
+			if (customerImportList == null || customerImportList.Count(x => x.IsValidate == true) == 0)
 			{
 				_errorMessage = "ตรวจสอบไฟล์แนบอีกครั้ง";
 				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
@@ -1610,7 +1614,7 @@ namespace SalesPipeline.Pages.Customers
 				_errorMessage = null;
 				ShowLoading();
 
-				foreach (var item in CustomerList.Where(x => x.IsValidate == true).ToList())
+				foreach (var item in customerImportList.Where(x => x.IsValidate == true).ToList())
 				{
 					var resultModel = new ResultImport();
 					resultModel.Name = item.CompanyName;
@@ -1650,7 +1654,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected void ClearInputFile()
 		{
-			CustomerList = new();
+			customerImportList = new();
 			bClearInputFile = true;
 			StateHasChanged();
 			bClearInputFile = false;
@@ -1685,7 +1689,32 @@ namespace SalesPipeline.Pages.Customers
 
 		public async Task OnShowVersion(Guid customerID)
 		{
-			HideLoading();
+			saleCurrentModel = new();
+			saleExportModel = new();
+
+			var data = await _salesViewModel.GetByCustomerId(customerID);
+			if (data != null && data.Status && data.Data != null)
+			{
+				saleCurrentModel = data.Data;
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			//saleExportModel
+			if (customerImportList?.Count > 0)
+			{
+				var sameImport = customerImportList.FirstOrDefault(x=>x.Id == customerID);
+				if (sameImport != null)
+				{
+					saleExportModel.Customer = sameImport;
+				}
+			}
+
+			StateHasChanged();
+			await Task.Delay(1);
 			await modalVersion.ShowAsync();
 		}
 
