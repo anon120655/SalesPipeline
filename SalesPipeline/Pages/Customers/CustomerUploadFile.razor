@@ -91,9 +91,15 @@
 																<ul class="text-danger mb-0">
 																	@foreach (var item_error in item.ValidateError)
 																	{
-																		<li>@item_error</li>
+																		<li>@((MarkupString)(item_error ?? string.Empty))</li>
 																	}
 																</ul>
+															}
+															if (item.IsSelectVersion)
+															{
+																<Button @onclick="() => OnShowVersion(item.Id)" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r ms-3">
+																	เลือกจัดเก็บเวอร์ชันข้อมูล
+																</Button>
 															}
 														}
 													</td>
@@ -143,8 +149,8 @@
 													@* <td class="text-center">@item.Master_ChainName</td> *@
 													@* <td class="text-center">@item.Master_LoanTypeName</td> *@
 													@* <td class="text-center">@item.CompanyEmail</td>
-													<td class="text-center">@item.CompanyTel</td>
-													<td class="text-center">@item.ParentCompanyGroup</td> *@
+										<td class="text-center">@item.CompanyTel</td>
+										<td class="text-center">@item.ParentCompanyGroup</td> *@
 													<td class="text-center">@item.CreditScore</td>
 													<td class="text-center">@item.FiscalYear</td>
 													<td class="text-center">@GeneralUtils.DateToEnStr(item.StatementDate)</td>
@@ -206,7 +212,7 @@
 								</div>
 							}
 						</div>
-						<small class="text-secondary">*ระบบจะนำเข้าเฉพาะรายการที่ผ่านการตรวจสอบ</small>
+						<small class="text-secondary">*ระบบจะนำเข้าเฉพาะรายการที่ตรวจสอบผ่าน และข้อมูลที่มีการเลือกจัดเก็บเวอร์ชั่นแล้วเท่านั้น</small>
 					</div>
 				</div>
 			</div>
@@ -231,6 +237,32 @@
 				<div class="d-flex justify-content-evenly align-items-center">
 					<div class="p-2">
 						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideResult">เสร็จสิ้น</Button>
+					</div>
+				</div>
+			</div>
+		</BodyTemplate>
+	</Modal>
+
+	<Modal @ref="modalVersion"
+		   Title=""
+		   IsVerticallyCentered="true"
+		   OnHidden="OnHiddenVersion"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<div class="row mb-4 text-center">
+				<h5 class="fw-bold mb-3">เลือกจัดเก็บเวอร์ชันข้อมูล</h5>
+			</div>
+			<div class="row my-3 text-center">
+				<div class="d-flex bd-highlight align-items-center justify-content-center">
+					<div class="p-2 bd-highlight">
+						<Button @onclick=OnHideVersion Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+							กลับ
+						</Button>
+					</div>
+					<div class="p-2">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideVersion">จัดเก็บ</Button>
+						</div>
 					</div>
 				</div>
 			</div>

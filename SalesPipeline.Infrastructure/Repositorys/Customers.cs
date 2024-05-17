@@ -30,6 +30,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
+			model.IsSelectVersion = true;
 			if (model.ValidateError == null) model.ValidateError = new();
 
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
@@ -49,6 +50,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				model.IsValidate = false;
 				model.ValidateError.Add(errorMessage);
 				if (isThrow) throw new ExceptionCustom(errorMessage);
+
+				if (juristicPersonRegNumber != null)
+				{
+					var juristicNumber = await VerifyByNumber(juristicPersonRegNumber);
+					if (juristicNumber.Code == "proceed")
+					{
+						errorMessage = juristicNumber.Message ?? string.Empty;
+						model.IsValidate = false;
+						model.IsSelectVersion = false;
+						model.ValidateError.Add(errorMessage);
+						if (isThrow) throw new ExceptionCustom(errorMessage);
+					}
+				}
+
 			}
 
 			if (model.DateContact.HasValue)
@@ -63,9 +78,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (string.IsNullOrEmpty(model.CompanyName))
 			{
-					errorMessage = $"ระบุ ชื่อบริษัท";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
+				errorMessage = $"ระบุ ชื่อบริษัท";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
 			}
 
 			if (isSetMaster == true)

@@ -406,6 +406,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public Guid? Branch_RegionId { get; set; }
 		public string? Branch_RegionName { get; set; }
 		public bool? IsValidate { get; set; }
+		public bool IsSelectVersion { get; set; } = false;
 		public List<string?>? ValidateError { get; set; }
 	}
 }

@@ -30,6 +30,8 @@ namespace SalesPipeline.Pages.Customers
 		private string? _fileName = null;
 		private List<string> header_list_key = new();
 
+		private Modal modalVersion = default!;
+
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
@@ -1679,6 +1681,22 @@ namespace SalesPipeline.Pages.Customers
 		private void HandleDragLeave()
 		{
 			dropClass = "";
+		}
+
+		public async Task OnShowVersion(Guid customerID)
+		{
+			HideLoading();
+			await modalVersion.ShowAsync();
+		}
+
+		private async Task OnHideVersion()
+		{
+			await modalVersion.HideAsync();
+		}
+
+		private async void OnHiddenVersion()
+		{
+			await Task.Delay(1);
 		}
 
 
