@@ -425,7 +425,7 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		//ฝ่ายกิจการสาขา
+		//กิจการสาขาภาค
 		public async Task<ResultModel<Master_Branch_RegionCustom>> CreateDepBranch(Master_Branch_RegionCustom model)
 		{
 			try
@@ -544,6 +544,132 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<PaginationView<List<Master_Branch_RegionCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		//สาขา
+		public async Task<ResultModel<InfoBranchCustom>> CreateBranch(InfoBranchCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/CreateBranch", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<InfoBranchCustom>(content);
+				return new ResultModel<InfoBranchCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<InfoBranchCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<InfoBranchCustom>> UpdateBranch(InfoBranchCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/Master/UpdateBranch", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<InfoBranchCustom>(content);
+				return new ResultModel<InfoBranchCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<InfoBranchCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> DeleteBranchById(UpdateModel model)
+		{
+			try
+			{
+				await _httpClient.DeleteAsync($"/v1/Master/DeleteBranchById?{model.SetParameter(true)}");
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> UpdateStatusBranchById(UpdateModel model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				await _httpClient.PutAsync($"/v1/Master/UpdateStatusBranchById", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<InfoBranchCustom>?> GetBranchById(int id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBranchById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<InfoBranchCustom>(content);
+				return new ResultModel<InfoBranchCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<InfoBranchCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<InfoBranchCustom>>>> GetBranchs(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetBranchs?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<InfoBranchCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<InfoBranchCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<InfoBranchCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

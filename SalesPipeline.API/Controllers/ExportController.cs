@@ -319,13 +319,13 @@ namespace SalesPipeline.API.Controllers
 					var data = await _repo.Dashboard.GetListTarget_SaleById(model);
 					if (data != null && data.Items.Count > 0)
 					{
-						var dataDepBranchs = await _repo.MasterBranchReg.GetBranchs(new allFilter() { status = StatusModel.Active });
-						if (dataDepBranchs != null)
+						var dataDepBranchReg = await _repo.MasterBranchReg.GetBranchRegs(new allFilter() { status = StatusModel.Active });
+						if (dataDepBranchReg != null)
 						{
 							LookUp.DepartmentBranch = new();
-							if (dataDepBranchs.Items.Count > 0)
+							if (dataDepBranchReg.Items.Count > 0)
 							{
-								LookUp.DepartmentBranch.AddRange(dataDepBranchs.Items);
+								LookUp.DepartmentBranch.AddRange(dataDepBranchReg.Items);
 							}
 						}
 

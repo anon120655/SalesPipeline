@@ -885,7 +885,14 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchCode).HasMaxLength(255);
             entity.Property(e => e.BranchName).HasMaxLength(255);
             entity.Property(e => e.BranchNameMain).HasMaxLength(255);
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.ProvinceID).HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<InfoProvince>(entity =>

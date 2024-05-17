@@ -44,8 +44,8 @@
 
 		//ตั้งค่า
 		public const int Setting = 260000;
-		public const int SetDivBranch = 260101;
-		public const int SetDivLoan = 260102;
+		public const int SetBranchReg = 260101;
+		public const int SetBranch = 260102;
 		public const int SetYieldChain = 260200;
 		public const int SetLoanType = 260300;
 		public const int SetReason = 260400;

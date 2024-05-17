@@ -4,14 +4,8 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -30,7 +24,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		//ฝ่ายกิจการสาขา
+		//กิจการสาขาภาค
 		public async Task<Master_Branch_RegionCustom> Create(Master_Branch_RegionCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
@@ -114,7 +108,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Master_Branch_Regions
 				.OrderByDescending(o => o.CreateDate)
-				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
 
 			return _mapper.Map<Master_Branch_RegionCustom>(query);
 		}
@@ -125,7 +119,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return name;
 		}
 
-		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchs(allFilter model)
+		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchRegs(allFilter model)
 		{
 			var query = _repo.Context.Master_Branch_Regions
 												 .Where(x => x.Status != StatusModel.Delete)
@@ -136,14 +130,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			if (!String.IsNullOrEmpty(model.val1))
+			if (!String.IsNullOrEmpty(model.code))
 			{
-				query = query.Where(x => x.Code != null && x.Code.Contains(model.val1));
+				query = query.Where(x => x.Code != null && x.Code.Contains(model.code));
 			}
 
-			if (!String.IsNullOrEmpty(model.val2))
+			if (!String.IsNullOrEmpty(model.branch_name))
 			{
-				query = query.Where(x => x.Name != null && x.Name.Contains(model.val2));
+				query = query.Where(x => x.Name != null && x.Name.Contains(model.branch_name));
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

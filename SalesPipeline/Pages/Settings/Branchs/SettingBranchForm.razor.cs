@@ -1,25 +1,26 @@
-using global::Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Settings.Branchs
 {
-	public partial class SettingBranchRegForm
+	public partial class SettingBranchForm
 	{
 		[Parameter]
-		public Guid? id { get; set; }
+		public int? id { get; set; }
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
-		private Master_Branch_RegionCustom formModel = new();
+		private InfoBranchCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetBranchReg) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetBranch) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 		}
@@ -46,7 +47,7 @@ namespace SalesPipeline.Pages.Settings.Branchs
 		{
 			if (id.HasValue)
 			{
-				var data = await _masterViewModel.GetDepBranchById(id.Value);
+				var data = await _masterViewModel.GetBranchById(id.Value);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
@@ -64,17 +65,17 @@ namespace SalesPipeline.Pages.Settings.Branchs
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_Branch_RegionCustom> response;
+			ResultModel<InfoBranchCustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue)
 			{
-				response = await _masterViewModel.UpdateDepBranch(formModel);
+				response = await _masterViewModel.UpdateBranch(formModel);
 			}
 			else
 			{
-				response = await _masterViewModel.CreateDepBranch(formModel);
+				response = await _masterViewModel.CreateBranch(formModel);
 			}
 
 			if (response.Status)
@@ -92,7 +93,7 @@ namespace SalesPipeline.Pages.Settings.Branchs
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/setting/branchreg");
+			_Navs.NavigateTo("/setting/branch");
 		}
 
 		protected void ShowLoading()
@@ -106,6 +107,7 @@ namespace SalesPipeline.Pages.Settings.Branchs
 			isLoading = false;
 			StateHasChanged();
 		}
+
 
 	}
 }

@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
@@ -512,7 +513,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		//ฝ่ายกิจการสาขา
+		//กิจการสาขาภาค
 		[HttpPost("CreateDepBranch")]
 		public async Task<IActionResult> CreateDepBranch(Master_Branch_RegionCustom model)
 		{
@@ -588,7 +589,93 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = await _repo.MasterBranchReg.GetBranchs(model);
+				var response = await _repo.MasterBranchReg.GetBranchRegs(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		//สาขา
+		[HttpPost("CreateBranch")]
+		public async Task<IActionResult> CreateBranch(InfoBranchCustom model)
+		{
+			try
+			{
+				var data = await _repo.MasterBranch.Create(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateBranch")]
+		public async Task<IActionResult> UpdateBranch(InfoBranchCustom model)
+		{
+			try
+			{
+				var data = await _repo.MasterBranch.Update(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpDelete("DeleteBranchById")]
+		public async Task<IActionResult> DeleteBranchById([FromQuery] UpdateModel model)
+		{
+			try
+			{
+				await _repo.MasterBranch.DeleteById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateStatusBranchById")]
+		public async Task<IActionResult> UpdateStatusBranchById(UpdateModel model)
+		{
+			try
+			{
+				await _repo.MasterBranch.UpdateStatusById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetBranchById")]
+		public async Task<IActionResult> GetBranchById([FromQuery] int id)
+		{
+			try
+			{
+				var data = await _repo.MasterBranch.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetBranchs")]
+		public async Task<IActionResult> GetBranchs([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.MasterBranch.GetBranchs(model);
 
 				return Ok(response);
 			}

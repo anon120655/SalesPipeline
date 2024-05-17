@@ -1,6 +1,7 @@
-﻿@page "/setting/branchreg"
+﻿@page "/setting/branch"
 
-<PageTitle>ตั้งค่ากิจการสาขา</PageTitle>
+
+<PageTitle>ตั้งค่า สาขา</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,12 +16,12 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ตั้งค่า กิจการสาขา</p>
+							<p class="back_topic">ตั้งค่า สาขา</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
-							<label class="form-label">รหัส</label>
+							<label class="form-label">รหัสสาขา</label>
 							<div class="input-group">
 								<input @bind="filter.code" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
@@ -31,7 +32,7 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อกิจการสาขา</label>
+							<label class="form-label">ชื่อสาขา</label>
 							<div class="input-group">
 								<input @bind="filter.branch_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
@@ -42,7 +43,7 @@
 							</div>
 						</div>
 						<div class="col mb-2 mt-3 text-end">
-							<a href="/setting/branchreg/create" class="btn btn-primary text-white mw_6r w-100">
+							<a href="/setting/branch/create" class="btn btn-primary text-white mw_6r w-100">
 								<i class="fa-solid fa-plus"></i> เพิ่มรายการ
 							</a>
 						</div>
@@ -53,8 +54,9 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">รหัส</th>
-											<th class="text-center">ชื่อกิจการสาขา</th>
+											<th class="text-center">รหัสสาขา</th>
+											<th class="text-center">ชื่อสาขา</th>
+											<th class="text-center">จังหวัด</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">สถานะ</th>
 										</tr>
@@ -83,15 +85,16 @@
 												bool status = item.Status == StatusModel.Active;
 
 												<tr>
-													<td class="text-center">@item.Code</td>
-													<td class="">@item.Name</td>
+													<td class="text-center">@item.BranchCode</td>
+													<td class="">@item.BranchName</td>
+													<td class="">@GetProvinceNameById(item.ProvinceID)</td>
 													<td class="text-center">
-														<a href="/setting/branchreg/update/@item.Id">แก้ไข</a> /
-														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
+														<a href="/setting/branch/update/@item.BranchID">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.BranchID.ToString(),item.BranchName))'>ลบ</a>
 													</td>
 													<td class="text-center">
 														<label class="switch">
-															<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
+															<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.BranchID))" checked="@status" />
 															<span class="slider round"></span>
 														</label>
 													</td>
@@ -123,3 +126,4 @@ else
 {
 	<NotPermissionPage />
 }
+
