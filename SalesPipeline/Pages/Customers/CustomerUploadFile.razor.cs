@@ -23,7 +23,7 @@ namespace SalesPipeline.Pages.Customers
 		List<CustomerCustom>? customerImportList = new();
 
 		private SaleCustom saleCurrentModel = new();
-		private SaleCustom saleExportModel = new();
+		private SaleCustom saleImportModel = new();
 
 		//ใส่กรณี clear file แล้ว input ไม่ update
 		private string _inputFileId = Guid.NewGuid().ToString();
@@ -1604,7 +1604,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			//UserList = UserList?.Where(x => x.IsValidate == true).ToList();
 
-			if (customerImportList == null || customerImportList.Count(x => x.IsValidate == true) == 0)
+			if (customerImportList == null || customerImportList.Count(x => x.IsValidate == true || x.IsKeep) == 0)
 			{
 				_errorMessage = "ตรวจสอบไฟล์แนบอีกครั้ง";
 				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
@@ -1614,14 +1614,24 @@ namespace SalesPipeline.Pages.Customers
 				_errorMessage = null;
 				ShowLoading();
 
-				foreach (var item in customerImportList.Where(x => x.IsValidate == true).ToList())
+				var userData = customerImportList.Where(x => x.IsValidate == true || x.IsKeep).ToList();
+				foreach (var item in userData)
 				{
 					var resultModel = new ResultImport();
 					resultModel.Name = item.CompanyName;
 
 					item.CurrentUserId = UserInfo.Id;
 
-					var response = await _customerViewModel.Create(item);
+					ResultModel<CustomerCustom> response = new();
+					if (item.Id == Guid.Empty)
+					{
+						response = await _customerViewModel.Create(item);
+					}
+					else
+					{
+						response = await _customerViewModel.Update(item);
+					}
+
 					if (!response.Status)
 					{
 						resultModel.Success = false;
@@ -1690,7 +1700,7 @@ namespace SalesPipeline.Pages.Customers
 		public async Task OnShowVersion(Guid customerID)
 		{
 			saleCurrentModel = new();
-			saleExportModel = new();
+			saleImportModel = new();
 
 			var data = await _salesViewModel.GetByCustomerId(customerID);
 			if (data != null && data.Status && data.Data != null)
@@ -1706,16 +1716,30 @@ namespace SalesPipeline.Pages.Customers
 			//saleExportModel
 			if (customerImportList?.Count > 0)
 			{
-				var sameImport = customerImportList.FirstOrDefault(x=>x.Id == customerID);
+				var sameImport = customerImportList.FirstOrDefault(x => x.Id == customerID);
 				if (sameImport != null)
 				{
-					saleExportModel.Customer = sameImport;
+					saleImportModel.Customer = sameImport;
 				}
 			}
 
 			StateHasChanged();
 			await Task.Delay(1);
 			await modalVersion.ShowAsync();
+		}
+
+		private async Task KeepCustomer(CustomerCustom? model, bool isKeep = false)
+		{
+			if (model != null && customerImportList != null)
+			{
+				var keep = customerImportList.FirstOrDefault(x => x.Id == model.Id);
+				if (keep != null)
+				{
+					keep.IsKeep = isKeep;
+					await Task.Delay(1);
+					await OnHideVersion();
+				}
+			}
 		}
 
 		private async Task OnHideVersion()

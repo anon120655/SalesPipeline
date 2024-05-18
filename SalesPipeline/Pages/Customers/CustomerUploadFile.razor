@@ -6,7 +6,7 @@
 
 <style>
 	@@media (min-width: 1200px) {
-    .modal-xl {
+		.modal-xl {
 			--bs-modal-width: 1340px;
 		}
 	}
@@ -68,7 +68,7 @@
 									<tbody>
 										@if (customerImportList == null)
 										{
-											<tr class="text-start align-middle">
+											<tr class="text-center align-middle">
 												<td colspan="100">
 													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
 												</td>
@@ -76,7 +76,7 @@
 										}
 										else if (customerImportList.Count == 0)
 										{
-											<tr class="text-start align-middle">
+											<tr class="text-center align-middle">
 												<td colspan="100">
 													<em>ไม่พบข้อมูล</em>
 												</td>
@@ -90,7 +90,7 @@
 													<td class="">
 														@if (item.IsValidate == true)
 														{
-															<p class="text-success text-center">ผ่าน</p>
+															<p class="text-primary text-center">ผ่าน</p>
 														}
 														else
 														{
@@ -106,8 +106,12 @@
 															if (item.IsSelectVersion)
 															{
 																<Button @onclick="() => OnShowVersion(item.Id)" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r ms-3">
-																	เลือกจัดเก็บเวอร์ชันข้อมูล
+																	เลือกจัดเก็บ
 																</Button>
+															}
+															if (item.IsKeep)
+															{
+																<span class="ms-2"><i class="fa-solid fa-circle-check text-primary"></i> จัดเก็บ</span>
 															}
 														}
 													</td>
@@ -207,7 +211,7 @@
 									กลับ
 								</Button>
 							</div>
-							@if (customerImportList?.Where(x => x.IsValidate == true).Count() > 0)
+							@if (customerImportList?.Where(x => x.IsValidate == true || x.IsKeep).Count() > 0)
 							{
 								<div class="p-2 bd-highlight">
 									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
@@ -261,34 +265,47 @@
 			<div class="row mb-4 text-center">
 				<h5 class="fw-bold mb-3">เลือกจัดเก็บเวอร์ชันข้อมูล</h5>
 			</div>
-			<div class="row mb-2 fs_0_75r">
+			<div class="row mb-4 fs_0_75r">
 				<div class="col-12 col-lg-6">
-					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 450px;">
+					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 400px;">
 						<PartialCustomerInfoVersion formModel="saleCurrentModel" />
+					</div>
+					<div class="mt-2 text-secondary">
+						<p>วันที่นำเข้า : @GeneralUtils.DateToEnStr(saleCurrentModel.CreateDate)</p>
 					</div>
 				</div>
 				<div class="col-12 col-lg-6">
-					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 450px;">
-						<PartialCustomerInfoVersion formModel="saleExportModel" />
+					<div class="overflow-y-auto overflow-x-hidden border p-2" style="max-height: 400px;">
+						<PartialCustomerInfoVersion formModel="saleImportModel" />
+					</div>
+					<div class="mt-2 text-secondary">
+						<p>วันที่นำเข้า : @GeneralUtils.DateToEnStr(DateTime.Now)</p>
 					</div>
 				</div>
 			</div>
-			<div class="my-2 text-center">
-				<div class="d-flex bd-highlight align-items-center justify-content-center">
-					<div class="p-2 bd-highlight">
-						<Button @onclick=OnHideVersion Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-							กลับ
-						</Button>
-					</div>
-					<div class="p-2 bd-highlight">
-						<Button Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
-							@if (isLoading)
-							{
-								<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
-							}
-							จัดเก็บ
-						</Button>
-					</div>
+			<div class="d-flex bd-highlight align-items-center justify-content-end">
+				<div class="p-2 flex-grow-1">
+					<Button @onclick=OnHideVersion Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+						ปิดหน้าต่าง
+					</Button>
+				</div>
+				<div class="p-2">
+					<Button @onclick="()=> KeepCustomer(saleImportModel.Customer,false)" Color="ButtonColor.Danger" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+						@if (isLoading)
+						{
+							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+						}
+						ไม่จัดเก็บ
+					</Button>
+				</div>
+				<div class="p-2">
+					<Button @onclick="()=> KeepCustomer(saleImportModel.Customer,true)" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+						@if (isLoading)
+						{
+							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+						}
+						จัดเก็บ
+					</Button>
 				</div>
 			</div>
 		</BodyTemplate>

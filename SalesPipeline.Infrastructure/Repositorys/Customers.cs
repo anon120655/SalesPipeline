@@ -31,6 +31,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
 			model.IsSelectVersion = true;
+			model.IsKeep = false;
 			if (model.ValidateError == null) model.ValidateError = new();
 
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
@@ -673,7 +674,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					customer.UpdateDate = _dateNow;
 					customer.UpdateBy = model.CurrentUserId;
-					customer.InsertRoleCode = userRole.Code;
+					//customer.InsertRoleCode = userRole.Code;
 					customer.DateContact = model.DateContact;
 					customer.Master_ContactChannelId = model.Master_ContactChannelId;
 					customer.Master_ContactChannelName = master_ContactChannelName;
