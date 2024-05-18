@@ -1476,6 +1476,133 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		//ประเภทธุรกิจ pre approve
+		public async Task<ResultModel<Master_Pre_BusinessTypeCustom>> CreatePre_BusType(Master_Pre_BusinessTypeCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/CreatePre_BusType", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_BusinessTypeCustom>(content);
+				return new ResultModel<Master_Pre_BusinessTypeCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_BusinessTypeCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Master_Pre_BusinessTypeCustom>> UpdatePre_BusType(Master_Pre_BusinessTypeCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/Master/UpdatePre_BusType", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_BusinessTypeCustom>(content);
+				return new ResultModel<Master_Pre_BusinessTypeCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_BusinessTypeCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> DeletePre_BusTypeById(UpdateModel model)
+		{
+			try
+			{
+				await _httpClient.DeleteAsync($"/v1/Master/DeletePre_BusTypeById?{model.SetParameter(true)}");
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> UpdateStatusPre_BusTypeById(UpdateModel model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				await _httpClient.PutAsync($"/v1/Master/UpdateStatusPre_BusTypeById", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Master_Pre_BusinessTypeCustom>?> GetPre_BusTypeById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_BusTypeById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Master_Pre_BusinessTypeCustom>(content);
+				return new ResultModel<Master_Pre_BusinessTypeCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Master_Pre_BusinessTypeCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<PaginationView<List<Master_Pre_BusinessTypeCustom>>>> GetPre_BusType(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_BusType?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Pre_BusinessTypeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_Pre_BusinessTypeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_Pre_BusinessTypeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+
 
 	}
 }

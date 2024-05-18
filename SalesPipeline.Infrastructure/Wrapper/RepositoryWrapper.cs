@@ -45,6 +45,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterStatusSale MasterStatusSale { get; }
 		public IMaster_Pre_RateType Master_Pre_RateType { get; }
 		public IMaster_Pre_App_Loan Master_Pre_App_Loan { get; }
+		public IMaster_Pre_BusType Master_Pre_BusType { get; }
 		public IThailand Thailand { get; }
 		public IAssignmentBranch AssignmentBranch { get; }
 		public IAssignmentCenter AssignmentCenter { get; }
@@ -90,6 +91,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
 			Master_Pre_RateType = new Master_Pre_RateType(this, _db, settings, _mapper);
 			Master_Pre_App_Loan = new Master_Pre_App_Loan(this, _db, settings, _mapper);
+			Master_Pre_BusType = new Master_Pre_BusType(this, _db, settings, _mapper);
 			Thailand = new Thailand(this, _db, settings, _mapper);
 			AssignmentBranch = new AssignmentBranch(this, _db, settings, _mapper);
 			AssignmentCenter = new AssignmentCenter(this, _db, settings, _mapper);

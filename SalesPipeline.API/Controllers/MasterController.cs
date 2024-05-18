@@ -1165,6 +1165,92 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		//ประเภทธุรกิจ pre approve
+		[HttpPost("CreatePre_BusType")]
+		public async Task<IActionResult> CreatePre_BusType(Master_Pre_BusinessTypeCustom model)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_BusType.Create(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdatePre_BusType")]
+		public async Task<IActionResult> UpdatePre_BusType(Master_Pre_BusinessTypeCustom model)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_BusType.Update(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpDelete("DeletePre_BusTypeById")]
+		public async Task<IActionResult> DeletePre_BusTypeById([FromQuery] UpdateModel model)
+		{
+			try
+			{
+				await _repo.Master_Pre_BusType.DeleteById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateStatusPre_BusTypeById")]
+		public async Task<IActionResult> UpdateStatusPre_BusTypeById(UpdateModel model)
+		{
+			try
+			{
+				await _repo.Master_Pre_BusType.UpdateStatusById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPre_BusTypeById")]
+		public async Task<IActionResult> GetPre_BusTypeById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.Master_Pre_BusType.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetPre_BusType")]
+		public async Task<IActionResult> GetPre_BusType([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master_Pre_BusType.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 	}
 }
