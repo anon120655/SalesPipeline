@@ -15,13 +15,82 @@
 							<p class="back_topic">รายการสินเชื่อ</p>
 						</div>
 					</div>
+					<div class="row mt-3">
+						<div class="col-12">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">ชื่อสินเชื่อ</th>
+											<th class="text-center">ประเภทการชำระดอกเบี้ย</th>
+											<th class="text-center">ประเภทอัตราดอกเบี้ย</th>
+											<th class="text-center">จัดการ</th>
+											<th class="text-center">สถานะ</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>ไม่พบข้อมูล</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+											int SequenceNo = 0;
+											foreach (var item in Items)
+											{
+												bool status = item.Status == StatusModel.Active;
+
+												<tr>
+													<td class="text-center">@item.Name</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Pre_Interest_PayTypeName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo("")</td>
+													<td class="text-center">
+														<a href="/loan/update/@item.Id">แก้ไข</a> /
+														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
+													</td>
+													<td class="text-center">
+														<label class="switch">
+															<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
+															<span class="slider round"></span>
+														</label>
+													</td>
+												</tr>
+												SequenceNo++;
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
 					<div>
-						<ComingSoon />
+						<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+										TotalItems="@(Pager?.TotalItems ?? 0)"
+										Pager="@Pager"
+										OnShowOnPage="@OnSelectPagesize"
+										OnSelectedPage="@OnSelectPage"
+										ParameterAll="@filter?.SetParameter()">
+						</PaginationBack>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 }
 else
 {
