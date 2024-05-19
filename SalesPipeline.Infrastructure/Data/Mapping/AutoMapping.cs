@@ -12,6 +12,7 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.Resources.Loans;
 
 namespace SalesPipeline.Infrastructure.Data.Mapping
 {
@@ -19,6 +20,12 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 	{
 		public AutoMapping()
 		{
+			//Loan
+			CreateMap<Entity.Loan, LoanCustom>().ReverseMap();
+			CreateMap<Entity.Loan_Period, Loan_PeriodCustom>().ReverseMap();
+			CreateMap<Entity.Loan_Period_AppLoan, Loan_Period_AppLoanCustom>().ReverseMap();
+			CreateMap<Entity.Loan_Period_BusType, Loan_Period_BusTypeCustom>().ReverseMap();
+
 			//Dashboard
 			CreateMap<Entity.Dash_Status_Total, Dash_Status_TotalCustom>().ReverseMap();
 			CreateMap<Entity.Dash_Avg_Number, Dash_AvgTop_NumberCustom>().ReverseMap();

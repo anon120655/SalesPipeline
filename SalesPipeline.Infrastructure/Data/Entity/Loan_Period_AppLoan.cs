@@ -17,9 +17,11 @@ public partial class Loan_Period_AppLoan
 
     public DateTime CreateDate { get; set; }
 
-    public int Loan_PeriodId { get; set; }
+    public Guid Loan_PeriodId { get; set; }
 
     public Guid Master_Pre_Applicant_LoanId { get; set; }
 
     public string? Master_Pre_Applicant_LoanName { get; set; }
+
+    public virtual Loan_Period Loan_Period { get; set; } = null!;
 }

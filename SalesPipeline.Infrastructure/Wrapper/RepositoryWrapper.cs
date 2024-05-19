@@ -43,6 +43,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterTSIC MasterTSIC { get; }
 		public IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
+		public IMaster_Pre_PayType Master_Pre_PayType { get; }
 		public IMaster_Pre_RateType Master_Pre_RateType { get; }
 		public IMaster_Pre_App_Loan Master_Pre_App_Loan { get; }
 		public IMaster_Pre_BusType Master_Pre_BusType { get; }
@@ -51,6 +52,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IAssignmentCenter AssignmentCenter { get; }
 		public IAssignmentRM AssignmentRM { get; }
 		public IReturnRepo Return { get; }
+		public ILoanRepo Loan { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -89,6 +91,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterTSIC = new MasterTSIC(this, _db, settings, _mapper);
 			MasterReasonCloseSale = new MasterReasonCloseSale(this, _db, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _db, settings, _mapper);
+			Master_Pre_PayType = new Master_Pre_PayType(this, _db, settings, _mapper);
 			Master_Pre_RateType = new Master_Pre_RateType(this, _db, settings, _mapper);
 			Master_Pre_App_Loan = new Master_Pre_App_Loan(this, _db, settings, _mapper);
 			Master_Pre_BusType = new Master_Pre_BusType(this, _db, settings, _mapper);
@@ -97,6 +100,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			AssignmentCenter = new AssignmentCenter(this, _db, settings, _mapper);
 			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);
 			Return = new ReturnRepo(this, _db, settings, _mapper);
+			Loan = new LoanRepo(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

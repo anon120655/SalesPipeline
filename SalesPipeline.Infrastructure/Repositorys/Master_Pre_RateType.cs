@@ -41,6 +41,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//master_Pre_Interest_RateTypes.Code = model.Code;
 				//master_Pre_Interest_RateTypes.Name = model.Name;
 				master_Pre_Interest_RateTypes.Rate = model.Rate;
+				master_Pre_Interest_RateTypes.IsRatePlusMinus = model.IsRatePlusMinus;
 				_db.Update(master_Pre_Interest_RateTypes);
 				await _db.SaveAsync();
 			}

@@ -39,6 +39,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterTSIC MasterTSIC { get; }
 		IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		IMasterStatusSale MasterStatusSale { get; }
+		IMaster_Pre_PayType Master_Pre_PayType { get; }
 		IMaster_Pre_RateType Master_Pre_RateType { get; }
 		IMaster_Pre_App_Loan Master_Pre_App_Loan { get; }
 		IMaster_Pre_BusType Master_Pre_BusType { get; }
@@ -47,6 +48,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IAssignmentCenter AssignmentCenter { get; }
 		IAssignmentRM AssignmentRM { get; }
 		IReturnRepo Return { get; }
+		ILoanRepo Loan { get; }
 
 		IProcessSales ProcessSale { get; }
 		ISales Sales { get; }

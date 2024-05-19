@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalesPipeline.Utils.Resources.Masters
+namespace SalesPipeline.Utils.Resources.Loans
 {
-	public class Master_Pre_Interest_RateTypeCustom : CommonModel
+	public class LoanCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -24,21 +24,28 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		public int UpdateBy { get; set; }
 
-		public string? Code { get; set; }
-
 		/// <summary>
-		/// ชื่อเต็ม
+		/// ชื่อสินเชื่อ
 		/// </summary>
 		public string? Name { get; set; }
 
 		/// <summary>
-		/// อัตราดอกเบี้ย
+		/// ประเภทการชำระดอกเบี้ย
 		/// </summary>
-		public decimal? Rate { get; set; }
+		public Guid? Master_Pre_Interest_PayTypeId { get; set; }
+
+		public string? Master_Pre_Interest_PayTypeName { get; set; }
 
 		/// <summary>
-		/// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้
+		/// จำนวนช่วงเวลา
 		/// </summary>
-		public short? IsRatePlusMinus { get; set; }
+		public int? PeriodNumber { get; set; }
+
+		/// <summary>
+		/// Risk Premium รายปี
+		/// </summary>
+		public decimal? RiskPremiumYear { get; set; }
+
+		public virtual ICollection<Loan_PeriodCustom>? Loan_Periods { get; set; }
 	}
 }

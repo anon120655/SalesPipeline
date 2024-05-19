@@ -968,13 +968,32 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.LoanId, "LoanId");
 
+            entity.HasIndex(e => e.Master_Pre_Interest_RateTypeId, "Master_Pre_Interest_RateTypeId");
+
+            entity.Property(e => e.Condition)
+                .HasMaxLength(255)
+                .HasComment("เงื่อนไข");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.IsRatePlusMinus)
+                .HasComment("1=สามารถเพิ่มลบอัตราดอกเบี้ยได้ ณ วันที่เพิ่ม")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.LoanId).HasComment("FK สินเชื่อ");
+            entity.Property(e => e.Master_Pre_Interest_RateTypeId).HasComment("FK ประเภทอัตราดอกเบี้ย");
+            entity.Property(e => e.Master_Pre_Interest_RateTypeName).HasMaxLength(255);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ชื่อสินเชื่อ");
             entity.Property(e => e.PeriodNo)
                 .HasComment("ระยะที่")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.RatePlusMinus)
+                .HasPrecision(18, 2)
+                .HasComment("ค่าเพิ่มลบดอกเบี้ย %");
+            entity.Property(e => e.RateValue)
+                .HasPrecision(18, 3)
+                .HasComment("อัตราดอกเบี้ย %");
+            entity.Property(e => e.StartYear)
+                .HasComment("เริ่มปีที่")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
@@ -984,6 +1003,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.LoanId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("loan_period_ibfk_1");
+
+            entity.HasOne(d => d.Master_Pre_Interest_RateType).WithMany(p => p.Loan_Periods)
+                .HasForeignKey(d => d.Master_Pre_Interest_RateTypeId)
+                .HasConstraintName("loan_period_ibfk_2");
         });
 
         modelBuilder.Entity<Loan_Period_AppLoan>(entity =>
@@ -992,12 +1015,18 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Loan_Period_AppLoan", tb => tb.HasComment("ประเภทผู้ขอในระยะที่"));
 
+            entity.HasIndex(e => e.Loan_PeriodId, "Loan_PeriodId");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Loan_PeriodId).HasColumnType("int(11)");
             entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Loan_Period).WithMany(p => p.Loan_Period_AppLoans)
+                .HasForeignKey(d => d.Loan_PeriodId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("loan_period_apploan_ibfk_1");
         });
 
         modelBuilder.Entity<Loan_Period_BusType>(entity =>
@@ -1006,12 +1035,18 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Loan_Period_BusType", tb => tb.HasComment("ประเภทธุรกิจในระยะที่"));
 
+            entity.HasIndex(e => e.Loan_PeriodId, "Loan_PeriodId");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Loan_PeriodId).HasColumnType("int(11)");
             entity.Property(e => e.Master_Pre_BusinessTypeName).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Loan_Period).WithMany(p => p.Loan_Period_BusTypes)
+                .HasForeignKey(d => d.Loan_PeriodId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("loan_period_bustype_ibfk_1");
         });
 
         modelBuilder.Entity<Logging>(entity =>
@@ -1303,6 +1338,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Code).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.IsRatePlusMinus)
+                .HasComment("1=สามารถเพิ่มลบอัตราดอกเบี้ยได้")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ชื่อเต็ม");
