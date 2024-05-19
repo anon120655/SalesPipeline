@@ -57,6 +57,7 @@ builder.Services.AddScoped<SystemViewModel>();
 builder.Services.AddScoped<DashboardViewModel>();
 builder.Services.AddScoped<ExportViewModel>();
 builder.Services.AddScoped<MailViewModel>();
+builder.Services.AddScoped<LoanViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

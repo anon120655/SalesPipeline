@@ -158,8 +158,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					loan.Master_Pre_Interest_PayTypeName = master_Pre_Interest_PayTypeName;
 					loan.PeriodNumber = model.PeriodNumber;
 					loan.RiskPremiumYear = model.RiskPremiumYear;
-					await _db.InsterAsync(loan);
+					_db.Update(loan);
 					await _db.SaveAsync();
+
+					//Update Status To Delete All
+					var loan_PeriodR = _repo.Context.Loan_Periods.Where(x => x.LoanId == model.Id).ToList();
+					if (loan_PeriodR.Count > 0)
+					{
+						foreach (var period in loan_PeriodR)
+						{
+							var loan_Period_AppLoansR = _repo.Context.Loan_Period_AppLoans.Where(x => x.Loan_PeriodId == period.Id).ToList();
+							if (loan_Period_AppLoansR.Count > 0)
+							{
+								foreach (var appLoan in loan_Period_AppLoansR)
+								{
+									appLoan.Status = StatusModel.Delete;
+								}
+								await _db.SaveAsync();
+							}
+							var loan_Period_BusTypesR = _repo.Context.Loan_Period_BusTypes.Where(x => x.Loan_PeriodId == period.Id).ToList();
+							if (loan_Period_BusTypesR.Count > 0)
+							{
+								foreach (var sharehold_item in loan_Period_BusTypesR)
+								{
+									sharehold_item.Status = StatusModel.Delete;
+								}
+								await _db.SaveAsync();
+							}
+							period.Status = StatusModel.Delete;
+						}
+						await _db.SaveAsync();
+					}
 
 					if (model.Loan_Periods?.Count > 0)
 					{
@@ -185,7 +214,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.RateValue = loan_Period.RateValue;
 							loan_Period.StartYear = loan_Period.StartYear;
 							loan_Period.Condition = loan_Period.Condition;
-							_db.Update(loan_Period);
+							await _db.InsterAsync(loan_Period);
 							await _db.SaveAsync();
 
 							if (period.Loan_Period_AppLoans?.Count > 0)

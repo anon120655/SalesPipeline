@@ -1602,7 +1602,5 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-
-
 	}
 }
