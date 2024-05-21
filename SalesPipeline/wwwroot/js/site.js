@@ -71,6 +71,12 @@ window.BootSelectRefreshID = (elm_id, time = 10) => {
 	}, time)
 }
 
+window.BootSelectRefreshClass = (elm_class, time = 10) => {
+	setTimeout(function () {
+		$(`.${elm_class}`).selectpicker('refresh');
+	}, time)
+}
+
 window.BootSelectDestroy = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 }
@@ -79,6 +85,12 @@ window.BootSelectEmptyID = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');
 	$(`#${elm_id}`).selectpicker('refresh');
+}
+
+window.BootSelectEmptyClass = (elm_class) => {
+	$(`.${elm_class}`).selectpicker('destroy');
+	$(`.${elm_class}`).selectpicker('setStyle', 'btn_white');
+	$(`.${elm_class}`).selectpicker('refresh');
 }
 
 window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName) => {

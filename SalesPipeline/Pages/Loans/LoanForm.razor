@@ -47,7 +47,7 @@
 									</div>
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนช่วงเวลา</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.PeriodNumber" id="Periods" class="selectpicker selectInit" data-style="select_btn_set" title="เลือก" data-live-search="true">
+										<select @bind="formModel.PeriodNumber" id="Interest_Periods" class="selectpicker selectInit" data-style="select_btn_set" title="เลือก" data-live-search="true">
 											@if (LookUp.Periods?.Count > 0)
 											{
 												foreach (var period in LookUp.Periods)
@@ -59,12 +59,25 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-12">
+								<div class="row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Risk Premium รายปี</label>
+									<div class="col-12 col-md-7 col-xl-3">
+										<input @onchange="@((ChangeEventArgs e) => formModel.RiskPremiumYear = GeneralUtils.ToDecimal(e.Value))" disabled
+											   value="@formModel.RiskPremiumYear?.ToString(GeneralTxt.FormatDecimal2)" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.RiskPremiumYear)" />
+									</div>
+									<label class="col"> %</label>
+								</div>
+							</div>
 						</div>
 						<div class="row my-3">
 							@if (formModel.Loan_Periods?.Count > 0)
 							{
 								foreach (var period in formModel.Loan_Periods)
 								{
+									var lookup = LookUps[period.PeriodNo - 1];
+
 									<div class="col-12">
 										<div class="row">
 											<div class="col-12 col-xl-6">
@@ -77,10 +90,23 @@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทอัตราดอกเบี้ย</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<select @bind="period.Master_Pre_Interest_RateTypeId" id="Interest_RateType_@(period.PeriodNo)" class="selectpicker selectInit interest_RateTypes select_@period.PeriodNo" title="เลือก" data-style="select_btn_set" data-live-search="true">
+													@if (lookup.Interest_RateType?.Count > 0)
+													{
+														foreach (var item in lookup.Interest_RateType)
+														{
+															<option value="@item.Id">@item.Code</option>
+														}
+													}
+												</select>
+												<ValidationMessage For="@(() => period.Master_Pre_Interest_RateTypeId)" />
 											</div>
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อัตราดอกเบี้ย</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-											</div>
+											@if (true)
+											{
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อัตราดอกเบี้ย</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												</div>
+											}
 										</div>
 									</div>
 								}
