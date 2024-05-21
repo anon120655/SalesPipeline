@@ -1,0 +1,61 @@
+﻿@page "/loan/create"
+@page "/loan/update/{id:guid}"
+
+<PageTitle>สินเชื่อ</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/loan_list.jpg" width="35" /></div>
+						<div class="p-2">
+							<p class="back_topic">รายการสินเชื่อ</p>
+						</div>
+					</div>
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+						<DataAnnotationsValidator />
+						<div class="row mt-5">
+							<div class="col-12">
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อสินเชื่อ<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.Name" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.Name)" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+										}
+										บันทึก
+									</Button>
+								</div>
+							</div>
+						</div>
+					</EditForm>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
