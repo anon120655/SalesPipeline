@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,11 +28,13 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// <summary>
 		/// ชื่อสินเชื่อ
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
 
 		/// <summary>
 		/// ประเภทการชำระดอกเบี้ย
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Pre_Interest_PayTypeId { get; set; }
 
 		public string? Master_Pre_Interest_PayTypeName { get; set; }
@@ -46,6 +49,6 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// </summary>
 		public decimal? RiskPremiumYear { get; set; }
 
-		public virtual ICollection<Loan_PeriodCustom>? Loan_Periods { get; set; }
+		public virtual List<Loan_PeriodCustom>? Loan_Periods { get; set; }
 	}
 }

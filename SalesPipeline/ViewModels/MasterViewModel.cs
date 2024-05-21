@@ -1308,6 +1308,29 @@ namespace SalesPipeline.ViewModels
 		}
 
 		//Pre Approve
+		//ประเภทการชำระดอกเบี้ย
+		public async Task<ResultModel<PaginationView<List<Master_Pre_Interest_PayTypeCustom>>>> GetPre_PayType(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Master/GetPre_PayType?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Master_Pre_Interest_PayTypeCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Master_Pre_Interest_PayTypeCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Master_Pre_Interest_PayTypeCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		//ประเภทอัตราดอกเบี้ย
 		public async Task<ResultModel<bool>> UpdatePre_RateType(List<Master_Pre_Interest_RateTypeCustom>? model)
 		{

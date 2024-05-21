@@ -36,5 +36,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<InfoAmphurCustom>? Amphurs { get; set; }
 		public List<InfoTambolCustom>? Tambols { get; set; }
 		public List<InfoBranchCustom>? Branchs { get; set; }
+		public List<Master_Pre_Interest_PayTypeCustom>? Interest_PayType { get; set; }
+		public List<Master_Pre_Interest_RateTypeCustom>? Interest_RateType { get; set; }
+		public List<SelectModel>? Periods { get; set; }
 	}
 }

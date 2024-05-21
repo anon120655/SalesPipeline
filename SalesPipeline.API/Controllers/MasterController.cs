@@ -1041,6 +1041,22 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		//Pre Approve
+		//ประเภทการชำระดอกเบี้ย
+		[HttpGet("GetPre_PayType")]
+		public async Task<IActionResult> GetPre_PayType([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Master_Pre_PayType.GetList(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		//ประเภทอัตราดอกเบี้ย
 		[HttpPut("UpdatePre_RateType")]
 		public async Task<IActionResult> UpdatePre_RateType(List<Master_Pre_Interest_RateTypeCustom> model)

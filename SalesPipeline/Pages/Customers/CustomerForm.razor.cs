@@ -175,7 +175,7 @@ namespace SalesPipeline.Pages.Customers
 
 			StateHasChanged();
 			await Task.Delay(10);
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 
 			await Task.Delay(10);
 			await SetAddress();
@@ -287,7 +287,7 @@ namespace SalesPipeline.Pages.Customers
 		}
 
 		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
+		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
 			LookUp.Amphurs = new List<InfoAmphurCustom>();
 			LookUp.Tambols = new List<InfoTambolCustom>();
@@ -308,7 +308,7 @@ namespace SalesPipeline.Pages.Customers
 					LookUp.Amphurs.AddRange(amphurs.Data);
 
 					StateHasChanged();
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "AmphurChange", "#Amphur");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAmphur", "#Amphur");
 					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Amphur", 100);
 					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 				}
@@ -316,7 +316,7 @@ namespace SalesPipeline.Pages.Customers
 		}
 
 		[JSInvokable]
-		public async Task AmphurChange(string _amphurID, string _amphurName)
+		public async Task OnAmphur(string _amphurID, string _amphurName)
 		{
 			if (_amphurID != null && int.TryParse(_amphurID, out int amphurID))
 			{
@@ -336,7 +336,7 @@ namespace SalesPipeline.Pages.Customers
 
 					StateHasChanged();
 					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", "#Tambol");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnTambol", "#Tambol");
 					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Tambol", 100);
 				}
 
@@ -344,7 +344,7 @@ namespace SalesPipeline.Pages.Customers
 		}
 
 		[JSInvokable]
-		public void TambolChange(string _tambolID, string _tambolName)
+		public void OnTambol(string _tambolID, string _tambolName)
 		{
 			if (_tambolID != null && int.TryParse(_tambolID, out int tambolID))
 			{
