@@ -986,6 +986,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.PeriodNo)
                 .HasComment("ระยะที่")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.PlusOrMinus)
+                .HasComment("1=เพิ่ม 2=ลบ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.RatePlusMinus)
                 .HasPrecision(18, 2)
                 .HasComment("ค่าเพิ่มลบดอกเบี้ย %");

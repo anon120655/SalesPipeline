@@ -101,12 +101,21 @@
 												</select>
 												<ValidationMessage For="@(() => period.Master_Pre_Interest_RateTypeId)" />
 											</div>
-											@if (true)
-											{
-												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อัตราดอกเบี้ย</label>
-												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												</div>
-											}
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อัตราดอกเบี้ย</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<input @onchange="@((ChangeEventArgs e) => period.RateValue = GeneralUtils.ToDecimal(e.Value))" disabled
+													   value="@period.RateValue?.ToString(GeneralTxt.FormatDecimal3)" type="text" class="form-control">
+											</div>
+										</div>
+										<div class="form-group row mb-3">
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Special</label>
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+												<select @bind="period.PlusOrMinus" class="form-select">
+													<option value="">เลือก</option>
+													<option value="1">เพิ่ม</option>
+													<option value="2">ลบ</option>
+												</select>
+											</div>
 										</div>
 									</div>
 								}

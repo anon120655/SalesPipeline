@@ -32,10 +32,12 @@ namespace SalesPipeline.Pages.Loans
 		{
 			if (firstRender)
 			{
-				await BootSelectInit();
+				await SetInitManual();
 
 				await SetModel();
 				StateHasChanged();
+
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				firstRender = false;
 			}
 		}
@@ -55,13 +57,6 @@ namespace SalesPipeline.Pages.Loans
 				_errorMessage = dataRateType?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
-		}
-
-		protected async Task BootSelectInit()
-		{
-			await Task.Delay(10);
-			await SetInitManual();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
 
 		[JSInvokable]

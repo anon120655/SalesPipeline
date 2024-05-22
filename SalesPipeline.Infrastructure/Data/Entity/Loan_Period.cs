@@ -45,6 +45,11 @@ public partial class Loan_Period
     public short? IsRatePlusMinus { get; set; }
 
     /// <summary>
+    /// 1=เพิ่ม 2=ลบ
+    /// </summary>
+    public int? PlusOrMinus { get; set; }
+
+    /// <summary>
     /// ค่าเพิ่มลบดอกเบี้ย %
     /// </summary>
     public decimal? RatePlusMinus { get; set; }
