@@ -36,11 +36,6 @@ namespace SalesPipeline.Utils.Resources.Masters
 		/// </summary>
 		public decimal? Rate { get; set; }
 
-		/// <summary>
-		/// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้
-		/// </summary>
-		public short? IsRatePlusMinus { get; set; }
-
         //Custom
         public string? OptionValue { get; set; }
     }

@@ -974,15 +974,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("เงื่อนไข");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.IsRatePlusMinus)
-                .HasComment("1=สามารถเพิ่มลบอัตราดอกเบี้ยได้ ณ วันที่เพิ่ม")
-                .HasColumnType("smallint(6)");
             entity.Property(e => e.LoanId).HasComment("FK สินเชื่อ");
             entity.Property(e => e.Master_Pre_Interest_RateTypeId).HasComment("FK ประเภทอัตราดอกเบี้ย");
             entity.Property(e => e.Master_Pre_Interest_RateTypeName).HasMaxLength(255);
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasComment("ชื่อสินเชื่อ");
             entity.Property(e => e.PeriodNo)
                 .HasComment("ระยะที่")
                 .HasColumnType("int(11)");
@@ -993,7 +987,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(18, 2)
                 .HasComment("ค่าเพิ่มลบดอกเบี้ย %");
             entity.Property(e => e.SpecialType)
-                .HasComment("1=เพิ่ม 2=ลบ 3=ระบุ")
+                .HasComment("1=เพิ่ม 2=ลบ")
                 .HasColumnType("int(11)");
             entity.Property(e => e.StartYear)
                 .HasComment("เริ่มปีที่")
@@ -1341,9 +1335,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Code).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.IsRatePlusMinus)
-                .HasComment("1=สามารถเพิ่มลบอัตราดอกเบี้ยได้")
-                .HasColumnType("smallint(6)");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ชื่อเต็ม");

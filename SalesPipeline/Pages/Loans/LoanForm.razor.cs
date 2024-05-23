@@ -29,6 +29,8 @@ namespace SalesPipeline.Pages.Loans
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
 			StateHasChanged();
+
+			await SetModel();
 			await Task.Delay(1);
 		}
 
@@ -37,11 +39,9 @@ namespace SalesPipeline.Pages.Loans
 			if (firstRender)
 			{
 				await SetInitManual();
-
-				await SetModel();
 				StateHasChanged();
 
-				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				firstRender = false;
 			}
 		}
@@ -71,6 +71,17 @@ namespace SalesPipeline.Pages.Loans
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
+
+					if (formModel.Master_Pre_Interest_PayTypeId.HasValue)
+					{
+						await OnInterest_PayType(formModel.Master_Pre_Interest_PayTypeId.Value.ToString(), string.Empty);
+
+						//if (formModel.PeriodNumber.HasValue)
+						//{
+						//	await OnInterest_Periods(formModel.PeriodNumber.Value.ToString(), string.Empty);
+						//}
+					}
+
 				}
 				else
 				{
@@ -139,6 +150,7 @@ namespace SalesPipeline.Pages.Loans
 		public async Task OnInterest_Periods(string _ids, string _name)
 		{
 			LookUps = new();
+			formModel.PeriodNumber = null;
 			formModel.Loan_Periods = new();
 			StateHasChanged();
 			await Task.Delay(1);
@@ -148,9 +160,10 @@ namespace SalesPipeline.Pages.Loans
 			{
 				if (int.TryParse(_ids, out int _length))
 				{
+					formModel.PeriodNumber = _length;
+
 					for (int i = 1; i <= _length; i++)
 					{
-						//await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", $"Interest_RateType_{i}");
 						formModel.Loan_Periods.Add(new() { PeriodNo = i });
 					}
 				}
@@ -253,6 +266,12 @@ namespace SalesPipeline.Pages.Loans
 			{
 				period.SpecialType = specialType;
 			}
+
+			if (period.SpecialRate.HasValue)
+			{
+				await OnSpecialRate(period, period.SpecialRate);
+			}
+
 			StateHasChanged();
 			await Task.Delay(1);
 		}
@@ -264,6 +283,8 @@ namespace SalesPipeline.Pages.Loans
 
 			if (decimal.TryParse(value?.ToString(), out decimal val))
 			{
+				period.SpecialRate = val;
+
 				if (period.SpecialType == SpecialTypeModel.Plus)
 				{
 					period.RateValue = period.RateValueOriginal + val;
@@ -275,9 +296,6 @@ namespace SalesPipeline.Pages.Loans
 				else if (period.SpecialType == SpecialTypeModel.Specify)
 				{
 					period.RateValue = val;
-				}
-				else
-				{
 				}
 			}
 

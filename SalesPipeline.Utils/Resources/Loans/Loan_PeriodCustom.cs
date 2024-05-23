@@ -18,11 +18,6 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public DateTime CreateDate { get; set; }
 
 		/// <summary>
-		/// ชื่อสินเชื่อ
-		/// </summary>
-		public string? Name { get; set; }
-
-		/// <summary>
 		/// FK สินเชื่อ
 		/// </summary>
 		public Guid LoanId { get; set; }
@@ -38,11 +33,6 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public Guid? Master_Pre_Interest_RateTypeId { get; set; }
 
 		public string? Master_Pre_Interest_RateTypeName { get; set; }
-
-		/// <summary>
-		/// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้ ณ วันที่เพิ่ม
-		/// </summary>
-		public short? IsRatePlusMinus { get; set; }
 
 		/// <summary>
 		/// 1=เพิ่ม 2=ลบ 3=ระบุ

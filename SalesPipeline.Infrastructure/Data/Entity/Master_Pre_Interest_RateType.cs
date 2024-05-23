@@ -35,10 +35,5 @@ public partial class Master_Pre_Interest_RateType
     /// </summary>
     public decimal? Rate { get; set; }
 
-    /// <summary>
-    /// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้
-    /// </summary>
-    public short? IsRatePlusMinus { get; set; }
-
     public virtual ICollection<Loan_Period> Loan_Periods { get; set; } = new List<Loan_Period>();
 }

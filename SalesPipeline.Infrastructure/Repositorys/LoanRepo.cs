@@ -72,16 +72,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						loan_Period.Status = StatusModel.Active;
 						loan_Period.CreateDate = _dateNow;
 						loan_Period.LoanId = loan.Id;
-						loan_Period.Name = loan_Period.Name;
-						loan_Period.PeriodNo = loan_Period.PeriodNo;
-						loan_Period.Master_Pre_Interest_RateTypeId = loan_Period.Master_Pre_Interest_RateTypeId;
+						loan_Period.PeriodNo = period.PeriodNo;
+						loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 						loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
-						loan_Period.IsRatePlusMinus = loan_Period.IsRatePlusMinus;
-						loan_Period.SpecialType = loan_Period.SpecialType;
-						loan_Period.SpecialRate = loan_Period.SpecialRate;
-						loan_Period.RateValue = loan_Period.RateValue;
-						loan_Period.StartYear = loan_Period.StartYear;
-						loan_Period.Condition = loan_Period.Condition;
+						loan_Period.SpecialType = period.SpecialType;
+						loan_Period.SpecialRate = period.SpecialRate;
+						loan_Period.RateValue = period.RateValue;
+						loan_Period.StartYear = period.StartYear;
+						loan_Period.Condition = period.Condition;
 						await _db.InsterAsync(loan_Period);
 						await _db.SaveAsync();
 
@@ -206,16 +204,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.Status = StatusModel.Active;
 							loan_Period.CreateDate = _dateNow;
 							loan_Period.LoanId = loan.Id;
-							loan_Period.Name = loan_Period.Name;
-							loan_Period.PeriodNo = loan_Period.PeriodNo;
-							loan_Period.Master_Pre_Interest_RateTypeId = loan_Period.Master_Pre_Interest_RateTypeId;
+							loan_Period.PeriodNo = period.PeriodNo;
+							loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 							loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
-							loan_Period.IsRatePlusMinus = loan_Period.IsRatePlusMinus;
-							loan_Period.SpecialType = loan_Period.SpecialType;
-							loan_Period.SpecialRate = loan_Period.SpecialRate;
-							loan_Period.RateValue = loan_Period.RateValue;
-							loan_Period.StartYear = loan_Period.StartYear;
-							loan_Period.Condition = loan_Period.Condition;
+							loan_Period.SpecialType = period.SpecialType;
+							loan_Period.SpecialRate = period.SpecialRate;
+							loan_Period.RateValue = period.RateValue;
+							loan_Period.StartYear = period.StartYear;
+							loan_Period.Condition = period.Condition;
 							await _db.InsterAsync(loan_Period);
 							await _db.SaveAsync();
 

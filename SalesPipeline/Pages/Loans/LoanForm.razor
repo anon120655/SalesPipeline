@@ -33,7 +33,7 @@
 								<div class="form-group row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทการชำระดอกเบี้ย</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-										<select @bind="formModel.Master_Pre_Interest_PayTypeId" id="Interest_PayType" class="selectpicker selectInit" title="เลือก" data-style="select_btn_set" data-live-search="true">
+										<select @bind="formModel.Master_Pre_Interest_PayTypeId" id="Interest_PayType" class="selectpickerdefault" title="เลือก" data-style="select_btn_set" data-live-search="true">
 											<option value="">เลือก</option>
 											@if (LookUp.Interest_PayType?.Count > 0)
 											{
@@ -72,7 +72,7 @@
 							</div>
 						</div>
 						<div class="row my-3">
-							@if (formModel.Loan_Periods?.Count > 0)
+							@if (formModel.Loan_Periods?.Count > 0 && (LookUps.Count == formModel.Loan_Periods?.Count))
 							{
 								foreach (var period in formModel.Loan_Periods)
 								{

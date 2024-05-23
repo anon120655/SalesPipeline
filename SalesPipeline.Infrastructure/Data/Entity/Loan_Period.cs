@@ -18,11 +18,6 @@ public partial class Loan_Period
     public DateTime CreateDate { get; set; }
 
     /// <summary>
-    /// ชื่อสินเชื่อ
-    /// </summary>
-    public string? Name { get; set; }
-
-    /// <summary>
     /// FK สินเชื่อ
     /// </summary>
     public Guid LoanId { get; set; }
@@ -40,12 +35,7 @@ public partial class Loan_Period
     public string? Master_Pre_Interest_RateTypeName { get; set; }
 
     /// <summary>
-    /// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้ ณ วันที่เพิ่ม
-    /// </summary>
-    public short? IsRatePlusMinus { get; set; }
-
-    /// <summary>
-    /// 1=เพิ่ม 2=ลบ 3=ระบุ
+    /// 1=เพิ่ม 2=ลบ
     /// </summary>
     public int? SpecialType { get; set; }
 
