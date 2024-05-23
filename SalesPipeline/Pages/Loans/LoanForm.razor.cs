@@ -23,6 +23,7 @@ namespace SalesPipeline.Pages.Loans
 
 		Guid _payType1 = Guid.Parse("6b7e120f-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่
 		Guid _payType2 = Guid.Parse("753e6f06-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่ตามรอบเวลา
+		Guid _rateTypeSpecial = Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"); //Special - ระบุ
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -214,7 +215,11 @@ namespace SalesPipeline.Pages.Loans
 				if (formModel.Loan_Periods != null && stringList.Count == 3)
 				{
 					int periodNo = int.Parse(stringList[0]);
-					decimal Rate = decimal.Parse(stringList[1]);
+					decimal? Rate = null;
+					if (decimal.TryParse(stringList[1], out decimal _rate))
+					{
+						Rate = _rate;
+					}
 					Guid id = Guid.Parse(stringList[2]);
 
 					var period = formModel.Loan_Periods.FirstOrDefault(x => x.PeriodNo == periodNo);
