@@ -21,6 +21,9 @@ namespace SalesPipeline.Pages.Loans
 		private User_PermissionCustom _permission = new();
 		private LoanCustom formModel = new();
 
+		Guid _payType1 = Guid.Parse("6b7e120f-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่
+		Guid _payType2 = Guid.Parse("753e6f06-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่ตามรอบเวลา
+
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
@@ -59,6 +62,23 @@ namespace SalesPipeline.Pages.Loans
 			}
 		}
 
+		protected async Task SetModel()
+		{
+			if (id.HasValue)
+			{
+				var data = await _loanViewModel.GetById(id.Value);
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
 		[JSInvokable]
 		public async Task OnInterest_PayType(string _ids, string _name)
 		{
@@ -74,9 +94,6 @@ namespace SalesPipeline.Pages.Loans
 			{
 				if (Guid.TryParse(_ids, out Guid id))
 				{
-					Guid _payType1 = Guid.Parse("6b7e120f-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่
-					Guid _payType2 = Guid.Parse("753e6f06-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่ตามรอบเวลา
-
 					formModel.Master_Pre_Interest_PayTypeId = id;
 
 					int startPeriod = 0;
@@ -92,10 +109,12 @@ namespace SalesPipeline.Pages.Loans
 						lengthPeriod = 10;
 					}
 
+					formModel.PeriodNumber = startPeriod;
+
 					LookUp.Periods.Add(new SelectModel() { ID = "", Name = "เลือก" });
 					for (int i = startPeriod; i <= lengthPeriod; i++)
 					{
-						LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString(), IsSelected = (i == 1 && startPeriod == 1) });
+						LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString() });
 					}
 
 					StateHasChanged();
@@ -137,7 +156,7 @@ namespace SalesPipeline.Pages.Loans
 
 				if (formModel.Loan_Periods.Count > 0)
 				{
-					var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>() { new Master_Pre_Interest_RateTypeCustom() { Code = "เลือก" } };
+					var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
 
 					var dataRateType = await _masterViewModel.GetPre_RateType(filter);
 					if (dataRateType != null && dataRateType.Status)
@@ -156,9 +175,21 @@ namespace SalesPipeline.Pages.Loans
 
 					foreach (var period in formModel.Loan_Periods)
 					{
+						List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@0@00000000-0000-0000-0000-000000000000", Code = "เลือก" } };
+						foreach (var item in Interest_RateTypeData)
+						{
+							rateType.Add(new()
+							{
+								Id = item.Id,
+								OptionValue = $"{period.PeriodNo}@{item.Rate}@{item.Id}",
+								Code = item.Code,
+								Name = item.Name
+							});
+						}
+
 						LookUps.Add(new LookUpResource()
 						{
-							Interest_RateType = Interest_RateTypeData
+							Interest_RateType = rateType
 						});
 					}
 					StateHasChanged();
@@ -179,27 +210,74 @@ namespace SalesPipeline.Pages.Loans
 		{
 			if (_ids != null)
 			{
+				List<string> stringList = _ids.Split('@').ToList();
+				if (formModel.Loan_Periods != null && stringList.Count == 3)
+				{
+					int periodNo = int.Parse(stringList[0]);
+					decimal Rate = decimal.Parse(stringList[1]);
+					Guid id = Guid.Parse(stringList[2]);
 
+					var period = formModel.Loan_Periods.FirstOrDefault(x => x.PeriodNo == periodNo);
+					if (period != null)
+					{
+						if (id != Guid.Empty)
+						{
+							period.Master_Pre_Interest_RateTypeId = id;
+							period.RateValue = Rate;
+							period.RateValueOriginal = Rate;
+						}
+						else
+						{
+							period.Master_Pre_Interest_RateTypeId = null;
+							period.RateValue = null;
+							period.SpecialType = null;
+							period.SpecialRate = null;
+						}
+					}
+				}
 			}
 			StateHasChanged();
 			await Task.Delay(1);
 		}
 
-		protected async Task SetModel()
+		public async Task OnSpecial(Loan_PeriodCustom period, object? value)
 		{
-			if (id.HasValue)
+			period.SpecialType = null;
+
+			if (int.TryParse(value?.ToString(), out int specialType))
 			{
-				var data = await _loanViewModel.GetById(id.Value);
-				if (data != null && data.Status && data.Data != null)
+				period.SpecialType = specialType;
+			}
+			StateHasChanged();
+			await Task.Delay(1);
+		}
+
+		public async Task OnSpecialRate(Loan_PeriodCustom period, object? value)
+		{
+			period.RateValue = period.RateValueOriginal;
+			period.SpecialRate = null;
+
+			if (decimal.TryParse(value?.ToString(), out decimal val))
+			{
+				if (period.SpecialType == SpecialTypeModel.Plus)
 				{
-					formModel = data.Data;
+					period.RateValue = period.RateValueOriginal + val;
+				}
+				else if (period.SpecialType == SpecialTypeModel.Minus)
+				{
+					period.RateValue = period.RateValueOriginal - val;
+				}
+				else if (period.SpecialType == SpecialTypeModel.Specify)
+				{
+					period.RateValue = val;
 				}
 				else
 				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+
+			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async Task OnInvalidSubmit()

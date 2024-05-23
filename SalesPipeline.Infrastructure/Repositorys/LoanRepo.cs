@@ -77,7 +77,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						loan_Period.Master_Pre_Interest_RateTypeId = loan_Period.Master_Pre_Interest_RateTypeId;
 						loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
 						loan_Period.IsRatePlusMinus = loan_Period.IsRatePlusMinus;
-						loan_Period.RatePlusMinus = loan_Period.RatePlusMinus;
+						loan_Period.SpecialType = loan_Period.SpecialType;
+						loan_Period.SpecialRate = loan_Period.SpecialRate;
 						loan_Period.RateValue = loan_Period.RateValue;
 						loan_Period.StartYear = loan_Period.StartYear;
 						loan_Period.Condition = loan_Period.Condition;
@@ -210,7 +211,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.Master_Pre_Interest_RateTypeId = loan_Period.Master_Pre_Interest_RateTypeId;
 							loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
 							loan_Period.IsRatePlusMinus = loan_Period.IsRatePlusMinus;
-							loan_Period.RatePlusMinus = loan_Period.RatePlusMinus;
+							loan_Period.SpecialType = loan_Period.SpecialType;
+							loan_Period.SpecialRate = loan_Period.SpecialRate;
 							loan_Period.RateValue = loan_Period.RateValue;
 							loan_Period.StartYear = loan_Period.StartYear;
 							loan_Period.Condition = loan_Period.Condition;

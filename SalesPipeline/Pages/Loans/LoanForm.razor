@@ -52,7 +52,7 @@
 											{
 												foreach (var period in LookUp.Periods)
 												{
-													<option value="@period.ID" selected=@period.IsSelected>@period.Name</option>
+													<option value="@period.ID">@period.Name</option>
 												}
 											}
 										</select>
@@ -95,7 +95,7 @@
 													{
 														foreach (var item in lookup.Interest_RateType)
 														{
-															<option value="@item.Id">@item.Code</option>
+															<option value="@item.OptionValue">@item.Code</option>
 														}
 													}
 												</select>
@@ -107,16 +107,24 @@
 													   value="@period.RateValue?.ToString(GeneralTxt.FormatDecimal3)" type="text" class="form-control">
 											</div>
 										</div>
-										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Special</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<select @bind="period.PlusOrMinus" class="form-select">
-													<option value="">เลือก</option>
-													<option value="1">เพิ่ม</option>
-													<option value="2">ลบ</option>
-												</select>
+										@if (formModel.Master_Pre_Interest_PayTypeId == _payType2)
+										{
+											<div class="form-group row mb-3">
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Special Type</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<select @onchange="(e)=> OnSpecial(period,e.Value)" class="form-select" value="@period.SpecialType">
+														<option value="">เลือก</option>
+														<option value="1">เพิ่ม</option>
+														<option value="2">ลบ</option>
+														<option value="3">ระบุ</option>
+													</select>
+												</div>
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อัตราดอกเบี้ย</label>
+												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+													<input @onchange="(e)=> OnSpecialRate(period,e.Value)" type="number" class="form-control numberonly" value="@period.SpecialRate" onkeyup="enforceMinMax(this);" min="0" max="10">
+												</div>
 											</div>
-										</div>
+										}
 									</div>
 								}
 							}

@@ -986,15 +986,15 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.PeriodNo)
                 .HasComment("ระยะที่")
                 .HasColumnType("int(11)");
-            entity.Property(e => e.PlusOrMinus)
-                .HasComment("1=เพิ่ม 2=ลบ")
-                .HasColumnType("int(11)");
-            entity.Property(e => e.RatePlusMinus)
-                .HasPrecision(18, 2)
-                .HasComment("ค่าเพิ่มลบดอกเบี้ย %");
             entity.Property(e => e.RateValue)
                 .HasPrecision(18, 3)
                 .HasComment("อัตราดอกเบี้ย %");
+            entity.Property(e => e.SpecialRate)
+                .HasPrecision(18, 2)
+                .HasComment("ค่าเพิ่มลบดอกเบี้ย %");
+            entity.Property(e => e.SpecialType)
+                .HasComment("1=เพิ่ม 2=ลบ 3=ระบุ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.StartYear)
                 .HasComment("เริ่มปีที่")
                 .HasColumnType("int(11)");

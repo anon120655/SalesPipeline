@@ -40,5 +40,8 @@ namespace SalesPipeline.Utils.Resources.Masters
 		/// 1=สามารถเพิ่มลบอัตราดอกเบี้ยได้
 		/// </summary>
 		public short? IsRatePlusMinus { get; set; }
-	}
+
+        //Custom
+        public string? OptionValue { get; set; }
+    }
 }
