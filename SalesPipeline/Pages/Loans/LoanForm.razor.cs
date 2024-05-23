@@ -29,8 +29,6 @@ namespace SalesPipeline.Pages.Loans
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
 			StateHasChanged();
-
-			await SetModel();
 			await Task.Delay(1);
 		}
 
@@ -38,10 +36,14 @@ namespace SalesPipeline.Pages.Loans
 		{
 			if (firstRender)
 			{
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
+				await SetModel();
+				StateHasChanged();
+
 				await SetInitManual();
 				StateHasChanged();
 
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 				firstRender = false;
 			}
 		}
@@ -51,6 +53,7 @@ namespace SalesPipeline.Pages.Loans
 			var dataRateType = await _masterViewModel.GetPre_PayType(filter);
 			if (dataRateType != null && dataRateType.Status)
 			{
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_PayType");
 				LookUp.Interest_PayType = dataRateType.Data?.Items;
 				StateHasChanged();
 				await Task.Delay(10);
@@ -74,14 +77,9 @@ namespace SalesPipeline.Pages.Loans
 
 					if (formModel.Master_Pre_Interest_PayTypeId.HasValue)
 					{
-						await OnInterest_PayType(formModel.Master_Pre_Interest_PayTypeId.Value.ToString(), string.Empty);
-
-						//if (formModel.PeriodNumber.HasValue)
-						//{
-						//	await OnInterest_Periods(formModel.PeriodNumber.Value.ToString(), string.Empty);
-						//}
+						await SetLookUpPeriod(formModel.Master_Pre_Interest_PayTypeId.Value);
+						await SetLookUpRateType();
 					}
-
 				}
 				else
 				{
@@ -101,38 +99,14 @@ namespace SalesPipeline.Pages.Loans
 			StateHasChanged();
 			await Task.Delay(1);
 
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Interest_Periods");
 			if (_ids != null)
 			{
 				if (Guid.TryParse(_ids, out Guid id))
 				{
+					await SetLookUpPeriod(id);
+
+					formModel.PeriodNumber = LookUp.Periods.Count;
 					formModel.Master_Pre_Interest_PayTypeId = id;
-
-					int startPeriod = 0;
-					int lengthPeriod = 0;
-					if (id == _payType1)
-					{
-						startPeriod = 1;
-						lengthPeriod = 1;
-					}
-					else if (id == _payType2)
-					{
-						startPeriod = 2;
-						lengthPeriod = 10;
-					}
-
-					formModel.PeriodNumber = startPeriod;
-
-					LookUp.Periods.Add(new SelectModel() { ID = "", Name = "เลือก" });
-					for (int i = startPeriod; i <= lengthPeriod; i++)
-					{
-						LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString() });
-					}
-
-					StateHasChanged();
-					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_Periods", "#Interest_Periods");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Interest_Periods", 100);
 
 					if (id == _payType1)
 					{
@@ -168,54 +142,7 @@ namespace SalesPipeline.Pages.Loans
 					}
 				}
 
-				if (formModel.Loan_Periods.Count > 0)
-				{
-					var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
-
-					var dataRateType = await _masterViewModel.GetPre_RateType(filter);
-					if (dataRateType != null && dataRateType.Status)
-					{
-						if (dataRateType.Data != null)
-						{
-							Interest_RateTypeData.AddRange(dataRateType.Data.Items);
-						}
-					}
-					else
-					{
-						_errorMessage = dataRateType?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
-
-
-					foreach (var period in formModel.Loan_Periods)
-					{
-						List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@0@00000000-0000-0000-0000-000000000000", Code = "เลือก" } };
-						foreach (var item in Interest_RateTypeData)
-						{
-							rateType.Add(new()
-							{
-								Id = item.Id,
-								OptionValue = $"{period.PeriodNo}@{item.Rate}@{item.Id}",
-								Code = item.Code,
-								Name = item.Name
-							});
-						}
-
-						LookUps.Add(new LookUpResource()
-						{
-							Interest_RateType = rateType
-						});
-					}
-					StateHasChanged();
-					await Task.Delay(10);
-
-					foreach (var period in formModel.Loan_Periods)
-					{
-						await _jsRuntimes.InvokeVoidAsync("BootSelectClass", $"select_{period.PeriodNo}");
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_RateType", $"#Interest_RateType_{period.PeriodNo}");
-					}
-
-				}
+				await SetLookUpRateType();
 			}
 		}
 
@@ -256,6 +183,87 @@ namespace SalesPipeline.Pages.Loans
 			}
 			StateHasChanged();
 			await Task.Delay(1);
+		}
+
+		public async Task SetLookUpPeriod(Guid _idpaytype)
+		{
+			await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_Periods");
+
+			LookUp.Periods = new();
+
+			int startPeriod = 0;
+			int lengthPeriod = 0;
+			if (_idpaytype == _payType1)
+			{
+				startPeriod = 1;
+				lengthPeriod = 1;
+			}
+			else if (_idpaytype == _payType2)
+			{
+				startPeriod = 2;
+				lengthPeriod = 10;
+			}
+
+			LookUp.Periods.Add(new SelectModel() { ID = "", Name = "เลือก" });
+			for (int i = startPeriod; i <= lengthPeriod; i++)
+			{
+				LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString() });
+			}
+
+			StateHasChanged();
+			await Task.Delay(1);
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_Periods", "#Interest_Periods");
+		}
+
+		public async Task SetLookUpRateType()
+		{
+			if (formModel.Loan_Periods?.Count > 0)
+			{
+				var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
+
+				var dataRateType = await _masterViewModel.GetPre_RateType(filter);
+				if (dataRateType != null && dataRateType.Status)
+				{
+					if (dataRateType.Data != null)
+					{
+						Interest_RateTypeData.AddRange(dataRateType.Data.Items);
+					}
+				}
+				else
+				{
+					_errorMessage = dataRateType?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+				foreach (var period in formModel.Loan_Periods)
+				{
+					List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@0@00000000-0000-0000-0000-000000000000", Code = "เลือก" } };
+					foreach (var item in Interest_RateTypeData)
+					{
+						rateType.Add(new()
+						{
+							Id = item.Id,
+							OptionValue = $"{period.PeriodNo}@{item.Rate}@{item.Id}",
+							Code = item.Code,
+							Name = item.Name
+						});
+					}
+
+					LookUps.Add(new LookUpResource()
+					{
+						Interest_RateType = rateType
+					});
+				}
+				StateHasChanged();
+				await Task.Delay(10);
+
+				foreach (var period in formModel.Loan_Periods)
+				{
+					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", $"select_{period.PeriodNo}");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_RateType", $"#Interest_RateType_{period.PeriodNo}");
+				}
+
+			}
 		}
 
 		public async Task OnSpecial(Loan_PeriodCustom period, object? value)
