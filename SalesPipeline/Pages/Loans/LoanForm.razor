@@ -143,7 +143,7 @@
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 													@if (lookup.Pre_Applicant_LoanModel?.Count > 0)
 													{
-														<DropdownCheckboxCustom items="lookup.Pre_Applicant_LoanModel" />
+														<DropdownCheckboxCustom items="lookup.Pre_Applicant_LoanModel" callbackItemsSelected="CallbackItemsSelected" />
 													}
 												</div>
 												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>

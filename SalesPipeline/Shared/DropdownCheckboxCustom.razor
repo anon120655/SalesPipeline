@@ -104,12 +104,8 @@
 	[Parameter]
 	public List<SelectModel> items { get; set; } = null!;
 
-	// private List<SelectModel> items = new List<SelectModel>
-	// {
-	// 	new SelectModel { ID = "1", Name = "Item 1" },
-	// 	new SelectModel { ID = "2", Name = "Item 2" },
-	// 	new SelectModel { ID = "3", Name = "Item 3" }
-	// };
+	[Parameter]
+	public EventCallback<List<SelectModel>> callbackItemsSelected { get; set; }
 
 	private List<SelectModel> filteredItems = new();
 
@@ -135,9 +131,14 @@
 
 	private IEnumerable<SelectModel> SelectedItems => items.Where(item => item.IsSelected);
 
-	private void ToggleDropdown()
+	private async Task ToggleDropdown()
 	{
 		isDropdownOpen = !isDropdownOpen;
+
+		if (!isDropdownOpen)
+		{
+			await callbackItemsSelected.InvokeAsync(SelectedItems.ToList());
+		}
 	}
 
 	private void OnSearchInput(ChangeEventArgs e)

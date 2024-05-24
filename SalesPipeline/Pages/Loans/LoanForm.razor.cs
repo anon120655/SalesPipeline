@@ -7,6 +7,8 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+using SalesPipeline.Shared.Modals;
+using SalesPipeline.Utils.Resources.Assignments;
 
 namespace SalesPipeline.Pages.Loans
 {
@@ -438,6 +440,15 @@ namespace SalesPipeline.Pages.Loans
 		{
 			isLoading = false;
 			StateHasChanged();
+		}
+
+		protected async Task CallbackItemsSelected(List<SelectModel> model)
+		{
+			await Task.Delay(1);
+			if (model.Count > 0)
+			{
+
+			}
 		}
 
 	}
