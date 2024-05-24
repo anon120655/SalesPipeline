@@ -121,6 +121,31 @@ window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName, 
 	});
 }
 
+
+window.addBlurHandler = (elementId, dotNetObjectReference) => {
+	//console.log("Adding blur handler");
+
+	const element = document.getElementById(elementId);
+	if (!element) {
+		console.error("Element not found:", elementId);
+		return;
+	}
+
+	element.addEventListener('blur', (event) => {
+		console.log("Element blur event triggered");
+		if (!element.contains(event.relatedTarget)) {
+			console.log("Invoking CloseDropdown");
+			dotNetObjectReference.invokeMethodAsync('CloseDropdown').then(() => {
+				console.log("CloseDropdown invoked successfully");
+			}).catch((error) => {
+				console.error("Error invoking CloseDropdown:", error);
+			});
+		}
+	});
+};
+
+
+
 window.scrollToElement = (id) => {
 	var element = document.getElementsByClassName(id);
 	if (element != null && element.length > 0) {

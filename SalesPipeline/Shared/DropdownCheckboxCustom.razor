@@ -1,152 +1,168 @@
 ﻿
 <style>
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #C0C0C0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-        width: 100%;
-    }
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		background-color: white;
+		border: 1px solid #C0C0C0;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		z-index: 1000;
+		width: 100%;
+	}
 
-        .dropdown-menu.show {
-            display: block;
-        }
+		.dropdown-menu.show {
+			display: block;
+		}
 
-    .dropdown-item {
-        padding: 8px 16px;
-        display: flex;
-        align-items: center;
-    }
+	.dropdown-item {
+		padding: 8px 16px;
+		display: flex;
+		align-items: center;
+	}
 
-        .dropdown-item input[type="checkbox"] {
-            margin-right: 8px;
-        }
+		.dropdown-item input[type="checkbox"] {
+			margin-right: 8px;
+		}
 
-    .search-input {
-        margin: 8px;
-        padding: 8px;
-        width: calc(100% - 32px);
-        box-sizing: border-box;
-    }
+	.search-input {
+		margin: 8px;
+		padding: 8px;
+		width: calc(100% - 32px);
+		box-sizing: border-box;
+	}
 
-    .selected-item {
-        display: inline-flex;
-        align-items: center;
-        padding: 0px 8px;
-        background-color: #f1f1f1;
-        border-radius: 5px;
-        margin-right: 8px;
-        color: #000 !important;
-    }
+	.selected-item {
+		display: inline-flex;
+		align-items: center;
+		padding: 0px 8px;
+		background-color: #f1f1f1;
+		border-radius: 5px;
+		margin-right: 8px;
+		color: #000 !important;
+	}
 
-    .remove-btn {
-        margin-left: 4px;
-        padding: 0 4px;
-        border: none;
-        background-color: transparent;
-        color: #dc3545;
-        cursor: pointer;
-    }
+	.remove-btn {
+		margin-left: 4px;
+		padding: 0 4px;
+		border: none;
+		background-color: transparent;
+		color: #dc3545;
+		cursor: pointer;
+	}
 
-    .btn:hover {
-        background-color: #fff !important;
-        color: #000 !important;
-        text-decoration: none;
-    }
+	.btn:hover {
+		background-color: #fff !important;
+		color: #000 !important;
+		text-decoration: none;
+	}
 
-    .dropdown-toggle {
-        color: #000 !important;
-        width: 100% !important;
-        border: 1px solid #C0C0C0 !important;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
+	.dropdown-toggle {
+		color: #000 !important;
+		width: 100% !important;
+		border: 1px solid #C0C0C0 !important;
+		text-align: left;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
 
 </style>
 
-
-<div class="dropdown">
-    <button @onclick="ToggleDropdown" class="btn btn-outline-secondary dropdown-toggle">
-        @if (SelectedItems.Any())
-        {
-            @foreach (var selectedItem in SelectedItems)
-            {
-                <span class="selected-item">
-                    @selectedItem.Name
-                    <button @onclick="(e) => RemoveItem(selectedItem.Id, e)" class="btn btn-sm btn-danger remove-btn">X</button>
-                </span>
-            }
-        }
-        else
-        {
-            <span>เลือก</span>
-        }
-    </button>
-    <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
-        <input type="text" @bind="searchTerm" placeholder="Search..." class="form-control search-input" @oninput="OnSearchInput" />
-        @foreach (var item in filteredItems)
-        {
-            <div class="dropdown-item">
-                <input type="checkbox" id="@item.Id" @bind="item.IsChecked" @bind:event="onchange" />
-                <label for="@item.Id">@item.Name</label>
-            </div>
-        }
-    </div>
+<div id="dropdown_elm" class="dropdown" @onblur="CloseDropdown" tabindex="0">
+	<button type="button" @onclick="ToggleDropdown" class="btn btn-outline-secondary dropdown-toggle">
+		@if (SelectedItems.Any())
+		{
+			@foreach (var selectedItem in SelectedItems)
+			{
+				<span class="selected-item">
+					@selectedItem.Name
+					<button type="button" @onclick="(e) => RemoveItem(selectedItem.ID, e)" class="btn btn-sm btn-danger remove-btn">X</button>
+				</span>
+			}
+		}
+		else 
+		{
+			<span>Select items</span>
+		}
+	</button>
+	<div class="dropdown-menu @(isDropdownOpen ? "show" : "")" tabindex="-1">
+		<input type="text" @bind="searchTerm" placeholder="Search..." class="form-control search-input" @oninput="OnSearchInput" />
+		@foreach (var item in filteredItems)
+		{
+			<div class="dropdown-item">
+				<input type="checkbox" id="@item.ID" @bind="item.IsSelected" @bind:event="onchange" />
+				<label for="@item.ID">@item.Name</label>
+			</div>
+		}
+	</div>
 </div>
 
 @code {
-    private bool isDropdownOpen = false;
-    private string searchTerm = string.Empty;
-    private List<Item> items = new List<Item>
-    {
-        new Item { Id = 1, Name = "Item 1" },
-        new Item { Id = 2, Name = "Item 2" },
-        new Item { Id = 3, Name = "Item 3" }
-    };
-    private List<Item> filteredItems;
+	private bool isDropdownOpen = false;
+	private string searchTerm = string.Empty;
 
-    protected override void OnInitialized()
-    {
-        filteredItems = items;
-    }
+	[Parameter]
+	public List<SelectModel> items { get; set; } = null!;
 
-    private IEnumerable<Item> SelectedItems => items.Where(item => item.IsChecked);
+	// private List<SelectModel> items = new List<SelectModel>
+	// {
+	// 	new SelectModel { ID = "1", Name = "Item 1" },
+	// 	new SelectModel { ID = "2", Name = "Item 2" },
+	// 	new SelectModel { ID = "3", Name = "Item 3" }
+	// };
 
-    private void ToggleDropdown()
-    {
-        isDropdownOpen = !isDropdownOpen;
-    }
+	private List<SelectModel> filteredItems = new();
 
-    private void OnSearchInput(ChangeEventArgs e)
-    {
-        searchTerm = e.Value.ToString();
-        FilterItems();
-    }
+	protected override void OnInitialized()
+	{
+		filteredItems = items;
+	}
 
-    private void FilterItems()
-    {
-        filteredItems = items.Where(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-    }
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await _jsRuntimes.InvokeVoidAsync("addBlurHandler", "dropdown_elm", DotNetObjectReference.Create(this));
+		}
+	}
 
-    private void RemoveItem(int itemId, MouseEventArgs e)
-    {
-        // e.StopPropagation(); // Prevent the dropdown from closing when clicking the remove button
-        var item = items.FirstOrDefault(i => i.Id == itemId);
-        if (item != null)
-        {
-            item.IsChecked = false;
-            FilterItems();
-        }
-    }
+	[JSInvokable]
+	public void CloseDropdown()
+	{
+		isDropdownOpen = false;
+		StateHasChanged();
+	}
 
-    private class Item
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool IsChecked { get; set; }
-    }
+	private IEnumerable<SelectModel> SelectedItems => items.Where(item => item.IsSelected);
+
+	private void ToggleDropdown()
+	{
+		isDropdownOpen = !isDropdownOpen;
+	}
+
+	private void OnSearchInput(ChangeEventArgs e)
+	{
+		if (e.Value != null)
+		{
+			searchTerm = e.Value.ToString() ?? string.Empty;
+		}
+		FilterItems();
+	}
+
+	private void FilterItems()
+	{
+		filteredItems = items.Where(item => item.Name != null && item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+	}
+
+	private void RemoveItem(string? itemId, MouseEventArgs e)
+	{
+		// e.StopPropagation(); // Prevent the dropdown from closing when clicking the remove button
+		var item = items.FirstOrDefault(i => i.ID == itemId);
+		if (item != null)
+		{
+			item.IsSelected = false;
+			FilterItems();
+		}
+	}
+
 }

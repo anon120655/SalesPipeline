@@ -62,10 +62,10 @@ namespace SalesPipeline.Pages.Loans
 			{
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_PayType");
 				//await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Interest_PayType");
-				LookUp.Interest_PayType = new() { new() { Name = "เลือก" } };
+				LookUp.Pre_Interest_PayType = new() { new() { Name = "เลือก" } };
 				if (dataRateType.Data?.Items != null)
 				{
-					LookUp.Interest_PayType.AddRange(dataRateType.Data.Items);
+					LookUp.Pre_Interest_PayType.AddRange(dataRateType.Data.Items);
 				}
 				StateHasChanged();
 				await Task.Delay(10);
@@ -242,6 +242,8 @@ namespace SalesPipeline.Pages.Loans
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroyClass", "interest_RateTypes");
 
 				var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
+				var Applicant_LoanData = new List<Master_Pre_Applicant_LoanCustom>();
+				var BusinessTypeData = new List<Master_Pre_BusinessTypeCustom>();
 
 				var dataRateType = await _masterViewModel.GetPre_RateType(filter);
 				if (dataRateType != null && dataRateType.Status)
@@ -254,6 +256,34 @@ namespace SalesPipeline.Pages.Loans
 				else
 				{
 					_errorMessage = dataRateType?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+				var dataApplicant = await _masterViewModel.GetPre_App_Loan(filter);
+				if (dataApplicant != null && dataApplicant.Status)
+				{
+					if (dataApplicant.Data != null)
+					{
+						Applicant_LoanData.AddRange(dataApplicant.Data.Items);
+					}
+				}
+				else
+				{
+					_errorMessage = dataApplicant?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+				var dataBusType = await _masterViewModel.GetPre_BusType(filter);
+				if (dataBusType != null && dataBusType.Status)
+				{
+					if (dataBusType.Data != null)
+					{
+						BusinessTypeData.AddRange(dataBusType.Data.Items);
+					}
+				}
+				else
+				{
+					_errorMessage = dataBusType?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 
@@ -271,9 +301,32 @@ namespace SalesPipeline.Pages.Loans
 						});
 					}
 
+					List<SelectModel>? LoanModel = new();
+					foreach (var item in Applicant_LoanData)
+					{
+						LoanModel.Add(new()
+						{
+							ID = item.Id.ToString(),
+							Name = item.Name
+						});
+					}
+
+					List<SelectModel>? BusTypeModel = new();
+					foreach (var item in BusinessTypeData)
+					{
+						BusTypeModel.Add(new()
+						{
+							ID = item.Id.ToString(),
+							Name = item.Name
+						});
+					}
+					
+
 					LookUps.Add(new LookUpResource()
 					{
-						Interest_RateType = rateType
+						Pre_Interest_RateType = rateType,
+						Pre_Applicant_LoanModel = LoanModel,
+						Pre_BusinessTypeModel = BusTypeModel,
 					});
 				}
 				StateHasChanged();
