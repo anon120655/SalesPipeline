@@ -5,6 +5,8 @@ using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace SalesPipeline.Pages.Loans
 {
@@ -30,6 +32,9 @@ namespace SalesPipeline.Pages.Loans
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
+
+
+
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
