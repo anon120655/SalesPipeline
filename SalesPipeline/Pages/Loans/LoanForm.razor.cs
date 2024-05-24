@@ -41,23 +41,31 @@ namespace SalesPipeline.Pages.Loans
 				await SetModel();
 				StateHasChanged();
 
-				await SetInitManual();
-				StateHasChanged();
+				if (!id.HasValue)
+				{
+					await SetLookUpPayType();
+				}
 
 				firstRender = false;
 			}
 		}
 
-		protected async Task SetInitManual()
+		protected async Task SetLookUpPayType()
 		{
 			var dataRateType = await _masterViewModel.GetPre_PayType(filter);
 			if (dataRateType != null && dataRateType.Status)
 			{
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_PayType");
-				LookUp.Interest_PayType = dataRateType.Data?.Items;
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Interest_PayType");
+				LookUp.Interest_PayType = new() { new() { Name = "เลือก" } };
+				if (dataRateType.Data?.Items != null)
+				{
+					LookUp.Interest_PayType.AddRange(dataRateType.Data.Items);
+				}
 				StateHasChanged();
 				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_PayType", "#Interest_PayType");
+				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Interest_PayType", 100);
 			}
 			else
 			{
@@ -77,6 +85,7 @@ namespace SalesPipeline.Pages.Loans
 
 					if (formModel.Master_Pre_Interest_PayTypeId.HasValue)
 					{
+						await SetLookUpPayType();
 						await SetLookUpPeriod(formModel.Master_Pre_Interest_PayTypeId.Value);
 						await SetLookUpRateType();
 					}
@@ -89,30 +98,33 @@ namespace SalesPipeline.Pages.Loans
 			}
 		}
 
+		//ประเภทการชำระดอกเบี้ย
 		[JSInvokable]
 		public async Task OnInterest_PayType(string _ids, string _name)
 		{
 			formModel.Master_Pre_Interest_PayTypeId = null;
 			formModel.Loan_Periods = new();
 			LookUp.Periods = new();
-			formModel.RiskPremiumYear = 3;
+			formModel.RiskPremiumYear = null;
 			StateHasChanged();
 			await Task.Delay(1);
 
 			if (_ids != null)
 			{
-				if (Guid.TryParse(_ids, out Guid id))
+				if (Guid.TryParse(_ids, out Guid _payTypeId))
 				{
-					await SetLookUpPeriod(id);
+					formModel.RiskPremiumYear = 3;
+					formModel.PeriodNumber = _payTypeId == _payType1 ? 1 : _payTypeId == _payType2 ? 2 : null;
 
-					formModel.PeriodNumber = LookUp.Periods.Count;
-					formModel.Master_Pre_Interest_PayTypeId = id;
+					await SetLookUpPeriod(_payTypeId);
 
-					if (id == _payType1)
+					formModel.Master_Pre_Interest_PayTypeId = _payTypeId;
+
+					if (_payTypeId == _payType1)
 					{
 						await OnInterest_Periods("1", string.Empty);
 					}
-					else if (id == _payType2)
+					else if (_payTypeId == _payType2)
 					{
 						await OnInterest_Periods("2", string.Empty);
 					}
@@ -120,6 +132,7 @@ namespace SalesPipeline.Pages.Loans
 			}
 		}
 
+		//จำนวนช่วงเวลา
 		[JSInvokable]
 		public async Task OnInterest_Periods(string _ids, string _name)
 		{
@@ -128,7 +141,6 @@ namespace SalesPipeline.Pages.Loans
 			formModel.Loan_Periods = new();
 			StateHasChanged();
 			await Task.Delay(1);
-			await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "interest_RateTypes");
 
 			if (_ids != null)
 			{
@@ -146,13 +158,14 @@ namespace SalesPipeline.Pages.Loans
 			}
 		}
 
+		//ประเภทอัตราดอกเบี้ย
 		[JSInvokable]
-		public async Task OnInterest_RateType(string _ids, string _name)
+		public async Task OnInterest_RateType(string _ids, string _name, string dataVal)
 		{
-			if (_ids != null)
+			if (_ids != null && dataVal != null && Guid.TryParse(_ids,out Guid rateTypeId))
 			{
-				List<string> stringList = _ids.Split('@').ToList();
-				if (formModel.Loan_Periods != null && stringList.Count == 3)
+				List<string> stringList = dataVal.Split('@').ToList();
+				if (formModel.Loan_Periods != null && stringList.Count == 2)
 				{
 					int periodNo = int.Parse(stringList[0]);
 					decimal? Rate = null;
@@ -160,23 +173,20 @@ namespace SalesPipeline.Pages.Loans
 					{
 						Rate = _rate;
 					}
-					Guid id = Guid.Parse(stringList[2]);
 
 					var period = formModel.Loan_Periods.FirstOrDefault(x => x.PeriodNo == periodNo);
 					if (period != null)
 					{
-						if (id != Guid.Empty)
+						period.Master_Pre_Interest_RateTypeId = null;
+						period.RateValue = null;
+						period.SpecialType = null;
+						period.SpecialRate = null;
+
+						if (rateTypeId != Guid.Empty)
 						{
-							period.Master_Pre_Interest_RateTypeId = id;
+							period.Master_Pre_Interest_RateTypeId = rateTypeId;
 							period.RateValue = Rate;
 							period.RateValueOriginal = Rate;
-						}
-						else
-						{
-							period.Master_Pre_Interest_RateTypeId = null;
-							period.RateValue = null;
-							period.SpecialType = null;
-							period.SpecialRate = null;
 						}
 					}
 				}
@@ -187,9 +197,11 @@ namespace SalesPipeline.Pages.Loans
 
 		public async Task SetLookUpPeriod(Guid _idpaytype)
 		{
-			await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_Periods");
-
 			LookUp.Periods = new();
+			StateHasChanged();
+			await Task.Delay(1);
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_Periods");
 
 			int startPeriod = 0;
 			int lengthPeriod = 0;
@@ -205,9 +217,12 @@ namespace SalesPipeline.Pages.Loans
 			}
 
 			LookUp.Periods.Add(new SelectModel() { ID = "", Name = "เลือก" });
-			for (int i = startPeriod; i <= lengthPeriod; i++)
+			if (startPeriod > 0)
 			{
-				LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString() });
+				for (int i = startPeriod; i <= lengthPeriod; i++)
+				{
+					LookUp.Periods.Add(new() { ID = i.ToString(), Name = i.ToString() });
+				}
 			}
 
 			StateHasChanged();
@@ -219,6 +234,8 @@ namespace SalesPipeline.Pages.Loans
 		{
 			if (formModel.Loan_Periods?.Count > 0)
 			{
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroyClass", "interest_RateTypes");
+
 				var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
 
 				var dataRateType = await _masterViewModel.GetPre_RateType(filter);
@@ -237,13 +254,13 @@ namespace SalesPipeline.Pages.Loans
 
 				foreach (var period in formModel.Loan_Periods)
 				{
-					List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@0@00000000-0000-0000-0000-000000000000", Code = "เลือก" } };
+					List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@{0}", Code = "เลือก" } };
 					foreach (var item in Interest_RateTypeData)
 					{
 						rateType.Add(new()
 						{
 							Id = item.Id,
-							OptionValue = $"{period.PeriodNo}@{item.Rate}@{item.Id}",
+							OptionValue = $"{period.PeriodNo}@{item.Rate}",
 							Code = item.Code,
 							Name = item.Name
 						});
@@ -260,7 +277,7 @@ namespace SalesPipeline.Pages.Loans
 				foreach (var period in formModel.Loan_Periods)
 				{
 					await _jsRuntimes.InvokeVoidAsync("BootSelectClass", $"select_{period.PeriodNo}");
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_RateType", $"#Interest_RateType_{period.PeriodNo}");
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_RateType", $"#Interest_RateType_{period.PeriodNo}", "optionvalue");
 				}
 
 			}

@@ -1,4 +1,6 @@
 ﻿
+//`````````````````````````````````````````````
+
 //new PDF
 window.jsPDF = window.jspdf.jsPDF;
 var baseUriWeb = '';
@@ -81,6 +83,10 @@ window.BootSelectDestroy = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 }
 
+window.BootSelectDestroyClass = (elm_class) => {
+	$(`.${elm_class}`).selectpicker('destroy');
+}
+
 window.BootSelectEmptyID = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');
@@ -93,7 +99,7 @@ window.BootSelectEmptyClass = (elm_class) => {
 	$(`.${elm_class}`).selectpicker('refresh');
 }
 
-window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName) => {
+window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName, dataName = null) => {
 	// initialize the specified picker element
 	$(pickerElementName).selectpicker('setStyle', 'btn_white');
 
@@ -101,10 +107,17 @@ window.InitSelectPicker = (dotnetHelper, callbackMethodName, pickerElementName) 
 	// setup event to push the selected dropdown value back to c# code
 	$(pickerElementName).on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
 		//console.log($(pickerElementName).val(), $(pickerElementName + ' option:selected').text())
-		dotnetHelper.invokeMethodAsync(callbackMethodName, $(pickerElementName).val(), $(pickerElementName + ' option:selected').text())
-			.then(data => {
+		if (dataName == null) {
+			dotnetHelper.invokeMethodAsync(callbackMethodName, $(pickerElementName).val(), $(pickerElementName + ' option:selected').text())
+				.then(data => {
 
-			});
+				});
+		} else {
+			dotnetHelper.invokeMethodAsync(callbackMethodName, $(pickerElementName).val(), $(pickerElementName + ' option:selected').text(), $(pickerElementName + ' option:selected').attr(`data-${dataName}`))
+				.then(data => {
+
+				});
+		}
 	});
 }
 
