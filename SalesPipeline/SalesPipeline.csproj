@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\checkbox_circle.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\dropdowncheckbox.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checktimeout.js" />
   </ItemGroup>
 

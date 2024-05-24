@@ -1,82 +1,13 @@
 ﻿
-<style>
-	.dropdown-menu {
-		display: none;
-		position: absolute;
-		background-color: white;
-		border: 1px solid #C0C0C0;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-		z-index: 1000;
-		width: 100%;
-	}
-
-		.dropdown-menu.show {
-			display: block;
-		}
-
-	.dropdown-item {
-		padding: 8px 16px;
-		display: flex;
-		align-items: center;
-	}
-
-		.dropdown-item input[type="checkbox"] {
-			margin-right: 8px;
-		}
-
-	.search-input {
-		margin: 8px;
-		padding: 8px;
-		width: calc(100% - 32px);
-		box-sizing: border-box;
-	}
-
-	.selected-item {
-		display: inline-flex;
-		align-items: center;
-		padding: 0px 8px;
-		background-color: #f1f1f1;
-		border-radius: 5px;
-		margin-right: 8px;
-		color: #000 !important;
-	}
-
-	.remove-btn {
-		margin-left: 4px;
-		padding: 0 4px;
-		border: none;
-		background-color: transparent;
-		color: #dc3545;
-		cursor: pointer;
-	}
-
-	.btn:hover {
-		background-color: #fff !important;
-		color: #000 !important;
-		text-decoration: none;
-	}
-
-	.dropdown-toggle {
-		color: #000 !important;
-		width: 100% !important;
-		border: 1px solid #C0C0C0 !important;
-		text-align: left;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-	}
-
-</style>
-
 <div id="dropdown_elm" class="dropdown" @onblur="CloseDropdown" tabindex="0">
-	<button type="button" @onclick="ToggleDropdown" class="btn btn-outline-secondary dropdown-toggle">
+	<button type="button" @onclick="ToggleDropdown" class="btn btn-outline-secondary dropdown-toggle d-flex flex-wrap">
 		@if (SelectedItems.Any())
 		{
 			@foreach (var selectedItem in SelectedItems)
 			{
 				<span class="selected-item">
 					@selectedItem.Name
-					<button type="button" @onclick="(e) => RemoveItem(selectedItem.ID, e)" class="btn btn-sm btn-danger remove-btn">X</button>
+					<button type="button" @onclick="(e) => RemoveItem(selectedItem.ID, e)" class="btn btn-sm btn-danger remove-btn">x</button>
 				</span>
 			}
 		}

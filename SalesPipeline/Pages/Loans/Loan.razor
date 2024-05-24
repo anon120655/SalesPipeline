@@ -1,5 +1,4 @@
-﻿
-@page "/loan"
+﻿@page "/loan"
 
 <PageTitle>รายการสินเชื่อ</PageTitle>
 
@@ -65,7 +64,18 @@
 												<tr>
 													<td class="text-center">@item.Name</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Pre_Interest_PayTypeName)</td>
-													<td class="text-center">@GeneralUtils.EmptyTo("")</td>
+													<td class="text-center">
+														@if (item.Loan_Periods?.Count > 0)
+														{
+															var rateType = item.Loan_Periods.FirstOrDefault();
+															if (rateType != null)
+															{
+																<p>
+																	<span>@GeneralUtils.EmptyTo(rateType.Master_Pre_Interest_RateTypeName)</span>
+																</p>
+															}
+														}
+													</td>
 													<td class="text-center">
 														<a href="/loan/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
