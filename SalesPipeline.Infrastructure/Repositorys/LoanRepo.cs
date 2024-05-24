@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -169,23 +170,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							var loan_Period_AppLoansR = _repo.Context.Loan_Period_AppLoans.Where(x => x.Loan_PeriodId == period.Id).ToList();
 							if (loan_Period_AppLoansR.Count > 0)
 							{
-								foreach (var appLoan in loan_Period_AppLoansR)
-								{
-									appLoan.Status = StatusModel.Delete;
-								}
+								//foreach (var appLoan in loan_Period_AppLoansR)
+								//{
+								//	appLoan.Status = StatusModel.Delete;
+								//}
+								_db.DeleteRange(loan_Period_AppLoansR);
 								await _db.SaveAsync();
 							}
 							var loan_Period_BusTypesR = _repo.Context.Loan_Period_BusTypes.Where(x => x.Loan_PeriodId == period.Id).ToList();
 							if (loan_Period_BusTypesR.Count > 0)
 							{
-								foreach (var sharehold_item in loan_Period_BusTypesR)
-								{
-									sharehold_item.Status = StatusModel.Delete;
-								}
+								//foreach (var sharehold_item in loan_Period_BusTypesR)
+								//{
+								//	sharehold_item.Status = StatusModel.Delete;
+								//}
+								_db.DeleteRange(loan_Period_BusTypesR);
 								await _db.SaveAsync();
 							}
-							period.Status = StatusModel.Delete;
+							//period.Status = StatusModel.Delete;
 						}
+						_db.DeleteRange(loan_PeriodR);
 						await _db.SaveAsync();
 					}
 

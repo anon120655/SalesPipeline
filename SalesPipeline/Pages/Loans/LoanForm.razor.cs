@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Components.Web;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.Resources.Assignments;
+using NPOI.SS.Formula.Functions;
+using SalesPipeline.Pages.Settings.PreApprove;
 
 namespace SalesPipeline.Pages.Loans
 {
@@ -169,7 +171,7 @@ namespace SalesPipeline.Pages.Loans
 		[JSInvokable]
 		public async Task OnInterest_RateType(string _ids, string _name, string dataVal)
 		{
-			if (_ids != null && dataVal != null && Guid.TryParse(_ids,out Guid rateTypeId))
+			if (_ids != null && dataVal != null && Guid.TryParse(_ids, out Guid rateTypeId))
 			{
 				List<string> stringList = dataVal.Split('@').ToList();
 				if (formModel.Loan_Periods != null && stringList.Count == 2)
@@ -306,23 +308,29 @@ namespace SalesPipeline.Pages.Loans
 					List<SelectModel>? LoanModel = new();
 					foreach (var item in Applicant_LoanData)
 					{
+						bool isSelected = period.Loan_Period_AppLoans?.Any(x=>x.Master_Pre_Applicant_LoanId == item.Id) ?? false;
+
 						LoanModel.Add(new()
 						{
 							ID = item.Id.ToString(),
-							Name = item.Name
+							Name = item.Name,
+							IsSelected = isSelected
 						});
 					}
 
 					List<SelectModel>? BusTypeModel = new();
 					foreach (var item in BusinessTypeData)
 					{
+						bool isSelected = period.Loan_Period_BusTypes?.Any(x => x.Master_Pre_BusinessTypeId == item.Id) ?? false;
+
 						BusTypeModel.Add(new()
 						{
 							ID = item.Id.ToString(),
-							Name = item.Name
+							Name = item.Name,
+							IsSelected = isSelected
 						});
 					}
-					
+
 
 					LookUps.Add(new LookUpResource()
 					{
@@ -442,13 +450,47 @@ namespace SalesPipeline.Pages.Loans
 			StateHasChanged();
 		}
 
-		protected async Task CallbackItemsSelected(List<SelectModel> model)
+		protected async Task CallbackItemsSelected(DropdownCheckboxMain model)
 		{
-			await Task.Delay(1);
-			if (model.Count > 0)
+			if (model != null && formModel.Loan_Periods != null)
 			{
-
+				var period = formModel.Loan_Periods.FirstOrDefault(x => x.PeriodNo == model.PeriodNo);
+				if (period != null)
+				{
+					if (model.Type == 1)
+					{
+						period.Loan_Period_AppLoans = new();
+						foreach (var item in model.SelectedItems)
+						{
+							if (Guid.TryParse(item.ID,out Guid _Id))
+							{
+								period.Loan_Period_AppLoans.Add(new()
+								{
+									Master_Pre_Applicant_LoanId = _Id,
+									Master_Pre_Applicant_LoanName = item.Name
+								});
+							}
+						}
+					}
+					else if (model.Type == 2)
+					{
+						period.Loan_Period_BusTypes = new();
+						foreach (var item in model.SelectedItems)
+						{
+							if (Guid.TryParse(item.ID, out Guid _Id))
+							{
+								period.Loan_Period_BusTypes.Add(new()
+								{
+									Master_Pre_BusinessTypeId = _Id,
+									Master_Pre_BusinessTypeName = item.Name
+								});
+							}
+						}
+					}
+				}
 			}
+
+			await Task.Delay(1);
 		}
 
 	}

@@ -80,7 +80,7 @@
 				</span>
 			}
 		}
-		else 
+		else
 		{
 			<span>Select items</span>
 		}
@@ -102,10 +102,16 @@
 	private string searchTerm = string.Empty;
 
 	[Parameter]
+	public int periodNo { get; set; }
+
+	[Parameter]
+	public int type { get; set; }
+
+	[Parameter]
 	public List<SelectModel> items { get; set; } = null!;
 
 	[Parameter]
-	public EventCallback<List<SelectModel>> callbackItemsSelected { get; set; }
+	public EventCallback<DropdownCheckboxMain> callbackItemsSelected { get; set; }
 
 	private List<SelectModel> filteredItems = new();
 
@@ -137,7 +143,12 @@
 
 		if (!isDropdownOpen)
 		{
-			await callbackItemsSelected.InvokeAsync(SelectedItems.ToList());
+			await callbackItemsSelected.InvokeAsync(new()
+				{
+					PeriodNo = periodNo,
+					Type = type,
+					SelectedItems = SelectedItems.ToList()
+				});
 		}
 	}
 

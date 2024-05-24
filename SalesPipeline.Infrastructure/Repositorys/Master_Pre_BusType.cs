@@ -112,7 +112,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_Pre_Applicant_Loans.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_Pre_BusinessTypes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 

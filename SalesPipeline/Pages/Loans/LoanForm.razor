@@ -143,14 +143,14 @@
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 													@if (lookup.Pre_Applicant_LoanModel?.Count > 0)
 													{
-														<DropdownCheckboxCustom items="lookup.Pre_Applicant_LoanModel" callbackItemsSelected="CallbackItemsSelected" />
+														<DropdownCheckboxCustom items="lookup.Pre_Applicant_LoanModel" periodNo="period.PeriodNo" type="1" callbackItemsSelected="CallbackItemsSelected" />
 													}
 												</div>
 												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 													@if (lookup.Pre_BusinessTypeModel?.Count > 0)
 													{
-														<DropdownCheckboxCustom items="lookup.Pre_BusinessTypeModel" />
+														<DropdownCheckboxCustom items="lookup.Pre_BusinessTypeModel" periodNo="period.PeriodNo" type="2" callbackItemsSelected="CallbackItemsSelected" />
 													}
 												</div>
 											</div>

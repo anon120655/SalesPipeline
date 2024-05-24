@@ -61,9 +61,9 @@ namespace SalesPipeline.Utils.Resources.Loans
 
 		public virtual LoanCustom? Loan { get; set; }
 
-		public virtual ICollection<Loan_Period_AppLoanCustom>? Loan_Period_AppLoans { get; set; }
+		public virtual List<Loan_Period_AppLoanCustom>? Loan_Period_AppLoans { get; set; }
 
-		public virtual ICollection<Loan_Period_BusTypeCustom>? Loan_Period_BusTypes { get; set; }
+		public virtual List<Loan_Period_BusTypeCustom>? Loan_Period_BusTypes { get; set; }
 
 		//Custom
 		public decimal? RateValueOriginal { get; set; }
