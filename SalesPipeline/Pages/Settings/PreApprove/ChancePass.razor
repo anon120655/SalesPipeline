@@ -15,8 +15,39 @@
 							<p class="back_topic">เครื่องมือ Pre-Approve > โอกาสขอสินเชื่อผ่าน</p>
 						</div>
 					</div>
-					<div>
-						<ComingSoon />
+					<div class="col-12 mt-5">
+						<div class="row">
+							<div class="col-12 col-xl">
+							</div>
+							<div class="col-12 col-xl-9">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">Z</th>
+												<th class="text-center">Credit Score</th>
+												<th class="text-center">Prob(default)</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (Items?.Count > 0)
+											{
+												foreach (var item in Items)
+												{
+													<tr>
+														<td class="text-center">@item.Z</td>
+														<td class="text-center">@item.CreditScore</td>
+														<td class="text-center">@item.Prob</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="col-12 col-xl">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
