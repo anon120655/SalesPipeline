@@ -37,4 +37,8 @@
     <ProjectReference Include="..\SalesPipeline.Utils\SalesPipeline.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Settings\PreApprove\Calculateds\" />
+  </ItemGroup>
+
 </Project>
