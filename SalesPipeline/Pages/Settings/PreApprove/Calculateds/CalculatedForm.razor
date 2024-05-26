@@ -1,0 +1,60 @@
+﻿@page "/setting/pre/calculated/form"
+
+<PageTitle>ตัวแปรคำนวณ</PageTitle>
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/setting.png" width="45" /></div>
+						<div class="p-2">
+							<p class="back_topic">เครื่องมือ Pre-Approve > ตัวแปรคำนวณ</p>
+						</div>
+					</div>
+					<div class="row mt-3 mh_40r">
+						<div class="col-12 tabs_elm">
+							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
+								<Tab Title="ข้อมูลการขอสินเชื่อ" IsActive="true">
+									<Content>
+										<Partial_Cal_Info />
+									</Content>
+								</Tab>
+								<Tab Title="คุณสมบัติมารตฐาน">
+									<Content>
+										<Partial_Cal_Fetu_Stan />
+									</Content>
+								</Tab>
+								<Tab Title="คุณสมบัติตามประเภทผู้ขอ">
+									<Content>
+										<Partial_Cal_Fetu_AppLoan />
+									</Content>
+								</Tab>
+								<Tab Title="คุณสมบัติตามประเภทธุรกิจ">
+									<Content>
+										<Partial_Cal_Fetu_BusType />
+									</Content>
+								</Tab>
+								<Tab Title="น้ำหนักของแต่ละปัจจัย">
+									<Content>
+										<Partial_Cal_Weight_Factor />
+									</Content>
+								</Tab>
+							</Tabs>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+
+
