@@ -1,89 +1,193 @@
 ﻿<div class="px-0">
-	<div class="row mt-3">
+	<div class="row mt-2">
 		<div class="col-12">
 			<div class="bg-header text-white rounded-1 p-2">
 				<h6 class="px-2">รายการข้อมูล</h6>
 			</div>
 		</div>
 	</div>
-	<div class="row mt-3">
+	<div class="row mt-2">
 		<div class="col-12 col-xl-10">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
 				<div class="row">
-					<div class="col-12 col-sm-8 col-xl-6 mb-3 mb-xl-0">
-						<div class="row mb-3">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
 							<div class="col-12">
-								<input type="text" class="form-control no-drop" value="สินเชื่อ" readonly>
+								<input type="text" class="form-control readonly_input" value="สินเชื่อ" readonly>
 							</div>
 						</div>
 					</div>
-					<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
-						<select class="form-select no-drop" readonly>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select readonly_input" readonly >
 							<option value="@FieldTypes.DropdownMaster">@PropertiesMain.PerFieldType(FieldTypes.DropdownMaster).Name</option>
 						</select>
 					</div>
 				</div>
-				<div class="row mb-3">
+				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<select class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
-							<option value="">เลือก</option>							
+						<select class="form-select" disabled>
+							<option disabled selected value="">รายการสินเชื่อ</option>
 						</select>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row mt-3">
+	<div class="row mt-2">
 		<div class="col-12 col-xl-10">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
 				<div class="row">
-					<div class="col-12 col-sm-8 col-xl-6 mb-3 mb-xl-0">
-						<div class="row mb-3">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
 							<div class="col-12">
-								<input type="text" class="form-control no-drop" value="จำนวนงวดชำระต่อปี" readonly>
+								<input type="text" class="form-control readonly_input" value="จำนวนงวดชำระต่อปี" readonly>
 							</div>
 						</div>
 					</div>
-					<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
-						<select class="form-select no-drop" readonly>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select readonly_input" readonly>
 							<option value="@FieldTypes.Dropdown">@PropertiesMain.PerFieldType(FieldTypes.Dropdown).Name</option>
 						</select>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="1">
+						<input type="text" class="form-control" placeholder="1" disabled>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="2">
+						<input type="text" class="form-control" placeholder="2" disabled>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="3">
+						<input type="text" class="form-control" placeholder="3" disabled>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="4">
+						<input type="text" class="form-control" placeholder="4" disabled>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="6">
+						<input type="text" class="form-control" placeholder="6" disabled>
 					</div>
 				</div>
 				<div class="row mb-2">
 					<div class="col-12 col-sm-8 col-xl-6">
-						<input type="text" class="form-control" value="12">
+						<input type="text" class="form-control" placeholder="12" disabled>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row mt-3">
+	<div class="row mt-2">
+		<div class="col-12 col-xl-10">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
+							<div class="col-12">
+								<input type="text" class="form-control readonly_input" value="มูลค่าสินเชื่อ" readonly>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select">
+							<option value="@FieldTypes.Number">@PropertiesMain.PerFieldType(FieldTypes.Number).Name</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-2">
+					<div class="col-12 col-sm-8 col-xl-6">
+						<input type="text" class="form-control" placeholder="Number" disabled>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12 col-xl-10">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
+							<div class="col-12">
+								<input type="text" class="form-control readonly_input" value="ระยะเวลาสินเชื่อ" readonly>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select">
+							<option value="@FieldTypes.Number">@PropertiesMain.PerFieldType(FieldTypes.Number).Name</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-2">
+					<div class="col-12 col-sm-8 col-xl-6">
+						<input type="text" class="form-control" placeholder="Number" disabled>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12 col-xl-10">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
+							<div class="col-12">
+								<input type="text" class="form-control readonly_input" value="ประเภทผู้ขอสินเชื่อ" readonly>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select readonly_input" readonly>
+							<option value="@FieldTypes.DropdownMaster">@PropertiesMain.PerFieldType(FieldTypes.DropdownMaster).Name</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-2">
+					<div class="col-12 col-sm-8 col-xl-6">
+						<select class="form-select" disabled>
+							<option disabled selected value="">ประเภทผู้ขอสินเชื่อ</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12 col-xl-10">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row">
+					<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+						<div class="row mb-2">
+							<div class="col-12">
+								<input type="text" class="form-control readonly_input" value="ประเภทธุรกิจ" readonly>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+						<select class="form-select readonly_input" readonly>
+							<option value="@FieldTypes.DropdownMaster">@PropertiesMain.PerFieldType(FieldTypes.DropdownMaster).Name</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-2">
+					<div class="col-12 col-sm-8 col-xl-6">
+						<select class="form-select" disabled>
+							<option disabled selected value="">ประเภทธุรกิจ</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row mt-2">
 		<div class="col-12">
 			<div class="bg-header text-white rounded-1 p-2">
 				<h6 class="px-2">คะแนนในการคำนวณ</h6>

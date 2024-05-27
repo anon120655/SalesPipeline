@@ -10,7 +10,7 @@
 		<div class="row">
 			<div class="col-12 my-2">
 				<div class="box_content">
-					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="d-flex flex-row align-items-center mb-2 border-bottom">
 						<div class="p-2">
 							<a href="/setting/processsales"><img src="/image/icon/assign_user128x.png" width="55" /></a>
 						</div>
@@ -54,18 +54,18 @@
 															<p class="d-inline text-bg-header rounded-1 p-2">@sectionName</p>
 														</div>
 													</div>
-													<div class="row mb-3">
+													<div class="row mb-2">
 														<div class="col-12">
-															<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+															<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
 																<div class="row my-2">
-																	<div class="col-12 col-sm-8 col-xl-6 mb-3 mb-xl-0">
-																		<div class="row mb-3">
+																	<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+																		<div class="row mb-2">
 																			<div class="col-12">
 																				<input @bind="section.Name" type="text" class="form-control" placeholder="ชื่อส่วน">
 																			</div>
 																		</div>
 																	</div>
-																	<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
+																	<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
 																	</div>
 																</div>
 																<div class="row">
@@ -102,16 +102,16 @@
 												@foreach (var item in saleItems)
 												{
 													<div class="col-12 col-xl-10">
-														<div class="bg-secondary bg-opacity-10 rounded p-3 mb-3">
+														<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
 															<div class="row my-2">
-																<div class="col-12 col-sm-8 col-xl-6 mb-3 mb-xl-0">
-																	<div class="row mb-3">
+																<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+																	<div class="row">
 																		<div class="col-12">
 																			<input @bind="item.ItemLabel" type="text" class="form-control" placeholder="หัวข้อ">
 																		</div>
 																	</div>
 																</div>
-																<div class="col-12 col-sm-4 col-xl-3 mb-3 mb-xl-0">
+																<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
 																	<select @onchange="async (e) => await OnItemTypes(e,section.Id,item.Id)" class="form-select" value="@item.ItemType">
 																		<option value="@FieldTypes.ShortAnswer">@PropertiesMain.PerFieldType(FieldTypes.ShortAnswer).Name</option>
 																		<option value="@FieldTypes.TextArea">@PropertiesMain.PerFieldType(FieldTypes.TextArea).Name</option>
@@ -126,7 +126,7 @@
 															</div>
 															@if (item.ItemType == FieldTypes.ShortAnswer)
 															{
-																<div class="row mb-3">
+																<div class="row mb-2">
 																	<div class="col-12 col-sm-8 col-xl-6">
 																		<input type="text" class="form-control" placeholder="text" disabled>
 																	</div>
@@ -134,7 +134,7 @@
 															}
 															else if (item.ItemType == FieldTypes.TextArea)
 															{
-																<div class="row mb-3">
+																<div class="row mb-2">
 																	<div class="col-12 col-sm-8 col-xl-6">
 																		<textarea class="form-control" rows="3" disabled></textarea>
 																	</div>
@@ -149,7 +149,7 @@
 																	int indexType = 1;
 																	foreach (var item_option in itemOptions)
 																	{
-																		<div class="row mb-3">
+																		<div class="row mb-2">
 																			<div class="col-12 col-sm-8 col-xl-6">
 																				<input @bind="item_option.OptionLabel" type="text" class="form-control" placeholder="ตัวเลือก @indexType">
 																			</div>
@@ -183,7 +183,7 @@
 																	int indexType = 1;
 																	foreach (var item_option in itemOptions)
 																	{
-																		<div class="row mb-3">
+																		<div class="row mb-2">
 																			<div class="col-12 col-sm-8 col-xl-6">
 																				<input @bind="item_option.OptionLabel" type="text" class="form-control" placeholder="ตัวเลือก @indexType">
 																			</div>
@@ -224,7 +224,7 @@
 																	int indexType = 1;
 																	foreach (var item_option in itemOptions)
 																	{
-																		<div class="row mb-3">
+																		<div class="row mb-2">
 																			<div class="col-12 col-sm-8 col-xl-6">
 																				<select @bind="item_option.Master_ListId" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 																					<option value="">เลือก</option>
@@ -244,7 +244,7 @@
 															}
 															else if (item.ItemType == FieldTypes.Fileupload)
 															{
-																<div class="row mb-3">
+																<div class="row mb-2">
 																	<div class="col-12 col-sm-8 col-xl-6">
 																		<input type="file" class="form-control" disabled>
 																	</div>
@@ -252,7 +252,7 @@
 															}
 															else if (item.ItemType == FieldTypes.Date)
 															{
-																<div class="row mb-3">
+																<div class="row mb-2">
 																	<div class="col-12 col-sm-8 col-xl-6">
 																		<input type="date" class="form-control" disabled>
 																	</div>
@@ -260,7 +260,7 @@
 															}
 															else if (item.ItemType == FieldTypes.Time)
 															{
-																<div class="row mb-3">
+																<div class="row mb-2">
 																	<div class="col-12 col-sm-8 col-xl-6">
 																		<input type="time" class="form-control" disabled>
 																	</div>
@@ -300,7 +300,7 @@
 														</div>
 													</div>
 													<div class="col-12 col-xl-2 d-flex align-items-center">
-														<div class="mb-3 text-end text-xl-start ">
+														<div class="mb-2 text-end text-xl-start ">
 															<Button @onclick="async () => await InsertSectionItem(section.Id,item.SequenceNo)" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="me-2">
 																<i class="fa-solid fa-circle-plus"></i>
 															</Button>

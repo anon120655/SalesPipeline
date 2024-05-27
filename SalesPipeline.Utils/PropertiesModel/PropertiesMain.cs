@@ -55,6 +55,11 @@ namespace SalesPipeline.Utils.PropertiesModel
 				},
 				new PropertiesOptions()
 				{
+					Code = "Number",
+					Name = "Number"
+				},
+				new PropertiesOptions()
+				{
 					Code = "TextArea",
 					Name = "Text area"
 				},

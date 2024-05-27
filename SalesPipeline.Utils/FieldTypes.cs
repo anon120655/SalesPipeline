@@ -13,6 +13,10 @@ namespace SalesPipeline.Utils
 		/// </summary>
 		public const string ShortAnswer = "ShortAnswer";
 		/// <summary>
+		/// Number
+		/// </summary>
+		public const string Number = "Number";
+		/// <summary>
 		/// TextArea
 		/// </summary>
 		public const string TextArea = "TextArea";

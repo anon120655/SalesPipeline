@@ -742,3 +742,8 @@ form .row {
 .no-drop {
     cursor: no-drop;
 }
+
+.readonly_input {
+    cursor: no-drop;
+    /*background-color: #fbfbfb;*/
+}
