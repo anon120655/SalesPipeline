@@ -1,3 +1,4 @@
+using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 
@@ -15,6 +16,16 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 			await Task.Delay(1);
 		}
 
+		protected async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if (firstRender)
+			{
+				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
+				firstRender = false;
+			}
+
+		}
 
 	}
 }

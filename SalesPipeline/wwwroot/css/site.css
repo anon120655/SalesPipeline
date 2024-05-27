@@ -738,3 +738,7 @@ form .row {
     cursor: context-menu;
     margin: 15px 0;
 }
+
+.no-drop {
+    cursor: no-drop;
+}
