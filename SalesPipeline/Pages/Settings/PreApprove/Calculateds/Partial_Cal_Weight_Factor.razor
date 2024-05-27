@@ -1,11 +1,49 @@
-﻿<div class="px-0">
-	<div class="row mt-3">
-		<div class="col-12">
-			<div class="bg-header text-white rounded-1 p-2">
-				<h6 class="px-2">รายการข้อมูล</h6>
-			</div>
-		</div>
-	</div>
+﻿
+<style>
+    .progress-container {
+        width: 100%;
+        border-radius: 25px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-bar {
+        height: 20px;
+        width: 100%; /* Adjust this to change the progress */
+        background-color: #2B446C;
+        text-align: right;
+        line-height: 30px;
+        color: white;
+    }
+
+    .progress-text {
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .progress-percentage {
+        position: absolute;
+        right: 10px;
+        top: 3px;
+        bottom: 3px;
+        display: flex;
+        align-items: center;
+        color: #000;
+        background-color: #f2f2f2;
+        padding: 3px 10px 3px 10px;
+    }
+</style>
+
+<div class="px-0">
+    <div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+        <div class="progress-bar"></div>
+        <div class="progress-text">คุณสมบัติตามประเภทผู้ขอ</div>
+        <div class="progress-percentage">20.00 %</div>
+    </div>
 </div>
 
 @code {
