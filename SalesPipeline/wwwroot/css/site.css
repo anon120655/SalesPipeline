@@ -747,3 +747,9 @@ form .row {
     cursor: no-drop;
     /*background-color: #fbfbfb;*/
 }
+
+.container_pre_cal input {
+    text-align: end;
+    max-width: 100px;
+}
+
