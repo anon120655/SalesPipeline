@@ -198,7 +198,7 @@
 		<div class="d-flex justify-content-end  align-items-center">
 			<div class="p-2">คะแนนสูงสุด</div>
 			<div class="p-2">
-				<input type="text" class="form-control readonly_input form-control-sm score" value="100">
+				<input type="text" class="form-control form-control-sm score" value="100">
 			</div>
 		</div>
 		<div class="row p-3">
@@ -209,49 +209,65 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="rounded p-3">
-							<div class="row d-flex align-items-center mb-1">
-								<div class="col-12 col-lg-6 mb-1">
-									<input type="text" class="form-control form-control-sm" value="1000000">
-								</div>
-								<div class="col-4 col-lg-2 mb-1 text-end">
-									<span>คะแนน</span>
-								</div>
-								<div class="col-3 col-lg-1 mb-1">
-									<input type="text" class="form-control form-control-sm score" value="0.00">
-								</div>
-								<div class="col-5 col-lg-3 mb-1">
-									<Button Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
-										<i class="fa-regular fa-trash-can"></i>
-									</Button>
-								</div>
-							</div>
-							<div class="row d-flex align-items-center mb-1">
-								<div class="col-12 col-lg-6 mb-1">
-									<input type="text" class="form-control form-control-sm" value="500000">
-								</div>
-								<div class="col-4 col-lg-2 mb-1 text-end">
-									<span>คะแนน</span>
-								</div>
-								<div class="col-3 col-lg-1 mb-1">
-									<input type="text" class="form-control form-control-sm score" value="0.00">
-								</div>
-								<div class="col-5 col-lg-3 mb-1">
-									<Button Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
-										<i class="fa-regular fa-trash-can"></i>
-									</Button>
-									<Button Color="ButtonColor.Primary" Type="ButtonType.Button" Class="ms-2">
-										<i class="fa-solid fa-circle-plus"></i>
-									</Button>
-								</div>
-							</div>
+							@if (formModel.Pre_Cal_Info_Scores?.Count > 0)
+							{
+								int index = 1;
+								foreach (var item in formModel.Pre_Cal_Info_Scores)
+								{
+									Guid ID = item.Id;
+
+									<div class="row d-flex align-items-center mb-1">
+										<div class="col-12 col-lg-6 mb-1">
+											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+										</div>
+										<div class="col-4 col-lg-2 mb-1 text-end">
+											<span>คะแนน</span>
+										</div>
+										<div class="col-3 col-lg-1 mb-1">
+											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
+										</div>
+										<div class="col-5 col-lg-3 mb-1">
+											@if (formModel.Pre_Cal_Info_Scores.Count > 1)
+											{
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
+													<i class="fa-regular fa-trash-can"></i>
+												</Button>
+											}
+											@if (formModel.Pre_Cal_Info_Scores.Count == index)
+											{
+												<Button @onclick="async () => await InsertScore()" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="ms-2">
+													<i class="fa-solid fa-circle-plus"></i>
+												</Button>
+											}
+										</div>
+									</div>
+									index++;
+								}
+							}
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div class="my-4 text-center">
+		<div class="d-flex bd-highlight align-items-center justify-content-center">
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					กลับ
+				</Button>
+			</div>
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Seve Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					@if (isLoading)
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+					}
+					บันทึก
+				</Button>
+			</div>
+		</div>
+	</div>
 </div>
 
-@code {
 
-}

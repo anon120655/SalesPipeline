@@ -233,7 +233,7 @@
 		<div class="d-flex justify-content-end  align-items-center">
 			<div class="p-2">คะแนนสูงสุด</div>
 			<div class="p-2">
-				<input type="text" class="form-control readonly_input form-control-sm score" value="100">
+				<input type="text" class="form-control form-control-sm score" value="100">
 			</div>
 		</div>
 		<div class="row p-3">
@@ -573,8 +573,24 @@
 			</div>
 		</div>
 	</div>
+	<div class="my-4 text-center">
+		<div class="d-flex bd-highlight align-items-center justify-content-center">
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					กลับ
+				</Button>
+			</div>
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Seve Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					@if (isLoading)
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+					}
+					บันทึก
+				</Button>
+			</div>
+		</div>
+	</div>
 </div>
 
-@code {
 
-}

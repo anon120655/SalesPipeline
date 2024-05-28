@@ -90,7 +90,7 @@ namespace SalesPipeline.Pages.Settings.LoanType
 			}
 		}
 
-		public void Cancel()
+		protected void Cancel()
 		{
 			_Navs.NavigateTo("/setting/loantype");
 		}
