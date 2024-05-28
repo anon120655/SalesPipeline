@@ -748,7 +748,7 @@ form .row {
     /*background-color: #fbfbfb;*/
 }
 
-.container_pre_cal input {
+.container_pre_cal input.score {
     text-align: end;
     max-width: 100px;
 }

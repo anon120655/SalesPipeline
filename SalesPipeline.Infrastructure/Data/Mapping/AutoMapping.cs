@@ -13,6 +13,7 @@ using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils.Resources.Loans;
+using SalesPipeline.Utils.Resources.PreApprove;
 
 namespace SalesPipeline.Infrastructure.Data.Mapping
 {
@@ -20,6 +21,13 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 	{
 		public AutoMapping()
 		{
+			//PreApprove
+			CreateMap<Entity.Pre_Cal_Info, Pre_Cal_InfoCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Info_Score, Pre_Cal_Info_ScoreCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Stan, Pre_Cal_Fetu_StanCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Stan_DropDown, Pre_Cal_Fetu_Stan_DropDownCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Stan_Score, Pre_Cal_Fetu_Stan_ScoreCustom>().ReverseMap();
+
 			//Loan
 			CreateMap<Entity.Loan, LoanCustom>().ReverseMap();
 			CreateMap<Entity.Loan_Period, Loan_PeriodCustom>().ReverseMap();

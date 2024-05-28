@@ -198,21 +198,52 @@
 		<div class="d-flex justify-content-end  align-items-center">
 			<div class="p-2">คะแนนสูงสุด</div>
 			<div class="p-2">
-				<input type="text" class="form-control readonly_input form-control-sm" value="100">
+				<input type="text" class="form-control readonly_input form-control-sm score" value="100">
 			</div>
 		</div>
-		<div class="row mt-2">
+		<div class="row p-3">
 			<div class="col-12">
-				<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-					<div class="row d-flex align-items-center mb-1">
-						<div class="col-12 col-md-9">
-							<p>น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย</p>
-						</div>
-						<div class="col-10 col-md-1">
-							<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
-						</div>
-						<div class="col-2">
-							
+				<p>น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย</p>
+			</div>
+			<div class="col-12">
+				<div class="row">
+					<div class="col-12">
+						<div class="rounded p-3">
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-lg-6 mb-1">
+									<input type="text" class="form-control form-control-sm" value="1000000">
+								</div>
+								<div class="col-4 col-lg-2 mb-1 text-end">
+									<span>คะแนน</span>
+								</div>
+								<div class="col-3 col-lg-1 mb-1">
+									<input type="text" class="form-control form-control-sm score" value="0.00">
+								</div>
+								<div class="col-5 col-lg-3 mb-1">
+									<Button Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
+										<i class="fa-regular fa-trash-can"></i>
+									</Button>
+								</div>
+							</div>
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-lg-6 mb-1">
+									<input type="text" class="form-control form-control-sm" value="500000">
+								</div>
+								<div class="col-4 col-lg-2 mb-1 text-end">
+									<span>คะแนน</span>
+								</div>
+								<div class="col-3 col-lg-1 mb-1">
+									<input type="text" class="form-control form-control-sm score" value="0.00">
+								</div>
+								<div class="col-5 col-lg-3 mb-1">
+									<Button Color="ButtonColor.Danger" Type="ButtonType.Button" Class="">
+										<i class="fa-regular fa-trash-can"></i>
+									</Button>
+									<Button Color="ButtonColor.Primary" Type="ButtonType.Button" Class="ms-2">
+										<i class="fa-solid fa-circle-plus"></i>
+									</Button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

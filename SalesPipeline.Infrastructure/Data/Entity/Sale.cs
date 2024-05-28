@@ -145,6 +145,8 @@ public partial class Sale
 
     public virtual Master_Reason_CloseSale? Master_Reason_CloseSale { get; set; }
 
+    public virtual ICollection<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; } = new List<Pre_Reply_Cal_Info>();
+
     public virtual ICollection<Sale_Activity> Sale_Activities { get; set; } = new List<Sale_Activity>();
 
     public virtual ICollection<Sale_Close_Sale> Sale_Close_Sales { get; set; } = new List<Sale_Close_Sale>();

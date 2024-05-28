@@ -48,4 +48,6 @@ public partial class Loan
     public virtual ICollection<Loan_Period> Loan_Periods { get; set; } = new List<Loan_Period>();
 
     public virtual Master_Pre_Interest_PayType? Master_Pre_Interest_PayType { get; set; }
+
+    public virtual ICollection<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; } = new List<Pre_Reply_Cal_Info>();
 }

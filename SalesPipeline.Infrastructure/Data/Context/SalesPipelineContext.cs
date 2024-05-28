@@ -110,6 +110,24 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Notification> Notifications { get; set; }
 
+    public virtual DbSet<Pre_Cal_Fetu_AppLoan> Pre_Cal_Fetu_AppLoans { get; set; }
+
+    public virtual DbSet<Pre_Cal_Fetu_BusType> Pre_Cal_Fetu_BusTypes { get; set; }
+
+    public virtual DbSet<Pre_Cal_Fetu_Stan> Pre_Cal_Fetu_Stans { get; set; }
+
+    public virtual DbSet<Pre_Cal_Fetu_Stan_DropDown> Pre_Cal_Fetu_Stan_DropDowns { get; set; }
+
+    public virtual DbSet<Pre_Cal_Fetu_Stan_Score> Pre_Cal_Fetu_Stan_Scores { get; set; }
+
+    public virtual DbSet<Pre_Cal_Info> Pre_Cal_Infos { get; set; }
+
+    public virtual DbSet<Pre_Cal_Info_Score> Pre_Cal_Info_Scores { get; set; }
+
+    public virtual DbSet<Pre_Cal_Weight_Factor> Pre_Cal_Weight_Factors { get; set; }
+
+    public virtual DbSet<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; }
+
     public virtual DbSet<ProcessSale> ProcessSales { get; set; }
 
     public virtual DbSet<ProcessSale_Section> ProcessSale_Sections { get; set; }
@@ -1579,6 +1597,222 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.ToUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("notification_ibfk_2");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Fetu_AppLoan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Fetu_AppLoan", tb => tb.HasComment("ตัวแปรคำนวณ คุณสมบัติตามประเภทผู้ขอ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Fetu_BusType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Fetu_BusType", tb => tb.HasComment("ตัวแปรคำนวณ คุณสมบัติตามประเภทธุรกิจ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Fetu_Stan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Fetu_Stan", tb => tb.HasComment("ตัวแปรคำนวณ คุณสมบัติมาตรฐาน"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Fetu_Stan_DropDown>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Fetu_Stan_DropDown");
+
+            entity.HasIndex(e => e.Pre_Cal_Fetu_StanId, "Pre_Cal_InfoId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Pre_Cal_Fetu_Stan).WithMany(p => p.Pre_Cal_Fetu_Stan_DropDowns)
+                .HasForeignKey(d => d.Pre_Cal_Fetu_StanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_cal_fetu_stan_dropdown_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Fetu_Stan_Score>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Fetu_Stan_Score");
+
+            entity.HasIndex(e => e.Pre_Cal_Fetu_StanId, "Pre_Cal_InfoId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Quantity)
+                .HasComment("จำนวน")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Score)
+                .HasPrecision(18, 2)
+                .HasComment("คะแนน");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Pre_Cal_Fetu_Stan).WithMany(p => p.Pre_Cal_Fetu_Stan_Scores)
+                .HasForeignKey(d => d.Pre_Cal_Fetu_StanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_cal_fetu_stan_score_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Info>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Info", tb => tb.HasComment("ตัวแปรคำนวณ ข้อมูลการขอสินเชื่อ"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.HighScore)
+                .HasComment("คะแนนสูงสุด")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Info_Score>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Info_Score");
+
+            entity.HasIndex(e => e.Pre_Cal_InfoId, "Pre_Cal_InfoId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Quantity)
+                .HasComment("จำนวน")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Score)
+                .HasPrecision(18, 2)
+                .HasComment("คะแนน");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Pre_Cal_Info).WithMany(p => p.Pre_Cal_Info_Scores)
+                .HasForeignKey(d => d.Pre_Cal_InfoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_cal_info_score_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_Cal_Weight_Factor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_Weight_Factor", tb => tb.HasComment("น้ำหนักของแต่ละปัจจัย"));
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasComment("ชื่อสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Pre_Reply_Cal_Info>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Reply_Cal_Info");
+
+            entity.HasIndex(e => e.LoanId, "LoanId");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.LoanAmount)
+                .HasPrecision(18, 2)
+                .HasComment("มูลค่าสินเชื่อ");
+            entity.Property(e => e.LoanDuration)
+                .HasComment("ระยะเวลาสินเชื่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.LoanId).HasComment("FK สินเชื่อ");
+            entity.Property(e => e.LoanName).HasMaxLength(255);
+            entity.Property(e => e.Master_Pre_Applicant_LoanId).HasComment("ประเภทผู้ขอสินเชื่อ");
+            entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
+            entity.Property(e => e.Master_Pre_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_Pre_BusinessTypeName).HasMaxLength(255);
+            entity.Property(e => e.PeriodNumberYear)
+                .HasComment("จำนวนงวดชำระต่อปี")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Loan).WithMany(p => p.Pre_Reply_Cal_Infos)
+                .HasForeignKey(d => d.LoanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_reply_cal_info_ibfk_2");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Pre_Reply_Cal_Infos)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_reply_cal_info_ibfk_1");
         });
 
         modelBuilder.Entity<ProcessSale>(entity =>
