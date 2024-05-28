@@ -1,49 +1,229 @@
 ﻿
 <style>
-    .progress-container {
-        width: 100%;
-        border-radius: 25px;
-        overflow: hidden;
-        position: relative;
-    }
+	.progress-container {
+		width: 100%;
+		border-radius: 25px;
+		overflow: hidden;
+		position: relative;
+	}
 
-    .progress-bar {
-        height: 20px;
-        width: 100%; /* Adjust this to change the progress */
-        background-color: #2B446C;
-        text-align: right;
-        line-height: 30px;
-        color: white;
-    }
+	.progress-bar {
+		height: 20px;
+		width: 100%; /* Adjust this to change the progress */
+		background-color: #2B446C;
+		text-align: right;
+		line-height: 30px;
+		color: white;
+	}
 
-    .progress-text {
-        position: absolute;
-        left: 10px;
-        top: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-    }
+	.progress-text {
+		position: absolute;
+		left: 10px;
+		top: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+	}
 
-    .progress-percentage {
-        position: absolute;
-        right: 10px;
-        top: 3px;
-        bottom: 3px;
-        display: flex;
-        align-items: center;
-        color: #000;
-        background-color: #f2f2f2;
-        padding: 3px 10px 3px 10px;
-    }
+	.progress-percentage {
+		position: absolute;
+		right: 10px;
+		top: 3px;
+		bottom: 3px;
+		display: flex;
+		align-items: center;
+		color: #000;
+		padding: 3px 10px 3px 10px;
+	}
+
+		.progress-percentage input {
+			max-width: 100px;
+			text-align: end;
+			cursor: no-drop;
+		}
+
+	.container_weight_factor input {
+		text-align: end;
+	}
+
 </style>
 
-<div class="px-0">
-    <div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
-        <div class="progress-bar"></div>
-        <div class="progress-text">คุณสมบัติตามประเภทผู้ขอ</div>
-        <div class="progress-percentage">20.00 %</div>
-    </div>
+<div class="px-0 container_weight_factor">
+	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+		<div class="progress-bar"></div>
+		<h6 class="progress-text">ข้อมูลการขอสินเชื่อ</h6>
+		<div class="progress-percentage">
+			<input value="0.00" readonly /> <span class="bg-header text-white ms-2"> %</span>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>มูลค่าสินเชื่อ</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+		<div class="progress-bar"></div>
+		<h6 class="progress-text">คุณสมบัติมารตฐาน</h6>
+		<div class="progress-percentage">
+			<input value="0.00" readonly /> <span class="bg-header text-white ms-2"> %</span>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>น้ำหนักของแต่ละปัจจัยหลักประกันต่อมูลค่าหนี้</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>น้ำหนักของแต่ละปัจจัยหนี้สินอื่นๆต่อรายได้</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>ปริมาณเงินฝากกับ ธกส.</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>ประเภทหลักประกัน</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>ประวัติการชำระหนี้</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+		<div class="progress-bar"></div>
+		<h6 class="progress-text">คุณสมบัติตามประเภทผู้ขอ</h6>
+		<div class="progress-percentage">
+			<input value="0.00" readonly /> <span class="bg-header text-white ms-2"> %</span>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>xxxxxx</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+		<div class="progress-bar"></div>
+		<h6 class="progress-text">คุณสมบัติตามประเภทธุรกิจ</h6>
+		<div class="progress-percentage">
+			<input value="0.00" readonly /> <span class="bg-header text-white ms-2"> %</span>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>xxxxxx</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+		<div class="progress-bar"></div>
+		<h6 class="progress-text">น้ำหนักรวม</h6>
+		<div class="progress-percentage">
+			<input value="0.00" readonly /> <span class="bg-header text-white ms-2"> %</span>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-12">
+			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+				<div class="row d-flex align-items-center mb-1">
+					<div class="col-12 col-md-9">
+						<p>xxxxxx</p>
+					</div>
+					<div class="col-11 col-md-1">
+						<input type="text" class="form-control readonly_input form-control-sm" value="0.00">
+					</div>
+					<div class="col-1">
+						<span class="ms-2">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 @code {
