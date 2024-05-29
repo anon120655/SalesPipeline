@@ -3,6 +3,8 @@
 
 <PageTitle>ตัวแปรคำนวณ</PageTitle>
 
+<link href="/css/switch.css" rel="stylesheet" />
+
 @if (_permission.IsView)
 {
 	<div class="container-fluid">
@@ -19,9 +21,12 @@
 						<div class="col-12 border-end">
 							<div class="row my-4 filter_s text-end">
 								<div class="col mb-2">
-									<a href="/setting/pre/calculated/form" class="btn btn-primary text-white mw_6r">
+									@* <a href="/setting/pre/calculated/form" class="btn btn-primary text-white mw_6r">
 										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
-									</a>
+									</a> *@
+									<Button @onclick="(async()=> await OnShow())" Color="ButtonColor.Primary" Class="mw_6r">
+										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+									</Button>
 								</div>
 							</div>
 							<div class="row">
@@ -37,9 +42,24 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr class="text-center align-middle">
+												@* <tr class="text-center align-middle">
 													<td colspan="100">
 														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr> *@
+												<tr>
+													<td class="">Micro</td>
+													<td class="">เกษตรกร</td>
+													<td class="text-center">
+														<a class="text-action" role="button">แก้ไข</a> /
+														<a class="text-action" role="button">ลบ</a> /
+														<a href="/setting/pre/calculated/form" class="text-action" role="button">จัดการ</a>
+													</td>
+													<td class="text-center">
+														<label class="switch">
+															<input type="checkbox" checked="checked" />
+															<span class="slider round"></span>
+														</label>
 													</td>
 												</tr>
 											</tbody>
@@ -53,6 +73,55 @@
 			</div>
 		</div>
 	</div>
+
+	<Modal @ref="modalForm"
+		   Title="ตัวแปรคำนวณ"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModel" OnValidSubmit="Save">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">ประเภทผู้ขอสินเชื่อ</label>
+							<div class="col-7">
+								<select class="form-select" >
+									<option>เลือก</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">ประเภทธุรกิจ</label>
+							<div class="col-7">
+								<select class="form-select">
+									<option>เลือก</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
+	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 }
 else
 {
