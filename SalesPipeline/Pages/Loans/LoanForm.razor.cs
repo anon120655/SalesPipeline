@@ -37,8 +37,7 @@ namespace SalesPipeline.Pages.Loans
 			StateHasChanged();
 			await Task.Delay(1);
 
-
-
+			filter.pagesize = 100;
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)

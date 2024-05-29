@@ -24,4 +24,6 @@ public partial class Master_Pre_BusinessType
     public int UpdateBy { get; set; }
 
     public string? Name { get; set; }
+
+    public virtual ICollection<Pre_Cal_Info> Pre_Cal_Infos { get; set; } = new List<Pre_Cal_Info>();
 }

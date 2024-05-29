@@ -34,6 +34,20 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// </summary>
 		public int? HighScore { get; set; }
 
+		/// <summary>
+		/// ประเภทผู้ขอสินเชื่อ
+		/// </summary>
+		public Guid? Master_Pre_Applicant_LoanId { get; set; }
+
+		public string? Master_Pre_Applicant_LoanName { get; set; }
+
+		/// <summary>
+		/// ประเภทธุรกิจ
+		/// </summary>
+		public Guid? Master_Pre_BusinessTypeId { get; set; }
+
+		public string? Master_Pre_BusinessTypeName { get; set; }
+
 		public virtual List<Pre_Cal_Info_ScoreCustom>? Pre_Cal_Info_Scores { get; set; }
 	}
 }

@@ -1,5 +1,4 @@
-﻿
-@page "/setting/pre/calculated"
+﻿@page "/setting/pre/calculated"
 
 <PageTitle>ตัวแปรคำนวณ</PageTitle>
 
@@ -22,8 +21,8 @@
 							<div class="row my-4 filter_s text-end">
 								<div class="col mb-2">
 									@* <a href="/setting/pre/calculated/form" class="btn btn-primary text-white mw_6r">
-										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
-									</a> *@
+								<i class="fa-solid fa-plus"></i> เพิ่มรายการ
+								</a> *@
 									<Button @onclick="(async()=> await OnShow())" Color="ButtonColor.Primary" Class="mw_6r">
 										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
 									</Button>
@@ -42,26 +41,45 @@
 												</tr>
 											</thead>
 											<tbody>
-												@* <tr class="text-center align-middle">
-													<td colspan="100">
-														<em>ไม่พบข้อมูล</em>
-													</td>
-												</tr> *@
-												<tr>
-													<td class="">Micro</td>
-													<td class="">เกษตรกร</td>
-													<td class="text-center">
-														<a class="text-action" role="button">แก้ไข</a> /
-														<a class="text-action" role="button">ลบ</a> /
-														<a href="/setting/pre/calculated/form" class="text-action" role="button">จัดการ</a>
-													</td>
-													<td class="text-center">
-														<label class="switch">
-															<input type="checkbox" checked="checked" />
-															<span class="slider round"></span>
-														</label>
-													</td>
-												</tr>
+												@if (Items == null)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<i class="fa-solid fa-circle-notch fa-spin text-black-50 fa-xl my-2"></i>
+														</td>
+													</tr>
+												}
+												else if (Items.Count == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													foreach (var item in Items)
+													{
+														bool status = item.Status == StatusModel.Active;
+
+														<tr>
+															<td class="">@item.Master_Pre_Applicant_LoanName</td>
+															<td class="">@item.Master_Pre_BusinessTypeName</td>
+															<td class="text-center">
+																<a class="text-action" role="button" @onclick="(async()=> await OnShow(item.Id))">แก้ไข</a> /
+																<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),$"{item.Master_Pre_Applicant_LoanName},{item.Master_Pre_BusinessTypeName}"))'>ลบ</a> /
+																<a href="/setting/pre/calculated/form" class="text-action" role="button">จัดการ</a>
+															</td>
+															<td class="text-center">
+																<label class="switch">
+																	<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
+																	<span class="slider round"></span>
+																</label>
+															</td>
+														</tr>
+													}
+												}
 											</tbody>
 										</table>
 									</div>
@@ -76,6 +94,7 @@
 
 	<Modal @ref="modalForm"
 		   Title="ตัวแปรคำนวณ"
+		   OnShown="OnModalShown"
 		   IsVerticallyCentered="true"
 		   HeaderCssClass="headermodal_default">
 		<BodyTemplate>
@@ -86,16 +105,28 @@
 						<div class="form-group row mb-3">
 							<label class="col-4 col-form-label text-lg-end">ประเภทผู้ขอสินเชื่อ</label>
 							<div class="col-7">
-								<select class="form-select" >
-									<option>เลือก</option>
+								<select @bind="formModel.Master_Pre_Applicant_LoanId" id="Pre_Applicant_Loan" title="เลือก" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Pre_Applicant_Loan?.Count > 0)
+									{
+										foreach (var item in LookUp.Pre_Applicant_Loan)
+										{
+											<option value="@item.Id">@item.Name</option>
+										}
+									}
 								</select>
 							</div>
 						</div>
 						<div class="form-group row mb-3">
 							<label class="col-4 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 							<div class="col-7">
-								<select class="form-select">
-									<option>เลือก</option>
+								<select @bind="formModel.Master_Pre_BusinessTypeId" id="Pre_BusinessType" title="เลือก" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Pre_BusinessType?.Count > 0)
+									{
+										foreach (var item in LookUp.Pre_BusinessType)
+										{
+											<option value="@item.Id">@item.Name</option>
+										}
+									}
 								</select>
 							</div>
 						</div>

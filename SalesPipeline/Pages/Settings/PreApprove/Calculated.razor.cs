@@ -16,6 +16,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
+		private LookUpResource LookUp = new();
 		private bool isLoading = false;
 		private List<Pre_Cal_InfoCustom>? Items;
 		private Pre_Cal_InfoCustom formModel = new();
@@ -40,8 +41,50 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			}
 		}
 
+		protected async Task SetInitManual()
+		{
+			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+
+			filter.pagesize = 100;
+			if (LookUp.Pre_Applicant_Loan == null || LookUp.Pre_Applicant_Loan?.Count == 0)
+			{
+				var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filter);
+				if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
+				{
+					LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Pre_Applicant_Loan", 100);
+				}
+				else
+				{
+					_errorMessage = dataPre_App_Loan?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+			if (LookUp.Pre_BusinessType == null || LookUp.Pre_BusinessType?.Count == 0)
+			{
+				var dataPre_BusType = await _masterViewModel.GetPre_BusType(filter);
+				if (dataPre_BusType != null && dataPre_BusType.Status)
+				{
+					LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
+					StateHasChanged();
+					await Task.Delay(10);
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Pre_BusinessType", 100);
+				}
+				else
+				{
+					_errorMessage = dataPre_BusType?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+
+		}
+
 		protected async Task SetModel()
 		{
+			Items = new() { new() { Master_Pre_Applicant_LoanName = "Micro", Master_Pre_BusinessTypeName = "เกษตรกร", Status = StatusModel.Active } };
 			//var data = await _masterViewModel.GetPre_App_Loan(filter);
 			//if (data != null && data.Status)
 			//{
@@ -162,6 +205,11 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			id = null;
 			await modalForm.HideAsync();
+		}
+
+		private async Task OnModalShown()
+		{
+			await SetInitManual();
 		}
 
 		private void ShowLoading()

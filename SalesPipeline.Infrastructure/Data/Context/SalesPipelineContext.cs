@@ -1713,11 +1713,19 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Pre_Cal_Info", tb => tb.HasComment("ตัวแปรคำนวณ ข้อมูลการขอสินเชื่อ"));
 
+            entity.HasIndex(e => e.Master_Pre_Applicant_LoanId, "Master_Pre_Applicant_LoanId");
+
+            entity.HasIndex(e => e.Master_Pre_BusinessTypeId, "Master_Pre_BusinessTypeId");
+
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.HighScore)
                 .HasComment("คะแนนสูงสุด")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.Master_Pre_Applicant_LoanId).HasComment("ประเภทผู้ขอสินเชื่อ");
+            entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
+            entity.Property(e => e.Master_Pre_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_Pre_BusinessTypeName).HasMaxLength(255);
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasComment("ชื่อสินเชื่อ");
@@ -1726,6 +1734,14 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Master_Pre_Applicant_Loan).WithMany(p => p.Pre_Cal_Infos)
+                .HasForeignKey(d => d.Master_Pre_Applicant_LoanId)
+                .HasConstraintName("pre_cal_info_ibfk_1");
+
+            entity.HasOne(d => d.Master_Pre_BusinessType).WithMany(p => p.Pre_Cal_Infos)
+                .HasForeignKey(d => d.Master_Pre_BusinessTypeId)
+                .HasConstraintName("pre_cal_info_ibfk_2");
         });
 
         modelBuilder.Entity<Pre_Cal_Info_Score>(entity =>
