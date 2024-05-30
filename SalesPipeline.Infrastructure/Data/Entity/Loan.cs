@@ -45,6 +45,10 @@ public partial class Loan
     /// </summary>
     public decimal? RiskPremiumYear { get; set; }
 
+    public virtual ICollection<Loan_AppLoan> Loan_AppLoans { get; set; } = new List<Loan_AppLoan>();
+
+    public virtual ICollection<Loan_BusType> Loan_BusTypes { get; set; } = new List<Loan_BusType>();
+
     public virtual ICollection<Loan_Period> Loan_Periods { get; set; } = new List<Loan_Period>();
 
     public virtual Master_Pre_Interest_PayType? Master_Pre_Interest_PayType { get; set; }

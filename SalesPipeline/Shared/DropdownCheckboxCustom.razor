@@ -33,9 +33,6 @@
 	private string searchTerm = string.Empty;
 
 	[Parameter]
-	public int periodNo { get; set; }
-
-	[Parameter]
 	public int type { get; set; }
 
 	[Parameter]
@@ -76,7 +73,6 @@
 		{
 			await callbackItemsSelected.InvokeAsync(new()
 				{
-					PeriodNo = periodNo,
 					Type = type,
 					SelectedItems = SelectedItems.ToList()
 				});

@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// <summary>
 		/// ประเภทผู้ขอสินเชื่อ
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Pre_Applicant_LoanId { get; set; }
 
 		public string? Master_Pre_Applicant_LoanName { get; set; }
@@ -44,6 +46,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// <summary>
 		/// ประเภทธุรกิจ
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Pre_BusinessTypeId { get; set; }
 
 		public string? Master_Pre_BusinessTypeName { get; set; }

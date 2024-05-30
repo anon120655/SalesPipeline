@@ -31,8 +31,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			//Loan
 			CreateMap<Entity.Loan, LoanCustom>().ReverseMap();
 			CreateMap<Entity.Loan_Period, Loan_PeriodCustom>().ReverseMap();
-			CreateMap<Entity.Loan_Period_AppLoan, Loan_Period_AppLoanCustom>().ReverseMap();
-			CreateMap<Entity.Loan_Period_BusType, Loan_Period_BusTypeCustom>().ReverseMap();
+			CreateMap<Entity.Loan_AppLoan, Loan_AppLoanCustom>().ReverseMap();
+			CreateMap<Entity.Loan_BusType, Loan_BusTypeCustom>().ReverseMap();
 
 			//Dashboard
 			CreateMap<Entity.Dash_Status_Total, Dash_Status_TotalCustom>().ReverseMap();

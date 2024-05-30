@@ -1033,7 +1033,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							UserId = model.UserId,
 							FullName = users.FullName,
-							IPAddress = model.IPAddress
+							IPAddress = model.IPAddress,
+							DeviceVersion = model.DeviceVersion,
+							SystemVersion = model.SystemVersion,
+							AppVersion = model.AppVersion,
+							tokenNoti = model.tokenNoti
 						};
 						_db.Inster(logLogin);
 						await _db.SaveAsync();

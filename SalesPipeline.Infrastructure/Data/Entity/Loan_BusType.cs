@@ -6,7 +6,7 @@ namespace SalesPipeline.Infrastructure.Data.Entity;
 /// <summary>
 /// ประเภทธุรกิจในระยะที่
 /// </summary>
-public partial class Loan_Period_BusType
+public partial class Loan_BusType
 {
     public Guid Id { get; set; }
 
@@ -17,11 +17,11 @@ public partial class Loan_Period_BusType
 
     public DateTime CreateDate { get; set; }
 
-    public Guid Loan_PeriodId { get; set; }
+    public Guid LoanId { get; set; }
 
     public Guid Master_Pre_BusinessTypeId { get; set; }
 
     public string? Master_Pre_BusinessTypeName { get; set; }
 
-    public virtual Loan_Period Loan_Period { get; set; } = null!;
+    public virtual Loan Loan { get; set; } = null!;
 }

@@ -49,6 +49,10 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// </summary>
 		public decimal? RiskPremiumYear { get; set; }
 
+		public virtual List<Loan_AppLoanCustom>? Loan_AppLoans { get; set; }
+
+		public virtual List<Loan_BusTypeCustom>? Loan_BusTypes { get; set; }
+
 		public virtual List<Loan_PeriodCustom>? Loan_Periods { get; set; }
 	}
 }

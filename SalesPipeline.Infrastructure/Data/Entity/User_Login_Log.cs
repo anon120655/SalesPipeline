@@ -17,7 +17,9 @@ public partial class User_Login_Log
 
     public string? DeviceVersion { get; set; }
 
+    public string? SystemVersion { get; set; }
+
     public string? AppVersion { get; set; }
 
-    public string? ApiAccessKey { get; set; }
+    public string? tokenNoti { get; set; }
 }

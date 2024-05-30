@@ -1,0 +1,192 @@
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Interfaces;
+using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SalesPipeline.Infrastructure.Repositorys
+{
+	public class PreCalInfo : IPreCalInfo
+	{
+		private IRepositoryWrapper _repo;
+		private readonly IMapper _mapper;
+		private readonly IRepositoryBase _db;
+		private readonly AppSettings _appSet;
+
+		public PreCalInfo(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		{
+			_db = db;
+			_repo = repo;
+			_mapper = mapper;
+			_appSet = appSet.Value;
+		}
+
+		public async Task<Pre_Cal_InfoCustom> Create(Pre_Cal_InfoCustom model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				string? master_Pre_Applicant_LoanIdName = null;
+				string? master_Pre_BusinessTypeName = null;
+
+				if (model.Master_Pre_Applicant_LoanId.HasValue)
+				{
+					master_Pre_Applicant_LoanIdName = await _repo.Master_Pre_App_Loan.GetNameById(model.Master_Pre_Applicant_LoanId.Value);
+				}
+				if (model.Master_Pre_BusinessTypeId.HasValue)
+				{
+					master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(model.Master_Pre_BusinessTypeId.Value);
+				}
+
+				DateTime _dateNow = DateTime.Now;
+
+				var pre_Cal_Info = new Data.Entity.Pre_Cal_Info();
+				pre_Cal_Info.Status = StatusModel.Active;
+				pre_Cal_Info.CreateDate = _dateNow;
+				pre_Cal_Info.CreateBy = model.CurrentUserId;
+				pre_Cal_Info.UpdateDate = _dateNow;
+				pre_Cal_Info.UpdateBy = model.CurrentUserId;
+				pre_Cal_Info.Name = model.Name;
+				pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
+				pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
+				pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
+				pre_Cal_Info.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+				await _db.InsterAsync(pre_Cal_Info);
+				await _db.SaveAsync();
+
+				_transaction.Commit();
+
+				return _mapper.Map<Pre_Cal_InfoCustom>(pre_Cal_Info);
+			}
+		}
+
+		public async Task<Pre_Cal_InfoCustom> Update(Pre_Cal_InfoCustom model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				string? master_Pre_Applicant_LoanIdName = null;
+				string? master_Pre_BusinessTypeName = null;
+
+				if (model.Master_Pre_Applicant_LoanId.HasValue)
+				{
+					master_Pre_Applicant_LoanIdName = await _repo.Master_Pre_App_Loan.GetNameById(model.Master_Pre_Applicant_LoanId.Value);
+				}
+				if (model.Master_Pre_BusinessTypeId.HasValue)
+				{
+					master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(model.Master_Pre_BusinessTypeId.Value);
+				}
+
+				DateTime _dateNow = DateTime.Now;
+				var pre_Cal_Info = await _repo.Context.Pre_Cal_Infos.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (pre_Cal_Info != null)
+				{
+					pre_Cal_Info.UpdateDate = _dateNow;
+					pre_Cal_Info.UpdateBy = model.CurrentUserId;
+					pre_Cal_Info.Name = model.Name;
+					pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
+					pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
+					pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
+					pre_Cal_Info.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+					_db.Update(pre_Cal_Info);
+					await _db.SaveAsync();
+
+					//Update Status To Delete All
+					var pre_Cal_Info_Score = _repo.Context.Pre_Cal_Info_Scores.Where(x => x.Pre_Cal_InfoId == pre_Cal_Info.Id).ToList();
+					if (pre_Cal_Info_Score.Count > 0)
+					{
+						_db.DeleteRange(pre_Cal_Info_Score);
+						await _db.SaveAsync();
+					}
+				}
+
+				_transaction.Commit();
+
+				return _mapper.Map<Pre_Cal_InfoCustom>(pre_Cal_Info);
+			}
+		}
+
+		public async Task DeleteById(UpdateModel model)
+		{
+			Guid id = Guid.Parse(model.id);
+			var query = await _repo.Context.Pre_Cal_Infos.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				query.UpdateDate = DateTime.Now;
+				query.UpdateBy = model.userid;
+				query.Status = StatusModel.Delete;
+				_db.Update(query);
+				await _db.SaveAsync();
+			}
+		}
+
+		public async Task UpdateStatusById(UpdateModel model)
+		{
+			if (model != null && Boolean.TryParse(model.value, out bool parsedValue))
+			{
+				var _status = parsedValue ? (short)1 : (short)0;
+				Guid id = Guid.Parse(model.id);
+				var query = await _repo.Context.Pre_Cal_Infos.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				if (query != null)
+				{
+					query.UpdateBy = model.userid;
+					query.Status = _status;
+					_db.Update(query);
+					await _db.SaveAsync();
+				}
+			}
+		}
+
+		public async Task<Pre_Cal_InfoCustom> GetById(Guid id)
+		{
+			var query = await _repo.Context.Pre_Cal_Infos
+										 .Include(x => x.Pre_Cal_Info_Scores)
+										 .OrderByDescending(o => o.CreateDate)
+										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Pre_Cal_InfoCustom>(query);
+		}
+
+		public async Task<string?> GetNameById(Guid id)
+		{
+			var name = await _repo.Context.Loans.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			return name;
+		}
+
+		public async Task<PaginationView<List<Pre_Cal_InfoCustom>>> GetList(allFilter model)
+		{
+			var query = _repo.Context.Pre_Cal_Infos
+									 .Where(x => x.Status != StatusModel.Delete)
+									 .Include(x => x.Pre_Cal_Info_Scores)
+									 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+									 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (!String.IsNullOrEmpty(model.val1))
+			{
+				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Pre_Cal_InfoCustom>>()
+			{
+				Items = _mapper.Map<List<Pre_Cal_InfoCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
+		}
+
+	}
+}

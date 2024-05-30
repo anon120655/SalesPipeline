@@ -46,11 +46,11 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Loan> Loans { get; set; }
 
+    public virtual DbSet<Loan_AppLoan> Loan_AppLoans { get; set; }
+
+    public virtual DbSet<Loan_BusType> Loan_BusTypes { get; set; }
+
     public virtual DbSet<Loan_Period> Loan_Periods { get; set; }
-
-    public virtual DbSet<Loan_Period_AppLoan> Loan_Period_AppLoans { get; set; }
-
-    public virtual DbSet<Loan_Period_BusType> Loan_Period_BusTypes { get; set; }
 
     public virtual DbSet<Logging> Loggings { get; set; }
 
@@ -978,6 +978,46 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("loan_ibfk_1");
         });
 
+        modelBuilder.Entity<Loan_AppLoan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Loan_AppLoan", tb => tb.HasComment("ประเภทผู้ขอในระยะที่"));
+
+            entity.HasIndex(e => e.LoanId, "LoanId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Loan).WithMany(p => p.Loan_AppLoans)
+                .HasForeignKey(d => d.LoanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("loan_apploan_ibfk_1");
+        });
+
+        modelBuilder.Entity<Loan_BusType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Loan_BusType", tb => tb.HasComment("ประเภทธุรกิจในระยะที่"));
+
+            entity.HasIndex(e => e.LoanId, "LoanId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Master_Pre_BusinessTypeName).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Loan).WithMany(p => p.Loan_BusTypes)
+                .HasForeignKey(d => d.LoanId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("loan_bustype_ibfk_1");
+        });
+
         modelBuilder.Entity<Loan_Period>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -1022,46 +1062,6 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_Pre_Interest_RateType).WithMany(p => p.Loan_Periods)
                 .HasForeignKey(d => d.Master_Pre_Interest_RateTypeId)
                 .HasConstraintName("loan_period_ibfk_2");
-        });
-
-        modelBuilder.Entity<Loan_Period_AppLoan>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Loan_Period_AppLoan", tb => tb.HasComment("ประเภทผู้ขอในระยะที่"));
-
-            entity.HasIndex(e => e.Loan_PeriodId, "Loan_PeriodId");
-
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.Loan_Period).WithMany(p => p.Loan_Period_AppLoans)
-                .HasForeignKey(d => d.Loan_PeriodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("loan_period_apploan_ibfk_1");
-        });
-
-        modelBuilder.Entity<Loan_Period_BusType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Loan_Period_BusType", tb => tb.HasComment("ประเภทธุรกิจในระยะที่"));
-
-            entity.HasIndex(e => e.Loan_PeriodId, "Loan_PeriodId");
-
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Master_Pre_BusinessTypeName).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-
-            entity.HasOne(d => d.Loan_Period).WithMany(p => p.Loan_Period_BusTypes)
-                .HasForeignKey(d => d.Loan_PeriodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("loan_period_bustype_ibfk_1");
         });
 
         modelBuilder.Entity<Logging>(entity =>
@@ -3165,7 +3165,6 @@ public partial class SalesPipelineContext : DbContext
             entity.ToTable("User_Login_Log");
 
             entity.Property(e => e.Id).HasColumnType("int(11)");
-            entity.Property(e => e.ApiAccessKey).HasMaxLength(300);
             entity.Property(e => e.AppVersion).HasMaxLength(255);
             entity.Property(e => e.CreateDate)
                 .ValueGeneratedOnAddOrUpdate()
@@ -3174,7 +3173,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DeviceVersion).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.IPAddress).HasMaxLength(255);
+            entity.Property(e => e.SystemVersion).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnType("int(11)");
+            entity.Property(e => e.tokenNoti).HasMaxLength(300);
         });
 
         modelBuilder.Entity<User_Permission>(entity =>

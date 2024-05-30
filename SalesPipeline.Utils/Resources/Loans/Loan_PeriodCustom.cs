@@ -35,7 +35,7 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public string? Master_Pre_Interest_RateTypeName { get; set; }
 
 		/// <summary>
-		/// 1=เพิ่ม 2=ลบ 3=ระบุ
+		/// 1=เพิ่ม 2=ลบ
 		/// </summary>
 		public int? SpecialType { get; set; }
 
@@ -60,10 +60,6 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public string? Condition { get; set; }
 
 		public virtual LoanCustom? Loan { get; set; }
-
-		public virtual List<Loan_Period_AppLoanCustom>? Loan_Period_AppLoans { get; set; }
-
-		public virtual List<Loan_Period_BusTypeCustom>? Loan_Period_BusTypes { get; set; }
 
 		//Custom
 		public decimal? RateValueOriginal { get; set; }

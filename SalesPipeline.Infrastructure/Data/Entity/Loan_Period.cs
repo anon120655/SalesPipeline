@@ -61,9 +61,5 @@ public partial class Loan_Period
 
     public virtual Loan Loan { get; set; } = null!;
 
-    public virtual ICollection<Loan_Period_AppLoan> Loan_Period_AppLoans { get; set; } = new List<Loan_Period_AppLoan>();
-
-    public virtual ICollection<Loan_Period_BusType> Loan_Period_BusTypes { get; set; } = new List<Loan_Period_BusType>();
-
     public virtual Master_Pre_Interest_RateType? Master_Pre_Interest_RateType { get; set; }
 }

@@ -19,8 +19,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 
 		public string? DeviceVersion { get; set; }
 
+		public string? SystemVersion { get; set; }
+
 		public string? AppVersion { get; set; }
 
-		public string? ApiAccessKey { get; set; }
+		public string? tokenNoti { get; set; }
 	}
 }

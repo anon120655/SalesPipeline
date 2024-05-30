@@ -37,8 +37,9 @@ namespace SalesPipeline.API.Controllers
 						UserId = response.Id,
 						IPAddress = model.IPAddress,
 						DeviceVersion = model.DeviceVersion,
+						SystemVersion = model.SystemVersion,
 						AppVersion = model.AppVersion,
-						ApiAccessKey = model.ApiAccessKey
+						tokenNoti = model.tokenNoti
 					});
 				}
 

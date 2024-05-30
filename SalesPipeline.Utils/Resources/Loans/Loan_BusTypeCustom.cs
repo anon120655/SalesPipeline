@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Loans
 {
-	public class Loan_Period_AppLoanCustom
+	public class Loan_BusTypeCustom
 	{
 		public Guid Id { get; set; }
 
@@ -17,11 +17,10 @@ namespace SalesPipeline.Utils.Resources.Loans
 
 		public DateTime CreateDate { get; set; }
 
-		public Guid Loan_PeriodId { get; set; }
+		public Guid LoanId { get; set; }
 
-		public Guid Master_Pre_Applicant_LoanId { get; set; }
+		public Guid Master_Pre_BusinessTypeId { get; set; }
 
-		public string? Master_Pre_Applicant_LoanName { get; set; }
-
+		public string? Master_Pre_BusinessTypeName { get; set; }
 	}
 }

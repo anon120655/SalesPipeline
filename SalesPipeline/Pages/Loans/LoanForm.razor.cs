@@ -5,12 +5,6 @@ using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Components.Web;
-using SalesPipeline.Shared.Modals;
-using SalesPipeline.Utils.Resources.Assignments;
-using NPOI.SS.Formula.Functions;
-using SalesPipeline.Pages.Settings.PreApprove;
 
 namespace SalesPipeline.Pages.Loans
 {
@@ -51,20 +45,19 @@ namespace SalesPipeline.Pages.Loans
 
 				if (!id.HasValue)
 				{
-					await SetLookUpPayType();
+					await SetLookUp();
 				}
 
 				firstRender = false;
 			}
 		}
 
-		protected async Task SetLookUpPayType()
+		protected async Task SetLookUp()
 		{
 			var dataRateType = await _masterViewModel.GetPre_PayType(filter);
 			if (dataRateType != null && dataRateType.Status)
 			{
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Interest_PayType");
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Interest_PayType");
 				LookUp.Pre_Interest_PayType = new() { new() { Name = "เลือก" } };
 				if (dataRateType.Data?.Items != null)
 				{
@@ -73,13 +66,76 @@ namespace SalesPipeline.Pages.Loans
 				StateHasChanged();
 				await Task.Delay(10);
 				await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnInterest_PayType", "#Interest_PayType");
-				//await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Interest_PayType", 100);
 			}
 			else
 			{
 				_errorMessage = dataRateType?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+
+
+			var Applicant_LoanData = new List<Master_Pre_Applicant_LoanCustom>();
+			var BusinessTypeData = new List<Master_Pre_BusinessTypeCustom>();
+
+			var dataApplicant = await _masterViewModel.GetPre_App_Loan(filter);
+			if (dataApplicant != null && dataApplicant.Status)
+			{
+				if (dataApplicant.Data != null)
+				{
+					Applicant_LoanData.AddRange(dataApplicant.Data.Items);
+				}
+			}
+			else
+			{
+				_errorMessage = dataApplicant?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var dataBusType = await _masterViewModel.GetPre_BusType(filter);
+			if (dataBusType != null && dataBusType.Status)
+			{
+				if (dataBusType.Data != null)
+				{
+					BusinessTypeData.AddRange(dataBusType.Data.Items);
+				}
+			}
+			else
+			{
+				_errorMessage = dataBusType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			List<SelectModel>? LoanModel = new();
+			foreach (var item in Applicant_LoanData)
+			{
+				bool isSelected = formModel.Loan_AppLoans?.Any(x => x.Master_Pre_Applicant_LoanId == item.Id) ?? false;
+
+				LoanModel.Add(new()
+				{
+					ID = item.Id.ToString(),
+					Name = item.Name,
+					IsSelected = isSelected
+				});
+			}
+
+			List<SelectModel>? BusTypeModel = new();
+			foreach (var item in BusinessTypeData)
+			{
+				bool isSelected = formModel.Loan_BusTypes?.Any(x => x.Master_Pre_BusinessTypeId == item.Id) ?? false;
+
+				BusTypeModel.Add(new()
+				{
+					ID = item.Id.ToString(),
+					Name = item.Name,
+					IsSelected = isSelected
+				});
+			}
+
+			LookUp.Pre_Applicant_LoanModel = LoanModel;
+			LookUp.Pre_BusinessTypeModel = BusTypeModel;
+
+			StateHasChanged();
+			await Task.Delay(10);
 		}
 
 		protected async Task SetModel()
@@ -93,7 +149,7 @@ namespace SalesPipeline.Pages.Loans
 
 					if (formModel.Master_Pre_Interest_PayTypeId.HasValue)
 					{
-						await SetLookUpPayType();
+						await SetLookUp();
 						await SetLookUpPeriod(formModel.Master_Pre_Interest_PayTypeId.Value);
 						await SetLookUpRateType();
 					}
@@ -245,8 +301,6 @@ namespace SalesPipeline.Pages.Loans
 				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroyClass", "interest_RateTypes");
 
 				var Interest_RateTypeData = new List<Master_Pre_Interest_RateTypeCustom>();
-				var Applicant_LoanData = new List<Master_Pre_Applicant_LoanCustom>();
-				var BusinessTypeData = new List<Master_Pre_BusinessTypeCustom>();
 
 				var dataRateType = await _masterViewModel.GetPre_RateType(filter);
 				if (dataRateType != null && dataRateType.Status)
@@ -262,37 +316,10 @@ namespace SalesPipeline.Pages.Loans
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 
-				var dataApplicant = await _masterViewModel.GetPre_App_Loan(filter);
-				if (dataApplicant != null && dataApplicant.Status)
-				{
-					if (dataApplicant.Data != null)
-					{
-						Applicant_LoanData.AddRange(dataApplicant.Data.Items);
-					}
-				}
-				else
-				{
-					_errorMessage = dataApplicant?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-
-				var dataBusType = await _masterViewModel.GetPre_BusType(filter);
-				if (dataBusType != null && dataBusType.Status)
-				{
-					if (dataBusType.Data != null)
-					{
-						BusinessTypeData.AddRange(dataBusType.Data.Items);
-					}
-				}
-				else
-				{
-					_errorMessage = dataBusType?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-
+				List<Master_Pre_Interest_RateTypeCustom>? rateType = new();
 				foreach (var period in formModel.Loan_Periods)
 				{
-					List<Master_Pre_Interest_RateTypeCustom>? rateType = new() { new() { OptionValue = $"{period.PeriodNo}@{0}", Code = "เลือก" } };
+					rateType = new() { new() { OptionValue = $"{period.PeriodNo}@{0}", Code = "เลือก" } };
 					foreach (var item in Interest_RateTypeData)
 					{
 						rateType.Add(new()
@@ -304,38 +331,9 @@ namespace SalesPipeline.Pages.Loans
 						});
 					}
 
-					List<SelectModel>? LoanModel = new();
-					foreach (var item in Applicant_LoanData)
-					{
-						bool isSelected = period.Loan_Period_AppLoans?.Any(x=>x.Master_Pre_Applicant_LoanId == item.Id) ?? false;
-
-						LoanModel.Add(new()
-						{
-							ID = item.Id.ToString(),
-							Name = item.Name,
-							IsSelected = isSelected
-						});
-					}
-
-					List<SelectModel>? BusTypeModel = new();
-					foreach (var item in BusinessTypeData)
-					{
-						bool isSelected = period.Loan_Period_BusTypes?.Any(x => x.Master_Pre_BusinessTypeId == item.Id) ?? false;
-
-						BusTypeModel.Add(new()
-						{
-							ID = item.Id.ToString(),
-							Name = item.Name,
-							IsSelected = isSelected
-						});
-					}
-
-
 					LookUps.Add(new LookUpResource()
 					{
-						Pre_Interest_RateType = rateType,
-						Pre_Applicant_LoanModel = LoanModel,
-						Pre_BusinessTypeModel = BusTypeModel,
+						Pre_Interest_RateType = rateType
 					});
 				}
 				StateHasChanged();
@@ -453,37 +451,33 @@ namespace SalesPipeline.Pages.Loans
 		{
 			if (model != null && formModel.Loan_Periods != null)
 			{
-				var period = formModel.Loan_Periods.FirstOrDefault(x => x.PeriodNo == model.PeriodNo);
-				if (period != null)
+				if (model.Type == 1)
 				{
-					if (model.Type == 1)
+					formModel.Loan_AppLoans = new();
+					foreach (var item in model.SelectedItems)
 					{
-						period.Loan_Period_AppLoans = new();
-						foreach (var item in model.SelectedItems)
+						if (Guid.TryParse(item.ID, out Guid _Id))
 						{
-							if (Guid.TryParse(item.ID,out Guid _Id))
+							formModel.Loan_AppLoans.Add(new()
 							{
-								period.Loan_Period_AppLoans.Add(new()
-								{
-									Master_Pre_Applicant_LoanId = _Id,
-									Master_Pre_Applicant_LoanName = item.Name
-								});
-							}
+								Master_Pre_Applicant_LoanId = _Id,
+								Master_Pre_Applicant_LoanName = item.Name
+							});
 						}
 					}
-					else if (model.Type == 2)
+				}
+				else if (model.Type == 2)
+				{
+					formModel.Loan_BusTypes = new();
+					foreach (var item in model.SelectedItems)
 					{
-						period.Loan_Period_BusTypes = new();
-						foreach (var item in model.SelectedItems)
+						if (Guid.TryParse(item.ID, out Guid _Id))
 						{
-							if (Guid.TryParse(item.ID, out Guid _Id))
+							formModel.Loan_BusTypes.Add(new()
 							{
-								period.Loan_Period_BusTypes.Add(new()
-								{
-									Master_Pre_BusinessTypeId = _Id,
-									Master_Pre_BusinessTypeName = item.Name
-								});
-							}
+								Master_Pre_BusinessTypeId = _Id,
+								Master_Pre_BusinessTypeName = item.Name
+							});
 						}
 					}
 				}

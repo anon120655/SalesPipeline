@@ -46,73 +46,66 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
 			filter.pagesize = 100;
-			if (LookUp.Pre_Applicant_Loan == null || LookUp.Pre_Applicant_Loan?.Count == 0)
+			var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filter);
+			if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
 			{
-				var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filter);
-				if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
-				{
-					LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
-					StateHasChanged();
-					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Pre_Applicant_Loan", 100);
-				}
-				else
-				{
-					_errorMessage = dataPre_App_Loan?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
+				LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
+				StateHasChanged();
+				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_Applicant_Loan");
+			}
+			else
+			{
+				_errorMessage = dataPre_App_Loan?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			if (LookUp.Pre_BusinessType == null || LookUp.Pre_BusinessType?.Count == 0)
+			var dataPre_BusType = await _masterViewModel.GetPre_BusType(filter);
+			if (dataPre_BusType != null && dataPre_BusType.Status)
 			{
-				var dataPre_BusType = await _masterViewModel.GetPre_BusType(filter);
-				if (dataPre_BusType != null && dataPre_BusType.Status)
-				{
-					LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
-					StateHasChanged();
-					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Pre_BusinessType", 100);
-				}
-				else
-				{
-					_errorMessage = dataPre_BusType?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
+				LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
+				StateHasChanged();
+				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_BusinessType");
 			}
-
+			else
+			{
+				_errorMessage = dataPre_BusType?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetModel()
 		{
-			Items = new() { new() { Master_Pre_Applicant_LoanName = "Micro", Master_Pre_BusinessTypeName = "เกษตรกร", Status = StatusModel.Active } };
-			//var data = await _masterViewModel.GetPre_App_Loan(filter);
-			//if (data != null && data.Status)
-			//{
-			//	Items = data.Data?.Items;
-			//}
-			//else
-			//{
-			//	_errorMessage = data?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
+			//Items = new() { new() { Master_Pre_Applicant_LoanName = "Micro", Master_Pre_BusinessTypeName = "เกษตรกร", Status = StatusModel.Active } };
+			var data = await _preCalInfoViewModel.GetList(filter);
+			if (data != null && data.Status)
+			{
+				Items = data.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		protected async Task SetModelById(Guid id)
 		{
-			//var data = await _masterViewModel.GetPre_App_LoanById(id);
-			//if (data != null && data.Status)
-			//{
-			//	if (data.Data != null)
-			//	{
-			//		formModel = data.Data;
-			//	}
-			//}
-			//else
-			//{
-			//	_errorMessage = data?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
-			StateHasChanged();
+			var data = await _preCalInfoViewModel.GetById(id);
+			if (data != null && data.Status)
+			{
+				if (data.Data != null)
+				{
+					formModel = data.Data;
+					StateHasChanged();
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 		}
 
 		private async Task Save()
@@ -124,28 +117,28 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			//if (id.HasValue && id != Guid.Empty)
-			//{
-			//	response = await _masterViewModel.UpdatePre_App_Loan(formModel);
-			//}
-			//else
-			//{
-			//	response = await _masterViewModel.CreatePre_App_Loan(formModel);
-			//}
+			if (id.HasValue && id != Guid.Empty)
+			{
+				response = await _preCalInfoViewModel.Update(formModel);
+			}
+			else
+			{
+				response = await _preCalInfoViewModel.Create(formModel);
+			}
 
-			//if (response.Status)
-			//{
-			//	await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-			//	HideLoading();
-			//	await OnHide();
-			//	await SetModel();
-			//}
-			//else
-			//{
-			//	HideLoading();
-			//	_errorMessage = response.errorMessage;
-			//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			//}
+			if (response.Status)
+			{
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+				HideLoading();
+				await OnHide();
+				await SetModel();
+			}
+			else
+			{
+				HideLoading();
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
 		}
 
 		protected async Task ConfirmDelete(string? id, string? txt)
@@ -157,7 +150,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			await modalConfirm.OnHideConfirm();
 
-			var data = await _masterViewModel.DeletePre_App_LoanById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			var data = await _preCalInfoViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
 			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 			{
 				_errorMessage = data?.errorMessage;
@@ -170,7 +163,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
 			{
-				var data = await _masterViewModel.UpdateStatusPre_App_LoanById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+				var data = await _preCalInfoViewModel.UpdateStatusById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
 				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 				{
 					_errorMessage = data?.errorMessage;
@@ -223,8 +216,6 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			isLoading = false;
 			StateHasChanged();
 		}
-
-
 
 	}
 }

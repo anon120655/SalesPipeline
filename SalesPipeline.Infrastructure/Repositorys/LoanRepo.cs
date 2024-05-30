@@ -58,6 +58,50 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.InsterAsync(loan);
 				await _db.SaveAsync();
 
+				if (model.Loan_AppLoans?.Count > 0)
+				{
+					foreach (var appLoan in model.Loan_AppLoans)
+					{
+						string? master_Pre_Applicant_LoanName = null;
+
+						if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
+						{
+							master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(appLoan.Master_Pre_Applicant_LoanId);
+						}
+
+						var loan_AppLoan = new Data.Entity.Loan_AppLoan();
+						loan_AppLoan.Status = StatusModel.Active;
+						loan_AppLoan.CreateDate = _dateNow;
+						loan_AppLoan.LoanId = loan.Id;
+						loan_AppLoan.Master_Pre_Applicant_LoanId = appLoan.Master_Pre_Applicant_LoanId;
+						loan_AppLoan.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
+						await _db.InsterAsync(loan_AppLoan);
+						await _db.SaveAsync();
+					}
+				}
+
+				if (model.Loan_BusTypes?.Count > 0)
+				{
+					foreach (var busType in model.Loan_BusTypes)
+					{
+						string? master_Pre_BusinessTypeName = null;
+
+						if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
+						{
+							master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(busType.Master_Pre_BusinessTypeId);
+						}
+
+						var loan_BusType = new Data.Entity.Loan_BusType();
+						loan_BusType.Status = StatusModel.Active;
+						loan_BusType.CreateDate = _dateNow;
+						loan_BusType.LoanId = loan.Id;
+						loan_BusType.Master_Pre_BusinessTypeId = busType.Master_Pre_BusinessTypeId;
+						loan_BusType.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+						await _db.InsterAsync(loan_BusType);
+						await _db.SaveAsync();
+					}
+				}
+
 				if (model.Loan_Periods?.Count > 0)
 				{
 					foreach (var period in model.Loan_Periods)
@@ -83,50 +127,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						loan_Period.Condition = period.Condition;
 						await _db.InsterAsync(loan_Period);
 						await _db.SaveAsync();
-
-						if (period.Loan_Period_AppLoans?.Count > 0)
-						{
-							foreach (var appLoan in period.Loan_Period_AppLoans)
-							{
-								string? master_Pre_Applicant_LoanName = null;
-
-								if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
-								{
-									master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(appLoan.Master_Pre_Applicant_LoanId);
-								}
-
-								var loan_Period_AppLoan = new Data.Entity.Loan_Period_AppLoan();
-								loan_Period_AppLoan.Status = StatusModel.Active;
-								loan_Period_AppLoan.CreateDate = _dateNow;
-								loan_Period_AppLoan.Loan_PeriodId = loan_Period.Id;
-								loan_Period_AppLoan.Master_Pre_Applicant_LoanId = appLoan.Master_Pre_Applicant_LoanId;
-								loan_Period_AppLoan.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
-								await _db.InsterAsync(loan_Period_AppLoan);
-								await _db.SaveAsync();
-							}
-						}
-
-						if (period.Loan_Period_BusTypes?.Count > 0)
-						{
-							foreach (var busType in period.Loan_Period_BusTypes)
-							{
-								string? master_Pre_BusinessTypeName = null;
-
-								if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
-								{
-									master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(busType.Master_Pre_BusinessTypeId);
-								}
-
-								var loan_Period_BusType = new Data.Entity.Loan_Period_BusType();
-								loan_Period_BusType.Status = StatusModel.Active;
-								loan_Period_BusType.CreateDate = _dateNow;
-								loan_Period_BusType.Loan_PeriodId = loan_Period.Id;
-								loan_Period_BusType.Master_Pre_BusinessTypeId = busType.Master_Pre_BusinessTypeId;
-								loan_Period_BusType.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
-								await _db.InsterAsync(loan_Period_BusType);
-								await _db.SaveAsync();
-							}
-						}
 					}
 				}
 
@@ -162,35 +162,67 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
+					var loan_AppLoanR = _repo.Context.Loan_AppLoans.Where(x => x.LoanId == model.Id).ToList();
+					if (loan_AppLoanR.Count > 0)
+					{
+						_db.DeleteRange(loan_AppLoanR);
+						await _db.SaveAsync();
+					}
+					var loan_BusTypeR = _repo.Context.Loan_BusTypes.Where(x => x.LoanId == model.Id).ToList();
+					if (loan_BusTypeR.Count > 0)
+					{
+						_db.DeleteRange(loan_BusTypeR);
+						await _db.SaveAsync();
+					}
 					var loan_PeriodR = _repo.Context.Loan_Periods.Where(x => x.LoanId == model.Id).ToList();
 					if (loan_PeriodR.Count > 0)
 					{
-						foreach (var period in loan_PeriodR)
-						{
-							var loan_Period_AppLoansR = _repo.Context.Loan_Period_AppLoans.Where(x => x.Loan_PeriodId == period.Id).ToList();
-							if (loan_Period_AppLoansR.Count > 0)
-							{
-								//foreach (var appLoan in loan_Period_AppLoansR)
-								//{
-								//	appLoan.Status = StatusModel.Delete;
-								//}
-								_db.DeleteRange(loan_Period_AppLoansR);
-								await _db.SaveAsync();
-							}
-							var loan_Period_BusTypesR = _repo.Context.Loan_Period_BusTypes.Where(x => x.Loan_PeriodId == period.Id).ToList();
-							if (loan_Period_BusTypesR.Count > 0)
-							{
-								//foreach (var sharehold_item in loan_Period_BusTypesR)
-								//{
-								//	sharehold_item.Status = StatusModel.Delete;
-								//}
-								_db.DeleteRange(loan_Period_BusTypesR);
-								await _db.SaveAsync();
-							}
-							//period.Status = StatusModel.Delete;
-						}
 						_db.DeleteRange(loan_PeriodR);
 						await _db.SaveAsync();
+					}
+
+					if (model.Loan_AppLoans?.Count > 0)
+					{
+						foreach (var appLoan in model.Loan_AppLoans)
+						{
+							string? master_Pre_Applicant_LoanName = null;
+
+							if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
+							{
+								master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(appLoan.Master_Pre_Applicant_LoanId);
+							}
+
+							var loan_AppLoan = new Data.Entity.Loan_AppLoan();
+							loan_AppLoan.Status = StatusModel.Active;
+							loan_AppLoan.CreateDate = _dateNow;
+							loan_AppLoan.LoanId = loan.Id;
+							loan_AppLoan.Master_Pre_Applicant_LoanId = appLoan.Master_Pre_Applicant_LoanId;
+							loan_AppLoan.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
+							await _db.InsterAsync(loan_AppLoan);
+							await _db.SaveAsync();
+						}
+					}
+
+					if (model.Loan_BusTypes?.Count > 0)
+					{
+						foreach (var busType in model.Loan_BusTypes)
+						{
+							string? master_Pre_BusinessTypeName = null;
+
+							if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
+							{
+								master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(busType.Master_Pre_BusinessTypeId);
+							}
+
+							var loan_BusType = new Data.Entity.Loan_BusType();
+							loan_BusType.Status = StatusModel.Active;
+							loan_BusType.CreateDate = _dateNow;
+							loan_BusType.LoanId = loan.Id;
+							loan_BusType.Master_Pre_BusinessTypeId = busType.Master_Pre_BusinessTypeId;
+							loan_BusType.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+							await _db.InsterAsync(loan_BusType);
+							await _db.SaveAsync();
+						}
 					}
 
 					if (model.Loan_Periods?.Count > 0)
@@ -218,50 +250,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.Condition = period.Condition;
 							await _db.InsterAsync(loan_Period);
 							await _db.SaveAsync();
-
-							if (period.Loan_Period_AppLoans?.Count > 0)
-							{
-								foreach (var appLoan in period.Loan_Period_AppLoans)
-								{
-									string? master_Pre_Applicant_LoanName = null;
-
-									if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
-									{
-										master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(appLoan.Master_Pre_Applicant_LoanId);
-									}
-
-									var loan_Period_AppLoan = new Data.Entity.Loan_Period_AppLoan();
-									loan_Period_AppLoan.Status = StatusModel.Active;
-									loan_Period_AppLoan.CreateDate = _dateNow;
-									loan_Period_AppLoan.Loan_PeriodId = loan_Period.Id;
-									loan_Period_AppLoan.Master_Pre_Applicant_LoanId = appLoan.Master_Pre_Applicant_LoanId;
-									loan_Period_AppLoan.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
-									await _db.InsterAsync(loan_Period_AppLoan);
-									await _db.SaveAsync();
-								}
-							}
-
-							if (period.Loan_Period_BusTypes?.Count > 0)
-							{
-								foreach (var busType in period.Loan_Period_BusTypes)
-								{
-									string? master_Pre_BusinessTypeName = null;
-
-									if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
-									{
-										master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(busType.Master_Pre_BusinessTypeId);
-									}
-
-									var loan_Period_BusType = new Data.Entity.Loan_Period_BusType();
-									loan_Period_BusType.Status = StatusModel.Active;
-									loan_Period_BusType.CreateDate = _dateNow;
-									loan_Period_BusType.Loan_PeriodId = loan_Period.Id;
-									loan_Period_BusType.Master_Pre_BusinessTypeId = busType.Master_Pre_BusinessTypeId;
-									loan_Period_BusType.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
-									await _db.InsterAsync(loan_Period_BusType);
-									await _db.SaveAsync();
-								}
-							}
 						}
 					}
 
@@ -307,8 +295,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<LoanCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Loans
-										 .Include(x => x.Loan_Periods).ThenInclude(t => t.Loan_Period_AppLoans)
-										 .Include(x => x.Loan_Periods).ThenInclude(t => t.Loan_Period_BusTypes)
+										 .Include(x => x.Loan_AppLoans)
+										 .Include(x => x.Loan_BusTypes)
+										 .Include(x => x.Loan_Periods.OrderBy(o => o.PeriodNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
@@ -325,8 +314,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Loans
 									 .Where(x => x.Status != StatusModel.Delete)
-									 .Include(x => x.Loan_Periods).ThenInclude(t => t.Loan_Period_AppLoans)
-									 .Include(x => x.Loan_Periods).ThenInclude(t => t.Loan_Period_BusTypes)
+									 .Include(x => x.Loan_AppLoans)
+									 .Include(x => x.Loan_BusTypes)
+									 .Include(x => x.Loan_Periods)
 									 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 									 .AsQueryable();
 			if (model.status.HasValue)

@@ -53,6 +53,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IAssignmentRM AssignmentRM { get; }
 		public IReturnRepo Return { get; }
 		public ILoanRepo Loan { get; }
+		public IPreCalInfo PreCalInfo { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -101,6 +102,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			AssignmentRM = new AssignmentRM(this, _db, settings, _mapper);
 			Return = new ReturnRepo(this, _db, settings, _mapper);
 			Loan = new LoanRepo(this, _db, settings, _mapper);
+			PreCalInfo = new PreCalInfo(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

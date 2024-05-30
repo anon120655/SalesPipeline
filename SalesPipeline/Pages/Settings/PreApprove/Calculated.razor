@@ -69,7 +69,7 @@
 															<td class="text-center">
 																<a class="text-action" role="button" @onclick="(async()=> await OnShow(item.Id))">แก้ไข</a> /
 																<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),$"{item.Master_Pre_Applicant_LoanName},{item.Master_Pre_BusinessTypeName}"))'>ลบ</a> /
-																<a href="/setting/pre/calculated/form" class="text-action" role="button">จัดการ</a>
+																<a href="/setting/pre/calculated/form/@item.Id" class="text-action" role="button">จัดการ</a>
 															</td>
 															<td class="text-center">
 																<label class="switch">
@@ -106,6 +106,7 @@
 							<label class="col-4 col-form-label text-lg-end">ประเภทผู้ขอสินเชื่อ</label>
 							<div class="col-7">
 								<select @bind="formModel.Master_Pre_Applicant_LoanId" id="Pre_Applicant_Loan" title="เลือก" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+									<option>เลือก</option>
 									@if (LookUp.Pre_Applicant_Loan?.Count > 0)
 									{
 										foreach (var item in LookUp.Pre_Applicant_Loan)
@@ -114,12 +115,14 @@
 										}
 									}
 								</select>
+								<ValidationMessage For="@(() => formModel.Master_Pre_Applicant_LoanId)" />
 							</div>
 						</div>
 						<div class="form-group row mb-3">
 							<label class="col-4 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 							<div class="col-7">
 								<select @bind="formModel.Master_Pre_BusinessTypeId" id="Pre_BusinessType" title="เลือก" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+									<option>เลือก</option>
 									@if (LookUp.Pre_BusinessType?.Count > 0)
 									{
 										foreach (var item in LookUp.Pre_BusinessType)
@@ -128,6 +131,7 @@
 										}
 									}
 								</select>
+								<ValidationMessage For="@(() => formModel.Master_Pre_BusinessTypeId)" />
 							</div>
 						</div>
 					</div>

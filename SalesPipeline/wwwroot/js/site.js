@@ -87,6 +87,11 @@ window.BootSelectDestroyClass = (elm_class) => {
 	$(`.${elm_class}`).selectpicker('destroy');
 }
 
+window.BootDestroyAndNewSelectId = (elm_id) => {
+	$(`#${elm_id}`).selectpicker('destroy');
+	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');
+}
+
 window.BootSelectEmptyID = (elm_id) => {
 	$(`#${elm_id}`).selectpicker('destroy');
 	$(`#${elm_id}`).selectpicker('setStyle', 'btn_white');

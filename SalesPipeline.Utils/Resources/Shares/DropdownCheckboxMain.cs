@@ -8,7 +8,6 @@ namespace SalesPipeline.Utils.Resources.Shares
 {
 	public class DropdownCheckboxMain
 	{
-        public int PeriodNo { get; set; }
         public int Type { get; set; }
 		public List<SelectModel> SelectedItems { get; set; } = null!;
     }
