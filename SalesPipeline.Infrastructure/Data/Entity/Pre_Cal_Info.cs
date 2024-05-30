@@ -17,39 +17,14 @@ public partial class Pre_Cal_Info
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public DateTime UpdateDate { get; set; }
-
-    public int UpdateBy { get; set; }
-
-    /// <summary>
-    /// ชื่อสินเชื่อ
-    /// </summary>
-    public string? Name { get; set; }
+    public Guid Pre_CalId { get; set; }
 
     /// <summary>
     /// คะแนนสูงสุด
     /// </summary>
     public int? HighScore { get; set; }
 
-    /// <summary>
-    /// ประเภทผู้ขอสินเชื่อ
-    /// </summary>
-    public Guid? Master_Pre_Applicant_LoanId { get; set; }
-
-    public string? Master_Pre_Applicant_LoanName { get; set; }
-
-    /// <summary>
-    /// ประเภทธุรกิจ
-    /// </summary>
-    public Guid? Master_Pre_BusinessTypeId { get; set; }
-
-    public string? Master_Pre_BusinessTypeName { get; set; }
-
-    public virtual Master_Pre_Applicant_Loan? Master_Pre_Applicant_Loan { get; set; }
-
-    public virtual Master_Pre_BusinessType? Master_Pre_BusinessType { get; set; }
+    public virtual Pre_Cal Pre_Cal { get; set; } = null!;
 
     public virtual ICollection<Pre_Cal_Info_Score> Pre_Cal_Info_Scores { get; set; } = new List<Pre_Cal_Info_Score>();
 }

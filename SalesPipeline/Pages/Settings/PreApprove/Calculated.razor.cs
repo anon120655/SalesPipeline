@@ -18,8 +18,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private bool isLoading = false;
-		private List<Pre_Cal_InfoCustom>? Items;
-		private Pre_Cal_InfoCustom formModel = new();
+		private List<Pre_CalCustom>? Items;
+		private Pre_CalCustom formModel = new();
 
 		Modal modalForm = default!;
 		ModalConfirm modalConfirm = default!;
@@ -77,8 +77,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModel()
 		{
-			//Items = new() { new() { Master_Pre_Applicant_LoanName = "Micro", Master_Pre_BusinessTypeName = "เกษตรกร", Status = StatusModel.Active } };
-			var data = await _preCalInfoViewModel.GetList(filter);
+			var data = await _preCalViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -92,7 +91,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModelById(Guid id)
 		{
-			var data = await _preCalInfoViewModel.GetById(id);
+			var data = await _preCalViewModel.GetById(id);
 			if (data != null && data.Status)
 			{
 				if (data.Data != null)
@@ -113,18 +112,17 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Pre_Cal_InfoCustom> response;
+			ResultModel<Pre_CalCustom> response;
 
-			formModel.CheckPage = 1;
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue && id != Guid.Empty)
 			{
-				response = await _preCalInfoViewModel.Update(formModel);
+				response = await _preCalViewModel.Update(formModel);
 			}
 			else
 			{
-				response = await _preCalInfoViewModel.Create(formModel);
+				response = await _preCalViewModel.Create(formModel);
 			}
 
 			if (response.Status)
@@ -151,7 +149,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			await modalConfirm.OnHideConfirm();
 
-			var data = await _preCalInfoViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			var data = await _preCalViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
 			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 			{
 				_errorMessage = data?.errorMessage;
@@ -164,7 +162,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
 			{
-				var data = await _preCalInfoViewModel.UpdateStatusById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+				var data = await _preCalViewModel.UpdateStatusById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
 				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
 				{
 					_errorMessage = data?.errorMessage;

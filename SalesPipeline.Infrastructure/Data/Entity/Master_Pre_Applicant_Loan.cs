@@ -25,5 +25,5 @@ public partial class Master_Pre_Applicant_Loan
 
     public string? Name { get; set; }
 
-    public virtual ICollection<Pre_Cal_Info> Pre_Cal_Infos { get; set; } = new List<Pre_Cal_Info>();
+    public virtual ICollection<Pre_Cal> Pre_Cals { get; set; } = new List<Pre_Cal>();
 }

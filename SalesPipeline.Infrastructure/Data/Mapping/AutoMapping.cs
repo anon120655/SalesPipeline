@@ -22,6 +22,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 		public AutoMapping()
 		{
 			//PreApprove
+			CreateMap<Entity.Pre_Cal, Pre_CalCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Info, Pre_Cal_InfoCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Info_Score, Pre_Cal_Info_ScoreCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Fetu_Stan, Pre_Cal_Fetu_StanCustom>().ReverseMap();

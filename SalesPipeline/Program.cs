@@ -58,6 +58,7 @@ builder.Services.AddScoped<DashboardViewModel>();
 builder.Services.AddScoped<ExportViewModel>();
 builder.Services.AddScoped<MailViewModel>();
 builder.Services.AddScoped<LoanViewModel>();
+builder.Services.AddScoped<PreCalViewModel>();
 builder.Services.AddScoped<PreCalInfoViewModel>();
 
 //StateProvider

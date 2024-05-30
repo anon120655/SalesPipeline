@@ -66,42 +66,6 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<bool>?> DeleteById(UpdateModel model)
-		{
-			try
-			{
-				await _httpClient.DeleteAsync($"/v1/PreCalInfo/DeleteById?{model.SetParameter(true)}");
-				return new ResultModel<bool>();
-			}
-			catch (Exception ex)
-			{
-				return new ResultModel<bool>
-				{
-					Status = false,
-					errorMessage = GeneralUtils.GetExMessage(ex)
-				};
-			}
-		}
-
-		public async Task<ResultModel<bool>?> UpdateStatusById(UpdateModel model)
-		{
-			try
-			{
-				string tokenJwt = await _authorizeViewModel.GetAccessToken();
-				string dataJson = JsonConvert.SerializeObject(model);
-				await _httpClient.PutAsync($"/v1/PreCalInfo/UpdateStatusById", dataJson, token: tokenJwt);
-				return new ResultModel<bool>();
-			}
-			catch (Exception ex)
-			{
-				return new ResultModel<bool>
-				{
-					Status = false,
-					errorMessage = GeneralUtils.GetExMessage(ex)
-				};
-			}
-		}
-
 		public async Task<ResultModel<Pre_Cal_InfoCustom>?> GetById(Guid id)
 		{
 			try
@@ -116,28 +80,6 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<Pre_Cal_InfoCustom>
-				{
-					Status = false,
-					errorMessage = GeneralUtils.GetExMessage(ex)
-				};
-			}
-		}
-
-		public async Task<ResultModel<PaginationView<List<Pre_Cal_InfoCustom>>>> GetList(allFilter model)
-		{
-			try
-			{
-				var content = await _httpClient.GetAsync($"/v1/PreCalInfo/GetList?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Pre_Cal_InfoCustom>>>(content);
-
-				return new ResultModel<PaginationView<List<Pre_Cal_InfoCustom>>>()
-				{
-					Data = dataMap
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResultModel<PaginationView<List<Pre_Cal_InfoCustom>>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

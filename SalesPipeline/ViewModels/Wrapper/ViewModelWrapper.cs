@@ -33,7 +33,7 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected DashboardViewModel _dashboarViewModel { get; set; } = default!;
 		[Inject] protected ExportViewModel _exportViewModel { get; set; } = default!;
 		[Inject] protected LoanViewModel _loanViewModel { get; set; } = default!;
+		[Inject] protected PreCalViewModel _preCalViewModel { get; set; } = default!;
 		[Inject] protected PreCalInfoViewModel _preCalInfoViewModel { get; set; } = default!;
-		//[Inject] protected MailViewModel _mailViewModel { get; set; } = default!;
 	}
 }

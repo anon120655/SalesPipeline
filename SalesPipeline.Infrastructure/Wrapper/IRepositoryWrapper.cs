@@ -49,6 +49,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IAssignmentRM AssignmentRM { get; }
 		IReturnRepo Return { get; }
 		ILoanRepo Loan { get; }
+		IPreCal PreCal { get; }
 		IPreCalInfo PreCalInfo { get; }
 
 		IProcessSales ProcessSale { get; }

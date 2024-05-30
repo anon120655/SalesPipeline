@@ -33,36 +33,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Pre_Cal_InfoCustom> Validate(Pre_Cal_InfoCustom model)
 		{
-			var pre_Cal_Info = await _repo.Context.Pre_Cal_Infos
-				.Where(x => x.Status == StatusModel.Active && x.Id != model.Id
-				&& x.Master_Pre_Applicant_LoanId == model.Master_Pre_Applicant_LoanId
-				&& x.Master_Pre_BusinessTypeId == model.Master_Pre_BusinessTypeId).FirstOrDefaultAsync();
-			if (pre_Cal_Info != null)
+			await Task.Delay(1);
+
+			if (!model.HighScore.HasValue || model.HighScore == 0)
 			{
-				throw new ExceptionCustom("ประเภทผู้ขอสินเชื่อและประเภทธุรกิจ มีในระบบแล้ว!");
+				throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
 			}
 
-
-			if (model.CheckPage != 1)
+			if (model.Pre_Cal_Info_Scores == null || model.Pre_Cal_Info_Scores.Count == 0)
 			{
-				if (!model.HighScore.HasValue || model.HighScore == 0)
-				{
-					throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
-				}
+				throw new ExceptionCustom("ระบุ จำนวนและคะแนน");
+			}
 
-				if (model.Pre_Cal_Info_Scores == null || model.Pre_Cal_Info_Scores.Count == 0)
+			foreach (var item in model.Pre_Cal_Info_Scores)
+			{
+				if (!item.Quantity.HasValue || !item.Score.HasValue)
 				{
-					throw new ExceptionCustom("ระบุ จำนวนและคะแนน");
+					throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
 				}
-
-				foreach (var item in model.Pre_Cal_Info_Scores)
+				if (item.Score > model.HighScore)
 				{
-					if (!item.Quantity.HasValue || !item.Score.HasValue)
-					{
-						throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
-					}
+					throw new ExceptionCustom("คะแนนต้องไม่มากว่าคะแนนสูงสุด");
 				}
-
 			}
 
 			return model;
@@ -74,34 +66,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				string? master_Pre_Applicant_LoanIdName = null;
-				string? master_Pre_BusinessTypeName = null;
-
-				if (model.Master_Pre_Applicant_LoanId.HasValue)
-				{
-					master_Pre_Applicant_LoanIdName = await _repo.Master_Pre_App_Loan.GetNameById(model.Master_Pre_Applicant_LoanId.Value);
-				}
-				if (model.Master_Pre_BusinessTypeId.HasValue)
-				{
-					master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(model.Master_Pre_BusinessTypeId.Value);
-				}
-
 				DateTime _dateNow = DateTime.Now;
 
 				var pre_Cal_Info = new Data.Entity.Pre_Cal_Info();
 				pre_Cal_Info.Status = StatusModel.Active;
 				pre_Cal_Info.CreateDate = _dateNow;
-				pre_Cal_Info.CreateBy = model.CurrentUserId;
-				pre_Cal_Info.UpdateDate = _dateNow;
-				pre_Cal_Info.UpdateBy = model.CurrentUserId;
-				pre_Cal_Info.Name = $"{master_Pre_Applicant_LoanIdName},{master_Pre_BusinessTypeName}";
+				pre_Cal_Info.Pre_CalId = model.Pre_CalId;
 				pre_Cal_Info.HighScore = model.HighScore;
-				pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
-				pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
-				pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
-				pre_Cal_Info.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
 				await _db.InsterAsync(pre_Cal_Info);
 				await _db.SaveAsync();
+
+				if (model.Pre_Cal_Info_Scores?.Count > 0)
+				{
+					foreach (var score in model.Pre_Cal_Info_Scores)
+					{
+						var pre_Cal_Info_Score = new Data.Entity.Pre_Cal_Info_Score();
+						pre_Cal_Info_Score.Status = StatusModel.Active;
+						pre_Cal_Info_Score.CreateDate = _dateNow;
+						pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
+						pre_Cal_Info_Score.Quantity = score.Quantity;
+						pre_Cal_Info_Score.Score = score.Score;
+						await _db.InsterAsync(pre_Cal_Info_Score);
+						await _db.SaveAsync();
+					}
+				}
 
 				_transaction.Commit();
 
@@ -115,30 +103,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				string? master_Pre_Applicant_LoanIdName = null;
-				string? master_Pre_BusinessTypeName = null;
-
-				if (model.Master_Pre_Applicant_LoanId.HasValue)
-				{
-					master_Pre_Applicant_LoanIdName = await _repo.Master_Pre_App_Loan.GetNameById(model.Master_Pre_Applicant_LoanId.Value);
-				}
-				if (model.Master_Pre_BusinessTypeId.HasValue)
-				{
-					master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(model.Master_Pre_BusinessTypeId.Value);
-				}
-
 				DateTime _dateNow = DateTime.Now;
 				var pre_Cal_Info = await _repo.Context.Pre_Cal_Infos.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
 				if (pre_Cal_Info != null)
 				{
-					pre_Cal_Info.UpdateDate = _dateNow;
-					pre_Cal_Info.UpdateBy = model.CurrentUserId;
-					pre_Cal_Info.Name = $"{master_Pre_Applicant_LoanIdName},{master_Pre_BusinessTypeName}";
 					pre_Cal_Info.HighScore = model.HighScore;
-					pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
-					pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
-					pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
-					pre_Cal_Info.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
 					_db.Update(pre_Cal_Info);
 					await _db.SaveAsync();
 
@@ -173,79 +142,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task DeleteById(UpdateModel model)
-		{
-			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Pre_Cal_Infos.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
-			if (query != null)
-			{
-				query.UpdateDate = DateTime.Now;
-				query.UpdateBy = model.userid;
-				query.Status = StatusModel.Delete;
-				_db.Update(query);
-				await _db.SaveAsync();
-			}
-		}
-
-		public async Task UpdateStatusById(UpdateModel model)
-		{
-			if (model != null && Boolean.TryParse(model.value, out bool parsedValue))
-			{
-				var _status = parsedValue ? (short)1 : (short)0;
-				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Pre_Cal_Infos.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
-				if (query != null)
-				{
-					query.UpdateBy = model.userid;
-					query.Status = _status;
-					_db.Update(query);
-					await _db.SaveAsync();
-				}
-			}
-		}
-
 		public async Task<Pre_Cal_InfoCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Pre_Cal_Infos
 										 .Include(x => x.Pre_Cal_Info_Scores)
 										 .OrderByDescending(o => o.CreateDate)
-										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == id);
 
 			return _mapper.Map<Pre_Cal_InfoCustom>(query);
-		}
-
-		public async Task<string?> GetNameById(Guid id)
-		{
-			var name = await _repo.Context.Loans.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
-			return name;
-		}
-
-		public async Task<PaginationView<List<Pre_Cal_InfoCustom>>> GetList(allFilter model)
-		{
-			var query = _repo.Context.Pre_Cal_Infos
-									 .Where(x => x.Status != StatusModel.Delete)
-									 .Include(x => x.Pre_Cal_Info_Scores)
-									 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
-									 .AsQueryable();
-			if (model.status.HasValue)
-			{
-				query = query.Where(x => x.Status == model.status);
-			}
-
-			if (!String.IsNullOrEmpty(model.val1))
-			{
-				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
-			}
-
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
-
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
-
-			return new PaginationView<List<Pre_Cal_InfoCustom>>()
-			{
-				Items = _mapper.Map<List<Pre_Cal_InfoCustom>>(await items.ToListAsync()),
-				Pager = pager
-			};
 		}
 
 	}

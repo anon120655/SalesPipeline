@@ -17,16 +17,12 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public DateTime CreateDate { get; set; }
 
-		public int CreateBy { get; set; }
-
-		public DateTime UpdateDate { get; set; }
-
-		public int UpdateBy { get; set; }
+		public Guid Pre_CalId { get; set; }
 
 		/// <summary>
-		/// ชื่อสินเชื่อ
+		/// คะแนนสูงสุด
 		/// </summary>
-		public string? Name { get; set; }
+		public int? HighScore { get; set; }
 
 		public virtual List<Pre_Cal_Fetu_Stan_DropDownCustom>? Pre_Cal_Fetu_Stan_DropDowns { get; set; }
 

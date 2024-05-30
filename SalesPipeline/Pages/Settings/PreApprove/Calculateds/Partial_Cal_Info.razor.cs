@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -10,7 +9,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 	public partial class Partial_Cal_Info
 	{
 		[Parameter]
-		public Guid id { get; set; }
+		public Guid pre_CalId { get; set; }
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
@@ -32,7 +31,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		}
 		protected async Task SetModel()
 		{
-			var data = await _preCalInfoViewModel.GetById(id);
+			var data = await _preCalInfoViewModel.GetById(pre_CalId);
 			if (data != null && data.Status)
 			{
 				if (data.Data != null)
@@ -40,11 +39,6 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 					formModel = data.Data;
 					StateHasChanged();
 				}
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
 			if (formModel.Pre_Cal_Info_Scores == null || formModel.Pre_Cal_Info_Scores.Count == 0)
@@ -57,9 +51,20 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		private async Task Seve()
 		{
+			ResultModel<Pre_Cal_InfoCustom> response;
+
+			formModel.Pre_CalId = pre_CalId;
 			formModel.CurrentUserId = UserInfo.Id;
 
-			var response = await _preCalInfoViewModel.Update(formModel);
+			if (formModel.Id == Guid.Empty)
+			{
+				response = await _preCalInfoViewModel.Create(formModel);
+			}
+			else
+			{
+				response = await _preCalInfoViewModel.Update(formModel);
+			}
+
 			if (response.Status)
 			{
 				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");

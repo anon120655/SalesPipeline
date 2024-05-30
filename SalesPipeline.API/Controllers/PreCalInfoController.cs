@@ -55,34 +55,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpDelete("DeleteById")]
-		public async Task<IActionResult> DeleteById([FromQuery] UpdateModel model)
-		{
-			try
-			{
-				await _repo.PreCalInfo.DeleteById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpPut("UpdateStatusById")]
-		public async Task<IActionResult> UpdateStatusById(UpdateModel model)
-		{
-			try
-			{
-				await _repo.PreCalInfo.UpdateStatusById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
@@ -90,21 +62,6 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.PreCalInfo.GetById(id);
 				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetList")]
-		public async Task<IActionResult> GetList([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.PreCalInfo.GetList(model);
-
-				return Ok(response);
 			}
 			catch (Exception ex)
 			{
