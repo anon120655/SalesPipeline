@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -30,8 +31,47 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+		public async Task<Pre_Cal_InfoCustom> Validate(Pre_Cal_InfoCustom model)
+		{
+			var pre_Cal_Info = await _repo.Context.Pre_Cal_Infos
+				.Where(x => x.Status == StatusModel.Active && x.Id != model.Id
+				&& x.Master_Pre_Applicant_LoanId == model.Master_Pre_Applicant_LoanId
+				&& x.Master_Pre_BusinessTypeId == model.Master_Pre_BusinessTypeId).FirstOrDefaultAsync();
+			if (pre_Cal_Info != null)
+			{
+				throw new ExceptionCustom("ประเภทผู้ขอสินเชื่อและประเภทธุรกิจ มีในระบบแล้ว!");
+			}
+
+
+			if (model.CheckPage != 1)
+			{
+				if (!model.HighScore.HasValue || model.HighScore == 0)
+				{
+					throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
+				}
+
+				if (model.Pre_Cal_Info_Scores == null || model.Pre_Cal_Info_Scores.Count == 0)
+				{
+					throw new ExceptionCustom("ระบุ จำนวนและคะแนน");
+				}
+
+				foreach (var item in model.Pre_Cal_Info_Scores)
+				{
+					if (!item.Quantity.HasValue || !item.Score.HasValue)
+					{
+						throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
+					}
+				}
+
+			}
+
+			return model;
+		}
+
 		public async Task<Pre_Cal_InfoCustom> Create(Pre_Cal_InfoCustom model)
 		{
+			await Validate(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				string? master_Pre_Applicant_LoanIdName = null;
@@ -54,7 +94,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Cal_Info.CreateBy = model.CurrentUserId;
 				pre_Cal_Info.UpdateDate = _dateNow;
 				pre_Cal_Info.UpdateBy = model.CurrentUserId;
-				pre_Cal_Info.Name = model.Name;
+				pre_Cal_Info.Name = $"{master_Pre_Applicant_LoanIdName},{master_Pre_BusinessTypeName}";
+				pre_Cal_Info.HighScore = model.HighScore;
 				pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
 				pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
 				pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
@@ -70,6 +111,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Pre_Cal_InfoCustom> Update(Pre_Cal_InfoCustom model)
 		{
+			await Validate(model);
+
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				string? master_Pre_Applicant_LoanIdName = null;
@@ -90,7 +133,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					pre_Cal_Info.UpdateDate = _dateNow;
 					pre_Cal_Info.UpdateBy = model.CurrentUserId;
-					pre_Cal_Info.Name = model.Name;
+					pre_Cal_Info.Name = $"{master_Pre_Applicant_LoanIdName},{master_Pre_BusinessTypeName}";
+					pre_Cal_Info.HighScore = model.HighScore;
 					pre_Cal_Info.Master_Pre_Applicant_LoanId = model.Master_Pre_Applicant_LoanId;
 					pre_Cal_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
 					pre_Cal_Info.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
@@ -99,12 +143,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var pre_Cal_Info_Score = _repo.Context.Pre_Cal_Info_Scores.Where(x => x.Pre_Cal_InfoId == pre_Cal_Info.Id).ToList();
-					if (pre_Cal_Info_Score.Count > 0)
+					var pre_Cal_Info_ScoreR = _repo.Context.Pre_Cal_Info_Scores.Where(x => x.Pre_Cal_InfoId == pre_Cal_Info.Id).ToList();
+					if (pre_Cal_Info_ScoreR.Count > 0)
 					{
-						_db.DeleteRange(pre_Cal_Info_Score);
+						_db.DeleteRange(pre_Cal_Info_ScoreR);
 						await _db.SaveAsync();
 					}
+
+					if (model.Pre_Cal_Info_Scores?.Count > 0)
+					{
+						foreach (var score in model.Pre_Cal_Info_Scores)
+						{
+							var pre_Cal_Info_Score = new Data.Entity.Pre_Cal_Info_Score();
+							pre_Cal_Info_Score.Status = StatusModel.Active;
+							pre_Cal_Info_Score.CreateDate = _dateNow;
+							pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
+							pre_Cal_Info_Score.Quantity = score.Quantity;
+							pre_Cal_Info_Score.Score = score.Score;
+							await _db.InsterAsync(pre_Cal_Info_Score);
+							await _db.SaveAsync();
+						}
+					}
+
 				}
 
 				_transaction.Commit();

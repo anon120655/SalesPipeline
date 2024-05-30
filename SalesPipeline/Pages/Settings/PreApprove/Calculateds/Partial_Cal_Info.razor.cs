@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
@@ -11,32 +12,39 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		[Parameter]
 		public Guid id { get; set; }
 
+		string? _errorMessage = null;
 		private bool isLoading = false;
 		private Pre_Cal_InfoCustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
-			await SetModel();
+			await Task.Delay(1);
 		}
 
+		protected async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if (firstRender)
+			{
+				await SetModel();
+				StateHasChanged();
+				firstRender = false;
+			}
+		}
 		protected async Task SetModel()
 		{
-			if (id != Guid.Empty)
+			var data = await _preCalInfoViewModel.GetById(id);
+			if (data != null && data.Status)
 			{
-				//var data = await _customerViewModel.GetById(id);
-				//if (data != null && data.Status && data.Data != null)
-				//{
-				//	formModel = data.Data;
-				//	if (formModel.Sales != null)
-				//	{
-				//		formModel.Branch_RegionId = formModel.Sales.Select(x => x.Master_Branch_RegionId).FirstOrDefault();
-				//	}
-				//}
-				//else
-				//{
-				//	_errorMessage = data?.errorMessage;
-				//	_utilsViewModel.AlertWarning(_errorMessage);
-				//}
+				if (data.Data != null)
+				{
+					formModel = data.Data;
+					StateHasChanged();
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
 			if (formModel.Pre_Cal_Info_Scores == null || formModel.Pre_Cal_Info_Scores.Count == 0)
@@ -49,8 +57,19 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		private async Task Seve()
 		{
-			await Task.Delay(300);
-			await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+			formModel.CurrentUserId = UserInfo.Id;
+
+			var response = await _preCalInfoViewModel.Update(formModel);
+			if (response.Status)
+			{
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+				await SetModel();
+			}
+			else
+			{
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
 		}
 
 		private void Cancel()

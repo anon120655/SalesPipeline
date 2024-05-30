@@ -52,5 +52,12 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		public string? Master_Pre_BusinessTypeName { get; set; }
 
 		public virtual List<Pre_Cal_Info_ScoreCustom>? Pre_Cal_Info_Scores { get; set; }
-	}
+
+        //Custom
+		/// <summary>
+		/// 1=บันทึก modal หน้ารายการ
+		/// </summary>
+        public int? CheckPage { get; set; }
+
+    }
 }

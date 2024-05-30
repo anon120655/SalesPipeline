@@ -115,6 +115,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 			ResultModel<Pre_Cal_InfoCustom> response;
 
+			formModel.CheckPage = 1;
 			formModel.CurrentUserId = UserInfo.Id;
 
 			if (id.HasValue && id != Guid.Empty)

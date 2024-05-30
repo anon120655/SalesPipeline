@@ -8,7 +8,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 	public partial class CalculatedForm
 	{
 		[Parameter]
-		public Guid? id { get; set; }
+		public Guid id { get; set; }
 
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
