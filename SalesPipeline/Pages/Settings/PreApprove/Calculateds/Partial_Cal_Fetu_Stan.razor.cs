@@ -13,6 +13,20 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		private bool isLoading = false;
 		private Pre_Cal_Fetu_StanCustom formModel = new();
 
+		protected override async Task OnInitializedAsync()
+		{
+			await Task.Delay(1);
+		}
+
+		protected async override Task OnAfterRenderAsync(bool firstRender)
+		{
+			if (firstRender)
+			{
+				StateHasChanged();
+				firstRender = false;
+			}
+		}
+
 		private async Task Seve()
 		{
 			await Task.Delay(300);

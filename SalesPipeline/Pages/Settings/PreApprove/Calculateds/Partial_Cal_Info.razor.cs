@@ -29,6 +29,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				firstRender = false;
 			}
 		}
+
 		protected async Task SetModel()
 		{
 			var data = await _preCalInfoViewModel.GetById(pre_CalId);
