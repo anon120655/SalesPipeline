@@ -17,14 +17,14 @@
 					<div class="row mt-3 mh_40r">
 						<div class="col-12 tabs_elm">
 							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
-								<Tab Title="ข้อมูลการขอสินเชื่อ" IsActive="true">
+								<Tab Title="ข้อมูลการขอสินเชื่อ" OnClick="ShowTabInfo" IsActive="true">
 									<Content>
-										<Partial_Cal_Info pre_CalId="id" />
+										<Partial_Cal_Info pre_CalId="id" IsShowTab="IsShowTabInfo" />
 									</Content>
 								</Tab>
-								<Tab Title="คุณสมบัติมารตฐาน">
+								<Tab Title="คุณสมบัติมารตฐาน" OnClick="ShowTabStan">
 									<Content>
-										<Partial_Cal_Fetu_Stan pre_CalId="id" />
+										<Partial_Cal_Fetu_Stan pre_CalId="id" IsShowTab="IsShowTabStan" />
 									</Content>
 								</Tab>
 								<Tab Title="คุณสมบัติตามประเภทผู้ขอ">

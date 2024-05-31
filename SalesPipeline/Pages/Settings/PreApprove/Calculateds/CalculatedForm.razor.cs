@@ -14,8 +14,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private Pre_CalCustom formModel = new();
-		private Pre_Cal_InfoCustom formModelInfo = new();
-		private Pre_Cal_Fetu_StanCustom formModelStan = new();
+		private bool IsShowTabInfo = false;
+		private bool IsShowTabStan = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -35,22 +35,22 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		}
 
-		protected async Task ShowTabInfo()
+		protected void TabAllClosed()
 		{
-			//var data = await _preCalInfoViewModel.GetById(pre_CalId);
-			//if (data != null && data.Status)
-			//{
-			//	if (data.Data != null)
-			//	{
-			//		formModel = data.Data;
-			//		StateHasChanged();
-			//	}
-			//}
+			IsShowTabInfo = false;
+			IsShowTabStan = false;
+		}
 
-			//if (formModelInfo.Pre_Cal_Info_Scores == null || formModelInfo.Pre_Cal_Info_Scores.Count == 0)
-			//{
-			//	formModelInfo.Pre_Cal_Info_Scores = new() { new() { Id = Guid.NewGuid() } };
-			//}
+		protected void ShowTabInfo()
+		{
+			TabAllClosed();
+			IsShowTabInfo = true;
+		}
+
+		protected void ShowTabStan()
+		{
+			TabAllClosed();
+			IsShowTabStan = true;
 		}
 
 
