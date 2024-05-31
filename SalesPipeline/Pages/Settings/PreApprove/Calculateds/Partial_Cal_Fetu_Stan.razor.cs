@@ -29,7 +29,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 			{
 				if (IsShowTab)
 				{
-					
+					await SetModel();
 				}
 				_internalIsShowTab = IsShowTab;
 			}
@@ -46,6 +46,26 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				StateHasChanged();
 				firstRender = false;
 			}
+		}
+
+		protected async Task SetModel()
+		{
+			//var data = await _preCalInfoViewModel.GetById(pre_CalId);
+			//if (data != null && data.Status)
+			//{
+			//	if (data.Data != null)
+			//	{
+			//		formModel = data.Data;
+			//		StateHasChanged();
+			//	}
+			//}
+
+			//if (formModel.Pre_Cal_Info_Scores == null || formModel.Pre_Cal_Info_Scores.Count == 0)
+			//{
+			//	formModel.Pre_Cal_Info_Scores = new() { new() { Id = Guid.NewGuid() } };
+			//}
+
+			await Task.Delay(1);
 		}
 
 		private async Task Seve()
