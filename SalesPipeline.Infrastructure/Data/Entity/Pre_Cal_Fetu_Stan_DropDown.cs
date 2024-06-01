@@ -24,7 +24,7 @@ public partial class Pre_Cal_Fetu_Stan_DropDown
     /// <summary>
     /// ลำดับ
     /// </summary>
-    public int? SequenceNo { get; set; }
+    public int SequenceNo { get; set; }
 
     public string? Name { get; set; }
 

@@ -164,7 +164,7 @@
 							<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
 								@if (stan_DropDowns.Count > 1)
 								{
-									<Button @onclick="async () => await RemoveDropDown(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+									<Button @onclick="async () => await RemoveDropDown(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 										<i class="fa-regular fa-trash-can"></i>
 									</Button>
 								}
@@ -240,7 +240,7 @@
 							<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
 								@if (stan_DropDowns.Count > 1)
 								{
-									<Button @onclick="async () => await RemoveDropDown(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+									<Button @onclick="async () => await RemoveDropDown(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 										<i class="fa-regular fa-trash-can"></i>
 									</Button>
 								}
@@ -303,7 +303,7 @@
 										<div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
 												</Button>
 											}
@@ -354,7 +354,7 @@
 										<div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
 												</Button>
 											}
@@ -405,7 +405,7 @@
 										<div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
 												</Button>
 											}
@@ -456,7 +456,7 @@
 										<div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
 												</Button>
 											}
@@ -496,7 +496,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Quantity" type="text" class="form-control form-control-sm" disabled>
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -504,7 +504,7 @@
 										<div class="col-3 col-lg-1 mb-1">
 											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
 										</div>
-										<div class="col-5 col-lg-3 mb-1">
+										@* <div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
 												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
@@ -517,7 +517,7 @@
 													<i class="fa-solid fa-circle-plus"></i>
 												</Button>
 											}
-										</div>
+										</div> *@
 									</div>
 									index++;
 								}
@@ -558,7 +558,7 @@
 										<div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
 												</Button>
 											}
@@ -606,7 +606,7 @@
 										<div class="col-3 col-lg-1 mb-1">
 											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
 										</div>
-										<div class="col-5 col-lg-3 mb-1">
+										@* <div class="col-5 col-lg-3 mb-1">
 											@if (stan_Score.Count > 1)
 											{
 												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
@@ -619,7 +619,7 @@
 													<i class="fa-solid fa-circle-plus"></i>
 												</Button>
 											}
-										</div>
+										</div> *@
 									</div>
 									index++;
 								}

@@ -1727,16 +1727,19 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Quantity)
-                .HasComment("จำนวน")
-                .HasColumnType("int(11)");
+                .HasMaxLength(255)
+                .HasComment("จำนวน");
             entity.Property(e => e.Score)
                 .HasPrecision(18, 2)
                 .HasComment("คะแนน");
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Type)
-                .HasComment("1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้")
+                .HasComment("1=น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย\r\n2=น้ำหนักของแต่ละปัจจัยหลักประกันมูลค่าหนี้\r\n3=น้ำหนักของแต่ละปัจจัยหนี้สินต่อรายได้อื่นๆ\r\n4=ปริมาณเงินฝาก\r\n5=ประเภทหลักประกัน\r\n6=มูลค่าสินเชื่อ\r\n7=ประวัติการชำระหนี้")
                 .HasColumnType("int(11)");
 
             entity.HasOne(d => d.Pre_Cal_Fetu_Stan).WithMany(p => p.Pre_Cal_Fetu_Stan_Scores)

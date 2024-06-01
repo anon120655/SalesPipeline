@@ -19,15 +19,28 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public Guid Pre_Cal_Fetu_StanId { get; set; }
 
-		/// <summary>
-		/// 1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้
-		/// </summary>
-		public int Type { get; set; }
+        /// <summary>
+        /// 1=น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย
+        /// 2=น้ำหนักของแต่ละปัจจัยหลักประกันมูลค่าหนี้
+        /// 3=น้ำหนักของแต่ละปัจจัยหนี้สินต่อรายได้อื่นๆ
+        /// 4=ปริมาณเงินฝาก
+        /// 5=ประเภทหลักประกัน
+        /// 6=มูลค่าสินเชื่อ
+        /// 7=ประวัติการชำระหนี้
+        /// </summary>
+        public int Type { get; set; }
 
-		/// <summary>
-		/// จำนวน
-		/// </summary>
-		public int? Quantity { get; set; }
+        public Guid Pre_Cal_Fetu_StanDropDownId { get; set; }
+
+        /// <summary>
+        /// ลำดับ
+        /// </summary>
+        public int SequenceNo { get; set; }
+
+        /// <summary>
+        /// จำนวน
+        /// </summary>
+        public string? Quantity { get; set; }
 
 		/// <summary>
 		/// คะแนน

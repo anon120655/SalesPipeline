@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using NPOI.Util;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.PreApprove;
@@ -59,21 +60,18 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				}
 			}
 
-			if (formModel.Pre_Cal_Fetu_Stan_DropDowns == null || formModel.Pre_Cal_Fetu_Stan_DropDowns.Count == 0)
+			if (formModel.Id == Guid.Empty)
 			{
 				await InsertDropDown(PreStanDropDownType.CollateralType);
 				await InsertDropDown(PreStanDropDownType.PaymentHistory);
-			}
 
-			if (formModel.Pre_Cal_Fetu_Stan_Scores == null || formModel.Pre_Cal_Fetu_Stan_Scores.Count == 0)
-			{
 				await InsertScore(PreStanScoreType.WeightIncomeExpenses);
 				await InsertScore(PreStanScoreType.WeighCollateraltDebtValue);
 				await InsertScore(PreStanScoreType.WeighLiabilitieOtherIncome);
 				await InsertScore(PreStanScoreType.CashBank);
-				await InsertScore(PreStanScoreType.CollateralType);
+				//await InsertScore(PreStanScoreType.CollateralType);
 				await InsertScore(PreStanScoreType.LoanValue);
-				await InsertScore(PreStanScoreType.PaymentHistory);
+				//await InsertScore(PreStanScoreType.PaymentHistory);
 			}
 
 			await Task.Delay(1);
@@ -94,43 +92,123 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			if (formModel.Pre_Cal_Fetu_Stan_DropDowns == null) formModel.Pre_Cal_Fetu_Stan_DropDowns = new();
 
+			var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).Max(p => (int?)p.SequenceNo) ?? 0) + 1;
+
+			var pre_Cal_Fetu_StanDropDownId = Guid.NewGuid();
 			formModel.Pre_Cal_Fetu_Stan_DropDowns.Add(new()
 			{
-				Id = Guid.NewGuid(),
+				Id = pre_Cal_Fetu_StanDropDownId,
 				Status = StatusModel.Active,
-				Type = type
+				Type = type,
+				SequenceNo = sequenceNo
 			});
+
+			CopyItemDropDown(type);
 
 			await Task.Delay(1);
 			StateHasChanged();
 		}
 
-		protected async Task RemoveDropDown(Guid ID, int type)
+		protected async Task RemoveDropDown(Guid ID)
 		{
 			var itemToRemove = formModel.Pre_Cal_Fetu_Stan_DropDowns?.FirstOrDefault(r => r.Id == ID);
 			if (itemToRemove != null)
+			{
 				formModel.Pre_Cal_Fetu_Stan_DropDowns?.Remove(itemToRemove);
+			}
+
+			var itemScoreToRemove = formModel.Pre_Cal_Fetu_Stan_Scores?.FirstOrDefault(r => r.Pre_Cal_Fetu_StanDropDownId == ID);
+			if (itemScoreToRemove != null)
+			{
+				formModel.Pre_Cal_Fetu_Stan_Scores?.Remove(itemScoreToRemove);
+			}
+
+			await CalSequenceDropDown();
 
 			await Task.Delay(1);
 			StateHasChanged();
+		}
+
+		protected async Task CalSequenceDropDown()
+		{
+			if (formModel.Pre_Cal_Fetu_Stan_DropDowns != null)
+			{
+				var stan_DropDown = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.CollateralType).OrderBy(x => x.SequenceNo);
+				int index = 1;
+				foreach (var item in stan_DropDown)
+				{
+					item.SequenceNo = index;
+					index++;
+				}
+
+				var stan_DropDownPay = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.PaymentHistory).OrderBy(x => x.SequenceNo);
+				int index2 = 1;
+				foreach (var item in stan_DropDownPay)
+				{
+					item.SequenceNo = index2;
+					index2++;
+				}
+			}
+
+			await Task.Delay(1);
+			StateHasChanged();
+		}
+
+		private void CopyItemDropDown(int type)
+		{
+			if (formModel.Pre_Cal_Fetu_Stan_Scores == null) formModel.Pre_Cal_Fetu_Stan_Scores = new();
+
+			var _typeScore = type == PreStanDropDownType.CollateralType ? PreStanScoreType.CollateralType : PreStanScoreType.PaymentHistory;
+
+			var Stan_Scores = formModel.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Type == _typeScore).ToList();
+			if (Stan_Scores != null)
+			{
+				foreach (var itemR in Stan_Scores)
+				{
+					formModel.Pre_Cal_Fetu_Stan_Scores.Remove(itemR);
+				}
+			}
+
+			if (formModel.Pre_Cal_Fetu_Stan_DropDowns != null && formModel.Pre_Cal_Fetu_Stan_DropDowns.Count > 0)
+			{
+				var itemCopy = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).ToList();
+				foreach (var item in itemCopy)
+				{
+					formModel.Pre_Cal_Fetu_Stan_Scores.Add(new()
+					{
+						Id = Guid.NewGuid(),
+						Status = StatusModel.Active,
+						Pre_Cal_Fetu_StanDropDownId = item.Id,
+						Type = _typeScore,
+						SequenceNo = item.SequenceNo,
+						Quantity = item.Name
+					});
+				}
+			}
 		}
 
 		protected async Task InsertScore(int type)
 		{
 			if (formModel.Pre_Cal_Fetu_Stan_Scores == null) formModel.Pre_Cal_Fetu_Stan_Scores = new();
 
+			var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_Scores.Max(p => (int?)p.SequenceNo) ?? 0) + 1;
+
+			//if (type != PreStanDropDownType.CollateralType && type != PreStanDropDownType.PaymentHistory)
+			//{
 			formModel.Pre_Cal_Fetu_Stan_Scores.Add(new()
 			{
 				Id = Guid.NewGuid(),
 				Status = StatusModel.Active,
-				Type = type
+				Type = type,
+				SequenceNo = sequenceNo
 			});
+			//}
 
 			await Task.Delay(1);
 			StateHasChanged();
 		}
 
-		protected async Task RemoveScore(Guid ID, int type)
+		protected async Task RemoveScore(Guid ID)
 		{
 			var itemToRemove = formModel.Pre_Cal_Fetu_Stan_Scores?.FirstOrDefault(r => r.Id == ID);
 			if (itemToRemove != null)

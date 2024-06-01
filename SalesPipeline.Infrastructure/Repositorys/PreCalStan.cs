@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SalesPipeline.Infrastructure.Data.Entity;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -44,7 +45,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			foreach (var item in model.Pre_Cal_Fetu_Stan_Scores)
 			{
-				if (!item.Quantity.HasValue || !item.Score.HasValue)
+				if (string.IsNullOrEmpty(item.Quantity) || !item.Score.HasValue)
 				{
 					throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
 				}
@@ -75,15 +76,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
 				{
-					foreach (var score in model.Pre_Cal_Fetu_Stan_DropDowns)
+					foreach (var dropdown in model.Pre_Cal_Fetu_Stan_DropDowns)
 					{
 						var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
+						pre_Cal_Fetu_Stan_DropDown.Id = dropdown.Id;
 						pre_Cal_Fetu_Stan_DropDown.Status = StatusModel.Active;
 						pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
 						pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
-						pre_Cal_Fetu_Stan_DropDown.Type = score.Type;
-						pre_Cal_Fetu_Stan_DropDown.SequenceNo = score.SequenceNo;
-						pre_Cal_Fetu_Stan_DropDown.Name = score.Name;
+						pre_Cal_Fetu_Stan_DropDown.Type = dropdown.Type;
+						pre_Cal_Fetu_Stan_DropDown.SequenceNo = dropdown.SequenceNo;
+						pre_Cal_Fetu_Stan_DropDown.Name = dropdown.Name;
 						await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
 						await _db.SaveAsync();
 					}
@@ -94,11 +96,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
 					{
 						var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
+						pre_Cal_Fetu_Stan_Score.Id = score.Id;
 						pre_Cal_Fetu_Stan_Score.Status = StatusModel.Active;
 						pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
 						pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
 						pre_Cal_Fetu_Stan_Score.Type = score.Type;
-						pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
+                        pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
+                        pre_Cal_Fetu_Stan_Score.SequenceNo = score.SequenceNo;
+                        pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
 						pre_Cal_Fetu_Stan_Score.Score = score.Score;
 						await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
 						await _db.SaveAsync();
@@ -141,40 +146,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 
-					if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
-					{
-						foreach (var score in model.Pre_Cal_Fetu_Stan_DropDowns)
-						{
-							var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
-							pre_Cal_Fetu_Stan_DropDown.Status = StatusModel.Active;
-							pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
-							pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
-							pre_Cal_Fetu_Stan_DropDown.Type = score.Type;
-							pre_Cal_Fetu_Stan_DropDown.SequenceNo = score.SequenceNo;
-							pre_Cal_Fetu_Stan_DropDown.Name = score.Name;
-							await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
-							await _db.SaveAsync();
-						}
-					}
+                    if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
+                    {
+                        foreach (var dropdown in model.Pre_Cal_Fetu_Stan_DropDowns)
+                        {
+                            var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
+                            pre_Cal_Fetu_Stan_DropDown.Status = StatusModel.Active;
+                            pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
+                            pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
+                            pre_Cal_Fetu_Stan_DropDown.Type = dropdown.Type;
+                            pre_Cal_Fetu_Stan_DropDown.SequenceNo = dropdown.SequenceNo;
+                            pre_Cal_Fetu_Stan_DropDown.Name = dropdown.Name;
+                            await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
+                            await _db.SaveAsync();
+                        }
+                    }
 
-					if (model.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
-					{
-						foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
-						{
-							var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
-							pre_Cal_Fetu_Stan_Score.Status = StatusModel.Active;
-							pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
-							pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
-							pre_Cal_Fetu_Stan_Score.Type = score.Type;
-							pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
-							pre_Cal_Fetu_Stan_Score.Score = score.Score;
-							await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
-							await _db.SaveAsync();
-						}
-					}
+                    if (model.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
+                    {
+                        foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
+                        {
+                            var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
+                            pre_Cal_Fetu_Stan_Score.Status = StatusModel.Active;
+                            pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
+                            pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
+                            pre_Cal_Fetu_Stan_Score.Type = score.Type;
+                            pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
+                            pre_Cal_Fetu_Stan_Score.SequenceNo = score.SequenceNo;
+                            pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
+                            pre_Cal_Fetu_Stan_Score.Score = score.Score;
+                            await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
+                            await _db.SaveAsync();
+                        }
+                    }
 
-
-				}
+                }
 
 				_transaction.Commit();
 

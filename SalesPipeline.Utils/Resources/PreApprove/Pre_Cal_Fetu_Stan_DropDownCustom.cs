@@ -19,17 +19,17 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public Guid Pre_Cal_Fetu_StanId { get; set; }
 
-		/// <summary>
-		/// 1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้
-		/// </summary>
-		public int Type { get; set; }
+        /// <summary>
+        /// 1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้
+        /// </summary>
+        public int Type { get; set; }
 
-		/// <summary>
-		/// ลำดับ
-		/// </summary>
-		public int? SequenceNo { get; set; }
+        /// <summary>
+        /// ลำดับ
+        /// </summary>
+        public int SequenceNo { get; set; }
 
-		public string? Name { get; set; }
+        public string? Name { get; set; }
 
 	}
 }
