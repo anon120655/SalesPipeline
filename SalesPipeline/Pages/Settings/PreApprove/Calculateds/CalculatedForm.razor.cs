@@ -16,6 +16,9 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		private Pre_CalCustom formModel = new();
 		private bool IsShowTabInfo = false;
 		private bool IsShowTabStan = false;
+		private bool IsShowTabAppLoan = false;
+		private bool IsShowTabBusType = false;
+		private bool IsShowTabWeightFactor = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -28,7 +31,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			if (firstRender)
 			{
-				await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+				await Task.Delay(1);
 
 				firstRender = false;
 			}
@@ -39,6 +42,9 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			IsShowTabInfo = false;
 			IsShowTabStan = false;
+			IsShowTabAppLoan = false;
+			IsShowTabBusType = false;
+			IsShowTabWeightFactor = false;
 		}
 
 		protected void ShowTabInfo()
@@ -51,6 +57,24 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			TabAllClosed();
 			IsShowTabStan = true;
+		}
+
+		protected void ShowTabAppLoan()
+		{
+			TabAllClosed();
+			IsShowTabAppLoan = true;
+		}
+
+		protected void ShowTabBusType()
+		{
+			TabAllClosed();
+			IsShowTabBusType = true;
+		}
+
+		protected void ShowTabWeightFactor()
+		{
+			TabAllClosed();
+			IsShowTabWeightFactor = true;
 		}
 
 

@@ -40,7 +40,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
-			{				
+			{
+				await Task.Delay(1);
 				StateHasChanged();
 				firstRender = false;
 			}

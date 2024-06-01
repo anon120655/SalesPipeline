@@ -51,6 +51,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		ILoanRepo Loan { get; }
 		IPreCal PreCal { get; }
 		IPreCalInfo PreCalInfo { get; }
+		IPreCalStan PreCalStan { get; }
 
 		IProcessSales ProcessSale { get; }
 		ISales Sales { get; }

@@ -60,6 +60,7 @@ builder.Services.AddScoped<MailViewModel>();
 builder.Services.AddScoped<LoanViewModel>();
 builder.Services.AddScoped<PreCalViewModel>();
 builder.Services.AddScoped<PreCalInfoViewModel>();
+builder.Services.AddScoped<PreCalStanViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

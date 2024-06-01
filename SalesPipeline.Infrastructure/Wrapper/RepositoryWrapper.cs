@@ -55,6 +55,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public ILoanRepo Loan { get; }
 		public IPreCal PreCal { get; }
 		public IPreCalInfo PreCalInfo { get; }
+		public IPreCalStan PreCalStan { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -105,6 +106,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			Loan = new LoanRepo(this, _db, settings, _mapper);
 			PreCal = new PreCal(this, _db, settings, _mapper);
 			PreCalInfo = new PreCalInfo(this, _db, settings, _mapper);
+			PreCalStan = new PreCalStan(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);
