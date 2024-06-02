@@ -159,7 +159,7 @@
 							Guid ID = item.Id;
 
 							<div class="col-12 col-sm-8 col-xl-6">
-								<input @bind="item.Name" type="text" class="form-control mb-1" placeholder="text">
+								<input @bind="item.Name" @onfocusout="() => CopyItemDropDownToScore(type)" type="text" class="form-control mb-1" placeholder="text">
 							</div>
 							<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
 								@if (stan_DropDowns.Count > 1)
@@ -235,7 +235,7 @@
 							Guid ID = item.Id;
 
 							<div class="col-12 col-sm-8 col-xl-6">
-								<input @bind="item.Name" type="text" class="form-control mb-1" placeholder="text">
+								<input @bind="item.Name" @onfocusout="() => CopyItemDropDownToScore(type)" type="text" class="form-control mb-1" placeholder="text">
 							</div>
 							<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
 								@if (stan_DropDowns.Count > 1)
@@ -505,19 +505,19 @@
 											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
 										</div>
 										@* <div class="col-5 col-lg-3 mb-1">
-											@if (stan_Score.Count > 1)
-											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
-													<i class="fa-regular fa-trash-can"></i>
-												</Button>
-											}
-											@if (stan_Score.Count == index)
-											{
-												<Button @onclick="async () => await InsertScore(type)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
-													<i class="fa-solid fa-circle-plus"></i>
-												</Button>
-											}
-										</div> *@
+								@if (stan_Score.Count > 1)
+								{
+								<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+								<i class="fa-regular fa-trash-can"></i>
+								</Button>
+								}
+								@if (stan_Score.Count == index)
+								{
+								<Button @onclick="async () => await InsertScore(type)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
+								<i class="fa-solid fa-circle-plus"></i>
+								</Button>
+								}
+								</div> *@
 									</div>
 									index++;
 								}
@@ -598,7 +598,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Quantity" type="text" class="form-control form-control-sm" disabled>
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -607,19 +607,19 @@
 											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
 										</div>
 										@* <div class="col-5 col-lg-3 mb-1">
-											@if (stan_Score.Count > 1)
-											{
-												<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
-													<i class="fa-regular fa-trash-can"></i>
-												</Button>
-											}
-											@if (stan_Score.Count == index)
-											{
-												<Button @onclick="async () => await InsertScore(type)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
-													<i class="fa-solid fa-circle-plus"></i>
-												</Button>
-											}
-										</div> *@
+								@if (stan_Score.Count > 1)
+								{
+								<Button @onclick="async () => await RemoveScore(ID,type)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+								<i class="fa-regular fa-trash-can"></i>
+								</Button>
+								}
+								@if (stan_Score.Count == index)
+								{
+								<Button @onclick="async () => await InsertScore(type)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
+								<i class="fa-solid fa-circle-plus"></i>
+								</Button>
+								}
+								</div> *@
 									</div>
 									index++;
 								}

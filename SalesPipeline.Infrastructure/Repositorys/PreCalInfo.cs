@@ -78,16 +78,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Pre_Cal_Info_Scores?.Count > 0)
 				{
+					int index = 1;
 					foreach (var score in model.Pre_Cal_Info_Scores)
 					{
 						var pre_Cal_Info_Score = new Data.Entity.Pre_Cal_Info_Score();
 						pre_Cal_Info_Score.Status = StatusModel.Active;
 						pre_Cal_Info_Score.CreateDate = _dateNow;
 						pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
+						pre_Cal_Info_Score.SequenceNo = index;
 						pre_Cal_Info_Score.Quantity = score.Quantity;
 						pre_Cal_Info_Score.Score = score.Score;
 						await _db.InsterAsync(pre_Cal_Info_Score);
 						await _db.SaveAsync();
+						index++;
 					}
 				}
 
@@ -121,16 +124,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (model.Pre_Cal_Info_Scores?.Count > 0)
 					{
+						int index = 1;
 						foreach (var score in model.Pre_Cal_Info_Scores)
 						{
 							var pre_Cal_Info_Score = new Data.Entity.Pre_Cal_Info_Score();
 							pre_Cal_Info_Score.Status = StatusModel.Active;
 							pre_Cal_Info_Score.CreateDate = _dateNow;
 							pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
+							pre_Cal_Info_Score.SequenceNo = index;
 							pre_Cal_Info_Score.Quantity = score.Quantity;
 							pre_Cal_Info_Score.Score = score.Score;
 							await _db.InsterAsync(pre_Cal_Info_Score);
 							await _db.SaveAsync();
+							index++;
 						}
 					}
 
@@ -145,7 +151,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Pre_Cal_InfoCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Pre_Cal_Infos
-										 .Include(x => x.Pre_Cal_Info_Scores)
+										 .Include(x => x.Pre_Cal_Info_Scores.OrderBy(s => s.SequenceNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == id);
 

@@ -4,6 +4,7 @@ using NPOI.Util;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
@@ -79,8 +80,30 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		private async Task Seve()
 		{
-			await Task.Delay(300);
-			await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+			ResultModel<Pre_Cal_Fetu_StanCustom> response;
+
+			formModel.Pre_CalId = pre_CalId;
+			formModel.CurrentUserId = UserInfo.Id;
+
+			if (formModel.Id == Guid.Empty)
+			{
+				response = await _preCalStanViewModel.Create(formModel);
+			}
+			else
+			{
+				response = await _preCalStanViewModel.Update(formModel);
+			}
+
+			if (response.Status)
+			{
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+				await SetModel();
+			}
+			else
+			{
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
 		}
 
 		private void Cancel()
@@ -92,18 +115,17 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			if (formModel.Pre_Cal_Fetu_Stan_DropDowns == null) formModel.Pre_Cal_Fetu_Stan_DropDowns = new();
 
-			var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).Max(p => (int?)p.SequenceNo) ?? 0) + 1;
+			//var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).Max(p => (int?)p.SequenceNo) ?? 0) + 1;
 
 			var pre_Cal_Fetu_StanDropDownId = Guid.NewGuid();
 			formModel.Pre_Cal_Fetu_Stan_DropDowns.Add(new()
 			{
 				Id = pre_Cal_Fetu_StanDropDownId,
 				Status = StatusModel.Active,
-				Type = type,
-				SequenceNo = sequenceNo
+				Type = type
 			});
 
-			CopyItemDropDown(type);
+			CopyItemDropDownToScore(type);
 
 			await Task.Delay(1);
 			StateHasChanged();
@@ -123,38 +145,38 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				formModel.Pre_Cal_Fetu_Stan_Scores?.Remove(itemScoreToRemove);
 			}
 
-			await CalSequenceDropDown();
+			//await CalSequenceDropDown();
 
 			await Task.Delay(1);
 			StateHasChanged();
 		}
 
-		protected async Task CalSequenceDropDown()
-		{
-			if (formModel.Pre_Cal_Fetu_Stan_DropDowns != null)
-			{
-				var stan_DropDown = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.CollateralType).OrderBy(x => x.SequenceNo);
-				int index = 1;
-				foreach (var item in stan_DropDown)
-				{
-					item.SequenceNo = index;
-					index++;
-				}
+		//protected async Task CalSequenceDropDown()
+		//{
+		//	if (formModel.Pre_Cal_Fetu_Stan_DropDowns != null)
+		//	{
+		//		var stan_DropDown = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.CollateralType).OrderBy(x => x.SequenceNo);
+		//		int index = 1;
+		//		foreach (var item in stan_DropDown)
+		//		{
+		//			item.SequenceNo = index;
+		//			index++;
+		//		}
 
-				var stan_DropDownPay = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.PaymentHistory).OrderBy(x => x.SequenceNo);
-				int index2 = 1;
-				foreach (var item in stan_DropDownPay)
-				{
-					item.SequenceNo = index2;
-					index2++;
-				}
-			}
+		//		var stan_DropDownPay = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == PreStanDropDownType.PaymentHistory).OrderBy(x => x.SequenceNo);
+		//		int index2 = 1;
+		//		foreach (var item in stan_DropDownPay)
+		//		{
+		//			item.SequenceNo = index2;
+		//			index2++;
+		//		}
+		//	}
 
-			await Task.Delay(1);
-			StateHasChanged();
-		}
+		//	await Task.Delay(1);
+		//	StateHasChanged();
+		//}
 
-		private void CopyItemDropDown(int type)
+		private void CopyItemDropDownToScore(int type)
 		{
 			if (formModel.Pre_Cal_Fetu_Stan_Scores == null) formModel.Pre_Cal_Fetu_Stan_Scores = new();
 
@@ -191,18 +213,14 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			if (formModel.Pre_Cal_Fetu_Stan_Scores == null) formModel.Pre_Cal_Fetu_Stan_Scores = new();
 
-			var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_Scores.Max(p => (int?)p.SequenceNo) ?? 0) + 1;
+			//var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_Scores.Max(p => (int?)p.SequenceNo) ?? 0) + 1;
 
-			//if (type != PreStanDropDownType.CollateralType && type != PreStanDropDownType.PaymentHistory)
-			//{
 			formModel.Pre_Cal_Fetu_Stan_Scores.Add(new()
 			{
 				Id = Guid.NewGuid(),
 				Status = StatusModel.Active,
-				Type = type,
-				SequenceNo = sequenceNo
+				Type = type
 			});
-			//}
 
 			await Task.Delay(1);
 			StateHasChanged();

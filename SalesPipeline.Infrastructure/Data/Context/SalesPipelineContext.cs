@@ -1785,6 +1785,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Score)
                 .HasPrecision(18, 2)
                 .HasComment("คะแนน");
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

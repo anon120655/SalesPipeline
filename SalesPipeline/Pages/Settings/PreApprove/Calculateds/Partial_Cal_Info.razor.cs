@@ -104,10 +104,13 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		{
 			if (formModel.Pre_Cal_Info_Scores == null) formModel.Pre_Cal_Info_Scores = new();
 
+			var sequenceNo = (formModel.Pre_Cal_Info_Scores.Max(p => (int?)p.SequenceNo) ?? 0) + 1;
+
 			formModel.Pre_Cal_Info_Scores.Add(new()
 			{
 				Id = Guid.NewGuid(),
-				Status = StatusModel.Active
+				Status = StatusModel.Active,
+				SequenceNo = sequenceNo
 			});
 
 			await Task.Delay(1);
@@ -123,6 +126,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 			await Task.Delay(1);
 			StateHasChanged();
 		}
+
+
 
 	}
 }

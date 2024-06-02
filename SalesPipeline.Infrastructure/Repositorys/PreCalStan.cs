@@ -33,6 +33,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			await Task.Delay(1);
 
+			if (model.Pre_Cal_Fetu_Stan_DropDowns == null || model.Pre_Cal_Fetu_Stan_DropDowns.Count == 0)
+			{
+				throw new ExceptionCustom("ระบุ Drop Down ไม่ถูกต้อง");
+			}
+
+			foreach (var item in model.Pre_Cal_Fetu_Stan_DropDowns)
+			{
+				if (string.IsNullOrEmpty(item.Name))
+				{
+					throw new ExceptionCustom("ระบุ Drop Down ไม่ครบถ้วน");
+				}
+			}
+
 			if (!model.HighScore.HasValue || model.HighScore == 0)
 			{
 				throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
@@ -76,6 +89,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
 				{
+					int index = 1;
 					foreach (var dropdown in model.Pre_Cal_Fetu_Stan_DropDowns)
 					{
 						var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
@@ -84,15 +98,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
 						pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
 						pre_Cal_Fetu_Stan_DropDown.Type = dropdown.Type;
-						pre_Cal_Fetu_Stan_DropDown.SequenceNo = dropdown.SequenceNo;
+						pre_Cal_Fetu_Stan_DropDown.SequenceNo = index;
 						pre_Cal_Fetu_Stan_DropDown.Name = dropdown.Name;
 						await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
 						await _db.SaveAsync();
+						index++;
 					}
 				}
 
 				if (model.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
 				{
+					int index = 1;
 					foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
 					{
 						var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
@@ -101,12 +117,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
 						pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
 						pre_Cal_Fetu_Stan_Score.Type = score.Type;
-                        pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
-                        pre_Cal_Fetu_Stan_Score.SequenceNo = score.SequenceNo;
-                        pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
+						pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
+						pre_Cal_Fetu_Stan_Score.SequenceNo = index;
+						pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
 						pre_Cal_Fetu_Stan_Score.Score = score.Score;
 						await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
 						await _db.SaveAsync();
+						index++;
 					}
 				}
 
@@ -146,41 +163,47 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 
-                    if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
-                    {
-                        foreach (var dropdown in model.Pre_Cal_Fetu_Stan_DropDowns)
-                        {
-                            var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
-                            pre_Cal_Fetu_Stan_DropDown.Status = StatusModel.Active;
-                            pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
-                            pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
-                            pre_Cal_Fetu_Stan_DropDown.Type = dropdown.Type;
-                            pre_Cal_Fetu_Stan_DropDown.SequenceNo = dropdown.SequenceNo;
-                            pre_Cal_Fetu_Stan_DropDown.Name = dropdown.Name;
-                            await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
-                            await _db.SaveAsync();
-                        }
-                    }
+					if (model.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
+					{
+						int index = 1;
+						foreach (var dropdown in model.Pre_Cal_Fetu_Stan_DropDowns)
+						{
+							var pre_Cal_Fetu_Stan_DropDown = new Data.Entity.Pre_Cal_Fetu_Stan_DropDown();
+							pre_Cal_Fetu_Stan_DropDown.Id = dropdown.Id;
+							pre_Cal_Fetu_Stan_DropDown.Status = StatusModel.Active;
+							pre_Cal_Fetu_Stan_DropDown.CreateDate = _dateNow;
+							pre_Cal_Fetu_Stan_DropDown.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
+							pre_Cal_Fetu_Stan_DropDown.Type = dropdown.Type;
+							pre_Cal_Fetu_Stan_DropDown.SequenceNo = index;
+							pre_Cal_Fetu_Stan_DropDown.Name = dropdown.Name;
+							await _db.InsterAsync(pre_Cal_Fetu_Stan_DropDown);
+							await _db.SaveAsync();
+							index++;
+						}
+					}
 
-                    if (model.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
-                    {
-                        foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
-                        {
-                            var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
-                            pre_Cal_Fetu_Stan_Score.Status = StatusModel.Active;
-                            pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
-                            pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
-                            pre_Cal_Fetu_Stan_Score.Type = score.Type;
-                            pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
-                            pre_Cal_Fetu_Stan_Score.SequenceNo = score.SequenceNo;
-                            pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
-                            pre_Cal_Fetu_Stan_Score.Score = score.Score;
-                            await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
-                            await _db.SaveAsync();
-                        }
-                    }
+					if (model.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
+					{
+						int index = 1;
+						foreach (var score in model.Pre_Cal_Fetu_Stan_Scores)
+						{
+							var pre_Cal_Fetu_Stan_Score = new Data.Entity.Pre_Cal_Fetu_Stan_Score();
+							pre_Cal_Fetu_Stan_Score.Id = score.Id;
+							pre_Cal_Fetu_Stan_Score.Status = StatusModel.Active;
+							pre_Cal_Fetu_Stan_Score.CreateDate = _dateNow;
+							pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanId = pre_Cal_Fetu_Stan.Id;
+							pre_Cal_Fetu_Stan_Score.Type = score.Type;
+							pre_Cal_Fetu_Stan_Score.Pre_Cal_Fetu_StanDropDownId = score.Pre_Cal_Fetu_StanDropDownId;
+							pre_Cal_Fetu_Stan_Score.SequenceNo = index;
+							pre_Cal_Fetu_Stan_Score.Quantity = score.Quantity;
+							pre_Cal_Fetu_Stan_Score.Score = score.Score;
+							await _db.InsterAsync(pre_Cal_Fetu_Stan_Score);
+							await _db.SaveAsync();
+							index++;
+						}
+					}
 
-                }
+				}
 
 				_transaction.Commit();
 
@@ -191,8 +214,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Pre_Cal_Fetu_StanCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Pre_Cal_Fetu_Stans
-										 .Include(x => x.Pre_Cal_Fetu_Stan_DropDowns)
-										 .Include(x => x.Pre_Cal_Fetu_Stan_Scores)
+										 .Include(x => x.Pre_Cal_Fetu_Stan_DropDowns.OrderBy(s => s.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Stan_Scores.OrderBy(s => s.SequenceNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == id);
 

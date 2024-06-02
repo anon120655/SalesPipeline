@@ -17,6 +17,11 @@ public partial class Pre_Cal_Info_Score
     public Guid Pre_Cal_InfoId { get; set; }
 
     /// <summary>
+    /// ลำดับ
+    /// </summary>
+    public int SequenceNo { get; set; }
+
+    /// <summary>
     /// จำนวน
     /// </summary>
     public int? Quantity { get; set; }
