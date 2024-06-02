@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.PreApprove
 {
-	public class Pre_Cal_Fetu_Stan_DropDownCustom
+	public class Pre_Cal_Fetu_Stan_ItemOptionCustom
 	{
 		public Guid Id { get; set; }
 

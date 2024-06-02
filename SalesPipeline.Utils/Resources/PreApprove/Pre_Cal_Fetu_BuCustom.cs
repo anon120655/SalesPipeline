@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.PreApprove
 {
-	public class Pre_Cal_Info_ScoreCustom
+	public class Pre_Cal_Fetu_BuCustom
 	{
 		public Guid Id { get; set; }
 
@@ -17,18 +17,13 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public DateTime CreateDate { get; set; }
 
-		public Guid Pre_Cal_InfoId { get; set; }
+		public Guid Pre_CalId { get; set; }
 
 		/// <summary>
-		/// ลำดับ
+		/// คะแนนสูงสุด
 		/// </summary>
-		public int SequenceNo { get; set; }
-
-		public int? Name { get; set; }
-
-		/// <summary>
-		/// คะแนน
-		/// </summary>
-		public decimal? Score { get; set; }
+		public int? HighScore { get; set; }
+		
+		public virtual ICollection<Pre_Cal_Fetu_Bus_ItemCustom>? Pre_Cal_Fetu_Bus_Items { get; set; }
 	}
 }

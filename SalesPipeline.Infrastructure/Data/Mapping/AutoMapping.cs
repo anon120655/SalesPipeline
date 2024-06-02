@@ -26,8 +26,15 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Pre_Cal_Info, Pre_Cal_InfoCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Info_Score, Pre_Cal_Info_ScoreCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Fetu_Stan, Pre_Cal_Fetu_StanCustom>().ReverseMap();
-			CreateMap<Entity.Pre_Cal_Fetu_Stan_DropDown, Pre_Cal_Fetu_Stan_DropDownCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Stan_ItemOption, Pre_Cal_Fetu_Stan_ItemOptionCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_Fetu_Stan_Score, Pre_Cal_Fetu_Stan_ScoreCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_App, Pre_Cal_Fetu_AppCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_App_Item, Pre_Cal_Fetu_App_ItemCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_App_Item_Score, Pre_Cal_Fetu_App_Item_ScoreCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Bu, Pre_Cal_Fetu_BuCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Bus_Item, Pre_Cal_Fetu_Bus_ItemCustom>().ReverseMap();
+			CreateMap<Entity.Pre_Cal_Fetu_Bus_Item_Score, Pre_Cal_Fetu_Bus_Item_ScoreCustom>().ReverseMap();
+
 
 			//Loan
 			CreateMap<Entity.Loan, LoanCustom>().ReverseMap();

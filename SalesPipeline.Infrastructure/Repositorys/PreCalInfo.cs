@@ -47,7 +47,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			foreach (var item in model.Pre_Cal_Info_Scores)
 			{
-				if (!item.Quantity.HasValue || !item.Score.HasValue)
+				if (!item.Name.HasValue || !item.Score.HasValue)
 				{
 					throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
 				}
@@ -86,7 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Cal_Info_Score.CreateDate = _dateNow;
 						pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
 						pre_Cal_Info_Score.SequenceNo = index;
-						pre_Cal_Info_Score.Quantity = score.Quantity;
+						pre_Cal_Info_Score.Name = score.Name;
 						pre_Cal_Info_Score.Score = score.Score;
 						await _db.InsterAsync(pre_Cal_Info_Score);
 						await _db.SaveAsync();
@@ -132,7 +132,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							pre_Cal_Info_Score.CreateDate = _dateNow;
 							pre_Cal_Info_Score.Pre_Cal_InfoId = pre_Cal_Info.Id;
 							pre_Cal_Info_Score.SequenceNo = index;
-							pre_Cal_Info_Score.Quantity = score.Quantity;
+							pre_Cal_Info_Score.Name = score.Name;
 							pre_Cal_Info_Score.Score = score.Score;
 							await _db.InsterAsync(pre_Cal_Info_Score);
 							await _db.SaveAsync();

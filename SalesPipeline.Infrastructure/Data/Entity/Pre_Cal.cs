@@ -40,6 +40,10 @@ public partial class Pre_Cal
 
     public virtual Master_Pre_BusinessType? Master_Pre_BusinessType { get; set; }
 
+    public virtual ICollection<Pre_Cal_Fetu_App> Pre_Cal_Fetu_Apps { get; set; } = new List<Pre_Cal_Fetu_App>();
+
+    public virtual ICollection<Pre_Cal_Fetu_Bu> Pre_Cal_Fetu_Bus { get; set; } = new List<Pre_Cal_Fetu_Bu>();
+
     public virtual ICollection<Pre_Cal_Fetu_Stan> Pre_Cal_Fetu_Stans { get; set; } = new List<Pre_Cal_Fetu_Stan>();
 
     public virtual ICollection<Pre_Cal_Info> Pre_Cal_Infos { get; set; } = new List<Pre_Cal_Info>();

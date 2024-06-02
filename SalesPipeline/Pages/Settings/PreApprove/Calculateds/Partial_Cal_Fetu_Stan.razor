@@ -149,10 +149,10 @@
 					</div>
 				</div>
 				<div class="row mb-2">
-					@if (formModel.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
+					@if (formModel.Pre_Cal_Fetu_Stan_ItemOptions?.Count > 0)
 					{
 						int type = PreStanDropDownType.CollateralType;
-						var stan_DropDowns = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).ToList();
+						var stan_DropDowns = formModel.Pre_Cal_Fetu_Stan_ItemOptions.Where(x => x.Type == type).ToList();
 						int index = 1;
 						foreach (var item in stan_DropDowns)
 						{
@@ -225,10 +225,10 @@
 					</div>
 				</div>
 				<div class="row mb-2">
-					@if (formModel.Pre_Cal_Fetu_Stan_DropDowns?.Count > 0)
+					@if (formModel.Pre_Cal_Fetu_Stan_ItemOptions?.Count > 0)
 					{
 						int type = PreStanDropDownType.PaymentHistory;
-						var stan_DropDowns = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).ToList();
+						var stan_DropDowns = formModel.Pre_Cal_Fetu_Stan_ItemOptions.Where(x => x.Type == type).ToList();
 						int index = 1;
 						foreach (var item in stan_DropDowns)
 						{
@@ -292,7 +292,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm">
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -343,7 +343,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm">
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -394,7 +394,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm">
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -445,7 +445,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm">
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -496,7 +496,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm" disabled>
+											<input @bind="item.Name" type="text" class="form-control form-control-sm" disabled>
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -547,7 +547,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm">
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
@@ -598,7 +598,7 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Quantity" type="text" class="form-control form-control-sm" disabled>
+											<input @bind="item.Name" type="text" class="form-control form-control-sm" disabled>
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>

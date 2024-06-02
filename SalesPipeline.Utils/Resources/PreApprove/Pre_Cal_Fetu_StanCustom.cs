@@ -25,7 +25,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// </summary>
 		public int? HighScore { get; set; }
 
-		public virtual List<Pre_Cal_Fetu_Stan_DropDownCustom>? Pre_Cal_Fetu_Stan_DropDowns { get; set; }
+		public virtual List<Pre_Cal_Fetu_Stan_ItemOptionCustom>? Pre_Cal_Fetu_Stan_ItemOptions { get; set; }
 
 		public virtual List<Pre_Cal_Fetu_Stan_ScoreCustom>? Pre_Cal_Fetu_Stan_Scores { get; set; }
 	}

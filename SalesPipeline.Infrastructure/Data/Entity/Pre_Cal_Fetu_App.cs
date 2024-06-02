@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
 /// <summary>
-/// ตัวแปรคำนวณ คุณสมบัติมาตรฐาน
+/// ตัวแปรคำนวณ คุณสมบัติตามประเภทผู้ขอ
 /// </summary>
-public partial class Pre_Cal_Fetu_Stan
+public partial class Pre_Cal_Fetu_App
 {
     public Guid Id { get; set; }
 
@@ -26,7 +26,5 @@ public partial class Pre_Cal_Fetu_Stan
 
     public virtual Pre_Cal Pre_Cal { get; set; } = null!;
 
-    public virtual ICollection<Pre_Cal_Fetu_Stan_ItemOption> Pre_Cal_Fetu_Stan_ItemOptions { get; set; } = new List<Pre_Cal_Fetu_Stan_ItemOption>();
-
-    public virtual ICollection<Pre_Cal_Fetu_Stan_Score> Pre_Cal_Fetu_Stan_Scores { get; set; } = new List<Pre_Cal_Fetu_Stan_Score>();
+    public virtual ICollection<Pre_Cal_Fetu_App_Item> Pre_Cal_Fetu_App_Items { get; set; } = new List<Pre_Cal_Fetu_App_Item>();
 }

@@ -27,17 +27,14 @@ public partial class Pre_Cal_Fetu_Stan_Score
     /// </summary>
     public int Type { get; set; }
 
-    public Guid? Pre_Cal_Fetu_StanDropDownId { get; set; }
+    public Guid? Pre_Cal_Fetu_StanItemOptionId { get; set; }
 
     /// <summary>
     /// ลำดับ
     /// </summary>
     public int SequenceNo { get; set; }
 
-    /// <summary>
-    /// จำนวน
-    /// </summary>
-    public string? Quantity { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// คะแนน

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Pre_Cal_Info_Score
+public partial class Pre_Cal_Fetu_Bus_Item_Score
 {
     public Guid Id { get; set; }
 
@@ -14,19 +14,19 @@ public partial class Pre_Cal_Info_Score
 
     public DateTime CreateDate { get; set; }
 
-    public Guid Pre_Cal_InfoId { get; set; }
+    public Guid Pre_Cal_Fetu_Bus_ItemId { get; set; }
 
     /// <summary>
     /// ลำดับ
     /// </summary>
     public int SequenceNo { get; set; }
 
-    public int? Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// คะแนน
     /// </summary>
     public decimal? Score { get; set; }
 
-    public virtual Pre_Cal_Info Pre_Cal_Info { get; set; } = null!;
+    public virtual Pre_Cal_Fetu_Bus_Item Pre_Cal_Fetu_Bus_Item { get; set; } = null!;
 }

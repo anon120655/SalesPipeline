@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-/// <summary>
-/// ตัวแปรคำนวณ คุณสมบัติตามประเภทผู้ขอ
-/// </summary>
-public partial class Pre_Cal_Fetu_AppLoan
+public partial class Pre_Cal_Fetu_App_Item
 {
     public Guid Id { get; set; }
 
@@ -17,14 +14,16 @@ public partial class Pre_Cal_Fetu_AppLoan
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public DateTime UpdateDate { get; set; }
-
-    public int UpdateBy { get; set; }
+    public Guid Pre_Cal_Fetu_AppId { get; set; }
 
     /// <summary>
-    /// ชื่อสินเชื่อ
+    /// ลำดับ
     /// </summary>
+    public int SequenceNo { get; set; }
+
     public string? Name { get; set; }
+
+    public virtual Pre_Cal_Fetu_App Pre_Cal_Fetu_App { get; set; } = null!;
+
+    public virtual ICollection<Pre_Cal_Fetu_App_Item_Score> Pre_Cal_Fetu_App_Item_Scores { get; set; } = new List<Pre_Cal_Fetu_App_Item_Score>();
 }

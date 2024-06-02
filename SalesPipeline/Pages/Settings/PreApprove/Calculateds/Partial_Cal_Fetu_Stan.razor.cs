@@ -113,12 +113,12 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		protected async Task InsertDropDown(int type)
 		{
-			if (formModel.Pre_Cal_Fetu_Stan_DropDowns == null) formModel.Pre_Cal_Fetu_Stan_DropDowns = new();
+			if (formModel.Pre_Cal_Fetu_Stan_ItemOptions == null) formModel.Pre_Cal_Fetu_Stan_ItemOptions = new();
 
 			//var sequenceNo = (formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).Max(p => (int?)p.SequenceNo) ?? 0) + 1;
 
 			var pre_Cal_Fetu_StanDropDownId = Guid.NewGuid();
-			formModel.Pre_Cal_Fetu_Stan_DropDowns.Add(new()
+			formModel.Pre_Cal_Fetu_Stan_ItemOptions.Add(new()
 			{
 				Id = pre_Cal_Fetu_StanDropDownId,
 				Status = StatusModel.Active,
@@ -133,13 +133,13 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		protected async Task RemoveDropDown(Guid ID)
 		{
-			var itemToRemove = formModel.Pre_Cal_Fetu_Stan_DropDowns?.FirstOrDefault(r => r.Id == ID);
+			var itemToRemove = formModel.Pre_Cal_Fetu_Stan_ItemOptions?.FirstOrDefault(r => r.Id == ID);
 			if (itemToRemove != null)
 			{
-				formModel.Pre_Cal_Fetu_Stan_DropDowns?.Remove(itemToRemove);
+				formModel.Pre_Cal_Fetu_Stan_ItemOptions?.Remove(itemToRemove);
 			}
 
-			var itemScoreToRemove = formModel.Pre_Cal_Fetu_Stan_Scores?.FirstOrDefault(r => r.Pre_Cal_Fetu_StanDropDownId == ID);
+			var itemScoreToRemove = formModel.Pre_Cal_Fetu_Stan_Scores?.FirstOrDefault(r => r.Pre_Cal_Fetu_StanItemOptionId == ID);
 			if (itemScoreToRemove != null)
 			{
 				formModel.Pre_Cal_Fetu_Stan_Scores?.Remove(itemScoreToRemove);
@@ -191,19 +191,19 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				}
 			}
 
-			if (formModel.Pre_Cal_Fetu_Stan_DropDowns != null && formModel.Pre_Cal_Fetu_Stan_DropDowns.Count > 0)
+			if (formModel.Pre_Cal_Fetu_Stan_ItemOptions != null && formModel.Pre_Cal_Fetu_Stan_ItemOptions.Count > 0)
 			{
-				var itemCopy = formModel.Pre_Cal_Fetu_Stan_DropDowns.Where(x => x.Type == type).ToList();
+				var itemCopy = formModel.Pre_Cal_Fetu_Stan_ItemOptions.Where(x => x.Type == type).ToList();
 				foreach (var item in itemCopy)
 				{
 					formModel.Pre_Cal_Fetu_Stan_Scores.Add(new()
 					{
 						Id = Guid.NewGuid(),
 						Status = StatusModel.Active,
-						Pre_Cal_Fetu_StanDropDownId = item.Id,
+						Pre_Cal_Fetu_StanItemOptionId = item.Id,
 						Type = _typeScore,
 						SequenceNo = item.SequenceNo,
-						Quantity = item.Name
+						Name = item.Name
 					});
 				}
 			}

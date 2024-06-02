@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Pre_Cal_Fetu_Stan_DropDown
+public partial class Pre_Cal_Fetu_App_Item_Score
 {
     public Guid Id { get; set; }
 
@@ -14,12 +14,7 @@ public partial class Pre_Cal_Fetu_Stan_DropDown
 
     public DateTime CreateDate { get; set; }
 
-    public Guid Pre_Cal_Fetu_StanId { get; set; }
-
-    /// <summary>
-    /// 1=ประเภทหลักประกัน 2=ประวัติการชำระหนี้
-    /// </summary>
-    public int Type { get; set; }
+    public Guid Pre_Cal_Fetu_App_ItemId { get; set; }
 
     /// <summary>
     /// ลำดับ
@@ -28,5 +23,10 @@ public partial class Pre_Cal_Fetu_Stan_DropDown
 
     public string? Name { get; set; }
 
-    public virtual Pre_Cal_Fetu_Stan Pre_Cal_Fetu_Stan { get; set; } = null!;
+    /// <summary>
+    /// คะแนน
+    /// </summary>
+    public decimal? Score { get; set; }
+
+    public virtual Pre_Cal_Fetu_App_Item Pre_Cal_Fetu_App_Item { get; set; } = null!;
 }
