@@ -26,6 +26,6 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public string? Name { get; set; }
 
-		public virtual ICollection<Pre_Cal_Fetu_Bus_Item_ScoreCustom>? Pre_Cal_Fetu_Bus_Item_Scores { get; set; }
+		public virtual List<Pre_Cal_Fetu_Bus_Item_ScoreCustom>? Pre_Cal_Fetu_Bus_Item_Scores { get; set; }
 	}
 }

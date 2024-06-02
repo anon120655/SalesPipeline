@@ -6,21 +6,151 @@
 			</div>
 		</div>
 	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-header text-white rounded-1 p-2">
-				<h6 class="px-2">คะแนนในการคำนวณ</h6>
+	@if (formModel.Pre_Cal_Fetu_App_Items?.Count > 0)
+	{
+		int index = 1;
+		foreach (var item in formModel.Pre_Cal_Fetu_App_Items)
+		{
+			<div class="row mt-2">
+				<div class="col-12 col-xl-10">
+					<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+						<div class="row">
+							<div class="col-12 col-sm-8 col-xl-6 mb-2 mb-xl-0">
+								<div class="row mb-2">
+									<div class="col-12">
+										<input @bind="item.Name" type="text" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-sm-4 col-xl-3 mb-2 mb-xl-0">
+								<select class="form-select">
+									<option value="@FieldTypes.Dropdown">@PropertiesMain.PerFieldType(FieldTypes.Dropdown).Name</option>
+								</select>
+							</div>
+						</div>
+						<div class="row mb-2">
+							@if (item.Pre_Cal_Fetu_App_Item_Scores?.Count > 0)
+							{
+								int indexScore = 1;
+								foreach (var itemName in item.Pre_Cal_Fetu_App_Item_Scores)
+								{
+									Guid ID = item.Id;
+
+									<div class="col-12 col-sm-8 col-xl-6">
+										<input @bind="itemName.Name" type="text" class="form-control mb-1" placeholder="text">
+									</div>
+									<div class="col-12 col-sm-3 text-end text-sm-start mt-2 mt-sm-0">
+										@if (item.Pre_Cal_Fetu_App_Item_Scores.Count > 1)
+										{
+											<Button @onclick="async () => await RemoveScore(ID,itemName.Id)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+												<i class="fa-regular fa-trash-can"></i>
+											</Button>
+										}
+										@if (item.Pre_Cal_Fetu_App_Item_Scores.Count == indexScore)
+										{
+											<Button @onclick="async () => await InsertScore(ID)" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
+												<i class="fa-solid fa-circle-plus"></i>
+											</Button>
+										}
+									</div>
+									indexScore++;
+								}
+							}
+						</div>
+					</div>
+				</div>
+				<div class="col-12 col-xl-2 d-flex align-items-center">
+					@if (formModel.Pre_Cal_Fetu_App_Items.Count > 1)
+					{
+						<Button @onclick="async () => await RemoveItem(item.Id)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
+							<i class="fa-regular fa-trash-can"></i>
+						</Button>
+					}
+					@if (formModel.Pre_Cal_Fetu_App_Items.Count == index)
+					{
+						<Button @onclick="async () => await InsertItem()" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
+							<i class="fa-solid fa-circle-plus"></i>
+						</Button>
+					}
+				</div>
+			</div>
+			index++;
+		}
+	}
+	<div class="container_pre_cal">
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="bg-header text-white rounded-1 p-2">
+					<h6 class="px-2">คะแนนในการคำนวณ</h6>
+				</div>
+			</div>
+		</div>
+		<div class="d-flex justify-content-end  align-items-center">
+			<div class="p-2">คะแนนสูงสุด</div>
+			<div class="p-2">
+				<input @bind="formModel.HighScore" type="text" class="form-control form-control-sm score">
+			</div>
+		</div>
+		@if (formModel.Pre_Cal_Fetu_App_Items?.Count > 0)
+		{
+			foreach (var item in formModel.Pre_Cal_Fetu_App_Items)
+			{
+				<div class="row p-3">
+					<div class="col-12">
+						<p>@item.Name</p>
+					</div>
+					<div class="col-12">
+						<div class="row">
+							<div class="col-12">
+								<div class="rounded p-3">
+									@if (item.Pre_Cal_Fetu_App_Item_Scores?.Count > 0)
+									{
+										int index = 1;
+										foreach (var itemScore in item.Pre_Cal_Fetu_App_Item_Scores)
+										{
+											Guid ID = item.Id;
+
+											<div class="row d-flex align-items-center mb-1">
+												<div class="col-12 col-lg-6 mb-1">
+													<input @bind="itemScore.Name" type="text" class="form-control form-control-sm" disabled>
+												</div>
+												<div class="col-4 col-lg-2 mb-1 text-end">
+													<span>คะแนน</span>
+												</div>
+												<div class="col-3 col-lg-1 mb-1">
+													<input @bind="itemScore.Score" type="text" class="form-control form-control-sm score">
+												</div>
+											</div>
+											index++;
+										}
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		}
+
+	</div>
+	<div class="my-4 text-center">
+		<div class="d-flex bd-highlight align-items-center justify-content-center">
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					กลับ
+				</Button>
+			</div>
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Seve Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					@if (isLoading)
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+					}
+					บันทึก
+				</Button>
 			</div>
 		</div>
 	</div>
 </div>
 
-@code {
-	[Parameter]
-	public Guid pre_CalId { get; set; }
 
-	[Parameter]
-	public bool IsShowTab { get; set; }
-
-
-}
