@@ -61,6 +61,8 @@ builder.Services.AddScoped<LoanViewModel>();
 builder.Services.AddScoped<PreCalViewModel>();
 builder.Services.AddScoped<PreCalInfoViewModel>();
 builder.Services.AddScoped<PreCalStanViewModel>();
+builder.Services.AddScoped<PreCalAppViewModel>();
+builder.Services.AddScoped<PreCalBusViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

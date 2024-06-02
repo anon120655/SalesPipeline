@@ -56,6 +56,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IPreCal PreCal { get; }
 		public IPreCalInfo PreCalInfo { get; }
 		public IPreCalStan PreCalStan { get; }
+		public IPreCalApp PreCalApp { get; }
+		public IPreCalBus PreCalBus { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -107,6 +109,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			PreCal = new PreCal(this, _db, settings, _mapper);
 			PreCalInfo = new PreCalInfo(this, _db, settings, _mapper);
 			PreCalStan = new PreCalStan(this, _db, settings, _mapper);
+			PreCalApp = new PreCalApp(this, _db, settings, _mapper);
+			PreCalBus = new PreCalBus(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

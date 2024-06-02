@@ -52,6 +52,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IPreCal PreCal { get; }
 		IPreCalInfo PreCalInfo { get; }
 		IPreCalStan PreCalStan { get; }
+		IPreCalApp PreCalApp { get; }
+		IPreCalBus PreCalBus { get; }
 
 		IProcessSales ProcessSale { get; }
 		ISales Sales { get; }
