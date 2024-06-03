@@ -58,7 +58,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IPreCalStan PreCalStan { get; }
 		public IPreCalApp PreCalApp { get; }
 		public IPreCalBus PreCalBus { get; }
-		public IPreCalWeightFactor PreCalWeightFactor { get; }
+		public IPreCalWeight PreCalWeight { get; }
 		public IProcessSales ProcessSale { get; }
 		public ISales Sales { get; }
 		public IUserRepo User { get; }
@@ -112,7 +112,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			PreCalStan = new PreCalStan(this, _db, settings, _mapper);
 			PreCalApp = new PreCalApp(this, _db, settings, _mapper);
 			PreCalBus = new PreCalBus(this, _db, settings, _mapper);
-			PreCalWeightFactor = new PreCalWeightFactor(this, _db, settings, _mapper);
+			PreCalWeight = new PreCalWeight(this, _db, settings, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

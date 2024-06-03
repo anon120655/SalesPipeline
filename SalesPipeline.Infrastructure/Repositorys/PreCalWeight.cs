@@ -14,14 +14,14 @@ using SalesPipeline.Infrastructure.Data.Entity;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class PreCalWeightFactor : IPreCalWeightFactor
+	public class PreCalWeight : IPreCalWeight
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public PreCalWeightFactor(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public PreCalWeight(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
@@ -33,40 +33,40 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			await Task.Delay(1);
 
-			if (model.Pre_Cal_Fetu_Stan_ItemOptions == null || model.Pre_Cal_Fetu_Stan_ItemOptions.Count == 0)
-			{
-				throw new ExceptionCustom("ระบุ Drop Down ไม่ถูกต้อง");
-			}
+			//if (model.Pre_Cal_Fetu_Stan_ItemOptions == null || model.Pre_Cal_Fetu_Stan_ItemOptions.Count == 0)
+			//{
+			//	throw new ExceptionCustom("ระบุ Drop Down ไม่ถูกต้อง");
+			//}
 
-			foreach (var item in model.Pre_Cal_Fetu_Stan_ItemOptions)
-			{
-				if (string.IsNullOrEmpty(item.Name))
-				{
-					throw new ExceptionCustom("ระบุ Drop Down ไม่ครบถ้วน");
-				}
-			}
+			//foreach (var item in model.Pre_Cal_Fetu_Stan_ItemOptions)
+			//{
+			//	if (string.IsNullOrEmpty(item.Name))
+			//	{
+			//		throw new ExceptionCustom("ระบุ Drop Down ไม่ครบถ้วน");
+			//	}
+			//}
 
-			if (!model.HighScore.HasValue || model.HighScore == 0)
-			{
-				throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
-			}
+			//if (!model.HighScore.HasValue || model.HighScore == 0)
+			//{
+			//	throw new ExceptionCustom("ระบุ คะแนนสูงสุด");
+			//}
 
-			if (model.Pre_Cal_Fetu_Stan_Scores == null || model.Pre_Cal_Fetu_Stan_Scores.Count == 0)
-			{
-				throw new ExceptionCustom("ระบุ จำนวนและคะแนน");
-			}
+			//if (model.Pre_Cal_Fetu_Stan_Scores == null || model.Pre_Cal_Fetu_Stan_Scores.Count == 0)
+			//{
+			//	throw new ExceptionCustom("ระบุ จำนวนและคะแนน");
+			//}
 
-			foreach (var item in model.Pre_Cal_Fetu_Stan_Scores)
-			{
-				if (string.IsNullOrEmpty(item.Name) || !item.Score.HasValue)
-				{
-					throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
-				}
-				if (item.Score > model.HighScore)
-				{
-					throw new ExceptionCustom("คะแนนต้องไม่มากว่าคะแนนสูงสุด");
-				}
-			}
+			//foreach (var item in model.Pre_Cal_Fetu_Stan_Scores)
+			//{
+			//	if (string.IsNullOrEmpty(item.Name) || !item.Score.HasValue)
+			//	{
+			//		throw new ExceptionCustom("ระบุ จำนวนและคะแนนไม่ครบถ้วน");
+			//	}
+			//	if (item.Score > model.HighScore)
+			//	{
+			//		throw new ExceptionCustom("คะแนนต้องไม่มากว่าคะแนนสูงสุด");
+			//	}
+			//}
 
 			return model;
 		}

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
-	public interface IPreCalWeightFactor
+	public interface IPreCalWeight
 	{
 		Task<Pre_Cal_WeightFactorCustom> Create(Pre_Cal_WeightFactorCustom model);
 		Task<Pre_Cal_WeightFactorCustom> Update(Pre_Cal_WeightFactorCustom model);

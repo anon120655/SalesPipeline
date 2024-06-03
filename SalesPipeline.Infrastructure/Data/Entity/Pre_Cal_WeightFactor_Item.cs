@@ -23,5 +23,7 @@ public partial class Pre_Cal_WeightFactor_Item
 
     public decimal Percent { get; set; }
 
+    public Guid? RefItemId { get; set; }
+
     public virtual Pre_Cal_WeightFactor Pre_Cal_WeightFactor { get; set; } = null!;
 }

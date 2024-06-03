@@ -26,5 +26,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public decimal Percent { get; set; }
 
+		public Guid? RefItemId { get; set; }
+
 	}
 }
