@@ -1,0 +1,16 @@
+﻿using SalesPipeline.Utils.Resources.PreApprove;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SalesPipeline.Infrastructure.Interfaces
+{
+	public interface IPreCalWeightFactor
+	{
+		Task<Pre_Cal_WeightFactorCustom> Create(Pre_Cal_WeightFactorCustom model);
+		Task<Pre_Cal_WeightFactorCustom> Update(Pre_Cal_WeightFactorCustom model);
+		Task<Pre_Cal_WeightFactorCustom> GetById(Guid id);
+	}
+}

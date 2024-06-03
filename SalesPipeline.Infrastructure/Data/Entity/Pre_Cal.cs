@@ -47,4 +47,6 @@ public partial class Pre_Cal
     public virtual ICollection<Pre_Cal_Fetu_Stan> Pre_Cal_Fetu_Stans { get; set; } = new List<Pre_Cal_Fetu_Stan>();
 
     public virtual ICollection<Pre_Cal_Info> Pre_Cal_Infos { get; set; } = new List<Pre_Cal_Info>();
+
+    public virtual ICollection<Pre_Cal_WeightFactor> Pre_Cal_WeightFactors { get; set; } = new List<Pre_Cal_WeightFactor>();
 }

@@ -134,7 +134,9 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Pre_Cal_Info_Score> Pre_Cal_Info_Scores { get; set; }
 
-    public virtual DbSet<Pre_Cal_Weight_Factor> Pre_Cal_Weight_Factors { get; set; }
+    public virtual DbSet<Pre_Cal_WeightFactor> Pre_Cal_WeightFactors { get; set; }
+
+    public virtual DbSet<Pre_Cal_WeightFactor_Item> Pre_Cal_WeightFactor_Items { get; set; }
 
     public virtual DbSet<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; }
 
@@ -1908,22 +1910,50 @@ public partial class SalesPipelineContext : DbContext
                 .HasConstraintName("pre_cal_info_score_ibfk_1");
         });
 
-        modelBuilder.Entity<Pre_Cal_Weight_Factor>(entity =>
+        modelBuilder.Entity<Pre_Cal_WeightFactor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Pre_Cal_Weight_Factor", tb => tb.HasComment("น้ำหนักของแต่ละปัจจัย"));
+            entity.ToTable("Pre_Cal_WeightFactor", tb => tb.HasComment("น้ำหนักของแต่ละปัจจัย"));
 
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.HasIndex(e => e.Pre_CalId, "Pre_CalId");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasComment("ชื่อสินเชื่อ");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.TotalPercent).HasPrecision(18, 2);
+            entity.Property(e => e.Type)
+                .HasComment("1=ข้อมูลการขอสินเชื่อ\r\n2=คุณสมบัติมารตฐาน\r\n3=คุณสมบัติตามประเภทผู้ขอ\r\n4=คุณสมบัติตามประเภทธุรกิจ")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Pre_Cal).WithMany(p => p.Pre_Cal_WeightFactors)
+                .HasForeignKey(d => d.Pre_CalId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_cal_weightfactor_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_Cal_WeightFactor_Item>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Cal_WeightFactor_Item");
+
+            entity.HasIndex(e => e.Pre_Cal_WeightFactorId, "Pre_Cal_WeightFactorId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Percent).HasPrecision(18, 2);
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Pre_Cal_WeightFactor).WithMany(p => p.Pre_Cal_WeightFactor_Items)
+                .HasForeignKey(d => d.Pre_Cal_WeightFactorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_cal_weightfactor_item_ibfk_1");
         });
 
         modelBuilder.Entity<Pre_Reply_Cal_Info>(entity =>
