@@ -100,6 +100,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Cal_WeightFactor_Item.Pre_Cal_WeightFactorId = pre_Cal_WeightFactor.Id;
 						pre_Cal_WeightFactor_Item.SequenceNo = index;
 						pre_Cal_WeightFactor_Item.Percent = item.Percent;
+						pre_Cal_WeightFactor_Item.RefItemId = item.RefItemId;
 						await _db.InsterAsync(pre_Cal_WeightFactor_Item);
 						await _db.SaveAsync();
 						index++;
@@ -146,6 +147,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							pre_Cal_WeightFactor_Item.Pre_Cal_WeightFactorId = pre_Cal_WeightFactor.Id;
 							pre_Cal_WeightFactor_Item.SequenceNo = index;
 							pre_Cal_WeightFactor_Item.Percent = item.Percent;
+							pre_Cal_WeightFactor_Item.RefItemId = item.RefItemId;
 							await _db.InsterAsync(pre_Cal_WeightFactor_Item);
 							await _db.SaveAsync();
 							index++;
