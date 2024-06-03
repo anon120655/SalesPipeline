@@ -43,110 +43,96 @@
 		}
 </style>
 
+
 <div class="px-0 container_pre_cal">
-	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
-		<div class="progress-bar"></div>
-		<h6 class="progress-text">ข้อมูลการขอสินเชื่อ</h6>
-		<div class="progress-percentage">
-			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+	@if (formWeightModel != null)
+	{
+		var weightInfo = formWeightModel.Where(x => x.Type == PreCalType.Info).FirstOrDefault();
+
+		<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+			<div class="progress-bar"></div>
+			<h6 class="progress-text">ข้อมูลการขอสินเชื่อ</h6>
+			<div class="progress-percentage">
+				@if (weightInfo != null)
+				{
+					<input value="@weightInfo._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+				}
+			</div>
 		</div>
-	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>มูลค่าสินเชื่อ</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+					@if (weightInfo?.Pre_Cal_WeightFactor_Items?.Count > 0)
+					{
+						foreach (var item in weightInfo.Pre_Cal_WeightFactor_Items)
+						{
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-md-9">
+									<p>มูลค่าสินเชื่อ</p>
+								</div>
+								<div class="col-11 col-md-1">
+									<input type="text" class="form-control form-control-sm score"
+										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+								</div>
+								<div class="col-1">
+									<span class="ms-2">%</span>
+								</div>
+							</div>
+						}
+					}
+					else
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white text-center"></i></span>
+					}
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
-		<div class="progress-bar"></div>
-		<h6 class="progress-text">คุณสมบัติมารตฐาน</h6>
-		<div class="progress-percentage">
-			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+
+		var weightStan = formWeightModel.Where(x => x.Type == PreCalType.Stan).FirstOrDefault();
+
+		<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+			<div class="progress-bar"></div>
+			<h6 class="progress-text">คุณสมบัติมารตฐาน</h6>
+			<div class="progress-percentage">
+				@if (weightStan != null)
+				{
+					<input value="@weightStan._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+				}
+			</div>
 		</div>
-	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>น้ำหนักของแต่ละปัจจัยหลักประกันต่อมูลค่าหนี้</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>น้ำหนักของแต่ละปัจจัยหนี้สินอื่นๆต่อรายได้</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>ปริมาณเงินฝากกับ ธกส.</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>ประเภทหลักประกัน</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>ประวัติการชำระหนี้</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
+
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+					@if (weightStan?.Pre_Cal_WeightFactor_Items?.Count > 0)
+					{
+						foreach (var item in weightStan.Pre_Cal_WeightFactor_Items)
+						{
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-md-9">
+									<p>@PropertiesMain.PerCalFetuStanName(item.StanScoreType?.ToString() ?? string.Empty)?.Name</p>
+								</div>
+								<div class="col-11 col-md-1">
+									<input type="text" class="form-control form-control-sm score"
+										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+								</div>
+								<div class="col-1">
+									<span class="ms-2">%</span>
+								</div>
+							</div>
+						}
+					}
+					else
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white text-center"></i></span>
+					}
 				</div>
 			</div>
 		</div>
-	</div>
+	}
+
 	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
 		<div class="progress-bar"></div>
 		<h6 class="progress-text">คุณสมบัติตามประเภทผู้ขอ</h6>

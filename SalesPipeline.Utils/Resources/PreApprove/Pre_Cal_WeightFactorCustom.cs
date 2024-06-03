@@ -31,5 +31,19 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		public decimal TotalPercent { get; set; }
 
 		public virtual List<Pre_Cal_WeightFactor_ItemCustom>? Pre_Cal_WeightFactor_Items { get; set; }
+
+		//Custom
+		public decimal _TotalPercent
+		{
+			get
+			{
+				if (Pre_Cal_WeightFactor_Items?.Count > 0)
+				{
+					return Pre_Cal_WeightFactor_Items.Sum(x => x.Percent);
+				}
+				return _TotalPercent;
+			}
+		}
+
 	}
 }

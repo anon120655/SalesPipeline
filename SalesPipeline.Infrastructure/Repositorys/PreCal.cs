@@ -162,6 +162,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Pre_CalCustom>(query);
 		}
 
+		public async Task<Pre_CalCustom> GetIncludeAllById(Guid id)
+		{
+			var query = await _repo.Context.Pre_Cals
+										 .Include(x => x.Pre_Cal_Infos).ThenInclude(x => x.Pre_Cal_Info_Scores)
+										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_ItemOptions)
+										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_Scores)
+										 .Include(x => x.Pre_Cal_Fetu_Apps).ThenInclude(x => x.Pre_Cal_Fetu_App_Items)
+										 .Include(x => x.Pre_Cal_Fetu_Bus).ThenInclude(x => x.Pre_Cal_Fetu_Bus_Items)
+										 .OrderByDescending(o => o.CreateDate)
+										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Pre_CalCustom>(query);
+		}
+
 		public async Task<PaginationView<List<Pre_CalCustom>>> GetList(allFilter model)
 		{
 			var query = _repo.Context.Pre_Cals

@@ -38,5 +38,13 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		public Guid? Master_Pre_BusinessTypeId { get; set; }
 
 		public string? Master_Pre_BusinessTypeName { get; set; }
+
+		public virtual ICollection<Pre_Cal_Fetu_AppCustom>? Pre_Cal_Fetu_Apps { get; set; }
+
+		public virtual ICollection<Pre_Cal_Fetu_BuCustom>? Pre_Cal_Fetu_Bus { get; set; }
+
+		public virtual ICollection<Pre_Cal_Fetu_StanCustom>? Pre_Cal_Fetu_Stans { get; set; }
+
+		public virtual ICollection<Pre_Cal_InfoCustom>? Pre_Cal_Infos { get; set; }
 	}
 }

@@ -15,14 +15,14 @@ namespace SalesPipeline.Utils.ConstTypeModel
 		/// <summary>
 		/// คุณสมบัติมารตฐาน
 		/// </summary>
-		public const short Stan = 1;
+		public const short Stan = 2;
 		/// <summary>
 		/// คุณสมบัติตามประเภทผู้ขอ
 		/// </summary>
-		public const short AppLoan = 1;
+		public const short AppLoan = 3;
 		/// <summary>
 		/// คุณสมบัติตามประเภทธุรกิจ
 		/// </summary>
-		public const short BusType = 1;
+		public const short BusType = 4;
 	}
 }

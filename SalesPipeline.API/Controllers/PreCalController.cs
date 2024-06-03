@@ -96,6 +96,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetIncludeAllById")]
+		public async Task<IActionResult> GetIncludeAllById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.PreCal.GetIncludeAllById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.ConstTypeModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -97,6 +98,56 @@ namespace SalesPipeline.Utils.PropertiesModel
 				{
 					Code = "Time",
 					Name = "Time"
+				}
+			};
+
+			var data = Properties.Where(x => x.Code == code).Select(x => x).FirstOrDefault();
+			if (data != null)
+			{
+				return data;
+			}
+
+			return new PropertiesOptions();
+		}
+
+		public static PropertiesOptions PerCalFetuStanName(string code)
+		{
+			var Properties = new List<PropertiesOptions>()
+			{
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.WeightIncomeExpenses.ToString(),
+					Name = "น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.WeighCollateraltDebtValue.ToString(),
+					Name = "น้ำหนักของแต่ละปัจจัยหลักประกันมูลค่าหนี้"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.WeighLiabilitieOtherIncome.ToString(),
+					Name = "น้ำหนักของแต่ละปัจจัยหนี้สินต่อรายได้อื่นๆ"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.CashBank.ToString(),
+					Name = "ปริมาณเงินฝาก"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.CollateralType.ToString(),
+					Name = "ประเภทหลักประกัน"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.LoanValue.ToString(),
+					Name = "มูลค่าสินเชื่อ"
+				},
+				new PropertiesOptions()
+				{
+					Code = PreStanScoreType.PaymentHistory.ToString(),
+					Name = "ประวัติการชำระหนี้"
 				}
 			};
 

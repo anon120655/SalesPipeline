@@ -24,9 +24,16 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// </summary>
 		public int SequenceNo { get; set; }
 
+		public string? Name { get; set; }
+
 		public decimal Percent { get; set; }
 
 		public Guid? RefItemId { get; set; }
 
-	}
+		/// <summary>
+		/// ประเภท คะแนนคุณสมบัติมาตรฐาน
+		/// </summary>
+		public int? StanScoreType { get; set; }
+
+    }
 }

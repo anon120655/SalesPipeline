@@ -123,6 +123,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<Pre_CalCustom>?> GetIncludeAllById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/PreCal/GetIncludeAllById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Pre_CalCustom>(content);
+				return new ResultModel<Pre_CalCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_CalCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Pre_CalCustom>>>> GetList(allFilter model)
 		{
 			try

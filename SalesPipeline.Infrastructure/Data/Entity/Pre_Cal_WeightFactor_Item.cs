@@ -21,9 +21,16 @@ public partial class Pre_Cal_WeightFactor_Item
     /// </summary>
     public int SequenceNo { get; set; }
 
+    public string? Name { get; set; }
+
     public decimal Percent { get; set; }
 
     public Guid? RefItemId { get; set; }
+
+    /// <summary>
+    /// ประเภท คะแนนคุณสมบัติมาตรฐาน
+    /// </summary>
+    public int? StanScoreType { get; set; }
 
     public virtual Pre_Cal_WeightFactor Pre_Cal_WeightFactor { get; set; } = null!;
 }

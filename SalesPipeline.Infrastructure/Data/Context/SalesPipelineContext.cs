@@ -1942,9 +1942,13 @@ public partial class SalesPipelineContext : DbContext
             entity.HasIndex(e => e.Pre_Cal_WeightFactorId, "Pre_Cal_WeightFactorId");
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Percent).HasPrecision(18, 2);
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.StanScoreType)
+                .HasComment("ประเภท คะแนนคุณสมบัติมาตรฐาน")
                 .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")

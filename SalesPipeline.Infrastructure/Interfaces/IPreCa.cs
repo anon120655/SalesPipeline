@@ -11,6 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task DeleteById(UpdateModel model);
 		Task UpdateStatusById(UpdateModel model);
 		Task<Pre_CalCustom> GetById(Guid id);
+		Task<Pre_CalCustom> GetIncludeAllById(Guid id);
 		Task<PaginationView<List<Pre_CalCustom>>> GetList(allFilter model);
 	}
 }
