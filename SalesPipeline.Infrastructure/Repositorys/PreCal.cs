@@ -165,11 +165,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Pre_CalCustom> GetIncludeAllById(Guid id)
 		{
 			var query = await _repo.Context.Pre_Cals
-										 .Include(x => x.Pre_Cal_Infos).ThenInclude(x => x.Pre_Cal_Info_Scores)
-										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_ItemOptions)
-										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_Scores)
-										 .Include(x => x.Pre_Cal_Fetu_Apps).ThenInclude(x => x.Pre_Cal_Fetu_App_Items)
-										 .Include(x => x.Pre_Cal_Fetu_Bus).ThenInclude(x => x.Pre_Cal_Fetu_Bus_Items)
+										 .Include(x => x.Pre_Cal_Infos).ThenInclude(x => x.Pre_Cal_Info_Scores.OrderBy(o=>o.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_ItemOptions.OrderBy(o => o.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_Scores.OrderBy(o => o.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Apps).ThenInclude(x => x.Pre_Cal_Fetu_App_Items.OrderBy(o => o.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Bus).ThenInclude(x => x.Pre_Cal_Fetu_Bus_Items.OrderBy(o => o.SequenceNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 

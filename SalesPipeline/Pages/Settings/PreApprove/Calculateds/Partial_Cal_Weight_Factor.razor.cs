@@ -57,36 +57,86 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				{
 					formModel = data.Data;
 
+					List<Pre_Cal_WeightFactor_ItemCustom> factor_Item = new();
+
 					if (formModel.Pre_Cal_Infos != null)
 					{
 						formWeightModel.Add(new()
 						{
 							Type = PreCalType.Info,
 							TotalPercent = 0,
-							Pre_Cal_WeightFactor_Items = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ", Percent = 5 } }
+							Pre_Cal_WeightFactor_Items = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ" } }
 						});
 					}
 
 					if (formModel.Pre_Cal_Fetu_Stans != null)
 					{
+						factor_Item = new();
+
 						var fetuStan = formModel.Pre_Cal_Fetu_Stans.FirstOrDefault();
 						if (fetuStan != null && fetuStan.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
 						{
-							List<Pre_Cal_WeightFactor_ItemCustom> factor_Item = new();
-
 							var stanLookUp = fetuStan.Pre_Cal_Fetu_Stan_Scores.ToLookup(x => x.Type).OrderBy(x => x.Key);
 
 							foreach (var item in stanLookUp)
 							{
 								factor_Item.Add(new()
 								{
-									StanScoreType = item.Key,
-									Percent = item.Key
+									StanScoreType = item.Key
 								});
 							}
 							formWeightModel.Add(new()
 							{
 								Type = PreCalType.Stan,
+								TotalPercent = 0,
+								Pre_Cal_WeightFactor_Items = factor_Item
+							});
+						}
+					}
+
+					if (formModel.Pre_Cal_Fetu_Apps != null)
+					{
+						factor_Item = new();
+
+						var fetuApp = formModel.Pre_Cal_Fetu_Apps.FirstOrDefault();
+						if (fetuApp != null && fetuApp.Pre_Cal_Fetu_App_Items?.Count > 0)
+						{
+							foreach (var item in fetuApp.Pre_Cal_Fetu_App_Items)
+							{
+								factor_Item.Add(new()
+								{
+									RefItemId = item.Id,
+									Name = item.Name,
+								});
+							}
+							formWeightModel.Add(new()
+							{
+								Type = PreCalType.AppLoan,
+								TotalPercent = 0,
+								Pre_Cal_WeightFactor_Items = factor_Item
+							});
+						}
+					}
+
+
+					if (formModel.Pre_Cal_Fetu_Bus != null)
+					{
+						factor_Item = new();
+
+						var fetuBus = formModel.Pre_Cal_Fetu_Bus.FirstOrDefault();
+						if (fetuBus != null && fetuBus.Pre_Cal_Fetu_Bus_Items?.Count > 0)
+						{
+							foreach (var item in fetuBus.Pre_Cal_Fetu_Bus_Items)
+							{
+								factor_Item.Add(new()
+								{
+									RefItemId = item.Id,
+									Name = item.Name,
+								});
+							}
+							formWeightModel.Add(new()
+							{
+								Type = PreCalType.BusType,
 								TotalPercent = 0,
 								Pre_Cal_WeightFactor_Items = factor_Item
 							});

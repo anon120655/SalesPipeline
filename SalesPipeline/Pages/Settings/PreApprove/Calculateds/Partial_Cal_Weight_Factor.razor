@@ -131,80 +131,100 @@
 				</div>
 			</div>
 		</div>
+
+		var weightApp = formWeightModel.Where(x => x.Type == PreCalType.AppLoan).FirstOrDefault();
+
+		<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+			<div class="progress-bar"></div>
+			<h6 class="progress-text">คุณสมบัติตามประเภทผู้ขอ</h6>
+			<div class="progress-percentage">
+				@if (weightApp != null)
+				{
+					<input value="@weightApp._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+				}
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+					@if (weightApp?.Pre_Cal_WeightFactor_Items?.Count > 0)
+					{
+						foreach (var item in weightApp.Pre_Cal_WeightFactor_Items)
+						{
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-md-9">
+									<p>@item.Name</p>
+								</div>
+								<div class="col-11 col-md-1">
+									<input type="text" class="form-control form-control-sm score"
+										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+								</div>
+								<div class="col-1">
+									<span class="ms-2">%</span>
+								</div>
+							</div>
+						}
+					}
+					else
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white text-center"></i></span>
+					}
+				</div>
+			</div>
+		</div>
+
+		var weightBus = formWeightModel.Where(x => x.Type == PreCalType.BusType).FirstOrDefault();
+
+		<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
+			<div class="progress-bar"></div>
+			<h6 class="progress-text">คุณสมบัติตามประเภทธุรกิจ</h6>
+			<div class="progress-percentage">
+				@if (weightBus != null)
+				{
+					<input value="@weightBus._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+				}
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
+					@if (weightBus?.Pre_Cal_WeightFactor_Items?.Count > 0)
+					{
+						foreach (var item in weightBus.Pre_Cal_WeightFactor_Items)
+						{
+							<div class="row d-flex align-items-center mb-1">
+								<div class="col-12 col-md-9">
+									<p>@item.Name</p>
+								</div>
+								<div class="col-11 col-md-1">
+									<input type="text" class="form-control form-control-sm score"
+										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+								</div>
+								<div class="col-1">
+									<span class="ms-2">%</span>
+								</div>
+							</div>
+						}
+					}
+					else
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white text-center"></i></span>
+					}
+				</div>
+			</div>
+		</div>
 	}
 
 	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
 		<div class="progress-bar"></div>
-		<h6 class="progress-text">คุณสมบัติตามประเภทผู้ขอ</h6>
-		<div class="progress-percentage">
-			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
-		</div>
-	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>xxxxxx</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
-		<div class="progress-bar"></div>
-		<h6 class="progress-text">คุณสมบัติตามประเภทธุรกิจ</h6>
-		<div class="progress-percentage">
-			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
-		</div>
-	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>xxxxxx</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="progress-container bg-header text-white rounded-1 p-2 mt-2">
-		<div class="progress-bar"></div>
 		<h6 class="progress-text">น้ำหนักรวม</h6>
-		<div class="progress-percentage">
+		<div class="progress-percentage">			
 			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 		</div>
 	</div>
-	<div class="row mt-2">
-		<div class="col-12">
-			<div class="bg-secondary bg-opacity-10 rounded p-3 mb-2">
-				<div class="row d-flex align-items-center mb-1">
-					<div class="col-12 col-md-9">
-						<p>xxxxxx</p>
-					</div>
-					<div class="col-11 col-md-1">
-						<input type="text" class="form-control readonly_input form-control-sm score" value="0.00">
-					</div>
-					<div class="col-1">
-						<span class="ms-2">%</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+
 </div>
 
 
