@@ -4,6 +4,7 @@ using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.ViewModels
@@ -128,7 +129,9 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Loan/GetList?{model.SetParameter(true)}");
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Loan/GetList", dataJson, token: tokenJwt);
 				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<LoanCustom>>>(content);
 
 				return new ResultModel<PaginationView<List<LoanCustom>>>()

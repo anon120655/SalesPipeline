@@ -1166,6 +1166,11 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ประเภทผู้ขอสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpGet("GetPre_App_Loan")]
 		public async Task<IActionResult> GetPre_App_Loan([FromQuery] allFilter model)
 		{
@@ -1252,6 +1257,11 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ประเภทธุรกิจ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
 		[HttpGet("GetPre_BusType")]
 		public async Task<IActionResult> GetPre_BusType([FromQuery] allFilter model)
 		{

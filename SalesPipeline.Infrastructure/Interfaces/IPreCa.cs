@@ -12,6 +12,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateStatusById(UpdateModel model);
 		Task<Pre_CalCustom> GetById(Guid id);
 		Task<Pre_CalCustom> GetIncludeAllById(Guid id);
+		Task<Pre_CalCustom> GetCalByAppBusId(Guid appid, Guid busid);
 		Task<PaginationView<List<Pre_CalCustom>>> GetList(allFilter model);
 	}
 }

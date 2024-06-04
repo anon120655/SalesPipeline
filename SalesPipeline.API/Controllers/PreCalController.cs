@@ -110,6 +110,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetCalByAppBusId")]
+		public async Task<IActionResult> GetCalByAppBusId([FromQuery] Guid appid, [FromQuery] Guid busid)
+		{
+			try
+			{
+				var data = await _repo.PreCal.GetCalByAppBusId(appid, busid);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] allFilter model)
 		{

@@ -97,8 +97,8 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetList")]
-		public async Task<IActionResult> GetList([FromQuery] allFilter model)
+		[HttpPost("GetList")]
+		public async Task<IActionResult> GetList(allFilter model)
 		{
 			try
 			{
