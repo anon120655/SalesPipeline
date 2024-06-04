@@ -35,6 +35,9 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.PreCalWeight.Validate(model);
 
+					Guid id = model.Select(x=>x.Pre_CalId).FirstOrDefault();
+					await _repo.PreCalWeight.RemoveAllPreCall(id);
+
 					foreach (var item in model)
 					{
 						await _repo.PreCalWeight.Create(item);
@@ -51,19 +54,13 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPut("Update")]
-		public async Task<IActionResult> Update(Pre_Cal_WeightFactorCustom model)
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
 			try
 			{
-				using (var _transaction = _repo.BeginTransaction())
-				{
-					var data = await _repo.PreCalWeight.Update(model);
-
-					_transaction.Commit();
-
-					return Ok(data);
-				}
+				var data = await _repo.PreCalWeight.GetById(id);
+				return Ok(data);
 			}
 			catch (Exception ex)
 			{
@@ -71,12 +68,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpGet("GetById")]
-		public async Task<IActionResult> GetById([FromQuery] Guid id)
+		[HttpGet("GetAllPreCalById")]
+		public async Task<IActionResult> GetAllPreCalById([FromQuery] Guid id)
 		{
 			try
 			{
-				var data = await _repo.PreCalWeight.GetById(id);
+				var data = await _repo.PreCalWeight.GetAllPreCalById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)

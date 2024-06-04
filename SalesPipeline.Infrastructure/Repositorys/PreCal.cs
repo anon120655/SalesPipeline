@@ -168,9 +168,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										 .Include(x => x.Pre_Cal_Infos).ThenInclude(x => x.Pre_Cal_Info_Scores.OrderBy(o=>o.SequenceNo))
 										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_ItemOptions.OrderBy(o => o.SequenceNo))
 										 .Include(x => x.Pre_Cal_Fetu_Stans).ThenInclude(x => x.Pre_Cal_Fetu_Stan_Scores.OrderBy(o => o.SequenceNo))
-										 .Include(x => x.Pre_Cal_Fetu_Apps).ThenInclude(x => x.Pre_Cal_Fetu_App_Items.OrderBy(o => o.SequenceNo))
-										 .Include(x => x.Pre_Cal_Fetu_Bus).ThenInclude(x => x.Pre_Cal_Fetu_Bus_Items.OrderBy(o => o.SequenceNo))
-										 //.Include(x => x.Pre_Cal_WeightFactors).ThenInclude(x => x.Pre_Cal_WeightFactor_Items.OrderBy(o => o.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Apps).ThenInclude(x => x.Pre_Cal_Fetu_App_Items.OrderBy(o => o.SequenceNo)).ThenInclude(x=>x.Pre_Cal_Fetu_App_Item_Scores)
+										 .Include(x => x.Pre_Cal_Fetu_Bus).ThenInclude(x => x.Pre_Cal_Fetu_Bus_Items.OrderBy(o => o.SequenceNo)).ThenInclude(x=>x.Pre_Cal_Fetu_Bus_Item_Scores)
+										 .Include(x => x.Pre_Cal_WeightFactors).ThenInclude(x => x.Pre_Cal_WeightFactor_Items.OrderBy(o => o.SequenceNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 

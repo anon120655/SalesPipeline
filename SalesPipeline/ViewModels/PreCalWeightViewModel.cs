@@ -43,13 +43,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Pre_Cal_WeightFactorCustom>> Update(Pre_Cal_WeightFactorCustom model)
+		public async Task<ResultModel<Pre_Cal_WeightFactorCustom>?> GetById(Guid id)
 		{
 			try
 			{
-				string tokenJwt = await _authorizeViewModel.GetAccessToken();
-				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PutAsync($"/v1/PreCalWeight/Update", dataJson, token: tokenJwt);
+				var content = await _httpClient.GetAsync($"/v1/PreCalWeight/GetById?id={id}");
 				var dataMap = JsonConvert.DeserializeObject<Pre_Cal_WeightFactorCustom>(content);
 				return new ResultModel<Pre_Cal_WeightFactorCustom>()
 				{
@@ -66,20 +64,20 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Pre_Cal_WeightFactorCustom>?> GetById(Guid id)
+		public async Task<ResultModel<List<Pre_Cal_WeightFactorCustom>>?> GetAllPreCalById(Guid id)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/PreCalWeight/GetById?id={id}");
-				var dataMap = JsonConvert.DeserializeObject<Pre_Cal_WeightFactorCustom>(content);
-				return new ResultModel<Pre_Cal_WeightFactorCustom>()
+				var content = await _httpClient.GetAsync($"/v1/PreCalWeight/GetAllPreCalById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<List<Pre_Cal_WeightFactorCustom>>(content);
+				return new ResultModel<List<Pre_Cal_WeightFactorCustom>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Pre_Cal_WeightFactorCustom>
+				return new ResultModel<List<Pre_Cal_WeightFactorCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
