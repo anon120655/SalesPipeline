@@ -36,6 +36,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Pre_Cal_Fetu_Bus_Item_Score, Pre_Cal_Fetu_Bus_Item_ScoreCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_WeightFactor, Pre_Cal_WeightFactorCustom>().ReverseMap();
 			CreateMap<Entity.Pre_Cal_WeightFactor_Item, Pre_Cal_WeightFactor_ItemCustom>().ReverseMap();
+			CreateMap<Entity.Pre_CreditScore, Pre_CreditScoreCustom>().ReverseMap();
+			CreateMap<Entity.Pre_ChancePass, Pre_ChancePassCustom>().ReverseMap();
 
 
 			//Loan

@@ -1,0 +1,46 @@
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using SalesPipeline.Helpers;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
+
+namespace SalesPipeline.ViewModels
+{
+	public class PreCreditViewModel
+	{
+		private readonly IHttpClientCustom _httpClient;
+		private readonly AppSettings _appSet;
+		private readonly AuthorizeViewModel _authorizeViewModel;
+
+		public PreCreditViewModel(IHttpClientCustom httpClient, IOptions<AppSettings> appset, AuthorizeViewModel authorizeViewModel)
+		{
+			_httpClient = httpClient;
+			_appSet = appset.Value;
+			_authorizeViewModel = authorizeViewModel;
+		}
+
+		public async Task<ResultModel<PaginationView<List<Pre_CreditScoreCustom>>>> GetList(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/PreCredit/GetList?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Pre_CreditScoreCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Pre_CreditScoreCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Pre_CreditScoreCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+	}
+}

@@ -138,6 +138,10 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Pre_Cal_WeightFactor_Item> Pre_Cal_WeightFactor_Items { get; set; }
 
+    public virtual DbSet<Pre_ChancePass> Pre_ChancePasses { get; set; }
+
+    public virtual DbSet<Pre_CreditScore> Pre_CreditScores { get; set; }
+
     public virtual DbSet<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; }
 
     public virtual DbSet<ProcessSale> ProcessSales { get; set; }
@@ -1958,6 +1962,45 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.Pre_Cal_WeightFactorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pre_cal_weightfactor_item_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_ChancePass>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_ChancePass");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreditScore).HasMaxLength(255);
+            entity.Property(e => e.Prob).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.Z).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<Pre_CreditScore>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_CreditScore");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreditScore).HasMaxLength(255);
+            entity.Property(e => e.CreditScoreColor).HasMaxLength(255);
+            entity.Property(e => e.Grade).HasMaxLength(255);
+            entity.Property(e => e.Level).HasMaxLength(255);
+            entity.Property(e => e.LimitMultiplier).HasMaxLength(255);
+            entity.Property(e => e.RateMultiplier).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Pre_Reply_Cal_Info>(entity =>

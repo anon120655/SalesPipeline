@@ -38,6 +38,8 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected PreCalStanViewModel _preCalStanViewModel { get; set; } = default!;
 		[Inject] protected PreCalAppViewModel _preCalAppViewModel { get; set; } = default!;
 		[Inject] protected PreCalBusViewModel _preCalBusViewModel { get; set; } = default!;
-		[Inject] protected PreCalWeightViewModel _preCalWeightViewModel { get; set; } = default!;		
+		[Inject] protected PreCalWeightViewModel _preCalWeightViewModel { get; set; } = default!;
+		[Inject] protected PreCreditViewModel _preCreditViewModel { get; set; } = default!;
+		[Inject] protected PreChanceViewModel _preChanceViewModel { get; set; } = default!;
 	}
 }
