@@ -46,5 +46,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		public virtual List<Pre_Cal_Fetu_StanCustom>? Pre_Cal_Fetu_Stans { get; set; }
 
 		public virtual List<Pre_Cal_InfoCustom>? Pre_Cal_Infos { get; set; }
+
+		public virtual List<Pre_Cal_WeightFactorCustom>? Pre_Cal_WeightFactors { get; set; }
+
 	}
 }

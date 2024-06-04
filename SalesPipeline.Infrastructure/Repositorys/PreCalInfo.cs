@@ -158,5 +158,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Pre_Cal_InfoCustom>(query);
 		}
 
+		public async Task<Pre_Cal_InfoCustom> GetByPreCalId(Guid id)
+		{
+			var query = await _repo.Context.Pre_Cal_Infos
+										 .Include(x => x.Pre_Cal_Info_Scores.OrderBy(s => s.SequenceNo))
+										 .OrderByDescending(o => o.CreateDate)
+										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == id);
+
+			return _mapper.Map<Pre_Cal_InfoCustom>(query);
+		}
+
 	}
 }

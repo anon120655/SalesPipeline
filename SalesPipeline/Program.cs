@@ -63,6 +63,7 @@ builder.Services.AddScoped<PreCalInfoViewModel>();
 builder.Services.AddScoped<PreCalStanViewModel>();
 builder.Services.AddScoped<PreCalAppViewModel>();
 builder.Services.AddScoped<PreCalBusViewModel>();
+builder.Services.AddScoped<PreCalWeightViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

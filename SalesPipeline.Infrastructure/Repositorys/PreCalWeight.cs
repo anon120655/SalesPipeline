@@ -29,9 +29,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<Pre_Cal_WeightFactorCustom> Validate(Pre_Cal_WeightFactorCustom model)
+		public async Task Validate(List<Pre_Cal_WeightFactorCustom> model)
 		{
 			await Task.Delay(1);
+
+			var TotalPercentAll = model.Sum(x => x._TotalPercent);
+			if (TotalPercentAll != 100)
+			{
+				throw new ExceptionCustom("น้ำหนักรวมต้องเท่ากับ 100%");
+			}
 
 			//if (model.Pre_Cal_Fetu_Stan_ItemOptions == null || model.Pre_Cal_Fetu_Stan_ItemOptions.Count == 0)
 			//{
@@ -67,26 +73,61 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//		throw new ExceptionCustom("คะแนนต้องไม่มากว่าคะแนนสูงสุด");
 			//	}
 			//}
-
-			return model;
 		}
 
 		public async Task<Pre_Cal_WeightFactorCustom> Create(Pre_Cal_WeightFactorCustom model)
 		{
-			await Validate(model);
+			DateTime _dateNow = DateTime.Now;
 
-			using (var _transaction = _repo.BeginTransaction())
+			var pre_Cal_WeightFactor = new Data.Entity.Pre_Cal_WeightFactor();
+			pre_Cal_WeightFactor.Status = StatusModel.Active;
+			pre_Cal_WeightFactor.CreateDate = _dateNow;
+			pre_Cal_WeightFactor.Pre_CalId = model.Pre_CalId;
+			pre_Cal_WeightFactor.Type = model.Type;
+			pre_Cal_WeightFactor.TotalPercent = model._TotalPercent;
+			await _db.InsterAsync(pre_Cal_WeightFactor);
+			await _db.SaveAsync();
+
+			if (model.Pre_Cal_WeightFactor_Items?.Count > 0)
 			{
-				DateTime _dateNow = DateTime.Now;
+				int index = 1;
+				foreach (var item in model.Pre_Cal_WeightFactor_Items)
+				{
+					var pre_Cal_WeightFactor_Item = new Data.Entity.Pre_Cal_WeightFactor_Item();
+					pre_Cal_WeightFactor_Item.Id = item.Id;
+					pre_Cal_WeightFactor_Item.Status = StatusModel.Active;
+					pre_Cal_WeightFactor_Item.CreateDate = _dateNow;
+					pre_Cal_WeightFactor_Item.Pre_Cal_WeightFactorId = pre_Cal_WeightFactor.Id;
+					pre_Cal_WeightFactor_Item.SequenceNo = index;
+					pre_Cal_WeightFactor_Item.Percent = item.Percent;
+					pre_Cal_WeightFactor_Item.RefItemId = item.RefItemId;
+					pre_Cal_WeightFactor_Item.StanScoreType = item.StanScoreType;
+					await _db.InsterAsync(pre_Cal_WeightFactor_Item);
+					await _db.SaveAsync();
+					index++;
+				}
+			}
 
-				var pre_Cal_WeightFactor = new Data.Entity.Pre_Cal_WeightFactor();
-				pre_Cal_WeightFactor.Status = StatusModel.Active;
-				pre_Cal_WeightFactor.CreateDate = _dateNow;
-				pre_Cal_WeightFactor.Pre_CalId = model.Pre_CalId;
-				pre_Cal_WeightFactor.Type = model.Type;
+			return _mapper.Map<Pre_Cal_WeightFactorCustom>(pre_Cal_WeightFactor);
+		}
+
+		public async Task<Pre_Cal_WeightFactorCustom> Update(Pre_Cal_WeightFactorCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+			var pre_Cal_WeightFactor = await _repo.Context.Pre_Cal_WeightFactors.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+			if (pre_Cal_WeightFactor != null)
+			{
 				pre_Cal_WeightFactor.TotalPercent = model.TotalPercent;
-				await _db.InsterAsync(pre_Cal_WeightFactor);
+				_db.Update(pre_Cal_WeightFactor);
 				await _db.SaveAsync();
+
+				//Update Status To Delete All
+				var pre_Cal_WeightFactor_ItemR = _repo.Context.Pre_Cal_WeightFactor_Items.Where(x => x.Pre_Cal_WeightFactorId == pre_Cal_WeightFactor.Id).ToList();
+				if (pre_Cal_WeightFactor_ItemR.Count > 0)
+				{
+					_db.DeleteRange(pre_Cal_WeightFactor_ItemR);
+					await _db.SaveAsync();
+				}
 
 				if (model.Pre_Cal_WeightFactor_Items?.Count > 0)
 				{
@@ -108,60 +149,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
-
-				return _mapper.Map<Pre_Cal_WeightFactorCustom>(pre_Cal_WeightFactor);
 			}
-		}
 
-		public async Task<Pre_Cal_WeightFactorCustom> Update(Pre_Cal_WeightFactorCustom model)
-		{
-			await Validate(model);
-
-			using (var _transaction = _repo.BeginTransaction())
-			{
-				DateTime _dateNow = DateTime.Now;
-				var pre_Cal_WeightFactor = await _repo.Context.Pre_Cal_WeightFactors.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
-				if (pre_Cal_WeightFactor != null)
-				{
-					pre_Cal_WeightFactor.TotalPercent = model.TotalPercent;
-					_db.Update(pre_Cal_WeightFactor);
-					await _db.SaveAsync();
-
-					//Update Status To Delete All
-					var pre_Cal_WeightFactor_ItemR = _repo.Context.Pre_Cal_WeightFactor_Items.Where(x => x.Pre_Cal_WeightFactorId == pre_Cal_WeightFactor.Id).ToList();
-					if (pre_Cal_WeightFactor_ItemR.Count > 0)
-					{
-						_db.DeleteRange(pre_Cal_WeightFactor_ItemR);
-						await _db.SaveAsync();
-					}
-
-					if (model.Pre_Cal_WeightFactor_Items?.Count > 0)
-					{
-						int index = 1;
-						foreach (var item in model.Pre_Cal_WeightFactor_Items)
-						{
-							var pre_Cal_WeightFactor_Item = new Data.Entity.Pre_Cal_WeightFactor_Item();
-							pre_Cal_WeightFactor_Item.Id = item.Id;
-							pre_Cal_WeightFactor_Item.Status = StatusModel.Active;
-							pre_Cal_WeightFactor_Item.CreateDate = _dateNow;
-							pre_Cal_WeightFactor_Item.Pre_Cal_WeightFactorId = pre_Cal_WeightFactor.Id;
-							pre_Cal_WeightFactor_Item.SequenceNo = index;
-							pre_Cal_WeightFactor_Item.Percent = item.Percent;
-							pre_Cal_WeightFactor_Item.RefItemId = item.RefItemId;
-							pre_Cal_WeightFactor_Item.StanScoreType = item.StanScoreType;
-							await _db.InsterAsync(pre_Cal_WeightFactor_Item);
-							await _db.SaveAsync();
-							index++;
-						}
-					}
-
-				}
-
-				_transaction.Commit();
-
-				return _mapper.Map<Pre_Cal_WeightFactorCustom>(pre_Cal_WeightFactor);
-			}
+			return _mapper.Map<Pre_Cal_WeightFactorCustom>(pre_Cal_WeightFactor);
 		}
 
 		public async Task<Pre_Cal_WeightFactorCustom> GetById(Guid id)
@@ -173,6 +163,5 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return _mapper.Map<Pre_Cal_WeightFactorCustom>(query);
 		}
-
 	}
 }

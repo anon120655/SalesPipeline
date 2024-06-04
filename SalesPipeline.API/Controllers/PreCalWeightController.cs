@@ -27,12 +27,23 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPost("Create")]
-		public async Task<IActionResult> Create(Pre_Cal_WeightFactorCustom model)
+		public async Task<IActionResult> Create(List<Pre_Cal_WeightFactorCustom> model)
 		{
 			try
 			{
-				var data = await _repo.PreCalWeight.Create(model);
-				return Ok(data);
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.PreCalWeight.Validate(model);
+
+					foreach (var item in model)
+					{
+						await _repo.PreCalWeight.Create(item);
+					}
+
+					_transaction.Commit();
+
+					return Ok();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -45,8 +56,14 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var data = await _repo.PreCalWeight.Update(model);
-				return Ok(data);
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					var data = await _repo.PreCalWeight.Update(model);
+
+					_transaction.Commit();
+
+					return Ok(data);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -67,6 +84,5 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
-
 	}
 }

@@ -20,22 +20,22 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<Pre_Cal_WeightFactorCustom>> Create(Pre_Cal_WeightFactorCustom model)
+		public async Task<ResultModel<bool>> Create(List<Pre_Cal_WeightFactorCustom> model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/PreCalWeight/Create", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Pre_Cal_WeightFactorCustom>(content);
-				return new ResultModel<Pre_Cal_WeightFactorCustom>()
+				
+				return new ResultModel<bool>()
 				{
-					Data = dataMap
+					Data = true
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Pre_Cal_WeightFactorCustom>
+				return new ResultModel<bool>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -86,6 +86,7 @@ namespace SalesPipeline.ViewModels
 				};
 			}
 		}
+
 
 	}
 }

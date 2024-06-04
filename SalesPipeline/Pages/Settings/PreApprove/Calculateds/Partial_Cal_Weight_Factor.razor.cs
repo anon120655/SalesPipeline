@@ -52,6 +52,16 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		protected async Task SetModel()
 		{
+
+			var dataInfo = await _preCalInfoViewModel.GetById(pre_CalId);
+			if (dataInfo != null && dataInfo.Status)
+			{
+				if (dataInfo.Data != null)
+				{
+				}
+			}
+
+
 			formWeightModel = new();
 			var data = await _preCalViewModel.GetIncludeAllById(pre_CalId);
 			if (data != null && data.Status)
@@ -60,17 +70,27 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				{
 					formModel = data.Data;
 
+					//var dataW = await _preCalWeightViewModel.GetCalAllById(pre_CalId);
+					//if (dataW != null && dataW.Status)
+					//{
+					//	if (dataW.Data != null && dataW.Data.Count > 0)
+					//	{
+					//	}
+					//}
+
 					List<Pre_Cal_WeightFactor_ItemCustom> factor_Item = new();
 
 					if (formModel.Pre_Cal_Infos != null)
 					{
 						formWeightModel.Add(new()
 						{
+							Pre_CalId = pre_CalId,
 							Type = PreCalType.Info,
 							TotalPercent = 0,
 							Pre_Cal_WeightFactor_Items = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ", Percent = 5 } }
 						});
 					}
+					StateHasChanged();
 
 					if (formModel.Pre_Cal_Fetu_Stans != null)
 					{
@@ -91,12 +111,14 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 							}
 							formWeightModel.Add(new()
 							{
+								Pre_CalId = pre_CalId,
 								Type = PreCalType.Stan,
 								TotalPercent = 0,
 								Pre_Cal_WeightFactor_Items = factor_Item
 							});
 						}
 					}
+					StateHasChanged();
 
 					if (formModel.Pre_Cal_Fetu_Apps != null)
 					{
@@ -116,6 +138,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 							}
 							formWeightModel.Add(new()
 							{
+								Pre_CalId = pre_CalId,
 								Type = PreCalType.AppLoan,
 								TotalPercent = 0,
 								Pre_Cal_WeightFactor_Items = factor_Item
@@ -142,6 +165,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 							}
 							formWeightModel.Add(new()
 							{
+								Pre_CalId = pre_CalId,
 								Type = PreCalType.BusType,
 								TotalPercent = 0,
 								Pre_Cal_WeightFactor_Items = factor_Item
@@ -158,30 +182,18 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 		private async Task Seve()
 		{
-			ResultModel<Pre_Cal_WeightFactorCustom> response;
+			var response = await _preCalWeightViewModel.Create(formWeightModel);
 
-			//formModel.Pre_CalId = pre_CalId;
-			//formModel.CurrentUserId = UserInfo.Id;
-
-			//if (formModel.Id == Guid.Empty)
-			//{
-			//	response = await _preCalAppViewModel.Create(formModel);
-			//}
-			//else
-			//{
-			//	response = await _preCalAppViewModel.Update(formModel);
-			//}
-
-			//if (response.Status)
-			//{
-			//	await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-			//	await SetModel();
-			//}
-			//else
-			//{
-			//	_errorMessage = response.errorMessage;
-			//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			//}
+			if (response.Status)
+			{
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+				await SetModel();
+			}
+			else
+			{
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
 		}
 
 		private void Cancel()
