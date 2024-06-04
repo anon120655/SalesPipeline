@@ -1,4 +1,16 @@
-﻿
+﻿@{
+	decimal TotalPercentAll = 0;
+	if (formWeightModel != null)
+	{
+		isDisableSave = true;
+		TotalPercentAll = formWeightModel.Sum(x => x._TotalPercent);
+		if (TotalPercentAll == 100)
+		{
+			isDisableSave = false;
+		}
+	}
+}
+
 <style>
 	.progress-container {
 		width: 100%;
@@ -221,7 +233,26 @@
 		<div class="progress-bar"></div>
 		<h6 class="progress-text">น้ำหนักรวม</h6>
 		<div class="progress-percentage">			
-			<input value="0.00" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+			<input class="@(isDisableSave ? "text-danger":"text-success")" value="@TotalPercentAll.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+		</div>
+	</div>
+
+	<div class="my-4 text-center">
+		<div class="d-flex bd-highlight align-items-center justify-content-center">
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Cancel Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+					กลับ
+				</Button>
+			</div>
+			<div class="p-2 bd-highlight">
+				<Button @onclick=Seve Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isDisableSave" Class="mw_6r">
+					@if (isLoading)
+					{
+						<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+					}
+					บันทึก
+				</Button>
+			</div>
 		</div>
 	</div>
 

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.PropertiesModel;
 using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
@@ -14,6 +16,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		public bool IsShowTab { get; set; }
 
 		string? _errorMessage = null;
+		private bool isDisableSave = false;
 		private bool isLoading = false;
 		private Pre_CalCustom formModel = new();
 		private List<Pre_Cal_WeightFactorCustom> formWeightModel = new();
@@ -65,7 +68,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 						{
 							Type = PreCalType.Info,
 							TotalPercent = 0,
-							Pre_Cal_WeightFactor_Items = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ" } }
+							Pre_Cal_WeightFactor_Items = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ", Percent = 5 } }
 						});
 					}
 
@@ -82,7 +85,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 							{
 								factor_Item.Add(new()
 								{
-									StanScoreType = item.Key
+									StanScoreType = item.Key,
+									Percent = item.Key
 								});
 							}
 							formWeightModel.Add(new()
@@ -107,6 +111,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 								{
 									RefItemId = item.Id,
 									Name = item.Name,
+									Percent = 1
 								});
 							}
 							formWeightModel.Add(new()
@@ -132,6 +137,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 								{
 									RefItemId = item.Id,
 									Name = item.Name,
+									Percent = 2
 								});
 							}
 							formWeightModel.Add(new()
@@ -148,6 +154,39 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				}
 			}
 
+		}
+
+		private async Task Seve()
+		{
+			ResultModel<Pre_Cal_WeightFactorCustom> response;
+
+			//formModel.Pre_CalId = pre_CalId;
+			//formModel.CurrentUserId = UserInfo.Id;
+
+			//if (formModel.Id == Guid.Empty)
+			//{
+			//	response = await _preCalAppViewModel.Create(formModel);
+			//}
+			//else
+			//{
+			//	response = await _preCalAppViewModel.Update(formModel);
+			//}
+
+			//if (response.Status)
+			//{
+			//	await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+			//	await SetModel();
+			//}
+			//else
+			//{
+			//	_errorMessage = response.errorMessage;
+			//	await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			//}
+		}
+
+		private void Cancel()
+		{
+			_Navs.NavigateTo("/setting/pre/calculated");
 		}
 
 	}
