@@ -75,7 +75,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 					var weightData = formWeightModel.Where(x => x.Type == PreCalType.Info).FirstOrDefault();
 					if (weightData == null)
 					{
-						factor_Item = new() { new() { Name = "มูลค่าสินเชื่อที่ขอ", Percent = 0 } };
+						factor_Item = new() { new() { Name = "มูลค่าสินเชื่อ", Percent = 0 } };
 						formWeightModel.Add(new()
 						{
 							Pre_CalId = pre_CalId,
@@ -99,18 +99,19 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 					{
 						var stanLookUp = dataStan.Data.Pre_Cal_Fetu_Stan_Scores.ToLookup(x => x.Type).OrderBy(x => x.Key);
 
+						foreach (var item in stanLookUp)
+						{
+							factor_Item.Add(new()
+							{
+								StanScoreType = item.Key,
+								Name = PropertiesMain.PerCalFetuStanName(item.Key.ToString() ?? string.Empty)?.Name,
+								Percent = 0
+							});
+						}
+
 						var weightData = formWeightModel.Where(x => x.Type == PreCalType.Stan).FirstOrDefault();
 						if (weightData == null)
 						{
-							foreach (var item in stanLookUp)
-							{
-								factor_Item.Add(new()
-								{
-									StanScoreType = item.Key,
-									Name = PropertiesMain.PerCalFetuStanName(item.Key.ToString() ?? string.Empty)?.Name,
-									Percent = 0
-								});
-							}
 							formWeightModel.Add(new()
 							{
 								Pre_CalId = pre_CalId,
@@ -118,8 +119,14 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 								TotalPercent = 0,
 								Pre_Cal_WeightFactor_Items = factor_Item
 							});
-							StateHasChanged();
 						}
+						else
+						{
+							weightData.Pre_Cal_WeightFactor_Items = factor_Item;
+						}
+
+						StateHasChanged();
+
 					}
 				}
 			}

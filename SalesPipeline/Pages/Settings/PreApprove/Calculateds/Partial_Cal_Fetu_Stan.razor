@@ -529,7 +529,7 @@
 		</div>
 		<div class="row p-3">
 			<div class="col-12">
-				<p>@PropertiesMain.PerCalFetuStanName(PreStanScoreType.LoanValue.ToString())?.Name</p>
+				<p>@PropertiesMain.PerCalFetuStanName(PreStanScoreType.CollateralValue.ToString())?.Name</p>
 			</div>
 			<div class="col-12">
 				<div class="row">
@@ -537,7 +537,7 @@
 						<div class="rounded p-3">
 							@if (formModel.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
 							{
-								int type = PreStanScoreType.LoanValue;
+								int type = PreStanScoreType.CollateralValue;
 								var stan_Score = formModel.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Type == type).ToList();
 
 								int index = 1;

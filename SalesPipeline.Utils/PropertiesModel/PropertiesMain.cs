@@ -141,8 +141,8 @@ namespace SalesPipeline.Utils.PropertiesModel
 				},
 				new PropertiesOptions()
 				{
-					Code = PreStanScoreType.LoanValue.ToString(),
-					Name = "มูลค่าสินเชื่อ"
+					Code = PreStanScoreType.CollateralValue.ToString(),
+					Name = "มูลค่าหลักประกัน"
 				},
 				new PropertiesOptions()
 				{

@@ -71,7 +71,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				await InsertScore(PreStanScoreType.WeighLiabilitieOtherIncome);
 				await InsertScore(PreStanScoreType.CashBank);
 				//await InsertScore(PreStanScoreType.CollateralType);
-				await InsertScore(PreStanScoreType.LoanValue);
+				await InsertScore(PreStanScoreType.CollateralValue);
 				//await InsertScore(PreStanScoreType.PaymentHistory);
 			}
 

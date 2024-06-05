@@ -29,9 +29,9 @@ namespace SalesPipeline.Utils.ConstTypeModel
 		/// </summary>
 		public const int CollateralType = 5;
 		/// <summary>
-		/// มูลค่าสินเชื่อ
+		/// มูลค่าหลักประกัน
 		/// </summary>
-		public const int LoanValue = 6;
+		public const int CollateralValue = 6;
 		/// <summary>
 		/// ประวัติการชำระหนี้
 		/// </summary>
