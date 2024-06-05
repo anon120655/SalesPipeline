@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
+/// <summary>
+/// โอกาสขอสินเชื่อผ่าน
+/// </summary>
 public partial class Pre_ChancePass
 {
     public Guid Id { get; set; }

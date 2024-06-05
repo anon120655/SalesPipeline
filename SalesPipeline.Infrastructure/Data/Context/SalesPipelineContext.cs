@@ -144,6 +144,10 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; }
 
+    public virtual DbSet<Pre_Result> Pre_Results { get; set; }
+
+    public virtual DbSet<Pre_Result_Item> Pre_Result_Items { get; set; }
+
     public virtual DbSet<ProcessSale> ProcessSales { get; set; }
 
     public virtual DbSet<ProcessSale_Section> ProcessSale_Sections { get; set; }
@@ -1968,7 +1972,7 @@ public partial class SalesPipelineContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Pre_ChancePass");
+            entity.ToTable("Pre_ChancePass", tb => tb.HasComment("โอกาสขอสินเชื่อผ่าน"));
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -1986,7 +1990,7 @@ public partial class SalesPipelineContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Pre_CreditScore");
+            entity.ToTable("Pre_CreditScore", tb => tb.HasComment("Credit Score"));
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -2045,6 +2049,70 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pre_reply_cal_info_ibfk_1");
+        });
+
+        modelBuilder.Entity<Pre_Result>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Result");
+
+            entity.Property(e => e.Ch_CreditScore).HasMaxLength(255);
+            entity.Property(e => e.Ch_Prob).HasMaxLength(255);
+            entity.Property(e => e.Ch_Z).HasMaxLength(255);
+            entity.Property(e => e.ChancePercent)
+                .HasMaxLength(255)
+                .HasComment("โอกาสขอสินเชื่อผ่าน");
+            entity.Property(e => e.Cr_CreditScore).HasMaxLength(255);
+            entity.Property(e => e.Cr_Grade).HasMaxLength(255);
+            entity.Property(e => e.Cr_Level).HasMaxLength(255);
+            entity.Property(e => e.Cr_LimitMultiplier).HasMaxLength(255);
+            entity.Property(e => e.Cr_RateMultiplier).HasMaxLength(255);
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.ResultLoan)
+                .HasMaxLength(255)
+                .HasComment("ผลการขอสินเชื่อ");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.TotalScore)
+                .HasPrecision(2)
+                .HasComment("คะแนนรวม");
+        });
+
+        modelBuilder.Entity<Pre_Result_Item>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Pre_Result_Item");
+
+            entity.HasIndex(e => e.Pre_ResultId, "Pre_ResultId");
+
+            entity.Property(e => e.AnalysisFactor)
+                .HasMaxLength(255)
+                .HasComment("ปัจจัยการวิเคราะห์");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Feature)
+                .HasMaxLength(255)
+                .HasComment("คุณสมบัติ");
+            entity.Property(e => e.Ratio)
+                .HasPrecision(18, 2)
+                .HasComment("อัตราส่วน");
+            entity.Property(e => e.Score)
+                .HasPrecision(18, 2)
+                .HasComment("คะแนน");
+            entity.Property(e => e.ScoreResult)
+                .HasPrecision(18, 2)
+                .HasComment("ผลคะแนน");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Pre_Result).WithMany(p => p.Pre_Result_Items)
+                .HasForeignKey(d => d.Pre_ResultId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_result_item_ibfk_1");
         });
 
         modelBuilder.Entity<ProcessSale>(entity =>

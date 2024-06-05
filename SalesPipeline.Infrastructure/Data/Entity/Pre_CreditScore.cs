@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
+/// <summary>
+/// Credit Score
+/// </summary>
 public partial class Pre_CreditScore
 {
     public Guid Id { get; set; }
