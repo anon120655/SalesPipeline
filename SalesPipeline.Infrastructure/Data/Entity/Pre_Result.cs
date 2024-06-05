@@ -16,6 +16,8 @@ public partial class Pre_Result
 
     public int CreateBy { get; set; }
 
+    public Guid SaleId { get; set; }
+
     /// <summary>
     /// คะแนนรวม
     /// </summary>
@@ -48,4 +50,6 @@ public partial class Pre_Result
     public string? Ch_Prob { get; set; }
 
     public virtual ICollection<Pre_Result_Item> Pre_Result_Items { get; set; } = new List<Pre_Result_Item>();
+
+    public virtual Sale Sale { get; set; } = null!;
 }

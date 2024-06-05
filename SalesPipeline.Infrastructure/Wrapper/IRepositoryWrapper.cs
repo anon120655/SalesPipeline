@@ -57,6 +57,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IPreCalWeight PreCalWeight { get; }
 		IPreCreditScore PreCreditScore { get; }
 		IPreChancePass PreChancePass { get; }
+		IPreFactor PreFactor { get; }
 
 		IProcessSales ProcessSale { get; }
 		ISales Sales { get; }

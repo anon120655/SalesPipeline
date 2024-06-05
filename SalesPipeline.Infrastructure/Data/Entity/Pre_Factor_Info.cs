@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class Pre_Reply_Cal_Info
+public partial class Pre_Factor_Info
 {
     public Guid Id { get; set; }
 
@@ -14,51 +14,46 @@ public partial class Pre_Reply_Cal_Info
 
     public DateTime CreateDate { get; set; }
 
-    public int CreateBy { get; set; }
+    public Guid Pre_FactorId { get; set; }
 
-    public DateTime UpdateDate { get; set; }
+    public Guid? LoanId { get; set; }
 
-    public int UpdateBy { get; set; }
-
-    public Guid SaleId { get; set; }
-
-    /// <summary>
-    /// FK สินเชื่อ
-    /// </summary>
-    public Guid LoanId { get; set; }
-
-    public string? LoanName { get; set; }
+    public string? LoanIName { get; set; }
 
     /// <summary>
     /// จำนวนงวดชำระต่อปี
     /// </summary>
-    public int PeriodNumberYear { get; set; }
+    public string? InstallmentPayYear { get; set; }
 
     /// <summary>
     /// มูลค่าสินเชื่อ
     /// </summary>
-    public decimal? LoanAmount { get; set; }
+    public decimal? LoanValue { get; set; }
 
     /// <summary>
     /// ระยะเวลาสินเชื่อ
     /// </summary>
-    public int? LoanDuration { get; set; }
+    public int? LoanPeriod { get; set; }
 
     /// <summary>
     /// ประเภทผู้ขอสินเชื่อ
     /// </summary>
-    public Guid? Master_Pre_Applicant_LoanId { get; set; }
+    public Guid Master_Pre_Applicant_LoanId { get; set; }
 
     public string? Master_Pre_Applicant_LoanName { get; set; }
 
     /// <summary>
     /// ประเภทธุรกิจ
     /// </summary>
-    public Guid? Master_Pre_BusinessTypeId { get; set; }
+    public Guid Master_Pre_BusinessTypeId { get; set; }
 
     public string? Master_Pre_BusinessTypeName { get; set; }
 
-    public virtual Loan Loan { get; set; } = null!;
+    public virtual Loan? Loan { get; set; }
 
-    public virtual Sale Sale { get; set; } = null!;
+    public virtual Master_Pre_Applicant_Loan Master_Pre_Applicant_Loan { get; set; } = null!;
+
+    public virtual Master_Pre_BusinessType Master_Pre_BusinessType { get; set; } = null!;
+
+    public virtual Pre_Factor Pre_Factor { get; set; } = null!;
 }

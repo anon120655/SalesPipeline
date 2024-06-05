@@ -66,6 +66,7 @@ builder.Services.AddScoped<PreCalBusViewModel>();
 builder.Services.AddScoped<PreCalWeightViewModel>();
 builder.Services.AddScoped<PreCreditViewModel>();
 builder.Services.AddScoped<PreChanceViewModel>();
+builder.Services.AddScoped<PreFactorViewModel>();
 
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();

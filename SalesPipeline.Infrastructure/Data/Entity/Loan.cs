@@ -53,5 +53,5 @@ public partial class Loan
 
     public virtual Master_Pre_Interest_PayType? Master_Pre_Interest_PayType { get; set; }
 
-    public virtual ICollection<Pre_Reply_Cal_Info> Pre_Reply_Cal_Infos { get; set; } = new List<Pre_Reply_Cal_Info>();
+    public virtual ICollection<Pre_Factor_Info> Pre_Factor_Infos { get; set; } = new List<Pre_Factor_Info>();
 }

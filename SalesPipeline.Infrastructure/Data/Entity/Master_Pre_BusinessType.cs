@@ -26,4 +26,6 @@ public partial class Master_Pre_BusinessType
     public string? Name { get; set; }
 
     public virtual ICollection<Pre_Cal> Pre_Cals { get; set; } = new List<Pre_Cal>();
+
+    public virtual ICollection<Pre_Factor_Info> Pre_Factor_Infos { get; set; } = new List<Pre_Factor_Info>();
 }
