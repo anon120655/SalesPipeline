@@ -39,7 +39,7 @@ public partial class Pre_Factor_Stan
     /// <summary>
     /// ปริมาณเงินฝากกับ ธกส.
     /// </summary>
-    public string? DepositBAAC { get; set; }
+    public decimal? DepositBAAC { get; set; }
 
     /// <summary>
     /// ประเภทหลักประกัน

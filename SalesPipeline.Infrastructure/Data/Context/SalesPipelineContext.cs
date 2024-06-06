@@ -2021,6 +2021,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Pre_Factor");
 
+            entity.HasIndex(e => e.Pre_CalId, "Pre_CalId");
+
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.Property(e => e.CompanyName)
@@ -2031,6 +2033,11 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+
+            entity.HasOne(d => d.Pre_Cal).WithMany(p => p.Pre_Factors)
+                .HasForeignKey(d => d.Pre_CalId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pre_factor_ibfk_2");
 
             entity.HasOne(d => d.Sale).WithMany(p => p.Pre_Factors)
                 .HasForeignKey(d => d.SaleId)
@@ -2094,8 +2101,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.InstallmentPayYear)
-                .HasMaxLength(255)
-                .HasComment("จำนวนงวดชำระต่อปี");
+                .HasComment("จำนวนงวดชำระต่อปี")
+                .HasColumnType("int(11)");
             entity.Property(e => e.LoanIName).HasMaxLength(255);
             entity.Property(e => e.LoanPeriod)
                 .HasComment("ระยะเวลาสินเชื่อ")
@@ -2145,7 +2152,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DepositBAAC)
-                .HasMaxLength(255)
+                .HasPrecision(18, 2)
                 .HasComment("ปริมาณเงินฝากกับ ธกส.");
             entity.Property(e => e.Expenses)
                 .HasPrecision(18, 2)

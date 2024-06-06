@@ -22,6 +22,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public Guid SaleId { get; set; }
 
+		public Guid Pre_CalId { get; set; }
+
 		/// <summary>
 		/// ชื่อบริษัท
 		/// </summary>

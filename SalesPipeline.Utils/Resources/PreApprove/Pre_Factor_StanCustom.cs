@@ -42,7 +42,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// <summary>
 		/// ปริมาณเงินฝากกับ ธกส.
 		/// </summary>
-		public string? DepositBAAC { get; set; }
+		public decimal? DepositBAAC { get; set; }
 
 		/// <summary>
 		/// ประเภทหลักประกัน

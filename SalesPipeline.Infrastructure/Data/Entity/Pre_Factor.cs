@@ -18,10 +18,14 @@ public partial class Pre_Factor
 
     public Guid SaleId { get; set; }
 
+    public Guid Pre_CalId { get; set; }
+
     /// <summary>
     /// ชื่อบริษัท
     /// </summary>
     public string? CompanyName { get; set; }
+
+    public virtual Pre_Cal Pre_Cal { get; set; } = null!;
 
     public virtual ICollection<Pre_Factor_App> Pre_Factor_Apps { get; set; } = new List<Pre_Factor_App>();
 

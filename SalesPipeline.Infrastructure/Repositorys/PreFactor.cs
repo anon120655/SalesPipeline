@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -37,6 +38,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var response = new Pre_Process();
 
 				var sales = await _repo.Context.Sales.Where(x => x.Id == model.SaleId).FirstOrDefaultAsync();
+				if(sales == null) throw new ExceptionCustom($"sales not found.");
+				var pre_Cal = await _repo.Context.Pre_Cals.Where(x => x.Id == model.Pre_CalId).FirstOrDefaultAsync();
+				if (pre_Cal == null) throw new ExceptionCustom($"pre_Cal not found.");
 
 				DateTime _dateNow = DateTime.Now;
 
@@ -45,6 +49,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Factor.CreateDate = _dateNow;
 				pre_Factor.CreateBy = model.CurrentUserId;
 				pre_Factor.SaleId = model.SaleId;
+				pre_Factor.Pre_CalId = model.Pre_CalId;
 				pre_Factor.CompanyName = sales?.CompanyName;
 				await _db.InsterAsync(pre_Factor);
 				await _db.SaveAsync();
@@ -53,6 +58,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					foreach (var item in model.Pre_Factor_Infos)
 					{
+						var calByAppBus = await _repo.PreCal.GetCalByAppBusId(item.Master_Pre_Applicant_LoanId, item.Master_Pre_BusinessTypeId);
+						if (calByAppBus == null) throw new ExceptionCustom($"factor_Info calByAppBus not found.");
+						if (calByAppBus.Id != pre_Cal.Id)
+						{
+							throw new ExceptionCustom($"appid busid not match pre_CalId");
+						}
+
 						string? loanIName = null;
 						string? master_Pre_Applicant_LoanName = null;
 						string? master_Pre_BusinessTypeName = null;

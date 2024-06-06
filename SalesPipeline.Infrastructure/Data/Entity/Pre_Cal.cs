@@ -49,4 +49,6 @@ public partial class Pre_Cal
     public virtual ICollection<Pre_Cal_Info> Pre_Cal_Infos { get; set; } = new List<Pre_Cal_Info>();
 
     public virtual ICollection<Pre_Cal_WeightFactor> Pre_Cal_WeightFactors { get; set; } = new List<Pre_Cal_WeightFactor>();
+
+    public virtual ICollection<Pre_Factor> Pre_Factors { get; set; } = new List<Pre_Factor>();
 }

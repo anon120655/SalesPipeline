@@ -23,7 +23,7 @@ public partial class Pre_Factor_Info
     /// <summary>
     /// จำนวนงวดชำระต่อปี
     /// </summary>
-    public string? InstallmentPayYear { get; set; }
+    public int? InstallmentPayYear { get; set; }
 
     /// <summary>
     /// มูลค่าสินเชื่อ

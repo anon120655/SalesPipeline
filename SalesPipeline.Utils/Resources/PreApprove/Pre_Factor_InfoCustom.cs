@@ -26,7 +26,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// <summary>
 		/// จำนวนงวดชำระต่อปี
 		/// </summary>
-		public string? InstallmentPayYear { get; set; }
+		public int? InstallmentPayYear { get; set; }
 
 		/// <summary>
 		/// มูลค่าสินเชื่อ
