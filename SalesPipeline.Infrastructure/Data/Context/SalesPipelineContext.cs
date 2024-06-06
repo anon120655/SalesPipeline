@@ -2256,6 +2256,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=ข้อมูลการขอสินเชื่อ\r\n2=คุณสมบัติมารตฐาน\r\n3=คุณสมบัติตามประเภทผู้ขอ\r\n4=คุณสมบัติตามประเภทธุรกิจ")
+                .HasColumnType("int(11)");
 
             entity.HasOne(d => d.Pre_Result).WithMany(p => p.Pre_Result_Items)
                 .HasForeignKey(d => d.Pre_ResultId)

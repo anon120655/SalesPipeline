@@ -17,6 +17,14 @@ public partial class Pre_Result_Item
     public Guid Pre_ResultId { get; set; }
 
     /// <summary>
+    /// 1=ข้อมูลการขอสินเชื่อ
+    /// 2=คุณสมบัติมารตฐาน
+    /// 3=คุณสมบัติตามประเภทผู้ขอ
+    /// 4=คุณสมบัติตามประเภทธุรกิจ
+    /// </summary>
+    public int Type { get; set; }
+
+    /// <summary>
     /// ปัจจัยการวิเคราะห์
     /// </summary>
     public string? AnalysisFactor { get; set; }
