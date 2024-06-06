@@ -214,8 +214,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Pre_Cal_Fetu_StanCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Pre_Cal_Fetu_Stans
-										 .Include(x => x.Pre_Cal_Fetu_Stan_ItemOptions.OrderBy(s => s.SequenceNo))
-										 .Include(x => x.Pre_Cal_Fetu_Stan_Scores.OrderBy(s => s.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Stan_ItemOptions.OrderBy(s => s.Type).ThenBy(t=>t.SequenceNo))
+										 .Include(x => x.Pre_Cal_Fetu_Stan_Scores.OrderBy(s => s.Type).ThenBy(t => t.SequenceNo))
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == id);
 

@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using System;
@@ -62,7 +63,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (calByAppBus == null) throw new ExceptionCustom($"factor_Info calByAppBus not found.");
 						if (calByAppBus.Id != pre_Cal.Id)
 						{
-							throw new ExceptionCustom($"appid busid not match pre_CalId");
+							throw new ExceptionCustom($"ไม่พบตัวแปรคำนวณ ประเภทผู้ขอสินเชื่อ และประเภทธุรกิจที่ท่านเลือก");
 						}
 
 						string? loanIName = null;
@@ -105,14 +106,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (item.Stan_ItemOptionId_Type1.HasValue)
 						{
 							var stan_ItemOption = await _repo.Context.Pre_Cal_Fetu_Stan_ItemOptions
-								.FirstOrDefaultAsync(x=>x.Id == item.Stan_ItemOptionId_Type1.Value);
+								.FirstOrDefaultAsync(x=> x.Type == PreStanDropDownType.CollateralType && x.Id == item.Stan_ItemOptionId_Type1.Value);
 							if (stan_ItemOption == null) throw new ExceptionCustom($"stan_ItemOption type1 not found.");
 							Stan_ItemOptionName_Type1 = stan_ItemOption.Name;
 						}
 						if (item.Stan_ItemOptionId_Type2.HasValue)
 						{
 							var stan_ItemOption = await _repo.Context.Pre_Cal_Fetu_Stan_ItemOptions
-								.FirstOrDefaultAsync(x => x.Id == item.Stan_ItemOptionId_Type2.Value);
+								.FirstOrDefaultAsync(x => x.Type == PreStanDropDownType.PaymentHistory && x.Id == item.Stan_ItemOptionId_Type2.Value);
 							if (stan_ItemOption == null) throw new ExceptionCustom($"stan_ItemOption type2 not found.");
 							Stan_ItemOptionName_Type2 = stan_ItemOption.Name;
 						}
@@ -128,6 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Factor_Stan.DepositBAAC = item.DepositBAAC;
 						pre_Factor_Stan.Stan_ItemOptionId_Type1 = item.Stan_ItemOptionId_Type1;
 						pre_Factor_Stan.Stan_ItemOptionName_Type1 = Stan_ItemOptionName_Type1;
+						pre_Factor_Stan.Stan_ItemOptionValue_Type1 = item.Stan_ItemOptionValue_Type1;
 						pre_Factor_Stan.Stan_ItemOptionId_Type2 = item.Stan_ItemOptionId_Type2;
 						pre_Factor_Stan.Stan_ItemOptionName_Type2 = Stan_ItemOptionName_Type2;
 						await _db.InsterAsync(pre_Factor_Stan);
@@ -146,14 +148,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							var app_Items = await _repo.Context.Pre_Cal_Fetu_App_Items
 								.FirstOrDefaultAsync(x => x.Id == item.Pre_Cal_Fetu_App_ItemId.Value);
-							if (app_Items == null) throw new ExceptionCustom($"app_ItemId not found.");
+							if (app_Items == null) throw new ExceptionCustom($"pre_Cal_Fetu_App_ItemId not found.");
 							pre_Cal_Fetu_App_ItemName = app_Items.Name;
 						}
 						if (item.Pre_Cal_Fetu_App_Item_ScoreId.HasValue)
 						{
 							var stan_ItemOption_Score = await _repo.Context.Pre_Cal_Fetu_App_Item_Scores
 								.FirstOrDefaultAsync(x => x.Id == item.Pre_Cal_Fetu_App_Item_ScoreId.Value);
-							if (stan_ItemOption_Score == null) throw new ExceptionCustom($"app_Item_ScoreId not found.");
+							if (stan_ItemOption_Score == null) throw new ExceptionCustom($"pre_Cal_Fetu_App_Item_ScoreId not found.");
 							pre_Cal_Fetu_App_Item_ScoreName = stan_ItemOption_Score.Name;
 						}
 
@@ -181,14 +183,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							var bus_Items = await _repo.Context.Pre_Cal_Fetu_Bus_Items
 								.FirstOrDefaultAsync(x => x.Id == item.Pre_Cal_Fetu_Bus_ItemId.Value);
-							if (bus_Items == null) throw new ExceptionCustom($"bus_ItemId not found.");
+							if (bus_Items == null) throw new ExceptionCustom($"pre_Cal_Fetu_Bus_ItemId not found.");
 							pre_Cal_Fetu_Bus_ItemName = bus_Items.Name;
 						}
 						if (item.Pre_Cal_Fetu_Bus_Item_ScoreId.HasValue)
 						{
 							var stan_ItemOption_Score = await _repo.Context.Pre_Cal_Fetu_Bus_Item_Scores
 								.FirstOrDefaultAsync(x => x.Id == item.Pre_Cal_Fetu_Bus_Item_ScoreId.Value);
-							if (stan_ItemOption_Score == null) throw new ExceptionCustom($"bus_Item_ScoreId not found.");
+							if (stan_ItemOption_Score == null) throw new ExceptionCustom($"pre_Cal_Fetu_Bus_Item_ScoreId not found.");
 							pre_Cal_Fetu_Bus_Item_ScoreName = stan_ItemOption_Score.Name;
 						}
 
@@ -207,7 +209,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				_transaction.Commit();
 
-				return new();
+				var factor_result = await GetById(pre_Factor.Id);
+
+				return factor_result;
 			}
 		}
 
