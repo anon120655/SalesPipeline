@@ -207,6 +207,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
+				//Result
+
+
+
+
 				_transaction.Commit();
 
 				var factor_result = await GetById(pre_Factor.Id);
