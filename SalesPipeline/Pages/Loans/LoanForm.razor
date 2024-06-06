@@ -72,7 +72,14 @@
 									<label class="col"> %</label>
 								</div>
 							</div>
-
+							<div class="col-12">
+								<div class="row mb-3">
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงื่อนไข</label>
+									<div class="col-12 col-md-8 mb-3 mb-xl-0">
+										<textarea @bind="formModel.Condition" class="form-control" rows="4"></textarea>
+									</div>
+								</div>
+							</div>
 							<div class="form-group row mb-3">
 								<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทผู้ขอสินเชื่อ</label>
 								<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
@@ -152,15 +159,6 @@
 												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เริ่มปีที่</label>
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 													<input @bind="period.StartYear" type="text" class="form-control numberonly" onkeyup="enforceMinMax(this);" min="1" max="10">
-												</div>
-											</div>
-										}
-										@if (formModel.Master_Pre_Interest_PayTypeId == _payType1 || period.Master_Pre_Interest_RateTypeId == _rateTypeSpecial)
-										{
-											<div class="form-group row mb-3">
-												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เงื่อนไข</label>
-												<div class="col-12 col-md-8 mb-3 mb-xl-0">
-													<textarea @bind="period.Condition" class="form-control" rows="4"></textarea>
 												</div>
 											</div>
 										}

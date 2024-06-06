@@ -55,6 +55,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				loan.Master_Pre_Interest_PayTypeName = master_Pre_Interest_PayTypeName;
 				loan.PeriodNumber = model.PeriodNumber;
 				loan.RiskPremiumYear = model.RiskPremiumYear;
+				loan.Condition = model.Condition;
 				await _db.InsterAsync(loan);
 				await _db.SaveAsync();
 
@@ -107,10 +108,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var period in model.Loan_Periods)
 					{
 						string? master_Pre_Interest_RateTypeName = null;
+						string? master_Pre_Interest_RateTypeCode = null;
 
 						if (period.Master_Pre_Interest_RateTypeId.HasValue)
 						{
-							master_Pre_Interest_RateTypeName = await _repo.Master_Pre_RateType.GetNameById(period.Master_Pre_Interest_RateTypeId.Value);
+							var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
+							if (pre_App_Loan != null)
+							{
+								master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
+								master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
+							}
 						}
 
 						var loan_Period = new Data.Entity.Loan_Period();
@@ -120,11 +127,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						loan_Period.PeriodNo = period.PeriodNo;
 						loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 						loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
+						loan_Period.Master_Pre_Interest_RateTypeCode = master_Pre_Interest_RateTypeCode;
 						loan_Period.SpecialType = period.SpecialType;
 						loan_Period.SpecialRate = period.SpecialRate;
 						loan_Period.RateValue = period.RateValue;
 						loan_Period.StartYear = period.StartYear;
-						loan_Period.Condition = period.Condition;
 						await _db.InsterAsync(loan_Period);
 						await _db.SaveAsync();
 					}
@@ -158,6 +165,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					loan.Master_Pre_Interest_PayTypeName = master_Pre_Interest_PayTypeName;
 					loan.PeriodNumber = model.PeriodNumber;
 					loan.RiskPremiumYear = model.RiskPremiumYear;
+					loan.Condition = model.Condition;
 					_db.Update(loan);
 					await _db.SaveAsync();
 
@@ -230,10 +238,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						foreach (var period in model.Loan_Periods)
 						{
 							string? master_Pre_Interest_RateTypeName = null;
+							string? master_Pre_Interest_RateTypeCode = null;
 
 							if (period.Master_Pre_Interest_RateTypeId.HasValue)
 							{
-								master_Pre_Interest_RateTypeName = await _repo.Master_Pre_RateType.GetNameById(period.Master_Pre_Interest_RateTypeId.Value);
+								var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
+								if (pre_App_Loan != null)
+								{
+									master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
+									master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
+								}
 							}
 
 							var loan_Period = new Data.Entity.Loan_Period();
@@ -243,11 +257,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.PeriodNo = period.PeriodNo;
 							loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 							loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
+							loan_Period.Master_Pre_Interest_RateTypeCode = master_Pre_Interest_RateTypeCode;
 							loan_Period.SpecialType = period.SpecialType;
 							loan_Period.SpecialRate = period.SpecialRate;
 							loan_Period.RateValue = period.RateValue;
 							loan_Period.StartYear = period.StartYear;
-							loan_Period.Condition = period.Condition;
 							await _db.InsterAsync(loan_Period);
 							await _db.SaveAsync();
 						}

@@ -34,6 +34,8 @@ namespace SalesPipeline.Utils.Resources.Loans
 
 		public string? Master_Pre_Interest_RateTypeName { get; set; }
 
+		public string? Master_Pre_Interest_RateTypeCode { get; set; }
+
 		/// <summary>
 		/// 1=เพิ่ม 2=ลบ
 		/// </summary>
@@ -53,11 +55,6 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// เริ่มปีที่
 		/// </summary>
 		public int? StartYear { get; set; }
-
-		/// <summary>
-		/// เงื่อนไข
-		/// </summary>
-		public string? Condition { get; set; }
 
 		public virtual LoanCustom? Loan { get; set; }
 

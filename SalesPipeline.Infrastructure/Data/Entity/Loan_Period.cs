@@ -34,6 +34,8 @@ public partial class Loan_Period
 
     public string? Master_Pre_Interest_RateTypeName { get; set; }
 
+    public string? Master_Pre_Interest_RateTypeCode { get; set; }
+
     /// <summary>
     /// 1=เพิ่ม 2=ลบ
     /// </summary>
@@ -53,11 +55,6 @@ public partial class Loan_Period
     /// เริ่มปีที่
     /// </summary>
     public int? StartYear { get; set; }
-
-    /// <summary>
-    /// เงื่อนไข
-    /// </summary>
-    public string? Condition { get; set; }
 
     public virtual Loan Loan { get; set; } = null!;
 

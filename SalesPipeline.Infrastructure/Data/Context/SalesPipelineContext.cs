@@ -982,6 +982,9 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Master_Pre_Interest_PayTypeId, "Master_Pre_Interest_PayTypeId");
 
+            entity.Property(e => e.Condition)
+                .HasMaxLength(500)
+                .HasComment("เงื่อนไข");
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Master_Pre_Interest_PayTypeId).HasComment("ประเภทการชำระดอกเบี้ย");
@@ -1056,11 +1059,9 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Master_Pre_Interest_RateTypeId, "Master_Pre_Interest_RateTypeId");
 
-            entity.Property(e => e.Condition)
-                .HasMaxLength(255)
-                .HasComment("เงื่อนไข");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.LoanId).HasComment("FK สินเชื่อ");
+            entity.Property(e => e.Master_Pre_Interest_RateTypeCode).HasMaxLength(255);
             entity.Property(e => e.Master_Pre_Interest_RateTypeId).HasComment("FK ประเภทอัตราดอกเบี้ย");
             entity.Property(e => e.Master_Pre_Interest_RateTypeName).HasMaxLength(255);
             entity.Property(e => e.PeriodNo)
