@@ -35,5 +35,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public virtual List<Pre_Factor_StanCustom>? Pre_Factor_Stans { get; set; }
 
+		public virtual List<Pre_ResultCustom>? Pre_Results { get; set; }
+
 	}
 }

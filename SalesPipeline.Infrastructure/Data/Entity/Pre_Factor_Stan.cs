@@ -56,9 +56,13 @@ public partial class Pre_Factor_Stan
     /// <summary>
     /// ประวัติการชำระหนี้
     /// </summary>
-    public int? Stan_ItemOptionId_Type2 { get; set; }
+    public Guid? Stan_ItemOptionId_Type2 { get; set; }
 
     public string? Stan_ItemOptionName_Type2 { get; set; }
 
     public virtual Pre_Factor Pre_Factor { get; set; } = null!;
+
+    public virtual Pre_Cal_Fetu_Stan_ItemOption? Stan_ItemOptionId_Type1Navigation { get; set; }
+
+    public virtual Pre_Cal_Fetu_Stan_ItemOption? Stan_ItemOptionId_Type2Navigation { get; set; }
 }

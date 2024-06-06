@@ -19,6 +19,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public int CreateBy { get; set; }
 
+		public Guid Pre_FactorId { get; set; }
+
 		/// <summary>
 		/// คะแนนรวม
 		/// </summary>

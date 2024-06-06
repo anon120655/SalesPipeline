@@ -20,7 +20,7 @@ public partial class Pre_Factor_App
 
     public string? Pre_Cal_Fetu_App_ItemName { get; set; }
 
-    public Guid Pre_Cal_Fetu_App_Item_ScoreId { get; set; }
+    public Guid? Pre_Cal_Fetu_App_Item_ScoreId { get; set; }
 
     public string? Pre_Cal_Fetu_App_Item_ScoreName { get; set; }
 

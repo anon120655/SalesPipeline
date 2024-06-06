@@ -2139,6 +2139,10 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasIndex(e => e.Pre_FactorId, "Pre_FactorId");
 
+            entity.HasIndex(e => e.Stan_ItemOptionId_Type1, "Stan_ItemOptionId_Type1");
+
+            entity.HasIndex(e => e.Stan_ItemOptionId_Type2, "Stan_ItemOptionId_Type2");
+
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DepositBAAC)
                 .HasMaxLength(255)
@@ -2156,9 +2160,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(18, 2)
                 .HasComment("หนี้สินอื่นๆ");
             entity.Property(e => e.Stan_ItemOptionId_Type1).HasComment("ประเภทหลักประกัน");
-            entity.Property(e => e.Stan_ItemOptionId_Type2)
-                .HasComment("ประวัติการชำระหนี้")
-                .HasColumnType("int(11)");
+            entity.Property(e => e.Stan_ItemOptionId_Type2).HasComment("ประวัติการชำระหนี้");
             entity.Property(e => e.Stan_ItemOptionName_Type1).HasMaxLength(255);
             entity.Property(e => e.Stan_ItemOptionName_Type2).HasMaxLength(255);
             entity.Property(e => e.Stan_ItemOptionValue_Type1)
@@ -2172,6 +2174,14 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.Pre_FactorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pre_factor_stan_ibfk_1");
+
+            entity.HasOne(d => d.Stan_ItemOptionId_Type1Navigation).WithMany(p => p.Pre_Factor_StanStan_ItemOptionId_Type1Navigations)
+                .HasForeignKey(d => d.Stan_ItemOptionId_Type1)
+                .HasConstraintName("pre_factor_stan_ibfk_2");
+
+            entity.HasOne(d => d.Stan_ItemOptionId_Type2Navigation).WithMany(p => p.Pre_Factor_StanStan_ItemOptionId_Type2Navigations)
+                .HasForeignKey(d => d.Stan_ItemOptionId_Type2)
+                .HasConstraintName("pre_factor_stan_ibfk_3");
         });
 
         modelBuilder.Entity<Pre_Result>(entity =>
@@ -2180,7 +2190,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Pre_Result");
 
-            entity.HasIndex(e => e.SaleId, "SaleId");
+            entity.HasIndex(e => e.Pre_FactorId, "Pre_FactorId");
 
             entity.Property(e => e.Ch_CreditScore).HasMaxLength(255);
             entity.Property(e => e.Ch_Prob).HasMaxLength(255);
@@ -2205,8 +2215,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasPrecision(2)
                 .HasComment("คะแนนรวม");
 
-            entity.HasOne(d => d.Sale).WithMany(p => p.Pre_Results)
-                .HasForeignKey(d => d.SaleId)
+            entity.HasOne(d => d.Pre_Factor).WithMany(p => p.Pre_Results)
+                .HasForeignKey(d => d.Pre_FactorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pre_result_ibfk_1");
         });

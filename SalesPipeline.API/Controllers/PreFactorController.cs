@@ -26,12 +26,12 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
-		[HttpPost("Create")]
-		public async Task<IActionResult> Create(Pre_FactorCustom model)
+		[HttpPost("Process")]
+		public async Task<IActionResult> Process(Pre_FactorCustom model)
 		{
 			try
 			{
-				var data = await _repo.PreFactor.Create(model);
+				var data = await _repo.PreFactor.Process(model);
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -39,6 +39,20 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
+
+		//[HttpPost("Create")]
+		//public async Task<IActionResult> Create(Pre_FactorCustom model)
+		//{
+		//	try
+		//	{
+		//		var data = await _repo.PreFactor.Create(model);
+		//		return Ok(data);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return new ErrorResultCustom(new ErrorCustom(), ex);
+		//	}
+		//}
 
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)

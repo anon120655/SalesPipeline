@@ -31,5 +31,7 @@ public partial class Pre_Factor
 
     public virtual ICollection<Pre_Factor_Stan> Pre_Factor_Stans { get; set; } = new List<Pre_Factor_Stan>();
 
+    public virtual ICollection<Pre_Result> Pre_Results { get; set; } = new List<Pre_Result>();
+
     public virtual Sale Sale { get; set; } = null!;
 }

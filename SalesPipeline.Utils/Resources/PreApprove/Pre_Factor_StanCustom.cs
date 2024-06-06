@@ -59,7 +59,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// <summary>
 		/// ประวัติการชำระหนี้
 		/// </summary>
-		public int? Stan_ItemOptionId_Type2 { get; set; }
+		public Guid? Stan_ItemOptionId_Type2 { get; set; }
 
 		public string? Stan_ItemOptionName_Type2 { get; set; }
 

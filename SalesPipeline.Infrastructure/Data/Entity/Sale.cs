@@ -147,8 +147,6 @@ public partial class Sale
 
     public virtual ICollection<Pre_Factor> Pre_Factors { get; set; } = new List<Pre_Factor>();
 
-    public virtual ICollection<Pre_Result> Pre_Results { get; set; } = new List<Pre_Result>();
-
     public virtual ICollection<Sale_Activity> Sale_Activities { get; set; } = new List<Sale_Activity>();
 
     public virtual ICollection<Sale_Close_Sale> Sale_Close_Sales { get; set; } = new List<Sale_Close_Sale>();

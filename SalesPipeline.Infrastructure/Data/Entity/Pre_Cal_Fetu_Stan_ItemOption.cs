@@ -29,4 +29,8 @@ public partial class Pre_Cal_Fetu_Stan_ItemOption
     public string? Name { get; set; }
 
     public virtual Pre_Cal_Fetu_Stan Pre_Cal_Fetu_Stan { get; set; } = null!;
+
+    public virtual ICollection<Pre_Factor_Stan> Pre_Factor_StanStan_ItemOptionId_Type1Navigations { get; set; } = new List<Pre_Factor_Stan>();
+
+    public virtual ICollection<Pre_Factor_Stan> Pre_Factor_StanStan_ItemOptionId_Type2Navigations { get; set; } = new List<Pre_Factor_Stan>();
 }

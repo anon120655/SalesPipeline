@@ -23,8 +23,9 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public string? Pre_Cal_Fetu_Bus_ItemName { get; set; }
 
-		public Guid Pre_Cal_Fetu_Bus_Item_ScoreId { get; set; }
+		public Guid? Pre_Cal_Fetu_Bus_Item_ScoreId { get; set; }
 
 		public string? Pre_Cal_Fetu_Bus_Item_ScoreName { get; set; }
+
 	}
 }
