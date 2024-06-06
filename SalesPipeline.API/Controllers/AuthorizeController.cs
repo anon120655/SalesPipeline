@@ -28,6 +28,10 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
+				var xx = (100 * 13)/100;
+				var xx2 = (20 * 3d)/100;
+				var xx3 = (50 * 10)/100;
+
 				var response = await _repo.Authorizes.Authenticate(model);
 
 				if (response != null)

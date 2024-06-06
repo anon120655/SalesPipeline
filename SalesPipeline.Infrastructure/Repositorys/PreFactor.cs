@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
+using Org.BouncyCastle.Asn1.X509;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -36,10 +37,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				var response = new Pre_Process();
+				List<Pre_Result_ItemCustom> pre_Result_Items = new();
 
 				var sales = await _repo.Context.Sales.Where(x => x.Id == model.SaleId).FirstOrDefaultAsync();
-				if(sales == null) throw new ExceptionCustom($"sales not found.");
+				if (sales == null) throw new ExceptionCustom($"sales not found.");
 				var pre_Cal = await _repo.Context.Pre_Cals.Where(x => x.Id == model.Pre_CalId).FirstOrDefaultAsync();
 				if (pre_Cal == null) throw new ExceptionCustom($"pre_Cal not found.");
 
@@ -54,6 +55,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Factor.CompanyName = sales?.CompanyName;
 				await _db.InsterAsync(pre_Factor);
 				await _db.SaveAsync();
+
+
+				var calInfo = await _repo.PreCalInfo.GetById(model.Pre_CalId);
+
+				Pre_Cal_WeightFactorCustom? calWeightInfo = null;
+				Pre_Cal_WeightFactorCustom? calWeightStan = null;
+				Pre_Cal_WeightFactorCustom? calWeightAppLoan = null;
+				Pre_Cal_WeightFactorCustom? calWeightBusType = null;
+				var calWeightList = await _repo.PreCalWeight.GetAllPreCalById(model.Pre_CalId);
+				if (calWeightList.Count > 0)
+				{
+					calWeightInfo = calWeightList.FirstOrDefault(x => x.Type == PreCalType.Info);
+					calWeightStan = calWeightList.FirstOrDefault(x => x.Type == PreCalType.Stan);
+					calWeightAppLoan = calWeightList.FirstOrDefault(x => x.Type == PreCalType.AppLoan);
+					calWeightBusType = calWeightList.FirstOrDefault(x => x.Type == PreCalType.BusType);
+				}
 
 				if (model.Pre_Factor_Infos?.Count > 0)
 				{
@@ -78,6 +95,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(item.Master_Pre_Applicant_LoanId);
 						master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(item.Master_Pre_BusinessTypeId);
 
+						var loanValue = item.LoanValue ?? 0;
+
 						var pre_Factor_Info = new Data.Entity.Pre_Factor_Info();
 						pre_Factor_Info.Status = StatusModel.Active;
 						pre_Factor_Info.CreateDate = _dateNow;
@@ -85,7 +104,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Factor_Info.LoanId = item.LoanId;
 						pre_Factor_Info.LoanIName = loanIName;
 						pre_Factor_Info.InstallmentPayYear = item.InstallmentPayYear;
-						pre_Factor_Info.LoanValue = item.LoanValue;
+						pre_Factor_Info.LoanValue = loanValue;
 						pre_Factor_Info.LoanPeriod = item.LoanPeriod;
 						pre_Factor_Info.Master_Pre_Applicant_LoanId = item.Master_Pre_Applicant_LoanId;
 						pre_Factor_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
@@ -93,6 +112,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Factor_Info.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
 						await _db.InsterAsync(pre_Factor_Info);
 						await _db.SaveAsync();
+
+						decimal? score = null;
+						decimal? ratio = null;
+						decimal? scoreResult = null;
+
+						if (calInfo != null && calInfo.Pre_Cal_Info_Scores?.Count > 0)
+						{
+							// ค้นหาค่าที่ใกล้เคียงที่สุด							
+							var scoreClosest = calInfo.Pre_Cal_Info_Scores.OrderBy(x => Math.Abs((decimal)(x.Name ?? 0) - loanValue)).First();
+							if (scoreClosest != null)
+							{
+								score = scoreClosest.Score;
+							}
+						}
+						if (calWeightInfo != null && calWeightInfo.Pre_Cal_WeightFactor_Items?.Count > 0)
+						{
+							ratio = calWeightInfo.Pre_Cal_WeightFactor_Items.FirstOrDefault()?.Percent;
+						}
+
+						scoreResult = (score * ratio) / 100;
+
+						pre_Result_Items.Add(new()
+						{
+							AnalysisFactor = "มูลค่าสินเชื่อ",
+							Feature = loanValue.ToString(GeneralTxt.FormatDecimal2),
+							Score = score,
+							Ratio = ratio,
+							ScoreResult = scoreResult
+						});
+
 					}
 				}
 
@@ -106,7 +155,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (item.Stan_ItemOptionId_Type1.HasValue)
 						{
 							var stan_ItemOption = await _repo.Context.Pre_Cal_Fetu_Stan_ItemOptions
-								.FirstOrDefaultAsync(x=> x.Type == PreStanDropDownType.CollateralType && x.Id == item.Stan_ItemOptionId_Type1.Value);
+								.FirstOrDefaultAsync(x => x.Type == PreStanDropDownType.CollateralType && x.Id == item.Stan_ItemOptionId_Type1.Value);
 							if (stan_ItemOption == null) throw new ExceptionCustom($"stan_ItemOption type1 not found.");
 							Stan_ItemOptionName_Type1 = stan_ItemOption.Name;
 						}
@@ -208,11 +257,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				//Result
+				var pre_Result = new Data.Entity.Pre_Result();
+				pre_Result.Status = StatusModel.Active;
+				pre_Result.CreateDate = _dateNow;
+				pre_Result.CreateBy = model.CurrentUserId;
+				pre_Result.Pre_FactorId = pre_Factor.Id;
+				pre_Result.TotalScore = 0;
+				pre_Result.ResultLoan = null;
+				pre_Result.ChancePercent = null;
+				await _db.InsterAsync(pre_Result);
+				await _db.SaveAsync();
 
+				if (pre_Result_Items.Count > 0)
+				{
+					foreach (var item in pre_Result_Items)
+					{
+						var pre_Result_Item = new Data.Entity.Pre_Result_Item();
+						pre_Result_Item.Status = StatusModel.Active;
+						pre_Result_Item.CreateDate = _dateNow;
+						pre_Result_Item.Pre_ResultId = pre_Result.Id;
+						pre_Result_Item.AnalysisFactor = item.AnalysisFactor;
+						pre_Result_Item.Feature = item.Feature;
+						pre_Result_Item.Score = item.Score;
+						pre_Result_Item.Ratio = item.Ratio;
+						pre_Result_Item.ScoreResult = item.ScoreResult;
+						await _db.InsterAsync(pre_Result_Item);
+						await _db.SaveAsync();
+					}
+				}
 
-
-
-				_transaction.Commit();
+				//_transaction.Commit();
 
 				var factor_result = await GetById(pre_Factor.Id);
 
