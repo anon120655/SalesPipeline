@@ -61,7 +61,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.InsterAsync(pre_Factor);
 				await _db.SaveAsync();
 
-				decimal? score = null;
+				//มูลค่าสินเชื่อที่ขอ
+				decimal loanValue = 0;
+				//มูลค่าหลักประกัน
+				decimal collValue = 0;
+				//หนี้สินอื่นๆ
+				decimal otherDebts = 0;
+				//รายได้ที่ได้ตามระยะงวดหนี้สินด้านบน
+				decimal incomeDebtPeriod = 0;
+
+
+				decimal ? score = null;
 				decimal? ratio = null;
 				decimal? scoreResult = null;
 
@@ -112,7 +122,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						master_Pre_Applicant_LoanName = await _repo.Master_Pre_App_Loan.GetNameById(item.Master_Pre_Applicant_LoanId);
 						master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(item.Master_Pre_BusinessTypeId);
 
-						var loanValue = item.LoanValue ?? 0;
+						loanValue = item.LoanValue ?? 0;
 
 						var pre_Factor_Info = new Data.Entity.Pre_Factor_Info();
 						pre_Factor_Info.Status = StatusModel.Active;
@@ -186,7 +196,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 
 						decimal depositBAAC = item.DepositBAAC ?? 0;
-						decimal stan_ItemOptionValue = item.Stan_ItemOptionValue_Type1 ?? 0;
+						collValue = item.Stan_ItemOptionValue_Type1 ?? 0;
+						otherDebts = item.OtherDebts ?? 0;
+						incomeDebtPeriod = item.IncomeDebtPeriod ?? 0;
 
 						var pre_Factor_Stan = new Data.Entity.Pre_Factor_Stan();
 						pre_Factor_Stan.Status = StatusModel.Active;
@@ -194,12 +206,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Factor_Stan.Pre_FactorId = pre_Factor.Id;
 						pre_Factor_Stan.Income = item.Income;
 						pre_Factor_Stan.Expenses = item.Expenses;
-						pre_Factor_Stan.OtherDebts = item.OtherDebts;
-						pre_Factor_Stan.IncomeDebtPeriod = item.IncomeDebtPeriod;
+						pre_Factor_Stan.OtherDebts = otherDebts;
+						pre_Factor_Stan.IncomeDebtPeriod = incomeDebtPeriod;
 						pre_Factor_Stan.DepositBAAC = depositBAAC;
 						pre_Factor_Stan.Stan_ItemOptionId_Type1 = item.Stan_ItemOptionId_Type1;
 						pre_Factor_Stan.Stan_ItemOptionName_Type1 = Stan_ItemOptionName_Type1;
-						pre_Factor_Stan.Stan_ItemOptionValue_Type1 = stan_ItemOptionValue;
+						pre_Factor_Stan.Stan_ItemOptionValue_Type1 = collValue;
 						pre_Factor_Stan.Stan_ItemOptionId_Type2 = item.Stan_ItemOptionId_Type2;
 						pre_Factor_Stan.Stan_ItemOptionName_Type2 = Stan_ItemOptionName_Type2;
 						await _db.InsterAsync(pre_Factor_Stan);
@@ -215,6 +227,161 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							var collateralValue = calStan.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Type == PreStanScoreType.CollateralValue).ToList();
 							var paymentHistory = calStan.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Type == PreStanScoreType.PaymentHistory).ToList();
 
+							//อัตราส่วนรายได้ต่อรายจ่าย
+							if (weightIncomeExpenses.Count > 0)
+							{
+								score = 0;
+								ratio = null;
+								scoreResult = null;
+								string? _feature = null;
+
+								//รายได้/รายจ่าย
+								var incomeExpenses = (item.Income / item.Expenses) ?? 0;
+
+								var decimals = weightIncomeExpenses.Select(o =>
+								{
+									try
+									{
+										if (o == null) return 0m; // ค่า null
+										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
+										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+									}
+									catch
+									{
+										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+									}
+								}).ToList();
+
+								//ค้นหาค่าที่ใกล้เคียงที่สุด	
+								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - incomeExpenses)).First();
+								var nameScore = weightIncomeExpenses.FirstOrDefault(x => x.Name == scoreClosest.ToString());
+								if (nameScore != null)
+								{
+									_feature = nameScore.Name;
+									score = nameScore.Score;
+								}
+
+								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
+								{
+									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == PreStanScoreType.WeightIncomeExpenses)?.Percent;
+								}
+
+								scoreResult = (score * ratio) / 100;
+
+								pre_Result_Items.Add(new()
+								{
+									Type = PreCalType.Stan,
+									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.WeightIncomeExpenses.ToString()).Name,
+									Feature = _feature,
+									Score = score,
+									Ratio = ratio,
+									ScoreResult = scoreResult
+								});
+							}
+
+							//อัตราส่วนหลักประกันต่อมูลค่าหนี้
+							if (weighCollateraltDebtValue.Count > 0)
+							{
+								score = 0;
+								ratio = null;
+								scoreResult = null;
+								string? _feature = null;
+
+								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
+								var collValueloanValue = collValue/loanValue;
+
+								var decimals = weighCollateraltDebtValue.Select(o =>
+								{
+									try
+									{
+										if (o == null) return 0m; // ค่า null
+										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
+										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+									}
+									catch
+									{
+										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+									}
+								}).ToList();
+
+								//ค้นหาค่าที่ใกล้เคียงที่สุด	
+								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - collValueloanValue)).First();
+								var nameScore = weighCollateraltDebtValue.FirstOrDefault(x => x.Name == scoreClosest.ToString());
+								if (nameScore != null)
+								{
+									_feature = nameScore.Name;
+									score = nameScore.Score;
+								}
+
+								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
+								{
+									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == PreStanScoreType.WeighCollateraltDebtValue)?.Percent;
+								}
+
+								scoreResult = (score * ratio) / 100;
+
+								pre_Result_Items.Add(new()
+								{
+									Type = PreCalType.Stan,
+									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.WeighCollateraltDebtValue.ToString()).Name,
+									Feature = _feature,
+									Score = score,
+									Ratio = ratio,
+									ScoreResult = scoreResult
+								});
+							}
+
+							//อัตราส่วนหนี้สินอื่นๆต่อรายได้
+							if (weighLiabilitieOtherIncome.Count > 0)
+							{
+								score = 0;
+								ratio = null;
+								scoreResult = null;
+								string? _feature = null;
+
+								//รายได้ที่ได้ตามระยะงวดหนี้สินด้านบน/หนี้สินอื่นๆ
+								var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
+
+								var decimals = weighLiabilitieOtherIncome.Select(o =>
+								{
+									try
+									{
+										if (o == null) return 0m; // ค่า null
+										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
+										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+									}
+									catch
+									{
+										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+									}
+								}).ToList();
+
+								//ค้นหาค่าที่ใกล้เคียงที่สุด
+								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - incomeDebtPeriodOtherDebts)).First();
+								var nameScore = weighLiabilitieOtherIncome.FirstOrDefault(x => x.Name == scoreClosest.ToString());
+								if (nameScore != null)
+								{
+									_feature = nameScore.Name;
+									score = nameScore.Score;
+								}
+
+								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
+								{
+									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == PreStanScoreType.WeighLiabilitieOtherIncome)?.Percent;
+								}
+
+								scoreResult = (score * ratio) / 100;
+
+								pre_Result_Items.Add(new()
+								{
+									Type = PreCalType.Stan,
+									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.WeighLiabilitieOtherIncome.ToString()).Name,
+									Feature = _feature,
+									Score = score,
+									Ratio = ratio,
+									ScoreResult = scoreResult
+								});
+							}
 
 							//ปริมาณเงินฝาก ธกส.
 							if (cashBank.Count > 0)
@@ -311,7 +478,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									}
 								}).ToList();
 
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - stan_ItemOptionValue)).First();
+								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - collValue)).First();
 								score = collateralValue.FirstOrDefault(x => x.Name == scoreClosest.ToString())?.Score;
 
 								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
@@ -325,7 +492,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								{
 									Type = PreCalType.Stan,
 									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.CollateralValue.ToString()).Name,
-									Feature = stan_ItemOptionValue.ToString(GeneralTxt.FormatDecimal2),
+									Feature = collValue.ToString(GeneralTxt.FormatDecimal2),
 									Score = score,
 									Ratio = ratio,
 									ScoreResult = scoreResult

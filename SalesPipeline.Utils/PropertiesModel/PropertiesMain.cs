@@ -117,22 +117,22 @@ namespace SalesPipeline.Utils.PropertiesModel
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.WeightIncomeExpenses.ToString(),
-					Name = "น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย"
+					Name = "อัตราส่วนรายได้ต่อรายจ่าย"
 				},
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.WeighCollateraltDebtValue.ToString(),
-					Name = "น้ำหนักของแต่ละปัจจัยหลักประกันมูลค่าหนี้"
+					Name = "อัตราส่วนหลักประกันต่อมูลค่าหนี้"
 				},
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.WeighLiabilitieOtherIncome.ToString(),
-					Name = "น้ำหนักของแต่ละปัจจัยหนี้สินต่อรายได้อื่นๆ"
+					Name = "อัตราส่วนหนี้สินอื่นๆต่อรายได้"
 				},
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.CashBank.ToString(),
-					Name = "ปริมาณเงินฝาก"
+					Name = "ปริมาณเงินฝากกับ ธกส."
 				},
 				new PropertiesOptions()
 				{

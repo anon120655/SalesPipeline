@@ -9,15 +9,15 @@ namespace SalesPipeline.Utils.ConstTypeModel
 	public class PreStanScoreType
 	{
 		/// <summary>
-		/// น้ำหนักของแต่ละปัจจัยรายได้ต่อรายจ่าย
+		/// อัตราส่วนรายได้ต่อรายจ่าย
 		/// </summary>
 		public const int WeightIncomeExpenses = 1;
 		/// <summary>
-		/// น้ำหนักของแต่ละปัจจัยหลักประกันมูลค่าหนี้
+		/// อัตราส่วนหลักประกันต่อมูลค่าหนี้
 		/// </summary>
 		public const int WeighCollateraltDebtValue = 2;
 		/// <summary>
-		/// น้ำหนักของแต่ละปัจจัยหนี้สินต่อรายได้อื่นๆ
+		/// อัตราส่วนหนี้สินอื่นๆต่อรายได้
 		/// </summary>
 		public const int WeighLiabilitieOtherIncome = 3;
 		/// <summary>
