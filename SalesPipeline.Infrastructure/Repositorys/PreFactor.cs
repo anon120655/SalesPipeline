@@ -9,6 +9,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.PropertiesModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using System;
@@ -226,9 +227,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - depositBAAC)).First();
 								score = cashBank.FirstOrDefault(x => x.Name == scoreClosest.ToString())?.Score;
 
-								if (calWeightInfo != null && calWeightInfo.Pre_Cal_WeightFactor_Items?.Count > 0)
+								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
 								{
-									ratio = calWeightInfo.Pre_Cal_WeightFactor_Items.FirstOrDefault(x=>x.StanScoreType == PreStanScoreType.CashBank)?.Percent;
+									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x=>x.StanScoreType == PreStanScoreType.CashBank)?.Percent;
 								}
 
 								scoreResult = (score * ratio) / 100;
@@ -236,7 +237,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								pre_Result_Items.Add(new()
 								{
 									Type = PreCalType.Stan,
-									AnalysisFactor = "มูลค่าสินเชื่อ",
+									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.CashBank.ToString()).Name,
+									Feature = depositBAAC.ToString(GeneralTxt.FormatDecimal2),
+									Score = score,
+									Ratio = ratio,
+									ScoreResult = scoreResult
+								});
+							}
+
+							//ประเภทหลักประกัน
+							if (collateralType.Count > 0)
+							{
+								score = null;
+								ratio = null;
+								scoreResult = null;
+
+								if (item.Stan_ItemOptionId_Type1.HasValue)
+								{
+									var itemOption = collateralType.FirstOrDefault(x=>x.Pre_Cal_Fetu_StanItemOptionId == item.Stan_ItemOptionId_Type1);
+									if (itemOption != null)
+									{
+										score = itemOption.Score;
+									}
+								}
+
+								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
+								{
+									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == PreStanScoreType.CollateralType)?.Percent;
+								}
+
+								scoreResult = (score * ratio) / 100;
+
+								pre_Result_Items.Add(new()
+								{
+									Type = PreCalType.Stan,
+									AnalysisFactor = PropertiesMain.PerCalFetuStanName(PreStanScoreType.CollateralType.ToString()).Name,
 									//Feature = loanValue.ToString(GeneralTxt.FormatDecimal2),
 									Score = score,
 									Ratio = ratio,
