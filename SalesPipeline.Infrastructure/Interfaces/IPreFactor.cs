@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.PreApprove;
+﻿using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.Resources.PreApprove;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	{
 		Task<Pre_FactorCustom> Process(Pre_FactorCustom model);
 		Task<Pre_FactorCustom> GetById(Guid id);
+		Task<Pre_ResultCustom> UpdateEvaluateAppLoan(Pre_ResultCustom model);
 	}
 }

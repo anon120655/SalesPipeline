@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
@@ -42,21 +43,7 @@ namespace SalesPipeline.API.Controllers
 			{
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
-		}
-
-		//[HttpPost("Create")]
-		//public async Task<IActionResult> Create(Pre_FactorCustom model)
-		//{
-		//	try
-		//	{
-		//		var data = await _repo.PreFactor.Create(model);
-		//		return Ok(data);
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return new ErrorResultCustom(new ErrorCustom(), ex);
-		//	}
-		//}
+		}			
 
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
@@ -72,7 +59,24 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-
+		/// <summary>
+		/// ประเมินผู้ขอสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPut("UpdateEvaluateAppLoan")]
+		public async Task<IActionResult> UpdateEvaluateAppLoan(Pre_ResultCustom model)
+		{
+			try
+			{
+				var data = await _repo.PreFactor.UpdateEvaluateAppLoan(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 	}
 }

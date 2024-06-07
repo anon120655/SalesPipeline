@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.PreApprove
 {
-	public class Pre_ResultCustom
+	public class Pre_ResultCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 
@@ -51,6 +52,26 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		public string? Ch_CreditScore { get; set; }
 
 		public string? Ch_Prob { get; set; }
+
+		/// <summary>
+		/// ผ่อนทั้งหมด
+		/// </summary>
+		public decimal? InstallmentAll { get; set; }
+
+		/// <summary>
+		/// รายได้ทั้งหมด
+		/// </summary>
+		public decimal? IncomeTotal { get; set; }
+
+		/// <summary>
+		/// อัตราส่วนผ่อน/รายได้
+		/// </summary>
+		public decimal? RatioInstallmentIncome { get; set; }
+
+		/// <summary>
+		/// 1=มีการกดบันทึก
+		/// </summary>
+		public short? PresSave { get; set; }
 
 		public virtual List<Pre_Result_ItemCustom>? Pre_Result_Items { get; set; }
 	}

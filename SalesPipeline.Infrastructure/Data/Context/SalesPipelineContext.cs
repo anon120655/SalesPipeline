@@ -2205,6 +2205,18 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Cr_RateMultiplier).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.IncomeTotal)
+                .HasPrecision(18, 2)
+                .HasComment("รายได้ทั้งหมด");
+            entity.Property(e => e.InstallmentAll)
+                .HasPrecision(18, 2)
+                .HasComment("ผ่อนทั้งหมด");
+            entity.Property(e => e.PresSave)
+                .HasComment("1=มีการกดบันทึก")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.RatioInstallmentIncome)
+                .HasPrecision(18, 2)
+                .HasComment("อัตราส่วนผ่อน/รายได้");
             entity.Property(e => e.ResultLoan)
                 .HasMaxLength(255)
                 .HasComment("ผลการขอสินเชื่อ");

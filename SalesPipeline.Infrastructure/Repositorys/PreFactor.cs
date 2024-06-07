@@ -690,7 +690,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				//Result
-
 				decimal totalScore = 0;
 				string? cr_Level = null;
 				int? cr_CreditScore = null;
@@ -726,7 +725,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Result.Cr_CreditScore = cr_CreditScore;
 				pre_Result.Cr_Grade = cr_Grade;
 				pre_Result.Cr_LimitMultiplier = cr_LimitMultiplier;
-				pre_Result.Cr_LimitMultiplier = cr_LimitMultiplier;
+				pre_Result.Cr_RateMultiplier = cr_RateMultiplier;
 				pre_Result.ResultLoan = null;
 				pre_Result.ChancePercent = null;
 				await _db.InsterAsync(pre_Result);
@@ -772,6 +771,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
 			return _mapper.Map<Pre_FactorCustom>(query);
+		}
+
+		public async Task<Pre_ResultCustom> UpdateEvaluateAppLoan(Pre_ResultCustom model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				var pre_Result = await _repo.Context.Pre_Results.Where(x => x.Pre_FactorId == model.Pre_FactorId).FirstOrDefaultAsync();
+				if (pre_Result != null)
+				{
+					pre_Result.InstallmentAll = model.InstallmentAll;
+					pre_Result.IncomeTotal = model.IncomeTotal;
+					pre_Result.RatioInstallmentIncome = model.RatioInstallmentIncome;
+					pre_Result.PresSave = 1;
+					_db.Update(pre_Result);
+					await _db.SaveAsync();
+
+					_transaction.Commit();
+				}
+
+				return _mapper.Map<Pre_ResultCustom>(pre_Result);
+			}
 		}
 
 	}
