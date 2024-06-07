@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -32,6 +33,9 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.PreFactor.Process(model);
+
+				//var factor_result = await _repo.PreFactor.GetById(data.Id);
+
 				return Ok(data);
 			}
 			catch (Exception ex)

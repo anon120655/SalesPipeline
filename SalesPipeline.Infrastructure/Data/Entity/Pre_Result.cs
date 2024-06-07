@@ -35,7 +35,7 @@ public partial class Pre_Result
 
     public string? Cr_Level { get; set; }
 
-    public string? Cr_CreditScore { get; set; }
+    public int? Cr_CreditScore { get; set; }
 
     public string? Cr_Grade { get; set; }
 

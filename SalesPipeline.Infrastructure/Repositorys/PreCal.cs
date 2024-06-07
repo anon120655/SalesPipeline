@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SalesPipeline.Infrastructure.Data.Entity;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -182,6 +183,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = await _repo.Context.Pre_Cals
 										 .OrderByDescending(o => o.CreateDate)
 										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Master_Pre_Applicant_LoanId == appid && x.Master_Pre_BusinessTypeId == busid);
+
+			if (query == null)
+			{
+				throw new ExceptionCustom($"ไม่พบตัวแปรคำนวณ ประเภทผู้ขอสินเชื่อ และประเภทธุรกิจที่ท่านเลือก");
+			}
 
 			return _mapper.Map<Pre_CalCustom>(query);
 		}

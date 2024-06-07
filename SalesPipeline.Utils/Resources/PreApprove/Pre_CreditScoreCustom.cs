@@ -25,7 +25,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public string? Level { get; set; }
 
-		public string? CreditScore { get; set; }
+		public int? CreditScore { get; set; }
 
 		public string? Grade { get; set; }
 

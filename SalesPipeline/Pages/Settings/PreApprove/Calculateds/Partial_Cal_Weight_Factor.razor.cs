@@ -97,19 +97,25 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 					if (dataStan.Data.Pre_Cal_Fetu_Stan_Scores?.Count > 0)
 					{
-						var stanLookUp = dataStan.Data.Pre_Cal_Fetu_Stan_Scores.ToLookup(x => x.Type).OrderBy(x => x.Key);
+						var weightData = formWeightModel.Where(x => x.Type == PreCalType.Stan).FirstOrDefault();
 
+						var stanLookUp = dataStan.Data.Pre_Cal_Fetu_Stan_Scores.ToLookup(x => x.Type).OrderBy(x => x.Key);
 						foreach (var item in stanLookUp)
 						{
+							decimal _percent = 0;
+							if (weightData != null && weightData.Pre_Cal_WeightFactor_Items?.Count > 0)
+							{
+								_percent = weightData.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == item.Key)?.Percent ?? 0;
+							}
+
 							factor_Item.Add(new()
 							{
 								StanScoreType = item.Key,
 								Name = PropertiesMain.PerCalFetuStanName(item.Key.ToString() ?? string.Empty)?.Name,
-								Percent = 0
+								Percent = _percent
 							});
 						}
 
-						var weightData = formWeightModel.Where(x => x.Type == PreCalType.Stan).FirstOrDefault();
 						if (weightData == null)
 						{
 							formWeightModel.Add(new()

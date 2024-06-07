@@ -2003,7 +2003,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.CreditScore).HasMaxLength(255);
+            entity.Property(e => e.CreditScore).HasColumnType("int(11)");
             entity.Property(e => e.CreditScoreColor).HasMaxLength(255);
             entity.Property(e => e.Grade).HasMaxLength(255);
             entity.Property(e => e.Level).HasMaxLength(255);
@@ -2182,14 +2182,6 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.Pre_FactorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("pre_factor_stan_ibfk_1");
-
-            entity.HasOne(d => d.Stan_ItemOptionId_Type1Navigation).WithMany(p => p.Pre_Factor_StanStan_ItemOptionId_Type1Navigations)
-                .HasForeignKey(d => d.Stan_ItemOptionId_Type1)
-                .HasConstraintName("pre_factor_stan_ibfk_2");
-
-            entity.HasOne(d => d.Stan_ItemOptionId_Type2Navigation).WithMany(p => p.Pre_Factor_StanStan_ItemOptionId_Type2Navigations)
-                .HasForeignKey(d => d.Stan_ItemOptionId_Type2)
-                .HasConstraintName("pre_factor_stan_ibfk_3");
         });
 
         modelBuilder.Entity<Pre_Result>(entity =>
@@ -2206,7 +2198,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ChancePercent)
                 .HasMaxLength(255)
                 .HasComment("โอกาสขอสินเชื่อผ่าน");
-            entity.Property(e => e.Cr_CreditScore).HasMaxLength(255);
+            entity.Property(e => e.Cr_CreditScore).HasColumnType("int(255)");
             entity.Property(e => e.Cr_Grade).HasMaxLength(255);
             entity.Property(e => e.Cr_Level).HasMaxLength(255);
             entity.Property(e => e.Cr_LimitMultiplier).HasMaxLength(255);
@@ -2253,6 +2245,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ScoreResult)
                 .HasPrecision(18, 2)
                 .HasComment("ผลคะแนน");
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

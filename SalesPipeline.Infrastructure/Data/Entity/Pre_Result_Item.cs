@@ -17,6 +17,11 @@ public partial class Pre_Result_Item
     public Guid Pre_ResultId { get; set; }
 
     /// <summary>
+    /// ลำดับ
+    /// </summary>
+    public int SequenceNo { get; set; }
+
+    /// <summary>
     /// 1=ข้อมูลการขอสินเชื่อ
     /// 2=คุณสมบัติมารตฐาน
     /// 3=คุณสมบัติตามประเภทผู้ขอ

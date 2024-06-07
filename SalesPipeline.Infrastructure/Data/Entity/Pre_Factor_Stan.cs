@@ -61,8 +61,4 @@ public partial class Pre_Factor_Stan
     public string? Stan_ItemOptionName_Type2 { get; set; }
 
     public virtual Pre_Factor Pre_Factor { get; set; } = null!;
-
-    public virtual Pre_Cal_Fetu_Stan_ItemOption? Stan_ItemOptionId_Type1Navigation { get; set; }
-
-    public virtual Pre_Cal_Fetu_Stan_ItemOption? Stan_ItemOptionId_Type2Navigation { get; set; }
 }
