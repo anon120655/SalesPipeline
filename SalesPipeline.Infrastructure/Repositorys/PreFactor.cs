@@ -71,7 +71,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				decimal incomeDebtPeriod = 0;
 
 
-				decimal ? score = null;
+				decimal? score = null;
 				decimal? ratio = null;
 				decimal? scoreResult = null;
 
@@ -288,7 +288,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								string? _feature = null;
 
 								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
-								var collValueloanValue = collValue/loanValue;
+								var collValueloanValue = collValue / loanValue;
 
 								var decimals = weighCollateraltDebtValue.Select(o =>
 								{
@@ -792,6 +792,50 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				return _mapper.Map<Pre_ResultCustom>(pre_Result);
 			}
+		}
+
+		public async Task<PaySchedule> PaymentSchedule(PayScheduleFactor model)
+		{
+			await Task.Delay(1);
+
+			var response = new PaySchedule();
+
+			response.Factor = model;
+
+			response.ScheduleItem = new();
+
+			double? rate = null;
+			double? payment = null;
+			double? interest = null;
+			double? principle = null;
+			double? balance = model.Principal;
+
+			// จำนวนเงินต้น
+			double principal = model.Principal;
+			// อัตราดอกเบี้ยรายงวด (0.58% หรือ 0.00582)
+			double monthlyInterestRate = 0.00582;
+			// จำนวนงวด
+			int numberOfPayments = model.NumberOfPayments;
+
+			// คำนวณยอดชำระเงินรายงวด
+			payment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
+
+			var paymentF2 = $"ยอดชำระเงินรายงวด: {payment:F2} บาท";
+
+			for (int i = 0; i <= model.NumberOfPayments; i++)
+			{
+				response.ScheduleItem.Add(new()
+				{
+					Period = i,
+					Rate = rate,
+					Payment = payment,
+					Interest = interest,
+					Principle = principle,
+					Balance = balance
+				});
+			}
+
+			return response;
 		}
 
 	}

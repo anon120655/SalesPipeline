@@ -78,5 +78,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ตารางการผ่อนสินเชื่อ
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost("PaymentSchedule")]
+		public async Task<IActionResult> PaymentSchedule(PayScheduleFactor model)
+		{
+			try
+			{
+				var data = await _repo.PreFactor.PaymentSchedule(model);
+
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
