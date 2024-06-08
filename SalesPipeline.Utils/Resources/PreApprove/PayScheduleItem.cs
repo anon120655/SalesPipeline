@@ -11,7 +11,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
         public int Period { get; set; }
         public double? Rate { get; set; }
         public double? Payment { get; set; }
-        public double? Interest { get; set; }
+        public string? PaymentStr { get; set; }
+		public double? Interest { get; set; }
         public double? Principle { get; set; }
         public double? Balance { get; set; }
 	}

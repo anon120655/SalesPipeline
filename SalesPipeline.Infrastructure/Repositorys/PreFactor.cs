@@ -814,8 +814,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			double principal = model.Principal;
 			// อัตราดอกเบี้ยรายงวด (0.58% หรือ 0.00582)
 			double monthlyInterestRate = 0.00582;
+			if (model.PeriodRate != null)
+			{
+				monthlyInterestRate = model.PeriodRate.FirstOrDefault()?.Rate ?? 0;
+			}
+
 			// จำนวนงวด
 			int numberOfPayments = model.NumberOfPayments;
+
+			// ยอดชำระเงินที่ต้องการ
+			double targetPayment = 10322.80;
+
+			// คำนวณอัตราดอกเบี้ยรายงวดที่ทำให้ยอดชำระเงินเท่ากับเป้าหมาย
+			double monthlyInterestRateNew = LoanCalculator.CalculateInterestRate(principal, numberOfPayments, targetPayment);
 
 			// คำนวณยอดชำระเงินรายงวด
 			payment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
@@ -829,6 +840,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					Period = i,
 					Rate = rate,
 					Payment = payment,
+					PaymentStr = $"{payment:F2}",
 					Interest = interest,
 					Principle = principle,
 					Balance = balance
