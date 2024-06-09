@@ -14,6 +14,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.PropertiesModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -146,13 +147,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (calInfo != null && calInfo.Pre_Cal_Info_Scores?.Count > 0)
 						{
-							// ค้นหาค่าที่ใกล้เคียงที่สุด							
-							var scoreClosest = calInfo.Pre_Cal_Info_Scores.OrderBy(x => Math.Abs((decimal)(x.Name ?? 0) - loanValue)).First();
-							if (scoreClosest != null)
+							var lookupArray = calInfo.Pre_Cal_Info_Scores.Select(x => new XLookUpModel()
 							{
-								score = scoreClosest.Score;
+								ID = x.Id,
+								CheckValue = (double)(x.Name ?? 0),
+								ReturnValue = x.Score.ToString()
+							}).ToList();
+
+							lookupArray = lookupArray.OrderByDescending(x=>x.CheckValue).ToList();
+
+							// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+							var lookupResult = LoanCalculator.XLookupList((double)loanValue, lookupArray, 0);
+							if (lookupResult != null)
+							{
+								var scoreClosest = calInfo.Pre_Cal_Info_Scores.FirstOrDefault(x => x.Id == lookupResult.ID);
+								if (scoreClosest != null)
+								{
+									score = scoreClosest.Score;
+								}
 							}
 						}
+
 						if (calWeightInfo != null && calWeightInfo.Pre_Cal_WeightFactor_Items?.Count > 0)
 						{
 							ratio = calWeightInfo.Pre_Cal_WeightFactor_Items.FirstOrDefault()?.Percent;
@@ -238,27 +253,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								//รายได้/รายจ่าย
 								var incomeExpenses = (item.Income / item.Expenses) ?? 0;
 
-								var decimals = weightIncomeExpenses.Select(o =>
+								var lookupArray = weightIncomeExpenses.Select(s =>
 								{
-									try
+									if (double.TryParse(s.Name, out double checkValue))
 									{
-										if (o == null) return 0m; // ค่า null
-										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
-										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+										return new XLookUpModel
+										{
+											ID = s.Id,
+											CheckValue = checkValue,
+											ReturnValue = s.Score.ToString()
+										};
 									}
-									catch
+									else
 									{
-										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+										return new();
 									}
 								}).ToList();
 
-								//ค้นหาค่าที่ใกล้เคียงที่สุด	
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - incomeExpenses)).First();
-								var nameScore = weightIncomeExpenses.FirstOrDefault(x => x.Name == scoreClosest.ToString());
-								if (nameScore != null)
+								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
+
+								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+								var lookupResult = LoanCalculator.XLookupList((double)incomeExpenses, lookupArray, -1);
+								if (lookupResult != null)
 								{
-									_feature = nameScore.Name;
-									score = nameScore.Score;
+									var scoreClosest = weightIncomeExpenses.FirstOrDefault(x => x.Id == lookupResult.ID);
+									if (scoreClosest != null)
+									{
+										_feature = scoreClosest.Name;
+										score = scoreClosest.Score;
+									}
 								}
 
 								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
@@ -290,28 +313,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
 								var collValueloanValue = collValue / loanValue;
 
-								var decimals = weighCollateraltDebtValue.Select(o =>
+								var lookupArray = weighCollateraltDebtValue.Select(s =>
 								{
-									try
+									if (double.TryParse(s.Name, out double checkValue))
 									{
-										if (o == null) return 0m; // ค่า null
-										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
-										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+										return new XLookUpModel
+										{
+											ID = s.Id,
+											CheckValue = checkValue,
+											ReturnValue = s.Score.ToString()
+										};
 									}
-									catch
+									else
 									{
-										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+										return new();
 									}
 								}).ToList();
 
-								//ค้นหาค่าที่ใกล้เคียงที่สุด	
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - collValueloanValue)).First();
-								var nameScore = weighCollateraltDebtValue.FirstOrDefault(x => x.Name == scoreClosest.ToString());
-								if (nameScore != null)
+								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
+
+								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+								var lookupResult = LoanCalculator.XLookupList((double)collValueloanValue, lookupArray, -1);
+								if (lookupResult != null)
 								{
-									_feature = nameScore.Name;
-									score = nameScore.Score;
+									var scoreClosest = weighCollateraltDebtValue.FirstOrDefault(x => x.Id == lookupResult.ID);
+									if (scoreClosest != null)
+									{
+										_feature = scoreClosest.Name;
+										score = scoreClosest.Score;
+									}
 								}
+
 
 								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
 								{
@@ -342,28 +374,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								//รายได้ที่ได้ตามระยะงวดหนี้สินด้านบน/หนี้สินอื่นๆ
 								var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
 
-								var decimals = weighLiabilitieOtherIncome.Select(o =>
+								var lookupArray = weighLiabilitieOtherIncome.Select(s =>
 								{
-									try
+									if (double.TryParse(s.Name, out double checkValue))
 									{
-										if (o == null) return 0m; // ค่า null
-										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
-										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+										return new XLookUpModel
+										{
+											ID = s.Id,
+											CheckValue = checkValue,
+											ReturnValue = s.Score.ToString()
+										};
 									}
-									catch
+									else
 									{
-										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+										return new();
 									}
 								}).ToList();
 
-								//ค้นหาค่าที่ใกล้เคียงที่สุด
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - incomeDebtPeriodOtherDebts)).First();
-								var nameScore = weighLiabilitieOtherIncome.FirstOrDefault(x => x.Name == scoreClosest.ToString());
-								if (nameScore != null)
+								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
+
+								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+								var lookupResult = LoanCalculator.XLookupList((double)incomeDebtPeriodOtherDebts, lookupArray, -1);
+								if (lookupResult != null)
 								{
-									_feature = nameScore.Name;
-									score = nameScore.Score;
+									var scoreClosest = weighLiabilitieOtherIncome.FirstOrDefault(x => x.Id == lookupResult.ID);
+									if (scoreClosest != null)
+									{
+										_feature = scoreClosest.Name;
+										score = scoreClosest.Score;
+									}
 								}
+
 
 								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
 								{
@@ -386,22 +427,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							//ปริมาณเงินฝาก ธกส.
 							if (cashBank.Count > 0)
 							{
-								var decimals = cashBank.Select(o =>
+								var lookupArray = cashBank.Select(s =>
 								{
-									try
+									if (double.TryParse(s.Name, out double checkValue))
 									{
-										if (o == null) return 0m; // ค่า null
-										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
-										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+										return new XLookUpModel
+										{
+											ID = s.Id,
+											CheckValue = checkValue,
+											ReturnValue = s.Score.ToString()
+										};
 									}
-									catch
+									else
 									{
-										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+										return new();
 									}
 								}).ToList();
 
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - depositBAAC)).First();
-								score = cashBank.FirstOrDefault(x => x.Name == scoreClosest.ToString())?.Score;
+								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
+
+								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+								var lookupResult = LoanCalculator.XLookupList((double)depositBAAC, lookupArray, -1);
+								if (lookupResult != null)
+								{
+									var scoreClosest = cashBank.FirstOrDefault(x => x.Id == lookupResult.ID);
+									if (scoreClosest != null)
+									{
+										score = scoreClosest.Score;
+									}
+								}
 
 								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
 								{
@@ -464,26 +518,34 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								ratio = null;
 								scoreResult = null;
 
-								var decimals = collateralValue.Select(o =>
+								var lookupArray = collateralValue.Select(s =>
 								{
-									try
+									if (double.TryParse(s.Name, out double checkValue))
 									{
-										if (o == null) return 0m; // ค่า null
-										if (o.Name is string s && decimal.TryParse(s, out decimal result)) return result; // ถ้าเป็น string และแปลงเป็น decimal ได้
-										return 0m; // ค่าดีฟอลต์สำหรับค่าอื่น ๆ ที่ไม่สามารถแปลงได้
+										return new XLookUpModel
+										{
+											ID = s.Id,
+											CheckValue = checkValue,
+											ReturnValue = s.Score.ToString()
+										};
 									}
-									catch
+									else
 									{
-										return 0m; // ค่าดีฟอลต์ในกรณีที่เกิดข้อผิดพลาด
+										return new();
 									}
 								}).ToList();
 
-								var scoreClosest = decimals.OrderBy(x => Math.Abs(x - collValue)).First();
-								score = collateralValue.FirstOrDefault(x => x.Name == scoreClosest.ToString())?.Score;
+								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
-								if (calWeightStan != null && calWeightStan.Pre_Cal_WeightFactor_Items?.Count > 0)
+								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+								var lookupResult = LoanCalculator.XLookupList((double)collValue, lookupArray, -1);
+								if (lookupResult != null)
 								{
-									ratio = calWeightStan.Pre_Cal_WeightFactor_Items.FirstOrDefault(x => x.StanScoreType == PreStanScoreType.CollateralValue)?.Percent;
+									var scoreClosest = collateralValue.FirstOrDefault(x => x.Id == lookupResult.ID);
+									if (scoreClosest != null)
+									{
+										score = scoreClosest.Score;
+									}
 								}
 
 								scoreResult = (score * ratio) / 100;
@@ -718,34 +780,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var createScoreList = await _repo.PreCreditScore.GetList(new() { page = 1, pagesize = 50 });
 					if (createScoreList.Items.Count > 0)
 					{
-						totalScore = (decimal)72.60;
+						//totalScore = (decimal)72.60;
 
-						//double[] lookupArray = { 0.0, 53, 59, 61, 64, 66, 69, 75, 80, 86, 101 };
-						//string[] returnArray = { "D", "C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA", "Error" };
-						double[] lookupArray = createScoreList.Items.Select(x => (double)(x.CreditScore ?? 0)).ToArray();
-						string[] returnArray = createScoreList.Items.Select(x => x.Grade ?? string.Empty).ToArray();
-						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า
-						var lookupResult = LoanCalculator.XLookup((double)totalScore, lookupArray, returnArray, "Error");
-
-						var scoreClosest = createScoreList.Items.FirstOrDefault(x=>x.Grade == lookupResult);
-						if (scoreClosest != null)
+						var lookupArray = createScoreList.Items.Select(x => new XLookUpModel()
 						{
-							cr_Level = scoreClosest.Level;
-							cr_CreditScore = scoreClosest.CreditScore;
-							cr_Grade = scoreClosest.Grade;
-							cr_LimitMultiplier = scoreClosest.LimitMultiplier;
-							cr_RateMultiplier = scoreClosest.RateMultiplier;
+							ID = x.Id,
+							CheckValue = (double)(x.CreditScore ?? 0),
+							ReturnValue = (x.Grade ?? string.Empty).ToString()
+						}).ToList();
+
+						lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
+
+						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+						var lookupResult = LoanCalculator.XLookupList((double)totalScore, lookupArray, -1);
+						if (lookupResult != null)
+						{
+							var scoreClosest = createScoreList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);
+							if (scoreClosest != null)
+							{
+								cr_Level = scoreClosest.Level;
+								cr_CreditScore = scoreClosest.CreditScore;
+								cr_Grade = scoreClosest.Grade;
+								cr_LimitMultiplier = scoreClosest.LimitMultiplier;
+								cr_RateMultiplier = scoreClosest.RateMultiplier;
+							}
 						}
-																	
-						//var scoreClosest = createScoreList.Items.OrderBy(x => Math.Abs((decimal)(x.CreditScore ?? 0) - totalScore)).First();
-						//if (scoreClosest != null)
-						//{
-						//	cr_Level = scoreClosest.Level;
-						//	cr_CreditScore = scoreClosest.CreditScore;
-						//	cr_Grade = scoreClosest.Grade;
-						//	cr_LimitMultiplier = scoreClosest.LimitMultiplier;
-						//	cr_RateMultiplier = scoreClosest.RateMultiplier;
-						//}
 					}
 				}
 

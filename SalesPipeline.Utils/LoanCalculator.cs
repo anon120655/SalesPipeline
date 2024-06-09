@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesPipeline.Utils.Resources.Shares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,24 +41,36 @@ namespace SalesPipeline.Utils
 			return mid;
 		}
 
-		public static string XLookup(double lookupValue, double[] lookupArray, string[] returnArray, string ifNotFound)
+		public static XLookUpModel? XLookupList(double lookupValue, List<XLookUpModel> lookUpModel, int searchMode = -1)
 		{
-			if (lookupArray.Length != returnArray.Length)
-			{
-				throw new ArgumentException("Lookup array and return array must be of the same length.");
-			}
-
 			// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า
-			for (int i = lookupArray.Length - 1; i >= 0; i--)
+
+			if (searchMode == -1)
 			{
-				if (lookupValue >= lookupArray[i])
+				// ค้นหาจากหลังไปแรก
+				for (int i = lookUpModel.Count - 1; i >= 0; i--)
 				{
-					return returnArray[i];
+					var checkValue = lookUpModel[i].CheckValue;
+					if (lookupValue >= checkValue)
+					{
+						return lookUpModel[i];
+					}
+				}
+			}
+			else
+			{
+				// ค้นหาจากแรกไปหลัง (default)
+				for (int i = 0; i < lookUpModel.Count; i++)
+				{
+					var checkValue = lookUpModel[i].CheckValue;
+					if (lookupValue >= checkValue)
+					{
+						return lookUpModel[i];
+					}
 				}
 			}
 
-			// ถ้าไม่พบค่าที่ตรงกันหรือน้อยกว่าค่าที่กำหนด, คืนค่าที่กำหนดไว้ (ifNotFound)
-			return ifNotFound;
+			return null;
 		}
 
 	}
