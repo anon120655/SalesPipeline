@@ -10,10 +10,6 @@ namespace SalesPipeline.Utils
 	{
 		public static double CalculateMonthlyPayment(double principal, double monthlyInterestRate, int numberOfPayments)
 		{
-			//var result = principal * (monthlyInterestRate * Math.Pow(1 + monthlyInterestRate, numberOfPayments)) /
-			//	   (Math.Pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-
-			//return result;
 			double ratePow = Math.Pow(1 + monthlyInterestRate, numberOfPayments);
 			return principal * (monthlyInterestRate * ratePow) / (ratePow - 1);
 		}

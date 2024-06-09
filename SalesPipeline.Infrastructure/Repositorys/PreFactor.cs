@@ -804,46 +804,93 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			response.ScheduleItem = new();
 
-			double? rate = null;
-			double? payment = null;
-			double? interest = null;
-			double? principle = null;
-			double? balance = model.Principal;
+			var loan = await _repo.Loan.GetById(model.LoanId);
+			if (loan == null) throw new ExceptionCustom("ไม่พบสินเชื่อ");
+
+			double monthlyPayment = 0;
+
+			//อัตราดอกเบี้ย(ต่ำสุด)รายปี period 1
+			double rateValue = 0; //F7 = 0.06125
+
+			//Risk Premium รายปี
+			double riskPremium = 0; //F10 = 0.03
+
+			// ตัวหารดอกเบี้ย/ตัวคูณจำนวนงวด
+			double interestDivisorTermMultiplier = 12; //F11 = 12 ****ยังไม่รู้ที่มา
 
 			// จำนวนเงินต้น
-			double principal = model.Principal;
-			// อัตราดอกเบี้ยรายงวด (0.58% หรือ 0.00582)
-			double monthlyInterestRate = 0.00582;
-			if (model.PeriodRate != null)
+			double principal = model.Principal; //F79
+
+			//Premium Rate Multiplier
+			double premiumRateMultiplier = 0.285714286; //F80 = 0.285714286  ****ยังไม่รู้ที่มา
+
+			// อัตราดอกเบี้ย **ดอกเบี้ยรายปี period 1
+			double annualInterestRate = 0; //F81 = 0.069821429 สูตร  =F7+(F$10*F$80)
+
+			// อัตราดอกเบี้ย **ดอกเบี้ยรายงวด period 1
+			double monthlyInterestRate = 0; //F84 = 0.005818452 สูตร  =F81/F$11
+
+			if (loan.RiskPremiumYear.HasValue)
 			{
-				monthlyInterestRate = model.PeriodRate.FirstOrDefault()?.Rate ?? 0;
+				riskPremium = (double)loan.RiskPremiumYear.Value / 100;
 			}
+
+			//if (loan.Master_Pre_Interest_PayTypeId == PrePayTypeIdModel.PayType1)
+			//{
+			if (loan.Loan_Periods?.Count > 0)
+			{
+				var period = loan.Loan_Periods.FirstOrDefault();
+				if (period != null && period.RateValue.HasValue)
+				{
+					rateValue = (double)period.RateValue.Value / 100; //0.06125
+					annualInterestRate = rateValue + (riskPremium * premiumRateMultiplier);
+					monthlyInterestRate = annualInterestRate / interestDivisorTermMultiplier;
+				}
+			}
+			//}
 
 			// จำนวนงวด
 			int numberOfPayments = model.NumberOfPayments;
 
-			// ยอดชำระเงินที่ต้องการ
-			double targetPayment = 10322.80;
-
-			// คำนวณอัตราดอกเบี้ยรายงวดที่ทำให้ยอดชำระเงินเท่ากับเป้าหมาย
-			double monthlyInterestRateNew = LoanCalculator.CalculateInterestRate(principal, numberOfPayments, targetPayment);
-
 			// คำนวณยอดชำระเงินรายงวด
-			payment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
+			monthlyPayment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
 
-			var paymentF2 = $"ยอดชำระเงินรายงวด: {payment:F2} บาท";
+			double? Rate = null;
+			double? Payment = null;
+			var balance = principal;
+			double interest = 0;
+			double principalPayment = 0;
 
 			for (int i = 0; i <= model.NumberOfPayments; i++)
 			{
+				if (i != 0)
+				{
+					interest = Math.Round(balance * monthlyInterestRate, 2);
+					principalPayment = Math.Round(monthlyPayment - interest, 2);
+					balance = Math.Round(balance - principalPayment, 2);
+
+					if (i == model.NumberOfPayments)
+					{
+						balance = 0;
+					}
+
+					Rate = monthlyInterestRate;
+					Payment = monthlyPayment;
+				}
+
 				response.ScheduleItem.Add(new()
 				{
 					Period = i,
-					Rate = rate,
-					Payment = payment,
-					PaymentStr = $"{payment:F2}",
+					Rate = Rate,
+					RateStr = Rate.HasValue ? $"{Rate.Value.ToString("P2")}" : string.Empty,
+					Payment = Payment,
+					PaymentStr = Payment.HasValue ? $"฿{Payment.Value.ToString(GeneralTxt.FormatDecimal2)}" : string.Empty,
 					Interest = interest,
-					Principle = principle,
-					Balance = balance
+					InterestStr = interest.ToString(GeneralTxt.FormatDecimal2),
+					Principle = principalPayment,
+					PrincipleStr = principalPayment.ToString(GeneralTxt.FormatDecimal2),
+					Balance = balance,
+					BalanceStr = balance.ToString(GeneralTxt.FormatDecimal2),
 				});
 			}
 

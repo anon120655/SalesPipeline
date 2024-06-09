@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Loans
 {
@@ -21,8 +22,8 @@ namespace SalesPipeline.Pages.Loans
 		private User_PermissionCustom _permission = new();
 		private LoanCustom formModel = new();
 
-		Guid _payType1 = Guid.Parse("6b7e120f-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่
-		Guid _payType2 = Guid.Parse("753e6f06-138a-11ef-93fa-30e37aef72fb"); //อัตราดอกเบี้ยคงที่ตามรอบเวลา
+		Guid _payType1 = PrePayTypeIdModel.PayType1; //อัตราดอกเบี้ยคงที่
+		Guid _payType2 = PrePayTypeIdModel.PayType2; //อัตราดอกเบี้ยคงที่ตามรอบเวลา
 		Guid _rateTypeSpecial = Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"); //Special - ระบุ
 
 		protected override async Task OnInitializedAsync()
