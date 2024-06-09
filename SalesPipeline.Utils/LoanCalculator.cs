@@ -40,14 +40,14 @@ namespace SalesPipeline.Utils
 			return mid;
 		}
 
-		public static string XLookup(decimal lookupValue, decimal[] lookupArray, string[] returnArray, string ifNotFound)
+		public static string XLookup(double lookupValue, double[] lookupArray, string[] returnArray, string ifNotFound)
 		{
 			if (lookupArray.Length != returnArray.Length)
 			{
 				throw new ArgumentException("Lookup array and return array must be of the same length.");
 			}
 
-			// ค้นหาค่าที่ตรงกันหรือน้อยกว่าค่าที่กำหนด
+			// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า
 			for (int i = lookupArray.Length - 1; i >= 0; i--)
 			{
 				if (lookupValue >= lookupArray[i])

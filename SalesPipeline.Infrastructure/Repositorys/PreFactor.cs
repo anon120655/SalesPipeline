@@ -718,10 +718,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var createScoreList = await _repo.PreCreditScore.GetList(new() { page = 1, pagesize = 50 });
 					if (createScoreList.Items.Count > 0)
 					{
-						//totalScore = (decimal)72.60;
+						totalScore = (decimal)72.60;
 
-						// ค้นหาค่าที่ใกล้เคียงที่สุด							
-						var scoreClosest = createScoreList.Items.OrderBy(x => Math.Abs((decimal)(x.CreditScore ?? 0) - totalScore)).First();
+						//double[] lookupArray = { 0.0, 53, 59, 61, 64, 66, 69, 75, 80, 86, 101 };
+						//string[] returnArray = { "D", "C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA", "Error" };
+						double[] lookupArray = createScoreList.Items.Select(x => (double)(x.CreditScore ?? 0)).ToArray();
+						string[] returnArray = createScoreList.Items.Select(x => x.Grade ?? string.Empty).ToArray();
+						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า
+						var lookupResult = LoanCalculator.XLookup((double)totalScore, lookupArray, returnArray, "Error");
+
+						var scoreClosest = createScoreList.Items.FirstOrDefault(x=>x.Grade == lookupResult);
 						if (scoreClosest != null)
 						{
 							cr_Level = scoreClosest.Level;
@@ -730,6 +736,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							cr_LimitMultiplier = scoreClosest.LimitMultiplier;
 							cr_RateMultiplier = scoreClosest.RateMultiplier;
 						}
+																	
+						//var scoreClosest = createScoreList.Items.OrderBy(x => Math.Abs((decimal)(x.CreditScore ?? 0) - totalScore)).First();
+						//if (scoreClosest != null)
+						//{
+						//	cr_Level = scoreClosest.Level;
+						//	cr_CreditScore = scoreClosest.CreditScore;
+						//	cr_Grade = scoreClosest.Grade;
+						//	cr_LimitMultiplier = scoreClosest.LimitMultiplier;
+						//	cr_RateMultiplier = scoreClosest.RateMultiplier;
+						//}
 					}
 				}
 
@@ -814,21 +830,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaySchedule> PaymentSchedule(PayScheduleFactor model)
 		{
-			// ตัวอย่างข้อมูล
-			decimal[] lookupArray = { 0.0m, 53m, 59m, 61m, 64m, 66m, 69m, 75m, 80m, 86m, 101m };
-			string[] returnArray = { "D", "C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA", "Error" };
-
-			// ค่าที่ต้องการค้นหา
-			decimal lookupValue = model.lookupValue;
-
-			// ค้นหาค่าที่ตรงกัน
-			var XLookupValue = LoanCalculator.XLookup(lookupValue, lookupArray, returnArray, "Error");
-
-			await Task.Delay(1);
-
 			var response = new PaySchedule();
-
-			response.XLookupValue = XLookupValue;
 
 			response.Factor = model;
 
