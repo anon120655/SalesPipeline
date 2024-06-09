@@ -23,6 +23,11 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public int UpdateBy { get; set; }
 
+		/// <summary>
+		/// ลำดับ
+		/// </summary>
+		public int SequenceNo { get; set; }
+
 		public string? Z { get; set; }
 
 		public string? CreditScore { get; set; }

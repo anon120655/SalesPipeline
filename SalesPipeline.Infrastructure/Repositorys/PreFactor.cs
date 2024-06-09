@@ -154,7 +154,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								ReturnValue = x.Score.ToString()
 							}).ToList();
 
-							lookupArray = lookupArray.OrderByDescending(x=>x.CheckValue).ToList();
+							lookupArray = lookupArray.OrderByDescending(x => x.CheckValue).ToList();
 
 							// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
 							var lookupResult = LoanCalculator.XLookupList((double)loanValue, lookupArray, 0);
@@ -774,15 +774,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? cr_Grade = null;
 				string? cr_LimitMultiplier = null;
 				string? cr_RateMultiplier = null;
+				string? resultLoan = null;
+				double? chanceNumber = null;
+				string? chancePercent = null;
+
 				if (pre_Result_Items.Count > 0)
 				{
 					totalScore = pre_Result_Items.Sum(x => x.ScoreResult ?? 0);
-					var createScoreList = await _repo.PreCreditScore.GetList(new() { page = 1, pagesize = 50 });
-					if (createScoreList.Items.Count > 0)
+
+					var creditScoreList = await _repo.PreCreditScore.GetList(new() { page = 1, pagesize = 300 });
+					if (creditScoreList.Items.Count > 0)
 					{
 						//totalScore = (decimal)72.60;
 
-						var lookupArray = createScoreList.Items.Select(x => new XLookUpModel()
+						var gradeCC = creditScoreList.Items.FirstOrDefault(x => x.Grade == "CC");
+						if (gradeCC != null)
+						{
+							resultLoan = totalScore >= gradeCC.CreditScore ? "ผ่าน" : "ไม่ผ่าน";
+						}
+
+						var lookupArray = creditScoreList.Items.Select(x => new XLookUpModel()
 						{
 							ID = x.Id,
 							CheckValue = (double)(x.CreditScore ?? 0),
@@ -795,7 +806,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var lookupResult = LoanCalculator.XLookupList((double)totalScore, lookupArray, -1);
 						if (lookupResult != null)
 						{
-							var scoreClosest = createScoreList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);
+							var scoreClosest = creditScoreList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);
 							if (scoreClosest != null)
 							{
 								cr_Level = scoreClosest.Level;
@@ -806,6 +817,53 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 						}
 					}
+
+
+					var chancePassList = await _repo.PreChancePass.GetList(new() { page = 1, pagesize = 300 });
+					if (chancePassList.Items.Count > 0)
+					{
+						//chancePercent
+						//=1-XLOOKUP(ICO!N74,PD!B:B,PD!C:C,"error",-1)
+						//N74 = totalScore
+						var lookupArray = chancePassList.Items.Select(s =>
+						{
+							if (double.TryParse(s.CreditScore, out double checkValue))
+							{
+								return new XLookUpModel
+								{
+									ID = s.Id,
+									CheckValue = checkValue,
+									ReturnValue = s.Prob
+								};
+							}
+							else
+							{
+								return new();
+							}
+						}).ToList();
+
+						lookupArray = lookupArray.OrderByDescending(x => x.CheckValue).ToList();
+
+						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
+						var lookupResult = LoanCalculator.XLookupList((double)totalScore, lookupArray, 0);
+						if (lookupResult != null)
+						{
+							var scoreClosest = chancePassList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);
+							if (scoreClosest != null)
+							{
+								if (double.TryParse(scoreClosest.Prob, out double prob))
+								{
+									chanceNumber = 1 - prob;
+									if (chanceNumber.HasValue)
+									{
+										chancePercent = chanceNumber.Value.ToString("P2");
+									}
+								}
+							}
+						}
+
+					}
+
 				}
 
 				var pre_Result = new Data.Entity.Pre_Result();
@@ -819,8 +877,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Result.Cr_Grade = cr_Grade;
 				pre_Result.Cr_LimitMultiplier = cr_LimitMultiplier;
 				pre_Result.Cr_RateMultiplier = cr_RateMultiplier;
-				pre_Result.ResultLoan = null;
-				pre_Result.ChancePercent = null;
+				pre_Result.ResultLoan = resultLoan;
+				pre_Result.ChanceNumber = chanceNumber;
+				pre_Result.ChancePercent = chancePercent;
 				await _db.InsterAsync(pre_Result);
 				await _db.SaveAsync();
 

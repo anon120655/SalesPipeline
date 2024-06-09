@@ -1987,6 +1987,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreditScore).HasMaxLength(255);
             entity.Property(e => e.Prob).HasMaxLength(255);
+            entity.Property(e => e.SequenceNo)
+                .HasComment("ลำดับ")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -2224,7 +2227,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.TotalScore)
-                .HasPrecision(2)
+                .HasPrecision(18, 2)
                 .HasComment("คะแนนรวม");
 
             entity.HasOne(d => d.Pre_Factor).WithMany(p => p.Pre_Results)

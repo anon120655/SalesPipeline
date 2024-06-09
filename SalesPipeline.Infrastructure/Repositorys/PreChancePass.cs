@@ -33,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Pre_ChancePasses
 									 .Where(x => x.Status != StatusModel.Delete)
-									 .OrderBy(x => x.CreateDate)
+									 .OrderBy(x => x.SequenceNo)
 									 .AsQueryable();
 			if (model.status.HasValue)
 			{

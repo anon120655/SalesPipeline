@@ -32,6 +32,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// </summary>
 		public string? ResultLoan { get; set; }
 
+		public double? ChanceNumber { get; set; }
+
 		/// <summary>
 		/// โอกาสขอสินเชื่อผ่าน
 		/// </summary>

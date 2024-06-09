@@ -28,6 +28,8 @@ public partial class Pre_Result
     /// </summary>
     public string? ResultLoan { get; set; }
 
+    public double? ChanceNumber { get; set; }
+
     /// <summary>
     /// โอกาสขอสินเชื่อผ่าน
     /// </summary>
