@@ -8,6 +8,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 {
 	public class PayScheduleFactor
 	{
+		public decimal lookupValue { get; set; }
 		/// <summary>
 		/// สินเชื่อ
 		/// </summary>

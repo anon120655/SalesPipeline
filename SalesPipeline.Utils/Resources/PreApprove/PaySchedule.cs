@@ -8,6 +8,7 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 {
 	public class PaySchedule
 	{
+        public string? XLookupValue { get; set; }
         public PayScheduleFactor? Factor { get; set; }
         public List<PayScheduleItem>? ScheduleItem { get; set; }
     }

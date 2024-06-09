@@ -564,6 +564,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								if (stan_ItemOption_Score == null) throw new ExceptionCustom($"pre_Cal_Fetu_App_Item_ScoreId not found.");
 								pre_Cal_Fetu_App_Item_ScoreName = stan_ItemOption_Score.Name;
 							}
+							else
+							{
+								throw new ExceptionCustom($"pre_Cal_Fetu_App_Item_ScoreId require.");
+							}
+						}
+						else
+						{
+							throw new ExceptionCustom($"pre_Cal_Fetu_App_ItemId require.");
 						}
 
 						var pre_Factor_App = new Data.Entity.Pre_Factor_App();
@@ -639,6 +647,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								if (stan_ItemOption_Score == null) throw new ExceptionCustom($"pre_Cal_Fetu_Bus_Item_ScoreId not found.");
 								pre_Cal_Fetu_Bus_Item_ScoreName = stan_ItemOption_Score.Name;
 							}
+							else
+							{
+								throw new ExceptionCustom($"pre_Cal_Fetu_Bus_Item_ScoreId require.");
+							}
+						}
+						else
+						{
+							throw new ExceptionCustom($"pre_Cal_Fetu_Bus_ItemId require.");
 						}
 
 						var pre_Factor_Bus = new Data.Entity.Pre_Factor_Bu();
@@ -702,6 +718,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var createScoreList = await _repo.PreCreditScore.GetList(new() { page = 1, pagesize = 50 });
 					if (createScoreList.Items.Count > 0)
 					{
+						//totalScore = (decimal)72.60;
+
 						// ค้นหาค่าที่ใกล้เคียงที่สุด							
 						var scoreClosest = createScoreList.Items.OrderBy(x => Math.Abs((decimal)(x.CreditScore ?? 0) - totalScore)).First();
 						if (scoreClosest != null)
@@ -796,9 +814,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaySchedule> PaymentSchedule(PayScheduleFactor model)
 		{
+			// ตัวอย่างข้อมูล
+			decimal[] lookupArray = { 0.0m, 53m, 59m, 61m, 64m, 66m, 69m, 75m, 80m, 86m, 101m };
+			string[] returnArray = { "D", "C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA", "Error" };
+
+			// ค่าที่ต้องการค้นหา
+			decimal lookupValue = model.lookupValue;
+
+			// ค้นหาค่าที่ตรงกัน
+			var XLookupValue = LoanCalculator.XLookup(lookupValue, lookupArray, returnArray, "Error");
+
 			await Task.Delay(1);
 
 			var response = new PaySchedule();
+
+			response.XLookupValue = XLookupValue;
 
 			response.Factor = model;
 
@@ -806,8 +836,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var loan = await _repo.Loan.GetById(model.LoanId);
 			if (loan == null) throw new ExceptionCustom("ไม่พบสินเชื่อ");
-
-			double monthlyPayment = 0;
 
 			//อัตราดอกเบี้ย(ต่ำสุด)รายปี period 1
 			double rateValue = 0; //F7 = 0.06125
@@ -853,7 +881,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int numberOfPayments = model.NumberOfPayments;
 
 			// คำนวณยอดชำระเงินรายงวด
-			monthlyPayment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
+			double monthlyPayment = LoanCalculator.CalculateMonthlyPayment(principal, monthlyInterestRate, numberOfPayments);
 
 			double? Rate = null;
 			double? Payment = null;
