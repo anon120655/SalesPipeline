@@ -138,6 +138,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 		{
 			LookUp.Branchs = new();
 			LookUp.RMUser = new();
+			filter.provinceid = null;
 			filter.Provinces = null;
 			filter.Branchs = new();
 			filter.RMUsers = new();

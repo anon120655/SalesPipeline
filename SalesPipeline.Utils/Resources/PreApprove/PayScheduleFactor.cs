@@ -20,14 +20,5 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// จำนวนเงินต้น
 		/// </summary>
 		public double Principal { get; set; }
-
-		//      public List<PeriodRates>? PeriodRate { get; set; }
-
-		//      public class PeriodRates
-		//{
-		//	public double Period { get; set; }
-		//          public double Rate { get; set; }
-		//      }
-
 	}
 }

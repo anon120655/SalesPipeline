@@ -43,7 +43,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected async Task SetInitManual()
 		{
-			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active });
+			var dataPosition = await _masterViewModel.Positions(new allFilter() { status = StatusModel.Active, type = UserTypes.Admin });
 			if (dataPosition != null && dataPosition.Status)
 			{
 				LookUp.Positions = dataPosition.Data;
