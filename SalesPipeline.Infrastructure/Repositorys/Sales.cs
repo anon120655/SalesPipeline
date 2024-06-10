@@ -351,6 +351,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
 		{
+			//List<Guid> cjeck = new();
+			//var _Customers = await _repo.Context.Customers.Where(x=>x.Status ==1).ToListAsync();
+			//var _Sales = await _repo.Context.Sales.Where(x=>x.Status ==1).ToListAsync();
+			//foreach (var item in _Customers)
+			//{
+			//	if (!_Sales.Any(x=>x.CustomerId == item.Id))
+			//	{
+			//		cjeck.Add(item.Id);
+			//	}
+			//}
+
+
 			if (!model.userid.HasValue) throw new ExceptionCustom("userid require.");
 
 			var user = await _repo.User.GetById(model.userid.Value);

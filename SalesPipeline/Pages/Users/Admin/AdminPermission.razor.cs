@@ -20,6 +20,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		private User_RoleCustom? formModel;
 		//private UserRoleCustom formModel = new();
 		public Pager? Pager;
+		bool checkOnAccess = false;
 
 		ModalConfirm modalConfirm = default!;
 
@@ -116,29 +117,36 @@ namespace SalesPipeline.Pages.Users.Admin
 			}
 		}
 
-		protected async Task OnAccess(int _id)
+		protected async Task OnAccess(User_RoleCustom model)
 		{
-			id = _id;
+			formModel = null;
+			id = null;
+
 			if (Items != null)
 			{
 				foreach (var item in Items)
 				{
-					if (item.Id == _id)
-						item.IsAccess = true;
-					else
+					if (item.Id != model.Id)
+					{
 						item.IsAccess = false;
+					}
 				}
 
-				formModel = null;
-				var data = await _userViewModel.GetRoleById(_id);
-				if (data != null && data.Status && data.Data != null)
+				model.IsAccess = !model.IsAccess;
+
+				if (model.IsAccess)
 				{
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
+					id = model.Id;
+					var data = await _userViewModel.GetRoleById(model.Id);
+					if (data != null && data.Status && data.Data != null)
+					{
+						formModel = data.Data;
+					}
+					else
+					{
+						_errorMessage = data?.errorMessage;
+						_utilsViewModel.AlertWarning(_errorMessage);
+					}
 				}
 			}
 		}

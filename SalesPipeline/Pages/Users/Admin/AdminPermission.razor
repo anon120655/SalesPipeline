@@ -65,7 +65,7 @@
 													<td class="text-center">@item.Name</td>
 													<td class="text-center">@item.Description</td>
 													<td class="text-center">
-														<div @onclick="(async()=> await OnAccess(item.Id))" role="button">
+														<div @onclick="(async()=> await OnAccess(item))" role="button">
 															@if (item.IsAccess)
 															{
 																<img src="/image/icon/bookopen_active.png" width="25" />
