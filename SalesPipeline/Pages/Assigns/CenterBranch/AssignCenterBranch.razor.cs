@@ -384,6 +384,23 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 			{
 				filter.businesstype = e.Value.ToString();
 			}
+
+			StateHasChanged();
+			await Task.Delay(1);
 		}
+
+		public async Task OnProvince(ChangeEventArgs e)
+		{
+			filter.provinceid = null;
+			if (e.Value != null && int.TryParse(e.Value.ToString(),out int _id))
+			{
+				filter.provinceid = _id;
+			}
+
+			StateHasChanged();
+			await Task.Delay(1);
+		}
+
+
 	}
 }

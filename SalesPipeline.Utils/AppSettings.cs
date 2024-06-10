@@ -36,6 +36,7 @@ namespace SalesPipeline.Utils
 
 		public class iAuthens
 		{
+			public bool IsConnect { get; set; }
 			public string? baseUri { get; set; }
 			public string? ApiKey { get; set; }
 			public string? RequestID { get; set; }

@@ -37,43 +37,47 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var iAuthenRequest = new iAuthenRequest()
+				if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect)
 				{
-					user = "6100004",
-					password = "SmpAMTIzNDU2Nzg5",
-					faceID = "",
-					requester_id = "R00001",
-					reference_id = "3",
-					ipaddress = "172.25.25.2",
-					authen_type = 4,
-				};
-
-				var httpClient = new HttpClient(new HttpClientHandler() { 
-					ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator 
-				});
-
-				var postData = new StringContent(
-					JsonConvert.SerializeObject(iAuthenRequest), // แปลงข้อมูลเป็น JSON ก่อน
-					Encoding.UTF8,
-					"application/json"
-				);
-				httpClient.DefaultRequestHeaders.Add("Api-Key", _appSet.iAuthen?.ApiKey);
-
-				HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.iAuthen?.baseUri}/authen/authentication", postData);
-				if (responseAPI.IsSuccessStatusCode)
-				{
-					string responseBody = await responseAPI.Content.ReadAsStringAsync();
-					if (responseBody != null)
+					var iAuthenRequest = new iAuthenRequest()
 					{
+						user = "6100004",
+						password = "SmpAMTIzNDU2Nzg5",
+						faceID = "",
+						requester_id = "R00001",
+						reference_id = "3",
+						ipaddress = "172.25.25.2",
+						authen_type = 4,
+					};
 
+					var httpClient = new HttpClient(new HttpClientHandler()
+					{
+						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+					});
+
+					var postData = new StringContent(
+						JsonConvert.SerializeObject(iAuthenRequest), // แปลงข้อมูลเป็น JSON ก่อน
+						Encoding.UTF8,
+						"application/json"
+					);
+					httpClient.DefaultRequestHeaders.Add("Api-Key", _appSet.iAuthen.ApiKey);
+
+					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.iAuthen.baseUri}/authen/authentication", postData);
+					if (responseAPI.IsSuccessStatusCode)
+					{
+						string responseBody = await responseAPI.Content.ReadAsStringAsync();
+						if (responseBody != null)
+						{
+
+						}
 					}
-				}
-				else
-				{
-					string responseBody = await responseAPI.Content.ReadAsStringAsync();
-					if (responseBody != null)
+					else
 					{
+						string responseBody = await responseAPI.Content.ReadAsStringAsync();
+						if (responseBody != null)
+						{
 
+						}
 					}
 				}
 
