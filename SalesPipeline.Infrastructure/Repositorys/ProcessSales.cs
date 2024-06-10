@@ -1022,11 +1022,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.SubmitType = model.SubmitType;
 			if (model.SubmitType == 1)
 			{
-				if (String.IsNullOrEmpty(model.IDCardIMGPath))
-				{
-					throw new ExceptionCustom("ระบุรูปบัตรประชาชน");
-				}
-				else if (String.IsNullOrEmpty(model.SignaturePath))
+				//if (String.IsNullOrEmpty(model.IDCardIMGPath))
+				//{
+				//	throw new ExceptionCustom("ระบุรูปบัตรประชาชน");
+				//}
+				
+				if (String.IsNullOrEmpty(model.SignaturePath))
 				{
 					throw new ExceptionCustom("ระบุรูปลายเซ็นผู้กู้ยืม");
 				}

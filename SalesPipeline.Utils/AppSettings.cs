@@ -13,6 +13,7 @@ namespace SalesPipeline.Utils
         public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }
+		public iAuthens? iAuthen { get; set; }
 
 		public class LineNotifys
 		{
@@ -31,6 +32,13 @@ namespace SalesPipeline.Utils
 			public string? DefualtMail { get; set; }
 			public bool IsSentMailCc { get; set; }
 			public string? DefualtMailCc { get; set; }
+		}
+
+		public class iAuthens
+		{
+			public string? baseUri { get; set; }
+			public string? ApiKey { get; set; }
+			public string? RequestID { get; set; }
 		}
 
 		public string? Version

@@ -140,6 +140,8 @@ builder.Services.AddControllers()
 	//options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
