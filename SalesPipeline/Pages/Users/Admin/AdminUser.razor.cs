@@ -24,14 +24,15 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
 			StateHasChanged();
-
-			await SetInitManual();
+			await Task.Delay(1);
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
+				await SetInitManual();
+
 				await SetQuery();
 				StateHasChanged();
 

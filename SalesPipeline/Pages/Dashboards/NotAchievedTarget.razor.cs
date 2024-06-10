@@ -28,6 +28,7 @@ namespace SalesPipeline.Pages.Dashboards
 			if (firstRender)
 			{
 				filter.userid = UserInfo.Id;
+				filter.achieve_goal = 2;
 
 				await SetInitManual();
 				await Task.Delay(10);

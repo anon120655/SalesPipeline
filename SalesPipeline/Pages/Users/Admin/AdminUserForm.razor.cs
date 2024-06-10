@@ -4,6 +4,8 @@ using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
@@ -186,6 +188,14 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			isLoading = false;
 			StateHasChanged();
+		}
+
+		private void OnInputTel(KeyboardEventArgs e)
+		{
+			if (formModel.Tel != null)
+			{
+				formModel.Tel = formModel.Tel.Substring(0, 10);
+			}
 		}
 
 	}

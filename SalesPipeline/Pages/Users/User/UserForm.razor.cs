@@ -6,6 +6,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.ViewModels;
 using SalesPipeline.Utils.Resources.Thailands;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace SalesPipeline.Pages.Users.User
 {
@@ -406,7 +407,13 @@ namespace SalesPipeline.Pages.Users.User
 			}
 		}
 
-
+		private void OnInputTel(KeyboardEventArgs e)
+		{
+			if (formModel.Tel != null)
+			{
+				formModel.Tel = formModel.Tel.Substring(0, 10);
+			}
+		}
 
 	}
 }

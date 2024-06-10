@@ -561,7 +561,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//จังหวัด
 			if (model.provinceid > 0)
 			{
-				query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == model.provinceid);
+				//query = query.Where(x => x.Customer != null && x.Customer.ProvinceId == model.provinceid);
+				query = query.Where(x => x.ProvinceId == model.provinceid);
 			}
 
 			//อำเภอ
