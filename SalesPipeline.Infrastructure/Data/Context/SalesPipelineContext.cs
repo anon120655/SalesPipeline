@@ -216,6 +216,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<User_Login_Log> User_Login_Logs { get; set; }
 
+    public virtual DbSet<User_Login_TokenNoti> User_Login_TokenNotis { get; set; }
+
     public virtual DbSet<User_Permission> User_Permissions { get; set; }
 
     public virtual DbSet<User_Role> User_Roles { get; set; }
@@ -3619,6 +3621,21 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.IPAddress).HasMaxLength(255);
             entity.Property(e => e.SystemVersion).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+            entity.Property(e => e.tokenNoti).HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<User_Login_TokenNoti>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("User_Login_TokenNoti");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("current_timestamp()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.UserId).HasColumnType("int(11)");
             entity.Property(e => e.tokenNoti).HasMaxLength(300);
         });

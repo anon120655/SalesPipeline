@@ -83,6 +83,11 @@ namespace SalesPipeline.API.Controllers
 
 				var response = await _repo.Authorizes.Authenticate(model);
 
+				if (_appSet.ServerSite == ServerSites.DEV)
+				{
+					model.tokenNoti = "cn2akTlACf2yrfsPdrUGxj:APA91bHzBDCeLPRa7TfjYF6TYcZTlFOQwNbBrI_9qPlXhVyBySt-7ZU_yQONDHRCaM5rjrasTMyJUBGmNyP0XQlIyMz_hzEO6zMdrvhU9NG9TKyfWNbE7gSNu-GE7eFrrbZv0KrZJP4E";
+				}
+
 				if (response != null)
 				{
 					await _repo.User.LogLogin(new()

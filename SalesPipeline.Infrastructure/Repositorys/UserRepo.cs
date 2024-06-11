@@ -1043,6 +1043,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _db.SaveAsync();
 					}
 
+					var user_Login_TokenNotis = await _repo.Context.User_Login_TokenNotis.FirstOrDefaultAsync(x => x.Id == model.UserId && x.tokenNoti == model.tokenNoti);
+					if (user_Login_TokenNotis == null)
+					{
+						var user_Login_TokenNoti = new Infrastructure.Data.Entity.User_Login_TokenNoti()
+						{
+							UserId = model.UserId,							
+							tokenNoti = model.tokenNoti
+						};
+						_db.Inster(user_Login_TokenNoti);
+						await _db.SaveAsync();
+					}
+
 				}
 			}
 			catch

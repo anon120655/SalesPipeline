@@ -14,6 +14,7 @@ namespace SalesPipeline.Utils
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }
 		public iAuthens? iAuthen { get; set; }
+		public NotiMobiles? NotiMobile { get; set; }
 
 		public class LineNotifys
 		{
@@ -40,6 +41,12 @@ namespace SalesPipeline.Utils
 			public string? baseUri { get; set; }
 			public string? ApiKey { get; set; }
 			public string? RequestID { get; set; }
+		}
+
+		public class NotiMobiles
+		{
+			public string? baseUri { get; set; }
+			public string? ApiKey { get; set; }
 		}
 
 		public string? Version

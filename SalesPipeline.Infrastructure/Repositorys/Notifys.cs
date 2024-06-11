@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Notifications;
+using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -133,6 +135,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<List<User_Login_TokenNotiCustom>> GetUserSendNotiById(int userid)
+		{
+			var query = await _repo.Context.User_Login_TokenNotis.Where(x => x.UserId == userid).ToListAsync();
+
+			return _mapper.Map<List<User_Login_TokenNotiCustom>>(query);
+		}
 
 	}
 }

@@ -66,6 +66,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.User_Permission, User_PermissionCustom>().ReverseMap();
 			CreateMap<Entity.User_Target_Sale, User_Target_SaleCustom>().ReverseMap();
 			CreateMap<Entity.User_Login_Log, User_Login_LogCustom>().ReverseMap();
+			CreateMap<Entity.User_Login_TokenNoti, User_Login_TokenNotiCustom>().ReverseMap();
 
 			//Master
 			CreateMap<Entity.Master_List, Master_ListCustom>().ReverseMap();

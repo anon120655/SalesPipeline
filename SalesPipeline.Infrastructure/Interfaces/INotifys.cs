@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Notifications;
+using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<NotificationCustom> Create(NotificationCustom model);
 		Task<PaginationView<List<NotificationCustom>>> GetList(NotiFilter model);
 		Task UpdateRead(List<Guid> model);
+		Task<List<User_Login_TokenNotiCustom>> GetUserSendNotiById(int userid);
 
 	}
 }
