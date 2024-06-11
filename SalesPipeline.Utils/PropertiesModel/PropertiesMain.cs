@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,5 +161,39 @@ namespace SalesPipeline.Utils.PropertiesModel
 			return new PropertiesOptions();
 		}
 
+		public static PropertiesOptions PerNotiEventName(string code)
+		{
+			var Properties = new List<PropertiesOptions>()
+			{
+				new PropertiesOptions()
+				{
+					Code = NotifyEventIdModel.AssignNew.ToString(),
+					Name = "รายการลูกค้าใหม่"
+				},
+				new PropertiesOptions()
+				{
+					Code = NotifyEventIdModel.ApproveTarget.ToString(),
+					Name = "อนุมัติกลุ่มเป้าหมาย"
+				},
+				new PropertiesOptions()
+				{
+					Code = NotifyEventIdModel.ApproveLoan.ToString(),
+					Name = "อนุมัติคำขอสินเชื่อ"
+				},
+				new PropertiesOptions()
+				{
+					Code = NotifyEventIdModel.Return.ToString(),
+					Name = "ส่งกลับ"
+				}
+			};
+
+			var data = Properties.Where(x => x.Code == code).Select(x => x).FirstOrDefault();
+			if (data != null)
+			{
+				return data;
+			}
+
+			return new PropertiesOptions();
+		}
 	}
 }

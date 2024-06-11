@@ -225,7 +225,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//Noti
 						await _repo.Notifys.Create(new()
 						{
-							EventId = NotifyEventIdModel.NewCus,
+							EventId = NotifyEventIdModel.ApproveTarget,
 							FromUserId = model.CreateBy,
 							ToUserId = sales.AssUserId.Value,
 							ActionName1 = sales.CompanyName

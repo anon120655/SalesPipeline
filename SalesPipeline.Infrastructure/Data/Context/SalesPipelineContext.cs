@@ -1600,6 +1600,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.EventId)
                 .HasComment("1=รายการลูกค้าใหม่ ,2=อนุมัติคำขอ ,3=ส่งกลับ")
                 .HasColumnType("int(11)");
+            entity.Property(e => e.EventName).HasMaxLength(255);
             entity.Property(e => e.FromUserId)
                 .HasComment("FK รหัสผู้ใช้ ที่สร้างการแจ้งเตือน")
                 .HasColumnType("int(11)");

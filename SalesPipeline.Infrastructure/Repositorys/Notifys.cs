@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
+using Newtonsoft.Json;
+using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.PropertiesModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Notifications;
 using SalesPipeline.Utils.Resources.PreApprove;
@@ -13,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,11 +68,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var fromUserName = await _repo.User.GetFullNameById(model.FromUserId);
 			var toUserName = await _repo.User.GetFullNameById(model.ToUserId);
 
+			var eventName = PropertiesMain.PerNotiEventName(model.EventId.ToString())?.Name ?? string.Empty;
+
 			var notification = new Data.Entity.Notification()
 			{
 				Status = StatusModel.Active,
 				CreateDate = _dateNow,
 				EventId = model.EventId,
+				EventName = eventName,
 				FromUserId = model.FromUserId,
 				FromUserName = fromUserName,
 				ToUserId = model.ToUserId,
@@ -80,6 +88,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 			await _db.InsterAsync(notification);
 			await _db.SaveAsync();
+
+			string _body = string.Empty;
+
+			_body = $"{fromUserName} {model.ActionName1} {model.ActionName2}";
+
+			var userSendNoti = await GetUserSendNotiById(model.ToUserId);
+			if (userSendNoti != null && userSendNoti.Count > 0)
+			{
+				foreach (var item in userSendNoti)
+				{
+					await NotiMobile(new()
+					{
+						to = item.tokenNoti,
+						priority = "high",
+						notification = new()
+						{
+							title = eventName,
+							body = _body
+						}
+					});
+				}
+			}
 
 			return _mapper.Map<NotificationCustom>(notification);
 		}
@@ -141,6 +171,60 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return _mapper.Map<List<User_Login_TokenNotiCustom>>(query);
 		}
+
+		public async Task<NotificationMobileResponse?> NotiMobile(NotificationMobile model)
+		{
+			var response = new NotificationMobileResponse();
+			try
+			{
+				if (_appSet.NotiMobile != null)
+				{
+					var httpClient = new HttpClient(new HttpClientHandler()
+					{
+						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+					});
+
+					if (model.notification != null)
+					{
+						model.notification.vibrate = 1;
+						model.notification.badge = "1";
+						model.notification.contentavailable = 1;
+						model.notification.forcestart = 1;
+						model.notification.nocache = 1;
+					}
+
+					var jsonTxt = JsonConvert.SerializeObject(model);
+					var postData = new StringContent(
+						jsonTxt, // แปลงข้อมูลเป็น JSON ก่อน
+						Encoding.UTF8,
+						"application/json"
+					);
+
+					//ใช้ key แล้ว error
+					//httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", _appSet.NotiMobile.ApiKey);
+					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _appSet.NotiMobile.ApiKey);
+
+					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/fcm/send", postData);
+					if (responseAPI.IsSuccessStatusCode)
+					{
+						string responseBody = await responseAPI.Content.ReadAsStringAsync();
+						response = JsonConvert.DeserializeObject<NotificationMobileResponse>(responseBody);
+					}
+					else
+					{
+						throw new ExceptionCustom("Noti Error.");
+					}
+				}
+
+				return response;
+			}
+			catch (Exception ex)
+			{
+				return response;
+			}
+		}
+
+
 
 	}
 }

@@ -95,36 +95,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = new NotificationMobileResponse();
-				if (_appSet.NotiMobile != null)
-				{
-					var httpClient = new HttpClient(new HttpClientHandler()
-					{
-						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-					});
-
-					var jsonTxt = JsonConvert.SerializeObject(model);
-					var postData = new StringContent(
-						jsonTxt, // แปลงข้อมูลเป็น JSON ก่อน
-						Encoding.UTF8,
-						"application/json"
-					);
-
-					//ใช้ key แล้ว error
-					//httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", _appSet.NotiMobile.ApiKey);
-					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _appSet.NotiMobile.ApiKey);
-
-					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/fcm/send", postData);
-					if (responseAPI.IsSuccessStatusCode)
-					{
-						string responseBody = await responseAPI.Content.ReadAsStringAsync();
-						response = JsonConvert.DeserializeObject<NotificationMobileResponse>(responseBody);
-					}
-					else
-					{
-						throw new ExceptionCustom("Noti Error.");
-					}
-				}
+				var response = await _repo.Notifys.NotiMobile(model);
 
 				return Ok(response);
 			}

@@ -16,6 +16,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<NotificationCustom>>> GetList(NotiFilter model);
 		Task UpdateRead(List<Guid> model);
 		Task<List<User_Login_TokenNotiCustom>> GetUserSendNotiById(int userid);
+		Task<NotificationMobileResponse?> NotiMobile(NotificationMobile model);
 
 	}
 }

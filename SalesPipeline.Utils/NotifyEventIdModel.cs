@@ -9,16 +9,20 @@ namespace SalesPipeline.Utils
 	public class NotifyEventIdModel
 	{
 		/// <summary>
-		/// ลูกค้าใหม่
+		/// รายการลูกค้าใหม่
 		/// </summary>
-		public const short NewCus = 1;
+		public const int AssignNew = 1;
 		/// <summary>
-		/// อนุมัติคำขอ
+		/// อนุมัติกลุ่มเป้าหมาย
 		/// </summary>
-		public const short ApproveLoan = 2;
+		public const int ApproveTarget = 2;
+		/// <summary>
+		/// อนุมัติคำขอสินเชื่อ
+		/// </summary>
+		public const short ApproveLoan = 3;
 		/// <summary>
 		/// ส่งกลับ
 		/// </summary>
-		public const short Return = 3;
+		public const int Return = 4;
 	}
 }
