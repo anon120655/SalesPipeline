@@ -17,6 +17,8 @@ using Microsoft.Extensions.FileProviders;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Utils.ValidationModel;
+using Hangfire;
+using Hangfire.MemoryStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +85,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
+//builder.Services.AddTransient<INotifys, Notifys>();
 
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
@@ -142,6 +145,14 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpClient();
 
+// Add Hangfire services with in-memory storage
+builder.Services.AddHangfire(configuration => configuration
+.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+.UseSimpleAssemblyNameTypeSerializer()
+.UseDefaultTypeSerializer()
+.UseMemoryStorage());
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
@@ -189,7 +200,8 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
 
-//string? pathBase = Environment.GetEnvironmentVariable("PATH_BASE");
-//app.UsePathBase(new PathString(pathBase));
+//app.UseHangfireServer();
+// Use Hangfire dashboard (optional)
+app.UseHangfireDashboard();
 
 app.Run();

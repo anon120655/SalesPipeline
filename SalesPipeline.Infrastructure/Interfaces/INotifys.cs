@@ -17,6 +17,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateRead(List<Guid> model);
 		Task<List<User_Login_TokenNotiCustom>> GetUserSendNotiById(int userid);
 		Task<NotificationMobileResponse?> NotiMobile(NotificationMobile model);
+		void SendNotification(string message);
 
 	}
 }

@@ -846,5 +846,10 @@ namespace SalesPipeline.Utils
 			return new Regex(pattern, RegexOptions.IgnoreCase);
 		}
 
+		public static void SendNotificationUtils(string message)
+		{
+			// Logic to send notification (e.g., email, SMS, push notification)
+			Console.WriteLine($"Notification: {message}");
+		}
 	}
 }

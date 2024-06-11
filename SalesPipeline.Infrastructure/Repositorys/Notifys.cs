@@ -224,7 +224,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-
-
+		public void SendNotification(string message)
+		{
+			// Logic to send notification (e.g., email, SMS, push notification)
+			Console.WriteLine($"Notification: {message}");
+		}
 	}
 }

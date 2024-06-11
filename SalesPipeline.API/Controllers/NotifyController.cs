@@ -14,6 +14,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using System.Text;
 using System.Net.Http.Headers;
 using SalesPipeline.Utils.Resources.Loans;
+using Hangfire;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -24,15 +25,17 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class NotifyController : ControllerBase
 	{
+		private readonly IBackgroundJobClient _backgroundJobClient;
 		private IRepositoryWrapper _repo;
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly AppSettings _appSet;
 
-		public NotifyController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet)
+		public NotifyController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient)
 		{
 			_repo = repo;
 			_httpClientFactory = httpClientFactory;
 			_appSet = appSet.Value;
+			_backgroundJobClient = backgroundJobClient;
 		}
 
 		//[AllowAnonymous]
@@ -120,6 +123,17 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost("ScheduleNotification")]
+		public IActionResult ScheduleNotification([FromBody] List<NotificationTestRequest> request)
+		{
+			foreach (var item in request)
+			{
+				//_backgroundJobClient.Schedule(() => _repo.Notifys.SendNotification(item.Message), item.NotifyAt);
+				_backgroundJobClient.Schedule(() => GeneralUtils.SendNotificationUtils(item.Message), item.NotifyAt);
+			}
 
+			return Ok(new { Message = "Notification scheduled successfully" });
+		}
 	}
 }
