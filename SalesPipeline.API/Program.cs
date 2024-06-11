@@ -85,7 +85,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
-//builder.Services.AddTransient<INotifys, Notifys>();
+builder.Services.AddSingleton<NotificationService>();
 
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>

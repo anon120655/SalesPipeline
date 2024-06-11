@@ -22,6 +22,8 @@ namespace SalesPipeline.Utils.Resources.Notifications
 		/// </summary>
 		public int EventId { get; set; }
 
+		public string? EventName { get; set; }
+
 		/// <summary>
 		/// FK รหัสผู้ใช้ ที่สร้างการแจ้งเตือน
 		/// </summary>

@@ -26,19 +26,21 @@ namespace SalesPipeline.API.Controllers
 	public class NotifyController : ControllerBase
 	{
 		private readonly IBackgroundJobClient _backgroundJobClient;
+		private readonly NotificationService _notiService;
 		private IRepositoryWrapper _repo;
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly AppSettings _appSet;
 
-		public NotifyController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient)
+		public NotifyController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient, NotificationService notificationService)
 		{
 			_repo = repo;
 			_httpClientFactory = httpClientFactory;
 			_appSet = appSet.Value;
 			_backgroundJobClient = backgroundJobClient;
+			_notiService = notificationService;
 		}
 
-		//[AllowAnonymous]
+		[AllowAnonymous]
 		[HttpGet("LineNotify")]
 		public async Task<IActionResult> LineNotify([FromQuery] string msg)
 		{
@@ -130,10 +132,20 @@ namespace SalesPipeline.API.Controllers
 			foreach (var item in request)
 			{
 				//_backgroundJobClient.Schedule(() => _repo.Notifys.SendNotification(item.Message), item.NotifyAt);
-				_backgroundJobClient.Schedule(() => GeneralUtils.SendNotificationUtils(item.Message), item.NotifyAt);
+				_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
+				{
+					to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+					notification = new()
+					{
+						title = "หัวข้อ01",
+						body = "ทดสอบข้อความ body"
+					}
+				}), item.NotifyAt);
 			}
 
 			return Ok(new { Message = "Notification scheduled successfully" });
 		}
+
+
 	}
 }

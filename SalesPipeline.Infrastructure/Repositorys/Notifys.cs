@@ -91,7 +91,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			string _body = string.Empty;
 
-			_body = $"{fromUserName} {model.ActionName1} {model.ActionName2}";
+			_body = $"{fromUserName} {eventName} {model.ActionName1} {model.ActionName2}";
 
 			var userSendNoti = await GetUserSendNotiById(model.ToUserId);
 			if (userSendNoti != null && userSendNoti.Count > 0)
