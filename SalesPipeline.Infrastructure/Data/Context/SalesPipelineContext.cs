@@ -2436,9 +2436,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Master_Branch_RegionId).HasComment("กิจการสาขาภาค");
             entity.Property(e => e.Master_Branch_RegionName).HasMaxLength(255);
             entity.Property(e => e.Master_Reason_CloseSaleId).HasComment("เหตุผลไม่ประสงค์กู้");
-            entity.Property(e => e.PercentChanceLoanPass)
-                .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน")
-                .HasColumnType("int(11)");
+            entity.Property(e => e.PercentChanceLoanPass).HasComment("เปอร์เซ็นโอกาสกู้ผ่าน");
+            entity.Property(e => e.PercentChanceLoanPassName)
+                .HasMaxLength(255)
+                .HasComment("เปอร์เซ็นโอกาสกู้ผ่าน");
             entity.Property(e => e.ProvinceId)
                 .HasComment("จังหวัด")
                 .HasColumnType("int(11)");

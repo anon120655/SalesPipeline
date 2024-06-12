@@ -22,6 +22,7 @@ using Hangfire.MemoryStorage;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 //[JsonIgnore] ใช้ System.Text.Json.Serialization
@@ -149,13 +150,31 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 
 builder.Services.AddHttpClient();
 
-// Add Hangfire services with in-memory storage
+
+
+// Add Hangfire
+var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
 builder.Services.AddHangfire(configuration => configuration
 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
 .UseSimpleAssemblyNameTypeSerializer()
 .UseDefaultTypeSerializer()
 .UseMemoryStorage());
 builder.Services.AddHangfireServer();
+
+//builder.Services.AddHangfire(config =>
+//{
+//	// ใช้ Memory Storage แทนการเชื่อมต่อฐานข้อมูล
+//	config.UseMemoryStorage();
+
+//	// กำหนด TimeZone เป็น TimeZone ของกรุงเทพฯ (Bangkok)
+//	var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+//	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+//		  .UseSimpleAssemblyNameTypeSerializer()
+//		  .UseRecommendedSerializerSettings()
+//		  .UseTimeZone(timeZone);
+//});
+
 
 
 var app = builder.Build();

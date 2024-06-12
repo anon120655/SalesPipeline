@@ -58,7 +58,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Factor.CreateBy = model.CurrentUserId;
 				pre_Factor.SaleId = model.SaleId;
 				pre_Factor.Pre_CalId = model.Pre_CalId;
-				pre_Factor.CompanyName = sales?.CompanyName;
+				pre_Factor.CompanyName = sales.CompanyName;
 				await _db.InsterAsync(pre_Factor);
 				await _db.SaveAsync();
 
@@ -776,6 +776,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? cr_RateMultiplier = null;
 				string? resultLoan = null;
 				double? chanceNumber = null;
+				double? chanceNumber2digit = null;
 				string? chancePercent = null;
 
 				if (pre_Result_Items.Count > 0)
@@ -856,7 +857,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									chanceNumber = 1 - prob;
 									if (chanceNumber.HasValue)
 									{
-										chancePercent = chanceNumber.Value.ToString("P2");
+										chanceNumber2digit = (double)Math.Round((decimal)chanceNumber.Value * 100, 2);
+										chancePercent = $"{chanceNumber2digit} %";
 									}
 								}
 							}
@@ -904,6 +906,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sequenceNo++;
 					}
 				}
+
+				sales.Pre_FactorId = pre_Factor.Id;
+				sales.PercentChanceLoanPass = chanceNumber2digit;
+				sales.PercentChanceLoanPassName = $"มีโอกาสขอสินเชื่อผ่าน {chancePercent}";
+				_db.Update(sales);
+				await _db.SaveAsync();
 
 				_transaction.Commit();
 

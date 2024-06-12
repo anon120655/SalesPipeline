@@ -129,8 +129,13 @@ namespace SalesPipeline.API.Controllers
 		[HttpPost("ScheduleNotification")]
 		public IActionResult ScheduleNotification([FromBody] List<NotificationTestRequest> request)
 		{
+			var serverTime = DateTime.Now;
+			var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+			var localTime = TimeZoneInfo.ConvertTime(serverTime, timeZone);
+
 			foreach (var item in request)
 			{
+				var notifyAt = TimeZoneInfo.ConvertTime(item.NotifyAt, timeZone);
 				//_backgroundJobClient.Schedule(() => _repo.Notifys.SendNotification(item.Message), item.NotifyAt);
 				_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
 				{
@@ -138,9 +143,9 @@ namespace SalesPipeline.API.Controllers
 					notification = new()
 					{
 						title = "หัวข้อ01",
-						body = "ทดสอบข้อความ body"
+						body = "ทดสอบข้อความ body " + DateTime.Now.ToString("t")
 					}
-				}), item.NotifyAt);
+				}), notifyAt);
 			}
 
 			return Ok(new { Message = "Notification scheduled successfully" });

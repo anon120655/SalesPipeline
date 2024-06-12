@@ -78,7 +78,14 @@ public partial class Sale
     /// <summary>
     /// เปอร์เซ็นโอกาสกู้ผ่าน
     /// </summary>
-    public int? PercentChanceLoanPass { get; set; }
+    public double? PercentChanceLoanPass { get; set; }
+
+    /// <summary>
+    /// เปอร์เซ็นโอกาสกู้ผ่าน
+    /// </summary>
+    public string? PercentChanceLoanPassName { get; set; }
+
+    public Guid? Pre_FactorId { get; set; }
 
     /// <summary>
     /// กิจการสาขาภาค

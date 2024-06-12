@@ -9,6 +9,6 @@ namespace SalesPipeline.Utils.Resources.Notifications
 	public class NotificationTestRequest
 	{
 		public string Message { get; set; } = null!;
-		public DateTimeOffset NotifyAt { get; set; }
+		public DateTime NotifyAt { get; set; }
 	}
 }
