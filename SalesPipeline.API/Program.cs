@@ -20,6 +20,7 @@ using SalesPipeline.Utils.ValidationModel;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -156,6 +157,7 @@ builder.Services.AddHangfire(configuration => configuration
 .UseMemoryStorage());
 builder.Services.AddHangfireServer();
 
+
 var app = builder.Build();
 
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
@@ -206,6 +208,11 @@ app.MapControllers();
 
 //app.UseHangfireServer();
 // Use Hangfire dashboard (optional)
-app.UseHangfireDashboard();
+//app.UseHangfireDashboard();
+// กำหนดให้ใช้ Hangfire middleware พร้อมการตั้งค่าการรับรองความถูกต้อง
+app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
+{
+	Authorization = new[] { new MyAuthorizationFilter() }
+});
 
 app.Run();

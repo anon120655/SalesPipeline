@@ -29,13 +29,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
+		private readonly NotificationService _notiService;
 
-		public Notifys(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Notifys(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper, NotificationService notiService)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+			_notiService = notiService;	
 		}
 
 		public async Task LineNotify(string msg)
@@ -178,44 +180,54 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var response = new NotificationMobileResponse();
 			try
 			{
-				if (_appSet.NotiMobile != null)
+				await _notiService.SendNotificationAsync(new()
 				{
-					var httpClient = new HttpClient(new HttpClientHandler()
+					to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+					notification = new()
 					{
-						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-					});
-
-					if (model.notification != null)
-					{
-						model.notification.vibrate = 1;
-						model.notification.badge = "1";
-						model.notification.contentavailable = 1;
-						model.notification.forcestart = 1;
-						model.notification.nocache = 1;
+						title = "หัวข้อ01",
+						body = "ทดสอบข้อความ body " + DateTime.Now.ToString("dd/MM/yy")
 					}
+				});
 
-					var jsonTxt = JsonConvert.SerializeObject(model);
-					var postData = new StringContent(
-						jsonTxt, // แปลงข้อมูลเป็น JSON ก่อน
-						Encoding.UTF8,
-						"application/json"
-					);
+				//if (_appSet.NotiMobile != null)
+				//{
+				//	var httpClient = new HttpClient(new HttpClientHandler()
+				//	{
+				//		ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+				//	});
 
-					//ใช้ key แล้ว error
-					//httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", _appSet.NotiMobile.ApiKey);
-					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _appSet.NotiMobile.ApiKey);
+				//	if (model.notification != null)
+				//	{
+				//		model.notification.vibrate = 1;
+				//		model.notification.badge = "1";
+				//		model.notification.contentavailable = 1;
+				//		model.notification.forcestart = 1;
+				//		model.notification.nocache = 1;
+				//	}
 
-					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/fcm/send", postData);
-					if (responseAPI.IsSuccessStatusCode)
-					{
-						string responseBody = await responseAPI.Content.ReadAsStringAsync();
-						response = JsonConvert.DeserializeObject<NotificationMobileResponse>(responseBody);
-					}
-					else
-					{
-						throw new ExceptionCustom("Noti Error.");
-					}
-				}
+				//	var jsonTxt = JsonConvert.SerializeObject(model);
+				//	var postData = new StringContent(
+				//		jsonTxt, // แปลงข้อมูลเป็น JSON ก่อน
+				//		Encoding.UTF8,
+				//		"application/json"
+				//	);
+
+				//	//ใช้ key แล้ว error
+				//	//httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", _appSet.NotiMobile.ApiKey);
+				//	httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _appSet.NotiMobile.ApiKey);
+
+				//	HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/fcm/send", postData);
+				//	if (responseAPI.IsSuccessStatusCode)
+				//	{
+				//		string responseBody = await responseAPI.Content.ReadAsStringAsync();
+				//		response = JsonConvert.DeserializeObject<NotificationMobileResponse>(responseBody);
+				//	}
+				//	else
+				//	{
+				//		throw new ExceptionCustom("Noti Error.");
+				//	}
+				//}
 
 				return response;
 			}

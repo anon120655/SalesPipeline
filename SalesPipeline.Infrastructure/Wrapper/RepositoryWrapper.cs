@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Context;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Repositorys;
 using SalesPipeline.Utils;
@@ -19,6 +20,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		private readonly IMapper _mapper;
 		private readonly IJwtUtils _jwtUtils;
 		private bool _isDisposed;
+		private readonly NotificationService _notiService;
 
 		public SalesPipelineContext Context { get; }
 		public IRepositoryBase _db { get; }
@@ -70,18 +72,19 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IEmailSender EmailSender { get; }
 
 		public RepositoryWrapper(SalesPipelineContext _context, IOptions<AppSettings> settings, IMapper mapper,
-													IHttpContextAccessor accessor, HttpClient httpClient, IJwtUtils jwtUtils)
+													IHttpContextAccessor accessor, HttpClient httpClient, IJwtUtils jwtUtils, NotificationService notificationService)
 		{
 			Context = _context;
 			_accessor = accessor;
 			_mapper = mapper;
 			_httpClient = httpClient;
 			_jwtUtils = jwtUtils;
+			_notiService = notificationService;
 
 			_db = new RepositoryBase(this);
 			Logger = new LoggerRepo(this, _db, settings);
 			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
-			Notifys = new Notifys(this, _db, settings, _mapper);
+			Notifys = new Notifys(this, _db, settings, _mapper, _notiService);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
 			Dashboard = new Dashboard(this, _db, settings, _mapper);
