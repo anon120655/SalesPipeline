@@ -21,6 +21,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Hangfire.MySql;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +74,34 @@ builder.Services.AddDbContext<SalesPipelineContext>(
 			   .EnableSensitiveDataLogging()
 			   .EnableDetailedErrors()
 	   );
+
+// ตั้งค่า Hangfire เพื่อใช้กับ MariaDB ** ยังแก้วิธีให้แสดงแดชบอร์ดทั้งหมดไม่ได้ บางหน้าเป็นหน้าว่าง ต้องใช้ UseMemoryStorage ไปก่อน
+//builder.Services.AddHangfire(configuration =>
+//{
+//    configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+//        .UseSimpleAssemblyNameTypeSerializer()
+//        .UseRecommendedSerializerSettings()
+//        .UseStorage(new MySqlStorage(SalesPipelineContext, new MySqlStorageOptions
+//        {
+//            // แก้ไข namespace เป็น System.Transactions.IsolationLevel
+//            TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
+//            QueuePollInterval = TimeSpan.FromSeconds(15),
+//            JobExpirationCheckInterval = TimeSpan.FromHours(1),
+//            CountersAggregateInterval = TimeSpan.FromMinutes(5),
+//            PrepareSchemaIfNecessary = true,
+//            DashboardJobListLimit = 50000,
+//            TransactionTimeout = TimeSpan.FromMinutes(1),
+//            TablesPrefix = "Hangfire_"
+//        }));
+//});
+//builder.Services.AddHangfireServer();
+
+builder.Services.AddHangfire(configuration => configuration
+.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+.UseSimpleAssemblyNameTypeSerializer()
+.UseDefaultTypeSerializer()
+.UseMemoryStorage());
+builder.Services.AddHangfireServer();
 
 
 
@@ -155,13 +184,6 @@ builder.Services.AddHttpClient();
 // Add Hangfire
 var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-builder.Services.AddHangfire(configuration => configuration
-.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-.UseSimpleAssemblyNameTypeSerializer()
-.UseDefaultTypeSerializer()
-.UseMemoryStorage());
-builder.Services.AddHangfireServer();
-
 //builder.Services.AddHangfire(config =>
 //{
 //	// ใช้ Memory Storage แทนการเชื่อมต่อฐานข้อมูล
@@ -233,5 +255,9 @@ app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 {
 	Authorization = new[] { new MyAuthorizationFilter() }
 });
+
+// ตัวอย่างการตั้งค่างาน
+var backgroundJobClient = app.Services.GetRequiredService<IBackgroundJobClient>();
+backgroundJobClient.Enqueue(() => Console.WriteLine("Hello, Hangfire with MariaDB!"));
 
 app.Run();
