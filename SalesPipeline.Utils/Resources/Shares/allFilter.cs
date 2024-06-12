@@ -81,9 +81,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<string?>? AssUsers { get; set; }
 		public List<string?>? Years { get; set; }
         public List<string?>? StatusSales { get; set; }
+		public short? isScheduledJob { get; set; }
 
-
-        public string SetParameter(bool? isPage = null)
+		public string SetParameter(bool? isPage = null)
 		{
 			string? ParameterAll = String.Empty;
 
@@ -307,6 +307,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (createdate.HasValue)
 				ParameterAll += $"&createdate={GeneralUtils.DateToStrParameter(createdate)}";
+
+			if (isScheduledJob.HasValue)
+				ParameterAll += $"&isScheduledJob={isScheduledJob}";
 
 			return ParameterAll;
 		}

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
@@ -15,6 +16,7 @@ using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
@@ -30,14 +32,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 		private readonly NotificationService _notiService;
+		private readonly IBackgroundJobClient _backgroundJobClient;
 
-		public Notifys(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper, NotificationService notiService)
+		public Notifys(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper, NotificationService notiService,IBackgroundJobClient backgroundJobClient)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
-			_notiService = notiService;	
+			_notiService = notiService;
+			_backgroundJobClient = backgroundJobClient;
 		}
 
 		public async Task LineNotify(string msg)
@@ -180,54 +184,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var response = new NotificationMobileResponse();
 			try
 			{
-				await _notiService.SendNotificationAsync(new()
-				{
-					to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
-					notification = new()
-					{
-						title = "หัวข้อ01",
-						body = "ทดสอบข้อความ body " + DateTime.Now.ToString("dd/MM/yy")
-					}
-				});
+				response = await _notiService.SendNotificationAsync(model);
 
-				//if (_appSet.NotiMobile != null)
+				//Test
+				//await _notiService.SendNotificationAsync(new()
 				//{
-				//	var httpClient = new HttpClient(new HttpClientHandler()
+				//	to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+				//	notification = new()
 				//	{
-				//		ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-				//	});
-
-				//	if (model.notification != null)
-				//	{
-				//		model.notification.vibrate = 1;
-				//		model.notification.badge = "1";
-				//		model.notification.contentavailable = 1;
-				//		model.notification.forcestart = 1;
-				//		model.notification.nocache = 1;
+				//		title = "หัวข้อ01",
+				//		body = "ทดสอบข้อความ body " + DateTime.Now.ToString("dd/MM/yy")
 				//	}
-
-				//	var jsonTxt = JsonConvert.SerializeObject(model);
-				//	var postData = new StringContent(
-				//		jsonTxt, // แปลงข้อมูลเป็น JSON ก่อน
-				//		Encoding.UTF8,
-				//		"application/json"
-				//	);
-
-				//	//ใช้ key แล้ว error
-				//	//httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("key", _appSet.NotiMobile.ApiKey);
-				//	httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _appSet.NotiMobile.ApiKey);
-
-				//	HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/fcm/send", postData);
-				//	if (responseAPI.IsSuccessStatusCode)
-				//	{
-				//		string responseBody = await responseAPI.Content.ReadAsStringAsync();
-				//		response = JsonConvert.DeserializeObject<NotificationMobileResponse>(responseBody);
-				//	}
-				//	else
-				//	{
-				//		throw new ExceptionCustom("Noti Error.");
-				//	}
-				//}
+				//});
 
 				return response;
 			}
@@ -242,5 +210,61 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			// Logic to send notification (e.g., email, SMS, push notification)
 			Console.WriteLine($"Notification: {message}");
 		}
+
+		public async Task<int> SetScheduleNoti()
+		{
+			int countSchedule = 0;
+			if (_appSet.NotiMobile != null)
+			{
+				var calendarList = await _repo.ProcessSale.GetListCalendar(new() { isScheduledJob = null });
+
+				if (calendarList.Count > 0)
+				{
+					var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+					foreach (var item in calendarList)
+					{
+						if (item.AppointmentDate.HasValue && item.AppointmentTime.HasValue && item.Sale != null && item.Sale.AssUserId.HasValue)
+						{
+							var userSendNoti = await _repo.Notifys.GetUserSendNotiById(item.Sale.AssUserId.Value);
+							if (userSendNoti != null && userSendNoti.Count > 0)
+							{
+								foreach (var item_user in userSendNoti)
+								{
+									string dateString = $"{item.AppointmentDate.Value.ToString("dd-MM-yyyy")} {item.AppointmentTime.Value.ToString("HH:mm")}";
+									bool success = DateTime.TryParseExact(dateString, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime NotifyAt);
+									if (success)
+									{
+										//แปลง UTC เป็น Local เพื่อให้สามารถส่ง format-time เป็น local ได้
+										var notiLocaltime = DateTime.SpecifyKind(NotifyAt, DateTimeKind.Local);
+										var notifyAt = TimeZoneInfo.ConvertTime(notiLocaltime, timeZone).AddMinutes(-_appSet.NotiMobile.NotiBeforeMinutes);
+
+										string? meetContent = item.MeetFullName != null ? item.MeetFullName : item.ContactFullName;
+
+										_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
+										{
+											//to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+											to = item_user.tokenNoti,
+											notification = new()
+											{
+												title = $"{item.NextActionName}",
+												body = $"{item.NextActionName} {meetContent}"
+											}
+										}), notifyAt);
+										countSchedule++;
+										await _repo.ProcessSale.UpdateScheduledJob(item.Id);
+									}
+								}
+							}
+
+
+						}
+					}
+				}
+
+			}
+			return countSchedule;
+		}
+
 	}
 }

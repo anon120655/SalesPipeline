@@ -47,7 +47,8 @@ namespace SalesPipeline.Utils
 		{
 			public string? baseUri { get; set; }
 			public string? ApiKey { get; set; }
-		}
+            public int NotiBeforeMinutes { get; set; }
+        }
 
 		public string? Version
 		{

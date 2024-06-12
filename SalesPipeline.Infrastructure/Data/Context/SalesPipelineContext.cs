@@ -2676,6 +2676,12 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DesireLoanName)
                 .HasMaxLength(255)
                 .HasComment("ความประสงค์กู้");
+            entity.Property(e => e.IsScheduledJob)
+                .HasComment("1=กำหนดเวลาแล้ว")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.IsScheduledJobSucceed)
+                .HasComment("1=แจ้งเตือนแล้ว")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasComment("สถานที่");

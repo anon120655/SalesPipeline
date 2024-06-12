@@ -122,6 +122,16 @@ public partial class Sale_Contact_History
     /// </summary>
     public string? NoteSystem { get; set; }
 
+    /// <summary>
+    /// 1=กำหนดเวลาแล้ว
+    /// </summary>
+    public short? IsScheduledJob { get; set; }
+
+    /// <summary>
+    /// 1=แจ้งเตือนแล้ว
+    /// </summary>
+    public short? IsScheduledJobSucceed { get; set; }
+
     public virtual Sale Sale { get; set; } = null!;
 
     public virtual Master_StatusSale StatusSale { get; set; } = null!;

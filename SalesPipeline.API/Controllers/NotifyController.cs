@@ -15,6 +15,7 @@ using System.Text;
 using System.Net.Http.Headers;
 using SalesPipeline.Utils.Resources.Loans;
 using Hangfire;
+using System.Globalization;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -126,29 +127,48 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpPost("ScheduleNotification")]
-		public IActionResult ScheduleNotification([FromBody] List<NotificationTestRequest> request)
+		[HttpPost("ScheduleNotiTest")]
+		public IActionResult ScheduleNotiTest([FromBody] List<NotificationTestRequest> request)
 		{
-			var serverTime = DateTime.Now;
-			var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-			var localTime = TimeZoneInfo.ConvertTime(serverTime, timeZone);
-
-			foreach (var item in request)
+			if (_appSet.NotiMobile != null)
 			{
-				var notifyAt = TimeZoneInfo.ConvertTime(item.NotifyAt, timeZone);
-				//_backgroundJobClient.Schedule(() => _repo.Notifys.SendNotification(item.Message), item.NotifyAt);
-				_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
-				{
-					to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
-					notification = new()
-					{
-						title = "หัวข้อ01",
-						body = "ทดสอบข้อความ body " + DateTime.Now.ToString("t")
-					}
-				}), notifyAt);
-			}
+				var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
-			return Ok(new { Message = "Notification scheduled successfully" });
+				foreach (var item in request)
+				{
+					//แปลง UTC เป็น Local เพื่อให้สามารถส่ง format-time เป็น local ได้
+					var notiLocaltime = DateTime.SpecifyKind(item.NotifyAt, DateTimeKind.Local);
+					var notifyAt = TimeZoneInfo.ConvertTime(notiLocaltime, timeZone).AddMinutes(-_appSet.NotiMobile.NotiBeforeMinutes);
+
+					_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
+					{
+						to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+						notification = new()
+						{
+							title = "หัวข้อ01",
+							body = "ทดสอบข้อความ body " + notifyAt.ToString("t")
+						}
+					}), notifyAt);
+				}
+
+				return Ok(new { Message = "Notification scheduled successfully" });
+			}
+			return Ok(new { Message = "Notification failed" });
+		}
+
+		[AllowAnonymous]
+		[HttpGet("SetScheduleNoti")]
+		public async Task<IActionResult> SetScheduleNoti()
+		{
+			if (_appSet.NotiMobile != null)
+			{
+				int countSchedule = 0;
+
+				countSchedule = await _repo.Notifys.SetScheduleNoti();
+
+				return Ok(new { Message = $"Notification scheduled successfully {countSchedule}" });
+			}
+			return Ok(new { Message = "Notification failed" });
 		}
 
 

@@ -22,6 +22,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<Sale_DocumentCustom>> GetListDocument(allFilter model);
 		Task<PaginationView<List<Sale_Contact_HistoryCustom>>> GetListContactHistory(allFilter model);
 		Task<List<Sale_Contact_HistoryCustom>> GetListCalendar(allFilter model);
+		Task UpdateScheduledJob(Guid id);
+		Task UpdateScheduledJobSucceed(Guid id);
 		Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model);
 	}
 }

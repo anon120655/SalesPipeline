@@ -314,6 +314,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _repo.Sales.SetIsUpdateStatusTotal(sales.AssUserId.Value);
 				}
 
+				//SetNoti
+				await _repo.Notifys.SetScheduleNoti();
 			}
 		}
 

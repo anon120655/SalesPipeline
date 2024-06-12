@@ -23,7 +23,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 			_appSet = appSet.Value;
 		}
 
-		public async Task SendNotificationAsync(NotificationMobile model)
+		public async Task<NotificationMobileResponse?> SendNotificationAsync(NotificationMobile model)
 		{
 			var response = new NotificationMobileResponse();
 			try
@@ -35,6 +35,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 					});
 
+					model.priority = "high";
 					if (model.notification != null)
 					{
 						model.notification.vibrate = 1;
@@ -66,18 +67,12 @@ namespace SalesPipeline.Infrastructure.Helpers
 						throw new ExceptionCustom("Noti Error.");
 					}
 				}
-				//var response = await _httpClient.GetAsync($"http://119.59.105.99/api/v1/Notify/LineNotify?msg={message}");
-				//if (response.IsSuccessStatusCode)
-				//{
-				//}
-				//else
-				//{
-				//}
+				return response;
 			}
 			catch (Exception ex)
 			{
+				return null;
 			}
-
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		private readonly IJwtUtils _jwtUtils;
 		private bool _isDisposed;
 		private readonly NotificationService _notiService;
+		private readonly IBackgroundJobClient _backgroundJobClient;
 
 		public SalesPipelineContext Context { get; }
 		public IRepositoryBase _db { get; }
@@ -72,7 +74,11 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IEmailSender EmailSender { get; }
 
 		public RepositoryWrapper(SalesPipelineContext _context, IOptions<AppSettings> settings, IMapper mapper,
-													IHttpContextAccessor accessor, HttpClient httpClient, IJwtUtils jwtUtils, NotificationService notificationService)
+													IHttpContextAccessor accessor, 
+													HttpClient httpClient, 
+													IJwtUtils jwtUtils, 
+													NotificationService notificationService
+			, IBackgroundJobClient backgroundJobClient)
 		{
 			Context = _context;
 			_accessor = accessor;
@@ -80,11 +86,12 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			_httpClient = httpClient;
 			_jwtUtils = jwtUtils;
 			_notiService = notificationService;
+			_backgroundJobClient = backgroundJobClient;
 
 			_db = new RepositoryBase(this);
 			Logger = new LoggerRepo(this, _db, settings);
 			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
-			Notifys = new Notifys(this, _db, settings, _mapper, _notiService);
+			Notifys = new Notifys(this, _db, settings, _mapper, _notiService, _backgroundJobClient);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);
 			Dashboard = new Dashboard(this, _db, settings, _mapper);

@@ -1026,7 +1026,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//{
 				//	throw new ExceptionCustom("ระบุรูปบัตรประชาชน");
 				//}
-				
+
 				if (String.IsNullOrEmpty(model.SignaturePath))
 				{
 					throw new ExceptionCustom("ระบุรูปลายเซ็นผู้กู้ยืม");
@@ -1485,8 +1485,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.AppointmentDate.HasValue && x.AppointmentDate.Value.Date >= model.startdate.Value.Date && x.AppointmentDate.Value.Date <= model.enddate.Value.Date).OrderBy(x => x.AppointmentDate);
 			}
 
+			//สร้าง Scheduled Hangfire แล้ว
+			if (model.isScheduledJob.HasValue)
+			{
+				query = query.Where(x => x.IsScheduledJob == model.isScheduledJob.Value);
+			}
+			else
+			{
+				query = query.Where(x => x.IsScheduledJob == null);
+			}
 
 			return _mapper.Map<List<Sale_Contact_HistoryCustom>>(await query.ToListAsync());
+		}
+
+		public async Task UpdateScheduledJob(Guid id)
+		{
+			var sale_Contact_Histories = await _repo.Context.Sale_Contact_Histories.FirstOrDefaultAsync(x => x.Id == id);
+			if (sale_Contact_Histories == null) throw new ExceptionCustom("id not found.");
+
+			sale_Contact_Histories.IsScheduledJob = 1;
+			_db.Update(sale_Contact_Histories);
+			await _db.SaveAsync();
+		}
+
+		public async Task UpdateScheduledJobSucceed(Guid id)
+		{
+			var sale_Contact_Histories = await _repo.Context.Sale_Contact_Histories.FirstOrDefaultAsync(x => x.Id == id);
+			if (sale_Contact_Histories == null) throw new ExceptionCustom("id not found.");
+
+			sale_Contact_Histories.IsScheduledJobSucceed = 1;
+			_db.Update(sale_Contact_Histories);
+			await _db.SaveAsync();
 		}
 
 		public async Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model)
