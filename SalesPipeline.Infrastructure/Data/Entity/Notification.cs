@@ -14,6 +14,8 @@ public partial class Notification
 
     public DateTime CreateDate { get; set; }
 
+    public Guid? SaleId { get; set; }
+
     /// <summary>
     /// 1=รายการลูกค้าใหม่ ,2=อนุมัติคำขอ ,3=ส่งกลับ
     /// </summary>

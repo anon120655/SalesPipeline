@@ -226,6 +226,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _repo.Notifys.Create(new()
 						{
 							EventId = NotifyEventIdModel.ApproveTarget,
+							SaleId = model.SaleId,
 							FromUserId = model.CreateBy,
 							ToUserId = sales.AssUserId.Value,
 							ActionName1 = sales.CompanyName
@@ -260,6 +261,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _repo.Notifys.Create(new()
 						{
 							EventId = NotifyEventIdModel.ApproveLoan,
+							SaleId = model.SaleId,
 							FromUserId = model.CreateBy,
 							ToUserId = sales.AssUserId.Value,
 							ActionName1 = sales.CompanyName
@@ -274,6 +276,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _repo.Notifys.Create(new()
 						{
 							EventId = NotifyEventIdModel.Return,
+							SaleId = model.SaleId,
 							FromUserId = model.CreateBy,
 							ToUserId = sales.AssUserId.Value,
 							ActionName1 = sales.CompanyName

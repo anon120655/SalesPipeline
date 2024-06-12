@@ -74,6 +74,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				Status = StatusModel.Active,
 				CreateDate = _dateNow,
+				SaleId = model.SaleId,
 				EventId = model.EventId,
 				EventName = eventName,
 				FromUserId = model.FromUserId,

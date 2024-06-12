@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Utils.ValidationModel;
 using Hangfire;
 using Hangfire.MemoryStorage;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +88,17 @@ builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddSingleton<NotificationService>();
 
+builder.Services.AddControllers()
+.AddJsonOptions(options =>
+{
+	options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+	//Ignore infinity loop class
+	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+	//Json return normal First Upper 
+	//options.JsonSerializerOptions.PropertyNamingPolicy = null;
+	//options.JsonSerializerOptions.Converters.Add(new BangkokDateTimeConverter());
+});
+
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -117,7 +129,7 @@ builder.Services.AddSwaggerGen(c =>
 	//</PropertyGroup>
 	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-
+	//c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema { Type = "string", Format = "date-time" });
 });
 
 //Nuget Asp.Versioning.Mvc.ApiExplorer
@@ -133,15 +145,6 @@ builder.Services.AddApiVersioning(options =>
 	  options.SubstituteApiVersionInUrl = true;
   });
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-
-builder.Services.AddControllers()
-.AddJsonOptions(options =>
-{
-	//Ignore infinity loop class
-	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-	//Json return normal First Upper 
-	//options.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
 
 builder.Services.AddHttpClient();
 
@@ -194,6 +197,7 @@ app.UseCors(x => x
 	.AllowAnyOrigin()
 	.AllowAnyMethod()
 	.AllowAnyHeader());
+
 
 // custom jwt auth middleware
 app.UseMiddleware<JwtMiddleware>();
