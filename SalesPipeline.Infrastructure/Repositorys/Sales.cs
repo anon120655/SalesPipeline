@@ -155,7 +155,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_dateNow = model.CreateDate;
 			}
 
-
 			var sale_Status = new Data.Entity.Sale_Status();
 			sale_Status.Status = StatusModel.Active;
 			sale_Status.CreateDate = _dateNow;

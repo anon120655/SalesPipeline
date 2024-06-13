@@ -78,7 +78,7 @@ builder.Services.AddDbContext<SalesPipelineContext>(
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
-// ตั้งค่า Hangfire เพื่อใช้กับ MariaDB ** ยังแก้วิธีให้แสดงแดชบอร์ดทั้งหมดไม่ได้ บางหน้าเป็นหน้าว่าง ต้องใช้ UseMemoryStorage ไปก่อน
+//**แก้วิธีให้แสดงแดชบอร์ดทั้งหมดไม่ได้ บางหน้าเป็นหน้าว่าง กำหนด Allow User Variables=true ใน ConnectionStrings
 builder.Services.AddHangfire(config =>
     config.UseStorage(new MySqlStorage(SalesPipelineJobContext, new MySqlStorageOptions
     {
@@ -88,7 +88,7 @@ builder.Services.AddHangfire(config =>
         CountersAggregateInterval = TimeSpan.FromMinutes(5), // ตั้งค่าช่วงเวลาสำหรับการรวมผลของเคาน์เตอร์
         PrepareSchemaIfNecessary = true, // ให้สร้าง schema ถ้าจำเป็น
         DashboardJobListLimit = 5000, // จำนวนสูงสุดของรายการงานที่จะแสดงใน dashboard
-        TransactionTimeout = TimeSpan.FromMinutes(3), // ตั้งค่าเวลา timeout สำหรับธุรกรรม
+        TransactionTimeout = TimeSpan.FromMinutes(1), // ตั้งค่าเวลา timeout สำหรับธุรกรรม
         TablesPrefix = "Hangfire_"
     }))
     .UseSimpleAssemblyNameTypeSerializer()
@@ -96,16 +96,6 @@ builder.Services.AddHangfire(config =>
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseColouredConsoleLogProvider()
 );
-
-//builder.Services.AddHangfire(config =>
-//    config.UseStorage(new MySqlStorage(SalesPipelineJobContext, new MySqlStorageOptions())));
-
-//builder.Services.AddHangfire(configuration => configuration
-//.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-//.UseSimpleAssemblyNameTypeSerializer()
-//.UseDefaultTypeSerializer()
-//.UseMemoryStorage());
-
 builder.Services.AddHangfireServer();
 
 builder.Services.AddLogging(logging =>
@@ -209,8 +199,6 @@ var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 //		  .UseTimeZone(timeZone);
 //});
 
-
-
 var app = builder.Build();
 
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
@@ -239,7 +227,7 @@ app.UseStaticFiles(new StaticFileOptions()
 //	app.UseSwaggerUI();
 //}
 
-var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+//var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseSwagger();
 app.UseSwaggerUI();
 

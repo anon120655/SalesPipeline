@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.ProcessSales;
+﻿using SalesPipeline.Utils.Resources.Phoenixs;
+using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -25,5 +26,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateScheduledJob(Guid id);
 		Task UpdateScheduledJobSucceed(Guid id);
 		Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model);
-	}
+        Task UpdatePhoenix(PhoenixModel model);
+    }
 }
