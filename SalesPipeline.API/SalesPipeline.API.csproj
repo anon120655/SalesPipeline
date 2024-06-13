@@ -21,4 +21,10 @@
     <ProjectReference Include="..\SalesPipeline.Utils\SalesPipeline.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Controllers\tha.traineddata">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

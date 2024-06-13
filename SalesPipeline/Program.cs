@@ -9,7 +9,7 @@ using SalesPipeline.ViewModels;
 using SalesPipeline.ViewModels.Wrapper;
 
 
-//***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport  *****
+//***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport เปลี่ยนไปใช้ SixLabors.ImageSharp *****
 //***** FontAwesome <i></i> not use near code c# error Ex. <span><i></i></span>
 //***** timestamp Update not use table have count
 //***** RestSharp ใช้กับ AuthenticationStateProvider ไม่ได้
