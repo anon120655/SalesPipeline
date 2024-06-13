@@ -18,10 +18,11 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Utils.ValidationModel;
 using Hangfire;
-using Hangfire.MemoryStorage;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Filters;
+using Hangfire.Storage;
 using Hangfire.MySql;
+using Microsoft.Extensions.Logging;
+using Hangfire.MemoryStorage;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,11 +37,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSignalR(e =>
 {
-	e.MaximumReceiveMessageSize = int.MaxValue; //2147483648 Byte = 2GB
+    e.MaximumReceiveMessageSize = int.MaxValue; //2147483648 Byte = 2GB
 });
 builder.Services.Configure<IISServerOptions>(options =>
 {
-	options.MaxRequestBodySize = int.MaxValue; //2147483648 Byte = 2GB
+    options.MaxRequestBodySize = int.MaxValue; //2147483648 Byte = 2GB
 });
 
 IConfigurationBuilder con_builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
@@ -68,46 +69,57 @@ var autoDetectVersion = ServerVersion.AutoDetect(SalesPipelineContext);
 //				));
 
 builder.Services.AddDbContext<SalesPipelineContext>(
-		   dbContextOptions => dbContextOptions
-			   .UseMySql(SalesPipelineContext, autoDetectVersion)
-			   .LogTo(Console.WriteLine, LogLevel.Information)
-			   .EnableSensitiveDataLogging()
-			   .EnableDetailedErrors()
-	   );
+           dbContextOptions => dbContextOptions
+               .UseMySql(SalesPipelineContext, autoDetectVersion)
+               .LogTo(Console.WriteLine, LogLevel.Information)
+               .EnableSensitiveDataLogging()
+               .EnableDetailedErrors()
+       );
+
+var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
 // ตั้งค่า Hangfire เพื่อใช้กับ MariaDB ** ยังแก้วิธีให้แสดงแดชบอร์ดทั้งหมดไม่ได้ บางหน้าเป็นหน้าว่าง ต้องใช้ UseMemoryStorage ไปก่อน
-//builder.Services.AddHangfire(configuration =>
-//{
-//    configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-//        .UseSimpleAssemblyNameTypeSerializer()
-//        .UseRecommendedSerializerSettings()
-//        .UseStorage(new MySqlStorage(SalesPipelineContext, new MySqlStorageOptions
-//        {
-//            // แก้ไข namespace เป็น System.Transactions.IsolationLevel
-//            TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
-//            QueuePollInterval = TimeSpan.FromSeconds(15),
-//            JobExpirationCheckInterval = TimeSpan.FromHours(1),
-//            CountersAggregateInterval = TimeSpan.FromMinutes(5),
-//            PrepareSchemaIfNecessary = true,
-//            DashboardJobListLimit = 50000,
-//            TransactionTimeout = TimeSpan.FromMinutes(1),
-//            TablesPrefix = "Hangfire_"
-//        }));
-//});
-//builder.Services.AddHangfireServer();
+builder.Services.AddHangfire(config =>
+    config.UseStorage(new MySqlStorage(SalesPipelineJobContext, new MySqlStorageOptions
+    {
+        TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // ตั้งค่าระดับการแยกการทำธุรกรรม
+        QueuePollInterval = TimeSpan.FromSeconds(15), // ตั้งค่าช่วงเวลาสำหรับการเช็คคิว
+        JobExpirationCheckInterval = TimeSpan.FromHours(1), // ตั้งค่าช่วงเวลาสำหรับการตรวจสอบงานที่หมดอายุ
+        CountersAggregateInterval = TimeSpan.FromMinutes(5), // ตั้งค่าช่วงเวลาสำหรับการรวมผลของเคาน์เตอร์
+        PrepareSchemaIfNecessary = true, // ให้สร้าง schema ถ้าจำเป็น
+        DashboardJobListLimit = 5000, // จำนวนสูงสุดของรายการงานที่จะแสดงใน dashboard
+        TransactionTimeout = TimeSpan.FromMinutes(3), // ตั้งค่าเวลา timeout สำหรับธุรกรรม
+        TablesPrefix = "Hangfire_"
+    }))
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseColouredConsoleLogProvider()
+);
 
-builder.Services.AddHangfire(configuration => configuration
-.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-.UseSimpleAssemblyNameTypeSerializer()
-.UseDefaultTypeSerializer()
-.UseMemoryStorage());
+//builder.Services.AddHangfire(config =>
+//    config.UseStorage(new MySqlStorage(SalesPipelineJobContext, new MySqlStorageOptions())));
+
+//builder.Services.AddHangfire(configuration => configuration
+//.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+//.UseSimpleAssemblyNameTypeSerializer()
+//.UseDefaultTypeSerializer()
+//.UseMemoryStorage());
+
 builder.Services.AddHangfireServer();
 
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+    logging.AddDebug();
+});
 
+GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
 builder.Services.Configure<AppSettings>(appSettings);
 builder.Services.Configure<ApiBehaviorOptions>(options
-	=> options.SuppressModelStateInvalidFilter = true);
+    => options.SuppressModelStateInvalidFilter = true);
 
 // configure DI for application services
 builder.Services.AddSingleton<HttpClient>();
@@ -122,58 +134,58 @@ builder.Services.AddSingleton<NotificationService>();
 builder.Services.AddControllers()
 .AddJsonOptions(options =>
 {
-	options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-	//Ignore infinity loop class
-	options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-	//Json return normal First Upper 
-	//options.JsonSerializerOptions.PropertyNamingPolicy = null;
-	//options.JsonSerializerOptions.Converters.Add(new BangkokDateTimeConverter());
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    //Ignore infinity loop class
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    //Json return normal First Upper 
+    //options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    //options.JsonSerializerOptions.Converters.Add(new BangkokDateTimeConverter());
 });
 
 //builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
-	var securitySchema = new OpenApiSecurityScheme
-	{
-		Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-		Name = "Authorization",
-		In = ParameterLocation.Header,
-		Type = SecuritySchemeType.Http,
-		Scheme = "bearer",
-		Reference = new OpenApiReference
-		{
-			Type = ReferenceType.SecurityScheme,
-			Id = "Bearer"
-		}
-	};
-	c.AddSecurityDefinition("Bearer", securitySchema);
+    var securitySchema = new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+    c.AddSecurityDefinition("Bearer", securitySchema);
 
-	var securityRequirement = new OpenApiSecurityRequirement();
-	securityRequirement.Add(securitySchema, new[] { "Bearer" });
-	c.AddSecurityRequirement(securityRequirement);
+    var securityRequirement = new OpenApiSecurityRequirement();
+    securityRequirement.Add(securitySchema, new[] { "Bearer" });
+    c.AddSecurityRequirement(securityRequirement);
 
-	//add descrtion controller action
-	//.csproj file:
-	//<PropertyGroup>
-	//	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	//	<NoWarn>$(NoWarn);1591</NoWarn>
-	//</PropertyGroup>
-	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-	//c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema { Type = "string", Format = "date-time" });
+    //add descrtion controller action
+    //.csproj file:
+    //<PropertyGroup>
+    //	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    //	<NoWarn>$(NoWarn);1591</NoWarn>
+    //</PropertyGroup>
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    //c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema { Type = "string", Format = "date-time" });
 });
 
 //Nuget Asp.Versioning.Mvc.ApiExplorer
 builder.Services.AddApiVersioning(options =>
 {
-	options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1.0);
-	options.AssumeDefaultVersionWhenUnspecified = true;
-	options.ReportApiVersions = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1.0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
 }).AddMvc()
   .AddApiExplorer(options =>
   {
-	  options.GroupNameFormat = "'v'VVV";
-	  options.SubstituteApiVersionInUrl = true;
+      options.GroupNameFormat = "'v'VVV";
+      options.SubstituteApiVersionInUrl = true;
   });
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -204,20 +216,20 @@ var app = builder.Build();
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
 app.Use(async (context, next) =>
 {
-	var httpMaxRequestBodySizeFeature = context.Features.Get<IHttpMaxRequestBodySizeFeature>();
-	if (httpMaxRequestBodySizeFeature is not null)
-		httpMaxRequestBodySizeFeature.MaxRequestBodySize = null; //unlimited I guess
-	await next(context);
+    var httpMaxRequestBodySizeFeature = context.Features.Get<IHttpMaxRequestBodySizeFeature>();
+    if (httpMaxRequestBodySizeFeature is not null)
+        httpMaxRequestBodySizeFeature.MaxRequestBodySize = null; //unlimited I guess
+    await next(context);
 });
 
 //"C:\\DataRM"
 app.UseStaticFiles(new StaticFileOptions()
 {
-	FileProvider = new PhysicalFileProvider(contentRootPath),
-	//OnPrepareResponse = ctx =>
-	//{
-	//	ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
-	//}
+    FileProvider = new PhysicalFileProvider(contentRootPath),
+    //OnPrepareResponse = ctx =>
+    //{
+    //	ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
+    //}
 });
 
 // Configure the HTTP request pipeline.
@@ -237,9 +249,9 @@ app.UseAuthorization();
 
 // global cors policy
 app.UseCors(x => x
-	.AllowAnyOrigin()
-	.AllowAnyMethod()
-	.AllowAnyHeader());
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 
 // custom jwt auth middleware
@@ -247,13 +259,11 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
 
-//app.UseHangfireServer();
-// Use Hangfire dashboard (optional)
 //app.UseHangfireDashboard();
 // กำหนดให้ใช้ Hangfire middleware พร้อมการตั้งค่าการรับรองความถูกต้อง
 app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 {
-	Authorization = new[] { new MyAuthorizationFilter() }
+    Authorization = new[] { new MyAuthorizationFilter() }
 });
 
 // ตัวอย่างการตั้งค่างาน
