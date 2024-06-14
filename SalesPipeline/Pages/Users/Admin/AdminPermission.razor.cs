@@ -93,6 +93,9 @@ namespace SalesPipeline.Pages.Users.Admin
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+
+			Cancel();
+
 			await SetModel();
 		}
 
@@ -213,6 +216,23 @@ namespace SalesPipeline.Pages.Users.Admin
 					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
 				}
 			}
+		}
+
+		protected void Cancel()
+		{
+			//ปิดหน้ารายการเมนูที่เปิดไว้
+			formModel = null;
+
+			//ปิด Active การเข้าถึง
+			if (Items?.Count > 0)
+			{
+				foreach (var item in Items)
+				{
+					item.IsAccess = false;
+				}
+			}
+
+			StateHasChanged();
 		}
 
 		protected void ShowLoading()

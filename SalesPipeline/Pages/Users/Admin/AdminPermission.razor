@@ -105,6 +105,14 @@
 						<div class="p-2 text-end">
 							@if (formModel != null)
 							{
+								<Button @onclick=Cancel Color="ButtonColor.Secondary" Disabled="@isLoading" Class="mw_6r">
+									ยกเลิก
+								</Button>
+							}
+						</div>
+						<div class="p-2 text-end">
+							@if (formModel != null)
+							{
 								<Button @onclick=Save Color="ButtonColor.Primary" Disabled="@isLoading" Class="mw_6r">
 									บันทึก
 								</Button>
