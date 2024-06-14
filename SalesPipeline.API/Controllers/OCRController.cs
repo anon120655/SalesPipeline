@@ -16,6 +16,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Azure;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -41,18 +42,25 @@ namespace SalesPipeline.API.Controllers
             _notiService = notificationService;
         }
 
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //static extern bool SetDllDirectory(string lpPathName);
+
         [HttpGet("Process")]
         public async Task<IActionResult> Process([FromQuery] string imageUrl)
         {
             int number = 47;
+            var currentDir = Directory.GetCurrentDirectory();
+            var dllDirectory = Path.Combine(currentDir, "Dependencies");
             try
             {
-                // ตั้งค่าเส้นทางไปยังไลบรารี Leptonica และ Tesseract
-                var envPath = Environment.GetEnvironmentVariable("PATH");
-                var currentDir = Directory.GetCurrentDirectory();
-                var tessDir = Path.Combine(currentDir, "tesseract"); // โฟลเดอร์ที่เก็บไลบรารี
-                Environment.SetEnvironmentVariable("PATH", envPath + ";" + tessDir);
+                // ตั้งค่าเส้นทางไปยังไฟล์ DLL
+                Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + dllDirectory);
 
+                //var dllPath = @"C:\inetpub\wwwroot\SalesPipeline\Service\Dependencies";
+                //if (!SetDllDirectory(dllPath))
+                //{
+                //    throw new ExceptionCustom($"Failed to set DLL directory.");
+                //}
                 //throw new Exception($"{tessDir}");
 
                 // กำหนดที่ตั้งของไฟล์ภาษาไทย
@@ -64,9 +72,9 @@ namespace SalesPipeline.API.Controllers
                 // ดาวน์โหลดภาพจาก URL
                 using (var httpClient = new HttpClient())
                 {
-                    //try
-                    //{
-                    number = 67;
+                    try
+                    {
+                        number = 67;
                     var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
                     number = 69;
                     using (var ms = new MemoryStream(imageBytes))
@@ -103,14 +111,14 @@ namespace SalesPipeline.API.Controllers
                                         string text = page.GetText();
 
                                         // ลบไฟล์ชั่วคราวหลังจากประมวลผลเสร็จ
-                                        try
-                                        {
-                                            System.IO.File.Delete(tempImagePath);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Console.WriteLine("เกิดข้อผิดพลาดขณะลบไฟล์: " + ex.Message);
-                                        }
+                                        //try
+                                        //{
+                                        //    System.IO.File.Delete(tempImagePath);
+                                        //}
+                                        //catch (Exception ex)
+                                        //{
+                                        //    Console.WriteLine("เกิดข้อผิดพลาดขณะลบไฟล์: " + ex.Message);
+                                        //}
 
                                         return Ok(text);
                                     }
@@ -120,11 +128,11 @@ namespace SalesPipeline.API.Controllers
 
                         }
                     }
-                    //}
-                    //catch (Exception)
-                    //{
-                    //    throw new Exception($"{tessDataPath} {tempImagePath} {number}");
-                    //}
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ExceptionCustom($"{GeneralUtils.GetExMessage(ex)} {dllDirectory} {number}");
+                    }
 
                 }
             }
