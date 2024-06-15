@@ -56,8 +56,9 @@ namespace SalesPipeline.Pages.Settings.ReasonReturn
 		}
 
 		protected async Task SetModel()
-		{
-			var data = await _masterViewModel.GetReasonReturns(filter);
+        {
+            filter.page = 1;
+            var data = await _masterViewModel.GetReasonReturns(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

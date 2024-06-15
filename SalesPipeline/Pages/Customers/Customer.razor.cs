@@ -133,8 +133,9 @@ namespace SalesPipeline.Pages.Customers
 		}
 
 		protected async Task SetModel()
-		{
-			filter.userid = UserInfo.Id;
+        {
+            filter.page = 1;
+            filter.userid = UserInfo.Id;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -190,7 +191,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task Search()
 		{
-			await SetModel();
+            await SetModel();
 			StateHasChanged();
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}

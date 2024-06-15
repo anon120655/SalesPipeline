@@ -97,8 +97,9 @@ namespace SalesPipeline.Pages.Users.User
 		}
 
 		protected async Task SetModel()
-		{
-			filter.type = UserTypes.User;
+        {
+            filter.page = 1;
+            filter.type = UserTypes.User;
 			filter.createby = UserInfo.Id;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)

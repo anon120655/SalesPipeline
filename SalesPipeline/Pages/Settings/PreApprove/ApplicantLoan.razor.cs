@@ -41,8 +41,9 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		}
 
 		protected async Task SetModel()
-		{
-			var data = await _masterViewModel.GetPre_App_Loan(filter);
+        {
+            filter.page = 1;
+            var data = await _masterViewModel.GetPre_App_Loan(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

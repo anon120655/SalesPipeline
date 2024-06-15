@@ -77,8 +77,9 @@ namespace SalesPipeline.Pages.ApproveLoans
 		}
 
 		protected async Task SetModel()
-		{
-			filter.userid = UserInfo.Id;
+        {
+            filter.page = 1;
+            filter.userid = UserInfo.Id;
 			filter.statussaleid = StatusSaleModel.WaitApproveLoanRequest;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

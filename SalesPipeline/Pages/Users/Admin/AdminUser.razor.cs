@@ -83,8 +83,9 @@ namespace SalesPipeline.Pages.Users.Admin
 		}
 
 		protected async Task SetModel()
-		{
-			filter.type = UserTypes.Admin;
+        {
+            filter.page = 1;
+            filter.type = UserTypes.Admin;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

@@ -101,8 +101,9 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		}
 
 		protected async Task SetModel()
-		{
-			filter.userid = UserInfo.Id;
+        {
+            filter.page = 1;
+            filter.userid = UserInfo.Id;
 			filter.statussaleid = StatusSaleModel.BranchReturnLCenter;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
