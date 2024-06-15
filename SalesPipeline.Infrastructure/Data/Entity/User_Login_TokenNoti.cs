@@ -11,5 +11,7 @@ public partial class User_Login_TokenNoti
 
     public int UserId { get; set; }
 
+    public string? DeviceId { get; set; }
+
     public string? tokenNoti { get; set; }
 }

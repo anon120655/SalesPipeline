@@ -15,6 +15,8 @@ public partial class User_Login_Log
 
     public string? IPAddress { get; set; }
 
+    public string? DeviceId { get; set; }
+
     public string? DeviceVersion { get; set; }
 
     public string? SystemVersion { get; set; }

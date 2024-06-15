@@ -311,12 +311,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (sales.AssUserId.HasValue)
 				{
 					await _repo.Sales.SetIsUpdateStatusTotal(sales.AssUserId.Value);
-				}
+                }
 
-				//SetNoti
-				await _repo.Notifys.SetScheduleNoti();
-			}
-		}
+                //SetNoti
+                await _repo.Notifys.SetScheduleNoti();
+            }
+        }
 
 		public async Task<bool> CheckStatusById(Guid id, int statusid)
 		{

@@ -94,8 +94,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						UserId = response.Id,
 						IPAddress = model.IPAddress,
+						DeviceId = model.DeviceId,
 						DeviceVersion = model.DeviceVersion,
-						SystemVersion = model.SystemVersion,
+                        SystemVersion = model.SystemVersion,
 						AppVersion = model.AppVersion,
 						tokenNoti = model.tokenNoti
 					});

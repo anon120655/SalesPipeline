@@ -18,7 +18,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public string? IPAddress { get; set; }
 
-		public string? DeviceVersion { get; set; }
+        public string? DeviceId { get; set; }
+
+        public string? DeviceVersion { get; set; }
 
 		public string? SystemVersion { get; set; }
 

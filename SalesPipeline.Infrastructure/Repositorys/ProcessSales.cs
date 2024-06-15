@@ -402,6 +402,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     }
                 }
 
+                //SetNoti
+                await _repo.Notifys.SetScheduleNoti();
+
                 _transaction.Commit();
 
                 return _mapper.Map<Sale_ReplyCustom>(saleReply);

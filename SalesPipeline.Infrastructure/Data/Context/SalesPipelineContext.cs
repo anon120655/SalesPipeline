@@ -3625,6 +3625,7 @@ public partial class SalesPipelineContext : DbContext
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
                 .HasColumnType("timestamp");
+            entity.Property(e => e.DeviceId).HasMaxLength(255);
             entity.Property(e => e.DeviceVersion).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.IPAddress).HasMaxLength(255);
@@ -3644,6 +3645,7 @@ public partial class SalesPipelineContext : DbContext
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("current_timestamp()")
                 .HasColumnType("timestamp");
+            entity.Property(e => e.DeviceId).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnType("int(11)");
             entity.Property(e => e.tokenNoti).HasMaxLength(300);
         });

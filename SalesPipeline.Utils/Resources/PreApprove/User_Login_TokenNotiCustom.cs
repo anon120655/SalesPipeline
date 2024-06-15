@@ -14,6 +14,8 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public int UserId { get; set; }
 
-		public string? tokenNoti { get; set; }
+        public string? DeviceId { get; set; }
+
+        public string? tokenNoti { get; set; }
 	}
 }
