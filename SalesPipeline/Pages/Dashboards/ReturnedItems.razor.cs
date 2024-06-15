@@ -83,12 +83,14 @@ namespace SalesPipeline.Pages.Dashboards
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			if (UserInfo.RoleCode != null)
 			{
 				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)

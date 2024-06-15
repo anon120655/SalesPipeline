@@ -91,12 +91,14 @@ namespace SalesPipeline.Pages.Dashboards
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			filter.userid = UserInfo.Id;
 			filter.type = "avgdurationclosesale";
 			var data = await _dashboarViewModel.GetListTarget_SaleById(filter);
