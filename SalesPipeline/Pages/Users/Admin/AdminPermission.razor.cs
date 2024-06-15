@@ -58,9 +58,8 @@ namespace SalesPipeline.Pages.Users.Admin
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            var data = await _userViewModel.GetListRole(filter);
+		{
+			var data = await _userViewModel.GetListRole(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

@@ -82,9 +82,8 @@ namespace SalesPipeline.Pages.ApproveTargets
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            filter.userid = UserInfo.Id;
+		{
+			filter.userid = UserInfo.Id;
 			filter.statussaleid = StatusSaleModel.WaitApprove;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)

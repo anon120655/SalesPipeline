@@ -111,9 +111,8 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            var data = await _userViewModel.GetUserTargetList(filter);
+		{
+			var data = await _userViewModel.GetUserTargetList(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

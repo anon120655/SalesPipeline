@@ -83,9 +83,8 @@ namespace SalesPipeline.Pages.Settings.Branchs
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            var data = await _masterViewModel.GetBranchs(filter);
+		{
+			var data = await _masterViewModel.GetBranchs(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

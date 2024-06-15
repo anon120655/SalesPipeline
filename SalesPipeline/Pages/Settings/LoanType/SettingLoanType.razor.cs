@@ -55,9 +55,8 @@ namespace SalesPipeline.Pages.Settings.LoanType
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            var data = await _masterViewModel.GetLoanType(filter);
+		{
+			var data = await _masterViewModel.GetLoanType(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

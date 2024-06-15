@@ -55,9 +55,8 @@ namespace SalesPipeline.Pages.Settings.SLA
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            var data = await _masterViewModel.GetSLAOperations(filter);
+		{
+			var data = await _masterViewModel.GetSLAOperations(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;

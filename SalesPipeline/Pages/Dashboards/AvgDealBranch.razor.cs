@@ -117,9 +117,8 @@ namespace SalesPipeline.Pages.Dashboards
 		}
 
 		protected async Task SetModelGroup()
-        {
-            filter.page = 1;
-            filter.userid = UserInfo.Id;
+		{
+			filter.userid = UserInfo.Id;
 			var data = await _dashboarViewModel.GetListDealBranchById(filter);
 			if (data != null && data.Status)
 			{

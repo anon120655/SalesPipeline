@@ -60,9 +60,8 @@ namespace SalesPipeline.Pages.Loans
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            filter.userid = UserInfo.Id;
+		{
+			filter.userid = UserInfo.Id;
 			var data = await _loanViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

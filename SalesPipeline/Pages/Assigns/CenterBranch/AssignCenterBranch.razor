@@ -146,15 +146,15 @@
 									</div>
 								</div>
 							</div>
-							<div>
-								<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-												TotalItems="@(Pager?.TotalItems ?? 0)"
-												Pager="@Pager"
-												OnShowOnPage="@OnSelectPagesize"
-												OnSelectedPage="@OnSelectPage"
-												ParameterAll="@filter?.SetParameter()">
-								</PaginationBack>
-							</div>
+							@* <div>
+					<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+					TotalItems="@(Pager?.TotalItems ?? 0)"
+					Pager="@Pager"
+					OnShowOnPage="@OnSelectPagesize"
+					OnSelectedPage="@OnSelectPage"
+					ParameterAll="@filter?.SetParameter()">
+					</PaginationBack>
+					</div> *@
 							<div class="my-4 text-center">
 								<div class="d-flex bd-highlight align-items-center justify-content-center">
 									<div class="p-2 bd-highlight">

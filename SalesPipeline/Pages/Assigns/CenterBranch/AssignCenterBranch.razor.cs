@@ -118,10 +118,10 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 		}
 
 		protected async Task SetModel()
-        {
-            filter.page = 1;
-            filter.userid = UserInfo.Id;
-			//filter.pagesize = 100;
+		{
+			filter.userid = UserInfo.Id;
+			filter.pagesize = 100;
+			//filter.statussaleid = StatusSaleModel.WaitAssignCenter;
 			filter.StatusSales = new()
 			{
 				StatusSaleModel.WaitAssignCenter.ToString(),
