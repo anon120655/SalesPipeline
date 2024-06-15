@@ -715,7 +715,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
             if (model.NextActionId != 1 && model.NextActionId != 2) throw new ExceptionCustom("nextActionId not match");
 
             if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-            if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+			if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
+			if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
             if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
             var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
@@ -839,7 +840,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             if (!model.LoanAmount.HasValue || model.LoanAmount <= 0) throw new ExceptionCustom("ระบุจำนวนการกู้");
             if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-            if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+			if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
+			if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
             if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
             var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
@@ -1112,7 +1114,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
                 if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
                 if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-                if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
                 if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
             }
             else if (model.ProceedId == 3)
@@ -1120,7 +1123,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
                 if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
                 if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-                if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
                 if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
             }
 
@@ -1298,7 +1302,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
             if (model.NextActionId == 2)
             {
                 if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
-                if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
+				if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
+				if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
                 //if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
                 nextActionName = "ติดต่ออีกครั้ง";
