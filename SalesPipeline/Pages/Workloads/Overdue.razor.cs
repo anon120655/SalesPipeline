@@ -76,12 +76,14 @@ namespace SalesPipeline.Pages.Workloads
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			filter.userid = UserInfo.Id;
 			filter.isoverdue = 1;
 			var data = await _salesViewModel.GetList(filter);

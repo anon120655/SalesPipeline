@@ -17,6 +17,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 		private bool isDisabledAssignment = true;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
+		private allFilter filterAss = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formView = null;
 		private List<SaleCustom>? Items;
@@ -113,14 +114,16 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			filter.userid = UserInfo.Id;
-			filter.pagesize = 100;
+			//filter.pagesize = 100;
 			//filter.statussaleid = StatusSaleModel.WaitAssignCenter;
 			filter.StatusSales = new()
 			{
@@ -158,8 +161,8 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 		protected async Task SetModelAssignment()
 		{
-			filter.pagesize = 100;
-			var data = await _assignmentCenterViewModel.GetListCenter(filter);
+			filterAss.pagesize = 100;
+			var data = await _assignmentCenterViewModel.GetListCenter(filterAss);
 			if (data != null && data.Status)
 			{
 				ItemsAssignment = data.Data?.Items;
@@ -197,12 +200,12 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 		protected async Task OnAssignment(object? val)
 		{
-			filter.assignmentid = null;
+			filterAss.assignmentid = null;
 			StateHasChanged();
 
 			if (val != null && Guid.TryParse(val.ToString(), out Guid _id))
 			{
-				filter.assignmentid = _id.ToString();
+				filterAss.assignmentid = _id.ToString();
 			}
 
 			await SetModelAssignment();

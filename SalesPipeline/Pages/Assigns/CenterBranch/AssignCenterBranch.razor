@@ -116,11 +116,12 @@
 												}
 												else
 												{
-													int SequenceNo = 1;
+													int _orderNo = Pager != null ? (Pager.PageSize * Pager.CurrentPage - 10) : 0;
+													int SequenceNo = 0;
 													foreach (var item in Items)
 													{
 														<tr>
-															<td class="text-center">@(SequenceNo)</td>
+															<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 															<td class="text-center">@item.Customer?.JuristicPersonRegNumber</td>
 															<td class="text-center">@item.CompanyName</td>
 															<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
@@ -146,15 +147,15 @@
 									</div>
 								</div>
 							</div>
-							@* <div>
-					<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
-					TotalItems="@(Pager?.TotalItems ?? 0)"
-					Pager="@Pager"
-					OnShowOnPage="@OnSelectPagesize"
-					OnSelectedPage="@OnSelectPage"
-					ParameterAll="@filter?.SetParameter()">
-					</PaginationBack>
-					</div> *@
+							<div>
+								<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+												TotalItems="@(Pager?.TotalItems ?? 0)"
+												Pager="@Pager"
+												OnShowOnPage="@OnSelectPagesize"
+												OnSelectedPage="@OnSelectPage"
+												ParameterAll="@filter?.SetParameter()">
+								</PaginationBack>
+							</div>
 							<div class="my-4 text-center">
 								<div class="d-flex bd-highlight align-items-center justify-content-center">
 									<div class="p-2 bd-highlight">

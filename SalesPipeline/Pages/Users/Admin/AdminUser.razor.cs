@@ -78,12 +78,14 @@ namespace SalesPipeline.Pages.Users.Admin
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			filter.type = UserTypes.Admin;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)

@@ -50,12 +50,14 @@ namespace SalesPipeline.Pages.Settings.Branchs
 
 			filter.SetUriQuery(uriQuery);
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			var data = await _masterViewModel.GetDepBranchs(filter);
 			if (data != null && data.Status)
 			{

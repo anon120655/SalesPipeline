@@ -106,12 +106,14 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 				filter.year = DateTime.Now.Year.ToString();
 			}
 
-			await SetModel();
+			await SetModel(!true);
 			StateHasChanged();
 		}
 
-		protected async Task SetModel()
+		protected async Task SetModel(bool resetPage = true)
 		{
+			if (resetPage) filter.page = 1;
+
 			var data = await _userViewModel.GetUserTargetList(filter);
 			if (data != null && data.Status)
 			{
