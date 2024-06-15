@@ -10,10 +10,11 @@ namespace SalesPipeline.Utils.Resources.Notifications
 	public class NotificationMobile
 	{
 		public string? to { get; set; }
-		public Notification? notification { get; set; }
-		public string? priority { get; set; }
+        public string? priority { get; set; }
+        public Notification? notification { get; set; }
+        public DataMore? data { get; set; }
 
-		public class Notification
+        public class Notification
 		{
 			public string? title { get; set; }
 			public string? subtitle { get; set; }
@@ -33,5 +34,18 @@ namespace SalesPipeline.Utils.Resources.Notifications
 			[JsonProperty("no-cache")]
 			public int nocache { get; set; }
 		}
-	}
+
+        public class DataMore
+        {
+            public Guid? SaleId { get; set; }
+            public int? EventId { get; set; }
+            public string? EventName { get; set; }
+            public int? FromUserId { get; set; }
+            public string? FromUserName { get; set; }
+            public int? ToUserId { get; set; }
+            public string? ToUserName { get; set; }
+            public string? ActionName1 { get; set; }
+            public string? ActionName2 { get; set; }
+        }
+    }
 }

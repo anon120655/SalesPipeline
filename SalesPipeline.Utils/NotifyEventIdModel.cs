@@ -24,5 +24,9 @@ namespace SalesPipeline.Utils
 		/// ส่งกลับ
 		/// </summary>
 		public const int Return = 4;
-	}
+        /// <summary>
+        /// นัดหมาย
+        /// </summary>
+        public const int Calendar = 5;
+    }
 }
