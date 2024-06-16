@@ -44,7 +44,9 @@
 													Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100 text-white">
 												@if (isLoading)
 												{
-													<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+													<span>
+														<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" Class="mx-1" />
+													</span>
 												}
 												Sign in
 											</Button>

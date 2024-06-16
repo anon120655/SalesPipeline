@@ -147,7 +147,7 @@ namespace SalesPipeline.ViewModels
 			var user = authState.User;
 			if (user.Identity == null || !user.Identity.IsAuthenticated)
 			{
-				_Nav.NavigateTo($"/signin?p=state", true);
+				_Nav.NavigateTo($"/signin?p=isauth", true);
 				return false;
 			}
 			else

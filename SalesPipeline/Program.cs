@@ -82,10 +82,11 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
-builder.Services.Configure<CircuitOptions>(options =>
-{
-	options.DetailedErrors = true;
-});
+//show error detail
+//builder.Services.Configure<CircuitOptions>(options =>
+//{
+//	options.DetailedErrors = true;
+//});
 
 string currentDirectory = Directory.GetCurrentDirectory();
 
@@ -93,7 +94,7 @@ string currentDirectory = Directory.GetCurrentDirectory();
 // Configure Data Protection
 // ถ้าใช้ ProtectedLocalStorage จะเข้ารหัสข้อมูลและใช้ Key เข้ารหัส ถ้าหา Key เดิมไม่เจอจะ error และต้องสร้างขึ้นใหม่
 // จะเกิดกรณีมีการ restart server
-var keysDirectory = @$"{currentDirectory}\AppKey";
+var keysDirectory = @$"{contentRootPath}\appkeys";
 builder.Services.AddDataProtection()
 	.PersistKeysToFileSystem(new DirectoryInfo(keysDirectory))
 	.SetApplicationName("SalesPipeline");
@@ -109,6 +110,12 @@ else
 	app.UseExceptionHandler("/Error");
 	app.UseHsts();
 }
+
+//if (!app.Environment.IsDevelopment())
+//{
+//	app.UseExceptionHandler("/Error");
+//	app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 
@@ -139,7 +146,7 @@ app.UseStaticFiles(new StaticFileOptions()
 	FileProvider = new PhysicalFileProvider(currentDirectoryFiles),
 	OnPrepareResponse = ctx =>
 	{
-		ctx.Context.Response.Headers.Append("Cache-Control","public, max-age=604800");
+		ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
 	}
 });
 
