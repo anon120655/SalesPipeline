@@ -148,6 +148,38 @@ namespace SalesPipeline.Pages.Users.Admin
 				{
 					if (type == 1) model.IsView = isChecked;
 				}
+
+				if (LookUp.MenuItem?.Count > 0)
+				{
+					var menuItem = LookUp.MenuItem.Where(x => x.ParentNumber == menuNumber).ToList();
+					if (menuItem.Count > 0)
+					{
+						foreach (var item in menuItem)
+						{
+							var permission = new User_PermissionCustom();
+							permission.Status = StatusModel.Active;
+							permission.MenuNumber = item.MenuNumber;
+							permission.RoleId = roleId;
+							if (type == 1) permission.IsView = isChecked;
+							formModel.User_Permissions.Add(permission);
+
+							var menuItemL3 = LookUp.MenuItem.Where(x => x.ParentNumber == item.MenuNumber).ToList();
+							if (menuItemL3.Count > 0)
+							{
+								foreach (var itemL3 in menuItemL3)
+								{
+									var permission3 = new User_PermissionCustom();
+									permission3.Status = StatusModel.Active;
+									permission3.MenuNumber = itemL3.MenuNumber;
+									permission3.RoleId = roleId;
+									if (type == 1) permission3.IsView = isChecked;
+									formModel.User_Permissions.Add(permission3);
+								}
+							}
+						}
+					}
+				}
+
 				//UpdateIsAll(type);
 				this.StateHasChanged();
 			}
