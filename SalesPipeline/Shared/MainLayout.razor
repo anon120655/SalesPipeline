@@ -7,7 +7,7 @@
 
 <PageTitle>SalesPipeline</PageTitle>
 
-<CascadingValue Value="isAuthorize">
+@* <CascadingValue Value="isAuthorize">
 	<CascadingValue Value="UserInfo">
 		<CascadingValue Value="MenuItem">
 			@if (isAuthorize == true && UserInfo.Id > 0 && MenuItem.Count > 0)
@@ -16,7 +16,6 @@
 					<NavTop />
 					<div id="layoutSidenavBack">
 						<NavLeft />
-						@* <NavLeftBackUp /> *@
 						<div id="layoutSidenav_contentBack">
 							<main class="pt-2">
 								@Body
@@ -24,6 +23,51 @@
 						</div>
 					</div>
 				</div>
+			}
+		</CascadingValue>
+	</CascadingValue>
+</CascadingValue> *@
+
+<CascadingValue Value="isAuthorize">
+	<CascadingValue Value="UserInfo">
+		<CascadingValue Value="MenuItem">
+			@if (isAuthorize == true)
+			{
+				if (UserInfo.Id > 0)
+				{
+					if (MenuItem.Count > 0)
+					{
+						<div class="back_layout">
+							<NavTop />
+							<div id="layoutSidenavBack">
+								<NavLeft />
+								<div id="layoutSidenav_contentBack">
+									<main class="pt-2">
+										@Body
+									</main>
+								</div>
+							</div>
+						</div>
+					}
+					else
+					{
+						<p>
+							<Spinner Color="SpinnerColor.Secondary" Size="SpinnerSize.Small" Class="mx-3" /> loading menu...
+						</p>
+					}
+				}
+				else
+				{
+					<p>
+						<Spinner Color="SpinnerColor.Secondary" Size="SpinnerSize.Small" Class="mx-3" /> loading user...
+					</p>
+				}
+			}
+			else
+			{
+				<p>
+					<Spinner Color="SpinnerColor.Secondary" Size="SpinnerSize.Small" Class="mx-3" /> loading auth...
+				</p>
 			}
 		</CascadingValue>
 	</CascadingValue>

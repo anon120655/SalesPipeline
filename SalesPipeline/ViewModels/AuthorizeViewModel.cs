@@ -12,12 +12,14 @@ using SalesPipeline.Utils.Resources.iAuthen;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using static Dapper.SqlMapper;
 
 namespace SalesPipeline.ViewModels
 {
 	public class AuthorizeViewModel : AuthenticationStateProvider
 	{
 		private readonly ProtectedLocalStorage _protectedLocalStorage;
+		private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 		private NavigationManager _Nav;
 		private readonly HttpClient _httpClient;
 		private readonly AppSettings _appSet;
@@ -38,21 +40,30 @@ namespace SalesPipeline.ViewModels
 			var principal = new ClaimsPrincipal();
 			try
 			{
+
 				var storedPrincipal = await _protectedLocalStorage.GetAsync<string>("identity");
-				if (storedPrincipal.Success && storedPrincipal.Value != null)
+				var identityData = storedPrincipal.Success ? storedPrincipal.Value : null;
+
+				if (string.IsNullOrEmpty(identityData))
 				{
-					var user = JsonConvert.DeserializeObject<LoginResponseModel>(storedPrincipal.Value);
-					if (user != null)
-					{
-						var identity = CreateIdentityFromUser(user);
-						principal = new(identity);
-					}
+					return new AuthenticationState(_anonymous);
 				}
+
+				var user = JsonConvert.DeserializeObject<LoginResponseModel>(identityData);
+				if (user == null) return new AuthenticationState(_anonymous);
+
+				var identity = CreateIdentityFromUser(user);
+
+				var identityUser = new ClaimsPrincipal(identity);
+
+				return new AuthenticationState(identityUser);
 			}
-			catch
+			catch (Exception ex)
 			{
+				//อาจจะเกิดขึ้นได้กรณี AppKey หายไปตอน restart server
+				await LogoutAsync();
+				return new AuthenticationState(principal);
 			}
-			return new AuthenticationState(principal);
 		}
 
 		public async Task<String> GetAccessToken()
@@ -89,14 +100,11 @@ namespace SalesPipeline.ViewModels
 					Password = user.Password,
 					IPAddress = user.IPAddress
 				});
-				var principal = new ClaimsPrincipal();
+				if (!userInDatabase.Status || userInDatabase.Data == null) throw new Exception("authenticate not found.");
 
-				if (userInDatabase.Status && userInDatabase.Data != null)
-				{
-					var identity = CreateIdentityFromUser(userInDatabase.Data);
-					principal = new ClaimsPrincipal(identity);
-					await _protectedLocalStorage.SetAsync("identity", JsonConvert.SerializeObject(userInDatabase.Data));
-				}
+				var identity = CreateIdentityFromUser(userInDatabase.Data);
+				var principal = new ClaimsPrincipal(identity);
+				await _protectedLocalStorage.SetAsync("identity", JsonConvert.SerializeObject(userInDatabase.Data));
 
 				NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
 				return userInDatabase;
@@ -139,7 +147,7 @@ namespace SalesPipeline.ViewModels
 			var user = authState.User;
 			if (user.Identity == null || !user.Identity.IsAuthenticated)
 			{
-				_Nav.NavigateTo("/signin", true);
+				_Nav.NavigateTo($"/signin?p=state", true);
 				return false;
 			}
 			else
@@ -156,7 +164,7 @@ namespace SalesPipeline.ViewModels
 							var dataMap = JsonConvert.DeserializeObject<Boolean>(content);
 							if (dataMap != true)
 							{
-								_Nav.NavigateTo("/signin", true);
+								_Nav.NavigateTo("/signin?p=expiretoken", true);
 								return false;
 							}
 						}
@@ -164,7 +172,7 @@ namespace SalesPipeline.ViewModels
 				}
 				catch (Exception ex)
 				{
-					_Nav.NavigateTo("/signin", true);
+					_Nav.NavigateTo("/signin?p=token", true);
 					return false;
 				}
 			}
@@ -187,7 +195,7 @@ namespace SalesPipeline.ViewModels
 			}
 			catch
 			{
-				_Nav.NavigateTo("/backoffice/signin", true);
+				_Nav.NavigateTo("/signin?p=user", true);
 				return null;
 			}
 		}

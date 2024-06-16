@@ -35,12 +35,10 @@
 </div>
 
 @code {
-	[Inject] protected NavigationManager _Navs { get; set; } = null!;
-	[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = null!;
 
 	protected override async Task OnInitializedAsync()
 	{
 		await _authorizeViewModel.LogoutAsync();
-		_Navs.NavigateTo("/signin");
+		_Navs.NavigateTo("/signin?p=signout", true);
 	}
 }

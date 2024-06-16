@@ -9,6 +9,8 @@ using BlazorBootstrap;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.Http.Features;
 using NPOI.SS.Formula.Functions;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.NetworkInformation;
 
 namespace SalesPipeline.Shared
 {
@@ -25,9 +27,12 @@ namespace SalesPipeline.Shared
 		[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = null!;
 		[Inject] protected MasterViewModel _masterViewModel { get; set; } = default!;
 
+		[Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+
 		private HubConnection _hubUserConnection = null!;
 		private LoginResponseModel UserInfo = new();
-		private Boolean? isAuthorize { get; set; }
+		private bool isAuthorize { get; set; }
+		private bool isRedirecting = false;
 
 		private List<UserOnlineModel> UserOnlineModels = new();
 		private List<MenuItemCustom> MenuItem = new();
@@ -41,63 +46,146 @@ namespace SalesPipeline.Shared
 		private int counterDate;
 		protected override async Task OnInitializedAsync()
 		{
+			AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+
 			baseUriWeb = _appSet.Value.baseUriWeb;
 			baseUriApi = _appSet.Value.baseUriApi;
-			//Create Connection SignalR
 			string? baseUrlWeb = _appSet?.Value?.baseUriWeb;
 			string? _hubUrlWeb = baseUrlWeb?.TrimEnd('/') + SignalRUtls.HubUserUrl;
 			_hubUserConnection = new HubConnectionBuilder().WithUrl(_hubUrlWeb).Build();
+
+			///**** comment StartAsync ไว้ก่อน เพราะถ้าเปิดจะไปที่ OnAfterRender ทันที
 			await _hubUserConnection.StartAsync();
 
-			//var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-			//if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
-			//{
-			//	MenuItem = dataMenuItem.Data;
-			//	StateHasChanged();
-			//}
+			isAuthorize = await _authorizeViewModel.IsAuth();
+
+			if (isAuthorize)
+			{
+				UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
+
+				var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+				if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+				{
+					MenuItem = dataMenuItem.Data;
+				}
+
+				StateHasChanged();
+
+				var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+				if (_hubUserConnection is not null)
+				{
+					_UserKey = Guid.NewGuid().ToString();
+					await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
+				}
+
+				//_Navs.NavigateTo("/?p=oninit");
+			}
+			else
+			{
+				_Navs.NavigateTo("/signin?p=init");
+			}
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
-			isAuthorize = await _authorizeViewModel.IsAuth();
+			//if (firstRender && !isAuthorize && !isRedirecting)
+			//{
+			//	isRedirecting = true;
+			//	_Navs.NavigateTo("/signin?p=auth", true);
+			//}
+			//isAuthorize = await _authorizeViewModel.IsAuth();
 			if (firstRender)
 			{
-				// isAuthorize = await _authorizeViewModel.IsAuth();
-				StateHasChanged();
-				if (_Navs.Uri.Contains("www."))
-				{
-					string UrlNew = _Navs.Uri.Replace("www.", string.Empty);
-					_Navs.NavigateTo(UrlNew, true);
-				}
+				//isAuthorize = await _authorizeViewModel.IsAuth();
+				//StateHasChanged();
+				//if (_Navs.Uri.Contains("www."))
+				//{
+				//	string UrlNew = _Navs.Uri.Replace("www.", string.Empty);
+				//	_Navs.NavigateTo(UrlNew, true);
+				//}
 
-				if (isAuthorize == true)
-				{
-					var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-					if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
-					{
-						MenuItem = dataMenuItem.Data;
-						StateHasChanged();
-					}
+				//if (isAuthorize && !isRedirecting)
+				//{
+				//	isRedirecting = true; 
+				//	var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+				//	if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+				//	{
+				//		MenuItem = dataMenuItem.Data;
+				//		StateHasChanged();
+				//	}
 
-					UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
-					var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
-					if (_hubUserConnection is not null)
-					{
-						_UserKey = Guid.NewGuid().ToString();
-						await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
-					}
-				}
-				else
-				{
-					_Navs.NavigateTo("/signin", true);
-				}
+				//	UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
+				//	var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+				//	if (_hubUserConnection is not null)
+				//	{
+				//		_UserKey = Guid.NewGuid().ToString();
+				//		await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
+				//	}
 
-				StateHasChanged();
+				//	StateHasChanged();
+				//	await _jsRuntimes.InvokeAsync<object>("AfterRenderMainLayout");
+				//	await _jsRuntimes.InvokeVoidAsync("initializeinactivitytimer", DotNetObjectReference.Create(this));
+
+
+				//	_Navs.NavigateTo("/");
+				//}
+				//else if (!isAuthorize && !isRedirecting)
+				//{
+				//	isRedirecting = true;
+				//	_Navs.NavigateTo("/signin?p=auth", true);
+				//}
+
+				//if (isAuthorize == true)
+				//{
+				//	var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+				//	if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+				//	{
+				//		MenuItem = dataMenuItem.Data;
+				//		StateHasChanged();
+				//	}
+
+				//	UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
+				//	var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
+				//	if (_hubUserConnection is not null)
+				//	{
+				//		_UserKey = Guid.NewGuid().ToString();
+				//		await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
+				//	}
+				//}
+				//else
+				//{
+				//	_Navs.NavigateTo("/signin?p=auth", true);
+				//}
+
 				await _jsRuntimes.InvokeAsync<object>("AfterRenderMainLayout");
 				await _jsRuntimes.InvokeVoidAsync("initializeinactivitytimer", DotNetObjectReference.Create(this));
-
 				firstRender = false;
 			}
+		}
+
+		private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+		{
+			InvokeAsync(async () =>
+			{
+				var authState = await task;
+				var user = authState.User;
+
+				isAuthorize = user.Identity != null && user.Identity.IsAuthenticated;
+				StateHasChanged();
+
+				if (isAuthorize && !isRedirecting)
+				{
+					isRedirecting = true;
+					_Navs.NavigateTo("/?p=onauth");
+				}
+				else if (!isAuthorize && !isRedirecting)
+				{
+					isRedirecting = true;
+					_Navs.NavigateTo("/signin?p=onauth");
+				}
+
+				StateHasChanged();
+			});
 		}
 
 		[JSInvokable]
@@ -129,13 +217,7 @@ namespace SalesPipeline.Shared
 
 		protected void LogoutByTimeOut()
 		{
-			_Navs.NavigateTo("/signin", true);
-			// var authState = await _authorizeViewModel.GetAuthenticationStateAsync();
-			// var user = authState.User;
-			// if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
-			// {
-			// 	_Navs.NavigateTo("/signin", true);
-			// }
+			_Navs.NavigateTo("/signin?p=timeout", true);
 		}
 
 		protected async Task WantContinue()

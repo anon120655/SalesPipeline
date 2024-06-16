@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using SalesPipeline.Helpers;
@@ -7,6 +8,10 @@ using SalesPipeline.Hubs;
 using SalesPipeline.Utils;
 using SalesPipeline.ViewModels;
 using SalesPipeline.ViewModels.Wrapper;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.DataProtection;
+
 
 
 //***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport เปลี่ยนไปใช้ SixLabors.ImageSharp *****
@@ -72,16 +77,36 @@ builder.Services.AddScoped<NotifyViewModel>();
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<AuthorizeViewModel>());
+// ลงทะเบียน AuthorizeView
+builder.Services.AddAuthorizationCore();
 
 builder.Services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
+builder.Services.Configure<CircuitOptions>(options =>
+{
+	options.DetailedErrors = true;
+});
+
+string currentDirectory = Directory.GetCurrentDirectory();
+
+
+// Configure Data Protection
+// ถ้าใช้ ProtectedLocalStorage จะเข้ารหัสข้อมูลและใช้ Key เข้ารหัส ถ้าหา Key เดิมไม่เจอจะ error และต้องสร้างขึ้นใหม่
+// จะเกิดกรณีมีการ restart server
+var keysDirectory = @$"{currentDirectory}\AppKey";
+builder.Services.AddDataProtection()
+	.PersistKeysToFileSystem(new DirectoryInfo(keysDirectory))
+	.SetApplicationName("SalesPipeline");
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+	app.UseDeveloperExceptionPage();
+}
+else
 {
 	app.UseExceptionHandler("/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
 }
 
@@ -89,7 +114,6 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-string currentDirectory = Directory.GetCurrentDirectory();
 
 string currentDirectoryRoot = Path.Combine(currentDirectory, @"wwwroot");
 string currentDirectoryFiles = contentRootPath;
