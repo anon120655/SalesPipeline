@@ -1489,8 +1489,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-            //กิจการสาขาภาค[]
-            if (model.DepBranchs?.Count > 0)
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทสินเชื่อ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
+				}
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
             {
                 var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
                 if (idList.Count > 0)
@@ -2227,8 +2245,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-            //กิจการสาขาภาค[]
-            if (model.DepBranchs?.Count > 0)
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทสินเชื่อ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
+				}
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
             {
                 var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
                 if (idList.Count > 0)
@@ -2764,8 +2800,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-            //กิจการสาขาภาค[]
-            if (model.DepBranchs?.Count > 0)
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทสินเชื่อ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
+				}
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
             {
                 var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
                 if (idList.Count > 0)
@@ -2868,7 +2922,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
-            var query = _repo.Context.Sale_Durations.Include(x => x.Sale)
+            var query = _repo.Context.Sale_Durations.Include(x => x.Sale).ThenInclude(x=>x.Customer)
                                                 .Where(x => x.Status == StatusModel.Active)
                                                 .OrderByDescending(x => x.CreateDate)
                                                 .AsQueryable();
@@ -2898,8 +2952,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date && x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-            //กิจการสาขาภาค[]
-            if (model.DepBranchs?.Count > 0)
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Sale.Customer != null && x.Sale.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทสินเชื่อ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Sale.Customer != null && x.Sale.Customer.Master_LoanTypeId == id);
+				}
+			}
+
+			//กิจการสาขาภาค[]
+			if (model.DepBranchs?.Count > 0)
             {
                 var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
                 if (idList.Count > 0)
@@ -3658,7 +3730,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
             DateTime pre_date = model.startdate.Value.AddMonths(-1);
 
             var query = _repo.Context.Sales
-                                     .Where(x => x.Status == StatusModel.Active)
+									 .Include(x => x.Customer)
+									 .Where(x => x.Status == StatusModel.Active)
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
@@ -3674,20 +3747,38 @@ namespace SalesPipeline.Infrastructure.Repositorys
             {
             }
 
-            //if (model.startdate.HasValue && !model.enddate.HasValue)
-            //{
-            //	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
-            //}
-            //if (!model.startdate.HasValue && model.enddate.HasValue)
-            //{
-            //	query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
-            //}
-            //if (model.startdate.HasValue && model.enddate.HasValue)
-            //{
-            //	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
-            //}
+			//if (model.startdate.HasValue && !model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
+			//if (!model.startdate.HasValue && model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
+			//if (model.startdate.HasValue && model.enddate.HasValue)
+			//{
+			//	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
+			//}
 
-            if (model.DepBranchs?.Count > 0)
+			//ประเภทธุรกิจ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
+				}
+			}
+
+			//ประเภทสินเชื่อ
+			if (!String.IsNullOrEmpty(model.loantypeid))
+			{
+				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
+				}
+			}
+
+			if (model.DepBranchs?.Count > 0)
             {
                 var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
                 if (idList.Count > 0)

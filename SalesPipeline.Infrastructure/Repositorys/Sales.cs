@@ -565,7 +565,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			//ประเภทธุรกิจ
+			//ประเภทสินเชื่อ
 			if (!String.IsNullOrEmpty(model.loantypeid))
 			{
 				if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
