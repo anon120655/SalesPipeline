@@ -255,7 +255,7 @@ app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 });
 
 // ตัวอย่างการตั้งค่างาน
-var backgroundJobClient = app.Services.GetRequiredService<IBackgroundJobClient>();
-backgroundJobClient.Enqueue(() => Console.WriteLine("Hello, Hangfire with MariaDB!"));
+//var backgroundJobClient = app.Services.GetRequiredService<IBackgroundJobClient>();
+//backgroundJobClient.Enqueue(() => Console.WriteLine("Hello, Hangfire with MariaDB!"));
 
 app.Run();

@@ -16,6 +16,8 @@ using System.Net.Http.Headers;
 using SalesPipeline.Utils.Resources.Loans;
 using Hangfire;
 using System.Globalization;
+using Hangfire.Common;
+using Hangfire.States;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -140,15 +142,32 @@ namespace SalesPipeline.API.Controllers
 					var notiLocaltime = DateTime.SpecifyKind(item.NotifyAt, DateTimeKind.Local);
 					var notifyAt = TimeZoneInfo.ConvertTime(notiLocaltime, timeZone).AddMinutes(-_appSet.NotiMobile.NotiBeforeMinutes);
 
+					//var job = Job.FromExpression(() => _notiService.SendNotificationAsync(new()
+					//{
+					//	to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+					//	notification = new()
+					//	{
+					//		title = "หัวข้อ01",
+					//		body = "ทดสอบข้อความ body " + notifyAt.ToString("t")
+					//	}
+					//}));
+					//var client = new BackgroundJobClient();
+					//client.Create(job, new ScheduledState(notifyAt));
+					//_backgroundJobClient.Create(job, new ScheduledState(notifyAt));
+
+					GlobalJobFilters.Filters.Add(new JobDisplayNameFilter($"{"ทดสอบ JobDisplay 01"}"));
+
 					_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
 					{
-						to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
+						to = "cDCOXTkURmKmNCWH6R1fXY:APA91bG2AUfiBzVysJEkjbJthojpX3n8iCV3o_O3LCNXEnbCWPZxRA4-tn9isrd5eLFMlG2O5U1wQnno4DgiZshngB_abF7f2denHj3XbJxv1c9HAkdf_fjFtmL50sg2WQ1m56lDSFJk",
 						notification = new()
 						{
 							title = "หัวข้อ01",
 							body = "ทดสอบข้อความ body " + notifyAt.ToString("t")
 						}
 					}), notifyAt);
+
+
 				}
 
 				return Ok(new { Message = "Notification scheduled successfully" });

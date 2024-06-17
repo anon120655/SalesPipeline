@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
 
 namespace SalesPipeline.Infrastructure.Helpers
 {
@@ -23,6 +26,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 			_appSet = appSet.Value;
 		}
 
+		[JobDisplayName("SendNoti Mobile")]
 		public async Task<NotificationMobileResponse?> SendNotificationAsync(NotificationMobile model)
 		{
 			var response = new NotificationMobileResponse();

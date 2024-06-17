@@ -253,7 +253,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
                                         string? meetContent = item.MeetFullName != null ? item.MeetFullName : item.ContactFullName;
 
-                                        _backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
+										GlobalJobFilters.Filters.Add(new JobDisplayNameFilter($"{item.NextActionName}"));
+
+										_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
                                         {
                                             //to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
                                             to = item_user.tokenNoti,

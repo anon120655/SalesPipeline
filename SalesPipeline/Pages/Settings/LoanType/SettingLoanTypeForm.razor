@@ -24,7 +24,7 @@
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อประเภท<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.Name" type="text" class="form-control">
+										<input @bind="formModel.Name" type="text" class="form-control" maxlength="100">
 										<ValidationMessage For="@(() => formModel.Name)" />
 									</div>
 								</div>
