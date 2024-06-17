@@ -206,6 +206,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<SendMail_Template> SendMail_Templates { get; set; }
 
+    public virtual DbSet<System_Config> System_Configs { get; set; }
+
     public virtual DbSet<System_SLA> System_SLAs { get; set; }
 
     public virtual DbSet<System_Signature> System_Signatures { get; set; }
@@ -3470,6 +3472,25 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Subject).HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<System_Config>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("System_Config");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnType("int(11)");
+            entity.Property(e => e.Code).HasMaxLength(20);
+            entity.Property(e => e.Description).HasMaxLength(200);
+            entity.Property(e => e.Group).HasMaxLength(20);
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Value).HasMaxLength(255);
         });
 
         modelBuilder.Entity<System_SLA>(entity =>

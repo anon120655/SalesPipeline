@@ -151,6 +151,9 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			//SendMail
 			CreateMap<Entity.SendMail_Template, SendMail_TemplateCustom>().ReverseMap();
 
+			//Config
+			CreateMap<Entity.System_Config, System_ConfigCustom>().ReverseMap();
+
 		}
 	}
 }

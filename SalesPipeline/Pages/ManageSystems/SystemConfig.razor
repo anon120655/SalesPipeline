@@ -1,0 +1,18 @@
+﻿
+@page "/config"
+
+<PageTitle>ตั้งค่าระบบ</PageTitle>
+
+
+@code {
+	string? _errorMessage = null;
+	private User_PermissionCustom _permission = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SystemConfig) ?? new User_PermissionCustom();
+		StateHasChanged();
+		await Task.Delay(1);
+	}
+
+}

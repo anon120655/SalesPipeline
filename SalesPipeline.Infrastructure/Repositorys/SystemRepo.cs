@@ -7,6 +7,7 @@ using SalesPipeline.Utils.Resources.ManageSystems;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Customers;
+using NetTopologySuite.Index.HPRtree;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -171,6 +172,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<System_SLACustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task<List<System_ConfigCustom>> GetConfig()
+		{
+			var query = _repo.Context.System_Configs.Where(x => x.Status != StatusModel.Delete)
+												 .AsQueryable();
+			return _mapper.Map<List<System_ConfigCustom>>(await query.ToListAsync());
+		}
+
+		public async Task UpdateConfig(List<System_ConfigCustom> model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				foreach (var item in model)
+				{
+					var system_Config = await _repo.Context.System_Configs.Where(x => x.Status == StatusModel.Active && x.Code == item.Code).FirstOrDefaultAsync();
+					if (system_Config != null)
+					{
+						system_Config.Value = item.Value;
+						_db.Update(system_Config);
+						await _db.SaveAsync();
+					}
+
+				}
+
+				_transaction.Commit();
+			}
 		}
 
 	}

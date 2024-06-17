@@ -52,7 +52,8 @@
 		public const int SetSLA = 260500;
 		public const int SetProcessSales = 260600;
 		public const int SetTargetsales = 260700;
-		public const int SetPreApprove = 260800;
+		public const int SystemConfig = 260800;
+		public const int SetPreApprove = 260900;
 
 	}
 }
