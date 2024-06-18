@@ -5,10 +5,11 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Center
 {
-	public partial class ReturnedCenterBranch
+    public partial class ReturnedCenterBranch
 	{
 		[Parameter]
 		public Guid id { get; set; }

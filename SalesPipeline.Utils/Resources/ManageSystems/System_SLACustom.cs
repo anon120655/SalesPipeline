@@ -25,10 +25,11 @@ namespace SalesPipeline.Utils.Resources.ManageSystems
 
 		public int UpdateBy { get; set; }
 
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public Guid? StatusSlaId { get; set; }
+		public string? Code { get; set; }
+
+		public string? Name { get; set; }
 
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public int? NumberDays { get; set; }
+		public int? Number { get; set; }
 	}
 }

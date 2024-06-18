@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class ReturnRepo : IReturnRepo
+    public class ReturnRepo : IReturnRepo
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

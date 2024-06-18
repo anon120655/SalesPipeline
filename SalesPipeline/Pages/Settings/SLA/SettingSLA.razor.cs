@@ -5,6 +5,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.ManageSystems;
 
 namespace SalesPipeline.Pages.Settings.SLA
 {
@@ -14,7 +15,7 @@ namespace SalesPipeline.Pages.Settings.SLA
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
-		private List<Master_SLAOperationCustom>? Items;
+		private List<System_SLACustom>? Items;
 		public Pager? Pager;
 
 		ModalConfirm modalConfirm = default!;
@@ -58,7 +59,7 @@ namespace SalesPipeline.Pages.Settings.SLA
 		{
 			if (resetPage) filter.page = 1;
 
-			var data = await _masterViewModel.GetSLAOperations(filter);
+			var data = await _systemViewModel.GetListSLA(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -84,43 +85,43 @@ namespace SalesPipeline.Pages.Settings.SLA
 			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
 		}
 
-		protected async Task ConfirmDelete(string? id, string? txt)
-		{
-			await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span>");
-		}
+		//protected async Task ConfirmDelete(string? id, string? txt)
+		//{
+		//	await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span>");
+		//}
 
-		protected async Task Delete(string id)
-		{
-			await modalConfirm.OnHideConfirm();
+		//protected async Task Delete(string id)
+		//{
+		//	await modalConfirm.OnHideConfirm();
 
-			var data = await _masterViewModel.DeleteSLAOpeById(new UpdateModel() { id = id, userid = UserInfo.Id });
-			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-			await SetModel();
-		}
+		//	var data = await _masterViewModel.DeleteSLAOpeById(new UpdateModel() { id = id, userid = UserInfo.Id });
+		//	if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+		//	{
+		//		_errorMessage = data?.errorMessage;
+		//		_utilsViewModel.AlertWarning(_errorMessage);
+		//	}
+		//	await SetModel();
+		//}
 
-		protected async Task StatusChanged(ChangeEventArgs e, Guid id)
-		{
-			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
-			{
-				var data = await _masterViewModel.UpdateStatusSLAOpeById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
-				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-				else
-				{
-					string? actiontxt = val ? "<i class=\"fa-regular fa-circle-check\"></i> เปิด" : "<i class=\"fa-solid fa-circle-xmark\"></i> ปิด";
-					string fulltxt = $"{actiontxt}การใช้งานเรียบร้อย";
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
-					await SetModel();
-				}
-			}
-		}
+		//protected async Task StatusChanged(ChangeEventArgs e, Guid id)
+		//{
+		//	if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
+		//	{
+		//		var data = await _masterViewModel.UpdateStatusSLAOpeById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+		//		if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+		//		{
+		//			_errorMessage = data?.errorMessage;
+		//			_utilsViewModel.AlertWarning(_errorMessage);
+		//		}
+		//		else
+		//		{
+		//			string? actiontxt = val ? "<i class=\"fa-regular fa-circle-check\"></i> เปิด" : "<i class=\"fa-solid fa-circle-xmark\"></i> ปิด";
+		//			string fulltxt = $"{actiontxt}การใช้งานเรียบร้อย";
+		//			await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
+		//			await SetModel();
+		//		}
+		//	}
+		//}
 
 		protected async Task OnSelectPagesize(int _number)
 		{

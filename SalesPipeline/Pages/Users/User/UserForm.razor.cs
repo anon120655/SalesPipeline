@@ -7,10 +7,11 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.ViewModels;
 using SalesPipeline.Utils.Resources.Thailands;
 using Microsoft.AspNetCore.Components.Web;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.User
 {
-	public partial class UserForm
+    public partial class UserForm
 	{
 		[Parameter]
 		public int? id { get; set; }

@@ -6,10 +6,11 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.ViewModels;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.User
 {
-	public partial class UserForm_Backup
+    public partial class UserForm_Backup
 	{
 		[Parameter]
 		public int? id { get; set; }

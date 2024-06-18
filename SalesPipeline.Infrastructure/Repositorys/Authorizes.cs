@@ -6,12 +6,13 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Authorizes : IAuthorizes
+    public class Authorizes : IAuthorizes
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IRepositoryBase _db;

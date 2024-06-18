@@ -11,10 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class PreCalStan : IPreCalStan
+    public class PreCalStan : IPreCalStan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

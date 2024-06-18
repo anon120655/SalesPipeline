@@ -4,12 +4,13 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterChains : IMasterChains
+    public class MasterChains : IMasterChains
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

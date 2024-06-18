@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Master_Pre_App_Loan : IMaster_Pre_App_Loan
+    public class Master_Pre_App_Loan : IMaster_Pre_App_Loan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

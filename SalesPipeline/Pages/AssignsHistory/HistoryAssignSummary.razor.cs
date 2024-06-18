@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
@@ -10,7 +11,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.AssignsHistory
 {
-	public partial class HistoryAssignSummary
+    public partial class HistoryAssignSummary
 	{
 		[Parameter]
 		public Guid id { get; set; }

@@ -6,10 +6,11 @@ using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using Microsoft.EntityFrameworkCore;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterYields : IMasterYields
+    public class MasterYields : IMasterYields
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

@@ -9,10 +9,11 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Assignments;
 using System.Linq;
 using BlazorBootstrap;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Settings.Targetsales
 {
-	public partial class SettingTargetsales
+    public partial class SettingTargetsales
 	{
 
 		string? _errorMessage = null;

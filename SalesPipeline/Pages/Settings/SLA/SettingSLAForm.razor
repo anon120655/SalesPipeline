@@ -24,19 +24,19 @@
 								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label text-lg-end fw-bold">หัวข้อการให้บริการ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.Name" type="text" class="form-control">
+										<label class="col-form-label">@formModel.Name</label>
 										<ValidationMessage For="@(() => formModel.Name)" />
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="row mt-5">
+						<div class="row mt-2">
 							<div class="col-12">
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">จำนวน<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">จำนวน(วัน)<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.Day" type="number" class="form-control">
-										<ValidationMessage For="@(() => formModel.Day)" />
+										<input @bind="formModel.Number" type="number" class="form-control">
+										<ValidationMessage For="@(() => formModel.Number)" />
 									</div>
 								</div>
 							</div>

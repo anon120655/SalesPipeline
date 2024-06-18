@@ -7,10 +7,11 @@ using SalesPipeline.Utils;
 using Microsoft.AspNetCore.Components;
 using NPOI.SS.Formula.Functions;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
-	public partial class ApproveLoan
+    public partial class ApproveLoan
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

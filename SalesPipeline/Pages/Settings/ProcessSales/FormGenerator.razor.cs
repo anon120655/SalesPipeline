@@ -2,7 +2,7 @@ using global::Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
-using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -10,7 +10,7 @@ using System;
 
 namespace SalesPipeline.Pages.Settings.ProcessSales
 {
-	public partial class FormGenerator
+    public partial class FormGenerator
 	{
 		[Parameter]
 		public Guid id { get; set; }

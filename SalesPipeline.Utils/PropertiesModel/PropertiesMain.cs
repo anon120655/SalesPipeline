@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.PropertiesModel
 {
-	public class PropertiesMain
+    public class PropertiesMain
 	{
 		public static PropertiesOptions PerActive(string code)
 		{

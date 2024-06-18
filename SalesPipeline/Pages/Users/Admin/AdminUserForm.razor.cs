@@ -6,10 +6,11 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class AdminUserForm
+    public partial class AdminUserForm
 	{
 		[Parameter]
 		public int? id { get; set; }

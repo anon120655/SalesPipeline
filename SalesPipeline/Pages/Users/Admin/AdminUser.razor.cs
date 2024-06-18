@@ -5,10 +5,11 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.Resources.Thailands;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class AdminUser
+    public partial class AdminUser
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

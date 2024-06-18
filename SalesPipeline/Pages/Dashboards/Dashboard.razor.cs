@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
@@ -11,7 +12,7 @@ using SalesPipeline.ViewModels;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class Dashboard
+    public partial class Dashboard
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

@@ -3,10 +3,11 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Shares;
 using Microsoft.AspNetCore.Components;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class AvgPerDeal
+    public partial class AvgPerDeal
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

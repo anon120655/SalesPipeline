@@ -6,10 +6,11 @@ using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Dashboards;
 using Microsoft.AspNetCore.Components;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class AvgPerDeal_Region
+    public partial class AvgPerDeal_Region
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

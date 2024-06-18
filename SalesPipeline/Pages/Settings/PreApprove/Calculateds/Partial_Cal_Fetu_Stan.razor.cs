@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using NPOI.Util;
-using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
-	public partial class Partial_Cal_Fetu_Stan
+    public partial class Partial_Cal_Fetu_Stan
 	{
 		[Parameter]
 		public Guid pre_CalId { get; set; }

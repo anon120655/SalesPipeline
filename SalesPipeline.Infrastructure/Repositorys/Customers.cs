@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -11,7 +12,7 @@ using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Customers : ICustomers
+    public class Customers : ICustomers
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

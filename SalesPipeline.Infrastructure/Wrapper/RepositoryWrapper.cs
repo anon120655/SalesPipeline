@@ -37,7 +37,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterDepartment MasterDepartment { get; }
 		public IMasterLoanTypes MasterLoanTypes { get; }
 		public IMasterReasonReturns MasterReasonReturn { get; }
-		public IMasterSLAOperations MasterSLAOperation { get; }
 		public IMasterYields MasterYield { get; }
 		public IMasterChains MasterChain { get; }
 		public IMasterBusinessSize MasterBusinessSize { get; }
@@ -100,7 +99,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterDepartment = new MasterDepartment(this, _db, settings, _mapper);
 			MasterLoanTypes = new MasterLoanTypes(this, _db, settings, _mapper);
 			MasterReasonReturn = new MasterReasonReturns(this, _db, settings, _mapper);
-			MasterSLAOperation = new MasterSLAOperations(this, _db, settings, _mapper);
 			MasterYield = new MasterYields(this, _db, settings, _mapper);
 			MasterChain = new MasterChains(this, _db, settings, _mapper);
 			MasterBusinessSize = new MasterBusinessSize(this, _db, settings, _mapper);

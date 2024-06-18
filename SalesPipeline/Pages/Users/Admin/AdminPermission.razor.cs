@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class AdminPermission
+    public partial class AdminPermission
 	{
 		public int? id { get; set; }
 		string? _errorMessage = null;

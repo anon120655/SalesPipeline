@@ -9,7 +9,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Loans
 {
-	public partial class LoanForm
+    public partial class LoanForm
 	{
 		[Parameter]
 		public Guid? id { get; set; }

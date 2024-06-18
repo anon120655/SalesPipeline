@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+﻿using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Assignments
 {
-	/// <summary>
-	/// พนักงานที่ถูกมอบหมาย
-	/// </summary>
-	public class Assignment_RMCustom : CommonModel
+    /// <summary>
+    /// พนักงานที่ถูกมอบหมาย
+    /// </summary>
+    public class Assignment_RMCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 

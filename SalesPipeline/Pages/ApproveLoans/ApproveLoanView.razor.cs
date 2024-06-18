@@ -9,10 +9,11 @@ using SalesPipeline.Shared.Modals;
 using SixLabors.ImageSharp.Metadata.Profiles.Iptc;
 using BlazorBootstrap;
 using NPOI.SS.Formula.Functions;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
-	public partial class ApproveLoanView
+    public partial class ApproveLoanView
 	{
 		[Parameter]
 		public Guid id { get; set; }

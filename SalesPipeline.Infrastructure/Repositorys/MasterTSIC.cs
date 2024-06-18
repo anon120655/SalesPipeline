@@ -11,10 +11,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterTSIC : IMasterTSIC
+    public class MasterTSIC : IMasterTSIC
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

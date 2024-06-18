@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-	public partial class TargetSales
+    public partial class TargetSales
     {
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

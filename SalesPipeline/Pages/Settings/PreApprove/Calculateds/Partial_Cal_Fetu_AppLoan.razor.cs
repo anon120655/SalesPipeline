@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
-	public partial class Partial_Cal_Fetu_AppLoan
+    public partial class Partial_Cal_Fetu_AppLoan
 	{
 		[Parameter]
 		public Guid pre_CalId { get; set; }

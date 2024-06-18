@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class AssignmentBranch : IAssignmentBranch
+    public class AssignmentBranch : IAssignmentBranch
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

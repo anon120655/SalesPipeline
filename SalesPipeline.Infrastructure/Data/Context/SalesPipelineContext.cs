@@ -94,8 +94,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Master_Reason_CloseSale> Master_Reason_CloseSales { get; set; }
 
-    public virtual DbSet<Master_SLAOperation> Master_SLAOperations { get; set; }
-
     public virtual DbSet<Master_StatusSale> Master_StatusSales { get; set; }
 
     public virtual DbSet<Master_TSIC> Master_TSICs { get; set; }
@@ -1455,23 +1453,6 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
-                .HasColumnType("smallint(6)");
-            entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
-            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Master_SLAOperation>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("Master_SLAOperation", tb => tb.HasComment("SLA การดำเนินการ"));
-
-            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Day).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
@@ -3499,9 +3480,11 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("System_SLA", tb => tb.HasComment("SLA การติดต่อ"));
 
+            entity.Property(e => e.Code).HasMaxLength(50);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.NumberDays).HasColumnType("int(11)");
+            entity.Property(e => e.Name).HasMaxLength(200);
+            entity.Property(e => e.Number).HasColumnType("int(11)");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");

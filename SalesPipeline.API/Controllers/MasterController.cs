@@ -85,26 +85,6 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// SLA การดำเนินการ
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpGet("GetSLAOperations")]
-		public async Task<IActionResult> GetSLAOperations([FromQuery] allFilter model)
-		{
-			try
-			{
-				var response = await _repo.MasterSLAOperation.GetList(model);
-
-				return Ok(response);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		/// <summary>
 		/// ผลผลิต
 		/// </summary>
 		/// <param name="model"></param>
@@ -819,77 +799,6 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.MasterReasonReturn.GetById(id);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		//SLA การดำเนินการ
-		[HttpPost("CreateSLAOpe")]
-		public async Task<IActionResult> CreateSLAOpe(Master_SLAOperationCustom model)
-		{
-			try
-			{
-				var data = await _repo.MasterSLAOperation.Create(model);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpPut("UpdateSLAOpe")]
-		public async Task<IActionResult> UpdateSLAOpe(Master_SLAOperationCustom model)
-		{
-			try
-			{
-				var data = await _repo.MasterSLAOperation.Update(model);
-				return Ok(data);
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpDelete("DeleteSLAOpeById")]
-		public async Task<IActionResult> DeleteSLAOpeById([FromQuery] UpdateModel model)
-		{
-			try
-			{
-				await _repo.MasterSLAOperation.DeleteById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpPut("UpdateStatusSLAOpeById")]
-		public async Task<IActionResult> UpdateStatusSLAOpeById(UpdateModel model)
-		{
-			try
-			{
-				await _repo.MasterSLAOperation.UpdateStatusById(model);
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("GetSLAOpeById")]
-		public async Task<IActionResult> GetSLAOpeById([FromQuery] Guid id)
-		{
-			try
-			{
-				var data = await _repo.MasterSLAOperation.GetById(id);
 				return Ok(data);
 			}
 			catch (Exception ex)

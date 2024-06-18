@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -311,12 +312,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (sales.AssUserId.HasValue)
 				{
 					await _repo.Sales.SetIsUpdateStatusTotal(sales.AssUserId.Value);
-                }
+				}
 
-                //SetNoti
-                await _repo.Notifys.SetScheduleNoti();
-            }
-        }
+				//SetNoti
+				await _repo.Notifys.SetScheduleNoti();
+			}
+		}
 
 		public async Task<bool> CheckStatusById(Guid id, int statusid)
 		{
@@ -355,18 +356,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
 		{
-			//List<Guid> cjeck = new();
-			//var _Customers = await _repo.Context.Customers.Where(x=>x.Status ==1).ToListAsync();
-			//var _Sales = await _repo.Context.Sales.Where(x=>x.Status ==1).ToListAsync();
-			//foreach (var item in _Customers)
-			//{
-			//	if (!_Sales.Any(x=>x.CustomerId == item.Id))
-			//	{
-			//		cjeck.Add(item.Id);
-			//	}
-			//}
-
-
 			if (!model.userid.HasValue) throw new ExceptionCustom("userid require.");
 
 			var user = await _repo.User.GetById(model.userid.Value);
@@ -410,13 +399,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.isoverdue == 1)
 			{
-				var _dnow = DateTime.Now.Date;
-				query = query.Include(x => x.Sale_Contacts.Where(c => c.AppointmentDate.HasValue))
-							 .Include(x => x.Sale_Meets.Where(c => c.AppointmentDate.HasValue))
-							 .Include(x => x.Sale_Results.Where(c => c.AppointmentDate.HasValue))
-							 .Where(x => (x.Sale_Contacts.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow))
-							 || x.Sale_Meets.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
-							 || x.Sale_Results.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow));
+				var dataSLA = await _repo.System.GetListSLA(model);
+				if (dataSLA != null && dataSLA.Items != null)
+				{
+					var _date_Contact = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Contact))?.Number ?? 0;
+					var _date_Meet = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Meet))?.Number ?? 0;
+					var _date_Document = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Document))?.Number ?? 0;
+					var _date_Result = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Result))?.Number ?? 0;
+
+					var _dnow = DateTime.Now.Date;
+
+					//query = query.Include(x => x.Sale_Contacts.Where(c => c.AppointmentDate.HasValue))
+					//			 .Include(x => x.Sale_Meets.Where(c => c.AppointmentDate.HasValue))
+					//			 .Include(x => x.Sale_Documents.Where(c => c.SubmitDate.HasValue))
+					//			 .Include(x => x.Sale_Results.Where(c => c.AppointmentDate.HasValue))
+					//			 .Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale &&
+					//			   (x.Sale_Contacts.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
+					//			 || x.Sale_Meets.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
+					//			 || x.Sale_Documents.Any(a => a.SubmitDate != null && a.SubmitDate.Value.Date < _dnow)
+					//			 || x.Sale_Results.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)));
+
+
+					query = query.Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale &&
+								   (x.StatusSaleMainId == StatusSaleMainModel.Contact && x.StatusSaleId == StatusSaleModel.WaitContact
+								 || x.StatusSaleMainId == StatusSaleMainModel.Contact && x.Sale_Contacts.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Contact))
+								 || x.StatusSaleMainId == StatusSaleMainModel.Meet && x.Sale_Meets.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Meet))
+								 || x.StatusSaleMainId == StatusSaleMainModel.Document && x.Sale_Documents.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Document))
+								 || x.StatusSaleMainId == StatusSaleMainModel.Result && x.Sale_Results.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Result))
+								 ));
+				}
+
 			}
 
 			if (model.customerid.HasValue && model.customerid != Guid.Empty)
@@ -626,7 +638,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!String.IsNullOrEmpty(model.cif)) {
+			if (!String.IsNullOrEmpty(model.cif))
+			{
 				query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
 			}
 

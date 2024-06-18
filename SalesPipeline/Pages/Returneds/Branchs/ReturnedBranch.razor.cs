@@ -6,10 +6,11 @@ using SalesPipeline.Utils;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils.Resources.Assignments;
 using Microsoft.AspNetCore.Components;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedBranch
+    public partial class ReturnedBranch
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;

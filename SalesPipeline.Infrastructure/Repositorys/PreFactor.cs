@@ -24,7 +24,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class PreFactor : IPreFactor
+    public class PreFactor : IPreFactor
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

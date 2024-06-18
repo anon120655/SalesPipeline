@@ -12,10 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class PreCal : IPreCal
+    public class PreCal : IPreCal
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

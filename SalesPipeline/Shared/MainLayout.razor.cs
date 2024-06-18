@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Http.Features;
 using NPOI.SS.Formula.Functions;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.NetworkInformation;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Shared
 {
-	public partial class MainLayout
+    public partial class MainLayout
 	{
 		[Inject] protected IJSRuntime _jsRuntimes { get; set; } = null!;
 

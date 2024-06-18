@@ -5,10 +5,11 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.ViewModels;
 using Microsoft.JSInterop;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.User
 {
-	public partial class User
+    public partial class User
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

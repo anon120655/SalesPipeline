@@ -8,10 +8,11 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.ApproveTargets
 {
-	public partial class ApproveTarget
+    public partial class ApproveTarget
 	{
 		string? _errorMessage = null;
 		private bool isLoading = false;

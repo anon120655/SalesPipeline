@@ -5,6 +5,7 @@ using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterBusinessSize : IMasterBusinessSize
+    public class MasterBusinessSize : IMasterBusinessSize
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

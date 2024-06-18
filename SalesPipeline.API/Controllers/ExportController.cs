@@ -13,11 +13,12 @@ using SalesPipeline.Infrastructure.Wrapper;
 using Microsoft.JSInterop;
 using System.Linq;
 using System;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
-	[ApiVersion(1.0)]
+    //[Authorizes]
+    [ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]

@@ -23,7 +23,9 @@ public partial class System_SLA
 
     public int UpdateBy { get; set; }
 
-    public Guid? StatusSlaId { get; set; }
+    public string? Code { get; set; }
 
-    public int? NumberDays { get; set; }
+    public string? Name { get; set; }
+
+    public int? Number { get; set; }
 }

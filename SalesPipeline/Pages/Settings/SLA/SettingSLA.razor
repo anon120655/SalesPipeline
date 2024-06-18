@@ -18,16 +18,6 @@
 							<p class="back_topic">ตั้งค่า SLA การดำเนินการ</p>
 						</div>
 					</div>
-					@* <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s d-flex justify-content-end">
-						<div class="col mb-2 mt-3">
-							<Dropdown Class="w-100">
-								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
-								<DropdownMenu>
-									<DropdownItem To="/setting/sla/create" Type="ButtonType.Link">เพิ่ม</DropdownItem>
-								</DropdownMenu>
-							</Dropdown>
-						</div>
-					</div> *@
 					<div class="row mt-5">
 						<div class="col">
 							<div class="table-responsive border-top">
@@ -35,9 +25,8 @@
 									<thead>
 										<tr>
 											<th class="text-center">หัวข้อการให้บริการ</th>
-											<th class="text-center">จำนวน</th>
+											<th class="text-center">จำนวน(วัน)</th>
 											<th class="text-center">จัดการ</th>
-											<th class="text-center">การใช้งาน</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -65,16 +54,9 @@
 
 												<tr>
 													<td class="">@item.Name</td>
-													<td class="text-center">@item.Day</td>
+													<td class="text-center">@item.Number</td>
 													<td class="text-center">
-														<a href="/setting/sla/update/@item.Id">แก้ไข</a> /
-														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
-													</td>
-													<td class="text-center">
-														<label class="switch">
-															<input type="checkbox" @oninput="((e)=> StatusChanged(e,item.Id))" checked="@status" />
-															<span class="slider round"></span>
-														</label>
+														<a href="/setting/sla/update/@item.Id">แก้ไข</a>
 													</td>
 												</tr>
 											}
@@ -97,8 +79,6 @@
 			</div>
 		</div>
 	</div>
-
-	<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 }
 else
 {

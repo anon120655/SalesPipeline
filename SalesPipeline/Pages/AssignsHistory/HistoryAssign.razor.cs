@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -8,7 +9,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.AssignsHistory
 {
-	public partial class HistoryAssign
+    public partial class HistoryAssign
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();

@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Returneds.Loans
 {
-	public partial class ReturnedLoan
+    public partial class ReturnedLoan
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;

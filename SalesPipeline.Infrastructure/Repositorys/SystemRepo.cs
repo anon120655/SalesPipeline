@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Customers;
 using NetTopologySuite.Index.HPRtree;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class SystemRepo : ISystemRepo
+    public class SystemRepo : ISystemRepo
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -95,8 +96,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					CreateBy = model.CurrentUserId,
 					UpdateDate = _dateNow,
 					UpdateBy = model.CurrentUserId,
-					StatusSlaId = model.StatusSlaId,
-					NumberDays = model.NumberDays,
+					Code = model.Code,
+					Name = model.Name,
+					Number = model.Number,
 				};
 				await _db.InsterAsync(systemSla);
 				await _db.SaveAsync();
@@ -118,8 +120,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					systemSlas.UpdateDate = _dateNow;
 					systemSlas.UpdateBy = model.CurrentUserId;
-					systemSlas.StatusSlaId = model.StatusSlaId;
-					systemSlas.NumberDays = model.NumberDays;
+					systemSlas.Number = model.Number;
 					_db.Update(systemSlas);
 					await _db.SaveAsync();
 
@@ -156,7 +157,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<System_SLACustom>>> GetListSLA(allFilter model)
 		{
 			var query = _repo.Context.System_SLAs.Where(x => x.Status != StatusModel.Delete)
-												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 			if (model.status.HasValue)
 			{

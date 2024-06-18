@@ -7,10 +7,11 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedBranchSummary
+    public partial class ReturnedBranchSummary
 	{
 		[Parameter]
 		public Guid id { get; set; }

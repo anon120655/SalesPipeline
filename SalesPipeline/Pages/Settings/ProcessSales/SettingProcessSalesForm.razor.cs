@@ -2,13 +2,14 @@ using global::Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.ProcessSales
 {
-	public partial class SettingProcessSalesForm
+    public partial class SettingProcessSalesForm
 	{
 		[Parameter]
 		public Guid id { get; set; }

@@ -6,10 +6,11 @@ using SalesPipeline.Utils;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class Master_Pre_PayType : IMaster_Pre_PayType
+    public class Master_Pre_PayType : IMaster_Pre_PayType
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

@@ -5,12 +5,13 @@ using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class AssignmentCenter : IAssignmentCenter
+    public class AssignmentCenter : IAssignmentCenter
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

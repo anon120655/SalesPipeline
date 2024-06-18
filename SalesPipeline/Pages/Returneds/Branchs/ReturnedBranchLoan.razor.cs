@@ -5,10 +5,11 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Branchs
 {
-	public partial class ReturnedBranchLoan
+    public partial class ReturnedBranchLoan
 	{
 		[Parameter]
 		public Guid id { get; set; }

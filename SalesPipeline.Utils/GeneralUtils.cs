@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Cmp;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Utils
 {
-	public static class GeneralUtils
+    public static class GeneralUtils
 	{
 		public static string GetExMessage(Exception ex)
 		{

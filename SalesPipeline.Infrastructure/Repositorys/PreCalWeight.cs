@@ -11,10 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class PreCalWeight : IPreCalWeight
+    public class PreCalWeight : IPreCalWeight
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;

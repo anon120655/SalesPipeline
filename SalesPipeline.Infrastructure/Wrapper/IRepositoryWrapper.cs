@@ -29,7 +29,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterBranch MasterBranch { get; }
 		IMasterLoanTypes MasterLoanTypes { get; }
 		IMasterReasonReturns MasterReasonReturn { get; }
-		IMasterSLAOperations MasterSLAOperation { get; }
 		IMasterYields MasterYield { get; }
 		IMasterChains MasterChain { get; }
 		IMasterBusinessSize MasterBusinessSize { get; }

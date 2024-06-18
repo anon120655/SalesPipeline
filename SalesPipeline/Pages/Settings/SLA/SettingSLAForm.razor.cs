@@ -4,6 +4,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.ManageSystems;
 
 namespace SalesPipeline.Pages.Settings.SLA
 {
@@ -16,7 +17,7 @@ namespace SalesPipeline.Pages.Settings.SLA
 		private bool isLoading = false;
 		private LookUpResource LookUp = new();
 		private User_PermissionCustom _permission = new();
-		private Master_SLAOperationCustom formModel = new();
+		private System_SLACustom formModel = new();
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -40,7 +41,7 @@ namespace SalesPipeline.Pages.Settings.SLA
 		{
 			if (id.HasValue)
 			{
-				var data = await _masterViewModel.GetSLAOpeById(id.Value);
+				var data = await _systemViewModel.GetSLAById(id.Value);
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel = data.Data;
@@ -64,18 +65,11 @@ namespace SalesPipeline.Pages.Settings.SLA
 			_errorMessage = null;
 			ShowLoading();
 
-			ResultModel<Master_SLAOperationCustom> response;
+			ResultModel<System_SLACustom> response;
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			if (id.HasValue)
-			{
-				response = await _masterViewModel.UpdateSLAOpe(formModel);
-			}
-			else
-			{
-				response = await _masterViewModel.CreateSLAOpe(formModel);
-			}
+			response = await _systemViewModel.UpdateSLA(formModel);
 
 			if (response.Status)
 			{

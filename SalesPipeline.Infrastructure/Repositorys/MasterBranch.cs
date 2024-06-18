@@ -4,12 +4,13 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-	public class MasterBranch : IMasterBranch
+    public class MasterBranch : IMasterBranch
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
