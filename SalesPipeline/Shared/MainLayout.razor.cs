@@ -88,74 +88,8 @@ namespace SalesPipeline.Shared
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
-			//if (firstRender && !isAuthorize && !isRedirecting)
-			//{
-			//	isRedirecting = true;
-			//	_Navs.NavigateTo("/signin?p=auth", true);
-			//}
-			//isAuthorize = await _authorizeViewModel.IsAuth();
 			if (firstRender)
 			{
-				//isAuthorize = await _authorizeViewModel.IsAuth();
-				//StateHasChanged();
-				//if (_Navs.Uri.Contains("www."))
-				//{
-				//	string UrlNew = _Navs.Uri.Replace("www.", string.Empty);
-				//	_Navs.NavigateTo(UrlNew, true);
-				//}
-
-				//if (isAuthorize && !isRedirecting)
-				//{
-				//	isRedirecting = true; 
-				//	var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-				//	if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
-				//	{
-				//		MenuItem = dataMenuItem.Data;
-				//		StateHasChanged();
-				//	}
-
-				//	UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
-				//	var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
-				//	if (_hubUserConnection is not null)
-				//	{
-				//		_UserKey = Guid.NewGuid().ToString();
-				//		await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
-				//	}
-
-				//	StateHasChanged();
-				//	await _jsRuntimes.InvokeAsync<object>("AfterRenderMainLayout");
-				//	await _jsRuntimes.InvokeVoidAsync("initializeinactivitytimer", DotNetObjectReference.Create(this));
-
-
-				//	_Navs.NavigateTo("/");
-				//}
-				//else if (!isAuthorize && !isRedirecting)
-				//{
-				//	isRedirecting = true;
-				//	_Navs.NavigateTo("/signin?p=auth", true);
-				//}
-
-				//if (isAuthorize == true)
-				//{
-				//	var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-				//	if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
-				//	{
-				//		MenuItem = dataMenuItem.Data;
-				//		StateHasChanged();
-				//	}
-
-				//	UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
-				//	var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
-				//	if (_hubUserConnection is not null)
-				//	{
-				//		_UserKey = Guid.NewGuid().ToString();
-				//		await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
-				//	}
-				//}
-				//else
-				//{
-				//	_Navs.NavigateTo("/signin?p=auth", true);
-				//}
 
 				await _jsRuntimes.InvokeAsync<object>("AfterRenderMainLayout");
 				await _jsRuntimes.InvokeVoidAsync("initializeinactivitytimer", DotNetObjectReference.Create(this));

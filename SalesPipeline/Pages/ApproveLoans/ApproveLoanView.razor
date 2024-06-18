@@ -56,7 +56,7 @@
 										<Button @onclick="InitShowConfirmApprove" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											@if (isLoading)
 											{
-												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+												<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 											}
 											อนุมัติ
 										</Button>

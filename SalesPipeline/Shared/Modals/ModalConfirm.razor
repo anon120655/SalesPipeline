@@ -26,7 +26,7 @@
 					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Confirm" Disabled="@isLoading">
 						@if (isLoading)
 						{
-							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+							<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 						}
 						ยืนยัน
 					</Button>

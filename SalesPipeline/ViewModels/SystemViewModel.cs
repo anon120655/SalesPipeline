@@ -171,6 +171,46 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<System_ConfigCustom>>> GetConfig()
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/System/GetConfig");
+				var dataMap = JsonConvert.DeserializeObject<List<System_ConfigCustom>>(content);
+
+				return new ResultModel<List<System_ConfigCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<System_ConfigCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>> UpdateConfig(List<System_ConfigCustom> model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				await _httpClient.PutAsync($"/v1/System/UpdateConfig", dataJson, token: tokenJwt);
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
 
 	}
 }

@@ -293,7 +293,7 @@
 					<Button @onclick="()=> KeepCustomer(saleImportModel.Customer,false)" Color="ButtonColor.Danger" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 						@if (isLoading)
 						{
-							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+							<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 						}
 						ไม่จัดเก็บ
 					</Button>
@@ -302,7 +302,7 @@
 					<Button @onclick="()=> KeepCustomer(saleImportModel.Customer,true)" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 						@if (isLoading)
 						{
-							<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+							<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 						}
 						จัดเก็บ
 					</Button>

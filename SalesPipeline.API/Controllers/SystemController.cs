@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
@@ -119,6 +120,36 @@ namespace SalesPipeline.API.Controllers
 				var response = await _repo.System.GetListSLA(model);
 
 				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpGet("GetConfig")]
+		public async Task<IActionResult> GetConfig()
+		{
+			try
+			{
+				var response = await _repo.System.GetConfig();
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateConfig")]
+		public async Task<IActionResult> UpdateConfig(List<System_ConfigCustom> model)
+		{
+			try
+			{
+				await _repo.System.UpdateConfig(model);
+				return Ok();
 			}
 			catch (Exception ex)
 			{

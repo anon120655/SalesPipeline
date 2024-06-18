@@ -181,6 +181,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<List<System_ConfigCustom>>(await query.ToListAsync());
 		}
 
+		public async Task<System_ConfigCustom?> GetConfigByCode(string code)
+		{
+			var system_Config = await _repo.Context.System_Configs.Where(x => x.Status == StatusModel.Active && x.Code == code).FirstOrDefaultAsync();
+			if (system_Config != null)
+			{
+				return _mapper.Map<System_ConfigCustom>(system_Config);
+			}
+			return null;
+		}
+
 		public async Task UpdateConfig(List<System_ConfigCustom> model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
@@ -194,7 +204,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						_db.Update(system_Config);
 						await _db.SaveAsync();
 					}
-
 				}
 
 				_transaction.Commit();

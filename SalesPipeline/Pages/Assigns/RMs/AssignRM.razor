@@ -317,7 +317,7 @@
 										<Button @onclick="(async () => await  InitShowReturnAssign())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											@if (isLoading)
 											{
-												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+												<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 											}
 											ถัดไป
 										</Button>
@@ -448,7 +448,7 @@
 									<Button @onclick="(async () => await  ShowReturnReason())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 										}
 										ถัดไป
 									</Button>
@@ -598,7 +598,7 @@
 									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 										}
 										ถัดไป
 									</Button>
@@ -740,7 +740,7 @@
 									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Confirm))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 										@if (isLoading)
 										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 										}
 										ยืนยัน
 									</Button>

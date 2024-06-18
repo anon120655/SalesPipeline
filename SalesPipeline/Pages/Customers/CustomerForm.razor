@@ -38,7 +38,7 @@
 										<Button @onclick=OnVerify Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											@if (isLoading)
 											{
-												<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+												<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 											}
 											ตรวจสอบ
 										</Button>
@@ -817,7 +817,7 @@
 											<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
 												@if (isLoading)
 												{
-													<span><i class="fa-solid fa-circle-notch fa-spin text-white fa-lg"></i></span>
+													<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
 												}
 												บันทึก
 											</Button>

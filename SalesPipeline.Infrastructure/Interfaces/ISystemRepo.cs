@@ -19,6 +19,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<System_SLACustom> GetSLAById(Guid id);
 		Task<PaginationView<List<System_SLACustom>>> GetListSLA(allFilter model);
 		Task<List<System_ConfigCustom>> GetConfig();
-		Task<System_ConfigCustom> UpdateConfig(System_ConfigCustom model);
+		Task<System_ConfigCustom?> GetConfigByCode(string code);
+		Task UpdateConfig(List<System_ConfigCustom> model);
 	}
 }

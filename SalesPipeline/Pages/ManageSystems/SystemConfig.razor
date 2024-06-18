@@ -1,18 +1,75 @@
-﻿
-@page "/config"
+﻿@page "/setting/config"
 
 <PageTitle>ตั้งค่าระบบ</PageTitle>
+<MessageError errorMessage="@_errorMessage" />
 
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2">
+							<i class="fa-solid fa-sliders fs_2r"></i>
+						</div>
+						<div class="p-2">
+							<p class="back_topic">ตั้งค่าระบบ</p>
+						</div>
+					</div>
+					<div class="row mt-3 mx-4">
+						@if (Items.Count > 0)
+						{
+							foreach (var item in Items)
+							{
+								if (item.Code == ConfigCode.LOGIN_FAIL)
+								{
+									<div class="col-12 col-lg-5">
+										<div class="mb-3">
+											<label for="exampleFormControlInput1" class="form-label">จำนวนสูงสุดที่อนุญาติในการ Login Fail</label>
+											<input @bind="item.Value" type="number" class="form-control">
+										</div>
+									</div>
+									<div class="col-12 col-lg-7"></div>
+								}
+							}
+						}
 
-@code {
-	string? _errorMessage = null;
-	private User_PermissionCustom _permission = new();
-
-	protected override async Task OnInitializedAsync()
-	{
-		_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SystemConfig) ?? new User_PermissionCustom();
-		StateHasChanged();
-		await Task.Delay(1);
-	}
+						@* <div class="col-12 col-lg-5">
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">จำนวนสูงสุดที่อนุญาติในการ Login Fail</label>
+								<input type="number" class="form-control">
+							</div>
+						</div>
+						<div class="col-12 col-lg-5">
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">จำนวนสูงสุดที่อนุญาติในการ Login Fail</label>
+								<input type="number" class="form-control">
+							</div>
+						</div> *@
+					</div>
+					<div class="my-4 text-center">
+						<div class="d-flex bd-highlight align-items-center justify-content-center">
+							<div class="p-2 bd-highlight">
+								<Button @onclick=Save Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+									@if (isLoading)
+									{
+										<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+									}
+									บันทึก
+								</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 }
+else
+{
+<NotPermissionPage />
+}
+
+

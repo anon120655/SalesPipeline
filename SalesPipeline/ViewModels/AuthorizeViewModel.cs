@@ -100,7 +100,7 @@ namespace SalesPipeline.ViewModels
 					Password = user.Password,
 					IPAddress = user.IPAddress
 				});
-				if (!userInDatabase.Status || userInDatabase.Data == null) throw new Exception("authenticate not found.");
+				if (!userInDatabase.Status || userInDatabase.Data == null) throw new Exception(userInDatabase.errorMessage);
 
 				var identity = CreateIdentityFromUser(userInDatabase.Data);
 				var principal = new ClaimsPrincipal(identity);

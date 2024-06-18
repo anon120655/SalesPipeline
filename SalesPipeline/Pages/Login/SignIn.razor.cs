@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
+using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Sales;
 
 namespace SalesPipeline.Pages.Login
@@ -13,6 +14,8 @@ namespace SalesPipeline.Pages.Login
 		bool isLoading = false;
 		bool toggleEye = false;
 		LoginRequestModel loginModel = new();
+		
+		//[CascadingParameter] protected List<System_ConfigCustom>? ItemConfig { get; set; } = default!;
 
 		protected override async Task OnAfterRenderAsync(bool firstRender)
 		{
@@ -20,6 +23,10 @@ namespace SalesPipeline.Pages.Login
 
 			if (firstRender)
 			{
+				//if (ItemConfig != null)
+				//{
+
+				//}
 				//if (_appSet.Value.ServerSite != ServerSites.PRO)
 				//{
 				//	loginModel.Username = "superadmin@gmail.com";

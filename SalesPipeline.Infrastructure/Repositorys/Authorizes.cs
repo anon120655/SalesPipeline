@@ -44,7 +44,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (user.Status == StatusModel.InActive)
 					throw new ExceptionCustom($"ท่านถูกปิดการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
 
-				const short maxLoginFail = 5;
+				short maxLoginFail = 5;
+				var config = await _repo.System.GetConfigByCode(ConfigCode.LOGIN_FAIL);
+				if (config != null && short.TryParse(config.Value,out short _maxLoginFail))
+				{
+					maxLoginFail = _maxLoginFail;
+				}
 
 				if (user.LoginFail >= maxLoginFail)
 					throw new ExceptionCustom($"ท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
@@ -53,7 +58,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.Password, user.PasswordHash, hashType: HashType.SHA384);
 				if (!verified)
 				{
-					user.LoginFail =  user.LoginFail.HasValue ? user.LoginFail += 1 : 1;
+					user.LoginFail = user.LoginFail.HasValue ? (short?)(user.LoginFail + 1) : (short?)1;
+
 					_db.Update(user);
 					await _db.SaveAsync();
 

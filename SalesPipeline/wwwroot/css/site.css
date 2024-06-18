@@ -753,3 +753,6 @@ form .row {
     max-width: 100px;
 }
 
+.spinner-border-sm {
+    --bs-spinner-border-width: 0.19em !important;
+}
