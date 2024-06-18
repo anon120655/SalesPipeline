@@ -1,13 +1,52 @@
-﻿using Hangfire;
+﻿using Asp.Versioning;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using NPOI.SS.Formula.Functions;
+using SalesPipeline.Infrastructure.Helpers;
+using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
+using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class JobsController : ControllerBase
-    {
-        [HttpGet("fire-and-forget")]
+	[ApiVersion(1.0)]
+	[ApiController]
+	[ServiceFilter(typeof(ValidationFilterAttribute))]
+	[Route("v{version:apiVersion}/[controller]")]
+	public class JobsController : ControllerBase
+	{
+		private IRepositoryWrapper _repo;
+		private readonly IHttpClientFactory _httpClientFactory;
+		private readonly AppSettings _appSet;
+		private readonly DatabaseBackupService _databaseBackup;
+
+		public JobsController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, DatabaseBackupService databaseBackup)
+		{
+			_repo = repo;
+			_httpClientFactory = httpClientFactory;
+			_appSet = appSet.Value;
+			_databaseBackup = databaseBackup;
+		}
+
+		[HttpGet("BackupDatabase")]
+		public IActionResult BackupDatabase()
+		{
+			try
+			{
+				_databaseBackup.BackupDatabase();
+
+				return Ok("Backup completed successfully.");
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("fire-and-forget")]
         public IActionResult FireAndForget()
         {
             BackgroundJob.Enqueue(() => Console.WriteLine("Fire-and-forget job executed"));

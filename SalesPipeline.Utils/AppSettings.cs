@@ -10,11 +10,12 @@ namespace SalesPipeline.Utils
 		public string? baseUriApi { get; set; }
 		public string? baseUriWeb { get; set; }
 		public string? ContentRootPath { get; set; }
-        public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
+		public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }
 		public iAuthens? iAuthen { get; set; }
 		public NotiMobiles? NotiMobile { get; set; }
+		public Databases? Database { get; set; }
 
 		public class LineNotifys
 		{
@@ -49,6 +50,12 @@ namespace SalesPipeline.Utils
 			public string? ApiKey { get; set; }
             public int NotiBeforeMinutes { get; set; }
         }
+
+		public class Databases
+		{
+			public string BackupDatabaseDir { get; set; } = null!;
+			public string MySqlDumpPath { get; set; } = null!;
+		}
 
 		public string? Version
 		{

@@ -24,7 +24,7 @@ namespace SalesPipeline.API.Controllers
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly AppSettings _appSet;
 
-		public AuthorizeController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet)
+		public AuthorizeController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, DatabaseBackupService databaseBackup)
 		{
 			_repo = repo;
 			_httpClientFactory = httpClientFactory;

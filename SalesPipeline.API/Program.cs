@@ -105,6 +105,8 @@ builder.Services.AddLogging(logging =>
     logging.AddDebug();
 });
 
+builder.Services.AddSingleton<DatabaseBackupService>();
+
 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 3 });
 
 builder.Services.Configure<AppSettings>(appSettings);
