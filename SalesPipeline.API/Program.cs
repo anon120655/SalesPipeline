@@ -267,8 +267,7 @@ app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
     Authorization = new[] { new MyAuthorizationFilter() }
 });
 
-// ตัวอย่างการตั้งค่างาน
-//var backgroundJobClient = app.Services.GetRequiredService<IBackgroundJobClient>();
-//backgroundJobClient.Enqueue(() => Console.WriteLine("Hello, Hangfire with MariaDB!"));
+// Schedule the job to run every hour
+RecurringJob.AddOrUpdate<DatabaseBackupService>("backup-job", x => x.BackupDatabase(), Cron.Hourly);
 
 app.Run();
