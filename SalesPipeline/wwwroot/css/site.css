@@ -756,3 +756,10 @@ form .row {
 .spinner-border-sm {
     --bs-spinner-border-width: 0.19em !important;
 }
+
+.red-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #d33f10;
+}

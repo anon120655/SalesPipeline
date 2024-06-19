@@ -11,6 +11,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IPreCreditScore
 	{
+		Task<Pre_CreditScoreCustom> Update(Pre_CreditScoreCustom model);
+		Task<Pre_CreditScoreCustom> GetById(Guid id);
 		Task<PaginationView<List<Pre_CreditScoreCustom>>> GetList(allFilter model);
 	}
 }

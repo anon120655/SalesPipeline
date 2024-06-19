@@ -48,6 +48,10 @@
 												<div class="">
 													@* <i class="fa-solid fa-chart-line me-2"></i> *@
 													<span>@item.Name</span>
+													@if (item.MenuNumber == MenuNumbers.Overdue && UserInfo.OverdueNotify > 0)
+													{
+														<span id="@(MenuNumbers.Overdue)" class="red-dot ms-2"></span>
+													}
 												</div>
 											</NavLink>
 										</li>

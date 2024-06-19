@@ -1,6 +1,11 @@
+using BlazorBootstrap;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.DataCustom;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -9,12 +14,16 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 {
 	public partial class CreditScore
 	{
+		public Guid? id { get; set; }
 
 		string? _errorMessage = null;
 		private allFilter filter = new();
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
 		private List<Pre_CreditScoreCustom>? Items;
+		private Pre_CreditScoreCustom formModel = new();
+
+		Modal modalForm = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -47,6 +56,83 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+		}
+
+		protected async Task SetModelById(Guid id)
+		{
+			var data = await _preCreditViewModel.GetById(id);
+			if (data != null && data.Status)
+			{
+				if (data.Data != null)
+				{
+					formModel = data.Data;
+				}
+			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+			StateHasChanged();
+		}
+
+		private async Task Save()
+		{
+			_errorMessage = null;
+			ShowLoading();
+
+			ResultModel<Pre_CreditScoreCustom> response;
+
+			formModel.CurrentUserId = UserInfo.Id;
+
+			response = await _preCreditViewModel.Update(formModel);
+
+			if (response.Status)
+			{
+				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+				HideLoading();
+				await OnHide();
+				await SetModel();
+			}
+			else
+			{
+				HideLoading();
+				_errorMessage = response.errorMessage;
+				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+			}
+		}
+
+		private async Task OnShow(Guid? _id = null)
+		{
+			if (_id.HasValue && _id.Value != Guid.Empty)
+			{
+				id = _id;
+				await SetModelById(_id.Value);
+			}
+			else
+			{
+				id = null;
+				formModel = new();
+			}
+			await modalForm.ShowAsync();
+		}
+
+		private async Task OnHide()
+		{
+			id = null;
+			await modalForm.HideAsync();
+		}
+
+		private void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		private void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
 		}
 
 	}

@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
@@ -169,20 +170,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		//[AllowAnonymous]
-		//[HttpGet("UpdateStatusTotalById")]
-		//public async Task<IActionResult> UpdateStatusTotalById([FromQuery] int userid)
-		//{
-		//	try
-		//	{
-		//		await _repo.Sales.UpdateStatusTotalById(userid);
-		//		return Ok();
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return new ErrorResultCustom(new ErrorCustom(), ex);
-		//	}
-		//}
+		[AllowAnonymous]
+		[HttpPost("GetOverdueCount")]
+		public async Task<IActionResult> GetOverdueCount(allFilter model)
+		{
+			try
+			{
+				var data = await _repo.Sales.GetOverdueCount(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 		[HttpGet("SetIsUpdateStatusTotal")]
 		public async Task<IActionResult> SetIsUpdateStatusTotal([FromQuery] int userid)

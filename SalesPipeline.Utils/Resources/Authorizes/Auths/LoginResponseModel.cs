@@ -34,6 +34,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? LevelName { get; set; }
 		public string? access_token { get; set; }
 		public string? expires_in { get; set; }
+		public int? OverdueNotify { get; set; }
 		public List<User_PermissionCustom> User_Permissions { get; set; }
 
 		public string? FullName

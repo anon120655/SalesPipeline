@@ -28,6 +28,7 @@
 												<th class="text-center">Grade</th>
 												<th class="text-center">Limit Multiplier</th>
 												<th class="text-center">Rate Multiplier</th>
+												<th class="text-center">จัดการ</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -57,6 +58,9 @@
 														<td class="text-center">@item.Grade</td>
 														<td class="text-center">@item.LimitMultiplier</td>
 														<td class="text-center">@item.RateMultiplier</td>
+														<td class="text-center">
+															<a class="text-action" role="button" @onclick="(async()=> await OnShow(item.Id))">แก้ไข</a>
+														</td>
 													</tr>
 												}
 											}
@@ -72,6 +76,72 @@
 			</div>
 		</div>
 	</div>
+
+	<Modal @ref="modalForm"
+		   Title="Credit Score"
+		   IsVerticallyCentered="true"
+		   HeaderCssClass="headermodal_default">
+		<BodyTemplate>
+			<EditForm Model="@formModel" OnValidSubmit="Save">
+				<DataAnnotationsValidator />
+				<div class="row my-3">
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">Credit Score</label>
+							<div class="col-7">
+								<input @bind="formModel.CreditScore" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModel.CreditScore)" />
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">Grade</label>
+							<div class="col-7">
+								<label class="col-form-label">@formModel.Grade</label>
+								<ValidationMessage For="@(() => formModel.Grade)" />
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">Limit Multiplier</label>
+							<div class="col-7">
+								<input @bind="formModel.LimitMultiplier" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModel.LimitMultiplier)" />
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<div class="form-group row mb-3">
+							<label class="col-4 col-form-label text-lg-end">Rate Multiplier</label>
+							<div class="col-7">
+								<input @bind="formModel.RateMultiplier" type="text" class="form-control">
+								<ValidationMessage For="@(() => formModel.RateMultiplier)" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="d-flex justify-content-evenly align-items-center">
+						<div class="p-2">
+							<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">ปิด</Button>
+						</div>
+						<div class="p-2">
+							<Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
+								@if (isLoading)
+								{
+									<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+								}
+								บันทึก
+							</Button>
+						</div>
+					</div>
+				</div>
+			</EditForm>
+		</BodyTemplate>
+	</Modal>
+
 }
 else
 {

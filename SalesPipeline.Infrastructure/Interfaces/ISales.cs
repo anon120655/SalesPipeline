@@ -17,6 +17,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Sale_ReturnCustom> CreateReturn(Sale_ReturnCustom model);
 		Task<PaginationView<List<Sale_ReturnCustom>>> GetListReturn(allFilter model);
 		Task SetIsUpdateStatusTotal(int id);
+		Task<int> GetOverdueCount(allFilter model);
 		Task<Sale_Status_TotalCustom> GetStatusTotalById(int id);
 
 		//ข้อมูลผู้ติดต่อ

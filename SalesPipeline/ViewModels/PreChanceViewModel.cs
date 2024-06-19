@@ -20,6 +20,50 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
+		public async Task<ResultModel<Pre_ChancePassCustom>> Update(Pre_ChancePassCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/PreChance/Update", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Pre_ChancePassCustom>(content);
+				return new ResultModel<Pre_ChancePassCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_ChancePassCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Pre_ChancePassCustom>?> GetById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/PreChance/GetById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Pre_ChancePassCustom>(content);
+				return new ResultModel<Pre_ChancePassCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_ChancePassCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Pre_ChancePassCustom>>>> GetList(allFilter model)
 		{
 			try

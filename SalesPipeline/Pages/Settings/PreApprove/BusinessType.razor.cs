@@ -23,7 +23,6 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		Modal modalForm = default!;
 		ModalConfirm modalConfirm = default!;
 
-
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetPreApprove) ?? new User_PermissionCustom();

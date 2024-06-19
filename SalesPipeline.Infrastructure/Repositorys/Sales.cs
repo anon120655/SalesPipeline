@@ -752,6 +752,57 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task<int> GetOverdueCount(allFilter model)
+		{
+			if (!model.userid.HasValue) throw new ExceptionCustom("userid require.");
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+
+			IQueryable<Sale> query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
+													.Include(x => x.Customer)
+													.Include(x => x.Sale_Statuses)
+													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+													.AsQueryable();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				query = query.Where(x => x.AssUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			{
+				query = query.Where(x => x.AssCenterUserId == user.Id);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+			{
+				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+			}
+			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+			}
+
+			var dataSLA = await _repo.System.GetListSLA(model);
+			if (dataSLA != null && dataSLA.Items != null)
+			{
+				var _date_Contact = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Contact))?.Number ?? 0;
+				var _date_Meet = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Meet))?.Number ?? 0;
+				var _date_Document = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Document))?.Number ?? 0;
+				var _date_Result = dataSLA.Items.FirstOrDefault(x => x.Code == nameof(StatusSaleMainModel.Result))?.Number ?? 0;
+
+				var _dnow = DateTime.Now.Date;
+
+				query = query.Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale &&
+							   (x.StatusSaleMainId == StatusSaleMainModel.Contact && x.StatusSaleId == StatusSaleModel.WaitContact
+							 || x.StatusSaleMainId == StatusSaleMainModel.Contact && x.Sale_Contacts.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Contact))
+							 || x.StatusSaleMainId == StatusSaleMainModel.Meet && x.Sale_Meets.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Meet))
+							 || x.StatusSaleMainId == StatusSaleMainModel.Document && x.Sale_Documents.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Document))
+							 || x.StatusSaleMainId == StatusSaleMainModel.Result && x.Sale_Results.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Result))
+							 ));
+			}
+
+			return query.Count();
+		}
+
 		public async Task<Sale_Status_TotalCustom> GetStatusTotalById(int userid)
 		{
 			//var query = await _repo.Context.Sale_Status_Totals

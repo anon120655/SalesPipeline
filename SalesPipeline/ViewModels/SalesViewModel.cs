@@ -133,6 +133,30 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<int>> GetOverdueCount(allFilter model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Sales/GetOverdueCount", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<int>(content);
+
+				return new ResultModel<int>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<int>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<Sale_Contact_InfoCustom>>>> GetListInfo(allFilter model)
 		{
 			try

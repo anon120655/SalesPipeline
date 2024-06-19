@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 
@@ -18,6 +19,50 @@ namespace SalesPipeline.ViewModels
 			_httpClient = httpClient;
 			_appSet = appset.Value;
 			_authorizeViewModel = authorizeViewModel;
+		}
+
+		public async Task<ResultModel<Pre_CreditScoreCustom>> Update(Pre_CreditScoreCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PutAsync($"/v1/PreCredit/Update", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Pre_CreditScoreCustom>(content);
+				return new ResultModel<Pre_CreditScoreCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_CreditScoreCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<Pre_CreditScoreCustom>?> GetById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/PreCredit/GetById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<Pre_CreditScoreCustom>(content);
+				return new ResultModel<Pre_CreditScoreCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_CreditScoreCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
 		}
 
 		public async Task<ResultModel<PaginationView<List<Pre_CreditScoreCustom>>>> GetList(allFilter model)

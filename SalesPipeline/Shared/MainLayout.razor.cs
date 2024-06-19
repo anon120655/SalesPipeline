@@ -15,7 +15,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Shared
 {
-    public partial class MainLayout
+	public partial class MainLayout
 	{
 		[Inject] protected IJSRuntime _jsRuntimes { get; set; } = null!;
 
@@ -27,6 +27,7 @@ namespace SalesPipeline.Shared
 
 		[Inject] protected AuthorizeViewModel _authorizeViewModel { get; set; } = null!;
 		[Inject] protected MasterViewModel _masterViewModel { get; set; } = default!;
+		[Inject] protected SalesViewModel _salesViewModel { get; set; } = default!;
 
 		[Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
@@ -63,6 +64,11 @@ namespace SalesPipeline.Shared
 			if (isAuthorize)
 			{
 				UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
+				var sale = await _salesViewModel.GetOverdueCount(new() { userid = UserInfo.Id });
+				if (sale != null)
+				{
+					UserInfo.OverdueNotify = sale.Data;
+				}
 
 				var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
 				if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)

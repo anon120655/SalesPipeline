@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
@@ -28,6 +29,41 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+		}
+
+		public async Task<Pre_CreditScoreCustom> Update(Pre_CreditScoreCustom model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				var _dateNow = DateTime.Now;
+
+				var pre_CreditScores = await _repo.Context.Pre_CreditScores.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
+				if (pre_CreditScores != null)
+				{
+					pre_CreditScores.UpdateDate = _dateNow;
+					pre_CreditScores.UpdateBy = model.CurrentUserId;
+					pre_CreditScores.CreditScore = model.CreditScore;
+					//pre_CreditScores.Grade = model.Grade;
+					pre_CreditScores.LimitMultiplier = model.LimitMultiplier;
+					pre_CreditScores.RateMultiplier = model.RateMultiplier;
+					//pre_CreditScores.CreditScoreColor = model.CreditScoreColor;
+					_db.Update(pre_CreditScores);
+					await _db.SaveAsync();
+
+					_transaction.Commit();
+				}
+
+				return _mapper.Map<Pre_CreditScoreCustom>(pre_CreditScores);
+			}
+		}
+
+		public async Task<Pre_CreditScoreCustom> GetById(Guid id)
+		{
+			var query = await _repo.Context.Pre_CreditScores
+										 .OrderByDescending(o => o.CreateDate)
+										 .FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Pre_CreditScoreCustom>(query);
 		}
 
 		public async Task<PaginationView<List<Pre_CreditScoreCustom>>> GetList(allFilter model)

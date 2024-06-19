@@ -52,8 +52,6 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Loan_Period> Loan_Periods { get; set; }
 
-    public virtual DbSet<Logging> Loggings { get; set; }
-
     public virtual DbSet<Master_Branch_Region> Master_Branch_Regions { get; set; }
 
     public virtual DbSet<Master_BusinessSize> Master_BusinessSizes { get; set; }
@@ -1093,26 +1091,6 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Master_Pre_Interest_RateType).WithMany(p => p.Loan_Periods)
                 .HasForeignKey(d => d.Master_Pre_Interest_RateTypeId)
                 .HasConstraintName("loan_period_ibfk_2");
-        });
-
-        modelBuilder.Entity<Logging>(entity =>
-        {
-            entity.HasKey(e => e.LogId).HasName("PRIMARY");
-
-            entity.ToTable("Logging");
-
-            entity.Property(e => e.ClientIp).HasMaxLength(255);
-            entity.Property(e => e.ContentType).HasMaxLength(255);
-            entity.Property(e => e.DeviceInfo).HasMaxLength(1000);
-            entity.Property(e => e.Host).HasMaxLength(100);
-            entity.Property(e => e.Method).HasMaxLength(50);
-            entity.Property(e => e.Path).HasMaxLength(255);
-            entity.Property(e => e.Query).HasMaxLength(500);
-            entity.Property(e => e.RequestDate).HasColumnType("datetime");
-            entity.Property(e => e.ResponseContentType).HasMaxLength(255);
-            entity.Property(e => e.ResponseDate).HasColumnType("datetime");
-            entity.Property(e => e.ResponseStatus).HasMaxLength(255);
-            entity.Property(e => e.Scheme).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Master_Branch_Region>(entity =>
