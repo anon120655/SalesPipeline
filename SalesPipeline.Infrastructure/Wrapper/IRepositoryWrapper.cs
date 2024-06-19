@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using SalesPipeline.Infrastructure.Data.Context;
+using SalesPipeline.Infrastructure.Data.Logger.Context;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Repositorys;
 using System;
@@ -13,6 +14,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 	public interface IRepositoryWrapper
 	{
 		SalesPipelineContext Context { get; }
+		SalesPipelineLogContext ContextLog { get; }
 		IDbContextTransaction BeginTransaction();
 		void Commit();
 

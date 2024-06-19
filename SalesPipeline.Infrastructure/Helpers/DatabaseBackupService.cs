@@ -44,7 +44,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 			Directory.CreateDirectory(backupPath);
 
 			// คำสั่งสำหรับการสำรองข้อมูล
-			var dumpCommand = $"\"{mysqldumpPath}\" -u {mysqlUser} -p{mysqlPassword} {mysqlDatabase} > \"{Path.Combine(backupPath, databaseBackupName + ".sql")}\"";
+			// --single-transaction จะไม่ lock table ขณะทำการ backup
+			var dumpCommand = $"\"{mysqldumpPath}\" --single-transaction -u {mysqlUser} -p{mysqlPassword} {mysqlDatabase} > \"{Path.Combine(backupPath, databaseBackupName + ".sql")}\"";
 
 			// เรียกใช้งาน batch file
 			var processInfo = new ProcessStartInfo("cmd.exe", $"/C \"{dumpCommand}\"")

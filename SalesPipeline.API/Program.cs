@@ -23,6 +23,7 @@ using Hangfire.Storage;
 using Hangfire.MySql;
 using Microsoft.Extensions.Logging;
 using Hangfire.MemoryStorage;
+using SalesPipeline.Infrastructure.Data.Logger.Context;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,7 @@ IConfigurationRoot con_root = con_builder.Build();
 
 var appSettings = con_root.GetSection("AppSettings");
 var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
+var SalesPipelineLogContext = con_root["ConnectionStrings:SalesPipelineLogContext"];
 var contentRootPath = con_root["AppSettings:ContentRootPath"] ?? String.Empty;
 
 //builder.Services.AddDbContext<SalesPipelineContext>(options =>
@@ -75,6 +77,14 @@ builder.Services.AddDbContext<SalesPipelineContext>(
                .EnableSensitiveDataLogging()
                .EnableDetailedErrors()
        );
+
+builder.Services.AddDbContext<SalesPipelineLogContext>(
+		   dbContextOptions => dbContextOptions
+			   .UseMySql(SalesPipelineLogContext, autoDetectVersion)
+			   .LogTo(Console.WriteLine, LogLevel.Information)
+			   .EnableSensitiveDataLogging()
+			   .EnableDetailedErrors()
+	   );
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
@@ -116,6 +126,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options
 // configure DI for application services
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddTransient<SalesPipelineContext>();
+builder.Services.AddTransient<SalesPipelineLogContext>();
 builder.Services.AddAutoMapper(typeof(AutoMapping));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();

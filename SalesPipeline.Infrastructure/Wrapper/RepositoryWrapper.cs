@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Context;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Data.Logger.Context;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Repositorys;
@@ -25,6 +26,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		private readonly IBackgroundJobClient _backgroundJobClient;
 
 		public SalesPipelineContext Context { get; }
+		public SalesPipelineLogContext ContextLog { get; }
 		public IRepositoryBase _db { get; }
 		public ILoggerRepo Logger { get; }
 		public IAuthorizes Authorizes { get; }
@@ -72,7 +74,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public ISystemRepo System { get; }
 		public IEmailSender EmailSender { get; }
 
-		public RepositoryWrapper(SalesPipelineContext _context, IOptions<AppSettings> settings, IMapper mapper,
+		public RepositoryWrapper(SalesPipelineContext _context, SalesPipelineLogContext _contextLog, IOptions<AppSettings> settings, IMapper mapper,
 													IHttpContextAccessor accessor, 
 													HttpClient httpClient, 
 													IJwtUtils jwtUtils, 
@@ -80,6 +82,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			, IBackgroundJobClient backgroundJobClient)
 		{
 			Context = _context;
+			ContextLog = _contextLog;
 			_accessor = accessor;
 			_mapper = mapper;
 			_httpClient = httpClient;
@@ -88,7 +91,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			_backgroundJobClient = backgroundJobClient;
 
 			_db = new RepositoryBase(this);
-			Logger = new LoggerRepo(this, _db, settings);
+			Logger = new LoggerRepo(this, settings, ContextLog);
 			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
 			Notifys = new Notifys(this, _db, settings, _mapper, _notiService, _backgroundJobClient);
 			Files = new FileRepository(this, _db, settings, _mapper);
@@ -146,7 +149,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			transaction.Commit();
 		}
 
-		//Dispose
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_isDisposed)
@@ -155,6 +157,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			if (disposing)
 			{
 				Context.Dispose();
+				ContextLog.Dispose();
 
 				_isDisposed = true;
 			}

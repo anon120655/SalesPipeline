@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Logger.Context;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -15,15 +16,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class LoggerRepo : ILoggerRepo
 	{
+		SalesPipelineLogContext _contextLog { get; }
 		private IRepositoryWrapper _repo;
-		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public LoggerRepo(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet)
+		public LoggerRepo(IRepositoryWrapper repo, IOptions<AppSettings> appSet, SalesPipelineLogContext contextLog)
 		{
-			_db = db;
 			_repo = repo;
 			_appSet = appSet.Value;
+			_contextLog = contextLog;
 		}
 
 		public async Task SaveLog(RequestResponseLogModel logs)
@@ -31,7 +32,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			bool responseExcept = GeneralUtils.LOGExcept(logs.RequestPath);
 			if (!responseExcept || (logs.ResponseStatus != null && !logs.ResponseStatus.StartsWith("20")))
 			{
-				int BodyLimit = 1000;
+				int BodyLimit = 3000;
 				string? _requestBody = logs.RequestBody;
 				string? _responseBody = logs.ResponseBody;
 
@@ -48,7 +49,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					//_repo.Context.ChangeTracker.Clear();
 
-					var logging = new Data.Entity.Logging()
+					var logging = new Data.Logger.Entity.Logging()
 					{
 						LogId = Guid.NewGuid(),
 						RequestDate = logs.RequestDateTimeUtc,
@@ -67,8 +68,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						ResponseDate = logs.ResponseDateTimeUtc,
 						ExceptionMessage = logs.ExceptionMessage
 					};
-					await _db.InsterAsync(logging);
-					await _db.SaveAsync();
+
+					_contextLog.ChangeTracker.Clear();
+					await _contextLog.AddAsync(logging);
+					await _contextLog.SaveChangesAsync();
+
+					//await _db.InsterAsync(logging);
+					//await _db.SaveAsync();
 
 					if (logs.ResponseStatus == StatusCodes.Status500InternalServerError.ToString() || GeneralUtils.LineTxtAlert(logs.ResponseBody))
 					{
