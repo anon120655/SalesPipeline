@@ -1472,11 +1472,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//query = query.Where(x => x.AppointmentDate.HasValue);
 
-			if (!String.IsNullOrEmpty(model.psalecode))
-			{
-				query = query.Where(x => x.ProcessSaleCode == model.psalecode);
-			}
-
 			if (model.userid.HasValue)
 			{
 				query = query.Where(x => x.Sale.AssUserId == model.userid);
@@ -1484,7 +1479,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.statussaleid.HasValue)
 			{
-				query = query.Where(x => x.StatusSaleId == model.statussaleid.Value);
+				//รอยื่นเอกสาร
+				if (model.statussaleid == StatusSaleModel.WaitSubmitDocument && model.psalecode == ProcessSaleCodeModel.Document)
+				{
+					query = query.Where(x => x.StatusSaleId == StatusSaleModel.WaitSubmitDocument);
+				}
+				else
+				{
+					query = query.Where(x => x.StatusSaleId == model.statussaleid.Value);
+				}
+			}
+			else
+			{
+				if (!String.IsNullOrEmpty(model.psalecode))
+				{
+					query = query.Where(x => x.ProcessSaleCode == model.psalecode);
+				}
 			}
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
@@ -1519,7 +1529,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Id = x.Id,
 				SaleId = x.SaleId,
 				StatusSaleId = x.StatusSaleId,
-				TopicName = x.TopicName,				
+				TopicName = x.TopicName,
 				ContactFullName = x.ContactFullName,
 				ProceedName = x.ProceedName,
 				ContactDate = x.ContactDate,
