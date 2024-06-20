@@ -229,7 +229,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             int countSchedule = 0;
             if (_appSet.NotiMobile != null)
             {
-                var calendarList = await _repo.ProcessSale.GetListCalendar(new() { isScheduledJob = null });
+                var calendarList = await _repo.ProcessSale.GetListCalendar(new() { isScheduledJob = 0 });
 
                 if (calendarList.Count > 0)
                 {
