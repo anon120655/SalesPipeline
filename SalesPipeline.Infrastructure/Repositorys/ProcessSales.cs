@@ -1482,6 +1482,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Sale.AssUserId == model.userid);
 			}
 
+			if (model.statussaleid.HasValue)
+			{
+				query = query.Where(x => x.StatusSaleId == model.statussaleid.Value);
+			}
+
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
 				query = query.Where(x => x.AppointmentDate.HasValue && x.AppointmentDate.Value.Date >= model.startdate.Value.Date).OrderBy(x => x.AppointmentDate);
