@@ -3521,6 +3521,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.BranchName).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Create_Type)
+                .HasComment("1=iAuthen")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.EmployeeId)
                 .HasMaxLength(10)
@@ -3719,6 +3722,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.iAuthenRoleCode).HasMaxLength(255);
         });
 
         modelBuilder.Entity<User_Target_Sale>(entity =>

@@ -644,8 +644,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
+			{
+				model.searchtxt = model.searchtxt.Trim();
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
 				|| x.Customer != null && x.Customer.JuristicPersonRegNumber != null && x.Customer.JuristicPersonRegNumber.Contains(model.searchtxt));
+			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 

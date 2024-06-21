@@ -40,6 +40,8 @@ public partial class User_Role
     /// </summary>
     public string? Description { get; set; }
 
+    public string? iAuthenRoleCode { get; set; }
+
     public virtual ICollection<User_Permission> User_Permissions { get; set; } = new List<User_Permission>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
