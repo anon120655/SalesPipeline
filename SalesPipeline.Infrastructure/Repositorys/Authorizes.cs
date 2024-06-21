@@ -9,6 +9,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.iAuthen;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -99,6 +100,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in);
 
 			return new AuthenticateResponse(userMap, token, expires_in + "d");
+		}
+
+		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse modeliAuth)
+		{
+			throw new NotImplementedException();
 		}
 
 		public UserAuth? GetById(int id)

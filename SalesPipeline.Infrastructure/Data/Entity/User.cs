@@ -100,6 +100,94 @@ public partial class User
     /// </summary>
     public string? UrlSignature { get; set; }
 
+    public string? TokenApi { get; set; }
+
+    public int? authen_fail_time { get; set; }
+
+    public string? branch_code { get; set; }
+
+    public string? branch_name { get; set; }
+
+    public int? cbs_id { get; set; }
+
+    public string? change_password_url { get; set; }
+
+    public string? create_password_url { get; set; }
+
+    public string? email_baac { get; set; }
+
+    public int? employee_id { get; set; }
+
+    public int? employee_position_id { get; set; }
+
+    public string? employee_position_level { get; set; }
+
+    public string? employee_position_name { get; set; }
+
+    public string? employee_status { get; set; }
+
+    public string? first_name_th { get; set; }
+
+    public bool? image_existing { get; set; }
+
+    public int? job_field_id { get; set; }
+
+    public string? job_field_name { get; set; }
+
+    public int? job_id { get; set; }
+
+    public string? job_name { get; set; }
+
+    public string? last_name_th { get; set; }
+
+    public DateTime? lastauthen_timestamp { get; set; }
+
+    public int? mobile_no { get; set; }
+
+    public string? name_en { get; set; }
+
+    public int? org_id { get; set; }
+
+    public string? org_name { get; set; }
+
+    public string? organization_48 { get; set; }
+
+    public string? organization_abbreviation { get; set; }
+
+    public int? organization_upper_id { get; set; }
+
+    public string? organization_upper_id2 { get; set; }
+
+    public string? organization_upper_id3 { get; set; }
+
+    public string? organization_upper_name { get; set; }
+
+    public string? organization_upper_name2 { get; set; }
+
+    public string? organization_upper_name3 { get; set; }
+
+    public string? password_unexpire { get; set; }
+
+    public string? requester_active { get; set; }
+
+    public string? requester_existing { get; set; }
+
+    public DateTime? timeresive { get; set; }
+
+    public DateTime? timesend { get; set; }
+
+    public string? title_th { get; set; }
+
+    public string? title_th_2 { get; set; }
+
+    public string? user_class { get; set; }
+
+    public bool? username_active { get; set; }
+
+    public bool? username_existing { get; set; }
+
+    public string? working_status { get; set; }
+
     public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
 
     public virtual ICollection<Assignment_CenterBranch> Assignment_CenterBranches { get; set; } = new List<Assignment_CenterBranch>();

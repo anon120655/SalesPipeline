@@ -3553,11 +3553,52 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("เบอร์โทร");
             entity.Property(e => e.TitleName).HasMaxLength(255);
+            entity.Property(e => e.TokenApi).HasMaxLength(255);
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.UrlSignature)
                 .HasMaxLength(300)
                 .HasComment("url ลายเซ็น");
+            entity.Property(e => e.authen_fail_time).HasColumnType("int(11)");
+            entity.Property(e => e.branch_code).HasMaxLength(255);
+            entity.Property(e => e.branch_name).HasMaxLength(255);
+            entity.Property(e => e.cbs_id).HasColumnType("int(11)");
+            entity.Property(e => e.change_password_url).HasMaxLength(255);
+            entity.Property(e => e.create_password_url).HasMaxLength(255);
+            entity.Property(e => e.email_baac).HasMaxLength(255);
+            entity.Property(e => e.employee_id).HasColumnType("int(11)");
+            entity.Property(e => e.employee_position_id).HasColumnType("int(11)");
+            entity.Property(e => e.employee_position_level).HasMaxLength(255);
+            entity.Property(e => e.employee_position_name).HasMaxLength(255);
+            entity.Property(e => e.employee_status).HasMaxLength(255);
+            entity.Property(e => e.first_name_th).HasMaxLength(255);
+            entity.Property(e => e.job_field_id).HasColumnType("int(11)");
+            entity.Property(e => e.job_field_name).HasMaxLength(255);
+            entity.Property(e => e.job_id).HasColumnType("int(11)");
+            entity.Property(e => e.job_name).HasMaxLength(255);
+            entity.Property(e => e.last_name_th).HasMaxLength(255);
+            entity.Property(e => e.lastauthen_timestamp).HasColumnType("datetime");
+            entity.Property(e => e.mobile_no).HasColumnType("int(11)");
+            entity.Property(e => e.name_en).HasMaxLength(255);
+            entity.Property(e => e.org_id).HasColumnType("int(11)");
+            entity.Property(e => e.org_name).HasMaxLength(255);
+            entity.Property(e => e.organization_48).HasMaxLength(255);
+            entity.Property(e => e.organization_abbreviation).HasMaxLength(255);
+            entity.Property(e => e.organization_upper_id).HasColumnType("int(11)");
+            entity.Property(e => e.organization_upper_id2).HasMaxLength(255);
+            entity.Property(e => e.organization_upper_id3).HasMaxLength(255);
+            entity.Property(e => e.organization_upper_name).HasMaxLength(255);
+            entity.Property(e => e.organization_upper_name2).HasMaxLength(255);
+            entity.Property(e => e.organization_upper_name3).HasMaxLength(255);
+            entity.Property(e => e.password_unexpire).HasMaxLength(255);
+            entity.Property(e => e.requester_active).HasMaxLength(255);
+            entity.Property(e => e.requester_existing).HasMaxLength(255);
+            entity.Property(e => e.timeresive).HasColumnType("datetime");
+            entity.Property(e => e.timesend).HasColumnType("datetime");
+            entity.Property(e => e.title_th).HasMaxLength(255);
+            entity.Property(e => e.title_th_2).HasMaxLength(255);
+            entity.Property(e => e.user_class).HasMaxLength(255);
+            entity.Property(e => e.working_status).HasMaxLength(255);
 
             entity.HasOne(d => d.Level).WithMany(p => p.Users)
                 .HasForeignKey(d => d.LevelId)

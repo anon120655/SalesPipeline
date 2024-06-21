@@ -212,6 +212,16 @@ var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 //		  .UseTimeZone(timeZone);
 //});
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificMethods",
+		builder =>
+		{
+			builder.WithMethods("GET", "POST", "PUT", "DELETE")
+				   .AllowAnyHeader();
+		});
+});
+
 var app = builder.Build();
 
 //RequestSizeLimit FromForm ,IFormFile ,FileByte[] Max
@@ -254,6 +264,7 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader());
 
+app.UseCors("AllowSpecificMethods");
 
 // custom jwt auth middleware
 app.UseMiddleware<JwtMiddleware>();

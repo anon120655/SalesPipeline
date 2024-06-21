@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Text;
 using SalesPipeline.Utils;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Utils.Resources.PreApprove;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -37,12 +38,13 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
+				iAuthenResponse? iAuthenData = null;
 				if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect)
 				{
 					var iAuthenRequest = new iAuthenRequest()
 					{
-						user = "6100004",
-						password = "SmpAMTIzNDU2Nzg5",
+						user = "1000083", //1000083
+						password = "YmFhY0AxMjM=",
 						faceID = "",
 						requester_id = "R00001",
 						reference_id = "3",
@@ -60,7 +62,8 @@ namespace SalesPipeline.API.Controllers
 						Encoding.UTF8,
 						"application/json"
 					);
-					httpClient.DefaultRequestHeaders.Add("Api-Key", _appSet.iAuthen.ApiKey);
+					httpClient.DefaultRequestHeaders.Add("apikey", _appSet.iAuthen.ApiKey);
+
 
 					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.iAuthen.baseUri}/authen/authentication", postData);
 					if (responseAPI.IsSuccessStatusCode)
@@ -68,7 +71,7 @@ namespace SalesPipeline.API.Controllers
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
 						if (responseBody != null)
 						{
-
+							iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
 						}
 					}
 					else
@@ -76,7 +79,7 @@ namespace SalesPipeline.API.Controllers
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
 						if (responseBody != null)
 						{
-
+							iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
 						}
 					}
 				}
