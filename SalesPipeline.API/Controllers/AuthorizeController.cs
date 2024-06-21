@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using System.Text;
 using SalesPipeline.Utils;
 using Microsoft.Extensions.Options;
-using SalesPipeline.Utils.Resources.PreApprove;
+using System.Net.NetworkInformation;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -38,17 +38,36 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
+				AuthenticateResponse? response = null;
 				iAuthenResponse? iAuthenData = null;
-				if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect)
+
+				if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect && GeneralUtils.IsDigit(model.Username))
 				{
+					bool isVpnConnect = false;
+					// รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
+					var adapters = NetworkInterface.GetAllNetworkInterfaces();
+					if (adapters.Length > 0)
+					{
+						foreach (NetworkInterface adapter in adapters)
+						{
+							if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
+							{
+								isVpnConnect = true;
+							}
+						}
+					}
+
+					if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
+
+					string base64password = Convert.ToBase64String(Encoding.UTF8.GetBytes(model.Password ?? ""));
+					var requester_id = $"R00001";
 					var iAuthenRequest = new iAuthenRequest()
 					{
-						user = "1000083", //1000083
-						password = "YmFhY0AxMjM=",
-						faceID = "",
-						requester_id = "R00001",
-						reference_id = "3",
-						ipaddress = "172.25.25.2",
+						user = model.Username, //1000040
+						password = base64password, //"YmFhY0AxMjM="
+						requester_id = requester_id,
+						reference_id = _appSet.iAuthen.Reference_ID,
+						ipaddress = _appSet.iAuthen.IPAddress,
 						authen_type = 4,
 					};
 
@@ -64,27 +83,28 @@ namespace SalesPipeline.API.Controllers
 					);
 					httpClient.DefaultRequestHeaders.Add("apikey", _appSet.iAuthen.ApiKey);
 
-
 					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.iAuthen.baseUri}/authen/authentication", postData);
 					if (responseAPI.IsSuccessStatusCode)
 					{
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
-						if (responseBody != null)
-						{
-							iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
-						}
+
+						iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
+						if (iAuthenData == null || iAuthenData.response_status != "pass")
+							throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
+
+						response = await _repo.Authorizes.AuthenticateBAAC(model, iAuthenData);
 					}
 					else
 					{
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
-						if (responseBody != null)
-						{
-							iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
-						}
+						iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
+						throw new ExceptionCustom($"{iAuthenData?.response_message}");
 					}
 				}
-
-				var response = await _repo.Authorizes.Authenticate(model);
+				else
+				{
+					response = await _repo.Authorizes.Authenticate(model);
+				}
 
 				if (_appSet.ServerSite == ServerSites.DEV)
 				{
@@ -99,7 +119,7 @@ namespace SalesPipeline.API.Controllers
 						IPAddress = model.IPAddress,
 						DeviceId = model.DeviceId,
 						DeviceVersion = model.DeviceVersion,
-                        SystemVersion = model.SystemVersion,
+						SystemVersion = model.SystemVersion,
 						AppVersion = model.AppVersion,
 						tokenNoti = model.tokenNoti
 					});

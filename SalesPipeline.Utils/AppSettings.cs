@@ -41,7 +41,8 @@ namespace SalesPipeline.Utils
 			public bool IsConnect { get; set; }
 			public string? baseUri { get; set; }
 			public string? ApiKey { get; set; }
-			public string? RequestID { get; set; }
+			public string? IPAddress { get; set; }
+			public string? Reference_ID { get; set; }
 		}
 
 		public class NotiMobiles

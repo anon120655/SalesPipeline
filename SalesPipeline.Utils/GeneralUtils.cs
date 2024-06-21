@@ -708,6 +708,11 @@ namespace SalesPipeline.Utils
 			}
 		}
 
+		/// <summary>
+		/// สตริงมีเพียงตัวเลขเท่านั้น
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static bool IsDigit(string? value)
 		{
 			try
