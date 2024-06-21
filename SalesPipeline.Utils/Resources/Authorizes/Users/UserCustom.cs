@@ -113,10 +113,15 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// </summary>
 		public string? UrlSignature { get; set; }
 
+		public string? TokenApi { get; set; }
+
+		/// <summary>
+		/// 1=iAuthen
+		/// </summary>
+		public int Create_Type { get; set; }
+
 
 		//*********** BAAC Model Begin **************
-
-		public string? TokenApi { get; set; }
 
 		public int? authen_fail_time { get; set; }
 

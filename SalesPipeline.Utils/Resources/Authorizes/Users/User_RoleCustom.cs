@@ -45,6 +45,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Description { get; set; }
 
+		public string? iAuthenRoleCode { get; set; }
+
 		public virtual ICollection<User_PermissionCustom>? User_Permissions { get; set; }
 
         //Custom

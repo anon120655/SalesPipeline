@@ -13,7 +13,7 @@ using SalesPipeline.Utils.Resources.iAuthen;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class Authorizes : IAuthorizes
+	public class Authorizes : IAuthorizes
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IRepositoryBase _db;
@@ -48,7 +48,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				short maxLoginFail = 5;
 				var config = await _repo.System.GetConfigByCode(ConfigCode.LOGIN_FAIL);
-				if (config != null && short.TryParse(config.Value,out short _maxLoginFail))
+				if (config != null && short.TryParse(config.Value, out short _maxLoginFail))
 				{
 					maxLoginFail = _maxLoginFail;
 				}
@@ -104,6 +104,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse modeliAuth)
 		{
+			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
+			if (user == null)
+			{
+				var xx = await _repo.User.Create(new()
+				{
+
+				});
+			}
+
 			throw new NotImplementedException();
 		}
 
