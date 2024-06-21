@@ -43,22 +43,25 @@ namespace SalesPipeline.API.Controllers
 
 				if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect && GeneralUtils.IsDigit(model.Username))
 				{
-					bool isVpnConnect = false;
-					// รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
-					var adapters = NetworkInterface.GetAllNetworkInterfaces();
-					if (adapters.Length > 0)
+					if (_appSet.ServerSite == ServerSites.DEV)
 					{
-						foreach (NetworkInterface adapter in adapters)
+						bool isVpnConnect = false;
+						// รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
+						var adapters = NetworkInterface.GetAllNetworkInterfaces();
+						if (adapters.Length > 0)
 						{
-							if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
+							foreach (NetworkInterface adapter in adapters)
 							{
-								isVpnConnect = true;
+								if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
+								{
+									isVpnConnect = true;
+								}
 							}
 						}
+
+						if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
+
 					}
-
-					if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
-
 					string base64password = Convert.ToBase64String(Encoding.UTF8.GetBytes(model.Password ?? ""));
 					var requester_id = $"R00001";
 					var iAuthenRequest = new iAuthenRequest()
