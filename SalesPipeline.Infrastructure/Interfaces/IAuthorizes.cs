@@ -11,7 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IAuthorizes
 	{
 		Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model);
-		Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse modeliAuth);
+		Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth);
 		UserAuth? GetById(int id);
 		Boolean ExpireToken(string? token);
 	}

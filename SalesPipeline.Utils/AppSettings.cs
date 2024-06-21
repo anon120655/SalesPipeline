@@ -5,7 +5,7 @@ namespace SalesPipeline.Utils
 	public class AppSettings
 	{
 		public string? Secret { get; set; }
-		public string? SiteUpdate { get; set; } = $"2567-06-19";
+		public string? SiteUpdate { get; set; } = $"2567-06-21";
 		public string ServerSite { get; set; } = null!;
 		public string? baseUriApi { get; set; }
 		public string? baseUriWeb { get; set; }

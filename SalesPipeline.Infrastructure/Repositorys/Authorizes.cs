@@ -102,18 +102,86 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return new AuthenticateResponse(userMap, token, expires_in + "d");
 		}
 
-		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse modeliAuth)
+		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)
 		{
+			int expires_in = 1; //days
+
+			UserCustom userCustom = new()
+			{
+				Status = StatusModel.Active,
+				Create_Type = 1,
+				CurrentUserId = 0,
+				EmployeeId = modeliAuth.employee_id,
+				TitleName = modeliAuth.title_th,
+				FirstName = modeliAuth.first_name_th,
+				LastName = modeliAuth.last_name_th,
+				FullName = $"{modeliAuth.first_name_th} {modeliAuth.last_name_th}",
+				Email = model.Username,
+				Tel = modeliAuth.mobile_no,
+				authen_fail_time = modeliAuth.authen_fail_time,
+				branch_code = modeliAuth.branch_code,
+				branch_name = modeliAuth.branch_name,
+				cbs_id = modeliAuth.cbs_id,
+				change_password_url = modeliAuth.change_password_url,
+				create_password_url = modeliAuth.create_password_url,
+				email_baac = modeliAuth.email,
+				employee_id = modeliAuth.employee_id,
+				employee_position_id = modeliAuth.employee_position_id,
+				employee_position_level = modeliAuth.employee_position_level,
+				employee_position_name = modeliAuth.employee_position_name,
+				employee_status = modeliAuth.employee_status,
+				first_name_th = modeliAuth.first_name_th,
+				image_existing = modeliAuth.image_existing,
+				job_field_id = modeliAuth.job_field_id,
+				job_field_name = modeliAuth.job_field_name,
+				job_id = modeliAuth.job_id,
+				job_name = modeliAuth.job_name,
+				last_name_th = modeliAuth.last_name_th,
+				lastauthen_timestamp = modeliAuth.lastauthen_timestamp,
+				mobile_no = modeliAuth.mobile_no,
+				name_en = modeliAuth.name_en,
+				org_id = modeliAuth.org_id,
+				org_name = modeliAuth.org_name,
+				organization_48 = modeliAuth.organization_48,
+				organization_abbreviation = modeliAuth.organization_abbreviation,
+				organization_upper_id = modeliAuth.organization_upper_id,
+				organization_upper_id2 = modeliAuth.organization_upper_id2,
+				organization_upper_id3 = modeliAuth.organization_upper_id3,
+				organization_upper_name = modeliAuth.organization_upper_name,
+				organization_upper_name2 = modeliAuth.organization_upper_name2,
+				organization_upper_name3 = modeliAuth.organization_upper_name3,
+				password_unexpire = modeliAuth.password_unexpire,
+				requester_active = modeliAuth.requester_active,
+				requester_existing = modeliAuth.requester_existing,
+				timeresive = modeliAuth.timeresive,
+				timesend = modeliAuth.timesend,
+				title_th = modeliAuth.title_th,
+				title_th_2 = modeliAuth.title_th_2,
+				user_class = modeliAuth.user_class,
+				username_active = modeliAuth.username_active,
+				username_existing = modeliAuth.username_existing,
+				working_status = modeliAuth.working_status
+			};
+
 			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
 			if (user == null)
 			{
-				var xx = await _repo.User.Create(new()
-				{
-
-				});
+				await _repo.User.Create(userCustom);
+			}
+			else
+			{
+				userCustom.Id = user.Id;
+				await _repo.User.Update(userCustom);
 			}
 
-			throw new NotImplementedException();
+			user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
+
+			var userMap = _mapper.Map<UserCustom>(user);
+
+			// authentication successful so generate jwt token
+			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in);
+
+			return new AuthenticateResponse(userMap, token, expires_in + "d");
 		}
 
 		public UserAuth? GetById(int id)

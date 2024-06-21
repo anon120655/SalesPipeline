@@ -89,10 +89,10 @@ namespace SalesPipeline.API.Controllers
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
 
 						iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
-						if (iAuthenData == null || iAuthenData.response_status != "pass")
+						if (iAuthenData == null || iAuthenData.response_status != "pass" || iAuthenData.response_data == null)
 							throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
 
-						response = await _repo.Authorizes.AuthenticateBAAC(model, iAuthenData);
+						response = await _repo.Authorizes.AuthenticateBAAC(model, iAuthenData.response_data);
 					}
 					else
 					{

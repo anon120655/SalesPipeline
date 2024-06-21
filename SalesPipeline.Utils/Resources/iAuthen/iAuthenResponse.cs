@@ -33,7 +33,7 @@ namespace SalesPipeline.Utils.Resources.iAuthen
 			public string? job_id { get; set; }
 			public string? job_name { get; set; }
 			public string? last_name_th { get; set; }
-			public string? lastauthen_timestamp { get; set; }
+			public DateTime? lastauthen_timestamp { get; set; }
 			public string? mobile_no { get; set; }
 			public string? name_en { get; set; }
 			public string? org_id { get; set; }

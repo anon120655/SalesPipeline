@@ -113,7 +113,7 @@ public partial class User
 
     public string? branch_name { get; set; }
 
-    public int? cbs_id { get; set; }
+    public string? cbs_id { get; set; }
 
     public string? change_password_url { get; set; }
 
@@ -121,9 +121,9 @@ public partial class User
 
     public string? email_baac { get; set; }
 
-    public int? employee_id { get; set; }
+    public string? employee_id { get; set; }
 
-    public int? employee_position_id { get; set; }
+    public string? employee_position_id { get; set; }
 
     public string? employee_position_level { get; set; }
 
@@ -135,11 +135,11 @@ public partial class User
 
     public bool? image_existing { get; set; }
 
-    public int? job_field_id { get; set; }
+    public string? job_field_id { get; set; }
 
     public string? job_field_name { get; set; }
 
-    public int? job_id { get; set; }
+    public string? job_id { get; set; }
 
     public string? job_name { get; set; }
 
@@ -147,11 +147,11 @@ public partial class User
 
     public DateTime? lastauthen_timestamp { get; set; }
 
-    public int? mobile_no { get; set; }
+    public string? mobile_no { get; set; }
 
     public string? name_en { get; set; }
 
-    public int? org_id { get; set; }
+    public string? org_id { get; set; }
 
     public string? org_name { get; set; }
 
@@ -159,7 +159,7 @@ public partial class User
 
     public string? organization_abbreviation { get; set; }
 
-    public int? organization_upper_id { get; set; }
+    public string? organization_upper_id { get; set; }
 
     public string? organization_upper_id2 { get; set; }
 
@@ -171,11 +171,11 @@ public partial class User
 
     public string? organization_upper_name3 { get; set; }
 
-    public string? password_unexpire { get; set; }
+    public bool? password_unexpire { get; set; }
 
-    public string? requester_active { get; set; }
+    public bool? requester_active { get; set; }
 
-    public string? requester_existing { get; set; }
+    public bool? requester_existing { get; set; }
 
     public DateTime? timeresive { get; set; }
 
