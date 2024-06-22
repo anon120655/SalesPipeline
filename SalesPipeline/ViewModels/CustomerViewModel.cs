@@ -21,11 +21,11 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
-		public async Task<ResultModel<ResponseDefaultModel>?> VerifyByNumber(string juristicNumber)
+		public async Task<ResultModel<ResponseDefaultModel>?> VerifyByNumber(string juristicNumber,int? userid = null)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Customer/VerifyByNumber?juristicNumber={juristicNumber}");
+				var content = await _httpClient.GetAsync($"/v1/Customer/VerifyByNumber?juristicNumber={juristicNumber}&userid={userid}");
 				var dataMap = JsonConvert.DeserializeObject<ResponseDefaultModel>(content);
 				return new ResultModel<ResponseDefaultModel>()
 				{

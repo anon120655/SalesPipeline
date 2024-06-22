@@ -241,9 +241,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					foreach (var item in calendarList)
 					{
-						if (item.AppointmentDate.HasValue && item.AppointmentTime.HasValue && item.Sale != null && item.Sale.AssUserId.HasValue)
+						if (item.AppointmentDate.HasValue && item.AppointmentTime.HasValue && item.AssUserId.HasValue)
 						{
-							var userSendNoti = await _repo.Notifys.GetUserSendNotiById(item.Sale.AssUserId.Value);
+							var userSendNoti = await _repo.Notifys.GetUserSendNotiById(item.AssUserId.Value);
 							if (userSendNoti != null && userSendNoti.Count > 0)
 							{
 								foreach (var item_user in userSendNoti)

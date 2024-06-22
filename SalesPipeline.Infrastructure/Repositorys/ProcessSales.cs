@@ -1542,7 +1542,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				AppointmentDate = x.AppointmentDate,
 				AppointmentTime = x.AppointmentTime,
 				Location = x.Location,
-				Note = x.Note
+				Note = x.Note,
+				AssUserId = x.Sale.AssUserId
 			}).ToListAsync();
 
 			return response;

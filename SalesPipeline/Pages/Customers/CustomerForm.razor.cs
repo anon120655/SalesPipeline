@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SalesPipeline.Pages.Customers
 {
-    public partial class CustomerForm
+	public partial class CustomerForm
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -211,7 +211,16 @@ namespace SalesPipeline.Pages.Customers
 					formModel = data.Data;
 					if (formModel.Sales != null)
 					{
-						formModel.Branch_RegionId = formModel.Sales.Select(x => x.Master_Branch_RegionId).FirstOrDefault();
+						var sales = formModel.Sales.FirstOrDefault();
+						if (sales != null)
+						{
+							formModel.Branch_RegionId = sales.Master_Branch_RegionId;
+
+							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
+							{
+								_permission.IsView = UserInfo.BranchId == sales.BranchId;
+							}
+						}
 					}
 				}
 				else
@@ -383,7 +392,7 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
-				var data = await _customerViewModel.VerifyByNumber(formModel.JuristicPersonRegNumber);
+				var data = await _customerViewModel.VerifyByNumber(formModel.JuristicPersonRegNumber, UserInfo.Id);
 				if (data != null && data.Status && data.Data != null)
 				{
 					if (data.Data.Code == "pass")

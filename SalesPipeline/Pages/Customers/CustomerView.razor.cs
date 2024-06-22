@@ -10,7 +10,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
 {
-    public partial class CustomerView
+	public partial class CustomerView
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -45,6 +45,10 @@ namespace SalesPipeline.Pages.Customers
 				var data = await _salesViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
+					if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
+					{
+						_permission.IsView = UserInfo.BranchId == data.Data.BranchId;
+					}
 					formModel = data.Data;
 				}
 				else

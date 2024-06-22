@@ -763,3 +763,7 @@ form .row {
     border-radius: 50%;
     background-color: #d33f10;
 }
+
+.back_blank {
+    background-color: #deebf7;
+}

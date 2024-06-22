@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
@@ -12,7 +13,7 @@ using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class Customers : ICustomers
+	public class Customers : ICustomers
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -56,7 +57,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (juristicPersonRegNumber != null)
 				{
-					var juristicNumber = await VerifyByNumber(juristicPersonRegNumber);
+					var juristicNumber = await VerifyByNumber(juristicPersonRegNumber, model.CurrentUserId);
 					if (juristicNumber.Code == "proceed")
 					{
 						errorMessage = juristicNumber.Message ?? string.Empty;
@@ -182,13 +183,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return model;
 		}
 
-		public async Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber)
+		public async Task<ResponseDefaultModel> VerifyByNumber(string juristicNumber, int? userid = null)
 		{
 			string code = "pass";
 			string message = "ผ่าน";
 			string id = "";
 
 			juristicNumber = juristicNumber.Trim();
+
+			UserCustom? user = null;
+			if (userid.HasValue)
+			{
+				user = await _repo.User.GetById(userid.Value);
+			}
 
 			var customers = await _repo.Context.Customers.Include(x => x.Sales).FirstOrDefaultAsync(x => x.JuristicPersonRegNumber == juristicNumber);
 			if (customers != null)
@@ -199,6 +206,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					foreach (var item_sale in customers.Sales)
 					{
+						if (user != null && user.Role != null && !user.Role.Code.Contains(RoleCodes.ADMIN) && user.BranchId.HasValue)
+						{
+							if (item_sale.BranchId != user.BranchId)
+							{
+								code = "proceed";
+								message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ท่านไม่มีสิทธิ์ดำเนินการเนื่องจากอยู่ในเขตรับผิดชอบอื่น";
+								isProceed = true;
+								break;
+							}
+						}
 						if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
 						{
 							if (!isProceed)

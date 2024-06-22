@@ -52,13 +52,13 @@ namespace SalesPipeline.API.Controllers
 		/// </summary>
 		//[AllowAnonymous]
 		[HttpGet("VerifyByNumber")]
-		public async Task<IActionResult> VerifyByNumber([FromQuery] string juristicNumber)
+		public async Task<IActionResult> VerifyByNumber([FromQuery] string juristicNumber, int? userid = null)
 		{
 			try
 			{
 				if (juristicNumber.Length < 10) throw new ExceptionCustom("ระบุข้อมูลไม่ถูกต้อง");
 
-				var data = await _repo.Customer.VerifyByNumber(juristicNumber);
+				var data = await _repo.Customer.VerifyByNumber(juristicNumber, userid);
 				return Ok(data);
 			}
 			catch (Exception ex)

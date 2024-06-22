@@ -135,5 +135,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public virtual SaleCustom? Sale { get; set; }
 
+		//Custom
+		//ใช้กับ Job
+		public int? AssUserId { get; set; }
+
 	}
 }

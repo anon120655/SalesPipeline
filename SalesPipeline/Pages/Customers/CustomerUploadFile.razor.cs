@@ -1486,6 +1486,7 @@ namespace SalesPipeline.Pages.Customers
 									{
 										customerImportList.Add(new()
 										{
+											CurrentUserId = UserInfo.Id,
 											DateContact = DateContact,
 											Master_ContactChannelId = Master_ContactChannelId,
 											Branch_RegionId = Branch_RegionId,
