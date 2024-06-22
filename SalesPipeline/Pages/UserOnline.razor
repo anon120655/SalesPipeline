@@ -6,6 +6,25 @@
 
 @layout MainLayoutBlank
 
+<nav class="d-flex align-items-center sb-topnav navbar navbar-expand  bg-header">
+	<!-- Navbar Brand-->
+	<a class="navbar-brand ps-3 text-white" href="/">
+		<img src="/image/logo/logo_bacc.png" width="35" /> <span class="d-none d-md-inline-block">BAAC RM SALE</span>
+	</a>
+	<!-- Navbar Search-->
+	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+		@if (_appSet.Value.ServerSite != ServerSites.PRO)
+		{
+			<span class="text-white fs_1_1r ms-3 fw-bold">Website Test (@_appSet.Value.ServerSite)</span>
+		}
+	</form>
+	<!-- Navbar-->
+	<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 d-flex justify-content-end align-items-center" style="min-width: 14.1rem;">
+		<li class="nav-item dropdown">
+			
+		</li>
+	</ul>
+</nav>
 <div class="container-xxl mt-3">
 	<div class="row">
 		<div class="col-12 col-xl">
@@ -85,7 +104,7 @@
 </div>
 
 @code {
-	[Inject] protected IHttpContextAccessor _accessor { get; set; } = null!;
+	// [Inject] protected IHttpContextAccessor _accessor { get; set; } = null!;
 
 	protected HubConnection _hubUserConnection { get; set; } = null!;
 	protected List<UserOnlineModel>? UserOnlineModels;
