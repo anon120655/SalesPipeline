@@ -102,9 +102,21 @@ namespace SalesPipeline.ViewModels
 				});
 				if (!userInDatabase.Status || userInDatabase.Data == null) throw new Exception(userInDatabase.errorMessage);
 
+				List<MenuItemCustom> MenuItem = new();
+				var dataMenuItem = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/Master/MenuItem?status=1");
+				if (dataMenuItem.StatusCode == System.Net.HttpStatusCode.OK && dataMenuItem.Content != null)
+				{
+					var dataMenuItemMap = JsonConvert.DeserializeObject<List<MenuItemCustom>>(await dataMenuItem.Content.ReadAsStringAsync());
+					if (dataMenuItemMap != null)
+					{
+						MenuItem = dataMenuItemMap;
+					}
+				}
+
 				var identity = CreateIdentityFromUser(userInDatabase.Data);
 				var principal = new ClaimsPrincipal(identity);
 				await _protectedLocalStorage.SetAsync("identity", JsonConvert.SerializeObject(userInDatabase.Data));
+				await _protectedLocalStorage.SetAsync("identityMenu", JsonConvert.SerializeObject(MenuItem));
 
 				NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
 				return userInDatabase;
@@ -122,6 +134,7 @@ namespace SalesPipeline.ViewModels
 		public async Task LogoutAsync()
 		{
 			await _protectedLocalStorage.DeleteAsync("identity");
+			await _protectedLocalStorage.DeleteAsync("identityMenu");
 			var principal = new ClaimsPrincipal();
 			NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(principal)));
 		}
@@ -192,6 +205,26 @@ namespace SalesPipeline.ViewModels
 				}
 
 				return userInDatabase;
+			}
+			catch
+			{
+				_Nav.NavigateTo("/signin?p=user", true);
+				return null;
+			}
+		}
+
+		public async Task<List<MenuItemCustom>?> GetMenuItem()
+		{
+			try
+			{
+				var data = new List<MenuItemCustom>();
+				var storedPrincipal = await _protectedLocalStorage.GetAsync<string>("identityMenu");
+				if (storedPrincipal.Success && storedPrincipal.Value != null)
+				{
+					data = JsonConvert.DeserializeObject<List<MenuItemCustom>>(storedPrincipal.Value);
+				}
+
+				return data;
 			}
 			catch
 			{

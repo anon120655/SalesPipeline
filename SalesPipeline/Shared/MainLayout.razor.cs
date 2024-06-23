@@ -64,18 +64,12 @@ namespace SalesPipeline.Shared
 			if (isAuthorize)
 			{
 				UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
-				var sale = await _salesViewModel.GetOverdueCount(new() { userid = UserInfo.Id });
-				if (sale != null)
-				{
-					UserInfo.OverdueNotify = sale.Data;
-				}
 
-				var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-				if (dataMenuItem != null && dataMenuItem.Status && dataMenuItem.Data != null)
+				MenuItem = await _authorizeViewModel.GetMenuItem() ?? new();
+				if (MenuItem.Count == 0)
 				{
-					MenuItem = dataMenuItem.Data;
+					_Navs.NavigateTo("/signin?p=timeout", true);
 				}
-
 				StateHasChanged();
 
 				var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
@@ -85,7 +79,12 @@ namespace SalesPipeline.Shared
 					await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
 				}
 
-				//_Navs.NavigateTo("/?p=oninit");
+				//await Task.Delay(1500);
+				var sale = await _salesViewModel.GetOverdueCount(new() { userid = UserInfo.Id });
+				if (sale != null)
+				{
+					UserInfo.OverdueNotify = sale.Data;
+				}
 			}
 			else
 			{

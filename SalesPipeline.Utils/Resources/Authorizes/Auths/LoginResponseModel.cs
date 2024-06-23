@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;

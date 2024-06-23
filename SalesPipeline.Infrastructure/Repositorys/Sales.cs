@@ -763,8 +763,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 
 			IQueryable<Sale> query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
-													.Include(x => x.Customer)
-													.Include(x => x.Sale_Statuses)
+													//.Include(x => x.Customer)
+													//.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();
 
