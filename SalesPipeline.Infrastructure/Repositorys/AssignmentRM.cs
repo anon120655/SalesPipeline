@@ -273,7 +273,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
-				salesQuery = salesQuery.Where(x => x.AssCenterUserId == user.Id);
+				salesQuery = salesQuery.Where(x => x.BranchId == user.BranchId);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();

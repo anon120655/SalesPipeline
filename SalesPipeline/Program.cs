@@ -111,6 +111,8 @@ else
 	app.UseHsts();
 }
 
+//app.UseDeveloperExceptionPage();
+
 //if (!app.Environment.IsDevelopment())
 //{
 //	app.UseExceptionHandler("/Error");

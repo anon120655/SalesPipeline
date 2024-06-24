@@ -106,6 +106,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			int expires_in = 1; //days
 
+			int? roleId = 0;
+			if (modeliAuth.job_name != null && modeliAuth.job_name.Contains("ผู้จัดการศูนย์"))
+			{
+				roleId = 7; //RoleCodes.CEN_BRANCH
+			}
+			else if(modeliAuth.job_name != null && modeliAuth.job_name.Contains("พนักงานธุรกิจสินเชื่อ"))
+			{
+				//RM พนักงานธุรกิจสินเชื่อ
+				roleId = 8; //RoleCodes.RM
+			}
+
 			UserCustom userCustom = new()
 			{
 				Status = StatusModel.Active,
@@ -118,6 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				FullName = $"{modeliAuth.first_name_th} {modeliAuth.last_name_th}",
 				Email = model.Username,
 				Tel = modeliAuth.mobile_no,
+				RoleId = roleId,
 				authen_fail_time = modeliAuth.authen_fail_time,
 				branch_code = modeliAuth.branch_code,
 				branch_name = modeliAuth.branch_name,

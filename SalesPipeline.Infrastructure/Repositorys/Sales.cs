@@ -387,7 +387,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
-				query = query.Where(x => x.AssCenterUserId == user.Id);
+				query = query.Where(x => x.BranchId == user.BranchId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
@@ -774,7 +774,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 			{
-				query = query.Where(x => x.AssCenterUserId == user.Id);
+				query = query.Where(x => x.BranchId == user.BranchId);
 			}
 			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 			{
