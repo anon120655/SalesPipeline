@@ -56,8 +56,8 @@ namespace SalesPipeline.Shared
 			string? _hubUrlWeb = baseUrlWeb?.TrimEnd('/') + SignalRUtls.HubUserUrl;
 			_hubUserConnection = new HubConnectionBuilder().WithUrl(_hubUrlWeb).Build();
 
-			///**** comment StartAsync ไว้ก่อน เพราะถ้าเปิดจะไปที่ OnAfterRender ทันที
-			//await _hubUserConnection.StartAsync();
+			///**** comment ไว้ก่อน บน server baac error
+			await _hubUserConnection.StartAsync();
 
 			isAuthorize = await _authorizeViewModel.IsAuth();
 
@@ -73,11 +73,11 @@ namespace SalesPipeline.Shared
 				StateHasChanged();
 
 				var remoteIpAddress = _accessor.HttpContext?.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress;
-				//if (_hubUserConnection is not null)
-				//{
-				//	_UserKey = Guid.NewGuid().ToString();
-				//	await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
-				//}
+				if (_hubUserConnection is not null)
+				{
+					_UserKey = Guid.NewGuid().ToString();
+					await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
+				}
 
 				//await Task.Delay(1500);
 				var sale = await _salesViewModel.GetOverdueCount(new() { userid = UserInfo.Id });
@@ -170,10 +170,10 @@ namespace SalesPipeline.Shared
 		public async ValueTask DisposeAsync()
 		{
 			timerCountDown?.Dispose();
-			//if (_hubUserConnection is not null && UserInfo is not null)
-			//{
-			//	await _hubUserConnection.SendAsync(SignalRUtls.RemoveUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id });
-			//}
+			if (_hubUserConnection is not null && UserInfo is not null)
+			{
+				await _hubUserConnection.SendAsync(SignalRUtls.RemoveUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id });
+			}
 		}
 	}
 }

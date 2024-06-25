@@ -72,7 +72,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 			if (process.ExitCode != 0)
 			{
-				throw new ExceptionCustom($"Error: {error}");
+				//throw new ExceptionCustom($"Error: {error}");
 			}
 			//else
 			//{
