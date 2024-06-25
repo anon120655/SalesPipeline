@@ -95,7 +95,7 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 50 });
+			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
 			if (iSICCode != null && iSICCode.Status)
 			{
 				LookUp.ISICCode = iSICCode.Data?.Items;
