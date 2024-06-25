@@ -3719,7 +3719,8 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.UpdateBy).HasColumnType("int(11)");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
-            entity.Property(e => e.iAuthenRoleCode).HasMaxLength(255);
+            entity.Property(e => e.iAuthenRoleCode).HasMaxLength(50);
+            entity.Property(e => e.iAuthenRoleName).HasMaxLength(255);
         });
 
         modelBuilder.Entity<User_Target_Sale>(entity =>

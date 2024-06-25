@@ -10,6 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.iAuthen;
+using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -107,14 +108,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			int expires_in = 1; //days
 
 			int? roleId = 0;
-			if (modeliAuth.job_name != null && modeliAuth.job_name.Contains("ผู้จัดการศูนย์"))
+			int? levelId = null;
+
+			if (modeliAuth.job_id != null)
 			{
-				roleId = 7; //RoleCodes.CEN_BRANCH
-			}
-			else if(modeliAuth.job_name != null && modeliAuth.job_name.Contains("พนักงานธุรกิจสินเชื่อ"))
-			{
-				//RM พนักงานธุรกิจสินเชื่อ
-				roleId = 8; //RoleCodes.RM
+				var user_Roles = await _repo.Context.User_Roles
+					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete
+					&& x.iAuthenRoleCode != null
+					&& x.iAuthenRoleCode.Contains(modeliAuth.job_id));
+				if (user_Roles != null)
+				{
+					roleId = user_Roles.Id;
+					if (int.TryParse(modeliAuth.employee_position_level, out int _levelid))
+					{
+						levelId = _levelid;
+					}
+				}
 			}
 
 			UserCustom userCustom = new()
@@ -130,6 +139,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Email = model.Username,
 				Tel = modeliAuth.mobile_no,
 				RoleId = roleId,
+				LevelId = levelId,
 				authen_fail_time = modeliAuth.authen_fail_time,
 				branch_code = modeliAuth.branch_code,
 				branch_name = modeliAuth.branch_name,
@@ -175,7 +185,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				working_status = modeliAuth.working_status
 			};
 
-			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
+			var user = _repo.Context.Users.SingleOrDefault(x => x.Email == model.Username);
 			if (user == null)
 			{
 				await _repo.User.Create(userCustom);

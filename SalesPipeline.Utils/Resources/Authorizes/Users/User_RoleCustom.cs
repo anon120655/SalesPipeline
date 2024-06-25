@@ -47,6 +47,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public string? iAuthenRoleCode { get; set; }
 
+		public string? iAuthenRoleName { get; set; }
+
 		public virtual ICollection<User_PermissionCustom>? User_Permissions { get; set; }
 
         //Custom

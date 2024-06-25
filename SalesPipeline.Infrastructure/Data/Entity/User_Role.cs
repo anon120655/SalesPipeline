@@ -42,6 +42,8 @@ public partial class User_Role
 
     public string? iAuthenRoleCode { get; set; }
 
+    public string? iAuthenRoleName { get; set; }
+
     public virtual ICollection<User_Permission> User_Permissions { get; set; } = new List<User_Permission>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();

@@ -194,7 +194,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 				{
-					model.LevelId = null;
+					//** comment ออก เพราะใน iAuthen ผู้จัดการศูนย์มี level ส่งมมา
+					//model.LevelId = null;
 				}
 				else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
 				{
