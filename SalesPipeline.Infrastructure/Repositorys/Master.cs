@@ -111,6 +111,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderBy(x => x.MenuNumber).ThenBy(x => x.ParentNumber)
 				.AsQueryable();
 
+			if (model.status.HasValue)
+			{
+				query = query.Where(x=>x.Status == model.status.Value);
+			}
+
 			return _mapper.Map<IList<MenuItemCustom>>(await query.ToListAsync());
 		}
 

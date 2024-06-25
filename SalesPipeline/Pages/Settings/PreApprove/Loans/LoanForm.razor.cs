@@ -7,7 +7,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.ConstTypeModel;
 
-namespace SalesPipeline.Pages.Loans
+namespace SalesPipeline.Pages.Settings.PreApprove.Loans
 {
     public partial class LoanForm
 	{
@@ -28,7 +28,7 @@ namespace SalesPipeline.Pages.Loans
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetPreApprove) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 
@@ -433,7 +433,7 @@ namespace SalesPipeline.Pages.Loans
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/loan");
+			_Navs.NavigateTo("/setting/pre/loan");
 		}
 
 		protected void ShowLoading()

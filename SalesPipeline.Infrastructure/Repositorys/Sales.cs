@@ -893,7 +893,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Sale_Contact_Infos
 												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderBy(x => x.CreateDate)
+												 //.OrderBy(x => x.CreateDate)
+												 .OrderBy(x => x.FullName)
 												 .AsQueryable();
 			if (model.status.HasValue)
 			{

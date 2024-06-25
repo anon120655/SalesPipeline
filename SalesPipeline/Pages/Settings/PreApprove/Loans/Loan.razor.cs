@@ -6,7 +6,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Loans
+namespace SalesPipeline.Pages.Settings.PreApprove.Loans
 {
 	public partial class Loan
 	{
@@ -21,7 +21,7 @@ namespace SalesPipeline.Pages.Loans
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Loan) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetPreApprove) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 		}
@@ -71,7 +71,7 @@ namespace SalesPipeline.Pages.Loans
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/loan";
+					Pager.UrlAction = "/setting/pre/loan";
 				}
 			}
 			else

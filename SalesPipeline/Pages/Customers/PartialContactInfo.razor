@@ -6,10 +6,11 @@
 				<table class="table table_list">
 					<thead>
 						<tr>
-							<th scope="col">ชื่อผู้ติดต่อ</th>
+							<th scope="col">ชื่อลูกค้าที่ติดต่อ</th>
 							<th scope="col">ตำแหน่ง</th>
 							<th scope="col">เบอร์โทร</th>
 							<th scope="col">อีเมล</th>
+							<th scope="col">วันที่ได้รับข้อมูล</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -20,6 +21,9 @@
 								<td>@GeneralUtils.EmptyTo(item.Position)</td>
 								<td>@GeneralUtils.EmptyTo(item.Tel)</td>
 								<td>@GeneralUtils.EmptyTo(item.Email)</td>
+								<td>
+									@GeneralUtils.DateToThString(item.CreateDate)
+								</td>
 							</tr>
 						}
 					</tbody>

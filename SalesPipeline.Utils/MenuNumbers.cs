@@ -35,8 +35,8 @@
 		//จัดการ User
 		public const int RMUser = 230000;
 
-		//รายการสินเชื่อ
-		public const int Loan = 240000;
+		//Empty
+		public const int Empty = 240000;
 
 		//จัดการระบบผู้ใช้งาน
 		public const int LoanPermission = 250100;

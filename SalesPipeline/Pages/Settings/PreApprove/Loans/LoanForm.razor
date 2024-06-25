@@ -1,5 +1,5 @@
-﻿@page "/loan/create"
-@page "/loan/update/{id:guid}"
+﻿@page "/setting/pre/loan/create"
+@page "/setting/pre/loan/update/{id:guid}"
 
 <PageTitle>สินเชื่อ</PageTitle>
 
@@ -24,7 +24,7 @@
 						<div class="row mt-5">
 							<div class="col-12">
 								<div class="row mb-3">
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อสินเชื่อ</label>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทสินเชื่อ</label>
 									<div class="col-12 col-md-7 col-xl-3">
 										<input @bind="formModel.Name" type="text" class="form-control" maxlength="100">
 										<ValidationMessage For="@(() => formModel.Name)" />
@@ -47,7 +47,7 @@
 										</select>
 										<ValidationMessage For="@(() => formModel.Master_Pre_Interest_PayTypeId)" />
 									</div>
-									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จำนวนช่วงเวลา</label>
+									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Tier</label>
 									<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 										<select @bind="formModel.PeriodNumber" id="Interest_Periods" class="selectpicker selectInit" data-style="select_btn_set" title="เลือก" data-live-search="true">
 											@if (LookUp.Periods?.Count > 0)
