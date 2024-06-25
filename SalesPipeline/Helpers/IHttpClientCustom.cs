@@ -56,7 +56,7 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(baseUri + url)
 				{
 					ThrowOnAnyError = false,
-					MaxTimeout = 60000
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 
 				if (!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(password))
@@ -463,7 +463,7 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					MaxTimeout = 60000
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
@@ -505,7 +505,7 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					MaxTimeout = 60000
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();

@@ -56,6 +56,8 @@ namespace SalesPipeline.Utils
 		{
 			public string BackupDatabaseDir { get; set; } = null!;
 			public string MySqlDumpPath { get; set; } = null!;
+			public string UserDB { get; set; } = null!;
+			public string PasswordDB { get; set; } = null!;
 		}
 
 		public string? Version

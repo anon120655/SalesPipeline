@@ -17,7 +17,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 		private string mysqldumpPath = @"C:\Program Files\MariaDB 10.11\bin\mysqldump.exe";
 		private string backupDir = @"C:\DataRM\backups\database";
 		private string mysqlUser = "SA";
-		private string mysqlPassword = "P@sswordSalePipe2024";
+		private string mysqlPassword = "Ibusiness02";
 		private string mysqlDatabase = "SalesPipeline";
 
 		private readonly AppSettings _appSet;
@@ -33,6 +33,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 			{
 				backupDir = _appSet.Database.BackupDatabaseDir;
 				mysqldumpPath = _appSet.Database.MySqlDumpPath;
+				mysqlUser = _appSet.Database.UserDB;
+				mysqlPassword = _appSet.Database.PasswordDB;
 			}
 
 			var timestamp = DateTime.Now.ToString("yyyyMMdd");
