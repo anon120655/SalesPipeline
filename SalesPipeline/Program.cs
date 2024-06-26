@@ -1,24 +1,17 @@
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using SalesPipeline.Helpers;
 using SalesPipeline.Hubs;
 using SalesPipeline.Utils;
 using SalesPipeline.ViewModels;
 using SalesPipeline.ViewModels.Wrapper;
-using Microsoft.AspNetCore.Components.Server.Circuits;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.DataProtection;
-
 
 
 //***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport เปลี่ยนไปใช้ SixLabors.ImageSharp *****
 //***** FontAwesome <i></i> not use near code c# error Ex. <span><i></i></span>
 //***** timestamp Update not use table have count
 //***** RestSharp ใช้กับ AuthenticationStateProvider ไม่ได้
-// blazorbootstrap 1.9.4 ไม่มีปัญหาเรื่อง Tooltip ค้าง ถ้า 1.9.5-1.10.1 ยังเจอปัญหานี้อยู่ *1.10.2 แก้แล้ว
 // Resource temporarily unavailable ต้องไปแก้ DNS servers ใน Webmin 
 // if Cascading มีผลทำให้ SEO Meta ไม่แสดง ถ้าไม่ if ตอน reload หน้านั้นๆ ข้อมูลใน Cascading หน้าที่เรียกจะเป็น null ทำให้โปรแกรมค้าง ถ้าไม่ if ต้องไปเช็คเพิ่มใน OnParametersSet
 // [JsonIgnore] ใช้ System.Text.Json.Serialization

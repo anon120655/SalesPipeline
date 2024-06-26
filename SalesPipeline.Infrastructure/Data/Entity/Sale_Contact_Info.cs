@@ -33,5 +33,10 @@ public partial class Sale_Contact_Info
 
     public string? Email { get; set; }
 
+    /// <summary>
+    /// 1=ฟอร์มเพิ่มลูกค้า backend
+    /// </summary>
+    public short? Createdfrom { get; set; }
+
     public virtual Sale Sale { get; set; } = null!;
 }

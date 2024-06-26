@@ -11,18 +11,13 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using Microsoft.AspNetCore.Http.Features;
 using SalesPipeline.Infrastructure.Data.Mapping;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
-using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Utils.ValidationModel;
 using Hangfire;
 using System.Text.Json;
-using Hangfire.Storage;
 using Hangfire.MySql;
-using Microsoft.Extensions.Logging;
-using Hangfire.MemoryStorage;
 using SalesPipeline.Infrastructure.Data.Logger.Context;
 
 

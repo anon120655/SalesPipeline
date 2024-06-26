@@ -32,5 +32,10 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public string? Tel { get; set; }
 
 		public string? Email { get; set; }
-	}
+
+        /// <summary>
+        /// 1=ฟอร์มเพิ่มลูกค้า backend
+        /// </summary>
+        public short? Createdfrom { get; set; }
+    }
 }

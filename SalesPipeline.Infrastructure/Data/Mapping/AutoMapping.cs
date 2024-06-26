@@ -118,7 +118,8 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Sale_Reply_Section_ItemValue, Sale_Reply_Section_ItemValueCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Contact, Sale_ContactCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Contact_History, Sale_Contact_HistoryCustom>().ReverseMap();
-			CreateMap<Entity.Sale_Meet, Sale_MeetCustom>().ReverseMap();
+            CreateMap<Entity.Sale_Contact_Info, Sale_Contact_InfoCustom>().ReverseMap();
+            CreateMap<Entity.Sale_Meet, Sale_MeetCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Document, Sale_DocumentCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Result, Sale_ResultCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Close_Sale, Sale_Close_SaleCustom>().ReverseMap();
@@ -126,7 +127,6 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Sale_Duration, Sale_DurationCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Activity, Sale_ActivityCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Deliver, Sale_DeliverCustom>().ReverseMap();
-			CreateMap<Entity.Sale_Contact_Info, Sale_Contact_InfoCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Partner, Sale_PartnerCustom>().ReverseMap();
 
 			//Customer

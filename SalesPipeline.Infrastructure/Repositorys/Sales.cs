@@ -69,7 +69,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
-			await UpdateStatusOnly(new()
+            await UpdateStatusOnly(new()
 			{
 				SaleId = sale.Id,
 				StatusId = model.StatusSaleId,
@@ -856,8 +856,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_Info.Position = model.Position;
 			sale_Contact_Info.Tel = model.Tel;
 			sale_Contact_Info.Email = model.Email;
+			sale_Contact_Info.Createdfrom = model.Createdfrom;
 
-			await _db.InsterAsync(sale_Contact_Info);
+            await _db.InsterAsync(sale_Contact_Info);
 			await _db.SaveAsync();
 
 			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);
@@ -875,8 +876,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale_Contact_Info.Position = model.Position;
 				sale_Contact_Info.Tel = model.Tel;
 				sale_Contact_Info.Email = model.Email;
+                sale_Contact_Info.Createdfrom = model.Createdfrom;
 
-				_db.Update(sale_Contact_Info);
+                _db.Update(sale_Contact_Info);
 				await _db.SaveAsync();
 			}
 			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);

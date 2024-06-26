@@ -2705,6 +2705,9 @@ public partial class SalesPipelineContext : DbContext
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Createdfrom)
+                .HasComment("1=ฟอร์มเพิ่มลูกค้า backend")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName)
                 .HasMaxLength(255)
