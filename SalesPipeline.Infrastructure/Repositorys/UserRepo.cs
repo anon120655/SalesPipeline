@@ -799,6 +799,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					Code = model.Code,
 					Name = model.Name,
 					Description = model.Description,
+					iAuthenRoleCode = model.iAuthenRoleCode,
+					iAuthenRoleName = model.iAuthenRoleName,
 					IsModify = model.IsModify,
 				};
 				await _db.InsterAsync(userRole);
@@ -841,6 +843,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					userRole.Code = model.Code;
 					userRole.Name = model.Name;
 					userRole.Description = model.Description;
+					userRole.iAuthenRoleCode = model.iAuthenRoleCode;
+					userRole.iAuthenRoleName = model.iAuthenRoleName;
 					userRole.IsModify = model.IsModify;
 					_db.Update(userRole);
 					await _db.SaveAsync();

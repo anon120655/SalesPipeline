@@ -198,7 +198,7 @@
 													{
 														foreach (var item in LookUp.ISICCode)
 														{
-															<option value="@item.Id">@item.Name</option>
+															<option value="@item.Id">@(!String.IsNullOrEmpty(item.Code) ? $"({item.Code})" : string.Empty) @item.Name</option>
 														}
 													}
 												</select>
@@ -212,7 +212,7 @@
 													{
 														foreach (var item in LookUp.TSIC)
 														{
-															<option value="@item.Id">@item.Name</option>
+															<option value="@item.Id">@(!String.IsNullOrEmpty(item.Code) ? $"({item.Code})" : string.Empty) @item.Name</option>
 														}
 													}
 												</select>
