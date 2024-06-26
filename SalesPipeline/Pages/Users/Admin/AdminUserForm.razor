@@ -22,9 +22,16 @@
 						<div class="row mt-5">
 							<div class="col-12">
 								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">UserName<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<input @bind="formModel.UserName" type="text" class="form-control" disabled="@(id.HasValue ? true : false)">
+										<ValidationMessage For="@(() => formModel.UserName)" />
+									</div>
+								</div>
+								<div class="row mb-3">
 									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสพนักงาน<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<input @bind="formModel.EmployeeId" type="text" class="form-control" disabled="@(id.HasValue ? true : false)">
+										<input @bind="formModel.EmployeeId" type="text" class="form-control" >
 										<ValidationMessage For="@(() => formModel.EmployeeId)" />
 									</div>
 								</div>
@@ -65,26 +72,26 @@
 										<ValidationMessage For="@(() => formModel.PositionId)" />
 									</div>
 								</div>
-								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
-									<div class="col-sm-4">
-										<select @bind="formModel.Master_DepartmentId" class="selectpickerdefault">
-											<option value="">เลือก</option>
-											@if (LookUp.Departments?.Count > 0)
-											{
-												foreach (var item in LookUp.Departments)
-												{
-													<option value="@item.Id">@item.Name</option>
-												}
-											}
-										</select>
-										<ValidationMessage For="@(() => formModel.Master_DepartmentId)" />
-									</div>
-								</div>
+								@* <div class="row mb-3">
+							<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ฝ่าย<span class="text-danger">*</span></label>
+							<div class="col-sm-4">
+							<select @bind="formModel.Master_DepartmentId" class="selectpickerdefault">
+							<option value="">เลือก</option>
+							@if (LookUp.Departments?.Count > 0)
+							{
+							foreach (var item in LookUp.Departments)
+							{
+							<option value="@item.Id">@item.Name</option>
+							}
+							}
+							</select>
+							<ValidationMessage For="@(() => formModel.Master_DepartmentId)" />
+							</div>
+							</div> *@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับหน้าที่<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
-										<select @onchange="((e) => OnRoles(e.Value,null))" class="selectpickerdefault" value="@formModel.RoleId">
+										<select id="Roles" class="selectpicker selectInit" data-style="select_btn_set" value="@formModel.RoleId">
 											<option value="">เลือก</option>
 											@if (ItemsUserRole?.Count > 0)
 											{
@@ -98,7 +105,7 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ<span class="text-danger">*</span></label>
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">ระดับ</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.LevelId" class="selectpickerdefault">
 											<option value="">เลือก</option>
@@ -113,6 +120,63 @@
 										<ValidationMessage For="@(() => formModel.LevelId)" />
 									</div>
 								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">กิจการสาขา</label>
+									<div class="col-sm-4">
+										<select @bind="formModel.Master_Branch_RegionId" id="DepBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+											<option value="">เลือก</option>
+											@if (LookUp.DepartmentBranch?.Count > 0)
+											{
+												foreach (var item in LookUp.DepartmentBranch)
+												{
+													<option value="@item.Id">@item.Name</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.Master_Branch_RegionId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">จังหวัด</label>
+									<div class="col-sm-4">
+										<select @bind="formModel.ProvinceId" id="Province" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+											@if (LookUp.Provinces?.Count > 0)
+											{
+												foreach (var item in LookUp.Provinces)
+												{
+													<option value="@item.ProvinceID">@item.ProvinceName</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.ProvinceId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สาขา</label>
+									<div class="col-sm-4">
+										<select @bind="formModel.BranchId" id="Branch" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
+											@if (LookUp.Branchs?.Count > 0)
+											{
+												foreach (var item in LookUp.Branchs)
+												{
+													<option value="@item.BranchID">@item.BranchName</option>
+												}
+											}
+										</select>
+										<ValidationMessage For="@(() => formModel.BranchId)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สถานะ<span class="text-danger">*</span></label>
+									<div class="col-sm-4">
+										<select @bind="formModel.Status" class="selectpickerdefault">
+											<option value="1">Y</option>
+											<option value="0">N</option>
+										</select>
+										<ValidationMessage For="@(() => formModel.Status)" />
+									</div>
+								</div>
+
 							</div>
 						</div>
 						<div class="my-4 text-center">

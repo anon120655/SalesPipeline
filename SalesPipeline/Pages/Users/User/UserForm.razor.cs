@@ -92,7 +92,6 @@ namespace SalesPipeline.Pages.Users.User
 
 			StateHasChanged();
 			await Task.Delay(1);
-			//await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnAssignment", "#Assignment");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRoles", "#Roles");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
 

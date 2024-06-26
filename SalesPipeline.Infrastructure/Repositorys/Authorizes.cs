@@ -35,7 +35,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			int expires_in = 1; //days
 
-			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
+			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.UserName == model.Username);
 
 			// return null if user not found
 			if (user == null) throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
@@ -131,6 +131,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Status = StatusModel.Active,
 				Create_Type = 1,
 				CurrentUserId = 0,
+				UserName = modeliAuth.Username,
 				EmployeeId = modeliAuth.employee_id,
 				TitleName = modeliAuth.title_th,
 				FirstName = modeliAuth.first_name_th,
@@ -185,7 +186,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				working_status = modeliAuth.working_status
 			};
 
-			var user = _repo.Context.Users.SingleOrDefault(x => x.Email == model.Username);
+			var user = _repo.Context.Users.SingleOrDefault(x => x.UserName == model.Username);
 			if (user == null)
 			{
 				await _repo.User.Create(userCustom);
@@ -196,7 +197,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _repo.User.Update(userCustom);
 			}
 
-			user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.Email == model.Username);
+			user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.UserName == model.Username);
 
 			var userMap = _mapper.Map<UserCustom>(user);
 

@@ -80,7 +80,7 @@
 								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
 								<DropdownMenu>
 									<DropdownItem To="/admin/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-									<DropdownItem To="/admin/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+									@* <DropdownItem To="/admin/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem> *@
 								</DropdownMenu>
 							</Dropdown>
 						</div>
@@ -94,10 +94,12 @@
 											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
-											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ตำแหน่ง</th>
+											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ระดับ</th>
-											<th class="text-center">วันที่เพิ่ม</th>
+											<th class="text-center">ฝ่าย</th>
+											<th class="text-center">จังหวัด</th>
+											<th class="text-center">สาขา</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">การใช้งาน</th>
 										</tr>
@@ -130,16 +132,27 @@
 												<tr>
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@item.EmployeeId</td>
-													<td class="">@item.FullName</td>
+													<td class="">@GeneralUtils.EmptyTo(item.FullName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(GetPositionName(item.PositionId))</td>
 													<td class="text-center">
 														@if (item.Role != null)
 														{
-															<p>@item.Role.Name</p>
+															<p>@GeneralUtils.EmptyTo(item.Role.Name)</p>
 														}
 													</td>
-													<td class="text-center">@GetPositionName(item.PositionId)</td>
-													<td class="text-center">@GetLevelName(item.LevelId)</td>
-													<td class="text-center">@GeneralUtils.getFullThaiShot(item.CreateDate)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(GetLevelName(item.LevelId))</td>
+													<td class="text-center">
+														@if (item.Master_Branch_RegionId.HasValue)
+														{
+															@GeneralUtils.EmptyTo(GetDepBranchName(item.Master_Branch_RegionId))
+														}
+														else
+														{
+															<span>-</span>
+														}
+													</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
 													<td class="text-center">
 														<a href="/admin/update/@item.Id">แก้ไข</a> /
 														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.FullName))'>ลบ</a>

@@ -86,10 +86,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderBy(x => x.Id)
 				.AsQueryable();
 
-			if (int.TryParse(model.type, out int _type))
-			{
-				query = query.Where(x => x.Type == _type);
-			}
+			//*** ไม่มีส่วนนี้ ยุบเมนูจัดการ user มารวมกับ จัดการระบบผู้ใช้งาน
+			//if (int.TryParse(model.type, out int _type))
+			//{
+			//	query = query.Where(x => x.Type == _type);
+			//}
 
 			return _mapper.Map<IList<Master_PositionCustom>>(await query.ToListAsync());
 		}

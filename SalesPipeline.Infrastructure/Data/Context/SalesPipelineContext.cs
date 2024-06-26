@@ -3565,6 +3565,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UrlSignature)
                 .HasMaxLength(300)
                 .HasComment("url ลายเซ็น");
+            entity.Property(e => e.UserName).HasMaxLength(255);
             entity.Property(e => e.authen_fail_time).HasColumnType("int(11)");
             entity.Property(e => e.branch_code).HasMaxLength(255);
             entity.Property(e => e.branch_name).HasMaxLength(255);

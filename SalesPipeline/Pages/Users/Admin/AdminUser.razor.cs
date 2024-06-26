@@ -67,6 +67,17 @@ namespace SalesPipeline.Pages.Users.Admin
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
+			{
+				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataGetDivBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			StateHasChanged();
 		}
 
@@ -87,7 +98,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			if (resetPage) filter.page = 1;
 
-			filter.type = UserTypes.Admin;
+			//filter.type = UserTypes.Admin;
 			var data = await _userViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -112,6 +123,16 @@ namespace SalesPipeline.Pages.Users.Admin
 			if (LookUp.Positions != null && id.HasValue)
 			{
 				return LookUp.Positions.FirstOrDefault(x => x.Id == id)?.Name;
+			}
+
+			return null;
+		}
+
+		protected string? GetDepBranchName(Guid? id)
+		{
+			if (LookUp.DepartmentBranch != null && id.HasValue)
+			{
+				return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
 			}
 
 			return null;

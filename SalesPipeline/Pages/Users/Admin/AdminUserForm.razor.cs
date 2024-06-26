@@ -7,10 +7,11 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-    public partial class AdminUserForm
+	public partial class AdminUserForm
 	{
 		[Parameter]
 		public int? id { get; set; }
@@ -21,43 +22,22 @@ namespace SalesPipeline.Pages.Users.Admin
 		private LookUpResource LookUp = new();
 		private List<User_RoleCustom>? ItemsUserRole;
 		private UserCustom formModel = new();
+		private string? department_BranchName = null;
 
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
-			await SetInitManual();
+			await SetModel();
 		}
 
 		protected async override Task OnAfterRenderAsync(bool firstRender)
 		{
 			if (firstRender)
 			{
-				await SetModel();
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				await BootSelectInit();
 				firstRender = false;
-			}
-		}
-
-		protected async Task SetModel()
-		{
-			if (id.HasValue)
-			{
-				var data = await _userViewModel.GetById(id.Value);
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel = data.Data;
-					if (formModel.RoleId.HasValue)
-					{
-						await OnRoles(formModel.RoleId,formModel.LevelId);
-					}
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
 			}
 		}
 
@@ -88,15 +68,133 @@ namespace SalesPipeline.Pages.Users.Admin
 			var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
 			if (data != null && data.Status)
 			{
-				ItemsUserRole = data.Data?.Items.Where(x => x.Code.Contains(RoleCodes.LOAN)).ToList();
+				//*** ไม่มีส่วนนี้ ยุบเมนูจัดการ user มารวมกับ จัดการระบบผู้ใช้งาน
+				//ItemsUserRole = data.Data?.Items.Where(x => x.Code.Contains(RoleCodes.LOAN)).ToList();
+				ItemsUserRole = data.Data?.Items;
 			}
 			else
 			{
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+			var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+			if (dataLevels != null && dataLevels.Status)
+			{
+				if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+				{
+					LookUp.UserLevels = dataLevels.Data;
+				}
+			}
+			else
+			{
+				_errorMessage = dataLevels?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
+			{
+				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataGetDivBranchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
 
 			StateHasChanged();
+			await Task.Delay(1);
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnRoles", "#Roles");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
+
+			await Task.Delay(1);
+			await SetAddress();
+			StateHasChanged();
+		}
+
+		protected async Task SetModel()
+		{
+			if (id.HasValue)
+			{
+				var data = await _userViewModel.GetById(id.Value);
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel = data.Data;
+					//if (formModel.RoleId.HasValue)
+					//{
+					//	await OnRoles(formModel.RoleId,formModel.LevelId);
+					//}
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task SetAddress()
+		{
+			Guid? department_BranchId = null;
+			department_BranchName = null;
+
+			if (formModel.Master_Branch_RegionId.HasValue)
+			{
+				department_BranchId = formModel.Master_Branch_RegionId.Value;
+			}
+
+			//if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
+			//{
+			//	department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
+			//}
+
+			if (department_BranchId.HasValue)
+			{
+				LookUp.Provinces = new();
+				StateHasChanged();
+				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Province");
+
+				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+				if (dataProvince != null && dataProvince.Status)
+				{
+					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
+					{
+						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces.AddRange(dataProvince.Data);
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+
+						if (formModel.ProvinceId.HasValue)
+						{
+							LookUp.Branchs = new();
+							StateHasChanged();
+							await Task.Delay(10);
+							await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Branch");
+
+							var branch = await _masterViewModel.GetBranch(formModel.ProvinceId.Value);
+							if (branch != null && branch.Data != null)
+							{
+								LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "--เลือก--" } };
+								LookUp.Branchs?.AddRange(branch.Data);
+								StateHasChanged();
+								await Task.Delay(10);
+								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", $"#Branch");
+
+							}
+						}
+					}
+
+				}
+			}
+
+		}
+
+		protected async Task BootSelectInit()
+		{
+			await Task.Delay(10);
+			await SetInitManual();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
 
 		protected async Task OnInvalidSubmit()
@@ -141,40 +239,153 @@ namespace SalesPipeline.Pages.Users.Admin
 			_Navs.NavigateTo("/admin");
 		}
 
-		protected async Task OnRoles(object? val, int? levelId = null)
+		//protected async Task OnRoles(object? val, int? levelId = null)
+		//{
+		//	formModel.RoleId = null;
+		//	formModel.LevelId = levelId;
+		//	LookUp.UserLevels = new();
+		//	StateHasChanged();
+		//	if (val != null && int.TryParse(val.ToString(), out int roleid))
+		//	{
+		//		formModel.RoleId = roleid;
+		//		StateHasChanged();
+		//		var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+		//		if (dataLevels != null && dataLevels.Status)
+		//		{
+		//			if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+		//			{
+		//				//if (formModel.RoleId == 3) //สายงานธุรกิจสินเชื่อ 10-12
+		//				//{
+		//				//	LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+		//				//}
+		//				//else if (formModel.RoleId == 4) //สายงานธุรกิจสินเชื่อ 4-9
+		//				//{
+		//				//	LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+		//				//}
+		//				LookUp.UserLevels = dataLevels.Data;
+		//				StateHasChanged();
+		//			}
+		//		}
+		//		else
+		//		{
+		//			_errorMessage = dataLevels?.errorMessage;
+		//			_utilsViewModel.AlertWarning(_errorMessage);
+		//		}
+		//	}
+		//}
+
+		[JSInvokable]
+		public async Task OnRoles(string _id, string _name)
 		{
 			formModel.RoleId = null;
-			formModel.LevelId = levelId;
 			LookUp.UserLevels = new();
 			StateHasChanged();
 
-			if (val != null && int.TryParse(val.ToString(), out int roleid))
+			if (_id != null && int.TryParse(_id.ToString(), out int roleid))
 			{
 				formModel.RoleId = roleid;
 				StateHasChanged();
 
-				var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-				if (dataLevels != null && dataLevels.Status)
-				{
-					if (dataLevels.Data != null && dataLevels.Data.Count > 0)
-					{
-						if (formModel.RoleId == 3) //สายงานธุรกิจสินเชื่อ 10-12
-						{
-							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
-						}
-						else if (formModel.RoleId == 4) //สายงานธุรกิจสินเชื่อ 4-9
-						{
-							LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
-						}
+				//await SetLevels(formModel.RoleId.Value);
+				//var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
+				//if (dataLevels != null && dataLevels.Status)
+				//{
+				//	if (dataLevels.Data != null && dataLevels.Data.Count > 0)
+				//	{
+				//		if (formModel.RoleId == 5) //สายงานกิจการสาขาภาค  10-12
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
+				//		}
+				//		else if (formModel.RoleId == 6) //สายงานกิจการสาขาภาค  4-9
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
+				//		}
+				//		else if (formModel.RoleId == 8) //RM
+				//		{
+				//			LookUp.UserLevels = dataLevels.Data;
+				//		}
 
+				//		StateHasChanged();
+				//	}
+				//}
+				//else
+				//{
+				//	_errorMessage = dataLevels?.errorMessage;
+				//	_utilsViewModel.AlertWarning(_errorMessage);
+				//}
+			}
+
+			await Task.Delay(10);
+		}
+
+		[JSInvokable]
+		public async Task OnDepBranch(string _id, string _name)
+		{
+			formModel.ProvinceId = null;
+			formModel.BranchId = null;
+			LookUp.Provinces = new();
+			LookUp.Branchs = new();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
+			{
+				formModel.Master_Branch_RegionId = department_BranchId;
+
+				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
+				if (dataProvince != null && dataProvince.Status)
+				{
+					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
+					{
+						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
 					}
 				}
 				else
 				{
-					_errorMessage = dataLevels?.errorMessage;
+					_errorMessage = dataProvince?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnProvince(string _provinceID, string _provinceName)
+		{
+			LookUp.Branchs = new List<InfoBranchCustom>();
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				formModel.ProvinceId = provinceID;
+
+				var branch = await _masterViewModel.GetBranch(provinceID);
+				if (branch != null && branch.Data?.Count > 0)
+				{
+					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--เลือก--" } };
+					LookUp.Branchs.AddRange(branch.Data);
+
+					StateHasChanged();
+					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", "#Branch");
+					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnBranch(string _branchID, string _branchName)
+		{
+			await Task.Delay(100);
+			if (_branchID != null && int.TryParse(_branchID, out int branchID))
+			{
 
 			}
 		}

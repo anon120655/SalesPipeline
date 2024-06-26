@@ -57,6 +57,9 @@ namespace SalesPipeline.Utils.Resources.iAuthen
 			public bool username_active { get; set; }
 			public bool username_existing { get; set; }
 			public string? working_status { get; set; }
+
+			//Custom
+			public string? Username { get; set; }
 		}
 	}
 }

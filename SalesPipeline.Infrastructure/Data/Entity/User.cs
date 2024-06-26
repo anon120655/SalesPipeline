@@ -23,6 +23,8 @@ public partial class User
 
     public int UpdateBy { get; set; }
 
+    public string? UserName { get; set; }
+
     /// <summary>
     /// รหัสพนักงาน
     /// </summary>

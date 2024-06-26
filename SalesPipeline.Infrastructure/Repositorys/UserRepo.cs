@@ -43,6 +43,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.Id == 0)
 			{
+				if (model.UserName != null && _repo.Context.Users.Any(x => x.UserName == model.UserName))
+				{
+					errorMessage = $"มีผู้ใช้ UserName {model.UserName} แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
 				if (model.EmployeeId != null && await UserExists(model.EmployeeId))
 				{
 					errorMessage = $"มีรหัสพนักงาน {model.EmployeeId} อยู่แล้ว";
@@ -76,52 +83,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (model.RoleId == 3 || model.RoleId == 5)
-			{
-				if (model.LevelId < 10 || model.LevelId > 12)
-				{
-					errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(10-12)";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
-					if (isThrow) throw new ExceptionCustom(errorMessage);
-				}
-			}
-			else if (model.RoleId == 4 || model.RoleId == 6)
-			{
-				if (model.LevelId < 4 || model.LevelId > 9)
-				{
-					errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(4-9)";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
-					if (isThrow) throw new ExceptionCustom(errorMessage);
-				}
-			}
+			//if (model.RoleId == 3 || model.RoleId == 5)
+			//{
+			//	if (model.LevelId < 10 || model.LevelId > 12)
+			//	{
+			//		errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(10-12)";
+			//		model.IsValidate = false;
+			//		model.ValidateError.Add(errorMessage);
+			//		if (isThrow) throw new ExceptionCustom(errorMessage);
+			//	}
+			//}
+			//else if (model.RoleId == 4 || model.RoleId == 6)
+			//{
+			//	if (model.LevelId < 4 || model.LevelId > 9)
+			//	{
+			//		errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(4-9)";
+			//		model.IsValidate = false;
+			//		model.ValidateError.Add(errorMessage);
+			//		if (isThrow) throw new ExceptionCustom(errorMessage);
+			//	}
+			//}
 
-			if (model.PositionId.HasValue)
-			{
-				if (model.RoleId == 3 || model.RoleId == 4)
-				{
-					var positionsList = await _repo.Master.Positions(new() { type = "1" });
-					if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
-					{
-						errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
-						model.IsValidate = false;
-						model.ValidateError.Add(errorMessage);
-						if (isThrow) throw new ExceptionCustom(errorMessage);
-					}
-				}
-				if (model.RoleId >= 5 && model.RoleId <= 8)
-				{
-					var positionsList = await _repo.Master.Positions(new() { type = "2" });
-					if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
-					{
-						errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
-						model.IsValidate = false;
-						model.ValidateError.Add(errorMessage);
-						if (isThrow) throw new ExceptionCustom(errorMessage);
-					}
-				}
-			}
+			//if (model.PositionId.HasValue)
+			//{
+			//	if (model.RoleId == 3 || model.RoleId == 4)
+			//	{
+			//		var positionsList = await _repo.Master.Positions(new() { type = "1" });
+			//		if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
+			//		{
+			//			errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
+			//			model.IsValidate = false;
+			//			model.ValidateError.Add(errorMessage);
+			//			if (isThrow) throw new ExceptionCustom(errorMessage);
+			//		}
+			//	}
+			//	if (model.RoleId >= 5 && model.RoleId <= 8)
+			//	{
+			//		var positionsList = await _repo.Master.Positions(new() { type = "2" });
+			//		if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
+			//		{
+			//			errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
+			//			model.IsValidate = false;
+			//			model.ValidateError.Add(errorMessage);
+			//			if (isThrow) throw new ExceptionCustom(errorMessage);
+			//		}
+			//	}
+			//}
 
 			if (model.Master_Branch_RegionId.HasValue)
 			{
@@ -246,6 +253,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				user.CreateBy = model.CurrentUserId;
 				user.UpdateDate = _dateNow;
 				user.UpdateBy = model.CurrentUserId;
+				user.UserName = model.UserName;
 				user.EmployeeId = model.EmployeeId;
 				user.TitleName = model.TitleName;
 				user.FirstName = model.FirstNames;
@@ -461,6 +469,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.Status = model.Status;
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;
+					user.EmployeeId = model.EmployeeId;
 					user.TitleName = model.TitleName;
 					user.FirstName = model.FirstNames;
 					user.LastName = model.LastNames;
@@ -708,17 +717,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			if (!String.IsNullOrEmpty(model.type))
-			{
-				if (model.type == UserTypes.Admin)
-				{
-					query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
-				}
-				else if (model.type == UserTypes.User)
-				{
-					query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
-				}
-			}
+			//*** ไม่มีส่วนนี้ ยุบเมนูจัดการ user มารวมกับ จัดการระบบผู้ใช้งาน
+			//if (!String.IsNullOrEmpty(model.type))
+			//{
+			//	if (model.type == UserTypes.Admin)
+			//	{
+			//		query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
+			//	}
+			//	else if (model.type == UserTypes.User)
+			//	{
+			//		query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
+			//	}
+			//}
 
 			if (!String.IsNullOrEmpty(model.employeeid))
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.employeeid));

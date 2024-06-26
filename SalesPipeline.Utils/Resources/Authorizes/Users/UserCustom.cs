@@ -23,6 +23,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public int UpdateBy { get; set; }
 
+		public string? UserName { get; set; }
+
 		/// <summary>
 		/// รหัสพนักงาน
 		/// </summary>
@@ -56,14 +58,14 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// กิจการสาขาภาค
 		/// </summary>
 		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		[UserAtt(FieldName = "Master_Branch_RegionId")]
+		//[UserAtt(FieldName = "Master_Branch_RegionId")]
 		public Guid? Master_Branch_RegionId { get; set; }
 
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
 		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		[UserAtt(FieldName = "ProvinceId")]
+		//[UserAtt(FieldName = "ProvinceId")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -79,7 +81,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// สาขา
 		/// </summary>
 		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		[UserAtt(FieldName = "BranchId")]
+		//[UserAtt(FieldName = "BranchId")]
 		public int? BranchId { get; set; }
 
 		public string? BranchName { get; set; }
@@ -87,13 +89,13 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// <summary>
 		/// ตำแหน่ง
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? PositionId { get; set; }
 
 		/// <summary>
 		/// ระดับ
 		/// </summary>
-		[UserAtt(FieldName = "LevelId")]
+		//[UserAtt(FieldName = "LevelId")]
 		public int? LevelId { get; set; }
 
 		/// <summary>
