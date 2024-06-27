@@ -75,7 +75,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
-            await UpdateStatusOnly(new()
+			await UpdateStatusOnly(new()
 			{
 				SaleId = sale.Id,
 				StatusId = model.StatusSaleId,
@@ -366,6 +366,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
 			IQueryable<Sale> query;
 
@@ -391,16 +392,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			else
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-			{
-				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-			{
+				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				{
+					//9999 เห็นทุกจังหวัดในภาค
+					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+					{
+						query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+					}
+					else
+					{
+						//เห็นเฉพาะจังหวัดที่ดูแล
+						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+					}
+				}
 			}
 
 			if (model.isoverdue == 1)
@@ -776,6 +783,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
 			IQueryable<Sale> query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													//.Include(x => x.Customer)
@@ -787,16 +795,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			else
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-			{
-				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-			{
+				if (user_Areas.Count > 0)
+				{
+					query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+				}
 			}
 
 			var dataSLA = await _repo.System.GetListSLA(model);
@@ -873,7 +877,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_Info.Email = model.Email;
 			sale_Contact_Info.Createdfrom = model.Createdfrom;
 
-            await _db.InsterAsync(sale_Contact_Info);
+			await _db.InsterAsync(sale_Contact_Info);
 			await _db.SaveAsync();
 
 			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);
@@ -891,9 +895,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale_Contact_Info.Position = model.Position;
 				sale_Contact_Info.Tel = model.Tel;
 				sale_Contact_Info.Email = model.Email;
-                sale_Contact_Info.Createdfrom = model.Createdfrom;
+				sale_Contact_Info.Createdfrom = model.Createdfrom;
 
-                _db.Update(sale_Contact_Info);
+				_db.Update(sale_Contact_Info);
 				await _db.SaveAsync();
 			}
 			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);

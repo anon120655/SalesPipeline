@@ -3288,7 +3288,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateByName).HasMaxLength(255);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทกิจการ");
             entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
             entity.Property(e => e.Master_LoanTypeId).HasComment("ประเภทสินเชื่อ");
             entity.Property(e => e.Master_LoanTypeName).HasMaxLength(255);
@@ -3617,11 +3617,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.HasOne(d => d.Master_Branch_Region).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Master_Branch_RegionId)
-                .HasConstraintName("user_ibfk_5");
-
-            entity.HasOne(d => d.Master_Department).WithMany(p => p.Users)
-                .HasForeignKey(d => d.Master_DepartmentId)
-                .HasConstraintName("user_ibfk_6");
+                .HasConstraintName("user_ibfk_4");
 
             entity.HasOne(d => d.Position).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PositionId)

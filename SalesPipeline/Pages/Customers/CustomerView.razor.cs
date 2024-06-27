@@ -45,9 +45,9 @@ namespace SalesPipeline.Pages.Customers
 				var data = await _salesViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
-					if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
+					if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
 					{
-						_permission.IsView = UserInfo.BranchId == data.Data.BranchId;
+						_permission.IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
 					}
 					formModel = data.Data;
 				}

@@ -215,8 +215,6 @@ public partial class User
 
     public virtual Master_Branch_Region? Master_Branch_Region { get; set; }
 
-    public virtual Master_Department? Master_Department { get; set; }
-
     public virtual ICollection<Notification> NotificationFromUsers { get; set; } = new List<Notification>();
 
     public virtual ICollection<Notification> NotificationToUsers { get; set; } = new List<Notification>();

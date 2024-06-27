@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Thailands;
+using System.Collections.Generic;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
@@ -96,7 +97,11 @@ namespace SalesPipeline.Pages.Users.Admin
 			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
 			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{
-				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;
+				LookUp.DepartmentBranch = new() { new() { Id = Guid.Parse("99999999-9999-9999-9999-999999999999"), Name = "ทั้งหมด" } };
+				if (dataGetDivBranchs.Data?.Items.Count > 0)
+				{
+					LookUp.DepartmentBranch.AddRange(dataGetDivBranchs.Data.Items);
+				}
 			}
 			else
 			{
@@ -163,7 +168,7 @@ namespace SalesPipeline.Pages.Users.Admin
 				{
 					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
 					{
-						//LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces = new() { new() { ProvinceID = 9999, ProvinceName = "ทั้งหมด" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvinces", "#Provinces");
@@ -221,41 +226,6 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			_Navs.NavigateTo("/admin");
 		}
-
-		//protected async Task OnRoles(object? val, int? levelId = null)
-		//{
-		//	formModel.RoleId = null;
-		//	formModel.LevelId = levelId;
-		//	LookUp.UserLevels = new();
-		//	StateHasChanged();
-		//	if (val != null && int.TryParse(val.ToString(), out int roleid))
-		//	{
-		//		formModel.RoleId = roleid;
-		//		StateHasChanged();
-		//		var dataLevels = await _userViewModel.GetListLevel(new allFilter() { status = StatusModel.Active });
-		//		if (dataLevels != null && dataLevels.Status)
-		//		{
-		//			if (dataLevels.Data != null && dataLevels.Data.Count > 0)
-		//			{
-		//				//if (formModel.RoleId == 3) //สายงานธุรกิจสินเชื่อ 10-12
-		//				//{
-		//				//	LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 10 && x.Id <= 12).ToList();
-		//				//}
-		//				//else if (formModel.RoleId == 4) //สายงานธุรกิจสินเชื่อ 4-9
-		//				//{
-		//				//	LookUp.UserLevels = dataLevels.Data.Where(x => x.Id >= 4 && x.Id <= 9).ToList();
-		//				//}
-		//				LookUp.UserLevels = dataLevels.Data;
-		//				StateHasChanged();
-		//			}
-		//		}
-		//		else
-		//		{
-		//			_errorMessage = dataLevels?.errorMessage;
-		//			_utilsViewModel.AlertWarning(_errorMessage);
-		//		}
-		//	}
-		//}
 
 		[JSInvokable]
 		public async Task OnRoles(string _id, string _name)
@@ -320,7 +290,8 @@ namespace SalesPipeline.Pages.Users.Admin
 				{
 					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
 					{
-						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "เลือก" } };
+						LookUp.Provinces = new() { new() { ProvinceID = 9999, ProvinceName = "ทั้งหมด" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
 						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvinces", "#Provinces");

@@ -26,6 +26,4 @@ public partial class Master_Department
     public string Code { get; set; } = null!;
 
     public string? Name { get; set; }
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

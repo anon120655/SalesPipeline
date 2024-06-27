@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -11,7 +10,6 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -47,23 +45,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
             var dash_Status_Total = new Dash_Status_TotalCustom();
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			if (user_Areas.Count > 0)
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-				//query = query.Where(x => x.BranchId == user.BranchId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+			}
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -210,8 +201,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
             {
                 var user = await _repo.User.GetById(model.userid.Value);
                 if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+				var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-                if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
                 {
                     var dash_Status_Total = await _repo.Context.Dash_Status_Totals
                                                                        .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
@@ -317,8 +309,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            int _year = DateTime.Now.Year;
+			int _year = DateTime.Now.Year;
             if (!string.IsNullOrEmpty(model.year))
             {
                 if (int.TryParse(model.year, out int year))
@@ -481,25 +474,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
             var statusTotal = new List<SaleStatusGroupByModel>();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			if (user_Areas.Count > 0)
 			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-				//query = query.Where(x => x.BranchId == user.BranchId);
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -589,8 +575,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var saleQuery = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var saleQuery = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
             var sale_DurationsQuery = _repo.Context.Sale_Durations.Include(x => x.Sale)
                                                 .Where(x => x.Status == StatusModel.Active)
@@ -688,8 +675,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
             {
                 var user = await _repo.User.GetById(model.userid.Value);
                 if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+				var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-                if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
                 {
                     var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
                                                                        .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
@@ -748,29 +736,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
             var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active && x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
             var queryDeliver = _repo.Context.Sale_Delivers.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-                query = query.Where(x => x.BranchId == user.BranchId);
-                queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.BranchId == user.BranchId);
-                queryDeliver = queryDeliver.Where(x => x.Sale.BranchId == user.BranchId);
-				//query = query.Where(x => x.BranchId == user.BranchId);
-				//queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.AssCenterUserId == user.Id);
-				//queryDeliver = queryDeliver.Where(x => x.Sale.AssCenterUserId == user.Id);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+				queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.ProvinceId.HasValue && user_Areas.Contains(x.Sale.ProvinceId.Value));
+				queryDeliver = queryDeliver.Where(x => x.Sale.ProvinceId.HasValue && user_Areas.Contains(x.Sale.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-                queryActcloseDeal = queryActcloseDeal.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
-                queryDeliver = queryDeliver.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
             if (model.startdate.HasValue && !model.enddate.HasValue)
             {
@@ -893,22 +870,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -978,22 +949,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1146,22 +1111,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1243,27 +1202,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active
             && (x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan
              || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
              || x.StatusSaleId == StatusSaleModel.CloseSaleFail));
 
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1347,8 +1300,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sale_Durations.Include(x => x.Sale)
+			var query = _repo.Context.Sale_Durations.Include(x => x.Sale)
                                                 .Where(x => x.Status == StatusModel.Active)
                                                 .OrderByDescending(x => x.CreateDate)
                                                 .AsQueryable();
@@ -1446,8 +1400,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
             {
@@ -1466,26 +1421,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var queryTarget = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
+			var queryTarget = _repo.Context.User_Target_Sales.Include(x => x.User).Where(x => x.Status == StatusModel.Active);
 
             var query = _repo.Context.Sales
                 .Include(x => x.AssUser).ThenInclude(x => x.User_Target_SaleUsers)
                 .Where(x => x.Status == StatusModel.Active && x.AssUser != null);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1576,24 +1525,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
             var queryCloseSale = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
-
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
-				queryCloseSale = queryCloseSale.Where(x => x.BranchId == user.BranchId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-                queryCloseSale = queryCloseSale.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+				queryCloseSale = queryCloseSale.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+			}
 
             if (model.startdate.HasValue && !model.enddate.HasValue)
             {
@@ -1690,33 +1631,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
-            //เหตุผลไม่ประสงค์ขอสินเชื่อ
-            //var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
-            //							 .GroupBy(m => m.Master_Reason_CloseSaleId)
-            //							 .Select(group => new
-            //							 {
-            //								 Label = group.Key,
-            //								 Sales = group.ToList()
-            //							 })
-            //							 .ToList();
+			//เหตุผลไม่ประสงค์ขอสินเชื่อ
+			//var salesResultsNotLoan = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue)
+			//							 .GroupBy(m => m.Master_Reason_CloseSaleId)
+			//							 .Select(group => new
+			//							 {
+			//								 Label = group.Key,
+			//								 Sales = group.ToList()
+			//							 })
+			//							 .ToList();
 
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1791,24 +1726,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -1937,24 +1866,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -2094,24 +2017,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -2226,22 +2143,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -2332,8 +2243,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
 
             IQueryable<Sale_Duration> query;
 
@@ -2553,8 +2465,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
 
             IQueryable<Sale_Activity> query;
 
@@ -2686,22 +2599,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             var queryUse = query.GroupBy(m => m.Master_Reason_CloseSaleId)
                                          .Select(group => new { GroupID = group.Key, Sales = group.ToList() })
@@ -2734,22 +2641,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0);
+			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var response = new List<Dash_PieCustom>();
+			var response = new List<Dash_PieCustom>();
 
             var queryUse = query.GroupBy(m => m.BranchId)
                                          .Select(group => new GroupByModel()
@@ -2776,7 +2677,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new SalesFunnelModel();
 
@@ -2784,19 +2686,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var statusTotal = new List<SaleStatusGroupByModel>();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -2908,7 +2803,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<Dash_PieCustom>();
 
@@ -2930,8 +2826,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var query = _repo.Context.Sale_Durations.Include(x => x.Sale).ThenInclude(x=>x.Customer)
+			var query = _repo.Context.Sale_Durations.Include(x => x.Sale).ThenInclude(x=>x.Customer)
                                                 .Where(x => x.Status == StatusModel.Active)
                                                 .OrderByDescending(x => x.CreateDate)
                                                 .AsQueryable();
@@ -3048,7 +2945,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<GroupByModel>();
 
@@ -3057,19 +2955,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var avgcountry = query.Sum(x => x.LoanAmount);
+			var avgcountry = query.Sum(x => x.LoanAmount);
             if (avgcountry.HasValue)
             {
                 response.Add(new()
@@ -3181,7 +3072,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<GroupByModel>();
 
@@ -3190,19 +3082,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var avgcountry = query.Sum(x => x.LoanAmount);
+			var avgcountry = query.Sum(x => x.LoanAmount);
             if (avgcountry.HasValue)
             {
                 response.Add(new()
@@ -3284,7 +3169,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<GroupByModel>();
 
@@ -3293,19 +3179,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var avgcountry = query.Sum(x => x.LoanAmount);
+			var avgcountry = query.Sum(x => x.LoanAmount);
             if (avgcountry.HasValue)
             {
                 response.Add(new()
@@ -3452,7 +3331,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<GroupByModel>();
 
@@ -3461,19 +3341,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            var avgcountry = query.Sum(x => x.LoanAmount);
+			var avgcountry = query.Sum(x => x.LoanAmount);
             if (avgcountry.HasValue)
             {
                 response.Add(new()
@@ -3628,24 +3501,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            var response = new List<GroupByModel>();
+			var response = new List<GroupByModel>();
 
             var query = _repo.Context.Sales.Include(i => i.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0);
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-				query = query.Where(x => x.BranchId == user.BranchId);
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
 			}
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
 
-            if (model.startdate.HasValue && !model.enddate.HasValue)
+			if (model.startdate.HasValue && !model.enddate.HasValue)
             {
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
@@ -3728,7 +3595,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-            model.rolecode = user.Role.Code.ToUpper();
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			model.rolecode = user.Role.Code.ToUpper();
 
             var response = new List<GroupByModel>();
 
@@ -3744,17 +3612,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                      .OrderByDescending(x => x.CreateDate)
                                      .AsQueryable();
 
-            if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-            {
-                query = query.Where(x => x.BranchId == user.BranchId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-            {
-                query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-            }
-            else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-            {
-            }
+			if (user_Areas.Count > 0)
+			{
+				query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+			}
 
 			//if (model.startdate.HasValue && !model.enddate.HasValue)
 			//{
@@ -3963,8 +3824,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             var user = await _repo.User.GetById(model.userid.Value);
             if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-            if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
+			if (user.Role.Code.StartsWith(RoleCodes.RM)) return new();
 
             IQueryable<Sale_Deliver> query;
 

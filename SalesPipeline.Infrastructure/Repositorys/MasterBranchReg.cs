@@ -10,7 +10,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterBranchReg : IMasterBranchReg
+	public class MasterBranchReg : IMasterBranchReg
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -123,10 +123,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchRegs(allFilter model)
 		{
 			var query = _repo.Context.Master_Branch_Regions
-												 .Where(x => x.Status != StatusModel.Delete)
+												 //.Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
-			if (model.status.HasValue)
+
+			if (model.status.HasValue && model.isAll != 1)
 			{
 				query = query.Where(x => x.Status == model.status);
 			}

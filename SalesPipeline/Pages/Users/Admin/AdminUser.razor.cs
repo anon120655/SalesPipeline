@@ -9,7 +9,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-    public partial class AdminUser
+	public partial class AdminUser
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -67,7 +67,7 @@ namespace SalesPipeline.Pages.Users.Admin
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active, isAll = 1 });
 			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{
 				LookUp.DepartmentBranch = dataGetDivBranchs.Data?.Items;

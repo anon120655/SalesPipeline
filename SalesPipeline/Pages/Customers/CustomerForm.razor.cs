@@ -216,9 +216,9 @@ namespace SalesPipeline.Pages.Customers
 						{
 							formModel.Branch_RegionId = sales.Master_Branch_RegionId;
 
-							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
+							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
 							{
-								_permission.IsView = UserInfo.BranchId == sales.BranchId;
+								_permission.IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
 							}
 						}
 					}

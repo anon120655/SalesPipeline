@@ -40,7 +40,7 @@ public partial class Sale_Return
     public string? StatusDescription { get; set; }
 
     /// <summary>
-    /// ประเภทธุรกิจ
+    /// ประเภทกิจการ
     /// </summary>
     public Guid? Master_BusinessTypeId { get; set; }
 

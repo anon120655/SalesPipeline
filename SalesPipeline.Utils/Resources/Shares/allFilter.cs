@@ -82,6 +82,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public List<string?>? Years { get; set; }
         public List<string?>? StatusSales { get; set; }
 		public short? isScheduledJob { get; set; }
+		public short? isAll { get; set; }
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -310,6 +311,9 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (isScheduledJob.HasValue)
 				ParameterAll += $"&isScheduledJob={isScheduledJob}";
+
+			if (isAll.HasValue)
+				ParameterAll += $"&isAll={isAll}";
 
 			return ParameterAll;
 		}

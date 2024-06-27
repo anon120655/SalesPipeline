@@ -2,6 +2,7 @@
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -562,6 +563,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						foreach (var item in model.User_Areas)
 						{
 							var provinceName_area = await _repo.Thailand.GetProvinceNameByid(item.ProvinceId);
+							if (item.ProvinceId == 9999) provinceName_area = "ทั้งหมด";
 
 							var user_Area = new Data.Entity.User_Area();
 							user_Area.UserId = user.Id;
@@ -1045,19 +1047,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
-
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-			{
-				query = query.Where(x => x.BranchId == user.BranchId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-			{
-				query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-			{
-			}
-
+						
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
