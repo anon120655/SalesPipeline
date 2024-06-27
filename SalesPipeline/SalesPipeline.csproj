@@ -37,4 +37,10 @@
     <ProjectReference Include="..\SalesPipeline.Utils\SalesPipeline.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Pages\Assigns\CenterBranch\AssignCenter.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

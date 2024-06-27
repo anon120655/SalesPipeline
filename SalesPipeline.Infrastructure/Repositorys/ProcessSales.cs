@@ -1321,7 +1321,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					if (sale_Close_Sale.DesireLoanId == 1)
 					{
 						topicName = "ปิดการขาย";
-						desireLoanName = "ประสงค์กู้";
+						desireLoanName = "สำเร็จ";
 						statusSaleId = StatusSaleModel.CloseSale;
 						nextActionName = null;
 						model.AppointmentDate = null;
@@ -1330,10 +1330,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else if (sale_Close_Sale.DesireLoanId == 2)
 					{
-						topicName = "ไม่ประสงค์กู้";
-						desireLoanName = "ไม่ประสงค์กู้";
+						topicName = "ปิดการขาย";
+						desireLoanName = "ไม่สำเร็จ";
 						statusSaleId = StatusSaleModel.CloseSaleNotLoan;
-						if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
+						//if (!model.Master_Reason_CloseSaleId.HasValue) throw new ExceptionCustom("master_Reason_CloseSaleId not found.");
 					}
 
 					if (model.Master_Reason_CloseSaleId.HasValue)
@@ -1359,7 +1359,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else
 				{
-					throw new ExceptionCustom("ระบุความประสงค์กู้ไม่ถูกต้อง");
+					throw new ExceptionCustom("ระบุผลคำขอสินเชื่อไม่ถูกต้อง");
 				}
 			}
 

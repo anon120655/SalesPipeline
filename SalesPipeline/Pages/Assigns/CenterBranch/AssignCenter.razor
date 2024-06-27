@@ -1,0 +1,767 @@
+﻿@page "/assign/center"
+
+<PageTitle>มอบหมายผู้จัดการศูนย์</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				@if (stepAssign == StepAssignLoanModel.Home)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายผู้จัดการศูนย์</p>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">รหัสพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filterRM.emp_id" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchRM" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ชื่อพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filterRM.emp_name" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchRM" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select value="@filterRM.provinceid" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">สาขา</label>
+								<select id="Branch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true" value="">
+									@if (LookUp.Branchs?.Count > 0)
+									{
+										foreach (var item in LookUp.Branchs)
+										{
+											<option value="@item.BranchID">@item.BranchName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="SearchRM" type="button" class="btn btn-primary text-white mw_6r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+												<th class="text-center">จัดการมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (ItemsRM == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+													</td>
+												</tr>
+											}
+											else if (ItemsRM.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+
+												foreach (var item in ItemsRM)
+												{
+													item.CurrentUserId = UserInfo.Id;
+
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.ProvinceName</td>
+														<td class="text-center">@item.BranchName</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAssignment)
+														</td>
+														<td class="text-center">
+															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
+														</td>
+														<td class="text-center">
+															<a role="button" @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,item.Id))">
+																<img src="/image/icon/ckeckbox.png" width="25" />
+															</a>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<PaginationBack DisplayItems="@(ItemsRM?.Count ?? 0)"
+											TotalItems="@(PagerRM?.TotalItems ?? 0)"
+											Pager="@PagerRM"
+											OnSelectedPage="@OnSelectPageRM"
+											ParameterAll="@filterRM?.SetParameter()">
+							</PaginationBack>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									@if (ItemsRM?.Count > 0)
+									{
+										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											มอบหมาย
+										</Button>
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Customer)
+				{
+					var _items = ItemsRM?.Where(x => x.Id == assignmentIdPrevious).FirstOrDefault();
+
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกลูกค้า</p>
+							</div>
+						</div>
+						<div class="@(formView != null ? "d-none" : "")">
+							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-2 filter_s">
+								<div class="col mb-2">
+									<label class="form-label">ค้นหาลูกค้า</label>
+									<div class="input-group">
+										<input @bind="filterRM.searchtxt" class="form-control" type="search" placeholder="">
+										<span class="input-group-append ms-0">
+											<button @onclick="(()=> SearchStepCustomer(null))" class="btn rounded-start-0 border border-start-0" type="button">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">ประเภทธุรกิจ</label>
+									<select @onchange="((e) => SearchStepCustomer(e.Value))" id="BusinessType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										<option value="">ทั้งหมด</option>
+										@if (LookUp.BusinessType?.Count > 0)
+										{
+											foreach (var item in LookUp.BusinessType)
+											{
+												<option value="@item.Id">@item.Name</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">จังหวัด</label>
+									<select id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+										<option value="">ทั้งหมด</option>
+										@if (LookUp.Provinces?.Count > 0)
+										{
+											foreach (var item in LookUp.Provinces)
+											{
+												<option value="@item.ProvinceID">@item.ProvinceName</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="col mb-2">
+									<label class="form-label">อำเภอ</label>
+									<select id="Amphur" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+										@if (LookUp.Amphurs?.Count > 0)
+										{
+											foreach (var item in LookUp.Amphurs)
+											{
+												<option value="@item.AmphurID">@item.AmphurName</option>
+											}
+										}
+									</select>
+								</div>
+								<div class="col mb-2 mt-3">
+									<button @onclick="SearchStepCustomer" type="button" class="btn btn-primary text-white mw_6r w-100">
+										<i class="fa fa-search fa-xs"></i> ค้นหา
+									</button>
+								</div>
+							</div>
+							<div class="row my-2 mb-3 text-end">
+								<div class="col mb-2">
+									<button type="button" class="btn btn-info text-white pe-none">
+										จำนวนการมอบหมาย (@(_items?.Assignment_RM_Sales?.Count(x => x.IsSelectMove))/@(_items?.Assignment_RM_Sales?.Count))
+									</button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="table-responsive border-top">
+										<table class="table table_list">
+											<thead>
+												<tr>
+													<th class="text-center">เลขนิติบุคคล</th>
+													<th class="text-center">ชื่อลูกค้า</th>
+													<th class="text-center">จังหวัด</th>
+													<th class="text-center">อำเภอ</th>
+													<th class="text-center">ประเภทธุรกิจ</th>
+													<th class="text-center">รายละเอียด</th>
+													<th class="text-center">มอบหมาย/ส่งคืน</th>
+												</tr>
+											</thead>
+											<tbody>
+												@if (_items == null)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+														</td>
+													</tr>
+												}
+												else if (_items.Assignment_RM_Sales == null || _items.Assignment_RM_Sales.Count(x => x.IsShow) == 0)
+												{
+													<tr class="text-center align-middle">
+														<td colspan="100">
+															<em>ไม่พบข้อมูล</em>
+														</td>
+													</tr>
+												}
+												else
+												{
+													foreach (var item in _items.Assignment_RM_Sales.Where(x => x.IsShow))
+													{
+														<tr>
+															<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+															<td class="text-center">@item.Sale?.CompanyName</td>
+															<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+															<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+															<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+															<td class="text-center">
+																<a @onclick="(() => OnViewCustomer(item.Sale))" class="btn btn-info btn-circle">
+																	<i class="fa-solid fa-eye text-white fs_15e"></i>
+																</a>
+															</td>
+															<td class="text-center">
+																<div class="form-check d-flex justify-content-center">
+																	<input class="form-check-input" type="checkbox" checked="@item.IsSelectMove"
+																		   @onchange="( (e) => OnCheckCustomer(item,e.Value))">
+																</div>
+															</td>
+														</tr>
+													}
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div>
+								@* <PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+						TotalItems="@(Pager?.TotalItems ?? 0)"
+						Pager="@Pager"
+						OnShowOnPage="@OnSelectPagesize"
+						OnSelectedPage="@OnSelectPage"
+						ParameterAll="@filter?.SetParameter()">
+						</PaginationBack> *@
+							</div>
+							<div class="my-4 text-center">
+								<div class="d-flex bd-highlight align-items-center justify-content-center">
+									<div class="p-2 bd-highlight">
+										<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Home))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											กลับ
+										</Button>
+									</div>
+									<div class="p-2 bd-highlight">
+										<Button @onclick="(async () => await  InitShowReturnAssign())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+											@if (isLoading)
+											{
+												<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+											}
+											ถัดไป
+										</Button>
+									</div>
+								</div>
+							</div>
+						</div>
+						@if (formView != null)
+						{
+							<div class="row mt-3">
+								<div class="col-12 tabs_elm">
+									<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
+										<Tab Title="ข้อมูลลูกค้า" IsActive="true">
+											<Content>
+												<div class="row">
+													<div class="col-12 col-xl-8"></div>
+													<div class="col-12 col-xl-3 text-end">
+														<a class="btn btn-primary mw_6r" @onclick=OnViewCustomerBack>กลับ</a>
+													</div>
+												</div>
+												<PartialCustomerInfo formModel="formView" />
+											</Content>
+										</Tab>
+										<Tab Title="ข้อมูลผู้ติดต่อ">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="เอกสาร">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="ประวัติการติดต่อ">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+										<Tab Title="คู่ค้า">
+											<Content>
+												<div class="d-flex align-items-center justify-content-center mh_10r">
+													<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+												</div>
+											</Content>
+										</Tab>
+									</Tabs>
+								</div>
+							</div>
+						}
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Return)
+				{
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปลูกค้าที่ส่งคืนกิจการสาขาภาค</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ส่งคืนกิจการสาขาภาค <span class="text-info">จำนวน @(SaleMoveAssigned?.Count) รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (SaleMoveAssigned == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+													</td>
+												</tr>
+											}
+											else if (SaleMoveAssigned.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in SaleMoveAssigned)
+												{
+													<tr>
+														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.Sale?.CompanyName</td>
+														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  ShowReturnReason())" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+										}
+										ถัดไป
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Assigned)
+				{
+					var _items = ItemsRMNew?.Where(x => x.Id != assignmentIdPrevious).ToList();
+
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกผู้รับผิดชอบ</p>
+							</div>
+						</div>
+						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
+							<div class="col mb-2">
+								<label class="form-label">รหัสพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filterRMNew.emp_id" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchRMNew" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">ชื่อพนักงาน</label>
+								<div class="input-group">
+									<input @bind="filterRMNew.emp_name" class="form-control" type="search" placeholder="">
+									<span class="input-group-append ms-0">
+										<button @onclick="SearchRMNew" class="btn rounded-start-0 border border-start-0" type="button">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">จังหวัด</label>
+								<select value="@filterRMNew.provinceid" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
+									<option value="">ทั้งหมด</option>
+									@if (LookUp.Provinces?.Count > 0)
+									{
+										foreach (var item in LookUp.Provinces)
+										{
+											<option value="@item.ProvinceID">@item.ProvinceName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2">
+								<label class="form-label">สาขา</label>
+								<select id="Branch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+									@if (LookUp.Branchs?.Count > 0)
+									{
+										foreach (var item in LookUp.Branchs)
+										{
+											<option value="@item.BranchID">@item.BranchName</option>
+										}
+									}
+								</select>
+							</div>
+							<div class="col mb-2 mt-3">
+								<button @onclick="SearchRMNew" type="button" class="btn btn-primary text-white mw_6r w-100">
+									<i class="fa fa-search fa-xs"></i> ค้นหา
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">มอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+													</td>
+												</tr>
+											}
+											else if (_items.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in _items.Where(x => x.IsShow))
+												{
+													<tr>
+														<td class="text-center">@item.EmployeeId</td>
+														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.ProvinceName</td>
+														<td class="text-center">@item.BranchName</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">
+															<div class="form-check d-flex justify-content-center">
+																<input class="form-check-input" type="checkbox" checked="@item.IsSelect"
+																	   @onchange="( (e) => OnCheckEmployee(item,e.Value))">
+															</div>
+														</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<PaginationBack DisplayItems="@(ItemsRMNew?.Count ?? 0)"
+											TotalItems="@(PagerRMNew?.TotalItems ?? 0)"
+											Pager="@PagerRMNew"
+											OnSelectedPage="@OnSelectPageRMNew"
+											ParameterAll="@filterRMNew?.SetParameter()">
+							</PaginationBack>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Customer,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Summary))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+										}
+										ถัดไป
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				else if (stepAssign == StepAssignLoanModel.Summary)
+				{
+					var _items = ItemsRMNew?.Where(x => x.IsSelect).FirstOrDefault();
+
+					List<Assignment_RM_SaleCustom>? _itemsSale = null;
+					if (SaleMoveAssigned != null)
+					{
+						_itemsSale = SaleMoveAssigned;
+					}
+
+					<div class="box_content">
+						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+							<div class="p-2">
+								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปผู้รับผิดชอบและลูกค้า</p>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อผู้รับผิดชอบ</h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">รหัสพนักงาน</th>
+												<th class="text-center">ชื่อพนักงาน</th>
+												<th class="text-center">เบอร์ติดต่อ</th>
+												<th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">จำนวนการมอบหมาย</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_items == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												<tr>
+													<td class="text-center">@_items.EmployeeId</td>
+													<td class="text-center">@_items.EmployeeName</td>
+													<td class="text-center">@_items.Tel</td>
+													<td class="text-center">@_items.ProvinceName</td>
+													<td class="text-center">@_items.BranchName</td>
+													<td class="text-center">@(_items.CurrentNumber)/100</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(_items.NumberAssignment + _itemsSale?.Count)
+													</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(_items.NumberAfterAssignment + _itemsSale?.Count)/100
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-4 mb-2">
+							<div class="col">
+								<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน @_itemsSale?.Count รายการ</span></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="table-responsive border-top">
+									<table class="table table_list">
+										<thead>
+											<tr>
+												<th class="text-center">เลขนิติบุคคล</th>
+												<th class="text-center">ชื่อลูกค้า</th>
+												<th class="text-center">จังหวัด</th>
+												<th class="text-center">อำเภอ</th>
+												<th class="text-center">ประเภทธุรกิจ</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (_itemsSale == null)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+													</td>
+												</tr>
+											}
+											else if (_itemsSale == null || _itemsSale.Count == 0)
+											{
+												<tr class="text-center align-middle">
+													<td colspan="100">
+														<em>ไม่พบข้อมูล</em>
+													</td>
+												</tr>
+											}
+											else
+											{
+												foreach (var item in _itemsSale)
+												{
+													<tr>
+														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+														<td class="text-center">@item.Sale?.CompanyName</td>
+														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="my-4 text-center">
+							<div class="d-flex bd-highlight align-items-center justify-content-center">
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Assigned,back: true))" Color="ButtonColor.Secondary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										กลับ
+									</Button>
+								</div>
+								<div class="p-2 bd-highlight">
+									<Button @onclick="(async () => await  GotoStep(StepAssignLoanModel.Confirm))" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
+										@if (isLoading)
+										{
+											<Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Small" />
+										}
+										ยืนยัน
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" />
+	<ModalReturnAssign @ref="modalReturnAssign" CallbackConfirm="ReturnAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" />
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="CenBranchToBranchReg" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
+}
+else
+{
+	<NotPermissionPage />
+}
+
+
+

@@ -140,7 +140,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 
 			//Assignment
 			CreateMap<Entity.Assignment_BranchReg, Assignment_BranchRegCustom>().ReverseMap();
-			CreateMap<Entity.Assignment_CenterBranch, Assignment_CenterBranchCustom>().ReverseMap();
+			CreateMap<Entity.Assignment_Center, Assignment_CenterCustom>().ReverseMap();
 			CreateMap<Entity.Assignment_RM, Assignment_RMCustom>().ReverseMap();
 			CreateMap<Entity.Assignment_RM_Sale, Assignment_RM_SaleCustom>().ReverseMap();
 

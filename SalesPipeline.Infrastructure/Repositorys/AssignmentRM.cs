@@ -219,7 +219,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//int? assignmentCenterUserId = null;
 			//if (model.assigncenter.HasValue)
 			//{
-			//	var assignment_MCenter = await _repo.Context.Assignment_CenterBranches.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
+			//	var assignment_MCenter = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.assigncenter);
 			//	if (assignment_MCenter != null)
 			//	{
 			//		assignmentCenterId = assignment_MCenter.Id;
@@ -311,6 +311,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							});
 						}
 
+						// OrderBy CreateDate
 						assignment_RM.Assignment_RM_Sales = assignment_RM.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
 
 						assignment_RM.User = null;
@@ -481,6 +482,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task AssignReturnChange(AssignChangeModel model)
 		{
+			DateTime _dateNow = DateTime.Now;
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 			var assUserName = await _repo.User.GetFullNameById(model.New.UserId);
 
@@ -514,8 +517,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					.ToListAsync();
 				if (sale_Statuses != null && sale_Statuses.Count >= 2)
 				{
+					sales.AssUserAlready = true;
 					sales.AssUserId = model.New.UserId;
 					sales.AssUserName = assUserName;
+					sales.AssUserDate = _dateNow;
 					_db.Update(sales);
 					await _db.SaveAsync();
 

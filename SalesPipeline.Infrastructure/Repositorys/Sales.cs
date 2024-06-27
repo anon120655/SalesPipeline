@@ -56,15 +56,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.ProvinceName = provinceName;
 			sale.BranchId = model.BranchId;
 			sale.BranchName = branchName;
-			sale.AssCenterUserId = model.AssCenterUserId;
-			sale.AssCenterUserName = model.AssCenterUserName;
+
 			if (model.AssCenterUserId.HasValue)
 			{
+				sale.AssCenterAlready = true;
+				sale.AssCenterUserId = model.AssCenterUserId;
+				sale.AssCenterUserName = model.AssCenterUserName;
 				sale.AssCenterCreateBy = model.CurrentUserId;
 				sale.AssCenterDate = _dateNow;
 			}
-			sale.AssUserId = model.AssUserId;
-			sale.AssUserName = model.AssUserName;
+			if (model.AssUserId.HasValue)
+			{
+				sale.AssUserAlready = true;
+				sale.AssUserId = model.AssUserId;
+				sale.AssUserName = model.AssUserName;
+			}
 
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();

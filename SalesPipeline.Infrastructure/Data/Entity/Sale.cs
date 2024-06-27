@@ -109,6 +109,11 @@ public partial class Sale
     public string? BranchName { get; set; }
 
     /// <summary>
+    /// ผู้จัดการศูนย์ได้รับมอบหมายแล้ว
+    /// </summary>
+    public bool? AssCenterAlready { get; set; }
+
+    /// <summary>
     /// ผู้จัดการศูนย์ที่ดูแล
     /// </summary>
     public int? AssCenterUserId { get; set; }
@@ -129,6 +134,11 @@ public partial class Sale
     public DateTime? AssCenterDate { get; set; }
 
     /// <summary>
+    /// ได้รับมอบหมายแล้ว
+    /// </summary>
+    public bool? AssUserAlready { get; set; }
+
+    /// <summary>
     /// พนักงานที่ได้รับมอบหมาย
     /// </summary>
     public int? AssUserId { get; set; }
@@ -137,6 +147,11 @@ public partial class Sale
     /// ชื่อพนักงานที่ได้รับมอบหมาย
     /// </summary>
     public string? AssUserName { get; set; }
+
+    /// <summary>
+    /// วันที่มอบหมาย
+    /// </summary>
+    public DateTime? AssUserDate { get; set; }
 
     public virtual User? AssCenterUser { get; set; }
 

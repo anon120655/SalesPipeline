@@ -12,11 +12,12 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	{
 		Task<bool> CheckAssignmentByUserId(int id);
 		Task<bool> CheckAssignmentByBranchId(int id);
-		Task<Assignment_CenterBranchCustom> GetById(Guid id);
-		Task<Assignment_CenterBranchCustom> GetByUserId(int id);
-		Task<Assignment_CenterBranchCustom> Create(Assignment_CenterBranchCustom model);
-		Task<Assignment_CenterBranchCustom> Update(Assignment_CenterBranchCustom model);
-		Task<PaginationView<List<Assignment_CenterBranchCustom>>> GetListCenter(allFilter model);
+		Task<Assignment_CenterCustom> GetById(Guid id);
+		Task<Assignment_CenterCustom> GetByUserId(int id);
+		Task<Assignment_CenterCustom> Create(Assignment_CenterCustom model);
+		Task<Assignment_CenterCustom> Update(Assignment_CenterCustom model);
+		Task<PaginationView<List<Assignment_CenterCustom>>> GetListAutoAssign(allFilter model);
+		Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model);
 		Task Assign(AssignModel model);
 		Task UpdateCurrentNumber(int id);
 		Task CreateAssignmentCenterAll(allFilter model);

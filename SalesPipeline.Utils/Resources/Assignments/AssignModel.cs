@@ -10,7 +10,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 {
 	public class AssignModel : CommonModel
 	{
-		public Assignment_CenterBranchCustom AssignMCenter { get; set; } = new();
+		public Assignment_CenterCustom AssignMCenter { get; set; } = new();
 		public Assignment_BranchRegCustom AssignMBranch { get; set; } = new();
 		public List<SaleCustom> Sales { get; set; } = null!;
 	}
