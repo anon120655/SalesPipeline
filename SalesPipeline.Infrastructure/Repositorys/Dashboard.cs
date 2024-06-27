@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -11,7 +10,6 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -152,16 +150,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model)
 		{
-			//var dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
-
-			//if (dash_Status_Total == null || (dash_Status_Total != null && dash_Status_Total.IsUpdate))
-			//{
-			//	await UpdateStatus_TotalById(userid);
-			//	dash_Status_Total = await _repo.Context.Dash_Status_Totals.FirstOrDefaultAsync(x => x.UserId == userid);
-			//}
-
-			//return _mapper.Map<Dash_Status_TotalCustom>(dash_Status_Total);
-
 			if (!model.userid.HasValue) return new();
 
 			var dash_Status_Total = new Dash_Status_TotalCustom();
@@ -220,33 +208,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var statusTotal = new List<SaleStatusGroupByModel>();
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-				{
-					statusTotal = await query.Where(x => x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-				{
-					statusTotal = await query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-				{
-					statusTotal = await query.GroupBy(info => info.StatusSaleId)
-							   .Select(group => new SaleStatusGroupByModel()
-							   {
-								   StatusID = group.Key,
-								   Count = group.Count()
-							   }).OrderBy(x => x.StatusID).ToListAsync();
-				}
+				statusTotal = await query.GroupBy(info => info.StatusSaleId)
+						   .Select(group => new SaleStatusGroupByModel()
+						   {
+							   StatusID = group.Key,
+							   Count = group.Count()
+						   }).OrderBy(x => x.StatusID).ToListAsync();
 
 				if (statusTotal != null)
 				{
@@ -287,13 +254,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
-
-						//if (item.StatusID == (int)StatusSaleModel.ResultsNotConsidered
-						//	|| item.StatusID == (int)StatusSaleModel.CloseSaleNotLoan
-						//	|| item.StatusID == (int)StatusSaleModel.CloseSaleFail)
-						//{
-						//	dash_Status_Total.NumCusTargeNotSuccess = dash_Status_Total.NumCusTargeNotSuccess + item.Count;
-						//}
 					}
 
 					int _year = DateTime.Now.Year;
@@ -302,11 +262,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						_year = model.startdate.Value.Year;
 					}
 
-					var user_Target_Sales = await _repo.Context.User_Target_Sales
-						.CountAsync(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
+					var user_Target_Sales = _repo.Context.User_Target_Sales
+						.Where(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
 
-					dash_Status_Total.NumCusTargeNotSuccess = user_Target_Sales;
+					//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+					if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+					{
+						//9999 เห็นทุกจังหวัดในภาค
+						if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+						{
+							user_Target_Sales = user_Target_Sales.Where(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId);
+						}
+						else
+						{
+							//เห็นเฉพาะจังหวัดที่ดูแล
+							user_Target_Sales = user_Target_Sales.Where(x => x.User.ProvinceId.HasValue && user_Areas.Contains(x.User.ProvinceId.Value));
+						}
+					}
 
+					dash_Status_Total.NumCusTargeNotSuccess = user_Target_Sales.Count();
 				}
 
 			}
@@ -453,7 +427,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.User_Target_Sales
 				.Include(x => x.User)
-				.Where(x => x.Status == StatusModel.Active && x.Year == _year);
+				.Where(x => x.Status == StatusModel.Active && x.Year == _year)
+				.OrderByDescending(x=>x.AmountTarget).AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
@@ -482,26 +457,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 			{
-				var querySales = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
-
-				querySales = QueryArea(querySales, user);
-
-				var queryGroupRM = await querySales.GroupBy(info => info.AssUserId)
-						   .Select(group => new SaleStatusGroupByModel()
-						   {
-							   StatusID = group.Key ?? 0
-						   }).OrderBy(x => x.StatusID).ToListAsync();
-
-				query = query.Where(x => queryGroupRM.Select(s => s.StatusID).Contains(x.UserId));
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-			{
-				query = query.Where(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId);
-			}
-			else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
-			{
+				//9999 เห็นทุกจังหวัดในภาค
+				if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+				{
+					query = query.Where(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				}
+				else
+				{
+					//เห็นเฉพาะจังหวัดที่ดูแล
+					query = query.Where(x => x.User.ProvinceId.HasValue && user_Areas.Contains(x.User.ProvinceId.Value));
+				}
 			}
 
 			//กิจการสาขาภาค[]
@@ -1501,6 +1469,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.startdate.HasValue)
 			{
 				_year = model.startdate.Value.Year;
+			}
+
+			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+			{
+				//9999 เห็นทุกจังหวัดในภาค
+				if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+				{
+					queryTarget = queryTarget.Where(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId);
+				}
+				else
+				{
+					//เห็นเฉพาะจังหวัดที่ดูแล
+					queryTarget = queryTarget.Where(x => x.User.ProvinceId.HasValue && user_Areas.Contains(x.User.ProvinceId.Value));
+				}
 			}
 
 			var sumTarget = queryTarget.Where(x => x.Year == _year).Sum(s => s.AmountTarget);
