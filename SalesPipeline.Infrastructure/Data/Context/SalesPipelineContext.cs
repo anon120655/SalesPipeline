@@ -210,6 +210,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<User_Area> User_Areas { get; set; }
+
     public virtual DbSet<User_Level> User_Levels { get; set; }
 
     public virtual DbSet<User_Login_Log> User_Login_Logs { get; set; }
@@ -3628,6 +3630,29 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("user_ibfk_1");
+        });
+
+        modelBuilder.Entity<User_Area>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("User_Area");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("current_timestamp()")
+                .HasColumnType("timestamp");
+            entity.Property(e => e.ProvinceId).HasColumnType("int(11)");
+            entity.Property(e => e.ProvinceName).HasMaxLength(255);
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.User).WithMany(p => p.User_Areas)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_area_ibfk_1");
         });
 
         modelBuilder.Entity<User_Level>(entity =>

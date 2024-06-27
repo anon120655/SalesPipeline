@@ -574,7 +574,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
@@ -733,6 +733,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				else if (model.sort == OrderByModel.DESC)
 				{
 					query = query.OrderByDescending(x => x.CreateDate);
+				}
+			}
+
+			//ประเภทกิจการ
+			if (!String.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
+				{
+					query = query.Where(x => x.Master_BusinessTypeId != null && x.Master_BusinessTypeId == id);
 				}
 			}
 

@@ -167,7 +167,6 @@ namespace SalesPipeline.Pages.Dashboards
 			{
 				await _jsRuntimes.InvokeVoidAsync("RemoveCursorWait");
 			}
-
 		}
 
 		[JSInvokable]

@@ -135,30 +135,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var provinceList = await _repo.Thailand.GetProvince(model.Master_Branch_RegionId.Value);
 				if (provinceList.Count > 0)
 				{
-					if (model.ProvinceId.HasValue)
-					{
-						if (!provinceList.Select(x => x.ProvinceID).Contains(model.ProvinceId.Value))
-						{
-							errorMessage = $"ไม่พบจังหวัดภายใต้ กิจการสาขาภาคที่ระบุ";
-							model.IsValidate = false;
-							model.ValidateError.Add(errorMessage);
-							if (isThrow) throw new ExceptionCustom(errorMessage);
-						}
-						else
-						{
-							if (model.BranchId.HasValue)
-							{
-								var branchList = await _repo.Thailand.GetBranch(model.ProvinceId.Value);
-								if (!branchList.Select(x => x.BranchID).Contains(model.BranchId.Value))
-								{
-									errorMessage = $"ไม่พบสาขาภายใต้ จังหวัดที่ระบุ";
-									model.IsValidate = false;
-									model.ValidateError.Add(errorMessage);
-									if (isThrow) throw new ExceptionCustom(errorMessage);
-								}
-							}
-						}
-					}
+					//if (model.ProvinceId > 0)
+					//{
+					//	if (!provinceList.Select(x => x.ProvinceID).Contains(model.ProvinceId.Value))
+					//	{
+					//		errorMessage = $"ไม่พบจังหวัดภายใต้ กิจการสาขาภาคที่ระบุ";
+					//		model.IsValidate = false;
+					//		model.ValidateError.Add(errorMessage);
+					//		if (isThrow) throw new ExceptionCustom(errorMessage);
+					//	}
+					//	else
+					//	{
+					//		if (model.BranchId > 0)
+					//		{
+					//			var branchList = await _repo.Thailand.GetBranch(model.ProvinceId.Value);
+					//			if (!branchList.Select(x => x.BranchID).Contains(model.BranchId.Value))
+					//			{
+					//				errorMessage = $"ไม่พบสาขาภายใต้ จังหวัดที่ระบุ";
+					//				model.IsValidate = false;
+					//				model.ValidateError.Add(errorMessage);
+					//				if (isThrow) throw new ExceptionCustom(errorMessage);
+					//			}
+					//		}
+					//	}
+					//}
 				}
 			}
 
@@ -319,6 +319,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.InsterAsync(user);
 				await _db.SaveAsync();
 
+				//Area
+				if (model.User_Areas?.Count > 0)
+				{
+					foreach (var item in model.User_Areas)
+					{
+						var provinceName_area = await _repo.Thailand.GetProvinceNameByid(item.ProvinceId);
+
+						var user_Area = new Data.Entity.User_Area();
+						user_Area.UserId = user.Id;
+						user_Area.CreateDate = _dateNow;
+						user_Area.ProvinceId = item.ProvinceId;
+						user_Area.ProvinceName = provinceName_area;
+						await _db.InsterAsync(user_Area);
+						await _db.SaveAsync();
+					}
+				}
+
 				//RM Role Create Default Assignment
 				if (model.RoleId.HasValue)
 				{
@@ -434,36 +451,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					if (roleCode != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-						{
-							if (model.BranchId != user.BranchId)
-							{
-								var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-								if (assignments != null && assignments.RMNumber > 0)
-								{
-									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
-								}
-							}
-						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
-						{
-							if (model.BranchId != user.BranchId)
-							{
-								var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-								if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
-								{
-									throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีการมอบหมายแล้ว");
-								}
-								else
-								{
-									var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
-									if (salesCount > 0)
-									{
-										throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
-									}
-								}
-							}
-						}
+						//if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+						//{
+						//	if (model.BranchId != user.BranchId)
+						//	{
+						//		var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+						//		if (assignments != null && assignments.RMNumber > 0)
+						//		{
+						//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
+						//		}
+						//	}
+						//}
+						//else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+						//{
+						//	if (model.BranchId != user.BranchId)
+						//	{
+						//		var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
+						//		if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
+						//		{
+						//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีการมอบหมายแล้ว");
+						//		}
+						//		else
+						//		{
+						//			var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
+						//			if (salesCount > 0)
+						//			{
+						//				throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
+						//			}
+						//		}
+						//	}
+						//}
 					}
 
 					user.Status = model.Status;
@@ -532,6 +549,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.working_status = model.working_status;
 					_db.Update(user);
 					await _db.SaveAsync();
+
+					//Area
+					var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == user.Id).ToList();
+					if (user_AreaR.Count > 0)
+					{
+						_db.DeleteRange(user_AreaR);
+						await _db.SaveAsync();
+					}
+					if (model.User_Areas?.Count > 0)
+					{
+						foreach (var item in model.User_Areas)
+						{
+							var provinceName_area = await _repo.Thailand.GetProvinceNameByid(item.ProvinceId);
+
+							var user_Area = new Data.Entity.User_Area();
+							user_Area.UserId = user.Id;
+							user_Area.CreateDate = _dateNow;
+							user_Area.ProvinceId = item.ProvinceId;
+							user_Area.ProvinceName = provinceName_area;
+							await _db.InsterAsync(user_Area);
+							await _db.SaveAsync();
+						}
+					}
 
 					//RM Role Create Default Assignment
 					if (roleCode != null)
@@ -663,6 +703,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<UserCustom> GetById(int id)
 		{
 			var query = await _repo.Context.Users
+				.Include(x => x.User_Areas)
 				.Include(x => x.Master_Branch_Region)
 				.Include(x => x.Position)
 				.Include(x => x.Role)
@@ -708,6 +749,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
+										   .Include(x => x.User_Areas)
 										   .Include(x => x.Master_Branch_Region)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)

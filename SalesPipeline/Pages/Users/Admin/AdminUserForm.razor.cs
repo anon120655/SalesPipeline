@@ -151,51 +151,26 @@ namespace SalesPipeline.Pages.Users.Admin
 				department_BranchId = formModel.Master_Branch_RegionId.Value;
 			}
 
-			//if (formModel.RoleId == 7 && formModel.Master_Department_CenterId.HasValue)
-			//{
-			//	department_BranchName = LookUp.DepartmentCenter?.FirstOrDefault(x => x.Id == formModel.Master_Department_CenterId)?.Master_Department_BranchName;
-			//}
-
 			if (department_BranchId.HasValue)
 			{
 				LookUp.Provinces = new();
 				StateHasChanged();
 				await Task.Delay(10);
-				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Province");
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Provinces");
 
 				var dataProvince = await _masterViewModel.GetProvince(department_BranchId);
 				if (dataProvince != null && dataProvince.Status)
 				{
 					if (dataProvince.Data != null && dataProvince.Data.Count > 0)
 					{
-						LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
+						//LookUp.Provinces = new() { new() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvinces", "#Provinces");
 
-						if (formModel.ProvinceId.HasValue)
-						{
-							LookUp.Branchs = new();
-							StateHasChanged();
-							await Task.Delay(10);
-							await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Branch");
-
-							var branch = await _masterViewModel.GetBranch(formModel.ProvinceId.Value);
-							if (branch != null && branch.Data != null)
-							{
-								LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "--เลือก--" } };
-								LookUp.Branchs?.AddRange(branch.Data);
-								StateHasChanged();
-								await Task.Delay(10);
-								await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBranch", $"#Branch");
-
-							}
-						}
 					}
-
 				}
 			}
-
 		}
 
 		protected async Task BootSelectInit()
@@ -332,11 +307,9 @@ namespace SalesPipeline.Pages.Users.Admin
 			formModel.ProvinceId = null;
 			formModel.BranchId = null;
 			LookUp.Provinces = new();
-			LookUp.Branchs = new();
 			StateHasChanged();
 
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Province");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Provinces");
 
 			if (_id != null && Guid.TryParse(_id, out Guid department_BranchId))
 			{
@@ -350,9 +323,8 @@ namespace SalesPipeline.Pages.Users.Admin
 						LookUp.Provinces = new List<InfoProvinceCustom>() { new InfoProvinceCustom() { ProvinceID = 0, ProvinceName = "--เลือก--" } };
 						LookUp.Provinces.AddRange(dataProvince.Data);
 						StateHasChanged();
-						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Province", 100);
-						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+						await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvinces", "#Provinces");
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Provinces", 100);
 					}
 				}
 				else
@@ -366,6 +338,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		[JSInvokable]
 		public async Task OnProvince(string _provinceID, string _provinceName)
 		{
+			formModel.BranchId = null;
 			LookUp.Branchs = new List<InfoBranchCustom>();
 			StateHasChanged();
 
@@ -394,9 +367,40 @@ namespace SalesPipeline.Pages.Users.Admin
 			await Task.Delay(100);
 			if (_branchID != null && int.TryParse(_branchID, out int branchID))
 			{
-
+				formModel.BranchId = branchID;
+			}
+			else
+			{
+				formModel.BranchId = null;
 			}
 		}
+
+		[JSInvokable]
+		public async Task OnProvinces(string[] _ids, string _name)
+		{
+			formModel.User_Areas = new();
+			StateHasChanged();
+			await Task.Delay(1);
+
+			if (_ids != null)
+			{
+				var selection = (_ids as string[])?.Select(x => x).ToList() ?? new();
+				if (selection != null)
+				{
+					foreach (var item in selection)
+					{
+						if (int.TryParse(item, out int provinceId))
+						{
+							formModel.User_Areas.Add(new()
+							{
+								ProvinceId = provinceId,
+							});
+						}
+					}
+				}
+			}
+		}
+
 
 		protected void ShowLoading()
 		{

@@ -143,6 +143,22 @@
 									</div>
 								</div>
 								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">พื้นที่ดูแล</label>
+									<div class="col-sm-4">
+										<select id="Provinces" class="selectpicker selectInit" title="ทุกจังหวัด" data-actions-box="true" data-live-search="true" data-selected-text-format="count > 3" multiple>
+											@if (LookUp.Provinces?.Count > 0)
+											{
+												foreach (var item in LookUp.Provinces)
+												{
+													bool isSelected = formModel.User_Areas?.Any(x=>x.ProvinceId == item.ProvinceID) ?? false;
+
+													<option value="@item.ProvinceID" selected=@isSelected>@item.ProvinceName</option>
+												}
+											}
+										</select>
+									</div>
+								</div>
+								@* <div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">จังหวัด</label>
 									<div class="col-sm-4">
 										<select @bind="formModel.ProvinceId" id="Province" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
@@ -171,7 +187,7 @@
 										</select>
 										<ValidationMessage For="@(() => formModel.BranchId)" />
 									</div>
-								</div>
+								</div> *@
 								<div class="row mb-3">
 									<label for="" class="col-sm-2 col-form-label text-lg-end fw-bold">สถานะ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">

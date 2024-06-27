@@ -233,6 +233,8 @@ public partial class User
 
     public virtual ICollection<Sale_Status> Sale_Statuses { get; set; } = new List<Sale_Status>();
 
+    public virtual ICollection<User_Area> User_Areas { get; set; } = new List<User_Area>();
+
     public virtual ICollection<User_Target_Sale> User_Target_SaleCreateByNavigations { get; set; } = new List<User_Target_Sale>();
 
     public virtual ICollection<User_Target_Sale> User_Target_SaleUsers { get; set; } = new List<User_Target_Sale>();

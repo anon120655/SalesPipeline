@@ -286,6 +286,8 @@ namespace SalesPipeline.ViewModels
 										data.User_Permissions = dataRoleMap.User_Permissions.ToList();
 									}
 								}
+
+								data.User_Areas = datauserMap.User_Areas;
 							}
 						}
 					}

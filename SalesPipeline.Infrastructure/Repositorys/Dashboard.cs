@@ -1498,7 +1498,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
@@ -2254,7 +2254,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
@@ -2809,7 +2809,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
@@ -2961,7 +2961,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.Sale.CreateDate.Date >= model.startdate.Value.Date && x.Sale.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
             }
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
@@ -3690,7 +3690,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 }
             }
 
-            //ประเภทธุรกิจ
+            //ประเภทกิจการ
             if (!String.IsNullOrEmpty(model.businesstype))
             {
                 if (Guid.TryParse(model.businesstype, out Guid id))
@@ -3769,7 +3769,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//	query = query.Where(x => x.CreateDate.Date >= model.startdate.Value.Date && x.CreateDate.Date <= model.enddate.Value.Date).OrderByDescending(x => x.CreateDate);
 			//}
 
-			//ประเภทธุรกิจ
+			//ประเภทกิจการ
 			if (!String.IsNullOrEmpty(model.businesstype))
 			{
 				if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)

@@ -217,9 +217,11 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public virtual Master_PositionCustom? Position { get; set; }
 		public virtual User_RoleCustom? Role { get; set; }
 		public virtual List<User_Target_SaleCustom>? User_Target_SaleUsers { get; set; }
+		public virtual List<User_AreaCustom>? User_Areas { get; set; }
 
-        //Custom
-        public string? DefaultPassword { get; set; }
+
+		//Custom
+		public string? DefaultPassword { get; set; }
         public string? Master_DepartmentName { get; set; }
 		public string? Master_Branch_RegionName { get; set; }
 		public string? PositionName { get; set; }

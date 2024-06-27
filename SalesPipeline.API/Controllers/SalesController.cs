@@ -136,8 +136,8 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// รายชื่อลูกค้าที่ส่งคืน
 		/// </summary>
-		[HttpGet("GetListReturn")]
-		public async Task<IActionResult> GetListReturn([FromQuery] allFilter model)
+		[HttpPost("GetListReturn")]
+		public async Task<IActionResult> GetListReturn(allFilter model)
 		{
 			try
 			{
