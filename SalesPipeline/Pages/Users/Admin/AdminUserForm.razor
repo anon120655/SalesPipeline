@@ -17,7 +17,13 @@
 							<p class="back_topic_active">ระบบผู้ใช้งาน</p>
 						</div>
 					</div>
-					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
+					@if (isLoadingContent)
+					{
+						<div class="text-center">
+							<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+						</div>
+					}
+					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save" class="@(isLoadingContent ? "d-none":"")">
 						<DataAnnotationsValidator />
 						<div class="row mt-5">
 							<div class="col-12">

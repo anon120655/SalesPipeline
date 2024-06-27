@@ -18,6 +18,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		private string? _errorMessage = null;
 		private bool isLoading = false;
+		private bool isLoadingContent = false;
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private List<User_RoleCustom>? ItemsUserRole;
@@ -26,6 +27,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected override async Task OnInitializedAsync()
 		{
+			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
 			StateHasChanged();
 
@@ -109,6 +111,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 			await Task.Delay(1);
 			await SetAddress();
+			isLoadingContent = false;
 			StateHasChanged();
 		}
 
@@ -130,6 +133,11 @@ namespace SalesPipeline.Pages.Users.Admin
 					_errorMessage = data?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
+			}
+			else
+			{
+				isLoadingContent = false;
+				formModel.Status = StatusModel.Active;
 			}
 		}
 

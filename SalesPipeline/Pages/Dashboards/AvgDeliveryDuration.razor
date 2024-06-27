@@ -178,7 +178,7 @@
 													<td class="">@item.Sale?.CompanyName</td>
 													<td class="text-center">@item.Sale?.BranchName</td>
 													<td class="text-center">@(item.LoanToBranchReg)</td>
-													<td class="text-center">@item.BranchRegToCenBranch</td>
+													@* <td class="text-center">@item.BranchRegToCenBranch</td> *@
 													<td class="text-center">@item.CenBranchToRM</td>
 													<td class="text-center">@(item.LoanToBranchReg + item.BranchRegToCenBranch + item.CenBranchToRM)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.AssUserName)</td>
