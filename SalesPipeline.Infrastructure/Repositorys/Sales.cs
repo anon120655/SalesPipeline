@@ -6,8 +6,10 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -24,6 +26,36 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+		}
+
+		public IQueryable<Sale> QueryArea(IQueryable<Sale> query, UserCustom user)
+		{
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				query = query.Where(x => x.AssUserId == user.Id);
+			}
+			else
+			{
+				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				{
+					//9999 เห็นทุกจังหวัดในภาค
+					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+					{
+						query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+					}
+					else
+					{
+						//เห็นเฉพาะจังหวัดที่ดูแล
+						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+					}
+				}
+			}
+
+			return query;
 		}
 
 		public async Task<SaleCustom> Create(SaleCustom model)
@@ -388,27 +420,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.AsQueryable();
 			}
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-			{
-				query = query.Where(x => x.AssUserId == user.Id);
-			}
-			else
-			{
-				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
-				{
-					//9999 เห็นทุกจังหวัดในภาค
-					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
-					{
-						query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
-					}
-				}
-			}
+			query = QueryArea(query, user);
 
 			if (model.isoverdue == 1)
 			{
