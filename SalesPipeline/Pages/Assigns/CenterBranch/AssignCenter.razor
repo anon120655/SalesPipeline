@@ -123,9 +123,9 @@
 															@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
 														</td>
 														<td class="text-center">
-														@* 	<a role="button" @onclick="(async () => await  gotostep(stepassignloanmodel.customer,item.id))">
+															<a role="button">
 																<img src="/image/icon/ckeckbox.png" width="25" />
-															</a> *@
+															</a>
 														</td>
 													</tr>
 												}
@@ -137,21 +137,21 @@
 						</div>
 						<div>
 							@* <PaginationBack DisplayItems="@(ItemsCenter?.Count ?? 0)"
-											TotalItems="@(PagerCenter?.TotalItems ?? 0)"
-											Pager="@PagerCenter"
-											OnSelectedPage="@OnSelectPageCenter"
-											ParameterAll="@filterCenter?.SetParameter()">
-							</PaginationBack> *@
+					TotalItems="@(PagerCenter?.TotalItems ?? 0)"
+					Pager="@PagerCenter"
+					OnSelectedPage="@OnSelectPageCenter"
+					ParameterAll="@filterCenter?.SetParameter()">
+					</PaginationBack> *@
 						</div>
 						<div class="my-4 text-center">
 							<div class="d-flex bd-highlight align-items-center justify-content-center">
 								<div class="p-2 bd-highlight">
-									@* @if (ItemsCenter?.Count > 0)
+									@if (Items?.Count > 0)
 									{
 										<Button @onclick="InitShowConfirmAssign" Color="ButtonColor.Primary" Type="ButtonType.Button" Disabled="@isLoading" Class="mw_6r">
 											มอบหมาย
 										</Button>
-									} *@
+									}
 								</div>
 							</div>
 						</div>
@@ -160,6 +160,9 @@
 			</div>
 		</div>
 	</div>
+	<ModalConfirm @ref="modalConfirmAssign" CallbackConfirm="ConfirmAssign" isLoading="isLoading" _errorMessage="@_errorMessageModal" />
+	<ModalSuccessful @ref="modalSuccessfulAssign" />
+
 }
 else
 {

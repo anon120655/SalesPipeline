@@ -14,19 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Assigns\CenterBranch\AssignCenterCus.razor" />
     <Content Remove="wwwroot\js\checktimeout.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Assigns\CenterBranch\AssignCenterCus.razor" />
     <_ContentIncludedByDefault Remove="wwwroot\css\checkbox_circle.css" />
     <_ContentIncludedByDefault Remove="wwwroot\css\dropdowncheckbox.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checktimeout.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\Assigns\CenterBranch\AssignCenterCus.razor" />
     <None Include="wwwroot\js\checktimeout.js" />
   </ItemGroup>
 
@@ -44,10 +41,6 @@
     <Content Update="Pages\Assigns\CenterBranch\AssignCenter.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\Assigns\CenterBranch\AssignCenterCus.razor" />
   </ItemGroup>
 
 </Project>

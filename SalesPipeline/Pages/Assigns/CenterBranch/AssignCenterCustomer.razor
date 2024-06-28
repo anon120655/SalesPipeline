@@ -1,0 +1,103 @@
+﻿@page "/assign/center/customer"
+
+<PageTitle>มอบหมายผู้จัดการศูนย์</PageTitle>
+
+<MessageError errorMessage="@_errorMessage" />
+
+@if (_permission.IsView)
+{
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 my-2">
+				<div class="box_content">
+					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+						<div class="p-2">
+							<p class="back_topic">มอบหมายผู้จัดการศูนย์ > เลือกลูกค้า</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="table-responsive border-top">
+								<table class="table table_list">
+									<thead>
+										<tr>
+											<th class="text-center">รหัสพนักงาน</th>
+											<th class="text-center">ชื่อพนักงาน</th>
+											<th class="text-center">พื้นที่ดูแล</th>
+											<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+											<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+											<th class="text-center">จำนวนการมอบหมาย</th>
+											<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+											<th class="text-center">จัดการมอบหมาย</th>
+										</tr>
+									</thead>
+									<tbody>
+										@if (Items == null)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+												</td>
+											</tr>
+										}
+										else if (Items.Count == 0)
+										{
+											<tr class="text-center align-middle">
+												<td colspan="100">
+													<em>(ไม่มีข้อมูลสำหรับการหมอบหมาย)</em>
+												</td>
+											</tr>
+										}
+										else
+										{
+											foreach (var item in Items)
+											{
+												<tr>
+													<td class="text-center">@item.EmployeeId</td>
+													<td class="text-center">@item.EmployeeName</td>
+													<td class="text-center">
+														@if (item.User?.User_Areas?.Count > 0)
+														{
+															string provinceNames = string.Join(",", item.User.User_Areas.Select(x => x.ProvinceName));
+															@GeneralUtils.EmptyTo(provinceNames)
+														}
+														else
+														{
+															<span>-</span>
+														}
+													</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(item.RMNumber)
+													</td>
+													<td class="text-center">@(item.CurrentNumber)/100</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(item.NumberAssignment)
+													</td>
+													<td class="text-center">
+														@GeneralUtils.EmptyTo(item.NumberAfterAssignment)/100
+													</td>
+													<td class="text-center">
+														<a role="button">
+															<img src="/image/icon/ckeckbox.png" width="25" />
+														</a>
+													</td>
+												</tr>
+											}
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<NotPermissionPage />
+}
+
+

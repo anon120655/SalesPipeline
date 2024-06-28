@@ -1,3 +1,4 @@
+using Hangfire.MemoryStorage.Database;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
@@ -6,6 +7,7 @@ using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Text.Json;
 
 namespace SalesPipeline.Pages.Assigns.CenterBranch
 {
@@ -22,6 +24,10 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
 		private Guid? assignmentIdPrevious = null;
+		private bool IsToClose = false;
+
+		ModalConfirm modalConfirmAssign = default!;
+		ModalSuccessful modalSuccessfulAssign = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -128,6 +134,82 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 		{
 			await SetModel();
 			StateHasChanged();
+		}
+
+		protected void ShowLoading()
+		{
+			isLoading = true;
+			StateHasChanged();
+		}
+
+		protected void HideLoading()
+		{
+			isLoading = false;
+			StateHasChanged();
+		}
+
+		protected async Task InitShowConfirmAssign()
+		{
+			_errorMessageModal = null;
+			await ShowConfirmAssign(null, "กรุณากด ยืนยัน การมอบหมายงาน", "<img src=\"/image/icon/do.png\" width=\"65\" />");
+		}
+
+		protected async Task ShowConfirmAssign(string? id, string? txt, string? icon = null)
+		{
+			IsToClose = false;
+			await modalConfirmAssign.OnShowConfirm(id, $"{txt}", icon);
+		}
+
+		protected async Task ConfirmAssign(string id)
+		{
+			ShowLoading();
+			await Task.Delay(10);
+			await Assign();
+		}
+
+		protected async Task ShowSuccessfulAssign(string? id, string? txt)
+		{
+			await modalSuccessfulAssign.OnShow(id, $"{txt}");
+		}
+
+		protected async Task Assign()
+		{
+			_errorMessageModal = null;
+
+			if (Items != null)
+			{
+				foreach (var item in Items)
+				{
+					foreach (var item_sale in item.Assignment_Sales ?? new())
+					{
+						item_sale.Sale = null;
+					}
+				}
+
+				var jsonData = JsonSerializer.Serialize(Items);
+				await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", "AssignCenterData", jsonData);
+
+				await modalConfirmAssign.OnHideConfirm();
+				await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+
+				_Navs.NavigateTo("/assign/center/customer");
+				//var response = await _assignmentCenterViewModel.Assign(Items);
+
+				//if (response.Status)
+				//{
+				//	IsToClose = true;
+				//	await modalConfirmAssign.OnHideConfirm();
+				//	await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+				//	await SetModel();
+				//	HideLoading();
+				//}
+				//else
+				//{
+				//	HideLoading();
+				//	_errorMessageModal = response.errorMessage;
+				//}
+			}
+
 		}
 
 	}

@@ -124,16 +124,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//รูปแบบการมอบหมายตามเกณฑ์
-			//1. ผจศ. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
-			//2. หาข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
-			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
-			//4. มอบหมายให้ ผจศ. เท่าๆ กัน  (ผจศ. ที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
-
 			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
 			//2. ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
 			//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
 
-			//ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
+			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
 			var query = _repo.Context.Assignment_Centers.Where(x => x.Status == StatusModel.Active)
 												 .Include(x => x.User).ThenInclude(t => t.User_Areas)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
@@ -156,7 +151,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			List<Assignment_CenterCustom> responseItems = new();
 
-			//ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
+			//2. ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
 			var salesQuery = _repo.Context.Sales
 				.Include(x => x.Customer)
 				.Where(x => x.Status == StatusModel.Active && x.ProvinceId > 0 && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssignCenter)
@@ -167,10 +162,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
-				//มอบหมาย ผจศ. ตามพื้นที่ดูแล
+				//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
 				foreach (var item_center in userAssignment)
 				{
 					var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
+
+					//9999 เห็นทุกจังหวัดในภาค
+					if (areaList.Any(x => x == 9999))
+					{
+						var branch_RegionId = _repo.Context.Users.FirstOrDefault(x=>x.Id == item_center.UserId)?.Master_Branch_RegionId;
+						if (branch_RegionId.HasValue)
+						{
+							areaList = _repo.Context.InfoProvinces
+								.Where(x => x.Master_Department_BranchId == branch_RegionId)
+								.Select(x=>x.ProvinceID).ToList();
+						}
+					}
+
 					var sales = salesCustomer.Where(x => x.ProvinceId.HasValue && areaList.Contains(x.ProvinceId.Value)).ToList();
 					if (sales.Count > 0)
 					{
