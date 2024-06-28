@@ -10,7 +10,7 @@ namespace SalesPipeline.Utils.Resources.Assignments
 	public class Assignment_Center_Sale
 	{
 
-		public Guid AssignmentRMId { get; set; }
+		public Guid AssignmentId { get; set; }
 
 		/// <summary>
 		/// 1=อยู่ในความรับผิดชอบ 0=ถูกเปลี่ยนผู้รับผิดชอบ

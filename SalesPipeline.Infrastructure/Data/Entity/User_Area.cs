@@ -7,6 +7,11 @@ public partial class User_Area
 {
     public int Id { get; set; }
 
+    /// <summary>
+    /// -1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน
+    /// </summary>
+    public short Status { get; set; }
+
     public DateTime CreateDate { get; set; }
 
     public int UserId { get; set; }

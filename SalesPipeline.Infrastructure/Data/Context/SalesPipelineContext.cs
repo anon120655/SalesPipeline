@@ -3628,6 +3628,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("timestamp");
             entity.Property(e => e.ProvinceId).HasColumnType("int(11)");
             entity.Property(e => e.ProvinceName).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
             entity.Property(e => e.UserId).HasColumnType("int(11)");
 
             entity.HasOne(d => d.User).WithMany(p => p.User_Areas)

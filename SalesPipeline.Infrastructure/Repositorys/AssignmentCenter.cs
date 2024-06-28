@@ -12,7 +12,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class AssignmentCenter : IAssignmentCenter
+	public class AssignmentCenter : IAssignmentCenter
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -118,7 +118,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && !user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN))
 			{
 				return new();
 			}
@@ -130,15 +130,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//4. มอบหมายให้ ผจศ. เท่าๆ กัน  (ผจศ. ที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
 
 			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
-			//2. หาข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย
+			//2. ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
+			//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
 
-			//ข้อมูลพนักงาน  ผจศ. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
-			var query = _repo.Context.Assignment_Centers.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.User)
+			//ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
+			var query = _repo.Context.Assignment_Centers.Where(x => x.Status == StatusModel.Active)
+												 .Include(x => x.User).ThenInclude(t => t.User_Areas)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			
+
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
@@ -149,26 +150,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
 			}
 
-			if (model.provinceid.HasValue)
-			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
-			}
-
-			if (model.amphurid.HasValue)
-			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
-			}
-
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
-
 			var userAssignment = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+			//var userAssignment = await query.ToListAsync();
 
 			List<Assignment_CenterCustom> responseItems = new();
 
-			//ข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
+			//ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
 			var salesQuery = _repo.Context.Sales
 				.Include(x => x.Customer)
-				.Where(x => x.Status != StatusModel.Delete && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssignCenter)
+				.Where(x => x.Status == StatusModel.Active && x.ProvinceId > 0 && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssignCenter)
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.AsQueryable();
 
@@ -176,42 +167,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
-				//แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
-				var partitionCustomer = GeneralUtils.PartitionList(salesCustomer, userAssignment.Count);
-
-				if (partitionCustomer.Length > 0)
+				//มอบหมาย ผจศ. ตามพื้นที่ดูแล
+				foreach (var item_center in userAssignment)
 				{
-					int index_path = 0;
-					foreach (var item_path in partitionCustomer)
+					var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
+					var sales = salesCustomer.Where(x => x.ProvinceId.HasValue && areaList.Contains(x.ProvinceId.Value)).ToList();
+					if (sales.Count > 0)
 					{
-						//มอบหมายให้พนักงานเท่าๆ กัน
-						//var assignment_Center = _mapper.Map<Assignment_CenterCustom>(userAssignment[index_path]);
-						//assignment_Center.Assignment_RM_Sales = new();
-						//assignment_Center.Tel = assignment_Center.User?.Tel;
-						//assignment_Center.ProvinceName = assignment_Center.User?.ProvinceName;
-						//assignment_Center.BranchName = assignment_Center.User?.BranchName;
+						var assignment_Center = _mapper.Map<Assignment_CenterCustom>(item_center);
+						assignment_Center.Tel = assignment_Center.User?.Tel;
+						assignment_Center.EmployeeId = assignment_Center.User?.EmployeeId;
+						assignment_Center.EmployeeName = assignment_Center.User?.FullName;
+						assignment_Center.Assignment_Sales = new();
+						foreach (var item_sale in sales)
+						{
+							assignment_Center.Assignment_Sales.Add(new()
+							{
+								SaleId = item_sale.Id,
+								IsActive = StatusModel.Active,
+								IsSelect = true,
+								Sale = _mapper.Map<SaleCustom>(item_sale)
+							});
+						}
 
-						//foreach (var item_sales in item_path)
-						//{
-						//	assignment_Center.Assignment_RM_Sales.Add(new()
-						//	{
-						//		Id = Guid.NewGuid(),
-						//		Status = StatusModel.Active,
-						//		CreateDate = DateTime.Now.AddSeconds(1),
-						//		AssignmentRMId = assignment_RM.Id,
-						//		SaleId = item_sales.Id,
-						//		IsActive = StatusModel.Active,
-						//		IsSelect = true,
-						//		IsSelectMove = false,
-						//		Sale = _mapper.Map<SaleCustom>(item_sales)
-						//	});
-						//}
-
-						//assignment_Center.Assignment_RM_Sales = assignment_Center.Assignment_RM_Sales.OrderBy(x => x.CreateDate).ToList();
-
-						//assignment_Center.User = null;
-						//responseItems.Add(assignment_Center);
-						//index_path++;
+						assignment_Center.User = null;
+						responseItems.Add(assignment_Center);
 					}
 				}
 			}

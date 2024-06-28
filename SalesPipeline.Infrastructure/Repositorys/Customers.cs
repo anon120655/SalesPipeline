@@ -571,9 +571,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     CIF = customer.CIF,
                     StatusSaleId = statusSaleId,
                     Master_Branch_RegionId = master_Branch_RegionId,
-                    ProvinceId = provinceId,
-                    BranchId = branchId,
-                    AssCenterUserId = assCenterUserId,
+					ProvinceId = model.ProvinceId,
+					//ProvinceId = provinceId,
+					//BranchId = branchId, //ต้องทำเพิ่ม กรณีเลือกสาขาจากหน้าฟอร์มลูกค้า
+					AssCenterUserId = assCenterUserId,
                     AssCenterUserName = assCenterUserName,
                     AssUserId = assUserId,
                     AssUserName = assUserName

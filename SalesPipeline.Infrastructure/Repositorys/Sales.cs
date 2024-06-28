@@ -82,8 +82,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale.StatusSaleId = model.StatusSaleId;
 			sale.DateAppointment = model.DateAppointment;
 			sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
-			sale.Master_Branch_RegionId = model.Master_Branch_RegionId;
-			sale.Master_Branch_RegionName = master_Branch_RegionName;
+			//sale.Master_Branch_RegionId = model.Master_Branch_RegionId;
+			//sale.Master_Branch_RegionName = master_Branch_RegionName;
 			sale.ProvinceId = model.ProvinceId;
 			sale.ProvinceName = provinceName;
 			sale.BranchId = model.BranchId;

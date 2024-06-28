@@ -316,8 +316,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						currentUserId = 5;
 						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
-						_statusSaleId = StatusSaleModel.WaitAssignCenterREG;
-						if (!branch_RegionId.HasValue) throw new ExceptionCustom($"ไม่พบข้อมูล branch_RegionId");
+						//_statusSaleId = StatusSaleModel.WaitAssignCenterREG;
+						_statusSaleId = StatusSaleModel.WaitAssignCenter;
+						//if (!branch_RegionId.HasValue) throw new ExceptionCustom($"ไม่พบข้อมูล branch_RegionId");
 					}
 					else
 					{

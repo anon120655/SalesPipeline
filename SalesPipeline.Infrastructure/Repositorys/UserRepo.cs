@@ -559,7 +559,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var userRegion = _repo.Context.Users
 							.Include(x => x.User_Areas)
-							.FirstOrDefault(x => x.Status != StatusModel.Delete && x.RoleId == 7
+							.FirstOrDefault(x => x.Status == StatusModel.Active && x.RoleId == 7
 							&& x.Master_Branch_RegionId == model.Master_Branch_RegionId);
 
 						if (userRegion != null && userRegion.User_Areas.Select(x => x.ProvinceId).Any(x => x == 9999))
@@ -571,7 +571,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (roleCode != null && roleCode == RoleCodes.CENTER)
 							{
-								var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.UserId != model.Id && x.ProvinceId == item.ProvinceId);
+								var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.Status == StatusModel.Active
+								&& x.UserId != model.Id
+								&& x.ProvinceId == item.ProvinceId);
 								if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
 							}
 
@@ -579,6 +581,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							if (item.ProvinceId == 9999) provinceName_area = "ทั้งหมด";
 
 							var user_Area = new Data.Entity.User_Area();
+							user_Area.Status = model.Status;
 							user_Area.UserId = user.Id;
 							user_Area.CreateDate = _dateNow;
 							user_Area.ProvinceId = item.ProvinceId;
@@ -670,45 +673,92 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query.Status = StatusModel.Delete;
 				_db.Update(query);
 				await _db.SaveAsync();
+
+				var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToList();
+				if (user_AreaR.Count > 0)
+				{
+					foreach (var item in user_AreaR)
+					{
+						item.Status = StatusModel.Delete;
+						_db.Update(item);
+					}
+					await _db.SaveAsync();
+				}
 			}
 		}
 
 		public async Task UpdateStatusById(UpdateModel model)
 		{
-			if (model != null && Boolean.TryParse(model.value, out bool parsedValue))
+			using (var _transaction = _repo.BeginTransaction())
 			{
-				var _status = parsedValue ? (short)1 : (short)0;
-				int id = int.Parse(model.id);
-				var query = await _repo.Context.Users.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
-				if (query != null)
+				if (model != null && Boolean.TryParse(model.value, out bool parsedValue))
 				{
-					query.UpdateBy = model.userid;
-					query.Status = _status;
-					_db.Update(query);
-					await _db.SaveAsync();
-
-					if (query.RoleId == 7)
+					var _status = parsedValue ? (short)1 : (short)0;
+					int id = int.Parse(model.id);
+					var query = await _repo.Context.Users.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+					if (query != null)
 					{
-						var assignment = await _repo.Context.Assignment_Centers.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
-						if (assignment != null)
+						query.UpdateBy = model.userid;
+						query.Status = _status;
+						_db.Update(query);
+						await _db.SaveAsync();
+
+						if (query.RoleId == 7)
 						{
-							assignment.Status = _status;
-							_db.Update(assignment);
-							await _db.SaveAsync();
+							var assignment = await _repo.Context.Assignment_Centers.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+							if (assignment != null)
+							{
+								assignment.Status = _status;
+								_db.Update(assignment);
+								await _db.SaveAsync();
+							}
+
+							var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToList();
+							if (user_AreaR.Count > 0)
+							{
+								if (_status == StatusModel.Active)
+								{
+									var userRegion = _repo.Context.Users
+									.Include(x => x.User_Areas)
+									.FirstOrDefault(x => x.Status == StatusModel.Active && x.RoleId == 7
+									&& x.Master_Branch_RegionId == query.Master_Branch_RegionId);
+
+									if (userRegion != null && userRegion.User_Areas.Select(x => x.ProvinceId).Any(x => x == 9999))
+									{
+										throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่ในกิจการสาขาภาคนี้ทั้งหมดแล้ว");
+									}
+								}
+
+								foreach (var item in user_AreaR)
+								{
+									if (_status == StatusModel.Active)
+									{
+										var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.Status == StatusModel.Active
+											&& x.UserId != model.userid
+											&& x.ProvinceId == item.ProvinceId);
+										if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
+									}
+
+									item.Status = _status;
+									_db.Update(item);
+								}
+								await _db.SaveAsync();
+							}
+						}
+						else if (query.RoleId == 8)
+						{
+							var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
+							if (assignment_RM != null)
+							{
+								assignment_RM.Status = _status;
+								_db.Update(assignment_RM);
+								await _db.SaveAsync();
+							}
 						}
 					}
-					else if (query.RoleId == 8)
-					{
-						var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == query.Id).FirstOrDefaultAsync();
-						if (assignment_RM != null)
-						{
-							assignment_RM.Status = _status;
-							_db.Update(assignment_RM);
-							await _db.SaveAsync();
-						}
-					}
-
 				}
+
+				_transaction.Commit();
 			}
 		}
 

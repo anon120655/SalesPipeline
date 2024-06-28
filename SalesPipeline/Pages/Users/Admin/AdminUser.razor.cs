@@ -224,6 +224,8 @@ namespace SalesPipeline.Pages.Users.Admin
 				{
 					_errorMessage = data?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
+					await SetModel();
+					StateHasChanged();
 				}
 				else
 				{
