@@ -93,6 +93,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpPost("AssignCenter")]
+		public async Task<IActionResult> AssignCenter(List<Assignment_CenterCustom> model)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentCenter.AssignCenter(model);
+
+					_transaction.Commit();
+				}
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("CreateAssignmentCenterAll")]
 		public async Task<IActionResult> CreateAssignmentCenterAll()
 		{

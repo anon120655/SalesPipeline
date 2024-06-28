@@ -10,7 +10,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Assigns.CenterBranch
 {
-    public partial class AssignCenterBranch
+    public partial class AssignCenterManual
 	{
 		string? _errorMessage = null;
 		private bool isLoading = false;
@@ -128,8 +128,8 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 			//filter.statussaleid = StatusSaleModel.WaitAssignCenter;
 			filter.StatusSales = new()
 			{
-				StatusSaleModel.WaitAssignCenter.ToString(),
-				StatusSaleModel.WaitAssignCenterREG.ToString()
+				StatusSaleModel.WaitAssignCenter.ToString()
+				//,StatusSaleModel.WaitAssignCenterREG.ToString()
 			};
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
@@ -148,7 +148,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 				Pager = data.Data?.Pager;
 				if (Pager != null)
 				{
-					Pager.UrlAction = "/assign/cbranch";
+					Pager.UrlAction = "/assign/center/manual";
 				}
 			}
 			else
@@ -403,6 +403,11 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 			StateHasChanged();
 			await Task.Delay(1);
+		}
+
+		protected void Cancel()
+		{
+			_Navs.NavigateTo("/assign/center");
 		}
 
 

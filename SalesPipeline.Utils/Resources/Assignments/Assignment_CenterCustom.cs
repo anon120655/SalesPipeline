@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.Resources.Assignments
 {
-	public class Assignment_CenterCustom
+	public class Assignment_CenterCustom : CommonModel
 	{
 		public Guid Id { get; set; }
 

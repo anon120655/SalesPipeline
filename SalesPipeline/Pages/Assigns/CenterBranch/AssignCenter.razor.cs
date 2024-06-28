@@ -47,6 +47,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 				await Task.Delay(10);
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+				await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"AssignCenterData_{UserInfo.Id}");
 				firstRender = false;
 			}
 		}
@@ -174,40 +175,37 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 		protected async Task Assign()
 		{
+			//var jsonData = JsonSerializer.Serialize(Items);
+			//await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", $"AssignCenterData_{UserInfo.Id}", jsonData);
+			//_Navs.NavigateTo("/assign/center/customer");
+
 			_errorMessageModal = null;
 
 			if (Items != null)
 			{
 				foreach (var item in Items)
 				{
+					item.CurrentUserId = UserInfo.Id;
 					foreach (var item_sale in item.Assignment_Sales ?? new())
 					{
 						item_sale.Sale = null;
 					}
 				}
 
-				var jsonData = JsonSerializer.Serialize(Items);
-				await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", "AssignCenterData", jsonData);
-
-				await modalConfirmAssign.OnHideConfirm();
-				await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-
-				_Navs.NavigateTo("/assign/center/customer");
-				//var response = await _assignmentCenterViewModel.Assign(Items);
-
-				//if (response.Status)
-				//{
-				//	IsToClose = true;
-				//	await modalConfirmAssign.OnHideConfirm();
-				//	await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
-				//	await SetModel();
-				//	HideLoading();
-				//}
-				//else
-				//{
-				//	HideLoading();
-				//	_errorMessageModal = response.errorMessage;
-				//}
+				var response = await _assignmentCenterViewModel.AssignCenter(Items);
+				if (response.Status)
+				{
+					IsToClose = true;
+					await modalConfirmAssign.OnHideConfirm();
+					await ShowSuccessfulAssign(null, "เสร็จสิ้นการมอบหมายงาน");
+					await SetModel();
+					HideLoading();
+				}
+				else
+				{
+					HideLoading();
+					_errorMessageModal = response.errorMessage;
+				}
 			}
 
 		}

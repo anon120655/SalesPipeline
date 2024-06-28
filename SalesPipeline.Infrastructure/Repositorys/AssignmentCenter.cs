@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -170,12 +171,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//9999 เห็นทุกจังหวัดในภาค
 					if (areaList.Any(x => x == 9999))
 					{
-						var branch_RegionId = _repo.Context.Users.FirstOrDefault(x=>x.Id == item_center.UserId)?.Master_Branch_RegionId;
+						var branch_RegionId = _repo.Context.Users.FirstOrDefault(x => x.Id == item_center.UserId)?.Master_Branch_RegionId;
 						if (branch_RegionId.HasValue)
 						{
 							areaList = _repo.Context.InfoProvinces
 								.Where(x => x.Master_Department_BranchId == branch_RegionId)
-								.Select(x=>x.ProvinceID).ToList();
+								.Select(x => x.ProvinceID).ToList();
 						}
 					}
 
@@ -276,16 +277,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
 						//ข้อมูลนี้จะได้มาตั้งแต่ตอนเพิ่มรายการ
-						//if (assignment_MCenter.User != null)
-						//{
-						//	sale.Master_Branch_RegionId = assignment_MCenter.User.Master_Branch_RegionId;
-						//	if (assignment_MCenter.User.Master_Branch_Region != null)
-						//	{
-						//		sale.Master_Branch_RegionName = assignment_MCenter.User.Master_Branch_Region.Name;
-						//	}
-						//	sale.ProvinceId = assignment_MCenter.User.ProvinceId;
-						//	sale.ProvinceName = assignment_MCenter.User.ProvinceName;
-						//}
 
 						//sale.BranchId = assignment_CenterBranch.BranchId;
 						//sale.BranchName = assignment_CenterBranch.BranchName;
@@ -321,6 +312,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(assignment_CenterBranch);
 				await _db.SaveAsync();
 
+			}
+		}
+
+		public async Task AssignCenter(List<Assignment_CenterCustom> model)
+		{
+			foreach (var item_center in model)
+			{
+				if (item_center.Assignment_Sales?.Count > 0)
+				{
+					var assignment_Center = await _repo.Context.Assignment_Centers
+						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_center.Id);
+					if (assignment_Center == null) throw new ExceptionCustom("ไม่พบข้อมูลผู้จัดการศูนย์");
+
+					foreach (var item_sale in item_center.Assignment_Sales)
+					{
+						var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_sale.SaleId);
+						if (sale == null) throw new ExceptionCustom("ไม่พบข้อมูลูกค้า");
+
+						sale.AssUser = null;
+						sale.AssCenterUser = null;
+						sale.AssCenterAlready = true;
+						sale.AssCenterUserId = item_center.UserId;
+						sale.AssCenterUserName = item_center.EmployeeName;
+						sale.AssCenterCreateBy = item_center.CurrentUserId;
+						sale.AssCenterDate = DateTime.Now;
+						_db.Update(sale);
+						await _db.SaveAsync();
+
+						var currentUserName = await _repo.User.GetFullNameById(item_center.CurrentUserId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = sale.Id,
+							StatusId = StatusSaleModel.WaitAssign,
+							CreateBy = item_center.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+
+						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item_sale.SaleId });
+					}
+
+					assignment_Center.CurrentNumber = item_center.NumberAfterAssignment;
+					_db.Update(assignment_Center);
+					await _db.SaveAsync();
+
+				}
 			}
 		}
 
