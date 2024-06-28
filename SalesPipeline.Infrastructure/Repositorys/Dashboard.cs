@@ -242,7 +242,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
 
-						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
+						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
@@ -780,7 +780,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var statusTotal = new List<SaleStatusGroupByModel>();
 
-					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 					{
 						var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 

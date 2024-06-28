@@ -14,18 +14,6 @@ public partial class Assignment_Center
 
     public DateTime CreateDate { get; set; }
 
-    public int? BranchId { get; set; }
-
-    /// <summary>
-    /// รหัสสาขา
-    /// </summary>
-    public string? BranchCode { get; set; }
-
-    /// <summary>
-    /// สาขา
-    /// </summary>
-    public string? BranchName { get; set; }
-
     /// <summary>
     /// UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย
     /// </summary>
@@ -52,8 +40,6 @@ public partial class Assignment_Center
     /// จำนวนลูกค้าปัจจุบันที่ดูแล
     /// </summary>
     public int? CurrentNumber { get; set; }
-
-    public virtual InfoBranch? Branch { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

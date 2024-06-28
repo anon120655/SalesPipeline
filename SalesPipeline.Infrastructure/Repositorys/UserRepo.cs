@@ -200,7 +200,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 				}
-				else if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+				else if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
 				{
 					//** comment ออก เพราะใน iAuthen ผู้จัดการศูนย์มี level ส่งมมา
 					//model.LevelId = null;
@@ -368,7 +368,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								CurrentNumber = 0
 							});
 						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
 						{
 							string? _code = null;
 							string? _name = null;
@@ -382,9 +382,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
 								Status = model.Status,
-								BranchId = user.BranchId,
-								BranchCode = _code,
-								BranchName = _name,
 								UserId = user.Id,
 								EmployeeId = model.EmployeeId,
 								EmployeeName = model.FullName,
@@ -560,8 +557,24 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					if (model.User_Areas?.Count > 0)
 					{
+						var userRegion = _repo.Context.Users
+							.Include(x => x.User_Areas)
+							.FirstOrDefault(x => x.Status != StatusModel.Delete && x.RoleId == 7
+							&& x.Master_Branch_RegionId == model.Master_Branch_RegionId);
+
+						if (userRegion != null && userRegion.User_Areas.Select(x => x.ProvinceId).Any(x => x == 9999))
+						{
+							throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่ในกิจการสาขาภาคนี้ทั้งหมดแล้ว");
+						}
+
 						foreach (var item in model.User_Areas)
 						{
+							if (roleCode != null && roleCode == RoleCodes.CENTER)
+							{
+								var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.UserId != model.Id && x.ProvinceId == item.ProvinceId);
+								if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
+							}
+
 							var provinceName_area = await _repo.Thailand.GetProvinceNameByid(item.ProvinceId);
 							if (item.ProvinceId == 9999) provinceName_area = "ทั้งหมด";
 
@@ -580,7 +593,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (user.BranchId.HasValue)
 						{
-							if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+							if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
 							{
 
 								string? _code = null;
@@ -595,9 +608,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								Assignment_CenterCustom assignmentCenterModel = new()
 								{
 									Status = model.Status,
-									BranchId = user.BranchId,
-									BranchCode = _code,
-									BranchName = _name,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
 									EmployeeName = model.FullName,
@@ -1047,7 +1057,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 										   .AsQueryable();
-						
+
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);

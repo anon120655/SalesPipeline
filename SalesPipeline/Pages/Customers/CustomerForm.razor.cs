@@ -452,7 +452,7 @@ namespace SalesPipeline.Pages.Customers
 					//Role กิจการสาขาภาค --> รอมอบหมาย(ศูนย์สาขา)
 					formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
 				}
-				else if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
+				else if (UserInfo.RoleCode == RoleCodes.CENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
 				{
 					//Role ผู้จัดการศูนย์ --> รอมอบหมาย
 					formModel.StatusSaleId = StatusSaleModel.WaitAssign;

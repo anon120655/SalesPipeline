@@ -288,17 +288,8 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Assignment_Center");
 
-            entity.HasIndex(e => e.BranchId, "Master_Department_BranchId");
-
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.BranchCode)
-                .HasMaxLength(255)
-                .HasComment("รหัสสาขา");
-            entity.Property(e => e.BranchId).HasColumnType("int(11)");
-            entity.Property(e => e.BranchName)
-                .HasMaxLength(255)
-                .HasComment("สาขา");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CurrentNumber)
                 .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
@@ -319,10 +310,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UserId)
                 .HasComment("UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
-
-            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_Centers)
-                .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("assignment_center_ibfk_2");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_Centers)
                 .HasForeignKey(d => d.UserId)
@@ -3511,8 +3498,6 @@ public partial class SalesPipelineContext : DbContext
             entity.HasIndex(e => e.LevelId, "LevelId");
 
             entity.HasIndex(e => e.Master_Branch_RegionId, "Master_Branch_Region");
-
-            entity.HasIndex(e => e.Master_DepartmentId, "Master_DepartmentId");
 
             entity.HasIndex(e => e.PositionId, "PositionId");
 

@@ -257,7 +257,7 @@ namespace SalesPipeline.API.Controllers
 				rolecode = rolecode.ToUpper();
 				if (rolecode.StartsWith("C"))
 				{
-					rolecode = RoleCodes.CEN_BRANCH;
+					rolecode = RoleCodes.CENTER;
 				}
 				else if (rolecode.StartsWith("B"))
 				{
@@ -289,7 +289,7 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
 						}
 					}
-					else if (rolecode == RoleCodes.CEN_BRANCH)
+					else if (rolecode == RoleCodes.CENTER)
 					{
 						currentUserId = 11;
 						employeeName = $"CEN_BRANCH_{provinceId}_{i} ทดสอบ";

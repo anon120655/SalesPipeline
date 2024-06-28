@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+﻿using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Thailands;
 using System;
@@ -20,18 +21,6 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public short Status { get; set; }
 
 		public DateTime CreateDate { get; set; }
-
-		public int? BranchId { get; set; }
-
-		/// <summary>
-		/// รหัสสาขา
-		/// </summary>
-		public string? BranchCode { get; set; }
-
-		/// <summary>
-		/// สาขา
-		/// </summary>
-		public string? BranchName { get; set; }
 
 		/// <summary>
 		/// UserId ผู้จัดการศูนย์ที่ได้รับมอบหมาย
@@ -60,9 +49,38 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		/// </summary>
 		public int? CurrentNumber { get; set; }
 
-		public virtual InfoBranchCustom? Branch { get; set; }
-
 		public virtual UserCustom? User { get; set; }
+
+		public virtual List<Assignment_Center_Sale>? Assignment_Sales { get; set; }
+
+		/// <summary>
+		/// จำนวนการมอบหมาย
+		/// </summary>
+		public int? NumberAssignment
+		{
+			get
+			{
+				if (Assignment_Sales != null)
+				{
+					return Assignment_Sales.Count();
+				}
+				return null;
+			}
+		}
+		/// <summary>
+		/// ลูกค้าหลังมอบหมาย
+		/// </summary>
+		public int? NumberAfterAssignment
+		{
+			get
+			{
+				if (CurrentNumber.HasValue && NumberAssignment.HasValue)
+				{
+					return CurrentNumber + NumberAssignment;
+				}
+				return CurrentNumber;
+			}
+		}
 
 		//Custom
 		public bool IsSelected { get; set; } = false;

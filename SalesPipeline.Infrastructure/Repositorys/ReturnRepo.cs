@@ -168,11 +168,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (countReturn > 0)
 			{
-				var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(model.CurrentUserId);
-				if (assignmentCenter == null || !assignmentCenter.BranchId.HasValue)
-					throw new ExceptionCustom("currentuserid not match assignmentCenter");
+				//var assignmentCenter = await _repo.AssignmentCenter.GetByUserId(model.CurrentUserId);
+				//if (assignmentCenter == null || !assignmentCenter.BranchId.HasValue)
+				//	throw new ExceptionCustom("currentuserid not match assignmentCenter");
 
-				await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentCenter.BranchId.Value);
+				//await _repo.AssignmentCenter.UpdateCurrentNumber(assignmentCenter.BranchId.Value);
 			}
 			else
 			{

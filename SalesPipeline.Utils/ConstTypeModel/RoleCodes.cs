@@ -50,9 +50,9 @@ namespace SalesPipeline.Utils.ConstTypeModel
         /// </summary>
         public const string BRANCH_REG_02 = "BRANCH_REG_02";
         /// <summary>
-        /// ผู้จัดการศูนย์สาขา
+        /// ผู้จัดการศูนย์
         /// </summary>
-        public const string CEN_BRANCH = "CEN_BRANCH";
+        public const string CENTER = "CENTER";
         /// <summary>
         /// RM พนักงานขาย
         /// </summary>

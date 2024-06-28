@@ -505,7 +505,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     provinceId = user.ProvinceId;
                     branchId = user.BranchId;
                 }
-                else if (userRole.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+                else if (userRole.Code.ToUpper().StartsWith(RoleCodes.CENTER))
                 {
                     var userCenter = await _repo.User.GetById(user.Id);
                     if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");

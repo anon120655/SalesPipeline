@@ -43,6 +43,22 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[AllowAnonymous]
+		[HttpPost("GetListAutoAssign")]
+		public async Task<IActionResult> GetListAutoAssign(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.AssignmentCenter.GetListAutoAssign(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
 		[HttpPost("GetListCenter")]
 		public async Task<IActionResult> GetListCenter(allFilter model)
 		{

@@ -34,7 +34,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<bool> CheckAssignmentByBranchId(int id)
 		{
-			return await _repo.Context.Assignment_Centers.AnyAsync(x => x.BranchId == id);
+			//return await _repo.Context.Assignment_Centers.AnyAsync(x => x.BranchId == id);
+			return false;
 		}
 
 		public async Task<Assignment_CenterCustom> GetById(Guid id)
@@ -58,11 +59,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
 
-			if (model.BranchId.HasValue)
-			{
-				if (await CheckAssignmentByBranchId(model.BranchId.Value))
-					throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
-			}
+			//if (model.BranchId.HasValue)
+			//{
+			//	if (await CheckAssignmentByBranchId(model.BranchId.Value))
+			//		throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
+			//}
 
 			if (string.IsNullOrEmpty(model.EmployeeName))
 			{
@@ -72,9 +73,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var assignment_Center = new Data.Entity.Assignment_Center();
 			assignment_Center.Status = model.Status;
 			assignment_Center.CreateDate = DateTime.Now;
-			assignment_Center.BranchId = model.BranchId;
-			assignment_Center.BranchCode = model.BranchCode;
-			assignment_Center.BranchName = model.BranchName;
 			assignment_Center.UserId = model.UserId;
 			assignment_Center.EmployeeId = model.EmployeeId;
 			assignment_Center.EmployeeName = model.EmployeeName;
@@ -84,11 +82,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment_Center);
 			await _db.SaveAsync();
 
-			if (model.BranchId.HasValue)
-			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-				//await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
-			}
+			//if (model.BranchId.HasValue)
+			//{
+			//	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
+			//}
 
 			return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
 		}
@@ -99,9 +96,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (assignment_Center != null)
 			{
 				assignment_Center.Status = model.Status;
-				assignment_Center.BranchId = model.BranchId;
-				assignment_Center.BranchCode = model.BranchCode;
-				assignment_Center.BranchName = model.BranchName;
 				assignment_Center.UserId = model.UserId;
 				assignment_Center.EmployeeId = model.EmployeeId;
 				assignment_Center.EmployeeName = model.EmployeeName;
@@ -109,11 +103,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(assignment_Center);
 				await _db.SaveAsync();
 
-				if (model.BranchId.HasValue)
-				{
-					await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-					//await _repo.AssignmentRM.UpdateAssignmentEmpty(model.BranchId.Value);
-				}
+				//if (model.BranchId.HasValue)
+				//{
+				//	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
+				//}
 
 			}
 			return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
@@ -130,13 +123,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				return new();
 			}
 
-			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
-
 			//รูปแบบการมอบหมายตามเกณฑ์
 			//1. ผจศ. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			//2. หาข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
 			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
 			//4. มอบหมายให้ ผจศ. เท่าๆ กัน  (ผจศ. ที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
+
+			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
+			//2. หาข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย
 
 			//ข้อมูลพนักงาน  ผจศ. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignment_Centers.Where(x => x.Status != StatusModel.Delete)
@@ -232,7 +226,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model)
 		{
 			var query = _repo.Context.Assignment_Centers.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.Branch)
+												 //.Include(x => x.Branch)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
@@ -242,16 +236,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					query = query.Where(x => x.Id == assignmentid);
 				}
-			}
-
-			if (!String.IsNullOrEmpty(model.mcenter_code))
-			{
-				query = query.Where(x => x.BranchCode != null && x.BranchCode.Contains(model.mcenter_code));
-			}
-
-			if (!String.IsNullOrEmpty(model.mcenter_name))
-			{
-				query = query.Where(x => x.BranchName != null && x.BranchName.Contains(model.mcenter_name));
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -315,8 +299,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						//	sale.ProvinceName = assignment_MCenter.User.ProvinceName;
 						//}
 
-						sale.BranchId = assignment_CenterBranch.BranchId;
-						sale.BranchName = assignment_CenterBranch.BranchName;
+						//sale.BranchId = assignment_CenterBranch.BranchId;
+						//sale.BranchName = assignment_CenterBranch.BranchName;
 						sale.AssCenterAlready = true;
 						sale.AssCenterUserId = model.AssignMCenter.UserId;
 						sale.AssCenterUserName = assignment_CenterBranch.EmployeeName;
@@ -360,19 +344,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			int countRm = assignment_RMs.Count;
 
-			var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.BranchId == id && x.Status == StatusModel.Active);
-			if (assignments != null)
-			{
-				assignments.RMNumber = countRm;
+			//var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.BranchId == id && x.Status == StatusModel.Active);
+			//if (assignments != null)
+			//{
+			//	assignments.RMNumber = countRm;
 
-				var sales = await _repo.Context.Sales
-												  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
-												  .ToListAsync();
+			//	var sales = await _repo.Context.Sales
+			//									  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
+			//									  .ToListAsync();
 
-				assignments.CurrentNumber = sales.Count;
-				_db.Update(assignments);
-				await _db.SaveAsync();
-			}
+			//	assignments.CurrentNumber = sales.Count;
+			//	_db.Update(assignments);
+			//	await _db.SaveAsync();
+			//}
 
 		}
 
@@ -380,7 +364,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_Centers)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.CEN_BRANCH && x.Assignment_Centers.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.CENTER && x.Assignment_Centers.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
@@ -402,9 +386,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 						{
 							Status = StatusModel.Active,
-							BranchId = item_center.BranchId,
-							BranchCode = _code,
-							BranchName = _name,
 							UserId = item_center.Id,
 							EmployeeId = item_center.EmployeeId,
 							EmployeeName = item_center.FullName,

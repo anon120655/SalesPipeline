@@ -94,7 +94,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (UserInfo.RoleCode != null)
 			{
-				if (UserInfo.RoleCode == RoleCodes.CEN_BRANCH)
+				if (UserInfo.RoleCode == RoleCodes.CENTER)
 				{
 					filter.assigncenter = UserInfo.Id;
 					filter.statussaleid = StatusSaleModel.RMReturnMCenter;

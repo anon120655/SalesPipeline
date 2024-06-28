@@ -202,7 +202,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
 				return new();
 			}
@@ -233,7 +233,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
 				query = query.Where(x=>x.BranchId == user.BranchId);
 			}
@@ -271,7 +271,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
 				salesQuery = salesQuery.Where(x => x.BranchId == user.BranchId);
 			}
