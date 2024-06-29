@@ -169,7 +169,7 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public virtual List<Sale_Contact_InfoCustom>? Sale_Contact_Infos { get; set; }
 		public virtual ICollection<Sale_MeetCustom>? Sale_Meets { get; set; }
 		public virtual List<Sale_DocumentCustom>? Sale_Documents { get; set; }
-		public virtual List<Sale_Document_FileCustom>? Sale_Document_Files { get; set; }
+		public virtual List<Sale_Document_UploadCustom>? Sale_Document_Files { get; set; }
 		public virtual ICollection<Sale_ResultCustom>? Sale_Results { get; set; }
 		public virtual List<Sale_PartnerCustom>? Sale_Partners { get; set; }
 

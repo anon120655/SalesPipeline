@@ -181,7 +181,7 @@ public partial class Sale
 
     public virtual ICollection<Sale_Deliver> Sale_Delivers { get; set; } = new List<Sale_Deliver>();
 
-    public virtual ICollection<Sale_Document_File> Sale_Document_Files { get; set; } = new List<Sale_Document_File>();
+    public virtual ICollection<Sale_Document_Upload> Sale_Document_Uploads { get; set; } = new List<Sale_Document_Upload>();
 
     public virtual ICollection<Sale_Document> Sale_Documents { get; set; } = new List<Sale_Document>();
 

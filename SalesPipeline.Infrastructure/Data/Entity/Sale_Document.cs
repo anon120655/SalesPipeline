@@ -71,19 +71,9 @@ public partial class Sale_Document
     public string? AmphurName { get; set; }
 
     /// <summary>
-    /// id file ไฟล์ทะเบียนนบ้าน
-    /// </summary>
-    public Guid? HouseRegistrationFileId { get; set; }
-
-    /// <summary>
     /// ไฟล์ทะเบียนนบ้าน
     /// </summary>
     public string? HouseRegistrationPath { get; set; }
-
-    /// <summary>
-    /// id file ไฟล์เอกสารอื่นๆ
-    /// </summary>
-    public Guid? OtherDocumentFileId { get; set; }
 
     /// <summary>
     /// ไฟล์เอกสารอื่นๆ
@@ -155,11 +145,6 @@ public partial class Sale_Document
     public string? CommentEmployeeLoan { get; set; }
 
     /// <summary>
-    /// id file รูปลายเซ็นผู้กู้ยืม
-    /// </summary>
-    public Guid? SignatureFileId { get; set; }
-
-    /// <summary>
     /// รูปลายเซ็นผู้กู้ยืม
     /// </summary>
     public string? SignaturePath { get; set; }
@@ -170,11 +155,6 @@ public partial class Sale_Document
     public DateTime? SignatureDate { get; set; }
 
     /// <summary>
-    /// id file รูปลายเซ็นพนักงานสินเชื่อ
-    /// </summary>
-    public Guid? SignatureEmployeeFileId { get; set; }
-
-    /// <summary>
     /// รูปลายเซ็นพนักงานสินเชื่อ
     /// </summary>
     public string? SignatureEmployeeLoanPath { get; set; }
@@ -183,11 +163,6 @@ public partial class Sale_Document
     /// วันที่เซ็นพนักงานสินเชื่อ
     /// </summary>
     public DateTime? SignatureEmployeeLoanDate { get; set; }
-
-    /// <summary>
-    /// id file รูปลายเซ็นผู้จัดการศูนย์
-    /// </summary>
-    public Guid? SignatureMCenterFileId { get; set; }
 
     /// <summary>
     /// รูปลายเซ็นผู้จัดการศูนย์
@@ -209,19 +184,9 @@ public partial class Sale_Document
     /// </summary>
     public DateTime? SubmitDate { get; set; }
 
-    public virtual FileUpload? HouseRegistrationFile { get; set; }
-
     public virtual Master_ProductProgramBank? Master_ProductProgramBank { get; set; }
 
     public virtual Master_TypeLoanRequest? Master_TypeLoanRequest { get; set; }
 
-    public virtual FileUpload? OtherDocumentFile { get; set; }
-
     public virtual Sale Sale { get; set; } = null!;
-
-    public virtual FileUpload? SignatureEmployeeFile { get; set; }
-
-    public virtual FileUpload? SignatureFile { get; set; }
-
-    public virtual FileUpload? SignatureMCenterFile { get; set; }
 }

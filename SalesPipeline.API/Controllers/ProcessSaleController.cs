@@ -249,7 +249,7 @@ namespace SalesPipeline.API.Controllers
         }
 
 		[HttpPost("CreateDocumentFile")]
-		public async Task<IActionResult> CreateDocumentFile(Sale_Document_FileCustom model)
+		public async Task<IActionResult> CreateDocumentFile(Sale_Document_UploadCustom model)
 		{
 			try
 			{
@@ -263,7 +263,7 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[HttpPut("UpdateDocumentFile")]
-		public async Task<IActionResult> UpdateDocumentFile(Sale_Document_FileCustom model)
+		public async Task<IActionResult> UpdateDocumentFile(Sale_Document_UploadCustom model)
 		{
 			try
 			{

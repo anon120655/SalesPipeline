@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SalesPipeline.Infrastructure.Data.Entity;
 
-public partial class FileUpload
+public partial class Sale_Document_Upload
 {
     public Guid Id { get; set; }
 
@@ -16,7 +16,14 @@ public partial class FileUpload
 
     public int CreateBy { get; set; }
 
-    public string? Url { get; set; }
+    public Guid SaleId { get; set; }
+
+    /// <summary>
+    /// 1=รูปบัตรประชาชน 2=ทะเบียนนบ้าน 3=เอกสารอื่นๆ 4=เอกสารเพิ่มเติม
+    /// </summary>
+    public short Type { get; set; }
+
+    public string Url { get; set; } = null!;
 
     /// <summary>
     /// ชื่อเดิมไฟล์
@@ -38,5 +45,5 @@ public partial class FileUpload
     /// </summary>
     public string MimeType { get; set; } = null!;
 
-    public virtual ICollection<Sale_Reply_Section_ItemValue> Sale_Reply_Section_ItemValues { get; set; } = new List<Sale_Reply_Section_ItemValue>();
+    public virtual Sale Sale { get; set; } = null!;
 }

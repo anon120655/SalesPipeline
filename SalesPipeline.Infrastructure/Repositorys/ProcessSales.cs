@@ -976,13 +976,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			DateTime _dateNow = DateTime.Now;
 
-			if (_appSet.ServerSite != ServerSites.DEV)
-			{
-				if (!String.IsNullOrEmpty(model.HouseRegistrationPath) && (!model.HouseRegistrationFileId.HasValue || model.HouseRegistrationFileId == Guid.Empty)) throw new ExceptionCustom("houseRegistrationFileId not found.");
-				if (!String.IsNullOrEmpty(model.OtherDocumentPath) && (!model.OtherDocumentFileId.HasValue || model.OtherDocumentFileId == Guid.Empty)) throw new ExceptionCustom("otherDocumentFileId not found.");
-				if (!String.IsNullOrEmpty(model.SignaturePath) && (!model.SignatureFileId.HasValue || model.SignatureFileId == Guid.Empty)) throw new ExceptionCustom("signatureFileId not found.");
-				if (!String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) && (!model.SignatureEmployeeFileId.HasValue || model.SignatureEmployeeFileId == Guid.Empty)) throw new ExceptionCustom("signatureEmployeeFileId not found.");
-			}
+			//if (_appSet.ServerSite != ServerSites.DEV)
+			//{
+			//	if (!String.IsNullOrEmpty(model.HouseRegistrationPath) && (!model.HouseRegistrationFileId.HasValue || model.HouseRegistrationFileId == Guid.Empty)) throw new ExceptionCustom("houseRegistrationFileId not found.");
+			//	if (!String.IsNullOrEmpty(model.OtherDocumentPath) && (!model.OtherDocumentFileId.HasValue || model.OtherDocumentFileId == Guid.Empty)) throw new ExceptionCustom("otherDocumentFileId not found.");
+			//	if (!String.IsNullOrEmpty(model.SignaturePath) && (!model.SignatureFileId.HasValue || model.SignatureFileId == Guid.Empty)) throw new ExceptionCustom("signatureFileId not found.");
+			//	if (!String.IsNullOrEmpty(model.SignatureEmployeeLoanPath) && (!model.SignatureEmployeeFileId.HasValue || model.SignatureEmployeeFileId == Guid.Empty)) throw new ExceptionCustom("signatureEmployeeFileId not found.");
+			//}
 
 			Sale_Document sale_Document = new();
 			sale_Document.Status = StatusModel.Active;
@@ -1000,9 +1000,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.ProvinceName = provinceName;
 			sale_Document.AmphurId = model.AmphurId;
 			sale_Document.AmphurName = amphurName;
-			sale_Document.HouseRegistrationFileId = model.HouseRegistrationFileId;
 			sale_Document.HouseRegistrationPath = model.HouseRegistrationPath;
-			sale_Document.OtherDocumentFileId = model.OtherDocumentFileId;
 			sale_Document.OtherDocumentPath = model.OtherDocumentPath;
 			sale_Document.Master_BusinessTypeId = model.Master_BusinessTypeId;
 			sale_Document.BusinessOperation = model.BusinessOperation;
@@ -1017,13 +1015,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.TotaLlimit = model.TotaLlimit;
 			sale_Document.TotaLlimitCEQA = model.TotaLlimitCEQA;
 			sale_Document.CommentEmployeeLoan = model.CommentEmployeeLoan;
-			sale_Document.SignatureFileId = model.SignatureFileId;
 			sale_Document.SignaturePath = model.SignaturePath;
 			sale_Document.SignatureDate = model.SignatureDate;
-			sale_Document.SignatureEmployeeFileId = model.SignatureEmployeeFileId;
 			sale_Document.SignatureEmployeeLoanPath = model.SignatureEmployeeLoanPath;
 			sale_Document.SignatureEmployeeLoanDate = model.SignatureEmployeeLoanDate;
-			sale_Document.SignatureMCenterFileId = model.SignatureMCenterFileId;
 			sale_Document.SignatureMCenterPath = model.SignatureMCenterPath;
 			sale_Document.SignatureMCenterDate = model.SignatureMCenterDate;
 			sale_Document.SubmitType = model.SubmitType;
@@ -1076,80 +1071,80 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				});
 			}
 
-			if (!String.IsNullOrEmpty(model.IDCardIMGPath))
-			{
-				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.IDCard);
-				if (fileUpdate == null)
-				{
-					await CreateDocumentFile(new()
-					{
-						CurrentUserId = model.CurrentUserId,
-						SaleId = model.SaleId,
-						Url = model.IDCardIMGPath,
-						Name = "บัตรประชาชนผู้ติดต่อ",
-						Type = DocumentFileType.IDCard
-					});
-				}
-				else
-				{
-					await UpdateDocumentFile(new()
-					{
-						Id = fileUpdate.Id,
-						Url = model.IDCardIMGPath,
-						Name = "บัตรประชาชนผู้ติดต่อ"
-					});
-				}
-			}
+			//if (!String.IsNullOrEmpty(model.IDCardIMGPath))
+			//{
+			//	var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.IDCard);
+			//	if (fileUpdate == null)
+			//	{
+			//		await CreateDocumentFile(new()
+			//		{
+			//			CurrentUserId = model.CurrentUserId,
+			//			SaleId = model.SaleId,
+			//			Url = model.IDCardIMGPath,
+			//			FileName = "บัตรประชาชนผู้ติดต่อ",
+			//			Type = DocumentFileType.IDCard
+			//		});
+			//	}
+			//	else
+			//	{
+			//		await UpdateDocumentFile(new()
+			//		{
+			//			Id = fileUpdate.Id,
+			//			Url = model.IDCardIMGPath,
+			//			FileName = "บัตรประชาชนผู้ติดต่อ"
+			//		});
+			//	}
+			//}
 
-			if (!String.IsNullOrEmpty(model.HouseRegistrationPath))
-			{
-				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.HouseRegistration);
-				if (fileUpdate == null)
-				{
-					await CreateDocumentFile(new()
-					{
-						CurrentUserId = model.CurrentUserId,
-						SaleId = model.SaleId,
-						Url = model.HouseRegistrationPath,
-						Name = "ทะเบียนบ้าน",
-						Type = DocumentFileType.HouseRegistration
-					});
-				}
-				else
-				{
-					await UpdateDocumentFile(new()
-					{
-						Id = fileUpdate.Id,
-						Url = model.HouseRegistrationPath,
-						Name = "ทะเบียนบ้าน"
-					});
-				}
-			}
+			//if (!String.IsNullOrEmpty(model.HouseRegistrationPath))
+			//{
+			//	var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.HouseRegistration);
+			//	if (fileUpdate == null)
+			//	{
+			//		await CreateDocumentFile(new()
+			//		{
+			//			CurrentUserId = model.CurrentUserId,
+			//			SaleId = model.SaleId,
+			//			Url = model.HouseRegistrationPath,
+			//			FileName = "ทะเบียนบ้าน",
+			//			Type = DocumentFileType.HouseRegistration
+			//		});
+			//	}
+			//	else
+			//	{
+			//		await UpdateDocumentFile(new()
+			//		{
+			//			Id = fileUpdate.Id,
+			//			Url = model.HouseRegistrationPath,
+			//			FileName = "ทะเบียนบ้าน"
+			//		});
+			//	}
+			//}
 
-			if (!String.IsNullOrEmpty(model.OtherDocumentPath))
-			{
-				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.Other);
-				if (fileUpdate == null)
-				{
-					await CreateDocumentFile(new()
-					{
-						CurrentUserId = model.CurrentUserId,
-						SaleId = model.SaleId,
-						Url = model.OtherDocumentPath,
-						Name = "เอกสารอื่นๆ",
-						Type = DocumentFileType.Other
-					});
-				}
-				else
-				{
-					await UpdateDocumentFile(new()
-					{
-						Id = fileUpdate.Id,
-						Url = model.OtherDocumentPath,
-						Name = "เอกสารอื่นๆ"
-					});
-				}
-			}
+			//if (!String.IsNullOrEmpty(model.OtherDocumentPath))
+			//{
+			//	var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.Other);
+			//	if (fileUpdate == null)
+			//	{
+			//		await CreateDocumentFile(new()
+			//		{
+			//			CurrentUserId = model.CurrentUserId,
+			//			SaleId = model.SaleId,
+			//			Url = model.OtherDocumentPath,
+			//			FileName = "เอกสารอื่นๆ",
+			//			Type = DocumentFileType.Other
+			//		});
+			//	}
+			//	else
+			//	{
+			//		await UpdateDocumentFile(new()
+			//		{
+			//			Id = fileUpdate.Id,
+			//			Url = model.OtherDocumentPath,
+			//			FileName = "เอกสารอื่นๆ"
+			//		});
+			//	}
+			//}
 
 			await CreateContactHistory(new()
 			{
@@ -1782,54 +1777,54 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<Sale_Document_FileCustom> CreateDocumentFile(Sale_Document_FileCustom model)
+		public async Task<Sale_Document_UploadCustom> CreateDocumentFile(Sale_Document_UploadCustom model)
 		{
-			Sale_Document_File sale_Document_File = new();
-			sale_Document_File.Status = StatusModel.Active;
-			sale_Document_File.CreateDate = DateTime.Now;
-			sale_Document_File.CreateBy = model.CurrentUserId;
-			sale_Document_File.SaleId = model.SaleId;
-			sale_Document_File.Url = model.Url;
-			sale_Document_File.Name = model.Name;
-			sale_Document_File.Type = model.Type;
-			await _db.InsterAsync(sale_Document_File);
+			Sale_Document_Upload sale_Document_Upload = new();
+			sale_Document_Upload.Status = StatusModel.Active;
+			sale_Document_Upload.CreateDate = DateTime.Now;
+			sale_Document_Upload.CreateBy = model.CurrentUserId;
+			sale_Document_Upload.SaleId = model.SaleId;
+			sale_Document_Upload.Url = model.Url;
+			sale_Document_Upload.FileName = model.FileName;
+			sale_Document_Upload.Type = model.Type;
+			await _db.InsterAsync(sale_Document_Upload);
 			await _db.SaveAsync();
 
-			return _mapper.Map<Sale_Document_FileCustom>(sale_Document_File);
+			return _mapper.Map<Sale_Document_UploadCustom>(sale_Document_Upload);
 		}
 
-		public async Task<Sale_Document_FileCustom> UpdateDocumentFile(Sale_Document_FileCustom model)
+		public async Task<Sale_Document_UploadCustom> UpdateDocumentFile(Sale_Document_UploadCustom model)
 		{
-			var sale_Document_File = await _repo.Context.Sale_Document_Files.FirstOrDefaultAsync(x => x.Id == model.Id);
+			var sale_Document_File = await _repo.Context.Sale_Document_Uploads.FirstOrDefaultAsync(x => x.Id == model.Id);
 			if (sale_Document_File == null) throw new ExceptionCustom("id not found.");
 
 			sale_Document_File.Url = model.Url;
-			sale_Document_File.Name = model.Name;
+			sale_Document_File.FileName = model.FileName;
 			_db.Update(sale_Document_File);
 			await _db.SaveAsync();
-			return _mapper.Map<Sale_Document_FileCustom>(sale_Document_File);
+			return _mapper.Map<Sale_Document_UploadCustom>(sale_Document_File);
 		}
 
-		public async Task<Sale_Document_FileCustom> GetDocumentFileById(Guid id)
+		public async Task<Sale_Document_UploadCustom> GetDocumentFileById(Guid id)
 		{
-			var query = await _repo.Context.Sale_Document_Files
+			var query = await _repo.Context.Sale_Document_Uploads
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
-			return _mapper.Map<Sale_Document_FileCustom>(query);
+			return _mapper.Map<Sale_Document_UploadCustom>(query);
 		}
 
-		public async Task<Sale_Document_FileCustom> GetDocumentFileSaleType(Guid saleid, short type)
+		public async Task<Sale_Document_UploadCustom> GetDocumentFileSaleType(Guid saleid, short type)
 		{
-			var query = await _repo.Context.Sale_Document_Files
+			var query = await _repo.Context.Sale_Document_Uploads
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == saleid && x.Type == type);
 
-			return _mapper.Map<Sale_Document_FileCustom>(query);
+			return _mapper.Map<Sale_Document_UploadCustom>(query);
 		}
 
 		public async Task DocumentFileById(UpdateModel model)
 		{
 			Guid id = Guid.Parse(model.id);
-			var query = await _repo.Context.Sale_Document_Files.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.Sale_Document_Uploads.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				query.Status = StatusModel.Delete;
@@ -1838,14 +1833,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<List<Sale_Document_FileCustom>> GetListDocumentFile(allFilter model)
+		public async Task<List<Sale_Document_UploadCustom>> GetListDocumentFile(allFilter model)
 		{
-			var query = await _repo.Context.Sale_Document_Files
+			var query = await _repo.Context.Sale_Document_Uploads
 				.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.id)
 				.OrderByDescending(x => x.CreateDate)
 				.ToListAsync();
 
-			return _mapper.Map<List<Sale_Document_FileCustom>>(query);
+			return _mapper.Map<List<Sale_Document_UploadCustom>>(query);
 		}
 
 	}

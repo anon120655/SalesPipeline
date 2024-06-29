@@ -222,22 +222,22 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Sale_Document_FileCustom>> CreateDocumentFile(Sale_Document_FileCustom model)
+		public async Task<ResultModel<Sale_Document_UploadCustom>> CreateDocumentFile(Sale_Document_UploadCustom model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/ProcessSale/CreateDocumentFile", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Sale_Document_FileCustom>(content);
-				return new ResultModel<Sale_Document_FileCustom>()
+				var dataMap = JsonConvert.DeserializeObject<Sale_Document_UploadCustom>(content);
+				return new ResultModel<Sale_Document_UploadCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<Sale_Document_FileCustom>
+				return new ResultModel<Sale_Document_UploadCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)
@@ -245,21 +245,21 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<List<Sale_Document_FileCustom>>> GetListDocumentFile(allFilter model)
+		public async Task<ResultModel<List<Sale_Document_UploadCustom>>> GetListDocumentFile(allFilter model)
 		{
 			try
 			{
 				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetListDocumentFile?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<List<Sale_Document_FileCustom>>(content);
+				var dataMap = JsonConvert.DeserializeObject<List<Sale_Document_UploadCustom>>(content);
 
-				return new ResultModel<List<Sale_Document_FileCustom>>()
+				return new ResultModel<List<Sale_Document_UploadCustom>>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<List<Sale_Document_FileCustom>>
+				return new ResultModel<List<Sale_Document_UploadCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

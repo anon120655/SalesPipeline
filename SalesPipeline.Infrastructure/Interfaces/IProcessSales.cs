@@ -27,11 +27,11 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateScheduledJobSucceed(Guid id);
 		Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model);
 		Task UpdatePhoenix(PhoenixModel model);
-		Task<Sale_Document_FileCustom> CreateDocumentFile(Sale_Document_FileCustom model);
-		Task<Sale_Document_FileCustom> UpdateDocumentFile(Sale_Document_FileCustom model);
-		Task<Sale_Document_FileCustom> GetDocumentFileById(Guid id);
-		Task<Sale_Document_FileCustom> GetDocumentFileSaleType(Guid saleid, short type);
+		Task<Sale_Document_UploadCustom> CreateDocumentFile(Sale_Document_UploadCustom model);
+		Task<Sale_Document_UploadCustom> UpdateDocumentFile(Sale_Document_UploadCustom model);
+		Task<Sale_Document_UploadCustom> GetDocumentFileById(Guid id);
+		Task<Sale_Document_UploadCustom> GetDocumentFileSaleType(Guid saleid, short type);
 		Task DocumentFileById(UpdateModel model);
-		Task<List<Sale_Document_FileCustom>> GetListDocumentFile(allFilter model);
+		Task<List<Sale_Document_UploadCustom>> GetListDocumentFile(allFilter model);
 	}
 }

@@ -176,7 +176,7 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
 
-    public virtual DbSet<Sale_Document_File> Sale_Document_Files { get; set; }
+    public virtual DbSet<Sale_Document_Upload> Sale_Document_Uploads { get; set; }
 
     public virtual DbSet<Sale_Duration> Sale_Durations { get; set; }
 
@@ -2762,21 +2762,11 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Sale_Document");
 
-            entity.HasIndex(e => e.HouseRegistrationFileId, "HouseRegistrationFileId");
-
             entity.HasIndex(e => e.Master_ProductProgramBankId, "Master_ProductProgramBankId");
 
             entity.HasIndex(e => e.Master_TypeLoanRequestId, "Master_TypeLoanRequest");
 
-            entity.HasIndex(e => e.OtherDocumentFileId, "OtherDocumentFileId");
-
             entity.HasIndex(e => e.SaleId, "SaleId");
-
-            entity.HasIndex(e => e.SignatureEmployeeFileId, "SignatureEmployeeFileId");
-
-            entity.HasIndex(e => e.SignatureFileId, "SignatureFileId");
-
-            entity.HasIndex(e => e.SignatureMCenterFileId, "SignatureMCenterFileId");
 
             entity.Property(e => e.AmphurId)
                 .HasComment("อำเภอ")
@@ -2798,7 +2788,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.HouseNo)
                 .HasMaxLength(255)
                 .HasComment("บ้านเลขที่");
-            entity.Property(e => e.HouseRegistrationFileId).HasComment("id file ไฟล์ทะเบียนนบ้าน");
             entity.Property(e => e.HouseRegistrationPath)
                 .HasMaxLength(255)
                 .HasComment("ไฟล์ทะเบียนนบ้าน");
@@ -2830,7 +2819,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.NameTh)
                 .HasMaxLength(255)
                 .HasComment("ชื่อภาษาไทย");
-            entity.Property(e => e.OtherDocumentFileId).HasComment("id file ไฟล์เอกสารอื่นๆ");
             entity.Property(e => e.OtherDocumentPath)
                 .HasMaxLength(255)
                 .HasComment("ไฟล์เอกสารอื่นๆ");
@@ -2847,18 +2835,15 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.SignatureDate)
                 .HasComment("วันที่เซ็นผู้กู้ยืม")
                 .HasColumnType("datetime");
-            entity.Property(e => e.SignatureEmployeeFileId).HasComment("id file รูปลายเซ็นพนักงานสินเชื่อ");
             entity.Property(e => e.SignatureEmployeeLoanDate)
                 .HasComment("วันที่เซ็นพนักงานสินเชื่อ")
                 .HasColumnType("datetime");
             entity.Property(e => e.SignatureEmployeeLoanPath)
                 .HasMaxLength(255)
                 .HasComment("รูปลายเซ็นพนักงานสินเชื่อ");
-            entity.Property(e => e.SignatureFileId).HasComment("id file รูปลายเซ็นผู้กู้ยืม");
             entity.Property(e => e.SignatureMCenterDate)
                 .HasComment("วันที่เซ็นผู้จัดการศูนย์")
                 .HasColumnType("datetime");
-            entity.Property(e => e.SignatureMCenterFileId).HasComment("id file รูปลายเซ็นผู้จัดการศูนย์");
             entity.Property(e => e.SignatureMCenterPath)
                 .HasMaxLength(255)
                 .HasComment("รูปลายเซ็นผู้จัดการศูนย์");
@@ -2884,10 +2869,6 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("หมู่ที่");
 
-            entity.HasOne(d => d.HouseRegistrationFile).WithMany(p => p.Sale_DocumentHouseRegistrationFiles)
-                .HasForeignKey(d => d.HouseRegistrationFileId)
-                .HasConstraintName("sale_document_ibfk_7");
-
             entity.HasOne(d => d.Master_ProductProgramBank).WithMany(p => p.Sale_Documents)
                 .HasForeignKey(d => d.Master_ProductProgramBankId)
                 .HasConstraintName("sale_document_ibfk_3");
@@ -2896,39 +2877,34 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.Master_TypeLoanRequestId)
                 .HasConstraintName("sale_document_ibfk_2");
 
-            entity.HasOne(d => d.OtherDocumentFile).WithMany(p => p.Sale_DocumentOtherDocumentFiles)
-                .HasForeignKey(d => d.OtherDocumentFileId)
-                .HasConstraintName("sale_document_ibfk_8");
-
             entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Documents)
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_document_ibfk_1");
-
-            entity.HasOne(d => d.SignatureEmployeeFile).WithMany(p => p.Sale_DocumentSignatureEmployeeFiles)
-                .HasForeignKey(d => d.SignatureEmployeeFileId)
-                .HasConstraintName("sale_document_ibfk_5");
-
-            entity.HasOne(d => d.SignatureFile).WithMany(p => p.Sale_DocumentSignatureFiles)
-                .HasForeignKey(d => d.SignatureFileId)
-                .HasConstraintName("sale_document_ibfk_4");
-
-            entity.HasOne(d => d.SignatureMCenterFile).WithMany(p => p.Sale_DocumentSignatureMCenterFiles)
-                .HasForeignKey(d => d.SignatureMCenterFileId)
-                .HasConstraintName("sale_document_ibfk_6");
         });
 
-        modelBuilder.Entity<Sale_Document_File>(entity =>
+        modelBuilder.Entity<Sale_Document_Upload>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("Sale_Document_File");
+            entity.ToTable("Sale_Document_Upload");
 
             entity.HasIndex(e => e.SaleId, "SaleId");
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.FileName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อไฟล์ที่ใช้ในระบบ");
+            entity.Property(e => e.FileSize)
+                .HasComment("ขนาดไฟล์")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.MimeType)
+                .HasMaxLength(50)
+                .HasComment("นามสกุลไฟล์");
+            entity.Property(e => e.OriginalFileName)
+                .HasMaxLength(255)
+                .HasComment("ชื่อเดิมไฟล์");
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
@@ -2937,10 +2913,10 @@ public partial class SalesPipelineContext : DbContext
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Url).HasMaxLength(500);
 
-            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Document_Files)
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Document_Uploads)
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("sale_document_file_ibfk_1");
+                .HasConstraintName("sale_document_upload_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Duration>(entity =>
