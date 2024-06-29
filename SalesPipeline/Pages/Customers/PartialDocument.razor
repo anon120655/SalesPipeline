@@ -25,7 +25,7 @@
 	{
 		<div class="row">
 			<div class="col text-end">
-				<Button @onclick=ToggleDocumentType Class="mw_6r" Color="ButtonColor.Primary">เอกสารยื่นประสงค์กู้สินเชื่อ</Button>
+				<Button @onclick=ToggleDocumentType Class="mw_6r" Color="ButtonColor.Success">เอกสารยื่นประสงค์กู้สินเชื่อ</Button>
 			</div>
 		</div>
 		<div class="row my-3">
@@ -38,7 +38,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@if (formModelUpload == null)
+						@if (document_Upload == null)
 						{
 							<tr class="text-center align-middle">
 								<td colspan="100">
@@ -46,7 +46,7 @@
 								</td>
 							</tr>
 						}
-						else if (formModelUpload.Count == 0)
+						else if (document_Upload.Count == 0)
 						{
 							<tr class="text-center align-middle">
 								<td colspan="100">
@@ -56,7 +56,7 @@
 						}
 						else
 						{
-							foreach (var item in formModelUpload)
+							foreach (var item in document_Upload)
 							{
 								<tr>
 									<td>
@@ -77,13 +77,16 @@
 			<div class="col-12">
 			</div>
 		</div>
+		<div class="row">
+			<div class="col text-end">
+				<Button @onclick=OnShowUploadFile Class="mw_6r" Color="ButtonColor.Primary">เพิ่มเอกสาร</Button>
+			</div>
+		</div>
 	}
 	else
 	{
-		var document = formModel?.FirstOrDefault();
-
-		var fileCustomer = formModelUpload?.FirstOrDefault(x => x.Type == DocumentFileType.Customer);
-		var fileRM = formModelUpload?.FirstOrDefault(x => x.Type == DocumentFileType.RM);
+		var fileCustomer = document_Upload?.FirstOrDefault(x => x.Type == DocumentFileType.Customer);
+		var fileRM = document_Upload?.FirstOrDefault(x => x.Type == DocumentFileType.RM);
 
 		<div class="row">
 			<div class="col text-end">
@@ -224,7 +227,16 @@
 									( @document.NameTh )
 								</div>
 								<div class="date-row">
-									วันที่........ เดือน………………… พ.ศ. …………………
+									@if (document.SignatureDate.HasValue)
+									{
+										<span>วันที่ @document.SignatureDate.Value.Day</span>
+										<span>เดือน @GeneralUtils.GetFullMonth(document.SignatureDate.Value.Month) </span>
+										<span>พ.ศ. @GeneralUtils.GetYearTH(document.SignatureDate.Value.Year)</span>
+									}
+									else
+									{
+										<span>วันที่........ เดือน………………… พ.ศ. …………………</span>
+									}
 								</div>
 							</div>
 						</div>
@@ -240,10 +252,19 @@
 									</div>
 								</div>
 								<div class="signature-space">
-									(                )
+									( @formModel?.AssUserName )
 								</div>
 								<div class="date-row">
-									วันที่........ เดือน………………… พ.ศ. …………………
+									@if (document.SignatureEmployeeLoanDate.HasValue)
+									{
+										<span>วันที่ @document.SignatureEmployeeLoanDate.Value.Day</span>
+										<span>เดือน @GeneralUtils.GetFullMonth(document.SignatureEmployeeLoanDate.Value.Month) </span>
+										<span>พ.ศ. @GeneralUtils.GetYearTH(document.SignatureEmployeeLoanDate.Value.Year)</span>
+									}
+									else
+									{
+										<span>วันที่........ เดือน………………… พ.ศ. …………………</span>
+									}
 								</div>
 							</div>
 						</div>
@@ -257,7 +278,16 @@
 									(                )
 								</div>
 								<div class="date-row">
-									วันที่........ เดือน………………… พ.ศ. …………………
+									@if (document.SignatureMCenterDate.HasValue)
+									{
+										<span>วันที่ @document.SignatureMCenterDate.Value.Day</span>
+										<span>เดือน @GeneralUtils.GetFullMonth(document.SignatureMCenterDate.Value.Month) </span>
+										<span>พ.ศ. @GeneralUtils.GetYearTH(document.SignatureMCenterDate.Value.Year)</span>
+									}
+									else
+									{
+										<span>วันที่........ เดือน………………… พ.ศ. …………………</span>
+									}
 								</div>
 							</div>
 						</div>
@@ -273,59 +303,25 @@
 	   IsVerticallyCentered="true"
 	   HeaderCssClass="headermodal_default">
 	<BodyTemplate>
-		@* <div class="row mb-4 text-center">
-		<div class="col-12" style="min-height:7rem;">
-		@if (!String.IsNullOrEmpty(formModel.ImgUrl) && formModel.ImgUrl.Contains("data:image"))
-		{
-		<img src="@($"{formModel.ImgUrl}")" width="250" @key=@(_inputFileId) />
-		}
-		else if (!String.IsNullOrEmpty(formModel.ImgUrlv))
-		{
-		<img src="@($"{formModel.ImgUrlv}")" width="250" @key=@(_inputFileId) />
-		}
-		else
-		{
-		<p>Image not found.</p>
-		}
-		</div>
-		</div>
 		<div class="row mb-4 text-center">
-		<div class="col-12">
-		@if (!bClearInput)
-		{
-		<InputFile accept=".png,.jpg,.jpeg" OnChange="OnUploadFileChanged" />
-		}
-		</div>
+			<div class="col-12">
+				@if (!bClearInput)
+				{
+					<InputFile accept=".png,.jpg,.jpeg" OnChange="OnUploadFileChanged" />
+				}
+			</div>
 		</div>
 		<div class="row my-3 text-center">
-		<div class="d-flex justify-content-evenly align-items-center">
-		<div class="p-2">
-		<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideUploadFile">ปิด</Button>
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideUploadFile">ปิด</Button>
+				</div>
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="SaveFile">บันทึก</Button>
+				</div>
+			</div>
 		</div>
-		<div class="p-2">
-		<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Save">บันทึก</Button>
-		</div>
-		</div>
-		</div> *@
 	</BodyTemplate>
 </Modal>
 
-@code {
-	[Parameter]
-	public List<Sale_DocumentCustom>? formModel { get; set; }
-	[Parameter]
-	public List<Sale_Document_UploadCustom>? formModelUpload { get; set; }
 
-	bool showDocumentType = true;
-
-	Modal modalUploadFile = default!;
-	private bool bClearInput = false;
-	//ใส่กรณี clear file แล้ว input ไม่ update
-	string _inputFileId = Guid.NewGuid().ToString();
-
-	void ToggleDocumentType()
-	{
-		showDocumentType = !showDocumentType;
-	}
-
-}

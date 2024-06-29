@@ -4,7 +4,7 @@
 
 <MessageError errorMessage="@_errorMessage" />
 
-@if (_permission.IsView)
+@if (_permission.IsView && IsView)
 {
 	<div class="container-fluid">
 		<div class="row">
@@ -31,7 +31,7 @@
 								</Tab>
 								<Tab Title="เอกสาร" OnClick="ShowTabDocument">
 									<Content>
-										<PartialDocument formModel="formModel.Sale_Documents" formModelUpload="formModel.Sale_Document_Files" />
+										<PartialDocument formModel="formModel" />
 									</Content>
 								</Tab>
 								<Tab Title="ประวัติการติดต่อ" OnClick="ShowTabContactHistory">

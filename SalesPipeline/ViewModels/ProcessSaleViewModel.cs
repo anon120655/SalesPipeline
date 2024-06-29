@@ -1,12 +1,17 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using SalesPipeline.Helpers;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Net.Http.Headers;
+using System.Security.Policy;
 
 namespace SalesPipeline.ViewModels
 {
@@ -227,13 +232,47 @@ namespace SalesPipeline.ViewModels
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
-				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/ProcessSale/CreateDocumentFile", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<Sale_Document_UploadCustom>(content);
-				return new ResultModel<Sale_Document_UploadCustom>()
+				var options = new RestClientOptions(_appSet.baseUriApi + "/v1/ProcessSale/CreateDocumentFile")
 				{
-					Data = dataMap
+					ThrowOnAnyError = false,
+					Timeout = TimeSpan.FromMinutes(2)
 				};
+				var client = new RestClient(options);
+				var request = new RestRequest();
+				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				request.Method = Method.Post;
+				//request.AlwaysMultipartFormData = true;
+				request.AddHeader("Content-Type", "multipart/form-data");
+
+				if (!string.IsNullOrWhiteSpace(tokenJwt))
+				{
+					var _authHeader = new AuthenticationHeaderValue("Bearer", tokenJwt);
+					request.AddHeader("Authorization", $"{_authHeader.Scheme} {_authHeader.Parameter}");
+				}
+
+				if (model != null && model.Files != null && model.Files.FileByte != null)
+				{
+					request.AddParameter("CurrentUserId", model.CurrentUserId);
+					request.AddParameter("SaleId", model.SaleId);
+					request.AddParameter("Type", DocumentFileType.More);
+					request.AddParameter("OriginalFileName", model.Files.FileName);
+					request.AddFile("Files.FileData", model.Files.FileByte, model.Files.FileName ?? "", "multipart/form-data");
+				}
+
+				var responseClient = await client.ExecuteAsync(request);
+				if (responseClient.StatusCode == System.Net.HttpStatusCode.OK || responseClient.StatusCode == System.Net.HttpStatusCode.Created)
+				{
+					if (responseClient.Content != null)
+					{
+						var dataMap = JsonConvert.DeserializeObject<Sale_Document_UploadCustom>(responseClient.Content);
+						return new ResultModel<Sale_Document_UploadCustom>()
+						{
+							Data = dataMap
+						};
+					}
+				}
+
+				throw new Exception("อัปโหลดไฟล์ไม่สำเร็จ");
 			}
 			catch (Exception ex)
 			{

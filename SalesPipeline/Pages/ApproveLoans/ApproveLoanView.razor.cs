@@ -13,7 +13,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.ApproveLoans
 {
-    public partial class ApproveLoanView
+	public partial class ApproveLoanView
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -26,6 +26,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 		ModalConfirm modalConfirmApprove = default!;
 		ModalNotApprove modalNotApprove = default!;
 		private bool IsToCancel = false;
+		private bool IsView = true;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -51,6 +52,8 @@ namespace SalesPipeline.Pages.ApproveLoans
 				var data = await _salesViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
+					IsView = data.Data.StatusSaleId == 20;
+
 					formModel = data.Data;
 				}
 				else
@@ -214,7 +217,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			}
 			if (formModel.Sale_Document_Files == null || formModel.Sale_Document_Files.Count == 0)
 			{
-				var data = await _processSaleViewModel.GetListDocumentFile(new() { id = id, pagesize = 200 });
+				var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = id, pagesize = 200 });
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel.Sale_Document_Files = data.Data;

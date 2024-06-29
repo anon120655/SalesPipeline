@@ -21,6 +21,7 @@ namespace SalesPipeline.Pages.Customers
 		private bool isLoading = false;
 		private bool isLoadingContent = false;
 		private User_PermissionCustom _permission = new();
+		private bool IsView = true;
 		private LookUpResource LookUp = new();
 		private CustomerCustom formModel = new();
 		private bool IsVerify = false;
@@ -218,7 +219,7 @@ namespace SalesPipeline.Pages.Customers
 
 							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
 							{
-								_permission.IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
+								IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
 							}
 						}
 					}
