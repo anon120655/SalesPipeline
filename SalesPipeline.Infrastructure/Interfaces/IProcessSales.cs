@@ -5,7 +5,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
-    public interface IProcessSales
+	public interface IProcessSales
 	{
 		Task<ProcessSaleCustom> GetById(Guid id);
 		Task<ProcessSaleCustom> Update(ProcessSaleCustom model);
@@ -26,6 +26,12 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateScheduledJob(Guid id);
 		Task UpdateScheduledJobSucceed(Guid id);
 		Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model);
-        Task UpdatePhoenix(PhoenixModel model);
-    }
+		Task UpdatePhoenix(PhoenixModel model);
+		Task<Sale_Document_FileCustom> CreateDocumentFile(Sale_Document_FileCustom model);
+		Task<Sale_Document_FileCustom> UpdateDocumentFile(Sale_Document_FileCustom model);
+		Task<Sale_Document_FileCustom> GetDocumentFileById(Guid id);
+		Task<Sale_Document_FileCustom> GetDocumentFileSaleType(Guid saleid, short type);
+		Task DocumentFileById(UpdateModel model);
+		Task<List<Sale_Document_FileCustom>> GetListDocumentFile(allFilter model);
+	}
 }

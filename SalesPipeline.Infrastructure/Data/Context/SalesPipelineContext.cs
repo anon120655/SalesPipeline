@@ -176,6 +176,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Document> Sale_Documents { get; set; }
 
+    public virtual DbSet<Sale_Document_File> Sale_Document_Files { get; set; }
+
     public virtual DbSet<Sale_Duration> Sale_Durations { get; set; }
 
     public virtual DbSet<Sale_Meet> Sale_Meets { get; set; }
@@ -2914,6 +2916,31 @@ public partial class SalesPipelineContext : DbContext
             entity.HasOne(d => d.SignatureMCenterFile).WithMany(p => p.Sale_DocumentSignatureMCenterFiles)
                 .HasForeignKey(d => d.SignatureMCenterFileId)
                 .HasConstraintName("sale_document_ibfk_6");
+        });
+
+        modelBuilder.Entity<Sale_Document_File>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Document_File");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Type)
+                .HasComment("1=รูปบัตรประชาชน 2=ทะเบียนนบ้าน 3=เอกสารอื่นๆ 4=เอกสารเพิ่มเติม")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.Url).HasMaxLength(500);
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Document_Files)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_document_file_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Duration>(entity =>

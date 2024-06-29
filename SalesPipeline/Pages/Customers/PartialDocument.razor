@@ -1,193 +1,55 @@
-﻿@if (formModel != null && formModel.Count > 0)
-{
-	var document = formModel.OrderByDescending(x => x.CreateDate).FirstOrDefault();
-
-	<div class="container">
-		<div class="row my-3">
-			<div class="col-12">
-				@if (document != null)
-				{
-					<table class="table table_list">
-						<thead>
-							<tr>
-								<th scope="col">ชื่อ</th>
-								<th scope="col">วันที่นำเข้า</th>
-							</tr>
-						</thead>
-						<tbody>
-							@if (!String.IsNullOrEmpty(document.IDCardIMGPath))
-							{
-								<tr>
-									<td>
-										<a class="text-decoration-none" href="@document.IDCardIMGPath" target="_blank">
-											<img src="/image/other/idcard.jpg" width="50" class="me-2" />
-											บัตรประชาชนผู้ติดต่อ
-										</a>
-									</td>
-									<td>
-										@GeneralUtils.DateToThString(document.CreateDate)
-									</td>
-								</tr>
-							}
-							@if (!String.IsNullOrEmpty(document.HouseRegistrationPath))
-							{
-								<tr>
-									<td>
-										<a class="text-decoration-none" href="@document.HouseRegistrationPath" target="_blank">
-											<img src="/image/other/registration.jpg" width="50" class="me-2" />
-											ทะเบียนบ้าน
-										</a>
-									</td>
-									<td>
-										@GeneralUtils.DateToThString(document.CreateDate)
-									</td>
-								</tr>
-							}
-							@if (!String.IsNullOrEmpty(document.OtherDocumentPath))
-							{
-								<tr>
-									<td>
-										<a class="text-decoration-none" href="@document.OtherDocumentPath" target="_blank">
-											<img src="/image/other/docother.jpg" width="50" class="me-2" />เอกสารอื่นๆ
-										</a>
-									</td>
-									<td>
-										@GeneralUtils.DateToThString(document.CreateDate)
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				}
-			</div>
-		</div>
-	</div>
-
-	<div class="row my-3 d-none">
+﻿
+<div class="container">
+	<div class="row my-3">
 		<div class="col-12">
-			@if (document != null)
-			{
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">เลขบัตรประชาชน : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.IDCardNumber)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาไทย : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.NameTh)
-						</label>
-					</div>
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ชื่อภาษาอังกฤษ :</label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.NameEn)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">วันเกิด : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(GeneralUtils.DateToThString(document.Birthday))
-						</label>
-					</div>
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ศาสนา :</label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.Religion)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่ : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.HouseNo)
-						</label>
-					</div>
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">หมู่ที่ :</label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.VillageNo)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.ProvinceName)
-						</label>
-					</div>
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">อำเภอ :</label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.AmphurName)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ไฟล์ทะเบียนนบ้าน : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							<a href="@document.HouseRegistrationPath" target="_blank">เปิดไฟล์</a>
-						</label>
-					</div>
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ไฟล์เอกสารอื่นๆ :</label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							<a href="@document.OtherDocumentPath" target="_blank">เปิดไฟล์</a>
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ความคิดเห็นพนักงานสินเชื่อ : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							@GeneralUtils.EmptyTo(document.CommentEmployeeLoan)
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นผู้กู้ยืม : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							<img src="@document.SignaturePath" width="250" />
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นพนักงานสินเชื่อ : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							<img src="@document.SignatureEmployeeLoanPath" width="250" />
-						</label>
-					</div>
-				</div>
-				<div class="form-group row mb-1">
-					<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ลายเซ็นผู้จัดการศูนย์ : </label>
-					<div class="col-6 col-md-7 col-xl-3">
-						<label class="col-form-label">
-							<img src="@document.SignatureMCenterPath" width="250" />
-						</label>
-					</div>
-				</div>
-			}
+			<table class="table table_list">
+				<thead>
+					<tr>
+						<th scope="col">ชื่อ</th>
+						<th scope="col">วันที่นำเข้า</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (formModel == null)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+							</td>
+						</tr>
+					}
+					else if (formModel.Count == 0)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<em>ไม่พบข้อมูล</em>
+							</td>
+						</tr>
+					}
+					else
+					{
+						foreach (var item in formModel)
+						{
+							<tr>
+								<td>
+									<a class="text-decoration-none" href="@item.Url" target="_blank">
+										<i class="fa-regular fa-file-lines fa-xl me-2"></i>
+										@item.Name
+									</a>
+								</td>
+								<td>
+									@GeneralUtils.DateToThString(item.CreateDate)
+								</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
 		</div>
 	</div>
-}
-else
-{
-	<div class="d-flex align-items-center justify-content-center mh_10r">
-		<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-	</div>
-}
+</div>
+
 @code {
 	[Parameter]
-	public List<Sale_DocumentCustom>? formModel { get; set; }
+	public List<Sale_Document_FileCustom>? formModel { get; set; }
 }

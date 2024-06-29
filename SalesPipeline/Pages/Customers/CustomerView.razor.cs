@@ -107,12 +107,12 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task ShowTabDocument()
 		{
-			if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
+			if (formModel.Sale_Document_Files == null || formModel.Sale_Document_Files.Count == 0)
 			{
-				var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 50 });
+				var data = await _processSaleViewModel.GetListDocumentFile(new() { id = id, pagesize = 200 });
 				if (data != null && data.Status && data.Data != null)
 				{
-					formModel.Sale_Documents = data.Data;
+					formModel.Sale_Document_Files = data.Data;
 				}
 				else
 				{
@@ -126,7 +126,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (formModel.Sale_Contact_Histories == null || formModel.Sale_Contact_Histories.Count == 0)
 			{
-				var data = await _processSaleViewModel.GetListContactHistory(new() { id = id, pagesize = 50 });
+				var data = await _processSaleViewModel.GetListContactHistory(new() { id = id, pagesize = 200 });
 				if (data != null && data.Status && data.Data != null)
 				{
 					formModel.Sale_Contact_Histories = data.Data.Items;

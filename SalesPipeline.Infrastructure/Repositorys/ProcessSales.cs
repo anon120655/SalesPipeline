@@ -1076,6 +1076,80 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				});
 			}
 
+			if (!String.IsNullOrEmpty(model.IDCardIMGPath))
+			{
+				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.IDCard);
+				if (fileUpdate == null)
+				{
+					await CreateDocumentFile(new()
+					{
+						CurrentUserId = model.CurrentUserId,
+						SaleId = model.SaleId,
+						Url = model.IDCardIMGPath,
+						Name = "บัตรประชาชนผู้ติดต่อ",
+						Type = DocumentFileType.IDCard
+					});
+				}
+				else
+				{
+					await UpdateDocumentFile(new()
+					{
+						Id = fileUpdate.Id,
+						Url = model.IDCardIMGPath,
+						Name = "บัตรประชาชนผู้ติดต่อ"
+					});
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.HouseRegistrationPath))
+			{
+				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.HouseRegistration);
+				if (fileUpdate == null)
+				{
+					await CreateDocumentFile(new()
+					{
+						CurrentUserId = model.CurrentUserId,
+						SaleId = model.SaleId,
+						Url = model.HouseRegistrationPath,
+						Name = "ทะเบียนบ้าน",
+						Type = DocumentFileType.HouseRegistration
+					});
+				}
+				else
+				{
+					await UpdateDocumentFile(new()
+					{
+						Id = fileUpdate.Id,
+						Url = model.HouseRegistrationPath,
+						Name = "ทะเบียนบ้าน"
+					});
+				}
+			}
+
+			if (!String.IsNullOrEmpty(model.OtherDocumentPath))
+			{
+				var fileUpdate = await GetDocumentFileSaleType(model.SaleId, DocumentFileType.Other);
+				if (fileUpdate == null)
+				{
+					await CreateDocumentFile(new()
+					{
+						CurrentUserId = model.CurrentUserId,
+						SaleId = model.SaleId,
+						Url = model.OtherDocumentPath,
+						Name = "เอกสารอื่นๆ",
+						Type = DocumentFileType.Other
+					});
+				}
+				else
+				{
+					await UpdateDocumentFile(new()
+					{
+						Id = fileUpdate.Id,
+						Url = model.OtherDocumentPath,
+						Name = "เอกสารอื่นๆ"
+					});
+				}
+			}
 
 			await CreateContactHistory(new()
 			{
@@ -1706,6 +1780,72 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				throw new ExceptionCustom("ไม่พบ SaleId");
 			}
+		}
+
+		public async Task<Sale_Document_FileCustom> CreateDocumentFile(Sale_Document_FileCustom model)
+		{
+			Sale_Document_File sale_Document_File = new();
+			sale_Document_File.Status = StatusModel.Active;
+			sale_Document_File.CreateDate = DateTime.Now;
+			sale_Document_File.CreateBy = model.CurrentUserId;
+			sale_Document_File.SaleId = model.SaleId;
+			sale_Document_File.Url = model.Url;
+			sale_Document_File.Name = model.Name;
+			sale_Document_File.Type = model.Type;
+			await _db.InsterAsync(sale_Document_File);
+			await _db.SaveAsync();
+
+			return _mapper.Map<Sale_Document_FileCustom>(sale_Document_File);
+		}
+
+		public async Task<Sale_Document_FileCustom> UpdateDocumentFile(Sale_Document_FileCustom model)
+		{
+			var sale_Document_File = await _repo.Context.Sale_Document_Files.FirstOrDefaultAsync(x => x.Id == model.Id);
+			if (sale_Document_File == null) throw new ExceptionCustom("id not found.");
+
+			sale_Document_File.Url = model.Url;
+			sale_Document_File.Name = model.Name;
+			_db.Update(sale_Document_File);
+			await _db.SaveAsync();
+			return _mapper.Map<Sale_Document_FileCustom>(sale_Document_File);
+		}
+
+		public async Task<Sale_Document_FileCustom> GetDocumentFileById(Guid id)
+		{
+			var query = await _repo.Context.Sale_Document_Files
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+
+			return _mapper.Map<Sale_Document_FileCustom>(query);
+		}
+
+		public async Task<Sale_Document_FileCustom> GetDocumentFileSaleType(Guid saleid, short type)
+		{
+			var query = await _repo.Context.Sale_Document_Files
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == saleid && x.Type == type);
+
+			return _mapper.Map<Sale_Document_FileCustom>(query);
+		}
+
+		public async Task DocumentFileById(UpdateModel model)
+		{
+			Guid id = Guid.Parse(model.id);
+			var query = await _repo.Context.Sale_Document_Files.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				query.Status = StatusModel.Delete;
+				_db.Update(query);
+				await _db.SaveAsync();
+			}
+		}
+
+		public async Task<List<Sale_Document_FileCustom>> GetListDocumentFile(allFilter model)
+		{
+			var query = await _repo.Context.Sale_Document_Files
+				.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.id)
+				.OrderByDescending(x => x.CreateDate)
+				.ToListAsync();
+
+			return _mapper.Map<List<Sale_Document_FileCustom>>(query);
 		}
 
 	}

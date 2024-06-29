@@ -248,5 +248,62 @@ namespace SalesPipeline.API.Controllers
             }
         }
 
-    }
+		[HttpPost("CreateDocumentFile")]
+		public async Task<IActionResult> CreateDocumentFile(Sale_Document_FileCustom model)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.CreateDocumentFile(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpPut("UpdateDocumentFile")]
+		public async Task<IActionResult> UpdateDocumentFile(Sale_Document_FileCustom model)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.UpdateDocumentFile(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetDocumentFileById")]
+		public async Task<IActionResult> GetDocumentFileById([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.ProcessSale.GetDocumentFileById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetListDocumentFile")]
+		public async Task<IActionResult> GetListDocumentFile([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.ProcessSale.GetListDocumentFile(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+	}
 }
