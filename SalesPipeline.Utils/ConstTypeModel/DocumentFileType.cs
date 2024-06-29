@@ -21,8 +21,16 @@ namespace SalesPipeline.Utils.ConstTypeModel
 		/// </summary>
 		public const int Other = 3;
 		/// <summary>
+		/// ลายเซ็นผู้กู้ยืม
+		/// </summary>
+		public const int Customer = 4;
+		/// <summary>
+		/// ลายเซ็นพนักงานสินเชื่อ
+		/// </summary>
+		public const int RM = 5;
+		/// <summary>
 		/// เอกสารเพิ่มเติม
 		/// </summary>
-		public const int More = 4;
+		public const int More = 6;
 	}
 }

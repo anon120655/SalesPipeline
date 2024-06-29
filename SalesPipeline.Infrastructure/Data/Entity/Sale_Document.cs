@@ -85,6 +85,8 @@ public partial class Sale_Document
     /// </summary>
     public Guid? Master_BusinessTypeId { get; set; }
 
+    public string? Master_BusinessTypeName { get; set; }
+
     /// <summary>
     /// ลักษณะการดำเนินธุรกิจ
     /// </summary>
@@ -102,12 +104,16 @@ public partial class Sale_Document
 
     public Guid? Master_TypeLoanRequestId { get; set; }
 
+    public string? Master_TypeLoanRequesName { get; set; }
+
     /// <summary>
     /// ระบุ
     /// </summary>
     public string? Master_TypeLoanRequestSpecify { get; set; }
 
     public Guid? Master_ProductProgramBankId { get; set; }
+
+    public string? Master_ProductProgramBankName { get; set; }
 
     /// <summary>
     /// วงเงินกู้สำหรับเงินทุนหมุนเวียนในกิจการ

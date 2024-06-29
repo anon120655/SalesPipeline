@@ -967,6 +967,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
 			var amphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId ?? 0);
+			var master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId ?? Guid.Empty);
+			var master_TypeLoanRequestName = _repo.Context.Master_TypeLoanRequests.FirstOrDefault(x => x.Id == model.Master_TypeLoanRequestId)?.Name;
+			var master_ProductProgramBankName = _repo.Context.Master_ProductProgramBanks.FirstOrDefault(x => x.Id == model.Master_ProductProgramBankId)?.Name;
 
 			int statusSaleId = StatusSaleModel.SubmitDocument;
 			string? topicName = "ยื่นเอกสาร";
@@ -1003,12 +1006,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Document.HouseRegistrationPath = model.HouseRegistrationPath;
 			sale_Document.OtherDocumentPath = model.OtherDocumentPath;
 			sale_Document.Master_BusinessTypeId = model.Master_BusinessTypeId;
+			sale_Document.Master_BusinessTypeName = master_BusinessTypeName;
 			sale_Document.BusinessOperation = model.BusinessOperation;
 			sale_Document.RegistrationDate = model.RegistrationDate;
 			sale_Document.DateFirstContactBank = model.DateFirstContactBank;
 			sale_Document.Master_TypeLoanRequestId = model.Master_TypeLoanRequestId;
+			sale_Document.Master_TypeLoanRequesName = master_TypeLoanRequestName;
 			sale_Document.Master_TypeLoanRequestSpecify = model.Master_TypeLoanRequestSpecify;
 			sale_Document.Master_ProductProgramBankId = model.Master_ProductProgramBankId;
+			sale_Document.Master_ProductProgramBankName = master_ProductProgramBankName;
 			sale_Document.LoanLimitBusiness = model.LoanLimitBusiness;
 			sale_Document.LoanLimitInvestmentCost = model.LoanLimitInvestmentCost;
 			sale_Document.LoanLimitObjectiveOther = model.LoanLimitObjectiveOther;
@@ -1779,15 +1785,51 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Sale_Document_UploadCustom> CreateDocumentFile(Sale_Document_UploadCustom model)
 		{
+			if (model.Files == null || model.Files.FileData == null) throw new ExceptionCustom("files not found");
+
+			var UploaR = await _repo.Context.Sale_Document_Uploads
+				.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId && x.Type == model.Type).ToListAsync();
+			if (UploaR.Count > 0)
+			{
+				foreach (var item in UploaR)
+				{
+					item.Status = StatusModel.Delete;
+					_db.Update(item);
+					await _db.SaveAsync();
+				}
+			}
+
+			var originalFileName = model.OriginalFileName ?? model.Files.FileData.FileName;
+			//if (model.Type == DocumentFileType.IDCard) originalFileName = "บัตรประชาชน";
+
+			var extension = Path.GetExtension(model.Files.FileData.FileName);
+
 			Sale_Document_Upload sale_Document_Upload = new();
 			sale_Document_Upload.Status = StatusModel.Active;
 			sale_Document_Upload.CreateDate = DateTime.Now;
 			sale_Document_Upload.CreateBy = model.CurrentUserId;
 			sale_Document_Upload.SaleId = model.SaleId;
-			sale_Document_Upload.Url = model.Url;
-			sale_Document_Upload.FileName = model.FileName;
 			sale_Document_Upload.Type = model.Type;
+			sale_Document_Upload.OriginalFileName = originalFileName;
+			sale_Document_Upload.MimeType = extension;
 			await _db.InsterAsync(sale_Document_Upload);
+			await _db.SaveAsync();
+
+			var _upload = await GeneralUtils.UploadFormFile(new FileModel()
+			{
+				appSet = _appSet,
+				FileData = model.Files.FileData,
+				Folder = $@"sale_document\{GeneralUtils.GetYearEn(DateTime.Now.Year)}",
+				Id = sale_Document_Upload.Id.ToString(),
+				MimeType = extension
+			});
+
+			if (_upload == null) throw new ExceptionCustom("upload file error");
+
+			sale_Document_Upload.FileSize = model.Files.FileData.Length;
+			sale_Document_Upload.FileName = $"{sale_Document_Upload.Id.ToString()}{extension}";
+			sale_Document_Upload.Url = _upload.UploadUrl ?? string.Empty;
+			_db.Update(sale_Document_Upload);
 			await _db.SaveAsync();
 
 			return _mapper.Map<Sale_Document_UploadCustom>(sale_Document_Upload);
@@ -1836,8 +1878,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<List<Sale_Document_UploadCustom>> GetListDocumentFile(allFilter model)
 		{
 			var query = await _repo.Context.Sale_Document_Uploads
-				.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.id)
-				.OrderByDescending(x => x.CreateDate)
+				.Where(x => x.Status != StatusModel.Delete && x.SaleId == model.saleid)
+				.OrderBy(x => x.Type)
 				.ToListAsync();
 
 			return _mapper.Map<List<Sale_Document_UploadCustom>>(query);

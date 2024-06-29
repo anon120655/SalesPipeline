@@ -1,52 +1,271 @@
 ﻿
-<div class="container">
-	<div class="row my-3">
-		<div class="col-12">
-			<table class="table table_list">
-				<thead>
-					<tr>
-						<th scope="col">ชื่อ</th>
-						<th scope="col">วันที่นำเข้า</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if (formModel == null)
-					{
-						<tr class="text-center align-middle">
-							<td colspan="100">
-								<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
-							</td>
+<style>
+	.container-custom {
+		border: 1px solid #000;
+		padding: 20px;
+		max-width: 500px;
+		margin-top: 50px;
+		background-color: #fff;
+		min-height: 180px;
+	}
+
+	.signature-space {
+		text-align: center;
+		margin: 20px 0;
+	}
+
+	.date-row {
+		text-align: center;
+		margin-top: 30px;
+	}
+</style>
+
+<div class="container" style="max-width:90%;">
+	@if (showDocumentType)
+	{
+		<div class="row">
+			<div class="col text-end">
+				<Button @onclick=ToggleDocumentType Class="mw_6r" Color="ButtonColor.Primary">เอกสารยื่นประสงค์กู้สินเชื่อ</Button>
+			</div>
+		</div>
+		<div class="row my-3">
+			<div class="col-12">
+				<table class="table table_list">
+					<thead>
+						<tr>
+							<th scope="col">ชื่อ</th>
+							<th scope="col">วันที่นำเข้า</th>
 						</tr>
-					}
-					else if (formModel.Count == 0)
-					{
-						<tr class="text-center align-middle">
-							<td colspan="100">
-								<em>ไม่พบข้อมูล</em>
-							</td>
-						</tr>
-					}
-					else
-					{
-						foreach (var item in formModel)
+					</thead>
+					<tbody>
+						@if (formModelUpload == null)
 						{
-							<tr>
-								<td>
-									<a class="text-decoration-none" href="@item.Url" target="_blank">
-										<i class="fa-regular fa-file-lines fa-xl me-2"></i>
-										@item.FileName
-									</a>
-								</td>
-								<td>
-									@GeneralUtils.DateToThString(item.CreateDate)
+							<tr class="text-center align-middle">
+								<td colspan="100">
+									<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
 								</td>
 							</tr>
 						}
-					}
-				</tbody>
-			</table>
+						else if (formModelUpload.Count == 0)
+						{
+							<tr class="text-center align-middle">
+								<td colspan="100">
+									<em>ไม่พบข้อมูล</em>
+								</td>
+							</tr>
+						}
+						else
+						{
+							foreach (var item in formModelUpload)
+							{
+								<tr>
+									<td>
+										<a class="text-decoration-none" href="@item.Url" target="_blank">
+											<i class="fa-regular fa-file-lines fa-xl me-2"></i>
+											@item.OriginalFileName
+										</a>
+									</td>
+									<td>
+										@GeneralUtils.DateToThString(item.CreateDate)
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</div>
+			<div class="col-12">
+			</div>
 		</div>
-	</div>
+	}
+	else
+	{
+		var document = formModel?.FirstOrDefault();
+
+		var fileCustomer = formModelUpload?.FirstOrDefault(x => x.Type == DocumentFileType.Customer);
+		var fileRM = formModelUpload?.FirstOrDefault(x => x.Type == DocumentFileType.RM);
+
+		<div class="row">
+			<div class="col text-end">
+				<Button @onclick=ToggleDocumentType Class="mw_6r" Color="ButtonColor.Primary">รายการเอกสาร</Button>
+			</div>
+		</div>
+		<div class="row my-3 py-3 rounded-3" style="background: #F5F7F9;">
+			<div class="col-12">
+				@if (document == null)
+				{
+					<div class="d-flex align-items-center justify-content-center mh_10r">
+						<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
+					</div>
+				}
+				else
+				{
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ประเภทธุรกิจ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.Master_BusinessTypeName)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ลักษณะการดำเนินธุรกิจ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.BusinessOperation)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วันที่รับขึ้นทะเบียนเป็นลูกค้า : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.DateToThString(document.RegistrationDate)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วันที่เริ่มติดต่อกับธนาคารในการขอกู้ครั้งนี้ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.DateToThString(document.DateFirstContactBank)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ประเภทการขอสินเชื่อ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.Master_TypeLoanRequesName)
+							</label>
+						</div>
+						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ระบุ :</label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.Master_TypeLoanRequestSpecify)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">Product Program ของธนาคาร โครงการสินเชื่อ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.Master_ProductProgramBankName)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วงเงินกู้สำหรับเงินทุนหมุนเวียนในกิจการ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.LoanLimitBusiness?.ToString(GeneralTxt.FormatDecimal2))
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วงเงินกู้สำหรับค่าลงทุน : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.LoanLimitBusiness?.ToString(GeneralTxt.FormatDecimal2))
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วงเงินกู้สำหรับวัตถุประสงค์อื่น : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.LoanLimitObjectiveOther?.ToString(GeneralTxt.FormatDecimal2))
+							</label>
+						</div>
+						<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">ระบุ :</label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.LoanLimitObjectiveOtherSpecify)
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">วงเงินรวม จำนวน :</label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.TotaLlimit?.ToString(GeneralTxt.FormatDecimal2))
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">CEQA รวมวงเงินเทียบเท่าสินเชื่อ เท่ากับ : </label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.TotaLlimitCEQA?.ToString(GeneralTxt.FormatDecimal2))
+							</label>
+						</div>
+					</div>
+					<div class="form-group row mb-1">
+						<label class="col-6 col-md-4 col-xl-3 col-form-label text-lg-end">ความคิดเห็นของพนักงานสินเชื่อ :</label>
+						<div class="col-6 col-md-7 col-xl-3">
+							<label class="col-form-label">
+								@GeneralUtils.EmptyTo(document.CommentEmployeeLoan)
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="container-custom">
+								<div class="row">
+									<div class="col text-start">ลงชื่อ</div>
+									<div class="col text-end">ผู้กู้ยืม</div>
+								</div>
+								<div class="row">
+									<div class="col text-center">
+										<img src="@fileCustomer?.Url" width="100" style="margin-top:-25px" />
+									</div>
+								</div>
+								<div class="signature-space">
+									( @document.NameTh )
+								</div>
+								<div class="date-row">
+									วันที่........ เดือน………………… พ.ศ. …………………
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="container-custom">
+								<div class="row">
+									<div class="col text-start">ลงชื่อ</div>
+									<div class="col text-end">พนักงานสินเชื่อ</div>
+								</div>
+								<div class="row">
+									<div class="col text-center">
+										<img src="@fileRM?.Url" width="100" style="margin-top:-25px" />
+									</div>
+								</div>
+								<div class="signature-space">
+									(                )
+								</div>
+								<div class="date-row">
+									วันที่........ เดือน………………… พ.ศ. …………………
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="container-custom">
+								<div class="row">
+									<div class="col text-start">ลงชื่อ</div>
+									<div class="col text-end">ผู้จัดการศูนย์</div>
+								</div>
+								<div class="signature-space">
+									(                )
+								</div>
+								<div class="date-row">
+									วันที่........ เดือน………………… พ.ศ. …………………
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	}
 </div>
 
 <Modal @ref="modalUploadFile"
@@ -55,48 +274,58 @@
 	   HeaderCssClass="headermodal_default">
 	<BodyTemplate>
 		@* <div class="row mb-4 text-center">
-			<div class="col-12" style="min-height:7rem;">
-				@if (!String.IsNullOrEmpty(formModel.ImgUrl) && formModel.ImgUrl.Contains("data:image"))
-				{
-					<img src="@($"{formModel.ImgUrl}")" width="250" @key=@(_inputFileId) />
-				}
-				else if (!String.IsNullOrEmpty(formModel.ImgUrlv))
-				{
-					<img src="@($"{formModel.ImgUrlv}")" width="250" @key=@(_inputFileId) />
-				}
-				else
-				{
-					<p>Image not found.</p>
-				}
-			</div>
+		<div class="col-12" style="min-height:7rem;">
+		@if (!String.IsNullOrEmpty(formModel.ImgUrl) && formModel.ImgUrl.Contains("data:image"))
+		{
+		<img src="@($"{formModel.ImgUrl}")" width="250" @key=@(_inputFileId) />
+		}
+		else if (!String.IsNullOrEmpty(formModel.ImgUrlv))
+		{
+		<img src="@($"{formModel.ImgUrlv}")" width="250" @key=@(_inputFileId) />
+		}
+		else
+		{
+		<p>Image not found.</p>
+		}
+		</div>
 		</div>
 		<div class="row mb-4 text-center">
-			<div class="col-12">
-				@if (!bClearInput)
-				{
-					<InputFile accept=".png,.jpg,.jpeg" OnChange="OnUploadFileChanged" />
-				}
-			</div>
+		<div class="col-12">
+		@if (!bClearInput)
+		{
+		<InputFile accept=".png,.jpg,.jpeg" OnChange="OnUploadFileChanged" />
+		}
+		</div>
 		</div>
 		<div class="row my-3 text-center">
-			<div class="d-flex justify-content-evenly align-items-center">
-				<div class="p-2">
-					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideUploadFile">ปิด</Button>
-				</div>
-				<div class="p-2">
-					<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Save">บันทึก</Button>
-				</div>
-			</div>
+		<div class="d-flex justify-content-evenly align-items-center">
+		<div class="p-2">
+		<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHideUploadFile">ปิด</Button>
+		</div>
+		<div class="p-2">
+		<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="Save">บันทึก</Button>
+		</div>
+		</div>
 		</div> *@
 	</BodyTemplate>
 </Modal>
 
 @code {
 	[Parameter]
-	public List<Sale_Document_UploadCustom>? formModel { get; set; }
+	public List<Sale_DocumentCustom>? formModel { get; set; }
+	[Parameter]
+	public List<Sale_Document_UploadCustom>? formModelUpload { get; set; }
+
+	bool showDocumentType = true;
 
 	Modal modalUploadFile = default!;
 	private bool bClearInput = false;
 	//ใส่กรณี clear file แล้ว input ไม่ update
 	string _inputFileId = Guid.NewGuid().ToString();
+
+	void ToggleDocumentType()
+	{
+		showDocumentType = !showDocumentType;
+	}
+
 }

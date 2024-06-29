@@ -199,6 +199,19 @@ namespace SalesPipeline.Pages.ApproveLoans
 
 		protected async Task ShowTabDocument()
 		{
+			if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
+			{
+				var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 200 });
+				if (data != null && data.Status && data.Data != null)
+				{
+					formModel.Sale_Documents = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
 			if (formModel.Sale_Document_Files == null || formModel.Sale_Document_Files.Count == 0)
 			{
 				var data = await _processSaleViewModel.GetListDocumentFile(new() { id = id, pagesize = 200 });

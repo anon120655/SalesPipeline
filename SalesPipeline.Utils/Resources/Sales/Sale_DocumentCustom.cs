@@ -89,6 +89,8 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public Guid? Master_BusinessTypeId { get; set; }
 
+		public string? Master_BusinessTypeName { get; set; }
+
 		/// <summary>
 		/// ลักษณะการดำเนินธุรกิจ
 		/// </summary>
@@ -106,12 +108,16 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid? Master_TypeLoanRequestId { get; set; }
 
+		public string? Master_TypeLoanRequesName { get; set; }
+
 		/// <summary>
 		/// ระบุ
 		/// </summary>
 		public string? Master_TypeLoanRequestSpecify { get; set; }
 
 		public Guid? Master_ProductProgramBankId { get; set; }
+
+		public string? Master_ProductProgramBankName { get; set; }
 
 		/// <summary>
 		/// วงเงินกู้สำหรับเงินทุนหมุนเวียนในกิจการ

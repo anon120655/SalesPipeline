@@ -2810,6 +2810,9 @@ public partial class SalesPipelineContext : DbContext
                 .HasMaxLength(255)
                 .HasComment("ระบุ");
             entity.Property(e => e.Master_BusinessTypeId).HasComment("ประเภทธุรกิจ");
+            entity.Property(e => e.Master_BusinessTypeName).HasMaxLength(255);
+            entity.Property(e => e.Master_ProductProgramBankName).HasMaxLength(255);
+            entity.Property(e => e.Master_TypeLoanRequesName).HasMaxLength(255);
             entity.Property(e => e.Master_TypeLoanRequestSpecify)
                 .HasMaxLength(255)
                 .HasComment("ระบุ");
@@ -2898,7 +2901,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("ชื่อไฟล์ที่ใช้ในระบบ");
             entity.Property(e => e.FileSize)
                 .HasComment("ขนาดไฟล์")
-                .HasColumnType("int(11)");
+                .HasColumnType("bigint(20)");
             entity.Property(e => e.MimeType)
                 .HasMaxLength(50)
                 .HasComment("นามสกุลไฟล์");
@@ -2909,7 +2912,7 @@ public partial class SalesPipelineContext : DbContext
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Type)
-                .HasComment("1=รูปบัตรประชาชน 2=ทะเบียนนบ้าน 3=เอกสารอื่นๆ 4=เอกสารเพิ่มเติม")
+                .HasComment("1=รูปบัตรประชาชน \r\n2=ทะเบียนนบ้าน \r\n3=เอกสารอื่นๆ \r\n4=ลายเซ็นผู้กู้ยืม \r\n5=ลายเซ็นพนักงานสินเชื่อ \r\n6=เอกสารเพิ่มเติม")
                 .HasColumnType("smallint(6)");
             entity.Property(e => e.Url).HasMaxLength(500);
 

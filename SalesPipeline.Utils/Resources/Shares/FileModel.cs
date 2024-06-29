@@ -13,7 +13,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		//FileByte ใช้ส่งผ่าน AddFils RestSharp
 		//FileData ใช้รับฝั่ง API
 
-		public AppSettings appSet { get; set; } = null!;
+		public AppSettings? appSet { get; set; }
 		public string? Id { get; set; }
 		public byte[]? FileByte { get; set; }
 		public IFormFile? FileData { get; set; }

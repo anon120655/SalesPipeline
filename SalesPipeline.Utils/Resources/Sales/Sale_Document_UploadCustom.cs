@@ -27,28 +27,29 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public short Type { get; set; }
 
-		public string Url { get; set; } = null!;
+		public string? Url { get; set; }
 
 		/// <summary>
 		/// ชื่อเดิมไฟล์
 		/// </summary>
-		public string OriginalFileName { get; set; } = null!;
+		public string? OriginalFileName { get; set; }
 
 		/// <summary>
 		/// ชื่อไฟล์ที่ใช้ในระบบ
 		/// </summary>
-		public string FileName { get; set; } = null!;
+		public string? FileName { get; set; }
 
 		/// <summary>
 		/// ขนาดไฟล์
 		/// </summary>
-		public int FileSize { get; set; }
+		public long? FileSize { get; set; }
 
 		/// <summary>
 		/// นามสกุลไฟล์
 		/// </summary>
-		public string MimeType { get; set; } = null!;
+		public string? MimeType { get; set; }
 
+		//Custom
 		public FileModel? Files { get; set; }
 	}
 }
