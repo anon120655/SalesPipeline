@@ -136,10 +136,10 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		/// <summary>
-		/// ข้อมูลกระบวนการขายทั้งหมด
-		/// </summary>
-		[HttpGet("GetListReply")]
+        /// <summary>
+        /// ข้อมูลกระบวนการขายทั้งหมด
+        /// </summary>
+        [HttpGet("GetListReply")]
 		public async Task<IActionResult> GetListReply([FromQuery] allFilter model)
 		{
 			try

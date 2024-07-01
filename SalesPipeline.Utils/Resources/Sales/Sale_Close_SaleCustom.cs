@@ -21,10 +21,12 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
-		/// <summary>
-		/// วันที่ติดต่อ
-		/// </summary>
-		public DateTime? ContactDate { get; set; }
+        public Guid? SaleReplyId { get; set; }
+
+        /// <summary>
+        /// วันที่ติดต่อ
+        /// </summary>
+        public DateTime? ContactDate { get; set; }
 
 		/// <summary>
 		/// ชื่อผู้ติดต่อ

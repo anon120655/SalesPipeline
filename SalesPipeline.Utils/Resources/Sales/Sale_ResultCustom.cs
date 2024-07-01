@@ -21,11 +21,13 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
-		/// <summary>
-		/// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
-		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public int? ProceedId { get; set; }
+        public Guid? SaleReplyId { get; set; }
+
+        /// <summary>
+        /// 1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
+        /// </summary>
+        //[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+        public int? ProceedId { get; set; }
 
 		/// <summary>
 		/// 1=เข้าพบสำเร็จ 2=เข้าพบไม่สำเร็จ

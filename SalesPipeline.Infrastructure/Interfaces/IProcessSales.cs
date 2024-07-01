@@ -13,7 +13,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Sale_ReplyCustom> CreateReply(Sale_ReplyCustom model);
 		Task<Sale_ReplyCustom> UpdateReply(Sale_ReplyCustom model);
 		Task<Sale_ReplyCustom> GetReplyById(Guid id);
-		Task<PaginationView<List<Sale_ReplyCustom>>> GetListReply(allFilter model);
+        Task<PaginationView<List<Sale_ReplyCustom>>> GetListReply(allFilter model);
 		Task<Sale_ContactCustom> CreateContact(Sale_ContactCustom model);
 		Task<Sale_MeetCustom> CreateMeet(Sale_MeetCustom model);
 		Task<Sale_DocumentCustom> CreateDocument(Sale_DocumentCustom model);

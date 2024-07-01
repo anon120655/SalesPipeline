@@ -23,6 +23,8 @@ public partial class Sale_Contact_History
 
     public Guid SaleId { get; set; }
 
+    public Guid? SaleReplyId { get; set; }
+
     public int StatusSaleId { get; set; }
 
     public string? ProcessSaleCode { get; set; }

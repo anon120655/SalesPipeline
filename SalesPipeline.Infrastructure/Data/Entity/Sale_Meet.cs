@@ -19,6 +19,8 @@ public partial class Sale_Meet
 
     public Guid SaleId { get; set; }
 
+    public Guid? SaleReplyId { get; set; }
+
     /// <summary>
     /// บุคคลที่เข้าพบ
     /// </summary>

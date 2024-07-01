@@ -16,6 +16,8 @@ public partial class Sale_Document
 
     public Guid SaleId { get; set; }
 
+    public Guid? SaleReplyId { get; set; }
+
     /// <summary>
     /// รูปบัตรประชาชน
     /// </summary>

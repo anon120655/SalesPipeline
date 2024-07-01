@@ -21,11 +21,13 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
-		/// <summary>
-		/// ชื่อผู้ติดต่อ
-		/// </summary>
-		//[Required(ErrorMessage = "ระบุชื่อผู้ติดต่อ")]
-		public string? Name { get; set; }
+        public Guid? SaleReplyId { get; set; }
+
+        /// <summary>
+        /// ชื่อผู้ติดต่อ
+        /// </summary>
+        //[Required(ErrorMessage = "ระบุชื่อผู้ติดต่อ")]
+        public string? Name { get; set; }
 
 		/// <summary>
 		/// เบอร์ติดต่อ

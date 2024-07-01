@@ -24,7 +24,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
-		public int StatusSaleId { get; set; }
+        public Guid? SaleReplyId { get; set; }
+
+        public int StatusSaleId { get; set; }
 
 		public string? ProcessSaleCode { get; set; }
 

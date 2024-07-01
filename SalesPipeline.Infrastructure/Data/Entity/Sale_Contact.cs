@@ -19,6 +19,8 @@ public partial class Sale_Contact
 
     public Guid SaleId { get; set; }
 
+    public Guid? SaleReplyId { get; set; }
+
     /// <summary>
     /// ชื่อผู้ติดต่อ
     /// </summary>

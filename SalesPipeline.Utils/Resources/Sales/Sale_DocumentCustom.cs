@@ -20,10 +20,12 @@ namespace SalesPipeline.Utils.Resources.Sales
 
 		public Guid SaleId { get; set; }
 
-		/// <summary>
-		/// รูปบัตรประชาชน
-		/// </summary>
-		public string? IDCardIMGPath { get; set; }
+        public Guid? SaleReplyId { get; set; }
+
+        /// <summary>
+        /// รูปบัตรประชาชน
+        /// </summary>
+        public string? IDCardIMGPath { get; set; }
 
 		/// <summary>
 		/// เลขบัตรประชาชน

@@ -16,6 +16,8 @@ public partial class Sale_Close_Sale
 
     public Guid SaleId { get; set; }
 
+    public Guid? SaleReplyId { get; set; }
+
     /// <summary>
     /// วันที่ติดต่อ
     /// </summary>
