@@ -175,5 +175,14 @@ namespace SalesPipeline.Shared
 				await _hubUserConnection.SendAsync(SignalRUtls.RemoveUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id });
 			}
 		}
+
+
+		//[JSInvokable]
+		//public static Task TryReconnect()
+		//{
+		//	Console.WriteLine("Attempting to reconnect from Blazor.");
+		//	return Task.CompletedTask;
+		//}
+
 	}
 }

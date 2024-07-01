@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace SalesPipeline.Pages.Assigns.CenterBranch
 {
-    public partial class AssignCenter
+	public partial class AssignCenter
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;
@@ -23,6 +23,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 		private Pager? Pager;
 		private SaleCustom? formView = null;
 		private int stepAssign = StepAssignLoanModel.Home;
+		private int? useridView;
 		private Guid? assignmentIdPrevious = null;
 		private bool IsToClose = false;
 
@@ -47,7 +48,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 				await Task.Delay(10);
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
-				await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"AssignCenterData_{UserInfo.Id}");
+				await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"assignCenterData_{UserInfo.Id}");
 				firstRender = false;
 			}
 		}
@@ -149,6 +150,16 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 			StateHasChanged();
 		}
 
+		protected async Task ToViewSummary(int userid)
+		{
+			stepAssign = StepAssignLoanModel.Summary;
+			useridView = userid;
+			//await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"assignCenterData_{UserInfo.Id}");
+			//var jsonData = JsonSerializer.Serialize(Items);
+			//await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", $"assignCenterData_{UserInfo.Id}", jsonData);
+			//_Navs.NavigateTo($"assign/center/customer");
+		}
+
 		protected async Task InitShowConfirmAssign()
 		{
 			_errorMessageModal = null;
@@ -175,10 +186,6 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 		protected async Task Assign()
 		{
-			//var jsonData = JsonSerializer.Serialize(Items);
-			//await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", $"AssignCenterData_{UserInfo.Id}", jsonData);
-			//_Navs.NavigateTo("/assign/center/customer");
-
 			_errorMessageModal = null;
 
 			if (Items != null)

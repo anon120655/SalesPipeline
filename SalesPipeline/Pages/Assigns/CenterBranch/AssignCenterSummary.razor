@@ -1,7 +1,135 @@
-﻿@page "/assign/center/summary"
+﻿@page "/assign/center/summary/{userid:int}"
 
-<h3>AssignCenterSummary</h3>
+<div class="box_content">
+	<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+		<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
+		<div class="p-2">
+			<p class="back_topic">มอบหมายผู้จัดการศูนย์ > สรุปผู้รับผิดชอบและลูกค้า</p>
+		</div>
+	</div>
+	<div class="row mt-4 mb-2">
+		<div class="col">
+			<h5 class="fw-bold">รายชื่อผู้รับผิดชอบ</h5>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<div class="table-responsive border-top">
+				<table class="table table_list">
+					<thead>
+						<tr>
+							<th class="text-center">รหัสพนักงาน</th>
+							<th class="text-center">ชื่อพนักงาน</th>
+							<th class="text-center">พื้นที่ดูแล</th>
+							<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+							<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+							<th class="text-center">จำนวนการมอบหมาย</th>
+							<th class="text-center">ลูกค้าหลังมอบหมาย</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (Items == null)
+						{
+							<tr class="text-center align-middle">
+								<td colspan="100">
+									<em>ไม่พบข้อมูล</em>
+								</td>
+							</tr>
+						}
+						else
+						{
+							<tr>
+								<td class="text-center">@Items.EmployeeId</td>
+								<td class="text-center">@Items.EmployeeName</td>
+								<td class="text-center">
+									@if (Items.User?.User_Areas?.Count > 0)
+									{
+										string provinceNames = string.Join(",", Items.User.User_Areas.Select(x => x.ProvinceName));
+										@GeneralUtils.EmptyTo(provinceNames)
+									}
+									else
+									{
+										<span>-</span>
+									}
+								</td>
+								<td class="text-center">
+									@GeneralUtils.EmptyTo(Items.RMNumber)
+								</td>
+								<td class="text-center">@(Items.CurrentNumber)/100</td>
+								<td class="text-center">
+									@GeneralUtils.EmptyTo(Items.NumberAssignment)
+								</td>
+								<td class="text-center">
+									@GeneralUtils.EmptyTo(Items.NumberAfterAssignment)/100
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row mt-4 mb-2">
+		<div class="col">
+			<h5 class="fw-bold">รายชื่อลูกค้าที่ได้รับใหม่ <span class="text-info">จำนวน @Items?.Assignment_Sales?.Count รายการ</span></h5>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<div class="table-responsive border-top">
+				<table class="table table_list">
+					<thead>
+						<tr>
+							<th class="text-center">เลขนิติบุคคล</th>
+							<th class="text-center">ชื่อลูกค้า</th>
+							<th class="text-center">จังหวัด</th>
+							<th class="text-center">ประเภทธุรกิจ</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (Items?.Assignment_Sales == null)
+						{
+							<tr class="text-center align-middle">
+								<td colspan="100">
+									<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+								</td>
+							</tr>
+						}
+						else if (Items.Assignment_Sales.Count == 0)
+						{
+							<tr class="text-center align-middle">
+								<td colspan="100">
+									<em>ไม่พบข้อมูล</em>
+								</td>
+							</tr>
+						}
+						else
+						{
+							foreach (var item in Items.Assignment_Sales)
+							{
+								<tr>
+									<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
+									<td class="text-center">@item.Sale?.CompanyName</td>
+									<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
+									<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
+									<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="my-4 text-center">
+		<div class="d-flex bd-highlight align-items-center justify-content-center">
+			<div class="p-2 bd-highlight">
+				<Button @onclick="( () =>   Cancel())" Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="mw_6r">
+					กลับ
+				</Button>
+			</div>
+		</div>
+	</div>
+</div>
 
-@code {
 
-}

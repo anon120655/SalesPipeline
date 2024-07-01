@@ -73,6 +73,8 @@
     <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js"></script>
     <script src="_framework/blazor.server.js" autostart="false"></script>
+    @* <script src="_framework/blazor.server.js" ></script> *@
+    <script src="/js/reconnectcustom.js?v=@(_appSet.Value.Version)"></script>
     <script>
         Blazor.start({
             configureSignalR: function (builder) {
@@ -84,6 +86,5 @@
             }
         });
     </script>
-    <script src="/js/reconnectcustom.js?v=@(_appSet.Value.Version)"></script>
 </body>
 </html>

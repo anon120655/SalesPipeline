@@ -6,6 +6,7 @@ using SalesPipeline.Utils;
 using SalesPipeline.ViewModels;
 using SalesPipeline.ViewModels.Wrapper;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 
 
 //***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport เปลี่ยนไปใช้ SixLabors.ImageSharp *****
@@ -20,7 +21,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
+{
+    options.DetailedErrors = true;
+    options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+    options.JSInteropDefaultCallTimeout = TimeSpan.FromSeconds(60);
+    options.MaxBufferedUnacknowledgedRenderBatches = 10;
+    options.DisconnectedCircuitMaxRetained = 100;
+}).AddHubOptions(options =>
+{
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+});
+
 builder.Services.AddBlazorBootstrap();
 
 IConfigurationBuilder con_builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
@@ -74,6 +87,8 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredServ
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+
+//builder.Services.AddSingleton<CircuitHandler, CustomCircuitHandler>();
 
 //show error detail
 //builder.Services.Configure<CircuitOptions>(options =>

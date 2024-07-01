@@ -199,7 +199,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							});
 						}
 
-						assignment_Center.User = null;
+						//assignment_Center.User = null;
 						responseItems.Add(assignment_Center);
 					}
 				}

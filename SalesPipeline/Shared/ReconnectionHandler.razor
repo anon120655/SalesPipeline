@@ -1,0 +1,46 @@
+﻿@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<div class="@(_isReconnecting ? "visible" : "hidden")">
+    <div class="reconnecting-overlay">
+        กำลังเชื่อมต่อใหม่...
+    </div>
+</div>
+
+@code {
+    private bool _isReconnecting;
+    private IDisposable? _subscription;
+
+    protected override void OnInitialized()
+    {
+        _subscription = NavigationManager.RegisterLocationChangingHandler(OnLocationChanging);
+    }
+
+    private ValueTask OnLocationChanging(LocationChangingContext context)
+    {
+        if (_isReconnecting)
+        {
+            context.PreventNavigation();
+        }
+        return ValueTask.CompletedTask;
+    }
+
+    [JSInvokable]
+    public void OnReconnecting()
+    {
+        _isReconnecting = true;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnReconnected()
+    {
+        _isReconnecting = false;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _subscription?.Dispose();
+    }
+}

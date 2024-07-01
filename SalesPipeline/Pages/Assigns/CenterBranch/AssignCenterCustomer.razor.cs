@@ -19,12 +19,12 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 			StateHasChanged();
 			await Task.Delay(1);
 
-			var jsonData = await _jsRuntimes.InvokeAsync<string>("localStorage.getItem", $"AssignCenterData_{UserInfo.Id}");
+			var jsonData = await _jsRuntimes.InvokeAsync<string>("localStorage.getItem", $"assignCenterData_{UserInfo.Id}");
 			if (jsonData != null)
 			{
 				Items = JsonSerializer.Deserialize<List<Assignment_CenterCustom>>(jsonData);
 				// ลบข้อมูลจาก Local Storage หลังจากดึงมาใช้แล้ว
-				await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"AssignCenterData_{UserInfo.Id}");
+				await _jsRuntimes.InvokeVoidAsync("localStorage.removeItem", $"assignCenterData_{UserInfo.Id}");
 			}
 			else
 			{
