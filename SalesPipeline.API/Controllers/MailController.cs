@@ -9,7 +9,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
+	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -24,7 +24,6 @@ namespace SalesPipeline.API.Controllers
 			_repo = repo;
 			_appSet = appSet.Value;
 		}
-
 
 		[HttpPost("SendMail")]
 		public async Task<IActionResult> SendMail(SendMailModel model)
@@ -74,7 +73,6 @@ namespace SalesPipeline.API.Controllers
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
 		}
-
 
 	}
 }

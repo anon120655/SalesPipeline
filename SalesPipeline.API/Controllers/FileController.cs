@@ -19,7 +19,6 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[Route("v{version:apiVersion}/[controller]")]
@@ -80,7 +79,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
 		[HttpPost("ImportZipCode")]
 		public async Task<IActionResult> ImportZipCode(IFormFile files)
 		{

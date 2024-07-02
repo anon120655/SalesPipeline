@@ -17,7 +17,6 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.API.Controllers
 {
-    //[Authorizes]
     [ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]

@@ -21,7 +21,6 @@ using Hangfire.States;
 
 namespace SalesPipeline.API.Controllers
 {
-	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -43,7 +42,6 @@ namespace SalesPipeline.API.Controllers
 			_notiService = notificationService;
 		}
 
-		[AllowAnonymous]
 		[HttpGet("LineNotify")]
 		public async Task<IActionResult> LineNotify([FromQuery] string msg)
 		{
@@ -61,7 +59,6 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลแจ้งเตือนทั้งหมด
 		/// </summary>
-		[AllowAnonymous]
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] NotiFilter model)
 		{
@@ -82,7 +79,6 @@ namespace SalesPipeline.API.Controllers
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[AllowAnonymous]
 		[HttpPut("UpdateRead")]
 		public async Task<IActionResult> UpdateRead(List<Guid> model)
 		{
@@ -97,7 +93,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
 		[HttpPost("NotiMobile")]
 		public async Task<IActionResult> NotiMobile(NotificationMobile model)
 		{
@@ -113,7 +108,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
 		[HttpGet("GetUserSendNotiById")]
 		public async Task<IActionResult> GetUserSendNotiById([FromQuery] int userid)
 		{
@@ -128,7 +122,6 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[AllowAnonymous]
 		[HttpPost("ScheduleNotiTest")]
 		public IActionResult ScheduleNotiTest([FromBody] List<NotificationTestRequest> request)
 		{
@@ -175,7 +168,6 @@ namespace SalesPipeline.API.Controllers
 			return Ok(new { Message = "Notification failed" });
 		}
 
-		[AllowAnonymous]
 		[HttpGet("SetScheduleNoti")]
 		public async Task<IActionResult> SetScheduleNoti()
 		{

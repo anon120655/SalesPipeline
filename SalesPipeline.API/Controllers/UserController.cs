@@ -15,7 +15,7 @@ using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
 {
-	//[Authorizes]
+	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]

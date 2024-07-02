@@ -83,8 +83,14 @@
 														</label>
 													</td>
 													<td class="text-center">
-														<a href="/permission/update/@item.Id">แก้ไข</a> /
-														<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>ลบ</a>
+														<a href="/permission/update/@item.Id">แก้ไข</a>
+														@if (item.Id > 8)
+														{
+															<span>/</span>
+															<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.Name))'>
+																ลบ
+															</a>
+														}
 													</td>
 												</tr>
 											}
