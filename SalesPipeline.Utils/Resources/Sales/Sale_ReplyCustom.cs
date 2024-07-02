@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.Shares;
+﻿using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,9 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public TimeOnly? AppointmentTime { get; set; }
 		public string? Location { get; set; }
 		public string? Note { get; set; }
+
+		//Custom
+		public int State { get; set; } = CRUDModel.Create;
 
 	}
 }

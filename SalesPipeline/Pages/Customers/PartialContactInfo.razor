@@ -1,20 +1,37 @@
-﻿@if (formModel != null && formModel.Count > 0)
-{
-	<div class="container" style="max-width:90%;">
-		<div class="row my-3">
-			<div class="col-12">
-				<table class="table table_list">
-					<thead>
-						<tr>
-							<th scope="col">ชื่อลูกค้าที่ติดต่อ</th>
-							<th scope="col">ตำแหน่ง</th>
-							<th scope="col">เบอร์โทร</th>
-							<th scope="col">อีเมล</th>
-							<th scope="col">วันที่ได้รับข้อมูล</th>
+﻿
+<div class="container" style="max-width:90%;">
+	<div class="row my-3">
+		<div class="col-12">
+			<table class="table table_list">
+				<thead>
+					<tr>
+						<th scope="col">ชื่อลูกค้าที่ติดต่อ</th>
+						<th scope="col">ตำแหน่ง</th>
+						<th scope="col">เบอร์โทร</th>
+						<th scope="col">อีเมล</th>
+						<th scope="col">วันที่ได้รับข้อมูล</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (formModel == null)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+							</td>
 						</tr>
-					</thead>
-					<tbody>
-						@foreach (var item in formModel)
+					}
+					else if (formModel.Count == 0)
+					{
+						<tr class="text-center align-middle">
+							<td colspan="100">
+								<em>ไม่พบข้อมูล</em>
+							</td>
+						</tr>
+					}
+					else
+					{
+						foreach (var item in formModel)
 						{
 							<tr>
 								<td>@GeneralUtils.EmptyTo(item.FullName)</td>
@@ -26,18 +43,14 @@
 								</td>
 							</tr>
 						}
-					</tbody>
-				</table>
-			</div>
+					}
+				</tbody>
+			</table>
 		</div>
 	</div>
-}
-else
-{
-	<div class="d-flex align-items-center justify-content-center mh_10r">
-		<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
-	</div>
-}
+</div>
+
+
 @code {
 	[Parameter]
 	public List<Sale_Contact_InfoCustom>? formModel { get; set; }

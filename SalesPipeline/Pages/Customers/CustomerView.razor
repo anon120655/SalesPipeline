@@ -33,9 +33,9 @@
 										@if (formModel.StatusSaleId == StatusSaleModel.WaitAPIPHOENIX)
 										{
 											<div class="row">
-												<div class="col-12 col-xl-4 text-end">
+												@* <div class="col-12 col-xl-4 text-end">
 													<a class="btn btn-outline-success mw_6r" @onclick=UpdateStatusWaitResults>ผ่านการวิเคราะห์สินเชื่อ(PHOENIX) -> รอบันทึกผลลัพธ์</a>
-												</div>
+												</div> *@
 											</div>
 										}
 										@if (formModel != null)
@@ -49,7 +49,7 @@
 										<PartialContactInfo formModel="formModel.Sale_Contact_Infos" />
 									</Content>
 								</Tab>
-								<Tab Title="เอกสาร" OnClick="ShowTabDocument">
+								<Tab Title="เอกสารตาม checklist" OnClick="ShowTabDocument">
 									<Content>
 										<PartialDocument formModel="formModel" />
 									</Content>

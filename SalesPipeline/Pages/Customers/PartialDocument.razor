@@ -77,11 +77,14 @@
 			<div class="col-12">
 			</div>
 		</div>
-		<div class="row">
-			<div class="col text-end">
-				<Button @onclick=OnShowUploadFile Class="mw_6r" Color="ButtonColor.Primary">เพิ่มเอกสาร</Button>
+		@if (document_Upload?.Count > 0)
+		{
+			<div class="row">
+				<div class="col text-end">
+					<Button @onclick=OnShowUploadFile Class="mw_6r" Color="ButtonColor.Primary">เพิ่มเอกสาร</Button>
+				</div>
 			</div>
-		</div>
+		}
 	}
 	else
 	{
