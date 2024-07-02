@@ -328,6 +328,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var provinceName_area = await _repo.Thailand.GetProvinceNameByid(item.ProvinceId);
 
 						var user_Area = new Data.Entity.User_Area();
+						user_Area.Status = model.Status;
 						user_Area.UserId = user.Id;
 						user_Area.CreateDate = _dateNow;
 						user_Area.ProvinceId = item.ProvinceId;
