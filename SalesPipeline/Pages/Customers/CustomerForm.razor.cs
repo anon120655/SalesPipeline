@@ -96,17 +96,6 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
-			if (iSICCode != null && iSICCode.Status)
-			{
-				LookUp.ISICCode = iSICCode.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = iSICCode?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
 			var tSIC = await _masterViewModel.GetTSIC(new allFilter() { status = StatusModel.Active, pagesize = 50 });
 			if (tSIC != null && tSIC.Status)
 			{
@@ -122,7 +111,6 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ContactChannel");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessSize");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "TSIC");
 
 			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
@@ -164,6 +152,32 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "LoanType");
 
+			var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
+			if (branchs != null && branchs.Status)
+			{
+				LookUp.Branchs = branchs.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = branchs?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
+			if (iSICCode != null && iSICCode.Status)
+			{
+				LookUp.ISICCode = iSICCode.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = iSICCode?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Branch");
+			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
+
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
 			{
@@ -183,23 +197,23 @@ namespace SalesPipeline.Pages.Customers
 			await SetAddress();
 
 
-			var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
-			if (dataDepBranchs != null && dataDepBranchs.Status)
-			{
-				LookUp.DepartmentBranch = new();
-				if (dataDepBranchs.Data?.Items.Count > 0)
-				{
-					LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
-					StateHasChanged();
-					await Task.Delay(1);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
-				}
-			}
-			else
-			{
-				_errorMessage = dataDepBranchs?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+			//var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
+			//if (dataDepBranchs != null && dataDepBranchs.Status)
+			//{
+			//	LookUp.DepartmentBranch = new();
+			//	if (dataDepBranchs.Data?.Items.Count > 0)
+			//	{
+			//		LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
+			//		StateHasChanged();
+			//		await Task.Delay(1);
+			//		await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
+			//	}
+			//}
+			//else
+			//{
+			//	_errorMessage = dataDepBranchs?.errorMessage;
+			//	_utilsViewModel.AlertWarning(_errorMessage);
+			//}
 		}
 
 		protected async Task SetModel()
@@ -575,21 +589,21 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
 
-		[JSInvokable]
-		public async Task OnDepBranch(string _ids, string _name)
-		{
-			formModel.Branch_RegionId = null;
+		//[JSInvokable]
+		//public async Task OnDepBranch(string _ids, string _name)
+		//{
+		//	formModel.Branch_RegionId = null;
 
-			if (_ids != null)
-			{
-				if (Guid.TryParse(_ids, out Guid id))
-				{
-					formModel.Branch_RegionId = id;
-				}
-			}
-			StateHasChanged();
-			await Task.Delay(1);
-		}
+		//	if (_ids != null)
+		//	{
+		//		if (Guid.TryParse(_ids, out Guid id))
+		//		{
+		//			formModel.Branch_RegionId = id;
+		//		}
+		//	}
+		//	StateHasChanged();
+		//	await Task.Delay(1);
+		//}
 
 
 	}

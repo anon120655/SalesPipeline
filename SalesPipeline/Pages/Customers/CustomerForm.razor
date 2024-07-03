@@ -54,8 +54,16 @@
 					{
 						bool IsDisabled = id != Guid.Empty;
 						bool isLoanAdmin = UserInfo.RoleCode != null && (UserInfo.RoleCode == RoleCodes.SUPERADMIN || UserInfo.RoleCode.StartsWith(RoleCodes.LOAN));
+						isLoanAdmin = false;
+						
+						@if (isLoadingContent)
+						{
+							<div class="text-center">
+								<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+							</div>
+						}
 
-						<div class="@(isLoadingContent ? "d-none":"")">
+						<div class="@(isLoadingContent ? "invisible":"")">
 							<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
 								<DataAnnotationsValidator />
 								<div class="row my-3">
@@ -82,7 +90,7 @@
 											</div>
 										</div>
 
-										<div class="form-group row mb-3 @(isLoanAdmin ? "": "d-none")">
+										@* <div class="form-group row mb-3 @(isLoanAdmin ? "": "d-none")">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กิจการสาขาภาค</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<select @bind="formModel.Branch_RegionId" id="DepBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true" disabled=@(IsDisabled)>
@@ -96,13 +104,22 @@
 													}
 												</select>
 											</div>
-										</div>
+										</div> *@
 
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.BranchName" type="text" class="form-control" disabled>
-												<ValidationMessage For="@(() => formModel.BranchName)" />
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0 loading-container @(LookUp.Branchs?.Count > 0 ? "":"loading_select")">
+												<select @bind="formModel.BranchId" id="Branch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+													<option value="">เลือก</option>
+													@if (LookUp.Branchs?.Count > 0)
+													{
+														foreach (var item in LookUp.Branchs)
+														{
+															<option value="@item.BranchID">@item.BranchName</option>
+														}
+													}
+												</select>
+												<ValidationMessage For="@(() => formModel.BranchId)" />
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ.</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
@@ -191,7 +208,7 @@
 										</div>
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0 loading-container @(LookUp.ISICCode?.Count > 0 ? "":"loading_select")">
 												<select @bind="formModel.Master_ISICCodeId" id="ISICCode" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 													<option value="">เลือก</option>
 													@if (LookUp.ISICCode?.Count > 0)
@@ -826,12 +843,6 @@
 								</div>
 							</EditForm>
 						</div>
-						@if (isLoadingContent)
-						{
-							<div class="text-center">
-								<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
-							</div>
-						}
 					}
 
 				</div>

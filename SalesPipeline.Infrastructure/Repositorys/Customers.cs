@@ -897,8 +897,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
                         UpdateBy = model.CurrentUserId,
                         UpdateDate = _dateNow,
                         CustomerId = customer.Id,
+                        ProvinceId = model.ProvinceId,
                         BranchId = model.BranchId,
-                        StatusSaleId = StatusSaleModel.NotStatus
+						StatusSaleId = StatusSaleModel.NotStatus
                     };
 
                     var sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();

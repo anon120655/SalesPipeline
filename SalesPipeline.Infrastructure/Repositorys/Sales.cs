@@ -140,6 +140,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale.CustomerId = model.CustomerId;
 				sale.CIF = model.CIF;
 				sale.CompanyName = companyName;
+				sale.BranchId = model.BranchId;
+				sale.BranchName = branchName;
 				//sale.StatusSaleId = model.StatusSaleId; //ไม่ต้อง update กรณีแก้ไข
 				sale.DateAppointment = model.DateAppointment;
 				sale.PercentChanceLoanPass = model.PercentChanceLoanPass;
