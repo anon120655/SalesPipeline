@@ -98,7 +98,7 @@
 		</div>
 		<div class="row my-3 py-3 rounded-3" style="background: #F5F7F9;">
 			<div class="col-12">
-				@if (document == null)
+				@if (document == null || formModel == null)
 				{
 					<div class="d-flex align-items-center justify-content-center mh_10r">
 						<p class="my-3 text-black-50">-ไม่พบข้อมูล-</p>
@@ -255,7 +255,7 @@
 									</div>
 								</div>
 								<div class="signature-space">
-									( @formModel?.AssUserName )
+									( @formModel.AssUserName )
 								</div>
 								<div class="date-row">
 									@if (document.SignatureEmployeeLoanDate.HasValue)
@@ -277,15 +277,21 @@
 									<div class="col text-start">ลงชื่อ</div>
 									<div class="col text-end">ผู้จัดการศูนย์</div>
 								</div>
+								<div class="row">
+									<div class="col text-center">
+										<img src="@dataSignature.ImgUrlv" width="100" style="margin-top:-25px" />
+									</div>
+								</div>
 								<div class="signature-space">
-									(                )
+									( @formModel.AssCenterUserName )
 								</div>
 								<div class="date-row">
-									@if (document.SignatureMCenterDate.HasValue)
+									@if (approveDateCenter != null)
 									{
-										<span>วันที่ @document.SignatureMCenterDate.Value.Day</span>
-										<span>เดือน @GeneralUtils.GetFullMonth(document.SignatureMCenterDate.Value.Month) </span>
-										<span>พ.ศ. @GeneralUtils.GetYearTH(document.SignatureMCenterDate.Value.Year)</span>
+										//dataSignature
+										<span>วันที่ @approveDateCenter.CreateDate.Day</span>
+										<span>เดือน @GeneralUtils.GetFullMonth(approveDateCenter.CreateDate.Month) </span>
+										<span>พ.ศ. @GeneralUtils.GetYearTH(approveDateCenter.CreateDate.Year)</span>
 									}
 									else
 									{

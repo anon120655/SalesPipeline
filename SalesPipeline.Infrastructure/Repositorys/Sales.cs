@@ -686,6 +686,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			};
 		}
 
+		public async Task<List<Sale_StatusCustom>> GetListStatusById(Guid id)
+		{
+			var query = await _repo.Context.Sale_Statuses
+				.Where(x => x.SaleId == id).ToListAsync();
+			return _mapper.Map<List<Sale_StatusCustom>>(query);
+		}
+
 		public async Task<Sale_ReturnCustom> CreateReturn(Sale_ReturnCustom model)
 		{
 			DateTime _dateNow = DateTime.Now;

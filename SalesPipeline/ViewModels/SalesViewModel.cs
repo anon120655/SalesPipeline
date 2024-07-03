@@ -87,6 +87,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Sale_StatusCustom>>?> GetListStatusById(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Sales/GetListStatusById?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<List<Sale_StatusCustom>>(content);
+				return new ResultModel<List<Sale_StatusCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Sale_StatusCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<Boolean>> UpdateStatusOnly(Sale_StatusCustom model)
 		{
 			try

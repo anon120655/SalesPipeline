@@ -2,6 +2,8 @@ using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Sales;
 using System.IO;
 using static System.Net.WebRequestMethods;
@@ -25,6 +27,8 @@ namespace SalesPipeline.Pages.Customers
 		Sale_DocumentCustom? document = null;
 		List<Sale_Document_UploadCustom>? document_Upload = null;
 		Sale_Document_UploadCustom formUploadModel = new();
+		System_SignatureCustom dataSignature = new();
+		Sale_StatusCustom? approveDateCenter;
 
 		protected override async Task OnParametersSetAsync()
 		{
@@ -35,7 +39,37 @@ namespace SalesPipeline.Pages.Customers
 
 				document = formModel.Sale_Documents?.FirstOrDefault();
 				document_Upload = formModel.Sale_Document_Files;
+
+				await GetSignatureLast();
 				await Task.Delay(1);
+			}
+		}
+
+		protected async Task GetSignatureLast()
+		{
+			if (formModel != null && formModel.AssCenterUserId.HasValue)
+			{
+				var data = await _systemViewModel.GetSignatureLast(formModel.AssCenterUserId.Value);
+				if (data != null && data.Status && data.Data != null)
+				{
+					dataSignature = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+
+				var dataStatus = await _salesViewModel.GetListStatusById(formModel.Id);
+				if (dataStatus != null && dataStatus.Status && dataStatus.Data != null)
+				{
+					approveDateCenter = dataStatus.Data.FirstOrDefault(x=>x.StatusId == StatusSaleModel.WaitAPIPHOENIX);
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}				
 			}
 		}
 
@@ -78,7 +112,7 @@ namespace SalesPipeline.Pages.Customers
 
 		private void ClearInputFileMedia()
 		{
-			_errorMessage = null;		
+			_errorMessage = null;
 			StateHasChanged();
 			bClearInput = true;
 			StateHasChanged();
