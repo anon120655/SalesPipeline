@@ -353,7 +353,7 @@ namespace SalesPipeline.API.Controllers
 							InsertRoleCode = rolecode,
 							DateContact = DateTime.Now.AddDays(-i),
 							Master_ContactChannelId = contactChannel[contactChannelRandom],
-							BranchName = $"สาขา_{i}",
+							//BranchName = $"สาขา_{i}",
 							ProvincialOffice = $"สนจ_{i}",
 							EmployeeId = $"50000{i}",
 							EmployeeName = employeeName,

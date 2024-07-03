@@ -248,14 +248,14 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.EmployeeId = UserInfo.EmployeeId;
 			formModel.EmployeeName = UserInfo.FullName;
-			formModel.BranchName = UserInfo.BranchName;
-			if (UserInfo.RoleCode != null)
-			{
-				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN || UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
-				{
-					formModel.BranchName = "สายงานธุรกิจสินเชื่อ";
-				}
-			}
+			//formModel.BranchName = UserInfo.BranchName;
+			//if (UserInfo.RoleCode != null)
+			//{
+			//	if (UserInfo.RoleCode == RoleCodes.SUPERADMIN || UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
+			//	{
+			//		formModel.BranchName = "สายงานธุรกิจสินเชื่อ";
+			//	}
+			//}
 		}
 
 		protected async Task SetAddress()

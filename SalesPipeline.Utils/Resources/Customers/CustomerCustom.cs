@@ -49,7 +49,11 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// สาขา
 		/// </summary>
-		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public int? BranchId { get; set; }
+
+		/// <summary>
+		/// ชื่อสาขา
+		/// </summary>
 		public string? BranchName { get; set; }
 
 		/// <summary>

@@ -253,7 +253,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
             {
                 await Validate(model);
 
-                string? master_ContactChannelName = null;
+                string? branchName = null;
+				string? master_ContactChannelName = null;
                 string? master_BusinessTypeName = null;
                 string? master_BusinessSizeName = null;
                 string? master_ISICCodeName = null;
@@ -261,11 +262,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 string? master_YieldName = null;
                 string? master_ChainName = null;
                 string? master_LoanTypeName = null;
-                //string? provinceName = null;
-                //string? amphurName = null;
-                //string? tambolName = null;
+				//string? provinceName = null;
+				//string? amphurName = null;
+				//string? tambolName = null;
 
-                if (model.Master_ContactChannelId.HasValue)
+				if (model.BranchId.HasValue)
+				{
+					branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
+				}
+
+				if (model.Master_ContactChannelId.HasValue)
                 {
                     master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
                 }
@@ -358,8 +364,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 customer.DateContact = model.DateContact;
                 customer.Master_ContactChannelId = model.Master_ContactChannelId;
                 customer.Master_ContactChannelName = master_ContactChannelName;
-                customer.BranchName = model.BranchName;
-                customer.ProvincialOffice = model.ProvincialOffice;
+                customer.BranchId = model.BranchId;
+                customer.BranchName = branchName;
+				customer.ProvincialOffice = model.ProvincialOffice;
                 customer.EmployeeName = model.EmployeeName;
                 customer.EmployeeId = model.EmployeeId;
                 customer.CIF = model.CIF;
@@ -572,8 +579,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     StatusSaleId = statusSaleId,
                     Master_Branch_RegionId = master_Branch_RegionId,
 					ProvinceId = model.ProvinceId,
-					//ProvinceId = provinceId,
-					//BranchId = branchId, //ต้องทำเพิ่ม กรณีเลือกสาขาจากหน้าฟอร์มลูกค้า
+                    BranchId = model.BranchId, //สาขาจะใช้เฉพาะลูกค้า พนักงานจะไม่มีสาขา เลือกสาขาจากหน้าฟอร์มลูกค้า
 					AssCenterUserId = assCenterUserId,
                     AssCenterUserName = assCenterUserName,
                     AssUserId = assUserId,
@@ -613,19 +619,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 var customer = await _repo.Context.Customers.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
                 if (customer != null)
                 {
+                    string? branchName = null;
                     string? master_ContactChannelName = null;
-                    string? master_BusinessTypeName = null;
+					string? master_BusinessTypeName = null;
                     string? master_BusinessSizeName = null;
                     string? master_ISICCodeName = null;
                     string? master_TSICName = null;
                     string? master_YieldName = null;
                     string? master_ChainName = null;
                     string? master_LoanTypeName = null;
-                    //string? provinceName = null;
-                    //string? amphurName = null;
-                    //string? tambolName = null;
+					//string? provinceName = null;
+					//string? amphurName = null;
+					//string? tambolName = null;
 
-                    if (model.Master_ContactChannelId.HasValue)
+					if (model.BranchId.HasValue)
+					{
+						branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
+					}
+
+					if (model.Master_ContactChannelId.HasValue)
                     {
                         master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
                     }
@@ -705,8 +717,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     customer.DateContact = model.DateContact;
                     customer.Master_ContactChannelId = model.Master_ContactChannelId;
                     customer.Master_ContactChannelName = master_ContactChannelName;
-                    customer.BranchName = model.BranchName;
-                    customer.ProvincialOffice = model.ProvincialOffice;
+                    customer.BranchId = model.BranchId;
+                    customer.BranchName = branchName;
+					customer.ProvincialOffice = model.ProvincialOffice;
                     customer.EmployeeName = model.EmployeeName;
                     customer.EmployeeId = model.EmployeeId;
                     customer.ContactName = model.ContactName;
@@ -884,6 +897,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                         UpdateBy = model.CurrentUserId,
                         UpdateDate = _dateNow,
                         CustomerId = customer.Id,
+                        BranchId = model.BranchId,
                         StatusSaleId = StatusSaleModel.NotStatus
                     };
 

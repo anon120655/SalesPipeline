@@ -43,6 +43,11 @@ public partial class Customer
     /// <summary>
     /// สาขา
     /// </summary>
+    public int? BranchId { get; set; }
+
+    /// <summary>
+    /// ชื่อสาขา
+    /// </summary>
     public string? BranchName { get; set; }
 
     /// <summary>

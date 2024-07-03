@@ -442,9 +442,12 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.AssetsTotal)
                 .HasPrecision(18, 2)
                 .HasComment("รวมสินทรัพย์");
+            entity.Property(e => e.BranchId)
+                .HasComment("สาขา")
+                .HasColumnType("int(11)");
             entity.Property(e => e.BranchName)
                 .HasMaxLength(255)
-                .HasComment("สาขา");
+                .HasComment("ชื่อสาขา");
             entity.Property(e => e.CIF).HasMaxLength(255);
             entity.Property(e => e.CompanyEmail)
                 .HasMaxLength(255)
