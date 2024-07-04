@@ -280,7 +280,7 @@ namespace SalesPipeline.API.Controllers
 						}
 
 						currentUserId = user.Id;
-						employeeName = $"RM_{provinceId}_{i} ทดสอบ";
+						employeeName = $"RM_{i} ทดสอบ";
 
 						var checkAssignmentRM = await _repo.AssignmentRM.CheckAssignmentByUserId(currentUserId);
 						if (!checkAssignmentRM)
@@ -292,7 +292,7 @@ namespace SalesPipeline.API.Controllers
 					else if (rolecode == RoleCodes.CENTER)
 					{
 						currentUserId = 11;
-						employeeName = $"CEN_BRANCH_{provinceId}_{i} ทดสอบ";
+						employeeName = $"CENTER_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssign;
 
 						if (assignedCenterUserId.HasValue)
@@ -309,13 +309,13 @@ namespace SalesPipeline.API.Controllers
 					else if (rolecode == RoleCodes.BRANCH_REG)
 					{
 						currentUserId = 9;
-						employeeName = $"BRANCH_REG_{provinceId}_{i} ทดสอบ";
+						employeeName = $"BRANCH_REG_{i} ทดสอบ";
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
 					}
 					else if (rolecode == RoleCodes.LOAN)
 					{
 						currentUserId = 5;
-						employeeName = $"LOAN_{provinceId}_{i} ทดสอบ";
+						employeeName = $"LOAN_{i} ทดสอบ";
 						//_statusSaleId = StatusSaleModel.WaitAssignCenterREG;
 						_statusSaleId = StatusSaleModel.WaitAssignCenter;
 						//if (!branch_RegionId.HasValue) throw new ExceptionCustom($"ไม่พบข้อมูล branch_RegionId");
