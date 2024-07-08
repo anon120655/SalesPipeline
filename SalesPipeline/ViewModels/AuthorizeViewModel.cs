@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using static Dapper.SqlMapper;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace SalesPipeline.ViewModels
 {
@@ -167,23 +168,14 @@ namespace SalesPipeline.ViewModels
 			{
 				try
 				{
-					string token = await GetAccessToken();
-					if (!string.IsNullOrEmpty(token))
+					var isExpire = await IsTokenExpired();
+					if (isExpire)
 					{
-						var responseClient = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/Authorize/ExpireToken?token={token}");
-						if (responseClient.IsSuccessStatusCode && responseClient.StatusCode == System.Net.HttpStatusCode.OK)
-						{
-							var content = await responseClient.Content.ReadAsStringAsync();
-							var dataMap = JsonConvert.DeserializeObject<Boolean>(content);
-							if (dataMap != true)
-							{
-								_Nav.NavigateTo("/signin?p=expiretoken", true);
-								return false;
-							}
-						}
+						_Nav.NavigateTo("/signin?p=token", true);
+						return false;
 					}
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					_Nav.NavigateTo("/signin?p=token", true);
 					return false;
@@ -319,6 +311,27 @@ namespace SalesPipeline.ViewModels
 					errorMessage = GeneralUtils.GetExMessage(ex)
 				};
 			}
+		}
+
+		public async Task<bool> IsTokenExpired()
+		{
+			var token = await GetAccessToken();
+			if (string.IsNullOrEmpty(token))
+			{
+				return true;
+			}
+
+			var handler = new JwtSecurityTokenHandler();
+			var jwtToken = handler.ReadJwtToken(token);
+			var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+
+			if (expClaim == null)
+			{
+				return true;
+			}
+
+			var exp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim.Value));
+			return exp < DateTimeOffset.UtcNow;
 		}
 
 	}

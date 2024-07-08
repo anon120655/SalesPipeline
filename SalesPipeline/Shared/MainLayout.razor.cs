@@ -61,6 +61,7 @@ namespace SalesPipeline.Shared
 
 			isAuthorize = await _authorizeViewModel.IsAuth();
 
+			//isAuthorize = true;
 			if (isAuthorize)
 			{
 				UserInfo = await _authorizeViewModel.GetUserInfo() ?? new();
@@ -79,7 +80,6 @@ namespace SalesPipeline.Shared
 					await _hubUserConnection.SendAsync(SignalRUtls.SendUserOnline, new UserOnlineModel() { UserKey = _UserKey, Id = UserInfo.Id, FullName = UserInfo.FullName, Ipaddress = $"{remoteIpAddress}", OnlineDate = DateTime.Now });
 				}
 
-				//await Task.Delay(1500);
 				var sale = await _salesViewModel.GetOverdueCount(new() { userid = UserInfo.Id });
 				if (sale != null)
 				{

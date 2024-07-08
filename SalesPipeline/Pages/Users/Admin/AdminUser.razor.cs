@@ -39,6 +39,8 @@ namespace SalesPipeline.Pages.Users.Admin
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 
+				await _assignmentCenterViewModel.CreateAssignmentCenterAll();
+				await _assignmentRMViewModel.CreateAssignmentRMAll();
 				firstRender = false;
 			}
 		}

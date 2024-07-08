@@ -105,7 +105,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)
 		{
-			int expires_in = 1; //days
+			int expires_in = 10; //days
 
 			int? roleId = 0;
 			int? levelId = null;
