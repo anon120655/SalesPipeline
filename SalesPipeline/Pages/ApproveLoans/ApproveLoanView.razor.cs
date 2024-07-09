@@ -110,6 +110,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			ShowLoading();
 
 			//ผู้จัดการศูนย์ตรวจสอบและอนุมัติลงนาม และส่ง API ส่งไประบบวิเคราะห์สินเชื่อ (PHOENIX/LPS) ไป รอวิเคราะห์สินเชื่อ(LPS)
+			//20240701 ตัด API PHOENIX/LPS ออกไป และจะปรับสถานะตอนกรอกเลข CIF จากหน้า RM
 			var response = await _salesViewModel.UpdateStatusOnly(new()
 			{
 				SaleId = id,

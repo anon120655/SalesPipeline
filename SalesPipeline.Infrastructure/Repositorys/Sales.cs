@@ -285,6 +285,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (model.StatusId == StatusSaleModel.WaitAPIPHOENIX)
 				{
+					//กรณี ผจศ. ถูกมอบหมายแล้ว
+					if (sales.AssCenterUserId.HasValue && sales.AssCenterUserId.Value != model.CreateBy)
+					{
+						throw new ExceptionCustom("ไม่สามารถอนุมัติคำขอได้ เนื่องจากไม่อยู่ในความรับผิดชอบของท่าน");
+					}
+					else
+					{
+						//กรณี ผจศ. ยังไม่ถูกมอบหมายและ อยู่ในพื้นที่ดูแล
+						sales.AssCenterAlready = true;
+						sales.AssCenterUserId = model.CreateBy;
+						sales.AssCenterUserName = currentUserName;
+						sales.AssCenterDate = _dateNow;
+						_db.Update(sales);
+						await _db.SaveAsync();
+					}
+
 					await _repo.ProcessSale.CreateContactHistory(new()
 					{
 						CurrentUserId = model.CreateBy,
@@ -1086,6 +1102,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Pager = pager
 			};
 		}
+
+		public async Task<List<HistoryLoanModel>> GetListHistoryLoan(allFilter model)
+		{
+			var historyLoan = await _repo.Context.Sales
+										.Include(x => x.Sale_Statuses)
+										.Where(x => x.Customer.JuristicPersonRegNumber == model.juristicnumber)
+										.Select(x => new
+										{
+											Loan = x,
+											Status = x.Sale_Statuses.FirstOrDefault(s => s.StatusId == StatusSaleModel.WaitAPIPHOENIX)
+										})
+										.Select(x => new HistoryLoanModel()
+										{
+											DateApprove = x.Status != null ? x.Status.CreateDate : (DateTime?)null,
+											LoanAmount = x.Loan.LoanAmount,
+											ProjectLoan = x.Loan.ProjectLoanName,
+											LoanPeriod = x.Loan.LoanPeriod,
+										})
+										.ToListAsync();
+
+			return historyLoan;
+		}
+
+
 
 	}
 }

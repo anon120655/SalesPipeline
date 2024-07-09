@@ -93,6 +93,16 @@ namespace SalesPipeline.Utils.Resources.Sales
 		public Guid? Pre_FactorId { get; set; }
 
 		/// <summary>
+		/// ชื่อโครงการสินเชื่อ
+		/// </summary>
+		public string? ProjectLoanName { get; set; }
+
+		/// <summary>
+		/// ระยะเวลาสินเชื่อ
+		/// </summary>
+		public int? LoanPeriod { get; set; }
+
+		/// <summary>
 		/// กิจการสาขาภาค
 		/// </summary>
 		public Guid? Master_Branch_RegionId { get; set; }

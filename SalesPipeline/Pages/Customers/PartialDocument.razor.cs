@@ -63,13 +63,13 @@ namespace SalesPipeline.Pages.Customers
 				var dataStatus = await _salesViewModel.GetListStatusById(formModel.Id);
 				if (dataStatus != null && dataStatus.Status && dataStatus.Data != null)
 				{
-					approveDateCenter = dataStatus.Data.FirstOrDefault(x=>x.StatusId == StatusSaleModel.WaitAPIPHOENIX);
+					approveDateCenter = dataStatus.Data.FirstOrDefault(x => x.StatusId == StatusSaleModel.WaitAPIPHOENIX);
 				}
 				else
 				{
 					_errorMessage = data?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
-				}				
+				}
 			}
 		}
 
@@ -142,6 +142,7 @@ namespace SalesPipeline.Pages.Customers
 				{
 					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
 					await OnHideUploadFile();
+					await SetModelDocument();
 				}
 				else
 				{
@@ -174,6 +175,24 @@ namespace SalesPipeline.Pages.Customers
 		{
 			isLoading = false;
 			StateHasChanged();
+		}
+
+		protected async Task SetModelDocument()
+		{
+			if (formModel != null && document_Upload != null)
+			{
+				var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = formModel.Id, pagesize = 200 });
+				if (data != null && data.Status && data.Data != null)
+				{
+					document_Upload = data.Data;
+					StateHasChanged();
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
 		}
 
 	}

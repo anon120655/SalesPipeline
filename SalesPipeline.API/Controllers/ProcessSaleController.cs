@@ -233,6 +233,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpPut("UpdatePhoenix")]
 		public async Task<IActionResult> UpdatePhoenix(PhoenixModel model)
 		{

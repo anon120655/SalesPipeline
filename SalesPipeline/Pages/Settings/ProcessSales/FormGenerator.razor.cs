@@ -341,6 +341,20 @@ namespace SalesPipeline.Pages.Settings.ProcessSales
 			formModel.Sale_Document.SignaturePath = "https://i.pinimg.com/736x/cb/c6/62/cbc662299bd35357e519fe867444b86c.jpg";
 			formModel.Sale_Document.SignatureEmployeeLoanPath = "https://m.media-amazon.com/images/I/411AYEiEsVL._SX300_SY300_QL70_FMwebp_.jpg";
 			//formModel.Sale_Document.SignatureMCenterPath = "https://m.media-amazon.com/images/I/618-nxYP6vL._AC_UF1000,1000_QL80_.jpg";
+			formModel.Sale_Document.Master_BusinessTypeId = Guid.Parse("241b4e71-1105-11ef-93f0-30e37aef72fb");
+			formModel.Sale_Document.BusinessOperation = "ธุรกิจการผลิต";
+			formModel.Sale_Document.RegistrationDate = new DateTime(2024, 07, 08);
+			formModel.Sale_Document.DateFirstContactBank = new DateTime(2024, 07, 05);
+			formModel.Sale_Document.Master_TypeLoanRequestId = Guid.Parse("466b18d7-ed49-11ee-927d-484d7ef7911c");
+			formModel.Sale_Document.Master_TypeLoanRequestSpecify = "ทดสอบระบุ001";
+			formModel.Sale_Document.Master_ProductProgramBankId = Guid.Parse("f77f218f-ed08-11ee-927d-484d7ef7911c");
+			formModel.Sale_Document.LoanLimitBusiness = 1000000;
+			formModel.Sale_Document.LoanLimitInvestmentCost = 800000;
+			formModel.Sale_Document.LoanLimitObjectiveOther = 500000;
+			formModel.Sale_Document.LoanLimitObjectiveOtherSpecify = "ทดสอบระบุ002";
+			formModel.Sale_Document.TotaLlimit = 2500000;
+			formModel.Sale_Document.TotaLlimitCEQA = 1500000;
+			formModel.Sale_Document.CommentEmployeeLoan = "ไม่มีความเห็น";
 
 			//ผลลัพธ์
 			formModel.Sale_Result = new();

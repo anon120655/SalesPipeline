@@ -352,6 +352,25 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ประวัติการกู้สินเชื่อ
+		/// </summary>
+		[AllowAnonymous]
+		[HttpPost("GetListHistoryLoan")]
+		public async Task<IActionResult> GetListHistoryLoan(allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Sales.GetListHistoryLoan(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 
 	}

@@ -1,30 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
-using NPOI.SS.Formula.Functions;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.PropertiesModel;
-using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class PreFactor : IPreFactor
+	public class PreFactor : IPreFactor
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -61,6 +48,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Factor.CompanyName = sales.CompanyName;
 				await _db.InsterAsync(pre_Factor);
 				await _db.SaveAsync();
+
+				string? loanIName = null;
+				int? loanPeriod = null;
 
 				//มูลค่าสินเชื่อที่ขอ
 				decimal loanValue = 0;
@@ -111,7 +101,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							throw new ExceptionCustom($"ไม่พบตัวแปรคำนวณ ประเภทผู้ขอสินเชื่อ และประเภทธุรกิจที่ท่านเลือก");
 						}
 
-						string? loanIName = null;
 						string? master_Pre_Applicant_LoanName = null;
 						string? master_Pre_BusinessTypeName = null;
 
@@ -124,6 +113,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						master_Pre_BusinessTypeName = await _repo.Master_Pre_BusType.GetNameById(item.Master_Pre_BusinessTypeId);
 
 						loanValue = item.LoanValue ?? 0;
+						loanPeriod = item.LoanPeriod;
 
 						var pre_Factor_Info = new Data.Entity.Pre_Factor_Info();
 						pre_Factor_Info.Status = StatusModel.Active;
@@ -133,7 +123,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						pre_Factor_Info.LoanIName = loanIName;
 						pre_Factor_Info.InstallmentPayYear = item.InstallmentPayYear;
 						pre_Factor_Info.LoanValue = loanValue;
-						pre_Factor_Info.LoanPeriod = item.LoanPeriod;
+						pre_Factor_Info.LoanPeriod = loanPeriod;
 						pre_Factor_Info.Master_Pre_Applicant_LoanId = item.Master_Pre_Applicant_LoanId;
 						pre_Factor_Info.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanName;
 						pre_Factor_Info.Master_Pre_BusinessTypeId = item.Master_Pre_BusinessTypeId;
@@ -908,6 +898,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				sales.Pre_FactorId = pre_Factor.Id;
+				sales.ProjectLoanName = loanIName;
+				sales.LoanPeriod = loanPeriod;
 				sales.PercentChanceLoanPass = chanceNumber2digit;
 				sales.PercentChanceLoanPassName = $"มีโอกาสขอสินเชื่อผ่าน {chancePercent}";
 				_db.Update(sales);
