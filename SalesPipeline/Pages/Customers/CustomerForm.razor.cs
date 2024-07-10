@@ -255,10 +255,10 @@ namespace SalesPipeline.Pages.Customers
 				formModel.Customer_Shareholders = new() { new() { Id = Guid.NewGuid() } };
 			}
 
-			if (!formModel.DateContact.HasValue)
-			{
-				formModel.DateContact = DateTime.Now.Date;
-			}
+			//if (!formModel.DateContact.HasValue)
+			//{
+			//	formModel.DateContact = DateTime.Now.Date;
+			//}
 
 			formModel.EmployeeId = UserInfo.EmployeeId;
 			formModel.EmployeeName = UserInfo.FullName;
