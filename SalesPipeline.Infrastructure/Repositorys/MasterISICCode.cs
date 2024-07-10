@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterISICCode : IMasterISICCode
+	public class MasterISICCode : IMasterISICCode
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -32,27 +32,23 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Master_ISICCodeCustom> Create(Master_ISICCodeCustom model)
 		{
-			using (var _transaction = _repo.BeginTransaction())
+			DateTime _dateNow = DateTime.Now;
+
+			var master_ISICCode = new Data.Entity.Master_ISICCode()
 			{
-				DateTime _dateNow = DateTime.Now;
+				Status = StatusModel.Active,
+				CreateDate = _dateNow,
+				CreateBy = model.CurrentUserId,
+				UpdateDate = _dateNow,
+				UpdateBy = model.CurrentUserId,
+				Code = model.Code,
+				Name = model.Name,
+				GroupMaster_BusinessTypeId = model.GroupMaster_BusinessTypeId
+			};
+			await _db.InsterAsync(master_ISICCode);
+			await _db.SaveAsync();
 
-				var master_ISICCode = new Data.Entity.Master_ISICCode()
-				{
-					Status = StatusModel.Active,
-					CreateDate = _dateNow,
-					CreateBy = model.CurrentUserId,
-					UpdateDate = _dateNow,
-					UpdateBy = model.CurrentUserId,
-					Code = model.Code,
-					Name = model.Name
-				};
-				await _db.InsterAsync(master_ISICCode);
-				await _db.SaveAsync();
-
-				_transaction.Commit();
-
-				return _mapper.Map<Master_ISICCodeCustom>(master_ISICCode);
-			}
+			return _mapper.Map<Master_ISICCodeCustom>(master_ISICCode);
 		}
 
 		public async Task<Master_ISICCodeCustom> Update(Master_ISICCodeCustom model)
@@ -68,6 +64,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					master_ISICCode.UpdateBy = model.CurrentUserId;
 					master_ISICCode.Code = model.Code;
 					master_ISICCode.Name = model.Name;
+					master_ISICCode.GroupMaster_BusinessTypeId = model.GroupMaster_BusinessTypeId;
 					_db.Update(master_ISICCode);
 					await _db.SaveAsync();
 
@@ -131,6 +128,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.val1))
 			{
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
+			}
+
+			if (!string.IsNullOrEmpty(model.businesstype))
+			{
+				if (Guid.TryParse(model.businesstype, out Guid Groupid))
+				{
+					query = query.Where(x => x.GroupMaster_BusinessTypeId != null
+					&& x.GroupMaster_BusinessTypeId.ToLower().Contains(Groupid.ToString().ToLower()));
+				}
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

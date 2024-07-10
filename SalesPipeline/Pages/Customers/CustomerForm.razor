@@ -208,9 +208,8 @@
 										</div>
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ISIC Code</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0 loading-container @(LookUp.ISICCode?.Count > 0 ? "":"loading_select")">
+											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0 loading-container @(!formModel.Master_BusinessSizeId.HasValue || LookUp.ISICCode?.Count > 0 ? "":"loading_select")">
 												<select @bind="formModel.Master_ISICCodeId" id="ISICCode" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-													<option value="">เลือก</option>
 													@if (LookUp.ISICCode?.Count > 0)
 													{
 														foreach (var item in LookUp.ISICCode)

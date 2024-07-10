@@ -173,11 +173,13 @@ namespace SalesPipeline.API.Controllers
 
 							var Code = row.GetCell(0) != null ? row.GetCell(0).ToString() : null;
 							var Name = row.GetCell(1) != null ? row.GetCell(1).ToString() : null;
+							var GroupId = row.GetCell(2) != null ? row.GetCell(2).ToString() : null;
 
 							DataList.Add(new()
 							{
 								Code = Code,
-								Name = Name
+								Name = Name,
+								GroupMaster_BusinessTypeId = GroupId
 							});
 						}
 

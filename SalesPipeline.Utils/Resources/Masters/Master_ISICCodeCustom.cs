@@ -27,5 +27,7 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public string? Code { get; set; }
 
 		public string? Name { get; set; }
+
+		public string? GroupMaster_BusinessTypeId { get; set; }
 	}
 }

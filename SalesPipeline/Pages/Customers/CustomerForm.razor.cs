@@ -1,10 +1,12 @@
 using global::Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SalesPipeline.Pages.Settings.PreApprove;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
+using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using System.Linq;
@@ -109,9 +111,9 @@ namespace SalesPipeline.Pages.Customers
 
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ContactChannel");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessSize");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "TSIC");
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnBusinessType", "#BusinessType");
 
 			var yields = await _masterViewModel.GetYields(new allFilter() { status = StatusModel.Active });
 			if (yields != null && yields.Status)
@@ -163,20 +165,20 @@ namespace SalesPipeline.Pages.Customers
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
-			if (iSICCode != null && iSICCode.Status)
-			{
-				LookUp.ISICCode = iSICCode.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = iSICCode?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+			//var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
+			//if (iSICCode != null && iSICCode.Status)
+			//{
+			//	LookUp.ISICCode = iSICCode.Data?.Items;
+			//}
+			//else
+			//{
+			//	_errorMessage = iSICCode?.errorMessage;
+			//	_utilsViewModel.AlertWarning(_errorMessage);
+			//}
 
 			StateHasChanged();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Branch");
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
+			//await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
 
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
@@ -194,26 +196,8 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 
 			await Task.Delay(10);
-			await SetAddress();
+			await SetDataLookup();
 
-
-			//var dataDepBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active });
-			//if (dataDepBranchs != null && dataDepBranchs.Status)
-			//{
-			//	LookUp.DepartmentBranch = new();
-			//	if (dataDepBranchs.Data?.Items.Count > 0)
-			//	{
-			//		LookUp.DepartmentBranch.AddRange(dataDepBranchs.Data.Items);
-			//		StateHasChanged();
-			//		await Task.Delay(1);
-			//		await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnDepBranch", "#DepBranch");
-			//	}
-			//}
-			//else
-			//{
-			//	_errorMessage = dataDepBranchs?.errorMessage;
-			//	_utilsViewModel.AlertWarning(_errorMessage);
-			//}
 		}
 
 		protected async Task SetModel()
@@ -272,8 +256,33 @@ namespace SalesPipeline.Pages.Customers
 			//}
 		}
 
-		protected async Task SetAddress()
+		protected async Task SetDataLookup()
 		{
+			if (formModel.Master_BusinessTypeId.HasValue)
+			{
+				LookUp.ISICCode = new List<Master_ISICCodeCustom>();
+				StateHasChanged();
+				await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "ISICCode");
+
+				var iSICCode = await _masterViewModel.GetISICCode(new allFilter()
+				{
+					status = StatusModel.Active,
+					pagesize = 2000,
+					businesstype = formModel.Master_BusinessTypeId.Value.ToString()
+				});
+				if (iSICCode != null && iSICCode.Status)
+				{
+					LookUp.ISICCode = new() { new() { Name = "--เลือก--" } };
+					if (iSICCode.Data != null)
+					{
+						LookUp.ISICCode.AddRange(iSICCode.Data.Items);
+
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "ISICCode", 100);
+					}
+				}
+			}
+
 			if (formModel.ProvinceId.HasValue)
 			{
 				LookUp.Amphurs = new List<InfoAmphurCustom>();
@@ -307,6 +316,45 @@ namespace SalesPipeline.Pages.Customers
 							await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "TambolChange", $"#Tambol");
 						}
 					}
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnBusinessType(string _ID, string _Name)
+		{
+			LookUp.ISICCode = new List<Master_ISICCodeCustom>();
+			formModel.Master_BusinessTypeId = null;
+			formModel.Master_ISICCodeId = null;
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "ISICCode");
+
+			if (_ID != null && Guid.TryParse(_ID, out Guid businessTypeId))
+			{
+				formModel.Master_BusinessTypeId = businessTypeId;
+
+				var iSICCode = await _masterViewModel.GetISICCode(new allFilter()
+				{
+					status = StatusModel.Active,
+					pagesize = 2000,
+					businesstype = businessTypeId.ToString()
+				});
+				if (iSICCode != null && iSICCode.Status)
+				{
+					LookUp.ISICCode = new() { new() { Name = "--เลือก--" } };
+					if (iSICCode.Data != null)
+					{
+						LookUp.ISICCode.AddRange(iSICCode.Data.Items);
+
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "ISICCode", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = iSICCode?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
 		}
