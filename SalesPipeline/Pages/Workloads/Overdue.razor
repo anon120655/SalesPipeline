@@ -126,8 +126,8 @@
 													<td class="text-center">@item.CompanyName</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
-													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@item.Customer?.ContactTel</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.Master_BusinessTypeName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.ContactTel)</td>
 													<td class="text-center fw-bold">
 														@item.StatusSaleName
 														@if (!String.IsNullOrEmpty(item.StatusDescription))
