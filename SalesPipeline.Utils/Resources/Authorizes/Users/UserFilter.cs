@@ -13,6 +13,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		public string? fullname { get; set; }
 		public string? type { get; set; }
 		public int? branchid { get; set; }
+		public int? roleid { get; set; }
 		public string? spositions { get; set; }
 		public List<string?>? PositionsList { get; set; }
 		public string? suserlevels { get; set; }
@@ -50,6 +51,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 			if (branchid > 0)
 				ParameterAll += $"&branchid={branchid}";
+
+			if (roleid > 0)
+				ParameterAll += $"&roleid={roleid}";
 
 			if (PositionsList != null && PositionsList.Count(x => !String.IsNullOrEmpty(x)) > 0)
 			{

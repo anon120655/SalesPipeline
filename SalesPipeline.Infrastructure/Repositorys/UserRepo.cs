@@ -868,6 +868,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.BranchId != null && x.BranchId == model.branchid);
 			}
 
+			if (model.roleid > 0)
+			{
+				query = query.Where(x => x.RoleId != null && x.RoleId == model.roleid);
+			}
+
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);

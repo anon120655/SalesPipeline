@@ -95,7 +95,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<int?> GetProvinceIdByName(string name)
 		{
-			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceName == name).FirstOrDefaultAsync();
+			name = name.Replace("จังหวัด", string.Empty);
+			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.ProvinceID;
@@ -105,7 +106,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<int?> GetAmphurIdByName(string name)
 		{
-			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurName == name).FirstOrDefaultAsync();
+			name = name.Replace("เขต", string.Empty);
+			name = name.Replace("อำเภอ", string.Empty);
+			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.AmphurID;
@@ -115,7 +118,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<int?> GetTambolIdByName(string name)
 		{
-			var query = await _repo.Context.InfoTambols.Where(x => x.TambolName == name).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoTambols.Where(x => x.TambolName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.TambolID;
@@ -219,7 +222,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			List<Guid?> idList = new();
 			if (model.DepBranchs?.Count > 0)
 			{
-				 idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
+				idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 			}
 
 			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();

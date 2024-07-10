@@ -69,6 +69,17 @@ namespace SalesPipeline.Pages.Users.Admin
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
+			var dataRoles = await _userViewModel.GetListRole(new allFilter() { status = StatusModel.Active });
+			if (dataRoles != null && dataRoles.Status)
+			{
+				LookUp.UserRoles = dataRoles.Data?.Items;
+			}
+			else
+			{
+				_errorMessage = dataRoles?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
 			var dataGetDivBranchs = await _masterViewModel.GetDepBranchs(new allFilter() { status = StatusModel.Active, isAll = 1 });
 			if (dataGetDivBranchs != null && dataGetDivBranchs.Status)
 			{
@@ -163,6 +174,19 @@ namespace SalesPipeline.Pages.Users.Admin
 			if (e.Value != null)
 			{
 				filter.PositionsList.Add(e.Value.ToString());
+			}
+
+			await SetModel();
+			StateHasChanged();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnRoles(ChangeEventArgs e)
+		{
+			filter.roleid = null;
+			if (e.Value != null && int.TryParse(e.Value.ToString(),out int id))
+			{
+				filter.roleid = id;
 			}
 
 			await SetModel();

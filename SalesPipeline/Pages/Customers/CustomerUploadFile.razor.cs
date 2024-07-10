@@ -851,8 +851,8 @@ namespace SalesPipeline.Pages.Customers
 								{
 									var row_0 = row_header.GetCell(0).ToString()?.Trim();
 									var row_1 = row_header.GetCell(1).ToString()?.Trim();
-									if (row_0 != "วันที่เข้ามาติดต่อ"
-										|| row_1 != "ช่องทางการติดต่อ")
+									var row_2 = row_header.GetCell(2).ToString()?.Trim();
+									if (row_0 != "เลขทะเบียนนิติบุคคล" || row_1 != "CIF" || row_2 != "ชื่อบริษัท")
 									{
 										throw new Exception("Template file not support.");
 									}
@@ -940,7 +940,7 @@ namespace SalesPipeline.Pages.Customers
 																  .ToDictionary(x => x.StringCellValue, x => x.ColumnIndex);
 
 								header_list_key = header_list.Select(x => x.Key.Trim()).ToList();
-								if (header_list_key.Count < 100)
+								if (header_list_key.Count < 150)
 								{
 									throw new Exception("Template file not support.");
 								}
@@ -1028,49 +1028,10 @@ namespace SalesPipeline.Pages.Customers
 									DateTime dateTimeMaster = DateTime.MinValue;
 									decimal decimalMaster = 0;
 
-									if (header_list.TryGetValue("วันที่เข้ามาติดต่อ", out cellIndex))
-									{
-										var ttt = row.GetCell(cellIndex);
-										if (DateTime.TryParse(row.GetCell(cellIndex)?.ToString(), out dateTimeMaster))
-										{
-											DateContact = dateTimeMaster;
-										}
-									}
-									if (header_list.TryGetValue("ช่องทางการติดต่อ", out cellIndex))
-									{
-										var ttt = row.GetCell(cellIndex);
-										if (Guid.TryParse(row.GetCell(cellIndex)?.ToString(), out guidMaster))
-										{
-											Master_ContactChannelId = guidMaster;
-										}
-									}
-									if (header_list.TryGetValue("กิจการสาขาภาค", out cellIndex))
-									{
-										if (Guid.TryParse(row.GetCell(cellIndex)?.ToString(), out guidMaster))
-										{
-											Branch_RegionId = guidMaster;
-										}
-									}
-									if (header_list.TryGetValue("สนจ.", out cellIndex))
-									{
-										ProvincialOffice = row.GetCell(cellIndex)?.ToString();
-									}
-									if (header_list.TryGetValue("ชื่อพนักงาน", out cellIndex))
-									{
-										EmployeeName = row.GetCell(cellIndex)?.ToString();
-									}
-									if (header_list.TryGetValue("รหัสพนักงาน", out cellIndex))
-									{
-										EmployeeId = row.GetCell(cellIndex)?.ToString();
-									}
-									if (header_list.TryGetValue("ชื่อผู้ติดต่อ", out cellIndex))
-									{
-										ContactName = row.GetCell(cellIndex)?.ToString();
-									}
-									if (header_list.TryGetValue("โทรศัพท์ผู้ติดต่อ", out cellIndex))
-									{
-										ContactTel = row.GetCell(cellIndex)?.ToString();
-									}
+									//Default 6eaca010-3e6e-11ef-931d-30e37aef72fb = ข้อมูลจากระบบ
+									Master_ContactChannelId = Guid.Parse("6eaca010-3e6e-11ef-931d-30e37aef72fb");
+									EmployeeId = UserInfo.EmployeeId;
+									EmployeeName = UserInfo.FullName;
 
 									if (header_list.TryGetValue("เลขทะเบียนนิติบุคคล", out cellIndex))
 									{

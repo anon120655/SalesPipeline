@@ -70,7 +70,7 @@
 										{
 											<tr class="text-center align-middle">
 												<td colspan="100">
-													<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+													<Spinner Class="me-2" Size="SpinnerSize.Small" Color="SpinnerColor.Secondary" /> กำลังตรวจสอบข้อมูล
 												</td>
 											</tr>
 										}
@@ -119,14 +119,6 @@
 															}
 														}
 													</td>
-													<td class="text-center">@GeneralUtils.DateToEnStr(item.DateContact)</td>
-													<td class="">@item.Master_ContactChannelName</td>
-													<td class="text-center">@item.Branch_RegionName</td>
-													<td class="text-center">@item.ProvincialOffice</td>
-													<td class="text-center">@item.EmployeeName</td>
-													<td class="text-center">@item.EmployeeId</td>
-													<td class="text-center">@item.ContactName</td>
-													<td class="text-center">@item.ContactTel</td>
 													<td class="text-center">@item.JuristicPersonRegNumber</td>
 													<td class="text-center">@item.CIF</td>
 													<td class="text-center">@item.CompanyName</td>
@@ -218,15 +210,21 @@
 							@if (customerImportList?.Where(x => x.IsValidate == true || x.IsKeep).Count() > 0)
 							{
 								<div class="p-2 bd-highlight">
-									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
-										@if (isLoading)
-										{
-											<span><i class="fa-solid fa-circle-notch fa-spin text-white-50 fa-lg"></i></span>
-										}
+									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">										
 										ยืนยัน
 									</Button>
 								</div>
 							}
+						</div>
+						<div class="row">
+							<div class="col d-flex align-items-center justify-content-center my-2">
+								@if (isLoading)
+								{
+									<span>
+										<Spinner Class="" Size="SpinnerSize.Small" Color="SpinnerColor.Secondary" />  กำลังบันทึกข้อมูล
+									</span>
+								}
+							</div>
 						</div>
 						<small class="text-secondary">*ระบบจะนำเข้าเฉพาะรายการที่ตรวจสอบผ่าน และข้อมูลที่มีการเลือกจัดเก็บเวอร์ชั่นแล้วเท่านั้น</small>
 					</div>

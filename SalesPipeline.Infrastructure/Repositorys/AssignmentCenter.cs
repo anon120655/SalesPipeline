@@ -389,7 +389,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_Centers)
-										   .Where(x => x.Status != StatusModel.Delete && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.CENTER && x.Assignment_Centers.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.CENTER && x.Assignment_Centers.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
@@ -397,29 +397,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				foreach (var item_center in usersCenter)
 				{
-					if (item_center.BranchId.HasValue)
+					var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 					{
-						string? _code = null;
-						string? _name = null;
-						var branch = await _repo.Thailand.GetBranchByid(item_center.BranchId.Value);
-						if (branch != null)
-						{
-							_code = branch.BranchCode;
-							_name = branch.BranchName;
-						}
-
-						var assignmentCenter = await _repo.AssignmentCenter.Create(new()
-						{
-							Status = StatusModel.Active,
-							UserId = item_center.Id,
-							EmployeeId = item_center.EmployeeId,
-							EmployeeName = item_center.FullName,
-							Tel = item_center.Tel,
-							RMNumber = 0,
-							CurrentNumber = 0
-						});
-					}
-
+						Status = StatusModel.Active,
+						UserId = item_center.Id,
+						EmployeeId = item_center.EmployeeId,
+						EmployeeName = item_center.FullName,
+						Tel = item_center.Tel,
+						RMNumber = 0,
+						CurrentNumber = 0
+					});
 				}
 			}
 		}

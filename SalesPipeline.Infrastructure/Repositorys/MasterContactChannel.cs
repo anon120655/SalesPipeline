@@ -69,7 +69,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Master_ContactChannels
 												 .Where(x => x.Status != StatusModel.Delete)
-												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 			if (model.status.HasValue)
 			{

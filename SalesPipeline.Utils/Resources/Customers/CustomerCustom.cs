@@ -36,7 +36,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// วันที่เข้ามาติดต่อ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public DateTime? DateContact { get; set; }
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อพนักงาน
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? EmployeeName { get; set; }
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อผู้ติดต่อ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? ContactName { get; set; }
 
 		/// <summary>

@@ -55,12 +55,12 @@
 							</select>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ระดับ</label>
-							<select @onchange="((e) => OnUserLevels(e))" class="selectpicker" data-style="select_btn_set" data-live-search="true">
+							<label class="form-label">ระดับหน้าที่</label>
+							<select @onchange="((e) => OnRoles(e))" class="selectpicker" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
-								@if (LookUp.UserLevels?.Count > 0)
+								@if (LookUp.UserRoles?.Count > 0)
 								{
-									foreach (var item in LookUp.UserLevels)
+									foreach (var item in LookUp.UserRoles)
 									{
 										<option value="@item.Id">@item.Name</option>
 									}
