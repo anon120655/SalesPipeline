@@ -23,6 +23,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task UpdateCurrentNumber(Guid id);
 		//Task UpdateAssignmentEmpty(int id);
 		Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model);
+		Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign2(allFilter model);
 		Task<PaginationView<List<Assignment_RMCustom>>> GetListRM(allFilter model);
 		Task Assign(List<Assignment_RMCustom> model);
 		Task AssignChange(AssignChangeModel model);

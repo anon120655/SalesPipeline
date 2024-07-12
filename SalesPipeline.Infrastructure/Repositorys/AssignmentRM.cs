@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Hangfire.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
+using NPOI.SS.Formula.Functions;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -264,8 +266,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				return new();
 			}
 
-			//*************** ต้องเช็คพวก สาขา จังหวัด อำเภอ เพิ่มเติม ****************
-
 			//รูปแบบการมอบหมายตามเกณฑ์
 			//1. ข้อมูลพนักงาน RM เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			//2. หาข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
@@ -305,16 +305,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.emp_name))
 			{
 				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
-			}
-
-			if (model.provinceid.HasValue)
-			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
-			}
-
-			if (model.amphurid.HasValue)
-			{
-				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -383,6 +373,161 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						assignment_RM.User = null;
 						responseItems.Add(assignment_RM);
 						index_path++;
+					}
+				}
+			}
+
+			return new PaginationView<List<Assignment_RMCustom>>()
+			{
+				Items = responseItems,
+				Pager = pager
+			};
+		}
+
+		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign2(allFilter model)
+		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			{
+				return new();
+			}
+			var user_Areas = user.User_Areas?.Select(x => new User_AreaCustom()
+			{
+				ProvinceId = x.ProvinceId,
+				ProvinceName = x.ProvinceName
+			}).ToList() ?? new();
+
+			//Begin AI
+			//ฟังก์ชัน AssignTasks จะทำการมอบหมายงานให้กับพนักงานที่มีสิทธิ์ในพื้นที่นั้นๆ โดยจะหมุนเวียนการมอบหมายงานไปเรื่อยๆ จนกว่างานจะหมด ทำให้แต่ละคนได้รับงานใกล้เคียงกันมากที่สุด
+			//ผลลัพธ์ที่ได้จะแสดงรายชื่อพนักงาน พื้นที่รับผิดชอบ และงานที่ได้รับมอบหมาย ซึ่งจะทำให้งานถูกกระจายอย่างเท่าเทียมกันตามความรับผิดชอบของแต่ละคน
+
+			//ยกตัวอย่างการทำงาน:
+			//สมมติว่ามีพนักงานที่มีสิทธิ์รับงานในพื้นที่นี้ 3 คน(eligibleEmployees.Count = 3)
+
+			//employeeIndex = (employeeIndex + 1) % eligibleEmployees.Count;
+			//เริ่มต้น employeeIndex = 0
+			//หลังจากมอบหมายงานชิ้นแรก: (0 + 1) % 3 = 1
+			//หลังจากมอบหมายงานชิ้นที่สอง: (1 + 1) % 3 = 2
+			//หลังจากมอบหมายงานชิ้นที่สาม: (2 + 1) % 3 = 0(วนกลับมาที่คนแรก)
+			//หลังจากมอบหมายงานชิ้นที่สี่: (0 + 1) % 3 = 1
+			//และวนซ้ำไปเรื่อยๆ
+
+			//วิธีนี้ทำให้เราสามารถกระจายงานให้กับพนักงานทุกคนอย่างเท่าเทียมกัน โดยไม่ต้องกังวลว่าจะเกินขอบเขตของ list(เพราะ modulo จะทำให้ค่าวนกลับมาอยู่ในช่วงที่ถูกต้องเสมอ) และยังช่วยให้การกระจายงานเป็นไปอย่างต่อเนื่องแม้จะมีจำนวนงานมากกว่าจำนวนพนักงาน
+			//End AI
+
+			//รูปแบบการมอบหมายตามเกณฑ์
+			//1. ข้อมูลพนักงาน RM ที่อยู่ในพื้นที่ดูแลของ ผจศ. เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+			//2. หาข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
+			//3. แยกรายการลูกค้าที่ยังไม่ถูกมอบหมายออกเป็นส่วนเท่าๆ กัน
+			//4. มอบหมายให้พนักงานเท่าๆ กัน  (พนักงานที่ดูแลลูกค้าน้อยสุดจะถูกมอบหมายก่อนเรียงลำดับไปเรื่อยๆ)
+
+			//ข้อมูลพนักงาน RM เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
+			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
+												 .Include(x => x.User).ThenInclude(x => x.User_Areas)
+												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
+												 .AsQueryable();
+
+			//var listRmAreas = query.ToList();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			{
+				query = QueryAreaAssignment_RM(query, user);
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_id))
+			{
+				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.emp_id));
+			}
+
+			if (!String.IsNullOrEmpty(model.emp_name))
+			{
+				query = query.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(model.emp_name));
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var userAssignment = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
+
+			List<Assignment_RMCustom> responseItems = new();
+
+			//ข้อมูลลูกค้าที่ยังไม่ถูกมอบหมาย
+			var salesQuery = _repo.Context.Sales
+				.Include(x => x.Customer)
+				.Where(x => x.Status != StatusModel.Delete && !x.AssUserId.HasValue && x.StatusSaleId == StatusSaleModel.WaitAssign)
+				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
+				.AsQueryable();
+
+			//พื้นที่ดูแล
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			{
+				salesQuery = QueryArea(salesQuery, user);
+			}
+
+			var salesCustomer = await salesQuery.ToListAsync();
+
+
+			//พื้นที่ดูแล ผจศ.
+			List<User_AreaCustom> AreasList = user_Areas;
+			//ลูกค้า
+			List<Sale> JobsList = salesCustomer;
+			//พนักงาน RM
+			List<Assignment_RM> EmployeesList = userAssignment;
+
+			foreach (var area in AreasList)
+			{
+				var jobs = JobsList.Where(j => j.ProvinceId == area.ProvinceId).ToList();
+				var eligibleEmployees = EmployeesList.Where(e => e.User.User_Areas.Any(ua => ua.ProvinceId == area.ProvinceId)).ToList();
+
+				if (eligibleEmployees.Count > 0)
+				{
+					int employeeIndex = 0;
+					foreach (var job in jobs)
+					{
+						var currentEmployee = eligibleEmployees[employeeIndex];
+						
+						// ตรวจสอบว่าพนักงานนี้มีงานอยู่แล้วหรือไม่
+						var existingAssignment = responseItems.FirstOrDefault(e => e.UserId == currentEmployee.UserId);
+
+						var RM_Sales = new Assignment_RM_SaleCustom()
+						{
+							Id = Guid.NewGuid(),
+							Status = StatusModel.Active,
+							CreateDate = DateTime.Now.AddSeconds(1),
+							//AssignmentRMId = existingAssignment.Id,
+							SaleId = job.Id,
+							IsActive = StatusModel.Active,
+							IsSelect = true,
+							IsSelectMove = false,
+							Sale = _mapper.Map<SaleCustom>(job)
+						};
+
+						if (existingAssignment != null)
+						{
+							RM_Sales.AssignmentRMId = existingAssignment.Id;
+							// ถ้าเป็นพนักงานคนเดิม ให้เพิ่มงานใน Assignment_RM_Sales
+							if (existingAssignment.Assignment_RM_Sales == null) existingAssignment.Assignment_RM_Sales = new();
+							existingAssignment.Assignment_RM_Sales.Add(RM_Sales);
+						}
+						else
+						{
+							// ถ้าเป็นพนักงานคนใหม่ ให้สร้าง Assignment_RM ใหม่
+							var assignment_RM = _mapper.Map<Assignment_RMCustom>(currentEmployee);
+							assignment_RM.Tel = assignment_RM.User?.Tel;
+							if (assignment_RM.User?.User_Areas?.Count > 0)
+							{
+								string provinceNames = string.Join(",", assignment_RM.User.User_Areas.Select(x => x.ProvinceName));
+								assignment_RM.AreaNameJoin = provinceNames;
+							}
+
+							if (assignment_RM.Assignment_RM_Sales == null) assignment_RM.Assignment_RM_Sales = new();
+							assignment_RM.Assignment_RM_Sales.Add(RM_Sales);
+							responseItems.Add(assignment_RM);
+						}
+
+						employeeIndex = (employeeIndex + 1) % eligibleEmployees.Count;
 					}
 				}
 			}
