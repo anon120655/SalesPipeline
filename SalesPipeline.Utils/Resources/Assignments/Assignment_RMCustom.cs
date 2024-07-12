@@ -55,6 +55,8 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public string? Tel { get; set; }
 		public string? ProvinceName { get; set; }
 		public string? BranchName { get; set; }
+		public string? AreaNameJoin { get; set; }
+		
 		/// <summary>
 		/// จำนวนการมอบหมาย
 		/// </summary>

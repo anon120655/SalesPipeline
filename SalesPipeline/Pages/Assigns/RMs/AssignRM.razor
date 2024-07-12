@@ -81,8 +81,9 @@
 												<th class="text-center">รหัสพนักงาน</th>
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">สาขาที่ดูแล</th>
+												@* <th class="text-center">จังหวัดที่ดูแล</th>
+												<th class="text-center">สาขาที่ดูแล</th> *@
+												<th class="text-center">พื้นที่ดูแล</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">จำนวนการมอบหมาย</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
@@ -117,8 +118,18 @@
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
 														<td class="text-center">@item.Tel</td>
-														<td class="text-center">@item.ProvinceName</td>
-														<td class="text-center">@item.BranchName</td>
+														@* <td class="text-center">@item.ProvinceName</td>
+										<td class="text-center">@item.BranchName</td> *@
+														<td class="text-center">
+															@if (!string.IsNullOrEmpty(item.AreaNameJoin))
+															{
+																<span>@item.AreaNameJoin</span>
+															}
+															else
+															{
+																<span>-</span>
+															}
+														</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
 															@GeneralUtils.EmptyTo(item.NumberAssignment)

@@ -1,18 +1,23 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq.Expressions;
+//using SalesPipeline.Infrastructure.Helpers;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class AssignmentRM : IAssignmentRM
+	public class AssignmentRM : IAssignmentRM
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -25,6 +30,58 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+		}
+
+		public IQueryable<Sale> QueryArea(IQueryable<Sale> query, UserCustom user)
+		{
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			{
+				query = query.Where(x => x.AssUserId == user.Id);
+			}
+			else
+			{
+				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				{
+					//9999 เห็นทุกจังหวัดในภาค
+					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+					{
+						query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+					}
+					else
+					{
+						//เห็นเฉพาะจังหวัดที่ดูแล
+						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+					}
+				}
+			}
+
+			return query;
+		}
+
+		private IQueryable<Assignment_RM> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
+		{
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+			// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
+			Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
+
+			foreach (var provinceId in user_Areas)
+			{
+				var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+				orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+			}
+
+			// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+			query = query.Where(orExpression);
+
+			//var listRmAreas = query.ToList();
+
+			return query;
 		}
 
 		public async Task<Assignment_RMCustom> Create(Assignment_RMCustom model)
@@ -229,13 +286,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//ข้อมูลพนักงาน RM เรียงจากลูกค้าที่ดูแลปัจจุบัน น้อย --> มาก
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.User)
+												 .Include(x => x.User).ThenInclude(x => x.User_Areas)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
+			//var listRmAreas = query.ToList();
+
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				query = query.Where(x=>x.BranchId == user.BranchId);
+				query = QueryAreaAssignment_RM(query, user);
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -271,9 +330,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 				.AsQueryable();
 
+			//พื้นที่ดูแล
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				salesQuery = salesQuery.Where(x => x.BranchId == user.BranchId);
+				salesQuery = QueryArea(salesQuery, user);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
@@ -294,6 +354,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						assignment_RM.Tel = assignment_RM.User?.Tel;
 						assignment_RM.ProvinceName = assignment_RM.User?.ProvinceName;
 						assignment_RM.BranchName = assignment_RM.User?.BranchName;
+
+						if (assignment_RM.User?.User_Areas?.Count > 0)
+						{
+							string provinceNames = string.Join(",", assignment_RM.User.User_Areas.Select(x => x.ProvinceName));
+							assignment_RM.AreaNameJoin = provinceNames;
+						}
 
 						foreach (var item_sales in item_path)
 						{
@@ -552,7 +618,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersRM = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_RMs.Where(s => s.Status == StatusModel.Active))
-										   .Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignment_RMs.Count == 0)
+										   .Where(x => x.Status == StatusModel.Active && x.Role != null && x.Role.Code == RoleCodes.RM && x.Assignment_RMs.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
@@ -561,20 +627,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int i = 1;
 				foreach (var item_rm in usersRM)
 				{
-					if (item_rm.BranchId.HasValue)
+					var assignment = await _repo.AssignmentRM.Create(new()
 					{
-						var assignment = await _repo.AssignmentRM.Create(new()
-						{
-							Status = StatusModel.Active,
-							CreateDate = DateTime.Now.AddSeconds(i),
-							BranchId = item_rm.BranchId,
-							UserId = item_rm.Id,
-							EmployeeId = item_rm.EmployeeId,
-							EmployeeName = item_rm.FullName,
-						});
-						i++;
-					}
-
+						Status = StatusModel.Active,
+						CreateDate = DateTime.Now.AddSeconds(i),
+						BranchId = item_rm.BranchId,
+						UserId = item_rm.Id,
+						EmployeeId = item_rm.EmployeeId,
+						EmployeeName = item_rm.FullName,
+					});
+					i++;
 				}
 			}
 

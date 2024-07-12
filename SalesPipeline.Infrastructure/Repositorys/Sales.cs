@@ -416,7 +416,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			//var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
 			IQueryable<Sale> query;
 

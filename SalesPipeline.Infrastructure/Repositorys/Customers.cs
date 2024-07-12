@@ -208,13 +208,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (user != null && user.Role != null && !user.Role.Code.Contains(RoleCodes.ADMIN) && user.BranchId.HasValue)
 						{
-							if (item_sale.BranchId != user.BranchId)
-							{
-								code = "proceed";
-								message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ท่านไม่มีสิทธิ์ดำเนินการเนื่องจากอยู่ในเขตรับผิดชอบอื่น";
-								isProceed = true;
-								break;
-							}
+							//if (item_sale.BranchId != user.BranchId)
+							//{
+							//	code = "proceed";
+							//	message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ท่านไม่มีสิทธิ์ดำเนินการเนื่องจากอยู่ในเขตรับผิดชอบอื่น";
+							//	isProceed = true;
+							//	break;
+							//}
 						}
 						if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
 						{
