@@ -124,6 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var companyName = await _repo.Customer.GetCompanyNameById(model.CustomerId);
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
+			var provinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId ?? 0);
 			var branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId ?? 0);
 
 			var sale = await _repo.Context.Sales
@@ -140,6 +141,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale.CustomerId = model.CustomerId;
 				sale.CIF = model.CIF;
 				sale.CompanyName = companyName;
+				sale.ProvinceId = model.ProvinceId;
+				sale.ProvinceName = provinceName;
 				sale.BranchId = model.BranchId;
 				sale.BranchName = branchName;
 				//sale.StatusSaleId = model.StatusSaleId; //ไม่ต้อง update กรณีแก้ไข

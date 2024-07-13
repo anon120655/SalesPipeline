@@ -81,14 +81,14 @@
 }
 
 	#layoutSidenavBack #layoutSidenav_navBack {
-		flex-basis: 245px;
+		flex-basis: 240px;
 		flex-shrink: 0;
 		transition: transform 0.15s ease-in-out;
 		z-index: 1020;
-		transform: translateX(-245px);
+		transform: translateX(-240px);
 		padding-top: 10px;
 		background-color: #304A74;
-		width: 245px;
+		width: 240px;
 	}
 
 	#layoutSidenavBack #layoutSidenav_contentBack {
@@ -99,7 +99,7 @@
 		min-width: 0;
 		flex-grow: 1;
 		min-height: calc(100vh - 56px);
-		margin-left: -245px;
+		margin-left: -240px;
 		padding-top: 10px;
 		background-color: #deebf7;
 	}
@@ -137,11 +137,11 @@
 	}
 
 	.sb-sidenav-toggled #layoutSidenavBack #layoutSidenav_navBack {
-		transform: translateX(-245px);
+		transform: translateX(-240px);
 	}
 
 	.sb-sidenav-toggled #layoutSidenavBack #layoutSidenav_contentBack {
-		margin-left: -245px;
+		margin-left: -240px;
 	}
 
 		.sb-sidenav-toggled #layoutSidenavBack #layoutSidenav_contentBack:before {
@@ -157,7 +157,7 @@
 
 .back_layout #layoutSidenavBack #layoutSidenav_navBack {
 	padding-top: 65px;
-	width: 245px;
+	width: 240px;
 	height: 100vh;
 	z-index: 1038;
 	box-shadow: 0px 0 5px 1px rgba(0, 0, 0, 0.15);
@@ -172,7 +172,7 @@
 		}
 
 .back_layout #layoutSidenavBack #layoutSidenav_contentBack {
-	padding-left: 245px;
+	padding-left: 240px;
 	top: 65px;
 }
 

@@ -350,7 +350,6 @@ namespace SalesPipeline.Pages.Users.Admin
 		public async Task OnProvinces(string[] _ids, string _name)
 		{
 			formModel.User_Areas = new();
-			StateHasChanged();
 			await Task.Delay(1);
 
 			if (_ids != null)
