@@ -12,6 +12,7 @@ using System.Text;
 using SalesPipeline.Utils;
 using Microsoft.Extensions.Options;
 using System.Net.NetworkInformation;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -153,6 +154,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost("RemoveNotiToken")]
+		public async Task<IActionResult> RemoveNotiToken(User_Login_LogCustom model)
+		{
+			try
+			{
+				await _repo.Authorizes.RemoveNotiToken(model);
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
 
 	}
 }

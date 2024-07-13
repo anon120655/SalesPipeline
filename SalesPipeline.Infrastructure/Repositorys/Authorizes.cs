@@ -229,5 +229,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return true;
 		}
 
+		public async Task RemoveNotiToken(User_Login_LogCustom model)
+		{
+			var user_Login_TokenNotis = await _repo.Context.User_Login_TokenNotis.FirstOrDefaultAsync(x => x.UserId == model.UserId && x.DeviceId == model.DeviceId);
+			if (user_Login_TokenNotis != null)
+			{
+				_db.Delete(user_Login_TokenNotis);
+				await _db.SaveAsync();
+			}
+		}
+
 	}
 }

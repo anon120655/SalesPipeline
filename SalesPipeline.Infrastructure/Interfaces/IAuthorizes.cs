@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Auths;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.iAuthen;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth);
 		UserAuth? GetById(int id);
 		Boolean ExpireToken(string? token);
+		Task RemoveNotiToken(User_Login_LogCustom model);
 	}
 }
