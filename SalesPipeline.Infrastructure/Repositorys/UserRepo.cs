@@ -572,9 +572,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (roleCode != null && roleCode == RoleCodes.CENTER)
 							{
-								var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.Status == StatusModel.Active
-								&& x.UserId != model.Id
-								&& x.ProvinceId == item.ProvinceId);
+								var user_AreaCheck = _repo.Context.Users
+															.Include(x => x.User_Areas)
+															.Any(x => x.Status == StatusModel.Active
+															&& x.Id != model.Id
+															&& x.RoleId == 7
+															&& x.User_Areas.Any(a => a.ProvinceId == item.ProvinceId));
 								if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
 							}
 

@@ -46,6 +46,17 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 				return $"{TitleName}{FirstName} {LastName}";
 			}
 		}
+		public string? AreasJoin
+		{
+			get
+			{
+				if (User_Areas?.Count > 0)
+				{
+					return string.Join(",", User_Areas.Select(x => x.ProvinceName));
+				}
+				return null;
+			}
+		}
 
 	}
 }

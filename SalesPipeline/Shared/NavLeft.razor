@@ -4,29 +4,29 @@
 		<div class="row my-2">
 			<i class="fa-solid fa-user text-white fs_5r"></i>
 		</div>
-		<div class="row mt-2 mb-4 text-center text-white">
+		<div class="row mt-2 mb-4 text-center text-white px-3">
 			<div class="col-12 mb-1">
-				<p>@UserInfo.FullName (@UserInfo.Id)</p>
+				<p class="text-break">@UserInfo.FullName (@UserInfo.Id)</p>
 			</div>
 			<div class="col-12 mb-1">
-				<p class="fs_0_9r">@UserInfo.PositionName</p>
+				<p class="text-break">@UserInfo.PositionName</p>
 			</div>
 			@if (!String.IsNullOrEmpty(UserInfo.Master_Department_BranchName))
 			{
 				<div class="col-12">
-					<p class="fs_0_9r">@UserInfo.Master_Department_BranchName</p>
+					<p class="text-break">@UserInfo.Master_Department_BranchName</p>
 				</div>
 			}
-			@if (!String.IsNullOrEmpty(UserInfo.BranchName))
+			@if (!String.IsNullOrEmpty(UserInfo.AreasJoin))
 			{
 				<div class="col-12">
-					<p class="fs_0_9r">สาขา : @UserInfo.BranchName</p>
+					<p class="text-break">พื้นที่ดูแล : @UserInfo.AreasJoin</p>
 				</div>
 			}
 			@if (!String.IsNullOrEmpty(UserInfo.LevelName))
 			{
 				<div class="col-12">
-					<p class="fs_0_9r">ระดับ : @UserInfo.LevelName</p>
+					<p class="text-break">ระดับ : @UserInfo.LevelName</p>
 				</div>
 			}
 		</div>
