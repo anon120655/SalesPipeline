@@ -738,7 +738,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.User_Areas)
+										   .Include(x => x.User_Areas.OrderBy(o => o.ProvinceId))
 										   .Include(x => x.Master_Branch_Region)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code != RoleCodes.SUPERADMIN && x.Role.Code != RoleCodes.ADMIN)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
