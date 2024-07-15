@@ -16,10 +16,10 @@ namespace SalesPipeline.Utils.ConstTypeModel
         /// อนุมัติกลุ่มเป้าหมาย
         /// </summary>
         public const int ApproveTarget = 2;
-        /// <summary>
-        /// อนุมัติคำขอสินเชื่อ
-        /// </summary>
-        public const short ApproveLoan = 3;
+		/// <summary>
+		/// อนุมัติคำขอสินเชื่อ
+		/// </summary>
+		public const short ApproveLoan = 3;
         /// <summary>
         /// ส่งกลับ
         /// </summary>
@@ -28,5 +28,9 @@ namespace SalesPipeline.Utils.ConstTypeModel
         /// นัดหมาย
         /// </summary>
         public const int Calendar = 5;
-    }
+		/// <summary>
+		/// ไม่อนุมัติกลุ่มเป้าหมาย
+		/// </summary>
+		public const int NotApproveTarget = 6;
+	}
 }

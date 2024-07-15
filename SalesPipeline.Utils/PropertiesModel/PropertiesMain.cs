@@ -177,6 +177,11 @@ namespace SalesPipeline.Utils.PropertiesModel
 				},
 				new PropertiesOptions()
 				{
+					Code = NotifyEventIdModel.NotApproveTarget.ToString(),
+					Name = "ไม่อนุมัติกลุ่มเป้าหมาย"
+				},
+				new PropertiesOptions()
+				{
 					Code = NotifyEventIdModel.ApproveLoan.ToString(),
 					Name = "อนุมัติคำขอสินเชื่อ"
 				},

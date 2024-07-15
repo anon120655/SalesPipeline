@@ -286,6 +286,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						NoteSystem = "รอติดต่อลูกค้า"
 					});
 				}
+				else if (model.StatusId == StatusSaleModel.NotApprove)
+				{
+					if (sales.AssUserId.HasValue)
+					{
+						//Noti
+						await _repo.Notifys.Create(new()
+						{
+							EventId = NotifyEventIdModel.NotApproveTarget,
+							SaleId = model.SaleId,
+							FromUserId = model.CreateBy,
+							ToUserId = sales.AssUserId.Value,
+							ActionName1 = sales.CompanyName
+						});
+					}
+				}
 				else if (model.StatusId == StatusSaleModel.WaitAPIPHOENIX)
 				{
 					//กรณี ผจศ. ถูกมอบหมายแล้ว
