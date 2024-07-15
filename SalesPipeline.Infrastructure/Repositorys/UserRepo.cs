@@ -10,6 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using static NPOI.HSSF.Util.HSSFColor;
 
@@ -716,6 +717,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == 8 && x.ProvinceId == id).FirstOrDefaultAsync();
 			return _mapper.Map<UserCustom>(query);
+		}
+
+		public async Task<UserCustom> GetUserCenterByUserIdRM(int id)
+		{
+			return new();
 		}
 
 		public async Task<string?> GetFullNameById(int id)

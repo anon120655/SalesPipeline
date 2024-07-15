@@ -108,7 +108,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (assignmentRM == null)
 					throw new ExceptionCustom("currentuserid not match assignmentrm");
 
-				await _repo.AssignmentRM.UpdateCurrentNumber(assignmentRM.Id);
+				await _repo.AssignmentRM.UpdateCurrentNumber(assignmentRM.UserId);
 			}
 			else
 			{

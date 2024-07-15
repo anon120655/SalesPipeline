@@ -255,10 +255,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var assignment = await _repo.AssignmentRM.GetByUserId(sales.AssUserId.Value);
 						if (assignment != null)
 						{
-							if (assignment.CurrentNumber >= 100)
-							{
-								throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
-							}
+							//if (assignment.CurrentNumber >= 100)
+							//{
+							//	throw new ExceptionCustom("ลูกค้าที่ดูแลปัจจุบันเกินจำนวนที่กำหนด");
+							//}
 
 							if (!await _repo.AssignmentRM.CheckAssignmentSaleById(sales.Id))
 							{
@@ -271,7 +271,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								});
 							}
 
-							await _repo.AssignmentRM.UpdateCurrentNumber(assignment.Id);
+							await _repo.AssignmentRM.UpdateCurrentNumber(assignment.UserId);
 						}
 
 						//Noti

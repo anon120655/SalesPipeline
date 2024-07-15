@@ -202,30 +202,42 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Assignment_RMCustom>(query);
 		}
 
-		public async Task UpdateCurrentNumber(Guid id)
+		public async Task UpdateCurrentNumber(int? userid = null)
 		{
-			var currentNumber = await _repo.Context.Assignment_RM_Sales
-											  .Include(x => x.Sale)
-											  .Where(x => x.AssignmentRMId == id && x.Status == StatusModel.Active && x.IsActive == StatusModel.Active
-													&& x.Sale.StatusSaleId >= StatusSaleModel.WaitContact && x.Sale.StatusSaleId <= StatusSaleModel.CloseSale)
-											  .CountAsync();
+			var query = _repo.Context.Users.Include(x => x.Role)
+										   .Include(x => x.User_Areas)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
+										   .OrderBy(x => x.Id)
+										   .AsQueryable();
 
-			var assignment_RMs = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Id == id);
-			if (assignment_RMs != null)
+			if (userid.HasValue && userid > 0)
 			{
-				assignment_RMs.CurrentNumber = currentNumber;
-				_db.Update(assignment_RMs);
-				await _db.SaveAsync();
-
-				//**** update ผู้จัดการศูนย์
-				//if (assignment_RMs.BranchId.HasValue)
-				//{
-				//	await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
-				//}
-
+				query = query.Where(x => x.Id == userid);
 			}
+
+			var usersRM = await query.ToListAsync();
+
+			if (usersRM.Count > 0)
+			{
+				foreach (var user in usersRM)
+				{
+					var currentNumber = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active
+																&& x.AssUserId == user.Id).CountAsync();
+					var assignment_RMs = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.UserId == user.Id);
+					if (assignment_RMs != null)
+					{
+						assignment_RMs.CurrentNumber = currentNumber;
+						_db.Update(assignment_RMs);
+						await _db.SaveAsync();
+
+						//**** update ผู้จัดการศูนย์						
+						//	await _repo.AssignmentCenter.UpdateCurrentNumber();						
+					}
+				}
+			}
+
 		}
-				
+
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
@@ -599,7 +611,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item_sale.SaleId });
 					}
 
-					await UpdateCurrentNumber(assignment_RM.Id);
+					await UpdateCurrentNumber(assignment_RM.UserId);
 				}
 
 			}
@@ -644,7 +656,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 			}
 
-			await UpdateCurrentNumber(model.New.Id);
+			await UpdateCurrentNumber(model.New.UserId);
 
 		}
 
@@ -712,7 +724,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			}
 
-			await UpdateCurrentNumber(model.New.Id);
+			await UpdateCurrentNumber(model.New.UserId);
 
 		}
 

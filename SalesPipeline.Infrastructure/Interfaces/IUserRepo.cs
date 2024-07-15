@@ -16,6 +16,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<UserCustom> GetByBranchRegionId(Guid id, int role);
 		Task<UserCustom> GetByBranchId(int id,int role);
 		Task<UserCustom> GetUserRMByProvinceId(int id);
+		Task<UserCustom> GetUserCenterByUserIdRM(int id);
 		Task<string?> GetFullNameById(int id);
 		Task<bool> UserExists(string employeeid);
 		Task<PaginationView<List<UserCustom>>> GetList(UserFilter model);
