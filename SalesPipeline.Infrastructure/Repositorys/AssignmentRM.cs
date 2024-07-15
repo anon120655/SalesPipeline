@@ -15,7 +15,6 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq.Expressions;
-//using SalesPipeline.Infrastructure.Helpers;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -79,13 +78,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
 			Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
-
 			foreach (var provinceId in user_Areas)
 			{
 				var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
 				orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
 			}
-
 			// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
 			query = query.Where(orExpression);
 
@@ -227,36 +224,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//}
 
 			}
-
 		}
-
-		/// <summary>
-		/// update ผู้จัดการศูนย์ที่ดูแลพนักงาน RM กรณีที่สร้างพนักงานมาก่อน แต่ยังไม่มีผู้จัดการศูนย์
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		//public async Task UpdateAssignmentEmpty(int id)
-		//{
-		//	var users = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.BranchId == id && x.RoleId == 7);
-		//	if (users != null)
-		//	{
-		//		var assignment_RMs = await _repo.Context.Assignment_RMs.Where(x => x.BranchId == id && x.AssignmentUserId == null).ToListAsync();
-		//		if (assignment_RMs.Count > 0)
-		//		{
-		//			foreach (var item in assignment_RMs)
-		//			{
-		//				if (item != null)
-		//				{
-		//					item.AssignmentUserId = users.Id;
-		//					item.AssignmentName = users.FullName;
-		//					_db.Update(item);
-		//					await _db.SaveAsync();
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
-
+				
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
+using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -10,6 +11,8 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -355,27 +358,61 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task UpdateCurrentNumber(int userid)
+		public async Task UpdateCurrentNumber(int? userid = null)
 		{
-			//var assignment_RMs = await _repo.Context.Assignment_RMs
-			//								  .Where(x => x.BranchId == id && x.Status == StatusModel.Active)
-			//								  .ToListAsync();
+			var query = _repo.Context.Users.Include(x => x.Role)
+										   .Include(x=>x.User_Areas)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.CENTER)
+										   .OrderBy(x => x.Id)
+										   .AsQueryable();
 
-			//int countRm = assignment_RMs.Count;
-
-			var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.UserId == userid && x.Status == StatusModel.Active);
-			if (assignments != null)
+			if (userid.HasValue && userid > 0)
 			{
-				var sales = await _repo.Context.Sales
-											  .Where(x => x.AssCenterUserId == userid && x.Status == StatusModel.Active)
-											  .ToListAsync();
-
-				assignments.CurrentNumber = sales.Count;
-				_db.Update(assignments);
-				await _db.SaveAsync();
-
+				query = query.Where(x => x.Id == userid);
 			}
 
+			var usersCenter = await query.ToListAsync();
+
+			if (usersCenter.Count > 0)
+			{
+				foreach (var user in usersCenter)
+				{
+					var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+
+					var queryRM = _repo.Context.Users.Include(x => x.Role)
+												   .Include(x => x.User_Areas)
+												   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
+												   .AsQueryable();
+
+					var querySale = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
+														.Include(x => x.AssUser).ThenInclude(t => t.User_Areas)
+														.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Branch_Region)
+														.AsQueryable();
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+					Expression<Func<User, bool>> orExpressionRM = x => false;
+					Expression<Func<Sale, bool>> orExpressionSale = x => false;
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+						orExpressionRM = orExpressionRM.Or(x => x.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpressionSale = orExpressionSale.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpressionSale = orExpressionSale.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+					}
+					// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+					queryRM = queryRM.Where(orExpressionRM);
+					querySale = querySale.Where(orExpressionSale);
+
+					var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Status == StatusModel.Active);
+					if (assignments != null)
+					{
+						assignments.RMNumber = queryRM.Count();
+						assignments.CurrentNumber = querySale.Count();
+						_db.Update(assignments);
+						await _db.SaveAsync();
+					}
+				}
+			}
 		}
 
 		public async Task CreateAssignmentCenterAll(allFilter model)

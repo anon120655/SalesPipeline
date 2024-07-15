@@ -52,6 +52,11 @@ namespace SalesPipeline.API.Controllers
 				}
 				catch { }
 
+				if (data.RoleId == 7)
+				{
+					await _repo.AssignmentCenter.UpdateCurrentNumber(data.Id);
+				}
+
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -66,6 +71,11 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.User.Update(model);
+
+				if (data.RoleId == 7)
+				{
+					await _repo.AssignmentCenter.UpdateCurrentNumber(data.Id);
+				}
 
 				return Ok(data);
 			}

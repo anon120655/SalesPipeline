@@ -158,6 +158,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 			//var jsonData = JsonSerializer.Serialize(Items);
 			//await _jsRuntimes.InvokeVoidAsync("localStorage.setItem", $"assignCenterData_{UserInfo.Id}", jsonData);
 			//_Navs.NavigateTo($"assign/center/customer");
+			await Task.Delay(1);
 		}
 
 		protected async Task InitShowConfirmAssign()

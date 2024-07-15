@@ -11,7 +11,7 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-	[ApiExplorerSettings(IgnoreApi = true)]
+	//[ApiExplorerSettings(IgnoreApi = true)]
 	[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
@@ -112,6 +112,28 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpGet("UpdateCurrentNumber")]
+		public async Task<IActionResult> UpdateCurrentNumber([FromQuery] int? userid)
+		{
+			try
+			{
+				using (var _transaction = _repo.BeginTransaction())
+				{
+					await _repo.AssignmentCenter.UpdateCurrentNumber(userid);
+
+					_transaction.Commit();
+
+					return Ok();
+				}
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
 		[HttpGet("CreateAssignmentCenterAll")]
 		public async Task<IActionResult> CreateAssignmentCenterAll()
 		{

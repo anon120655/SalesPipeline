@@ -344,42 +344,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var roleCode = await GetRoleCodeById(model.RoleId.Value);
 					if (roleCode != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+						if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
 						{
-							string? _code = null;
-							string? _name = null;
-							var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
-							if (branch != null)
-							{
-								_code = branch.BranchCode;
-								_name = branch.BranchName;
-							}
-
-							var assignmentCenter = await _repo.AssignmentBranch.Create(new()
-							{
-								Status = StatusModel.Active,
-								Master_Branch_RegionId = user.Master_Branch_RegionId,
-								BranchId = user.BranchId,
-								BranchCode = _code,
-								BranchName = _name,
-								UserId = user.Id,
-								EmployeeId = user.EmployeeId,
-								EmployeeName = user.FullName,
-								Tel = user.Tel,
-								CurrentNumber = 0
-							});
-						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
-						{
-							string? _code = null;
-							string? _name = null;
-							var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
-							if (branch != null)
-							{
-								_code = branch.BranchCode;
-								_name = branch.BranchName;
-							}
-
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
 								Status = model.Status,
@@ -447,40 +413,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == model.Id);
 				if (user != null)
 				{
-					if (roleCode != null && user.BranchId.HasValue)
-					{
-						//if (roleCode.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
-						//{
-						//	if (model.BranchId != user.BranchId)
-						//	{
-						//		var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-						//		if (assignments != null && assignments.RMNumber > 0)
-						//		{
-						//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาที่รับผิดชอบได้ เนื่องจากมีพนักงานที่ดูแล");
-						//		}
-						//	}
-						//}
-						//else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
-						//{
-						//	if (model.BranchId != user.BranchId)
-						//	{
-						//		var assignment_RM = await _repo.Context.Assignment_RMs.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.UserId == model.Id);
-						//		if (assignment_RM != null && assignment_RM.CurrentNumber > 0)
-						//		{
-						//			throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีการมอบหมายแล้ว");
-						//		}
-						//		else
-						//		{
-						//			var salesCount = await _repo.Context.Sales.CountAsync(x => x.Status != StatusModel.Delete && x.AssUserId == model.Id);
-						//			if (salesCount > 0)
-						//			{
-						//				throw new ExceptionCustom("ไม่สามารถเปลี่ยนสาขาได้ เนื่องจากมีลูกค้าอยู่ระหว่างการดำเนินการ");
-						//			}
-						//		}
-						//	}
-						//}
-					}
-
 					user.Status = model.Status;
 					user.UpdateDate = _dateNow;
 					user.UpdateBy = model.CurrentUserId;

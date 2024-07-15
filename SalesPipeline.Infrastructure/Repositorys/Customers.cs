@@ -349,8 +349,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 
-				var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
-				if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
+				var user = await _repo.User.GetById(model.CurrentUserId);
+				if (user == null || user.Role == null) throw new ExceptionCustom("currentUserId not found!");						
 
 				DateTime _dateNow = DateTime.Now;
 
@@ -360,7 +360,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.CreateBy = model.CurrentUserId;
 				customer.UpdateDate = _dateNow;
 				customer.UpdateBy = model.CurrentUserId;
-				customer.InsertRoleCode = userRole.Code;
+				customer.InsertRoleCode = user.Role.Code;
 				customer.DateContact = model.DateContact;
 				customer.Master_ContactChannelId = model.Master_ContactChannelId;
 				customer.Master_ContactChannelName = master_ContactChannelName;
@@ -490,77 +490,29 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int? assUserId = null;
 				string? assUserName = null;
 
-				var user = await _repo.User.GetById(model.CurrentUserId);
-				if (user == null) throw new ExceptionCustom("currentUserId not found!");
-
-				if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
-					if (user.BranchId.HasValue)
-					{
-						var userCenter = await _repo.User.GetByBranchId(user.BranchId.Value, 7);
-						if (userCenter != null)
-						{
-							assCenterUserId = userCenter.Id;
-							assCenterUserName = userCenter.FullName;
-						}
-					}
-
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;
 					assUserName = user.FullName;
 					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
-					branchId = user.BranchId;
 				}
-				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 				{
-					var userCenter = await _repo.User.GetById(user.Id);
-					if (userCenter == null) throw new ExceptionCustom("AssignedCenter not found!");
-					//if (!userCenter.Master_Department_CenterId.HasValue) throw new ExceptionCustom("AssignedCenter CenterId not found!");
-
-					//var masterDepCenter = await _repo.MasterDepCenter.GetById(userCenter.Master_Department_CenterId.Value);
-					//if (masterDepCenter == null) throw new ExceptionCustom("MasterDepCenter not found!");
-
-					//พนักงาน RM สร้าง ต้องเช็คกิจการสาขาภาคว่าตรงกับผู้จัดการศูนย์ที่ดูแลอยู่หรือป่าว
-					if (userRole.Code.ToUpper().StartsWith(RoleCodes.RM))
-					{
-						var assignmentRM = await _repo.AssignmentRM.GetByUserId(model.CurrentUserId);
-						if (assignmentRM == null) throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM!");
-						//if (assignmentRM.Assignment.User?.Master_Department_Center != null)
-						//{
-						//	if (assignmentRM.Assignment.User.Master_Department_Center.master_Branch_RegionId != masterDepCenter.master_Branch_RegionId)
-						//	{
-						//		throw new ExceptionCustom("assignedCenter not correct!");
-						//	}
-						//}
-					}
-
 					statusSaleId = StatusSaleModel.WaitAssign;
 					assCenterUserId = user.Id;
-					assCenterUserName = userCenter.FullName;
-					master_Branch_RegionId = userCenter.Master_Branch_RegionId;
-					provinceId = userCenter.ProvinceId;
-					branchId = userCenter.BranchId;
+					assCenterUserName = user.FullName;
+					master_Branch_RegionId = user.Master_Branch_RegionId;
+					provinceId = user.ProvinceId;
 				}
-				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
-					//master_Branch_RegionId = user.Master_Branch_RegionId;
-					//provinceId = user.ProvinceId;
-					//branchId = user.BranchId;
 				}
-				else if (userRole.Code.ToUpper().StartsWith(RoleCodes.LOAN) || userRole.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
-
-					//if (!model.Branch_RegionId.HasValue) throw new ExceptionCustom("ระบุ กิจการสาขาภาค!");
-					// var userBranch_REG = await _repo.User.GetByBranchRegionId(model.Branch_RegionId.Value, 6);
-					// master_Branch_RegionId = model.Branch_RegionId;
-					// if (userBranch_REG != null)
-					// {
-					//     provinceId = userBranch_REG.ProvinceId;
-					//     branchId = userBranch_REG.BranchId;
-					// }
 				}
 
 				var saleData = new SaleCustom()
@@ -591,9 +543,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					Createdfrom = 1
 				});
 
-				if (branchId.HasValue)
+				if (assCenterUserId.HasValue)
 				{
-					await _repo.AssignmentCenter.UpdateCurrentNumber(branchId.Value);
+					await _repo.AssignmentCenter.UpdateCurrentNumber(assCenterUserId.Value);
 				}
 
 				//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
