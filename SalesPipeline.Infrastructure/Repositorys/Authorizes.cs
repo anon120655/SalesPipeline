@@ -81,7 +81,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							var assignment = await _repo.AssignmentRM.Create(new()
 							{
 								Status = StatusModel.Active,
-								BranchId = user.BranchId,
 								UserId = user.Id,
 								EmployeeId = user.EmployeeId,
 								EmployeeName = user.FullName,

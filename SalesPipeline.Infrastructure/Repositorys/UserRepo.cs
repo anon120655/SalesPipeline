@@ -399,7 +399,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								var assignment = await _repo.AssignmentRM.Create(new()
 								{
 									Status = model.Status,
-									BranchId = user.BranchId,
 									UserId = user.Id,
 									EmployeeId = model.EmployeeId,
 									EmployeeName = model.FullName,
@@ -598,63 +597,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//RM Role Create Default Assignment
 					if (roleCode != null)
 					{
-						if (user.BranchId.HasValue)
+						if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
 						{
-							if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
+							Assignment_CenterCustom assignmentCenterModel = new()
 							{
+								Status = model.Status,
+								UserId = user.Id,
+								EmployeeId = model.EmployeeId,
+								EmployeeName = model.FullName,
+								Tel = user.Tel,
+								RMNumber = 0,
+								CurrentNumber = 0
+							};
 
-								string? _code = null;
-								string? _name = null;
-								var branch = await _repo.Thailand.GetBranchByid(user.BranchId.Value);
-								if (branch != null)
-								{
-									_code = branch.BranchCode;
-									_name = branch.BranchName;
-								}
-
-								Assignment_CenterCustom assignmentCenterModel = new()
-								{
-									Status = model.Status,
-									UserId = user.Id,
-									EmployeeId = model.EmployeeId,
-									EmployeeName = model.FullName,
-									Tel = user.Tel,
-									RMNumber = 0,
-									CurrentNumber = 0
-								};
-
-								var checkAssignment = await _repo.AssignmentCenter.GetByUserId(user.Id);
-								if (checkAssignment == null)
-								{
-									await _repo.AssignmentCenter.Create(assignmentCenterModel);
-								}
-								else
-								{
-									assignmentCenterModel.Id = checkAssignment.Id;
-									await _repo.AssignmentCenter.Update(assignmentCenterModel);
-								}
-
+							var checkAssignment = await _repo.AssignmentCenter.GetByUserId(user.Id);
+							if (checkAssignment == null)
+							{
+								await _repo.AssignmentCenter.Create(assignmentCenterModel);
 							}
-							else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+							else
 							{
-								Assignment_RMCustom assignment_RM = new()
-								{
-									Status = model.Status,
-									BranchId = user.BranchId,
-									UserId = user.Id,
-									EmployeeId = model.EmployeeId,
-									EmployeeName = model.FullName,
-								};
+								assignmentCenterModel.Id = checkAssignment.Id;
+								await _repo.AssignmentCenter.Update(assignmentCenterModel);
+							}
 
-								//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
-								if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-								{
-									var assignment = await _repo.AssignmentRM.Create(assignment_RM);
-								}
-								else
-								{
-									var assignment = await _repo.AssignmentRM.Update(assignment_RM);
-								}
+						}
+						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+						{
+							Assignment_RMCustom assignment_RM = new()
+							{
+								Status = model.Status,
+								UserId = user.Id,
+								EmployeeId = model.EmployeeId,
+								EmployeeName = model.FullName,
+							};
+
+							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
+							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+							{
+								var assignment = await _repo.AssignmentRM.Create(assignment_RM);
+							}
+							else
+							{
+								var assignment = await _repo.AssignmentRM.Update(assignment_RM);
 							}
 						}
 					}

@@ -24,11 +24,6 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		public DateTime CreateDate { get; set; }
 
 		/// <summary>
-		/// สาขา
-		/// </summary>
-		public int? BranchId { get; set; }
-
-		/// <summary>
 		/// พนักงานที่ได้รับมอบหมาย
 		/// </summary>
 		public int UserId { get; set; }

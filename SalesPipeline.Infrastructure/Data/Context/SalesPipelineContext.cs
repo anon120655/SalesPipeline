@@ -325,15 +325,10 @@ public partial class SalesPipelineContext : DbContext
 
             entity.ToTable("Assignment_RM", tb => tb.HasComment("พนักงานที่ถูกมอบหมาย"));
 
-            entity.HasIndex(e => e.BranchId, "BranchId");
-
             entity.HasIndex(e => e.Status, "Status");
 
             entity.HasIndex(e => e.UserId, "UserId");
 
-            entity.Property(e => e.BranchId)
-                .HasComment("สาขา")
-                .HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CurrentNumber)
                 .HasComment("จำนวนลูกค้าปัจจุบันที่ดูแล")
@@ -350,10 +345,6 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.UserId)
                 .HasComment("พนักงานที่ได้รับมอบหมาย")
                 .HasColumnType("int(11)");
-
-            entity.HasOne(d => d.Branch).WithMany(p => p.Assignment_RMs)
-                .HasForeignKey(d => d.BranchId)
-                .HasConstraintName("assignment_rm_ibfk_3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Assignment_RMs)
                 .HasForeignKey(d => d.UserId)
@@ -1198,7 +1189,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Code).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.GroupMaster_BusinessTypeId).HasMaxLength(255);
+            entity.Property(e => e.GroupMaster_BusinessTypeId).HasMaxLength(500);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")

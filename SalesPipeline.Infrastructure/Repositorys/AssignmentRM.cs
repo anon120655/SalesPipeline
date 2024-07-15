@@ -55,8 +55,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+						Expression<Func<Sale, bool>> orExpression = x => false;
+						foreach (var provinceId in user_Areas)
+						{
+							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+							orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						}
+						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+						query = query.Where(orExpression);
 					}
 				}
 			}
@@ -81,8 +89,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
 			query = query.Where(orExpression);
 
-			//var listRmAreas = query.ToList();
-
 			return query;
 		}
 
@@ -106,7 +112,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				assignment_RM.CreateDate = DateTime.Now;
 			}
-			assignment_RM.BranchId = model.BranchId;
 			assignment_RM.UserId = model.UserId;
 			assignment_RM.EmployeeId = model.EmployeeId;
 			assignment_RM.EmployeeName = model.EmployeeName;
@@ -115,10 +120,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.SaveAsync();
 
 			//**** update ผู้จัดการศูนย์
-			if (model.BranchId.HasValue)
-			{
-				await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-			}
+			await _repo.AssignmentCenter.UpdateCurrentNumber(model.UserId);
+
 
 			return _mapper.Map<Assignment_RMCustom>(assignment_RM);
 		}
@@ -130,7 +133,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (assignment_RM != null)
 			{
 				assignment_RM.Status = model.Status;
-				assignment_RM.BranchId = model.BranchId;
 				assignment_RM.EmployeeId = model.EmployeeId;
 				assignment_RM.EmployeeName = model.EmployeeName;
 				_db.Update(assignment_RM);
@@ -219,10 +221,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 
 				//**** update ผู้จัดการศูนย์
-				if (assignment_RMs.BranchId.HasValue)
-				{
-					await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
-				}
+				//if (assignment_RMs.BranchId.HasValue)
+				//{
+				//	await _repo.AssignmentCenter.UpdateCurrentNumber(assignment_RMs.BranchId.Value);
+				//}
 
 			}
 
@@ -481,7 +483,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var job in jobs)
 					{
 						var currentEmployee = eligibleEmployees[employeeIndex];
-						
+
 						// ตรวจสอบว่าพนักงานนี้มีงานอยู่แล้วหรือไม่
 						var existingAssignment = responseItems.FirstOrDefault(e => e.UserId == currentEmployee.UserId);
 
@@ -564,21 +566,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//ยังไม่ confirm เรื่องจังหวัดและอำเภอที่ดูแล
 			}
 
-			if (!String.IsNullOrEmpty(model.branchid))
-			{
-				if (int.TryParse(model.branchid, out int branchid))
-				{
-					query = query.Where(x => x.BranchId != null && x.BranchId == branchid);
-				}
-			}
-
 			if (model.Branchs?.Count > 0)
 			{
-				var idList = GeneralUtils.ListStringToInt(model.Branchs);
-				if (idList.Count > 0)
-				{
-					query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
-				}
+				//var idList = GeneralUtils.ListStringToInt(model.Branchs);
+				//if (idList.Count > 0)
+				//{
+				//	query = query.Where(x => x.BranchId.HasValue && idList.Contains(x.BranchId));
+				//}
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
@@ -770,7 +764,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						Status = StatusModel.Active,
 						CreateDate = DateTime.Now.AddSeconds(i),
-						BranchId = item_rm.BranchId,
 						UserId = item_rm.Id,
 						EmployeeId = item_rm.EmployeeId,
 						EmployeeName = item_rm.FullName,

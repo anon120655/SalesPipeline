@@ -33,12 +33,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Assignment_Centers.AnyAsync(x => x.UserId == id);
 		}
 
-		public async Task<bool> CheckAssignmentByBranchId(int id)
-		{
-			//return await _repo.Context.Assignment_Centers.AnyAsync(x => x.BranchId == id);
-			return false;
-		}
-
 		public async Task<Assignment_CenterCustom> GetById(Guid id)
 		{
 			var query = await _repo.Context.Assignment_Centers
@@ -361,27 +355,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task UpdateCurrentNumber(int id)
+		public async Task UpdateCurrentNumber(int userid)
 		{
-			var assignment_RMs = await _repo.Context.Assignment_RMs
-											  .Where(x => x.BranchId == id && x.Status == StatusModel.Active)
+			//var assignment_RMs = await _repo.Context.Assignment_RMs
+			//								  .Where(x => x.BranchId == id && x.Status == StatusModel.Active)
+			//								  .ToListAsync();
+
+			//int countRm = assignment_RMs.Count;
+
+			var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.UserId == userid && x.Status == StatusModel.Active);
+			if (assignments != null)
+			{
+				var sales = await _repo.Context.Sales
+											  .Where(x => x.AssCenterUserId == userid && x.Status == StatusModel.Active)
 											  .ToListAsync();
 
-			int countRm = assignment_RMs.Count;
+				assignments.CurrentNumber = sales.Count;
+				_db.Update(assignments);
+				await _db.SaveAsync();
 
-			//var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.BranchId == id && x.Status == StatusModel.Active);
-			//if (assignments != null)
-			//{
-			//	assignments.RMNumber = countRm;
-
-			//	var sales = await _repo.Context.Sales
-			//									  .Where(x => x.AssCenterUserId == assignments.UserId && x.Status == StatusModel.Active)
-			//									  .ToListAsync();
-
-			//	assignments.CurrentNumber = sales.Count;
-			//	_db.Update(assignments);
-			//	await _db.SaveAsync();
-			//}
+			}
 
 		}
 

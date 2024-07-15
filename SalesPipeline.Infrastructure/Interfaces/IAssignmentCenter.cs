@@ -11,7 +11,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	public interface IAssignmentCenter
 	{
 		Task<bool> CheckAssignmentByUserId(int id);
-		Task<bool> CheckAssignmentByBranchId(int id);
 		Task<Assignment_CenterCustom> GetById(Guid id);
 		Task<Assignment_CenterCustom> GetByUserId(int id);
 		Task<Assignment_CenterCustom> Create(Assignment_CenterCustom model);
@@ -20,7 +19,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model);
 		Task Assign(AssignModel model);
 		Task AssignCenter(List<Assignment_CenterCustom> model);
-		Task UpdateCurrentNumber(int id);
+		Task UpdateCurrentNumber(int userid);
 		Task CreateAssignmentCenterAll(allFilter model);
 	}
 }

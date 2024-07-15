@@ -10,6 +10,9 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Dashboards;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Linq.Expressions;
+using SalesPipeline.Infrastructure.Helpers;
+using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -49,8 +52,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.ProvinceId.HasValue && user_Areas.Contains(x.ProvinceId.Value));
+						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+						Expression<Func<Sale, bool>> orExpression = x => false;
+						foreach (var provinceId in user_Areas)
+						{
+							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+							orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						}
+						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+						query = query.Where(orExpression);
 					}
 				}
 			}
@@ -79,8 +90,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.Sale.ProvinceId.HasValue && user_Areas.Contains(x.Sale.ProvinceId.Value));
+						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+						Expression<Func<Sale_Duration, bool>> orExpression = x => false;
+						foreach (var provinceId in user_Areas)
+						{
+							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						}
+						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+						query = query.Where(orExpression);
 					}
 				}
 			}
@@ -109,8 +128,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.Sale.ProvinceId.HasValue && user_Areas.Contains(x.Sale.ProvinceId.Value));
+						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+						Expression<Func<Sale_Activity, bool>> orExpression = x => false;
+						foreach (var provinceId in user_Areas)
+						{
+							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						}
+						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+						query = query.Where(orExpression);
 					}
 				}
 			}
@@ -139,8 +166,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						//เห็นเฉพาะจังหวัดที่ดูแล
-						query = query.Where(x => x.Sale.ProvinceId.HasValue && user_Areas.Contains(x.Sale.ProvinceId.Value));
+						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+						Expression<Func<Sale_Deliver, bool>> orExpression = x => false;
+						foreach (var provinceId in user_Areas)
+						{
+							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						}
+						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+						query = query.Where(orExpression);
 					}
 				}
 			}

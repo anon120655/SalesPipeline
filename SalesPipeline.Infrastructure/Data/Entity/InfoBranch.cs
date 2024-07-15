@@ -30,7 +30,5 @@ public partial class InfoBranch
 
     public virtual ICollection<Assignment_BranchReg> Assignment_BranchRegs { get; set; } = new List<Assignment_BranchReg>();
 
-    public virtual ICollection<Assignment_RM> Assignment_RMs { get; set; } = new List<Assignment_RM>();
-
     public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 }
