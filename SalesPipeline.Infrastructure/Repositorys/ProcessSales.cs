@@ -13,6 +13,7 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -1771,6 +1772,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (string.IsNullOrEmpty(model.CIF))
 				throw new ExceptionCustom("ระบุ CIF");
+
+			if (!Regex.IsMatch(model.CIF, @"^\d{1,12}$"))
+			{
+				throw new ExceptionCustom("ระบุตัวเลขเท่านั้นความยาวไม่เกิน 12 หลัก");
+			}
 
 			if (model.SaleId == Guid.Empty)
 				throw new ExceptionCustom("ระบุ SaleId");
