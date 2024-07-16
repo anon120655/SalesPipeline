@@ -88,13 +88,13 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อบริษัท
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุชื่อบริษัท")]
 		public string? CompanyName { get; set; }
 
 		/// <summary>
 		/// เลขทะเบียนนิติบุคคล
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุเลขทะเบียนนิติบุคคล")]
 		//[MinLength(13, ErrorMessage = "ระบุข้อมูล 13 หลัก")]
 		public string? JuristicPersonRegNumber { get; set; }
 
@@ -170,7 +170,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// บ้านเลขที่
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุบ้านเลขที่")]
 		public string? HouseNo { get; set; }
 
 		/// <summary>
@@ -181,7 +181,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุจังหวัด")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -189,7 +189,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุอำเภอ")]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -197,7 +197,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ตำบล
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุตำบล")]
 		public int? TambolId { get; set; }
 
 		public string? TambolName { get; set; }
@@ -205,7 +205,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// รหัสไปรษณีย์
 		/// </summary>
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[Required(ErrorMessage = "ระบุรหัสไปรษณีย์")]
 		public string? ZipCode { get; set; }
 
 		/// <summary>

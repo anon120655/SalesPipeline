@@ -1199,6 +1199,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (String.IsNullOrEmpty(model.MeetName)) throw new ExceptionCustom("ระบุผู้ติดต่อ");
 				if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์โทร");
 				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+				if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("ระบุผลการเข้าพบไม่ถูกต้อง");
 				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
 				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
 				if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
@@ -1208,6 +1209,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else if (model.ProceedId == 3)
 			{
 				if (!model.ResultMeetId.HasValue) throw new ExceptionCustom("ระบุผลการเข้าพบ");
+				if (model.ResultMeetId != 1 && model.ResultMeetId != 2) throw new ExceptionCustom("ระบุผลการเข้าพบไม่ถูกต้อง");
 				if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
 				if (!model.AppointmentDate.HasValue) throw new ExceptionCustom("ระบุวันที่นัดหมาย");
 				if (model.AppointmentDate.Value.Date < DateTime.Now.Date) throw new ExceptionCustom("วันที่นัดหมายต้องไม่น้อยกว่าวันที่ปัจจุบัน");
