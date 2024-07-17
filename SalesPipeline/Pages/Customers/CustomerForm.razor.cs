@@ -217,7 +217,14 @@ namespace SalesPipeline.Pages.Customers
 
 							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
 							{
-								IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
+								if (UserInfo.RoleCode == RoleCodes.CENTER)
+								{
+									if (sales.AssCenterUserId != UserInfo.Id)
+									{
+										IsView = false;
+									}
+									//IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
+								}
 							}
 						}
 					}

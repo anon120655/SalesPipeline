@@ -60,7 +60,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
 							orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId) || x.AssCenterUserId == user.Id);
 						}
 						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
 						query = query.Where(orExpression);
