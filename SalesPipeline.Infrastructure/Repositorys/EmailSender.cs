@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -125,7 +126,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						// The third parameter is useSSL (true if the client should make an SSL-wrapped
 						// connection to the server; otherwise, false).
-						await client.ConnectAsync(resource.MailServer, resource.MailPort, false);
+						//await client.ConnectAsync(resource.MailServer, resource.MailPort, false);
+						await client.ConnectAsync(resource.MailServer, resource.MailPort, SecureSocketOptions.Auto);
 
 						// Note: only needed if the SMTP server requires authentication
 						await client.AuthenticateAsync(resource.Sender, resource.Password);
