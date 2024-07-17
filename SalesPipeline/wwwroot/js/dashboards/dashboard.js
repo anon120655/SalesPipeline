@@ -589,6 +589,105 @@ window.numcussizebusiness = (_data, _labels) => {
 	}
 }
 
+window.numcustypebusiness2 = (_data, _labels) => {
+	console.log("Data:", _data);
+	console.log("Labels:", _labels);
+
+	const labels = _labels.map(label => label || 'ไม่ระบุ');
+
+	try {
+
+		let chartId = "numcustypebusiness";
+		const canvas = document.getElementById(chartId);
+		if (canvas != null && canvas != undefined) {
+			let chartStatus = Chart.getChart(chartId);
+			if (chartStatus != undefined) {
+				chartStatus.destroy();
+			}
+			if (_data.length == 0) return;
+
+			// ลงทะเบียน plugin
+			Chart.register(ChartDataLabels);
+
+			const data = {
+				labels: labels,
+				datasets: [
+					{
+						data: _data,
+						backgroundColor: [
+							"#1A68AF",
+							"#97C7FF",
+							"#bbd0eb",
+						],
+						borderColor: [
+							"#1A68AF",
+							"#97C7FF",
+							"#bbd0eb",
+						],
+					},
+				],
+			};
+
+			const config = {
+				type: "pie",
+				data: data,
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					layout: {
+						padding: 20,
+					},
+					plugins: {
+						legend: {
+							display: false,
+						},
+						datalabels: {
+							color: '#fff',
+							anchor: 'end',
+							align: 'start',
+							offset: 10,
+							borderWidth: 2,
+							borderColor: '#fff',
+							borderRadius: 25,
+							backgroundColor: (context) => {
+								return context.dataset.backgroundColor;
+							},
+							font: {
+								weight: 'bold',
+								size: '10',
+							},
+							formatter: (value, context) => {
+								if (context.chart.data && context.chart.data.labels) {
+									const datapoints = context.chart.data.datasets[0].data;
+									const total = datapoints.reduce((total, datapoint) => total + datapoint, 0);
+									const percentage = value / total * 100;
+									return percentage > 2 ? `${context.chart.data.labels[context.dataIndex]}\n${percentage.toFixed(1)}%` : '';
+								}
+								return '';
+							},
+						},
+					},
+				},
+			};
+
+			try {
+				const ctx = canvas.getContext('2d');
+				const chart = new Chart(ctx, config);
+				if (chart != null) {
+					chart.canvas.parentNode.style.height = '300px';
+					chart.canvas.parentNode.style.width = '300px';
+				}
+			} catch (error) {
+				console.error("Error creating chart:", error);
+			}
+		}
+
+	} catch (error) {
+		console.error("Error creating chart:", error);
+	}
+
+}
+
 window.numcustypebusiness = (_data, _labels) => {
 	let chartId = "numcustypebusiness";
 	const canvas = document.getElementById(chartId);
@@ -618,7 +717,7 @@ window.numcustypebusiness = (_data, _labels) => {
 				},
 			],
 		};
-		// pieLabelsLine plugin
+		
 		const pieLabelsLine = {
 			id: "pieLabelsLine",
 			afterDraw(chart) {
@@ -638,8 +737,7 @@ window.numcustypebusiness = (_data, _labels) => {
 
 						const x = 2 * a - cx;
 						const y = 2 * b - cy;
-
-						// draw line
+						
 						const halfwidth = width / 2;
 						const halfheight = height / 2;
 						const xLine = x >= halfwidth ? x + 10 : x - 10;
@@ -649,24 +747,19 @@ window.numcustypebusiness = (_data, _labels) => {
 
 						ctx.beginPath();
 						ctx.moveTo(x, y);
-						//ctx.arc(x, y, 2, 0, 2 * Math.PI, true);
 						ctx.fill();
 						ctx.moveTo(x, y);
 						ctx.lineTo(xLine, yLine);
 						ctx.lineTo(xLine + extraLine, yLine);
-						// ctx.strokeStyle = dataset.backgroundColor[index];
 						ctx.strokeStyle = "black";
 						ctx.stroke();
 
-						// text
 						const textWidth = ctx.measureText(chart.data.labels[index]).width;
 						ctx.font = "9px prompt-regular";
-						// control the position
 						const textXPosition = x >= halfwidth ? "left" : "right";
 						const plusFivePx = x >= halfwidth ? 5 : -5;
 						ctx.textAlign = textXPosition;
 						ctx.textBaseline = "middle";
-						// ctx.fillStyle = dataset.backgroundColor[index];
 						ctx.fillStyle = "black";
 
 						ctx.fillText(

@@ -366,7 +366,7 @@ namespace SalesPipeline.API.Controllers
 							Master_ISICCodeId = ISICCode[ISICCodeRandom],
 							Master_YieldId = Yield[YieldRandom],
 							Master_ChainId = Chain[ChainRandom],
-							Master_LoanTypeId = LoanType[LoanTypeRandom],
+							//Master_LoanTypeId = LoanType[LoanTypeRandom],
 							CompanyEmail = $"company_{i}@email.com",
 							CompanyTel = $"02{i.ToString("0000000")}",
 							ParentCompanyGroup = $"บริษัทแม่_{i}",

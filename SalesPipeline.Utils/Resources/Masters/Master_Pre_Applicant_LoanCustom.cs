@@ -26,6 +26,7 @@ namespace SalesPipeline.Utils.Resources.Masters
 		public int UpdateBy { get; set; }
 
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[MaxLength(50, ErrorMessage = "ไม่เกิน 50 ตัวอักษร")]
 		public string? Name { get; set; }
 	}
 }

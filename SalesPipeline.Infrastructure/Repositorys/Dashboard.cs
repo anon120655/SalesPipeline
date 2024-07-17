@@ -463,7 +463,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.User_Target_Sales
 				.Include(x => x.User)
 				.Where(x => x.Status == StatusModel.Active && x.Year == _year)
-				.OrderByDescending(x=>x.AmountTarget).AsQueryable();
+				.OrderByDescending(x => x.AmountTarget).AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
@@ -1191,6 +1191,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 ProvinceName = group.First().ProvinceName ?? string.Empty,
 												 SalesAmount = group.Sum(s => s.LoanAmount) ?? 0
 											 })
+											 .Where(x => x.ProvinceId > 0)
 											 .OrderByDescending(x => x.SalesAmount);
 
 			if (!String.IsNullOrEmpty(model.sort))
@@ -1779,6 +1780,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var salesBusinessSize = query.GroupBy(m => m.Customer.Master_BusinessSizeId)
 											 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 											 .ToList();
 
 			if (salesBusinessSize.Count > 0)
@@ -1799,6 +1801,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var salesBusinessType = query.GroupBy(m => m.Customer.Master_BusinessTypeId)
 										 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+										 .Where(x => x.GroupID.HasValue)
 										 .ToList();
 			if (salesBusinessType.Count > 0)
 			{
@@ -1809,7 +1812,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						Status = StatusModel.Active,
 						Code = Dash_PieCodeModel.NumCusTypeBusiness,
-						TitleName = "จำนวนลูกค้าตามประเภทธุรกิจ",
+						TitleName = "จำนวนลูกค้าตามประเภทกิจการ",
 						Name = $"{item.Customers.Select(x => x.Customer.Master_BusinessTypeName).FirstOrDefault()} ",
 						Value = item.Customers.Count
 					});
@@ -1818,6 +1821,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var salesISICCode = query.GroupBy(m => m.Customer.Master_ISICCodeId)
 										 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 										 .ToList();
 			if (salesISICCode.Count > 0)
 			{
@@ -1918,6 +1922,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var salesBusinessSize = query.GroupBy(m => m.Customer.Master_BusinessSizeId)
 											 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 											 .ToList();
 
 				if (salesBusinessSize.Count > 0)
@@ -1940,6 +1945,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var salesBusinessType = query.GroupBy(m => m.Customer.Master_BusinessTypeId)
 											 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 											 .ToList();
 				if (salesBusinessType.Count > 0)
 				{
@@ -1961,6 +1967,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var salesISICCode = query.GroupBy(m => m.Customer.Master_ISICCodeId)
 											 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 											 .ToList();
 				if (salesISICCode.Count > 0)
 				{
@@ -1983,6 +1990,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var salesLoanType = query.GroupBy(m => m.Customer.Master_LoanTypeId)
 											 .Select(group => new { GroupID = group.Key, Customers = group.ToList() })
+											 .Where(x => x.GroupID.HasValue)
 											 .ToList();
 				if (salesLoanType.Count > 0)
 				{
