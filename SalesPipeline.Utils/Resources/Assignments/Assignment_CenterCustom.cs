@@ -86,5 +86,6 @@ namespace SalesPipeline.Utils.Resources.Assignments
 		//Custom
 		public bool IsSelected { get; set; } = false;
 
+		public string? AreaNameJoin { get; set; }
 	}
 }

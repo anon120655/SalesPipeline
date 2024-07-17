@@ -1,6 +1,7 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace SalesPipeline.Utils.Resources.Masters
 		/// </summary>
 		public decimal? Rate { get; set; }
 
-        //Custom
-        public string? OptionValue { get; set; }
-    }
+		//Custom
+		public string? OptionValue { get; set; }
+	}
 }

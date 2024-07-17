@@ -184,6 +184,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						assignment_Center.Tel = assignment_Center.User?.Tel;
 						assignment_Center.EmployeeId = assignment_Center.User?.EmployeeId;
 						assignment_Center.EmployeeName = assignment_Center.User?.FullName;
+
+						if (assignment_Center.User?.User_Areas?.Count > 0)
+						{
+							string provinceNames = string.Join(",", assignment_Center.User.User_Areas.Select(x => x.ProvinceName));
+							assignment_Center.AreaNameJoin = provinceNames;
+						}
+
 						assignment_Center.Assignment_Sales = new();
 						foreach (var item_sale in sales)
 						{
@@ -196,7 +203,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							});
 						}
 
-						//assignment_Center.User = null;
+						assignment_Center.User = null;
 						responseItems.Add(assignment_Center);
 					}
 				}
@@ -212,8 +219,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model)
 		{
 			var query = _repo.Context.Assignment_Centers.Where(x => x.Status != StatusModel.Delete)
-												 //.Include(x => x.Branch)
+												 .Include(x => x.User).ThenInclude(x => x.User_Areas)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
+												 .Where(x => x.User != null && x.User.User_Areas.Count > 0)
 												 .AsQueryable();
 
 			if (!String.IsNullOrEmpty(model.assignmentid))
@@ -361,7 +369,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task UpdateCurrentNumber(int? userid = null)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x=>x.User_Areas)
+										   .Include(x => x.User_Areas)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.CENTER)
 										   .OrderBy(x => x.Id)
 										   .AsQueryable();

@@ -282,6 +282,7 @@
 										<thead>
 											<tr>
 												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
+												<th class="text-center">พื้นที่ดูแล</th>
 												<th class="text-center">เบอร์โทรศัพท์</th>
 												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
@@ -313,6 +314,17 @@
 													int NumberAfterAssignment = (item.CurrentNumber + ItemsSelected.Count) ?? 0;
 													<tr>
 														<td class="text-center">@item.EmployeeName</td>
+														<td class="text-center">
+															@if (item.User?.User_Areas?.Count > 0)
+															{
+																string provinceNames = string.Join(",", item.User.User_Areas.Select(x => x.ProvinceName));
+																@GeneralUtils.EmptyTo(provinceNames)
+															}
+															else
+															{
+																<span>-</span>
+															}
+														</td>
 														<td class="text-center">@item.Tel</td>
 														<td class="text-center">@item.RMNumber</td>
 														<td class="text-center">@item.CurrentNumber</td>

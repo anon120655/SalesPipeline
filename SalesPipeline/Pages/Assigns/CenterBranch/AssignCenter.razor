@@ -209,15 +209,7 @@
 													<td class="text-center">@viewAssign.EmployeeId</td>
 													<td class="text-center">@viewAssign.EmployeeName</td>
 													<td class="text-center">
-														@if (viewAssign.User?.User_Areas?.Count > 0)
-														{
-															string provinceNames = string.Join(",", viewAssign.User.User_Areas.Select(x => x.ProvinceName));
-															@GeneralUtils.EmptyTo(provinceNames)
-														}
-														else
-														{
-															<span>-</span>
-														}
+														@GeneralUtils.EmptyTo(viewAssign.AreaNameJoin)
 													</td>
 													<td class="text-center">
 														@GeneralUtils.EmptyTo(viewAssign.RMNumber)
