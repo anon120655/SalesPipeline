@@ -1034,7 +1034,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var query = _repo.Context.Users.Include(x => x.Role)
-										   .Include(x => x.User_Target_SaleUsers.Where(w => w.Year == _year))
+										   .Include(x => x.User_Target_SaleUsers.Where(w => w.Status == StatusModel.Active && w.Year == _year))
 										   .Include(x => x.Master_Branch_Region)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.RM)
 										   .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
@@ -1112,30 +1112,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				foreach (var item in model.ItemsTarget)
 				{
-					int CRUD = CRUDModel.Update;
-					var user_Target_Sales = await _repo.Context.User_Target_Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == item.UserId && x.Year == item.Year);
-					if (user_Target_Sales == null)
+					var user_Target_SalesRemove = await _repo.Context.User_Target_Sales.Where(x => x.Status == StatusModel.Active && x.UserId == item.UserId && x.Year == item.Year).ToListAsync();
+
+					if (user_Target_SalesRemove != null && user_Target_SalesRemove.Count > 0)
 					{
-						CRUD = CRUDModel.Create;
-						user_Target_Sales = new();
-						user_Target_Sales.CreateDate = _dateNow;
-						user_Target_Sales.CreateBy = model.CurrentUserId;
+						foreach (var item_remove in user_Target_SalesRemove)
+						{
+							item_remove.Status = StatusModel.InActive;
+							_db.Update(item_remove);
+						}
+						await _db.SaveAsync();
 					}
+
+					User_Target_Sale user_Target_Sales = new();
+					user_Target_Sales.Status = StatusModel.Active;
+					user_Target_Sales.CreateDate = _dateNow;
+					user_Target_Sales.CreateBy = model.CurrentUserId;
 					user_Target_Sales.UpdateDate = _dateNow;
 					user_Target_Sales.UpdateBy = model.CurrentUserId;
-
 					user_Target_Sales.UserId = item.UserId;
 					user_Target_Sales.Year = item.Year;
 					user_Target_Sales.AmountTarget = item.AmountTarget;
-
-					if (CRUD == CRUDModel.Create)
-					{
-						await _db.InsterAsync(user_Target_Sales);
-					}
-					else
-					{
-						_db.Update(user_Target_Sales);
-					}
+					await _db.InsterAsync(user_Target_Sales);
 					await _db.SaveAsync();
 				}
 

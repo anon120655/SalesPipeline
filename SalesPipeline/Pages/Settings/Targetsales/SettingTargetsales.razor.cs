@@ -314,7 +314,6 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			await modalTarget.HideAsync();
 		}
 
-
 		protected async Task Save()
 		{
 			_errorMessage = null;
