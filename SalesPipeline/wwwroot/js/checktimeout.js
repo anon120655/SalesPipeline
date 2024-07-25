@@ -22,13 +22,16 @@ function initializeinactivitytimer(dotnetHelper) {
 	document.onclick = resetTimer;
 
 	function resetTimer() {
-		var milliseconds = 600000 * 3; //600000 milliseconds = 10 minuts //600000*3=30 境煬
+		//milliseconds
+		//1000 = 1 л境煬 //1000*5 = 5 л境煬
+		//60000 = 1 境煬 //60000*3 = 3 境煬
+		//600000 = 10 minuts //600000*3 = 30 境煬
+		var milliseconds = 60000 * 30;
 		var _path = window.location.pathname;
 		clearTimeout(timer);
 		if (_path == "/user") {
 			//milliseconds = 10000;
 		}
-		//console.log(milliseconds);
 
 		timer = setTimeout(logout, milliseconds);
 	}

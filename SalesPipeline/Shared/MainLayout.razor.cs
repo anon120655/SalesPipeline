@@ -131,7 +131,7 @@ namespace SalesPipeline.Shared
 		[JSInvokable]
 		public async Task ConfirmLogout()
 		{
-			counterDate = 10;
+			counterDate = 30;
 			await modalConfirmLogout.ShowAsync();
 			timerCountDown = new System.Timers.Timer(1000);
 			timerCountDown.Enabled = true;
