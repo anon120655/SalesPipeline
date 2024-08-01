@@ -1,4 +1,5 @@
 using global::Microsoft.AspNetCore.Components;
+using Hangfire.Common;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
@@ -50,11 +51,30 @@ namespace SalesPipeline.Pages.Customers
 					{
 						if (UserInfo.RoleCode == RoleCodes.CENTER)
 						{
+							//เช็คว่าถูกมอบหมายหรือไม่
 							if (data.Data.AssCenterUserId != UserInfo.Id)
 							{
-								IsView = false;
+								//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+								if (data.Data.AssUserId.HasValue)
+								{
+									//ดึงพื้นที่ดูแลพนักงาน RM 
+									var areaRM = await _userViewModel.GetAreaByUserId(data.Data.AssUserId.Value);
+									if (areaRM != null && areaRM.Data != null)
+									{
+										int index = 0;
+										//เช็คว่าอยู่ในพื้นที่ดูแลของ ผจศ หรือป่าว
+										foreach (var item in areaRM.Data)
+										{
+											if (index > 0)
+											{
+												if (IsView) break;
+											}
+											IsView = UserInfo.User_Areas?.Any(a => a.ProvinceId == item.ProvinceId) ?? false;
+											index++;
+										}
+									}
+								}
 							}
-							//IsView = UserInfo.User_Areas?.Select(x => x.ProvinceId).Contains(data.Data.ProvinceId.Value) ?? false;
 						}
 					}
 					formModel = data.Data;

@@ -127,6 +127,20 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetAreaByUserId")]
+		public async Task<IActionResult> GetAreaByUserId([FromQuery] int id)
+		{
+			try
+			{
+				var data = await _repo.User.GetAreaByUserId(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetList")]
 		public async Task<IActionResult> GetList([FromQuery] UserFilter model)
 		{

@@ -94,6 +94,7 @@
 											<th class="text-center">ลำดับที่</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
+											<th class="text-center">อีเมล</th>
 											<th class="text-center">ตำแหน่ง</th>
 											<th class="text-center">ระดับหน้าที่</th>
 											<th class="text-center">ระดับ</th>
@@ -132,6 +133,7 @@
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@GeneralUtils.EmptyTo(item.FullName)</td>
+													<td class="">@GeneralUtils.EmptyTo(item.Email)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(GetPositionName(item.PositionId))</td>
 													<td class="text-center">
 														@if (item.Role != null)

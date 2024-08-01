@@ -129,6 +129,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<User_AreaCustom>>?> GetAreaByUserId(int id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/User/GetAreaByUserId?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<List<User_AreaCustom>>(content);
+				return new ResultModel<List<User_AreaCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<User_AreaCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<UserCustom>>>> GetList(UserFilter model)
 		{
 			try

@@ -170,7 +170,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// บ้านเลขที่
 		/// </summary>
-		[Required(ErrorMessage = "ระบุบ้านเลขที่")]
+		//[Required(ErrorMessage = "ระบุบ้านเลขที่")]
 		public string? HouseNo { get; set; }
 
 		/// <summary>
@@ -181,7 +181,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[Required(ErrorMessage = "ระบุจังหวัด")]
+		//[Required(ErrorMessage = "ระบุจังหวัด")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -189,7 +189,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
-		[Required(ErrorMessage = "ระบุอำเภอ")]
+		//[Required(ErrorMessage = "ระบุอำเภอ")]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -197,7 +197,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ตำบล
 		/// </summary>
-		[Required(ErrorMessage = "ระบุตำบล")]
+		//[Required(ErrorMessage = "ระบุตำบล")]
 		public int? TambolId { get; set; }
 
 		public string? TambolName { get; set; }
@@ -205,7 +205,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// รหัสไปรษณีย์
 		/// </summary>
-		[Required(ErrorMessage = "ระบุรหัสไปรษณีย์")]
+		//[Required(ErrorMessage = "ระบุรหัสไปรษณีย์")]
 		public string? ZipCode { get; set; }
 
 		/// <summary>

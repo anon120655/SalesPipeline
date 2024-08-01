@@ -719,9 +719,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<UserCustom>(query);
 		}
 
-		public async Task<UserCustom> GetUserCenterByUserIdRM(int id)
+		public async Task<List<User_AreaCustom>> GetAreaByUserId(int id)
 		{
-			return new();
+			var query = await _repo.Context.User_Areas				
+				.Where(x => x.UserId == id).ToListAsync();
+			return _mapper.Map<List<User_AreaCustom>>(query);
 		}
 
 		public async Task<string?> GetFullNameById(int id)
