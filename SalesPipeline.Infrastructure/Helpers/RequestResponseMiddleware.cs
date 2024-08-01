@@ -135,10 +135,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 				LogError(log, exception);
 			}
 
-			//if (log.RequestHost != null && !log.RequestHost.Contains("localhost"))
-			//{
-			await repo.Logger.SaveLog(log);
-			//}
+			_ = repo.Logger.SaveLog(log).ConfigureAwait(false); //บันทึก log ในพื้นหลัง โดยไม่รอให้เสร็จสิ้น
+			//await repo.Logger.SaveLog(log);			
 
 		}
 
