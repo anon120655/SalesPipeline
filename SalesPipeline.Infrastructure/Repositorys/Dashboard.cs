@@ -192,7 +192,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
+			var query = _repo.Context.Sales.Include(x => x.AssUser).Where(x => x.Status == StatusModel.Active);
 
 			query = QueryArea(query, user);
 
@@ -215,7 +215,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 				if (idList.Count > 0)
 				{
-					query = query.Where(x => x.Master_Branch_RegionId.HasValue && idList.Contains(x.Master_Branch_RegionId));
+					foreach (var branchRegId in idList)
+					{
+						var provinces = await _repo.Thailand.GetProvince(branchRegId);
+						if (provinces?.Count > 0)
+						{
+							var provincesIdlist = provinces.Select(x=>x.ProvinceID).ToList();
+							query = query.Where(x => x.ProvinceId.HasValue && provincesIdlist.Contains(x.ProvinceId.Value));
+						}
+					}
 				}
 			}
 
@@ -297,7 +305,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						_year = model.startdate.Value.Year;
 					}
 
-					var user_Target_Sales = _repo.Context.User_Target_Sales
+					var user_Target_Sales = _repo.Context.User_Target_Sales.Include(x => x.User)
 						.Where(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
 
 					//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
