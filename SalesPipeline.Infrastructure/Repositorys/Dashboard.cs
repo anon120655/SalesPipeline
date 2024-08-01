@@ -48,7 +48,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId);
+						query = query.Where(x => x.AssUser != null && x.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
 					}
 					else
 					{
@@ -86,7 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
+						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
 					}
 					else
 					{
@@ -124,7 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
+						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
 					}
 					else
 					{
@@ -162,7 +162,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.Master_Branch_RegionId == user.Master_Branch_RegionId);
+						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
 					}
 					else
 					{
