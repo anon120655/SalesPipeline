@@ -75,6 +75,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+			//var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
+			
+			// ดึงข้อมูล User ก่อน
+			//var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
+
+			// จากนั้นค่อยดึง User_Areas
+			//var user_AreasRm = users
+			//	.SelectMany(u => u.User_Areas.Select(s => new
+			//	{
+			//		UserId = u.Id,
+			//		ProvinceId = s.ProvinceId,
+			//		// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
+			//	}))
+			//	.ToList();
+
 
 			// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
 			Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
