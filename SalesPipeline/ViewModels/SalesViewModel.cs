@@ -63,11 +63,11 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<bool>?> IsViewSales(Guid id)
+		public async Task<ResultModel<bool>?> IsViewSales(Guid id, int userid)
 		{
 			try
 			{
-				var content = await _httpClient.GetAsync($"/v1/Sales/IsViewSales?id={id}");
+				var content = await _httpClient.GetAsync($"/v1/Sales/IsViewSales?id={id}&userid={userid}");
 				var dataMap = JsonConvert.DeserializeObject<bool>(content);
 				return new ResultModel<bool>()
 				{

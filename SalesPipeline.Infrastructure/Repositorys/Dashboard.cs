@@ -31,7 +31,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		private IQueryable<Sale> QueryArea(IQueryable<Sale> query, UserCustom user)
+		private async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -45,31 +45,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
+					Expression<Func<Sale, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.AssUser != null && x.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
-						Expression<Func<Sale, bool>> orExpression = x => false;
-						foreach (var provinceId in user_Areas)
+						var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+						if (provinces?.Count > 0)
 						{
-							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-							orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							user_Areas = provinces.Select(x => x.ProvinceID).ToList();
 						}
-						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-						query = query.Where(orExpression);
 					}
+
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId;
+						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x => x.ProvinceId == tempProvinceId);
+					}
+
+					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
+					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
+					query = query.Where(orExpression);
 				}
 			}
 
 			return query;
 		}
 
-		private IQueryable<Sale_Duration> QueryAreaDuration(IQueryable<Sale_Duration> query, UserCustom user)
+		private async Task<IQueryable<Sale_Duration>> QueryAreaDuration(IQueryable<Sale_Duration> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -83,31 +87,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
+					Expression<Func<Sale_Duration, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
-						Expression<Func<Sale_Duration, bool>> orExpression = x => false;
-						foreach (var provinceId in user_Areas)
+						var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+						if (provinces?.Count > 0)
 						{
-							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							user_Areas = provinces.Select(x => x.ProvinceID).ToList();
 						}
-						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-						query = query.Where(orExpression);
 					}
+
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId;
+						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
+					}
+
+					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
+					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
+					query = query.Where(orExpression);
 				}
 			}
 
 			return query;
 		}
 
-		private IQueryable<Sale_Activity> QueryAreaActivity(IQueryable<Sale_Activity> query, UserCustom user)
+		private async Task<IQueryable<Sale_Activity>> QueryAreaActivity(IQueryable<Sale_Activity> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -121,31 +129,35 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
+					Expression<Func<Sale_Activity, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
-						Expression<Func<Sale_Activity, bool>> orExpression = x => false;
-						foreach (var provinceId in user_Areas)
+						var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+						if (provinces?.Count > 0)
 						{
-							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							user_Areas = provinces.Select(x => x.ProvinceID).ToList();
 						}
-						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-						query = query.Where(orExpression);
 					}
+
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId;
+						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
+					}
+
+					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
+					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
+					query = query.Where(orExpression);
 				}
 			}
 
 			return query;
 		}
 
-		private IQueryable<Sale_Deliver> QueryAreaDeliver(IQueryable<Sale_Deliver> query, UserCustom user)
+		private async Task<IQueryable<Sale_Deliver>> QueryAreaDeliver(IQueryable<Sale_Deliver> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -159,24 +171,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
+					Expression<Func<Sale_Deliver, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.Sale.AssUser != null && x.Sale.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
-						Expression<Func<Sale_Deliver, bool>> orExpression = x => false;
-						foreach (var provinceId in user_Areas)
+						var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+						if (provinces?.Count > 0)
 						{
-							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-							orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.Sale.AssCenterUser != null && x.Sale.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+							user_Areas = provinces.Select(x => x.ProvinceID).ToList();
 						}
-						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-						query = query.Where(orExpression);
 					}
+
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId;
+						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
+					}
+
+					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
+					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
+					query = query.Where(orExpression);
 				}
 			}
 
@@ -194,7 +210,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(x => x.AssUser).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -220,7 +236,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						var provinces = await _repo.Thailand.GetProvince(branchRegId);
 						if (provinces?.Count > 0)
 						{
-							var provincesIdlist = provinces.Select(x=>x.ProvinceID).ToList();
+							var provincesIdlist = provinces.Select(x => x.ProvinceID).ToList();
 							query = query.Where(x => x.ProvinceId.HasValue && provincesIdlist.Contains(x.ProvinceId.Value));
 						}
 					}
@@ -359,7 +375,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					IQueryable<Sale> query;
 					query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).AsQueryable();
 
-					query = QueryArea(query, user);
+					query = await QueryArea(query, user);
 
 					statusTotal = await query.GroupBy(info => info.StatusSaleId)
 							   .Select(group => new SaleStatusGroupByModel()
@@ -625,7 +641,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var statusTotal = new List<SaleStatusGroupByModel>();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -726,8 +742,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			saleQuery = QueryArea(saleQuery, user);
-			sale_DurationsQuery = QueryAreaDuration(sale_DurationsQuery, user);
+			saleQuery = await QueryArea(saleQuery, user);
+			sale_DurationsQuery = await QueryAreaDuration(sale_DurationsQuery, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -827,7 +843,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
-						query = QueryArea(query, user);
+						query = await QueryArea(query, user);
 
 						decimal? RatingAverage = await query.AverageAsync(r => r.LoanAmount);
 
@@ -862,9 +878,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var queryActcloseDeal = _repo.Context.Sale_Activities.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active && x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
 			var queryDeliver = _repo.Context.Sale_Delivers.Include(x => x.Sale).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
-			queryActcloseDeal = QueryAreaActivity(queryActcloseDeal, user);
-			queryDeliver = QueryAreaDeliver(queryDeliver, user);
+			query = await QueryArea(query, user);
+			queryActcloseDeal = await QueryAreaActivity(queryActcloseDeal, user);
+			queryDeliver = await QueryAreaDeliver(queryDeliver, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -991,7 +1007,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1067,7 +1083,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssUserId.HasValue);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1146,7 +1162,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale && x.LoanAmount > 0);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1239,7 +1255,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			 || x.StatusSaleId == StatusSaleModel.ResultsNotConsidered
 			 || x.StatusSaleId == StatusSaleModel.CloseSaleFail));
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1332,7 +1348,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			query = QueryAreaDuration(query, user);
+			query = await QueryAreaDuration(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1443,7 +1459,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.AssUser).ThenInclude(x => x.User_Target_SaleUsers)
 				.Where(x => x.Status == StatusModel.Active && x.AssUser != null);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1556,8 +1572,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 			var queryCloseSale = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSale);
 
-			query = QueryArea(query, user);
-			queryCloseSale = QueryArea(queryCloseSale, user);
+			query = await QueryArea(query, user);
+			queryCloseSale = await QueryArea(queryCloseSale, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1658,7 +1674,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1741,7 +1757,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -1881,7 +1897,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -2033,7 +2049,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -2154,7 +2170,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(s => s.Customer).Where(x => x.Status == StatusModel.Active);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -2259,7 +2275,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.AsQueryable();
 
 
-			query = QueryAreaDuration(query, user);
+			query = await QueryAreaDuration(query, user);
 
 			if (!String.IsNullOrEmpty(model.type))
 			{
@@ -2476,7 +2492,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			query = query.Where(x => x.Sale.StatusSaleId == StatusSaleModel.CloseSale);
 
-			query = QueryAreaActivity(query, user);
+			query = await QueryAreaActivity(query, user);
 
 			if (!String.IsNullOrEmpty(model.searchtxt))
 				query = query.Where(x => x.Sale.CompanyName != null && x.Sale.CompanyName.Contains(model.searchtxt));
@@ -2593,7 +2609,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.StatusSaleId == StatusSaleModel.CloseSaleNotLoan && x.Master_Reason_CloseSaleId.HasValue);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var response = new List<Dash_PieCustom>();
 
@@ -2632,7 +2648,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.BranchId.HasValue && x.BranchId > 0);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var response = new List<Dash_PieCustom>();
 
@@ -2670,7 +2686,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var statusTotal = new List<SaleStatusGroupByModel>();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -2814,7 +2830,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			query = QueryAreaDuration(query, user);
+			query = await QueryAreaDuration(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -2926,7 +2942,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
@@ -3050,7 +3066,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
@@ -3144,7 +3160,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
@@ -3303,7 +3319,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			var avgcountry = query.Sum(x => x.LoanAmount);
 			if (avgcountry.HasValue)
@@ -3466,7 +3482,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var query = _repo.Context.Sales.Include(i => i.Customer).Where(x => x.Status == StatusModel.Active && x.LoanAmount > 0);
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			if (model.startdate.HasValue && !model.enddate.HasValue)
 			{
@@ -3568,7 +3584,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									 .OrderByDescending(x => x.CreateDate)
 									 .AsQueryable();
 
-			query = QueryArea(query, user);
+			query = await QueryArea(query, user);
 
 			//if (model.startdate.HasValue && !model.enddate.HasValue)
 			//{
@@ -3788,7 +3804,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												.OrderByDescending(x => x.CreateDate)
 												.AsQueryable();
 
-			query = QueryAreaDeliver(query, user);
+			query = await QueryAreaDeliver(query, user);
 
 			if (int.TryParse(model.loantobranchreg, out int _loantobranchreg))
 				query = query.Where(x => x.LoanToBranchReg == _loantobranchreg);

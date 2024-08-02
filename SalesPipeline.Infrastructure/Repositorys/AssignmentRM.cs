@@ -33,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public IQueryable<Sale> QueryArea(IQueryable<Sale> query, UserCustom user)
+		public async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -47,24 +47,28 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
+					Expression<Func<Sale, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
 					if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
 					{
-						query = query.Where(x => x.AssUser != null && x.AssUser.Master_Branch_RegionId == user.Master_Branch_RegionId);
-					}
-					else
-					{
-						//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
-						Expression<Func<Sale, bool>> orExpression = x => false;
-						foreach (var provinceId in user_Areas)
+						var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+						if (provinces?.Count > 0)
 						{
-							var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-							orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-							orExpression = orExpression.Or(x => x.AssCenterUser != null && x.AssCenterUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId) || x.AssCenterUserId == user.Id);
+							user_Areas = provinces.Select(x => x.ProvinceID).ToList();
 						}
-						// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-						query = query.Where(orExpression);
 					}
+
+					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					foreach (var provinceId in user_Areas)
+					{
+						var tempProvinceId = provinceId;
+						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x => x.ProvinceId == tempProvinceId);
+					}
+
+					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
+					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
+					query = query.Where(orExpression);
 				}
 			}
 
@@ -321,7 +325,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//พื้นที่ดูแล
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				salesQuery = QueryArea(salesQuery, user);
+				salesQuery = await QueryArea(salesQuery, user);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
@@ -455,7 +459,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//พื้นที่ดูแล
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				salesQuery = QueryArea(salesQuery, user);
+				salesQuery = await QueryArea(salesQuery, user);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
@@ -604,7 +608,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//พื้นที่ดูแล
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				salesQuery = QueryArea(salesQuery, user);
+				salesQuery = await QueryArea(salesQuery, user);
 			}
 
 			var salesCustomer = await salesQuery.ToListAsync();
