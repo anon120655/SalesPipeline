@@ -857,5 +857,19 @@ namespace SalesPipeline.Utils
 			// Logic to send notification (e.g., email, SMS, push notification)
 			Console.WriteLine($"Notification: {message}");
 		}
+
+		public static bool HasAtLeastOneCommonElement(List<int> A, List<int> B)
+		{
+			HashSet<int> setA = new HashSet<int>(A);
+			foreach (int item in B)
+			{
+				if (setA.Contains(item))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 	}
 }

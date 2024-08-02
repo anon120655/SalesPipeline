@@ -12,8 +12,8 @@ using SalesPipeline.Utils.ValidationModel;
 
 namespace SalesPipeline.API.Controllers
 {
-    [Authorizes]
-    [ApiVersion(1.0)]
+	[Authorizes]
+	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
@@ -87,6 +87,20 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.Sales.GetByCustomerId(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("IsViewSales")]
+		public async Task<IActionResult> IsViewSales([FromQuery] Guid id, [FromQuery] int userid)
+		{
+			try
+			{
+				var data = await _repo.Sales.IsViewSales(id, userid);
 				return Ok(data);
 			}
 			catch (Exception ex)

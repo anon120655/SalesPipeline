@@ -13,6 +13,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<SaleCustom> GetById(Guid id); 
 		Task<SaleCustom> GetByCustomerId(Guid id); 
 		Task<SaleCustom> GetStatusById(Guid id);
+		Task<bool> IsViewSales(Guid id, int userid);
 		Task<PaginationView<List<SaleCustom>>> GetList(allFilter model);
 		Task<List<Sale_StatusCustom>> GetListStatusById(Guid id);
 		Task<Sale_ReturnCustom> CreateReturn(Sale_ReturnCustom model);

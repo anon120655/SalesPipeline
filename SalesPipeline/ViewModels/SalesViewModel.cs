@@ -63,6 +63,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<bool>?> IsViewSales(Guid id)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Sales/IsViewSales?id={id}");
+				var dataMap = JsonConvert.DeserializeObject<bool>(content);
+				return new ResultModel<bool>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<PaginationView<List<SaleCustom>>>> GetList(allFilter model)
 		{
 			try

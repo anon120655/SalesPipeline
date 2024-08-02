@@ -11,6 +11,8 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq.Expressions;
 using SalesPipeline.Infrastructure.Helpers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Hangfire.MemoryStorage.Database;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -435,6 +437,52 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.StatusSale)
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
 			return _mapper.Map<SaleCustom>(query);
+		}
+
+		public async Task<bool> IsViewSales(Guid id, int userid)
+		{
+			var user = await _repo.User.GetById(userid);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+			{
+				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+				{
+					var areaCenter = user.User_Areas?.Select(x => x.ProvinceId).ToList();
+					if (areaCenter == null || areaCenter.Count == 0) return false;
+
+					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
+					if (sale == null) throw new ExceptionCustom("sale not found.");
+					//เช็คว่าถูกมอบหมายให้ ผจศ หรือไม่
+					if (sale.AssCenterUserId != userid)
+					{
+						//99999999-9999-9999-9999-999999999999 ผจศ เห็นทั้งประเทศ
+						if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+						{
+							if (!sale.AssUserId.HasValue) return false; //ยังไม่ถูกมอบหมายให้ RM
+
+							var userRM = await _repo.Context.Users.Include(x => x.User_Areas).FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == sale.AssUserId);
+							if (userRM == null) throw new ExceptionCustom("users rm not found.");
+							var areaRM = user.User_Areas?.Select(x => x.ProvinceId).ToList();
+							if (areaRM == null || areaRM.Count == 0) return false;
+
+							//99999999-9999-9999-9999-999999999999 RM เห็นทั้งประเทศ
+							if (userRM.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+							{
+								if (user.Master_Branch_RegionId != userRM.Master_Branch_RegionId) return false; //กิจการสาขาไม่ตรงกัน
+
+								//9999 ผจศ และ RM เห็นทุกจังหวัดในภาค
+								if (areaCenter.Any(x => x == 9999) && areaRM.Any(x => x == 9999)) return true;
+
+								//เช็คพนักงาน RM อยู่ภายใต้พื้นที่การดูแลหรือไม่ (เช็คพื้นที่ดูแล ผจศ และ พนักงาน RM ว่าตรงกันหรือไม่)
+								var check = GeneralUtils.HasAtLeastOneCommonElement(areaRM, areaCenter);
+
+								return check;
+							}
+						}
+					}
+				}
+			}
+			return true;
 		}
 
 		public async Task<PaginationView<List<SaleCustom>>> GetList(allFilter model)
@@ -1152,8 +1200,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			return historyLoan;
 		}
-
-
 
 	}
 }
