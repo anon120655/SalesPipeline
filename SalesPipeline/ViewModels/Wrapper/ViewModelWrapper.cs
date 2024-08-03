@@ -41,6 +41,7 @@ namespace SalesPipeline.ViewModels.Wrapper
 		[Inject] protected PreCalWeightViewModel _preCalWeightViewModel { get; set; } = default!;
 		[Inject] protected PreCreditViewModel _preCreditViewModel { get; set; } = default!;
 		[Inject] protected PreChanceViewModel _preChanceViewModel { get; set; } = default!;
+		[Inject] protected PreFactorViewModel _preFactorViewModel { get; set; } = default!;
 		[Inject] protected NotifyViewModel _notifyViewModel { get; set; } = default!;
 	}
 }

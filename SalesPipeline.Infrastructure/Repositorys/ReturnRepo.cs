@@ -117,11 +117,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		}
 
 		/// <summary>
-		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
+		/// ผู้จัดการศูนย์ ส่งคืน สำนักงานใหญ่
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		public async Task CenBranchToBranchReg(ReturnModel model)
+		public async Task CenBranchToLoan(ReturnModel model)
 		{
 			int countReturn = 0;
 			foreach (var item in model.ListSale)
@@ -154,7 +154,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						await _repo.Sales.UpdateStatusOnly(new()
 						{
 							SaleId = saleId,
-							StatusId = StatusSaleModel.MCenterReturnBranch,
+							StatusId = StatusSaleModel.MCenterReturnLoan,
 							CreateBy = model.CurrentUserId,
 							CreateByName = currentUserName,
 							Description = reasonName

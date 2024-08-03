@@ -34,10 +34,10 @@
         /// สาขาภาคส่งคืนศูนย์ธุรกิจสินเชื่อ
         /// </summary>
         public const short BranchReturnLCenter = 7;
-        /// <summary>
-        /// ผจศ. ส่งคืน สาขาภาค
-        /// </summary>
-        public const short MCenterReturnBranch = 8;
+		/// <summary>
+		/// ผจศ. ส่งคืน สำนักงานใหญ่
+		/// </summary>
+		public const short MCenterReturnLoan = 8;
         /// <summary>
         /// พนักงาน RM ส่งคืน ผจศ.
         /// </summary>

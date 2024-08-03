@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NetTopologySuite.Index.HPRtree;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -11,8 +10,6 @@ using SalesPipeline.Utils.Resources.Phoenixs;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace SalesPipeline.Infrastructure.Repositorys
@@ -1023,7 +1020,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Location = model.Location,
 				Note = model.Note,
 				NoteSystem = NoteSystem,
-				CreditLimit = model.LoanAmount
+				CreditLimit = model.LoanAmount,
+				PercentChanceLoanPass = sale.PercentChanceLoanPass
 			});
 
 			return _mapper.Map<Sale_MeetCustom>(sale_Meet);
@@ -1512,6 +1510,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.NextActionName = model.NextActionName;
 			sale_Contact_History.CreditLimit = model.CreditLimit;
 			sale_Contact_History.Percent = model.Percent;
+			sale_Contact_History.PercentChanceLoanPass = model.PercentChanceLoanPass;
 
 			sale_Contact_History.AppointmentDate = model.AppointmentDate;
 			sale_Contact_History.AppointmentTime = model.AppointmentTime;

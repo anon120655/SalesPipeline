@@ -11,8 +11,6 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq.Expressions;
 using SalesPipeline.Infrastructure.Helpers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Hangfire.MemoryStorage.Database;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -56,17 +54,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//พนักงาน RM ภายใต้พื้นที่การดูแล
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x=>x.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -618,7 +617,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.returndate.HasValue)
 			{
-				query = query.Where(x => x.Sale_Statuses.Any(w => w.StatusId == StatusSaleModel.MCenterReturnBranch && w.CreateDate.Date == model.returndate.Value.Date));
+				query = query.Where(x => x.Sale_Statuses.Any(w => w.StatusId == StatusSaleModel.MCenterReturnLoan && w.CreateDate.Date == model.returndate.Value.Date));
 			}
 
 			if (!String.IsNullOrEmpty(model.reason))

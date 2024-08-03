@@ -2658,6 +2658,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Percent)
                 .HasMaxLength(255)
                 .HasComment("ร้อยละ");
+            entity.Property(e => e.PercentChanceLoanPass).HasComment("เปอร์เซ็นโอกาสกู้ผ่าน");
             entity.Property(e => e.ProceedName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อการดำเนินการ");

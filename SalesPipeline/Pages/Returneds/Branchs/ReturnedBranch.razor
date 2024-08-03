@@ -137,7 +137,7 @@
 													<td class="text-center">
 														@if (item.Sale_Statuses != null)
 														{
-															var sale_status = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnBranch);
+															var sale_status = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnLoan);
 															<span>@GeneralUtils.DateToThString(sale_status?.CreateDate)</span>
 															@if (!String.IsNullOrEmpty(item.StatusDescription))
 															{

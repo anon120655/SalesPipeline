@@ -1,6 +1,6 @@
 ﻿@page "/return/loan"
 
-<PageTitle>รายการส่งคืนจากกิจการสาขาภาค</PageTitle>
+<PageTitle>รายการส่งคืนจากจากผู้จัดการศูนย์</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -13,7 +13,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">รายการส่งคืนจากกิจการสาขาภาค</p>
+							<p class="back_topic">รายการส่งคืนจากจากผู้จัดการศูนย์</p>
 						</div>
 					</div>
 
@@ -138,7 +138,7 @@
 													<td class="text-center">
 														@if (item.Sale_Statuses != null)
 														{
-															var statusName = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnBranch);
+															var statusName = item.Sale_Statuses.FirstOrDefault(x => x.StatusId == StatusSaleModel.MCenterReturnLoan);
 															<span>@GeneralUtils.DateToThString(statusName?.CreateDate)</span>
 															@if (!String.IsNullOrEmpty(item.StatusDescription))
 															{

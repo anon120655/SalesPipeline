@@ -134,6 +134,11 @@ public partial class Sale_Contact_History
     /// </summary>
     public short? IsScheduledJobSucceed { get; set; }
 
+    /// <summary>
+    /// เปอร์เซ็นโอกาสกู้ผ่าน
+    /// </summary>
+    public double? PercentChanceLoanPass { get; set; }
+
     public virtual Sale Sale { get; set; } = null!;
 
     public virtual Master_StatusSale StatusSale { get; set; } = null!;

@@ -2,6 +2,42 @@
 
 <link href="/css/contacthistory.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
 
+<style>
+	.main-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+		.main-table th, .main-table td {
+			border: 1px solid #b5b5b5;
+			padding: 5px;
+		}
+
+	.summary-container {
+		text-align: right;
+	}
+
+	.summary-table {
+		display: inline-block;
+		border-collapse: collapse;
+		background-color: #dff2ff;
+	}
+
+		.summary-table td {
+			border: 1px solid #b5b5b5;
+			padding: 5px;
+		}
+
+		/* .summary-table .title_name {
+			min-width: 200px;
+			text-align:start;
+		} */
+
+		.summary-table .title_result {
+			min-width: 100px;
+		}
+</style>
+
 @if (formModel != null)
 {
 	<div class="row my-3">
@@ -47,6 +83,11 @@
 											@if (!String.IsNullOrEmpty(item.ResultMeetName))
 											{
 												<p>ผลการเข้าพบ : @item.ResultMeetName</p>
+											}
+											@if (item.PercentChanceLoanPass.HasValue)
+											{
+												Guid _saleid = item.SaleId;
+												<a role="button" @onclick="(()=> OnShow(_saleid))">แนวโน้มกู้ผ่าน : @(item.PercentChanceLoanPass) %</a>
 											}
 											@if (!String.IsNullOrEmpty(item.NextActionName))
 											{
@@ -113,8 +154,129 @@ else
 	</div>
 }
 
+<Modal @ref="modal"
+	   Title=""
+	   Size="ModalSize.Large"
+	   IsVerticallyCentered="true"
+	   HeaderCssClass="headermodal_default">
+	<BodyTemplate>
+		<div class="row mb-4 text-center">
+			<h4 class="fw-bold">ผลการขอสินเชื่อ</h4>
+		</div>
+		<div class="row mb-4">
+			@if (pre_FactorCustom == null)
+			{
+				<div class="col">
+					<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+				</div>
+			}
+			else
+			{
+				var pre_Results = pre_FactorCustom.Pre_Results?.FirstOrDefault();
+				if (pre_Results != null)
+				{
+					<div class="col">
+						<div class="table-responsive border-top">
+							<table class="main-table">
+								<tr style="background-color: #304A74; color:white;">
+									<td class="text-center">ปัจจัยการวิเคราะห์</td>
+									<td class="text-center">คุณสมบัติ</td>
+									<td class="text-center">คะแนน</td>
+									<td class="text-center">อัตราส่วน</td>
+									<td class="text-center">ผลคะแนน</td>
+								</tr>
+								@if (pre_Results.Pre_Result_Items == null)
+								{
+									<tr class="text-center align-middle">
+										<td colspan="100">
+											<Spinner Class="my-2" Type="SpinnerType.Dots" Color="SpinnerColor.Secondary" />
+										</td>
+									</tr>
+								}
+								else if (pre_Results.Pre_Result_Items.Count == 0)
+								{
+									<tr class="text-center align-middle">
+										<td colspan="100">
+											<em>ไม่พบข้อมูล</em>
+										</td>
+									</tr>
+								}
+								else
+								{
+									foreach (var item in pre_Results.Pre_Result_Items)
+									{
+										<tr>
+											<td class="text-start">@GeneralUtils.EmptyTo(item.AnalysisFactor)</td>
+											<td class="text-end">@GeneralUtils.EmptyTo(item.Feature)</td>
+											<td class="text-end">@item.Score</td>
+											<td class="text-end">@item.Ratio</td>
+											<td class="text-end">@item.ScoreResult</td>
+										</tr>
+									}
+								}
+							</table>
+							<div class="summary-container">
+								<table class="summary-table">
+									<tr>
+										<td class="title_name">คะแนนรวม</td>
+										<td class="title_result">@pre_Results.TotalScore</td>
+									</tr>
+									<tr>
+										<td class="title_name">โอกาสอนุมัติเชื่อผ่าน</td>
+										<td class="title_result">@pre_Results.Cr_Grade</td>
+									</tr>
+									<tr>
+										<td class="title_name">ผลการอนุมัติเชื่อ</td>
+										<td class="title_result">@pre_Results.ResultLoan</td>
+									</tr>
+									<tr>
+										<td class="title_name">โอกาสอนุมัติเชื่อผ่าน</td>
+										<td class="title_result">@pre_Results.ChancePercent</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+		<div class="row my-3 text-center">
+			<div class="d-flex justify-content-evenly align-items-center">
+				<div class="p-2">
+					<Button Class="mw_6r" Color="ButtonColor.Secondary" @onclick="OnHide">ปิด</Button>
+				</div>
+			</div>
+		</div>
+	</BodyTemplate>
+</Modal>
+
 @code {
 	[Parameter]
 	public List<Sale_Contact_HistoryCustom>? formModel { get; set; }
 
+	Pre_FactorCustom? pre_FactorCustom = null;
+
+	protected Modal modal = default!;
+
+	public async Task OnShow(Guid? saleid = null)
+	{
+		if (saleid.HasValue)
+		{
+			var processLast = await _preFactorViewModel.GetLastProcessBySaleId(saleid.Value);
+			if (processLast != null && processLast.Status)
+			{
+				if (processLast.Data != null)
+				{
+					pre_FactorCustom = processLast.Data;
+					StateHasChanged();
+					await modal.ShowAsync();
+				}
+			}
+		}
+	}
+
+	public async Task OnHide()
+	{
+		await modal.HideAsync();
+	}
 }

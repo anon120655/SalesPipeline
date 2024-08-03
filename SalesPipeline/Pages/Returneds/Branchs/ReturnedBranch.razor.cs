@@ -105,7 +105,7 @@ namespace SalesPipeline.Pages.Returneds.Branchs
 			if (resetPage) filter.page = 1;
 
 			filter.userid = UserInfo.Id;
-			filter.statussaleid = StatusSaleModel.MCenterReturnBranch;
+			filter.statussaleid = StatusSaleModel.MCenterReturnLoan;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{

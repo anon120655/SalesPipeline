@@ -61,12 +61,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x => x.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -103,12 +104,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x => x.Sale.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -145,12 +147,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x => x.Sale.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -187,12 +190,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.Sale.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.Sale.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x => x.Sale.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -305,7 +309,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
-						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG) && item.StatusID == (int)StatusSaleModel.MCenterReturnBranch)
+						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG) && item.StatusID == (int)StatusSaleModel.MCenterReturnLoan)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}

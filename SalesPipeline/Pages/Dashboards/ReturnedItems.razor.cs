@@ -101,7 +101,7 @@ namespace SalesPipeline.Pages.Dashboards
 				}
 				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
 				{
-					filter.statussaleid = StatusSaleModel.MCenterReturnBranch;
+					filter.statussaleid = StatusSaleModel.MCenterReturnLoan;
 				}
 				else if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN) || UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
 				{

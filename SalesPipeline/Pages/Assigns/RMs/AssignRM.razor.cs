@@ -430,7 +430,7 @@ namespace SalesPipeline.Pages.Assigns.RMs
 			await modalReturnReason.OnShowConfirm();
 		}
 
-		protected async Task CenBranchToBranchReg(string? id)
+		protected async Task CenBranchToLoan(string? id)
 		{
 			_errorMessageModal = null;
 
@@ -442,7 +442,7 @@ namespace SalesPipeline.Pages.Assigns.RMs
 					listSale.Add(new() { ID = item.SaleId.ToString() });
 				}
 
-				var response = await _returnViewModel.CenBranchToBranchReg(new()
+				var response = await _returnViewModel.CenBranchToLoan(new()
 				{
 					CurrentUserId = UserInfo.Id,
 					Master_ReasonReturnId = _id,

@@ -35,8 +35,6 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.PreFactor.Process(model);
 
-				//var factor_result = await _repo.PreFactor.GetById(data.Id);
-
 				return Ok(data);
 			}
 			catch (Exception ex)
@@ -51,6 +49,20 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.PreFactor.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpGet("GetLastProcessBySaleId")]
+		public async Task<IActionResult> GetLastProcessBySaleId([FromQuery] Guid id)
+		{
+			try
+			{
+				var data = await _repo.PreFactor.GetLastProcessBySaleId(id);
 				return Ok(data);
 			}
 			catch (Exception ex)

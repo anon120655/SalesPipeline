@@ -925,6 +925,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Pre_FactorCustom>(query);
 		}
 
+		public async Task<Pre_FactorCustom> GetLastProcessBySaleId(Guid id)
+		{
+			var query = await _repo.Context.Pre_Factors
+				.Include(x => x.Pre_Factor_Infos)
+				.Include(x => x.Pre_Factor_Stans)
+				.Include(x => x.Pre_Factor_Apps)
+				.Include(x => x.Pre_Factor_Bus)
+				.Include(x => x.Pre_Results).ThenInclude(x => x.Pre_Result_Items.OrderBy(o => o.SequenceNo))
+				.OrderByDescending(o => o.CreateDate)
+				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == id);
+
+			return _mapper.Map<Pre_FactorCustom>(query);
+		}
+
 		public async Task<Pre_ResultCustom> UpdateEvaluateAppLoan(Pre_ResultCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())

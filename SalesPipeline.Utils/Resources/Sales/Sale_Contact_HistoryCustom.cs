@@ -135,6 +135,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public short? IsScheduledJobSucceed { get; set; }
 
+		/// <summary>
+		/// เปอร์เซ็นโอกาสกู้ผ่าน
+		/// </summary>
+		public double? PercentChanceLoanPass { get; set; }
+
 		public virtual SaleCustom? Sale { get; set; }
 
 		//Custom

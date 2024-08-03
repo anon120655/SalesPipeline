@@ -63,12 +63,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-						orExpression = orExpression.Or(x => x.ProvinceId == tempProvinceId);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
 					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
+
+					query = query.Where(x => x.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 

@@ -51,18 +51,18 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		/// <summary>
-		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
+		/// ผู้จัดการศูนย์ ส่งคืน สำนักงานใหญ่
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		[HttpPost("CenBranchToBranchReg")]
-		public async Task<IActionResult> CenBranchToBranchReg(ReturnModel model)
+		[HttpPost("CenBranchToLoan")]
+		public async Task<IActionResult> CenBranchToLoan(ReturnModel model)
 		{
 			try
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.Return.CenBranchToBranchReg(model);
+					await _repo.Return.CenBranchToLoan(model);
 
 					_transaction.Commit();
 				}

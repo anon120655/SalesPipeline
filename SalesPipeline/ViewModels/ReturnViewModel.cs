@@ -43,13 +43,13 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<Boolean>> CenBranchToBranchReg(ReturnModel model)
+		public async Task<ResultModel<Boolean>> CenBranchToLoan(ReturnModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
-				var content = await _httpClient.PostAsync($"/v1/Return/CenBranchToBranchReg", dataJson, token: tokenJwt);
+				var content = await _httpClient.PostAsync($"/v1/Return/CenBranchToLoan", dataJson, token: tokenJwt);
 
 				return new ResultModel<Boolean>()
 				{

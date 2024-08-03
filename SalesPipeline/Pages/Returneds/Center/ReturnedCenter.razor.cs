@@ -172,7 +172,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 			pathToNext = null;
 			if (model.Value == "0")
 			{
-				pathToNext = $"/return/center/branch/{model.ID}";
+				pathToNext = $"/return/center/loan/{model.ID}";
 			}
 			else if (model.Value == "1")
 			{

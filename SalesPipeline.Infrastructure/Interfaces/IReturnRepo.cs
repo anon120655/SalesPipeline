@@ -16,11 +16,11 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		/// <returns></returns>
 		Task RMToCenBranch(ReturnModel model);
 		/// <summary>
-		/// ผู้จัดการศูนย์ ส่งคืน กิจการสาขาภาค
+		/// ผู้จัดการศูนย์ ส่งคืน สำนักงานใหญ่
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
-		Task CenBranchToBranchReg(ReturnModel model);
+		Task CenBranchToLoan(ReturnModel model);
 		/// <summary>
 		/// กิจการสาขาภาค ส่งคืน ศูนย์ธุรกิจสินเชื่อ
 		/// </summary>

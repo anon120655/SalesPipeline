@@ -9,7 +9,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Center
 {
-    public partial class ReturnedCenterBranch
+    public partial class ReturnedCenterLoan
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -138,13 +138,13 @@ namespace SalesPipeline.Pages.Returneds.Center
 			await modalReturnReason.OnShowConfirm();
 		}
 
-		protected async Task CenBranchToBranchReg(string? id)
+		protected async Task CenBranchToLoan(string? id)
 		{
 			_errorMessageModal = null;
 
 			if (Guid.TryParse(id, out Guid _id) && formModel != null)
 			{
-				var response = await _returnViewModel.CenBranchToBranchReg(new()
+				var response = await _returnViewModel.CenBranchToLoan(new()
 				{
 					CurrentUserId = UserInfo.Id,
 					Master_ReasonReturnId = _id,

@@ -1,4 +1,4 @@
-﻿@page "/return/center/branch/{id:guid}"
+﻿@page "/return/center/loan/{id:guid}"
 
 <PageTitle>รายการที่ส่งคืน</PageTitle>
 
@@ -14,12 +14,12 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/return.png" width="50" /></div>
 						<div class="p-2">
-							<p class="back_topic">รายการที่ส่งคืน > สรุปลูกค้าที่ส่งคืนกิจการสาขาภาค</p>
+							<p class="back_topic">รายการที่ส่งคืน > สรุปลูกค้าที่ส่งคืนสำนักงานใหญ่</p>
 						</div>
 					</div>
 					<div class="row mt-4 mb-2">
 						<div class="col">
-							<h5 class="fw-bold">รายชื่อลูกค้าที่ส่งคืนกิจการสาขาภาค <span class="text-info">จำนวน 1 รายการ</span></h5>
+							<h5 class="fw-bold">รายชื่อลูกค้าที่ส่งคืนสำนักงานใหญ่ <span class="text-info">จำนวน 1 รายการ</span></h5>
 						</div>
 					</div>
 					<div class="row">
@@ -84,7 +84,7 @@
 		</div>
 	</div>
 
-	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="CenBranchToBranchReg" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
+	<ModalReturnReason @ref="modalReturnReason" CallbackConfirm="CenBranchToLoan" isLoading="isLoading" _errorMessage="@_errorMessageModal" ReasonReturn="LookUp.ReasonReturn" />
 	<ModalSuccessful @ref="modalSuccessfulAssign" CallbackModalHidden="OnModalHidden" />
 }
 else
