@@ -191,13 +191,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var pre_Cal_Fetu_Stans = await _repo.Context.Pre_Cal_Fetu_Stans.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == query.Id);
-			if(pre_Cal_Fetu_Stans == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติมารตฐานไม่สมบรณ์");
+			if(pre_Cal_Fetu_Stans == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติมารตฐานไม่สมบูรณ์");
 
 			var pre_Cal_Fetu_Apps = await _repo.Context.Pre_Cal_Fetu_Apps.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == query.Id);
-			if (pre_Cal_Fetu_Apps == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติตามประเภทผู้ขอไม่สมบรณ์");
+			if (pre_Cal_Fetu_Apps == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติตามประเภทผู้ขอไม่สมบูรณ์");
 
 			var pre_Cal_Fetu_Bus = await _repo.Context.Pre_Cal_Fetu_Bus.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Pre_CalId == query.Id);
-			if (pre_Cal_Fetu_Bus == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติตามประเภทธุรกิจไม่สมบรณ์");
+			if (pre_Cal_Fetu_Bus == null) throw new ExceptionCustom($"ข้อมูลคุณสมบัติตามประเภทธุรกิจไม่สมบูรณ์");
 
 			return _mapper.Map<Pre_CalCustom>(query);
 		}
