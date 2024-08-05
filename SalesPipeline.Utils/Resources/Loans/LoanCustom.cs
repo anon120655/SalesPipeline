@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationAtt.PreApprove;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,6 +43,7 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// <summary>
 		/// จำนวนช่วงเวลา
 		/// </summary>
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? PeriodNumber { get; set; }
 
 		/// <summary>
@@ -59,5 +61,13 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public virtual List<Loan_BusTypeCustom>? Loan_BusTypes { get; set; }
 
 		public virtual List<Loan_PeriodCustom>? Loan_Periods { get; set; }
+
+		[RequiredLoan_App(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public List<Loan_AppLoanCustom>? ValidateLoan_App => Loan_AppLoans;
+
+		[RequiredLoan_Bus(ErrorMessage = "กรุณาระบุข้อมูล")]
+		public List<Loan_BusTypeCustom>? ValidateLoan_Bus => Loan_BusTypes;
+
+
 	}
 }

@@ -58,6 +58,7 @@
 												}
 											}
 										</select>
+										<ValidationMessage For="@(() => formModel.PeriodNumber)" />
 									</div>
 								</div>
 							</div>
@@ -87,6 +88,7 @@
 									{
 										<DropdownCheckboxCustom items="LookUp.Pre_Applicant_LoanModel" type="1" callbackItemsSelected="CallbackItemsSelected" />
 									}
+									<ValidationMessage For="@(() => formModel.ValidateLoan_App)" />
 								</div>
 								<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 								<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
@@ -94,6 +96,7 @@
 									{
 										<DropdownCheckboxCustom items="LookUp.Pre_BusinessTypeModel" type="2" callbackItemsSelected="CallbackItemsSelected" />
 									}
+									<ValidationMessage For="@(() => formModel.ValidateLoan_Bus)" />
 								</div>
 							</div>
 						</div>
@@ -139,7 +142,7 @@
 															&& period.Master_Pre_Interest_RateTypeId != _rateTypeSpecial)
 										{
 											<div class="form-group row mb-3">
-												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Special Type</label>
+												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ส่วนต่างอัตราดอกเบี้ย</label>
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 													<select @onchange="(e)=> OnSpecial(period,e.Value)" class="form-select" value="@period.SpecialType">
 														<option value="">เลือก</option>
