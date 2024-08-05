@@ -20,10 +20,14 @@
 		<input type="text" @bind="searchTerm" placeholder="Search..." class="form-control search-input" @oninput="OnSearchInput" />
 		@foreach (var item in filteredItems)
 		{
-			<div class="dropdown-item">
+			@* <div class="dropdown-item">
 				<input type="checkbox" id="@item.ID" @bind="item.IsSelected" @bind:event="onchange" />
 				<label for="@item.ID">@item.Name</label>
-			</div>
+			</div> *@
+			<label class="dropdown-item">
+				<input type="checkbox" id="@item.ID" @bind="item.IsSelected" @bind:event="onchange" />
+				@item.Name
+			</label>
 		}
 	</div>
 </div>
