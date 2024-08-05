@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class LoanRepo : ILoanRepo
+	public class LoanRepo : ILoanRepo
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -111,15 +112,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						string? master_Pre_Interest_RateTypeName = null;
 						string? master_Pre_Interest_RateTypeCode = null;
 
-						if (period.Master_Pre_Interest_RateTypeId.HasValue)
+						if (!period.Master_Pre_Interest_RateTypeId.HasValue) throw new ExceptionCustom("ระบุประเภทอัตราดอกเบี้ย");
+
+						var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
+						if (pre_App_Loan != null)
 						{
-							var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
-							if (pre_App_Loan != null)
-							{
-								master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
-								master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
-							}
+							master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
+							master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
 						}
+
+						if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
+						if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
 
 						var loan_Period = new Data.Entity.Loan_Period();
 						loan_Period.Status = StatusModel.Active;
@@ -241,15 +244,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							string? master_Pre_Interest_RateTypeName = null;
 							string? master_Pre_Interest_RateTypeCode = null;
 
-							if (period.Master_Pre_Interest_RateTypeId.HasValue)
+							if (!period.Master_Pre_Interest_RateTypeId.HasValue) throw new ExceptionCustom("ระบุประเภทอัตราดอกเบี้ย");
+
+							var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
+							if (pre_App_Loan != null)
 							{
-								var pre_App_Loan = await _repo.Master_Pre_RateType.GetById(period.Master_Pre_Interest_RateTypeId.Value);
-								if (pre_App_Loan != null)
-								{
-									master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
-									master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
-								}
+								master_Pre_Interest_RateTypeName = pre_App_Loan.Name;
+								master_Pre_Interest_RateTypeCode = pre_App_Loan.Code;
 							}
+
+							if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
+							if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
 
 							var loan_Period = new Data.Entity.Loan_Period();
 							loan_Period.Status = StatusModel.Active;

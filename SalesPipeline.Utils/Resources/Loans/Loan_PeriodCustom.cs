@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +32,7 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// <summary>
 		/// FK ประเภทอัตราดอกเบี้ย
 		/// </summary>
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public Guid? Master_Pre_Interest_RateTypeId { get; set; }
 
 		public string? Master_Pre_Interest_RateTypeName { get; set; }

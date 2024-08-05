@@ -56,18 +56,15 @@ namespace SalesPipeline.Utils.Resources.Loans
 		/// </summary>
 		public string? Condition { get; set; }
 
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[MinLength(1, ErrorMessage = "ต้องมีอย่างน้อย 1 รายการ")]
 		public virtual List<Loan_AppLoanCustom>? Loan_AppLoans { get; set; }
 
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
+		[MinLength(1, ErrorMessage = "ต้องมีอย่างน้อย 1 รายการ")]
 		public virtual List<Loan_BusTypeCustom>? Loan_BusTypes { get; set; }
 
 		public virtual List<Loan_PeriodCustom>? Loan_Periods { get; set; }
-
-		[RequiredLoan_App(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public List<Loan_AppLoanCustom>? ValidateLoan_App => Loan_AppLoans;
-
-		[RequiredLoan_Bus(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public List<Loan_BusTypeCustom>? ValidateLoan_Bus => Loan_BusTypes;
-
 
 	}
 }

@@ -88,7 +88,7 @@
 									{
 										<DropdownCheckboxCustom items="LookUp.Pre_Applicant_LoanModel" type="1" callbackItemsSelected="CallbackItemsSelected" />
 									}
-									<ValidationMessage For="@(() => formModel.ValidateLoan_App)" />
+									<ValidationMessage For="@(() => formModel.Loan_AppLoans)" />
 								</div>
 								<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทธุรกิจ</label>
 								<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
@@ -96,7 +96,7 @@
 									{
 										<DropdownCheckboxCustom items="LookUp.Pre_BusinessTypeModel" type="2" callbackItemsSelected="CallbackItemsSelected" />
 									}
-									<ValidationMessage For="@(() => formModel.ValidateLoan_Bus)" />
+									<ValidationMessage For="@(() => formModel.Loan_BusTypes)" />
 								</div>
 							</div>
 						</div>
@@ -155,9 +155,6 @@
 													<input @onchange="(e)=> OnSpecialRate(period,e.Value)" type="number" class="form-control numberonly" value="@period.SpecialRate" onkeyup="enforceMinMax(this);" min="0" max="10">
 												</div>
 											</div>
-										}
-										@if (period.SpecialType != null)
-										{
 											<div class="form-group row mb-3">
 												<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เริ่มปีที่</label>
 												<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
