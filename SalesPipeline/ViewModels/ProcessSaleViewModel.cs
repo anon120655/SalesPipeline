@@ -210,11 +210,11 @@ namespace SalesPipeline.ViewModels
 			try
 			{
 				var content = await _httpClient.GetAsync($"/v1/ProcessSale/GetListContactHistory?{model.SetParameter(true)}");
-				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Sale_Contact_HistoryCustom>>>(content);
+				var dataMap = JsonConvert.DeserializeObject<ContactHistoryMain>(content);
 
 				return new ResultModel<PaginationView<List<Sale_Contact_HistoryCustom>>>()
 				{
-					Data = dataMap
+					Data = dataMap?.History
 				};
 			}
 			catch (Exception ex)

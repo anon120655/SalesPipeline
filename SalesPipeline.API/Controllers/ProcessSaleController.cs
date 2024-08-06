@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Phoenixs;
@@ -136,10 +137,10 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-        /// <summary>
-        /// ข้อมูลกระบวนการขายทั้งหมด
-        /// </summary>
-        [HttpGet("GetListReply")]
+		/// <summary>
+		/// ข้อมูลกระบวนการขายทั้งหมด
+		/// </summary>
+		[HttpGet("GetListReply")]
 		public async Task<IActionResult> GetListReply([FromQuery] allFilter model)
 		{
 			try
@@ -182,7 +183,23 @@ namespace SalesPipeline.API.Controllers
 			{
 				var response = await _repo.ProcessSale.GetListContactHistory(model);
 
-				return Ok(response);
+				short iSCloseSale = 0;
+				if (model.id != Guid.Empty)
+				{
+					var sale = await _repo.Sales.GetStatusById(model.id);
+					if (sale == null) throw new ExceptionCustom("saleid not found.");
+
+					if (sale.StatusSaleId == StatusSaleModel.WaitCloseSale)
+					{
+						iSCloseSale = 1;
+					}
+				}
+
+				return Ok(new ContactHistoryMain()
+				{
+					History = response,
+					ISCloseSale = iSCloseSale
+				});
 			}
 			catch (Exception ex)
 			{
