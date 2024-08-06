@@ -1186,8 +1186,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
 			if (!model.ProceedId.HasValue) throw new ExceptionCustom("ระบุการดำเนินการ");
-			if (model.ProceedId != 1 && model.ProceedId != 2 && model.ProceedId != 3 && model.ProceedId != 4) throw new ExceptionCustom("proceedId not match");
-			if (model.ProceedId == 1 || model.ProceedId == 4)
+			if (model.ProceedId != 1 && model.ProceedId != 2 && model.ProceedId != 3 && model.ProceedId != 4 && model.ProceedId != 5) throw new ExceptionCustom("proceedId not match");
+			if (model.ProceedId == 1 || model.ProceedId == 4 || model.ProceedId == 5)
 			{
 				if (String.IsNullOrEmpty(model.Note)) throw new ExceptionCustom("ระบุหมายเหตุ");
 			}
@@ -1255,6 +1255,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					: model.ProceedId == 2 ? "ติดต่อขอเอกสาร"
 					: model.ProceedId == 3 ? "เข้าพบรับเอกสาร"
 					: model.ProceedId == 4 ? "ไม่ผ่านการพิจารณา"
+					: model.ProceedId == 5 ? "รอปิดการขาย"
 					: string.Empty;
 			}
 
@@ -1289,10 +1290,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					nextActionName = "ทำการนัดหมาย";
 				}
-				else if (model.NextActionId == 2)
+				else if (model.NextActionId == 2 || model.ProceedId == 5)
 				{
 					statusSaleId = StatusSaleModel.WaitCloseSale;
-					//topicName = "รอปิดการขาย";
 					nextActionName = "รอปิดการขาย";
 					await _repo.Sales.UpdateStatusOnly(new()
 					{
@@ -1317,6 +1317,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				MeetFullName = model.MeetName,
 				ResultMeetName = resultMeetName,
 				NextActionName = nextActionName,
+				AttachmentPath = model.AttachmentPath,
 				AppointmentDate = model.AppointmentDate,
 				AppointmentTime = model.AppointmentTime,
 				Location = model.Location,
@@ -1512,6 +1513,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			sale_Contact_History.Percent = model.Percent;
 			sale_Contact_History.PercentChanceLoanPass = model.PercentChanceLoanPass;
 
+			sale_Contact_History.AttachmentPath = model.AttachmentPath;
 			sale_Contact_History.AppointmentDate = model.AppointmentDate;
 			sale_Contact_History.AppointmentTime = model.AppointmentTime;
 			sale_Contact_History.Location = model.Location;

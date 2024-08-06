@@ -75,6 +75,11 @@ public partial class Sale_Contact_History
     public string? NextActionName { get; set; }
 
     /// <summary>
+    /// ไฟล์แนบ
+    /// </summary>
+    public string? AttachmentPath { get; set; }
+
+    /// <summary>
     /// วันที่นัดหมาย
     /// </summary>
     public DateTime? AppointmentDate { get; set; }
