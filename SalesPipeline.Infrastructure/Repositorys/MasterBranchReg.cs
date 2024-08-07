@@ -94,7 +94,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				var _status = parsedValue ? (short)1 : (short)0;
 				Guid id = Guid.Parse(model.id);
-				var query = await _repo.Context.Master_Branch_Regions.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+				var query = await _repo.Context.Master_Branch_Regions.Where(x =>  x.Id == id).FirstOrDefaultAsync();
 				if (query != null)
 				{
 					query.UpdateBy = model.userid;
@@ -123,7 +123,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchRegs(allFilter model)
 		{
 			var query = _repo.Context.Master_Branch_Regions
-												 //.Where(x => x.Status != StatusModel.Delete)
+												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 

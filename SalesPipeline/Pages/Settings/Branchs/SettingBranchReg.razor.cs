@@ -116,9 +116,8 @@ namespace SalesPipeline.Pages.Settings.Branchs
 				{
 					string? actiontxt = val ? "<i class=\"fa-regular fa-circle-check\"></i> เปิด" : "<i class=\"fa-solid fa-circle-xmark\"></i> ปิด";
 					string fulltxt = $"{actiontxt}การใช้งานเรียบร้อย";
-					//_utilsViewModel.AlertSuccess(fulltxt);
 					await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
-					await SetModel();
+					await SetModel(!true);
 				}
 			}
 		}
