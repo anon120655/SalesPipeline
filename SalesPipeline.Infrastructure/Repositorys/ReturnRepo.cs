@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class ReturnRepo : IReturnRepo
+	public class ReturnRepo : IReturnRepo
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -134,8 +134,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sales.AssUser = null;
 						sales.AssCenterUser = null;
 
-						if (model.CurrentUserId != sales.AssCenterUserId)
+						var isView = await _repo.Sales.IsViewSales(saleId, model.CurrentUserId);
+						if (!isView)
+						{
 							throw new ExceptionCustom("currentuserid not match assuserid");
+						}
+						//if (model.CurrentUserId != sales.AssCenterUserId)
+						//	throw new ExceptionCustom("currentuserid not match assuserid");
 
 						//Name ต่างๆ ใช้ตอนแสดงผลว่าใครส่งกลับ แต่ id ต้อง clear ออกเพื่อคำนวณ UpdateCurrentNumber
 						sales.AssUserId = null;
