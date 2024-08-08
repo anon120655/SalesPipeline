@@ -1810,33 +1810,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (phoenix != null && phoenix.Count > 0)
 				{
-					_repo.Context.Sale_Phoenixes.RemoveRange(_repo.Context.Sale_Phoenixes.Where(x => x.SaleId == model.SaleId));
-					foreach (var item in phoenix)
-					{
-						Sale_Phoenix sale_Phoenix = new();
-						sale_Phoenix.Status = StatusModel.Active;
-						sale_Phoenix.CreateDate = _dateNow;
-						sale_Phoenix.SaleId = model.SaleId;
-						sale_Phoenix.workflow_id = item.workflow_id;
-						sale_Phoenix.app_no = item.app_no;
-						sale_Phoenix.ana_no = item.ana_no;
-						sale_Phoenix.fin_type = item.fin_type;
-						sale_Phoenix.cif_no = item.cif_no;
-						sale_Phoenix.cif_name = item.cif_name;
-						sale_Phoenix.branch_customer = item.branch_customer;
-						sale_Phoenix.branch_user = item.branch_user;
-						sale_Phoenix.approve_level = item.approve_level;
-						sale_Phoenix.status_type = item.status_type;
-						sale_Phoenix.status_code = item.status_code;
-						sale_Phoenix.create_by = item.create_by;
-						sale_Phoenix.created_date = item.created_date;
-						sale_Phoenix.update_by = item.update_by;
-						sale_Phoenix.update_date = item.update_date;
-						sale_Phoenix.approve_by = item.approve_by;
-						sale_Phoenix.approve_date = item.approve_date;
-						await _db.InsterAsync(sale_Phoenix);
-						await _db.SaveAsync();
-					}
+					await SyncPhoenixBySaleId(model.SaleId, phoenix);
 				}
 
 				await _repo.Sales.UpdateStatusOnly(new()
@@ -1849,6 +1823,45 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				throw new ExceptionCustom("ไม่พบ SaleId");
+			}
+		}
+
+		public async Task SyncPhoenixBySaleId(Guid id, List<Sale_PhoenixCustom>? phoenix)
+		{
+			var sales = await _repo.Context.Sales.Where(x => x.Id == id).FirstOrDefaultAsync();
+			if(sales == null) throw new ExceptionCustom("ไม่พบข้อมูล");
+
+			DateTime _dateNow = DateTime.Now;
+
+			if (phoenix != null && phoenix.Count > 0)
+			{
+				_repo.Context.Sale_Phoenixes.RemoveRange(_repo.Context.Sale_Phoenixes.Where(x => x.SaleId == id));
+				foreach (var item in phoenix)
+				{
+					Sale_Phoenix sale_Phoenix = new();
+					sale_Phoenix.Status = StatusModel.Active;
+					sale_Phoenix.CreateDate = _dateNow;
+					sale_Phoenix.SaleId = id;
+					sale_Phoenix.workflow_id = item.workflow_id;
+					sale_Phoenix.app_no = item.app_no;
+					sale_Phoenix.ana_no = item.ana_no;
+					sale_Phoenix.fin_type = item.fin_type;
+					sale_Phoenix.cif_no = item.cif_no;
+					sale_Phoenix.cif_name = item.cif_name;
+					sale_Phoenix.branch_customer = item.branch_customer;
+					sale_Phoenix.branch_user = item.branch_user;
+					sale_Phoenix.approve_level = item.approve_level;
+					sale_Phoenix.status_type = item.status_type;
+					sale_Phoenix.status_code = item.status_code;
+					sale_Phoenix.create_by = item.create_by;
+					sale_Phoenix.created_date = item.created_date;
+					sale_Phoenix.update_by = item.update_by;
+					sale_Phoenix.update_date = item.update_date;
+					sale_Phoenix.approve_by = item.approve_by;
+					sale_Phoenix.approve_date = item.approve_date;
+					await _db.InsterAsync(sale_Phoenix);
+					await _db.SaveAsync();
+				}
 			}
 		}
 

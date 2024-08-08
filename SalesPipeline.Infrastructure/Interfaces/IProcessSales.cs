@@ -29,6 +29,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model);
 		Task<List<Sale_PhoenixCustom>?> GetPhoenixBySaleId(Guid id);
 		Task UpdatePhoenix(PhoenixModel model, List<Sale_PhoenixCustom>? phoenix);
+		Task SyncPhoenixBySaleId(Guid id, List<Sale_PhoenixCustom>? phoenix);
 		Task<Sale_Document_UploadCustom> CreateDocumentFile(Sale_Document_UploadCustom model);
 		Task<Sale_Document_UploadCustom> UpdateDocumentFile(Sale_Document_UploadCustom model);
 		Task<Sale_Document_UploadCustom> GetDocumentFileById(Guid id);
