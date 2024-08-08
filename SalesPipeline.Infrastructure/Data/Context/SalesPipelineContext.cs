@@ -184,6 +184,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Sale_Partner> Sale_Partners { get; set; }
 
+    public virtual DbSet<Sale_Phoenix> Sale_Phoenixes { get; set; }
+
     public virtual DbSet<Sale_Reply> Sale_Replies { get; set; }
 
     public virtual DbSet<Sale_Reply_Section> Sale_Reply_Sections { get; set; }
@@ -3082,6 +3084,42 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("sale_partner_ibfk_1");
+        });
+
+        modelBuilder.Entity<Sale_Phoenix>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Sale_Phoenix");
+
+            entity.HasIndex(e => e.SaleId, "SaleId");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.ana_no).HasMaxLength(255);
+            entity.Property(e => e.app_no).HasMaxLength(255);
+            entity.Property(e => e.approve_by).HasMaxLength(255);
+            entity.Property(e => e.approve_date).HasMaxLength(255);
+            entity.Property(e => e.approve_level).HasMaxLength(255);
+            entity.Property(e => e.branch_customer).HasMaxLength(255);
+            entity.Property(e => e.branch_user).HasMaxLength(255);
+            entity.Property(e => e.cif_name).HasMaxLength(255);
+            entity.Property(e => e.cif_no).HasMaxLength(255);
+            entity.Property(e => e.create_by).HasMaxLength(255);
+            entity.Property(e => e.created_date).HasMaxLength(255);
+            entity.Property(e => e.fin_type).HasMaxLength(255);
+            entity.Property(e => e.status_code).HasMaxLength(255);
+            entity.Property(e => e.status_type).HasMaxLength(255);
+            entity.Property(e => e.update_by).HasMaxLength(255);
+            entity.Property(e => e.update_date).HasMaxLength(255);
+            entity.Property(e => e.workflow_id).HasMaxLength(255);
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.Sale_Phoenixes)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("sale_phoenix_ibfk_1");
         });
 
         modelBuilder.Entity<Sale_Reply>(entity =>

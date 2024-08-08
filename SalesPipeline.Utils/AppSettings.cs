@@ -14,6 +14,7 @@ namespace SalesPipeline.Utils
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }
 		public iAuthens? iAuthen { get; set; }
+		public Phoenixs? Phoenix { get; set; }
 		public NotiMobiles? NotiMobile { get; set; }
 		public Databases? Database { get; set; }
 
@@ -43,6 +44,13 @@ namespace SalesPipeline.Utils
 			public string? ApiKey { get; set; }
 			public string? IPAddress { get; set; }
 			public string? Reference_ID { get; set; }
+		}
+
+		public class Phoenixs
+		{
+			public bool IsConnect { get; set; }
+			public string? baseUri { get; set; }
+			public string? ApiKey { get; set; }
 		}
 
 		public class NotiMobiles

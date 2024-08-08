@@ -1184,6 +1184,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("สถานะการขายไม่ถูกต้อง");
 			}
 
+			if (sale.StatusSaleId == StatusSaleModel.ResultsNotConsidered)
+			{
+				throw new ExceptionCustom("ลูกค้าท่านนี้ไม่ผ่านการพิจารณา");
+			}
+
 			//1=แจ้งข้อมูลเพิ่มเติม 2=ติดต่อขอเอกสาร 3=เข้าพบรับเอกสาร 4=ไม่ผ่านการพิจารณา
 			if (!model.ProceedId.HasValue) throw new ExceptionCustom("ระบุการดำเนินการ");
 			if (model.ProceedId != 1 && model.ProceedId != 2 && model.ProceedId != 3 && model.ProceedId != 4 && model.ProceedId != 5) throw new ExceptionCustom("proceedId not match");
@@ -1769,7 +1774,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Sale_ContactCustom>(sale_Contact);
 		}
 
-		public async Task UpdatePhoenix(PhoenixModel model)
+		public async Task<List<Sale_PhoenixCustom>?> GetPhoenixBySaleId(Guid id)
+		{
+			var query = await _repo.Context.Sale_Phoenixes.Where(x => x.Status != StatusModel.Delete && x.SaleId == id).OrderBy(x => x.CreateDate).ToListAsync();
+
+			return _mapper.Map<List<Sale_PhoenixCustom>>(query);
+		}
+
+		public async Task UpdatePhoenix(PhoenixModel model, List<Sale_PhoenixCustom>? phoenix)
 		{
 			if (string.IsNullOrEmpty(model.CIF))
 				throw new ExceptionCustom("ระบุ CIF");
@@ -1793,6 +1805,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sales.CIF = model.CIF;
 				_db.Update(sales);
 				await _db.SaveAsync();
+
+				DateTime _dateNow = DateTime.Now;
+
+				if (phoenix != null && phoenix.Count > 0)
+				{
+					_repo.Context.Sale_Phoenixes.RemoveRange(_repo.Context.Sale_Phoenixes.Where(x => x.SaleId == model.SaleId));
+					foreach (var item in phoenix)
+					{
+						Sale_Phoenix sale_Phoenix = new();
+						sale_Phoenix.Status = StatusModel.Active;
+						sale_Phoenix.CreateDate = _dateNow;
+						sale_Phoenix.SaleId = model.SaleId;
+						sale_Phoenix.workflow_id = item.workflow_id;
+						sale_Phoenix.app_no = item.app_no;
+						sale_Phoenix.ana_no = item.ana_no;
+						sale_Phoenix.fin_type = item.fin_type;
+						sale_Phoenix.cif_no = item.cif_no;
+						sale_Phoenix.cif_name = item.cif_name;
+						sale_Phoenix.branch_customer = item.branch_customer;
+						sale_Phoenix.branch_user = item.branch_user;
+						sale_Phoenix.approve_level = item.approve_level;
+						sale_Phoenix.status_type = item.status_type;
+						sale_Phoenix.status_code = item.status_code;
+						sale_Phoenix.create_by = item.create_by;
+						sale_Phoenix.created_date = item.created_date;
+						sale_Phoenix.update_by = item.update_by;
+						sale_Phoenix.update_date = item.update_date;
+						sale_Phoenix.approve_by = item.approve_by;
+						sale_Phoenix.approve_date = item.approve_date;
+						await _db.InsterAsync(sale_Phoenix);
+						await _db.SaveAsync();
+					}
+				}
 
 				await _repo.Sales.UpdateStatusOnly(new()
 				{

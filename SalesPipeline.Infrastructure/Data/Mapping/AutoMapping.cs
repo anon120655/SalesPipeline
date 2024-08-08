@@ -14,6 +14,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils.Resources.Loans;
 using SalesPipeline.Utils.Resources.PreApprove;
+using SalesPipeline.Utils.Resources.Phoenixs;
 
 namespace SalesPipeline.Infrastructure.Data.Mapping
 {
@@ -130,6 +131,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Sale_Activity, Sale_ActivityCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Deliver, Sale_DeliverCustom>().ReverseMap();
 			CreateMap<Entity.Sale_Partner, Sale_PartnerCustom>().ReverseMap();
+			CreateMap<Entity.Sale_Phoenix, Sale_PhoenixCustom>().ReverseMap();
 
 			//Customer
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();

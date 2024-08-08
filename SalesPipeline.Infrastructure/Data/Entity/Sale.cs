@@ -201,6 +201,8 @@ public partial class Sale
 
     public virtual ICollection<Sale_Partner> Sale_Partners { get; set; } = new List<Sale_Partner>();
 
+    public virtual ICollection<Sale_Phoenix> Sale_Phoenixes { get; set; } = new List<Sale_Phoenix>();
+
     public virtual ICollection<Sale_Reply> Sale_Replies { get; set; } = new List<Sale_Reply>();
 
     public virtual ICollection<Sale_Result> Sale_Results { get; set; } = new List<Sale_Result>();

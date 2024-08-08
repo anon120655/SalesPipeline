@@ -1,4 +1,5 @@
-﻿using SalesPipeline.Utils.Resources.PreApprove;
+﻿using SalesPipeline.Utils.Resources.Phoenixs;
+using SalesPipeline.Utils.Resources.PreApprove;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,27 @@ namespace SalesPipeline.Utils.DataCustom
 				new() {Z = "-5.1" ,CreditScore = "91" ,Prob = "0.006059801"},
 				new() {Z = "5" ,CreditScore = "90" ,Prob = "0.006692851"}
 			};
+		}
+
+		public static List<Sale_PhoenixCustom>? Phoenixs()
+		{
+			List<Sale_PhoenixCustom> phoenixModel = new List<Sale_PhoenixCustom>();
+
+			for (int i = 1; i <= 9; i++)
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					phoenixModel.Add(new Sale_PhoenixCustom
+					{
+						cif_no = $"1000{i}",
+						cif_name = $"บริษัท 00{i}_{j}",
+						status_type = $"วิเคราะห์โครงการ00{i}_{j}",
+						status_code = $"100 - RM วิเคราะห์โครงการ{i}_{j}",
+					});
+				}
+			}
+
+			return phoenixModel;
 		}
 	}
 }
