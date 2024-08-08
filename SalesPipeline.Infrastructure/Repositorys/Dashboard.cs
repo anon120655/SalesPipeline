@@ -2770,14 +2770,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				foreach (var item in statusTotal)
 				{
-					if (item.StatusID == (int)StatusSaleModel.WaitMeet
-						|| item.StatusID == (int)StatusSaleModel.Meet)
+					if (item.StatusID == (int)StatusSaleModel.Contact)
+					{
+						response.Contact = response.Contact + item.Count;
+					}
+
+					if (item.StatusID == (int)StatusSaleModel.Meet)
 					{
 						response.Meet = response.Meet + item.Count;
 					}
 
-					if (item.StatusID == (int)StatusSaleModel.WaitSubmitDocument
-						|| item.StatusID == (int)StatusSaleModel.SubmitDocument)
+					if (item.StatusID == (int)StatusSaleModel.SubmitDocument)
 					{
 						response.Document = response.Document + item.Count;
 					}
