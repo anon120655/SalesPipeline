@@ -76,38 +76,60 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return query;
 		}
 
-		private IQueryable<Assignment_RM> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
+		private async Task<IQueryable<Assignment_RM>> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
-			//var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
-			
+			var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
+
 			// ดึงข้อมูล User ก่อน
-			//var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
+			var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
 
 			// จากนั้นค่อยดึง User_Areas
-			//var user_AreasRm = users
-			//	.SelectMany(u => u.User_Areas.Select(s => new
-			//	{
-			//		UserId = u.Id,
-			//		ProvinceId = s.ProvinceId,
-			//		// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
-			//	}))
-			//	.ToList();
+			var user_AreasRms = users
+				.SelectMany(u => u.User_Areas.Select(s => new
+				{
+					UserId = u.Id,
+					ProvinceId = s.ProvinceId,
+					// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
+				}))
+				.ToList();
 
 
 			// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
 			Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
+
 			foreach (var provinceId in user_Areas)
 			{
 				var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
 				orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
 			}
+
+			orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
 			// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
 			query = query.Where(orExpression);
+			var queryL = query.Where(orExpression).ToList();
 
 			return query;
 		}
+
+		//private IQueryable<Assignment_RM> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
+		//{
+		//	if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+		//	var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+		//	// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
+		//	Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
+		//	foreach (var provinceId in user_Areas)
+		//	{
+		//		var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+		//		orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+		//	}
+		//	// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+		//	query = query.Where(orExpression);
+
+		//	return query;
+		//}
 
 		public async Task<Assignment_RMCustom> Create(Assignment_RMCustom model)
 		{
@@ -297,7 +319,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				query = QueryAreaAssignment_RM(query, user);
+				query = await QueryAreaAssignment_RM(query, user);
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -431,7 +453,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				query = QueryAreaAssignment_RM(query, user);
+				query = await QueryAreaAssignment_RM(query, user);
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -580,7 +602,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
 			{
-				query = QueryAreaAssignment_RM(query, user);
+				query = await QueryAreaAssignment_RM(query, user);
 			}
 
 			if (!String.IsNullOrEmpty(model.emp_id))
@@ -625,6 +647,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//ทุกงานจะถูกพิจารณา ไม่ว่าจะอยู่ในพื้นที่ดูแลที่กำหนดไว้ใน AreasList หรือไม่
 			if (JobsList.Count > 0 && EmployeesList.Count > 0)
 			{
+				int index_not_anyjob = 0;
 				foreach (var job in JobsList)
 				{
 					var eligibleEmployees = EmployeesList.Where(e => e.User.User_Areas.Any(ua => ua.ProvinceId == job.ProvinceId)).ToList();
@@ -637,11 +660,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					else
 					{
-						// ถ้าไม่มีพนักงานที่เหมาะสม ให้เลือกพนักงานคนแรกใน EmployeesList
-						selectedEmployee = EmployeesList.FirstOrDefault();
+						// ถ้าไม่มีพนักงานที่เหมาะสม จะวนมอบหมายให้พนักงานใน EmployeesList
+						selectedEmployee = EmployeesList[index_not_anyjob];
+						index_not_anyjob++;
+						if (EmployeesList.Count == index_not_anyjob)
+						{
+							index_not_anyjob = 0;
+						}
 						if (selectedEmployee == null)
 						{
-							Console.WriteLine($"ไม่มีพนักงานใน EmployeesList สำหรับงาน ID: {job.Id}");
+							//Console.WriteLine($"ไม่มีพนักงานใน EmployeesList สำหรับงาน ID: {job.Id}");
 							continue; // ข้ามไปงานถัดไป
 						}
 					}
