@@ -49,6 +49,16 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 		public string? iAuthenRoleName { get; set; }
 
+		/// <summary>
+		/// 1=มีสิทธ์มอบหมาย ผจศ.
+		/// </summary>
+		public bool IsAssignCenter { get; set; }
+
+		/// <summary>
+		/// 1=มีสิทธ์มอบหมาย rm
+		/// </summary>
+		public bool IsAssignRM { get; set; }
+
 		public virtual ICollection<User_PermissionCustom>? User_Permissions { get; set; }
 
         //Custom

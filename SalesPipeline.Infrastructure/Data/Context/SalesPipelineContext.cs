@@ -3777,6 +3777,8 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasComment("รายละเอียดหน้าที่");
+            entity.Property(e => e.IsAssignCenter).HasComment("1=มีสิทธ์มอบหมาย ผจศ.");
+            entity.Property(e => e.IsAssignRM).HasComment("1=มีสิทธ์มอบหมาย rm");
             entity.Property(e => e.IsModify).HasComment("อนุญาตให้แก้ไข");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)

@@ -65,7 +65,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					orExpression = orExpression.Or(x => x.AssCenterUserId == user.Id);
 					query = query.Where(orExpression);
 
-					query = query.Where(x=>x.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
+					query = query.Where(x => x.StatusSaleId != StatusSaleModel.MCenterReturnLoan);
 				}
 			}
 
@@ -495,6 +495,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			//var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+			if (model.isassigncenter == 1)
+			{
+				if (!user.Role.IsAssignCenter)
+				{
+					return new() { Items = new() };
+				}
+			}
+
+			if (model.isassignrm == 1)
+			{
+				if (!user.Role.IsAssignRM)
+				{
+					return new() { Items = new() };
+				}
+			}
 
 			IQueryable<Sale> query;
 

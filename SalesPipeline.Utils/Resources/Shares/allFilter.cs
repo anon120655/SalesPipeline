@@ -85,6 +85,8 @@ namespace SalesPipeline.Utils.Resources.Shares
 		public short? isAll { get; set; }
 		public short? isMatchCal { get; set; }
 		public string? preapploanid { get; set; }
+		public short? isassigncenter { get; set; }
+		public short? isassignrm { get; set; }
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -322,6 +324,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (!String.IsNullOrEmpty(preapploanid))
 				ParameterAll += $"&preapploanid={preapploanid}";
+
+			if (isassigncenter.HasValue)
+				ParameterAll += $"&isassigncenter={isassigncenter}";
+
+			if (isassignrm.HasValue)
+				ParameterAll += $"&isassignrm={isassignrm}";
 
 			return ParameterAll;
 		}

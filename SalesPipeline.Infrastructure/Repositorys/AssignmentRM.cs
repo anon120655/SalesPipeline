@@ -564,10 +564,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			//if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			//{
+			//	return new();
+			//}
+			if (!user.Role.IsAssignRM)
 			{
-				return new();
+				return new() { Items = new() };
 			}
+
 			var user_Areas = user.User_Areas?.Select(x => new User_AreaCustom()
 			{
 				ProvinceId = x.ProvinceId,

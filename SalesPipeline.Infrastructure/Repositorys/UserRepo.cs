@@ -850,6 +850,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					iAuthenRoleCode = model.iAuthenRoleCode,
 					iAuthenRoleName = model.iAuthenRoleName,
 					IsModify = model.IsModify,
+					IsAssignCenter = model.IsAssignCenter,
+					IsAssignRM = model.IsAssignRM,
 				};
 				await _db.InsterAsync(userRole);
 				await _db.SaveAsync();
@@ -894,6 +896,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					userRole.iAuthenRoleCode = model.iAuthenRoleCode;
 					userRole.iAuthenRoleName = model.iAuthenRoleName;
 					userRole.IsModify = model.IsModify;
+					userRole.IsAssignCenter = model.IsAssignCenter;
+					userRole.IsAssignRM = model.IsAssignRM;
 					_db.Update(userRole);
 					await _db.SaveAsync();
 

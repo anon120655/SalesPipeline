@@ -44,6 +44,16 @@ public partial class User_Role
 
     public string? iAuthenRoleName { get; set; }
 
+    /// <summary>
+    /// 1=มีสิทธ์มอบหมาย ผจศ.
+    /// </summary>
+    public bool IsAssignCenter { get; set; }
+
+    /// <summary>
+    /// 1=มีสิทธ์มอบหมาย rm
+    /// </summary>
+    public bool IsAssignRM { get; set; }
+
     public virtual ICollection<User_Permission> User_Permissions { get; set; } = new List<User_Permission>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();

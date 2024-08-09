@@ -116,9 +116,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && !user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+			//if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && !user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN))
+			//{
+			//	return new();
+			//}
+			if (!user.Role.IsAssignCenter)
 			{
-				return new();
+				return new() { Items = new() };
 			}
 
 			//รูปแบบการมอบหมายตามเกณฑ์

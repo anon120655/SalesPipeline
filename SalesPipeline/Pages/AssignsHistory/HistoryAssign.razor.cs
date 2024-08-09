@@ -80,6 +80,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 			if (resetPage) filter.page = 1;
 
 			filter.userid = UserInfo.Id;
+			filter.isassignrm = 1;
 			filter.statussaleid = StatusSaleModel.WaitContact;
 			var data = await _salesViewModel.GetList(filter);
 			if (data != null && data.Status)
