@@ -10,7 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class Master_Pre_BusType : IMaster_Pre_BusType
+	public class Master_Pre_BusType : IMaster_Pre_BusType
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -126,6 +126,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (Guid.TryParse(model.preapploanid, out Guid _preapploanid))
+			{
+				if (_preapploanid != Guid.Empty)
+				{
+					var pre_Cals = _repo.Context.Pre_Cals
+										 .Where(x => x.Status == StatusModel.Active && x.Master_Pre_Applicant_LoanId == _preapploanid)
+										 .Select(a => a.Master_Pre_BusinessTypeId)
+										 .Distinct(); // ใช้ Distinct เพื่อลดการจับคู่ที่ไม่จำเป็น
+
+					query = query.Where(x => pre_Cals.Any(busid => busid == x.Id));
+				}
 			}
 
 			if (!String.IsNullOrEmpty(model.val1))

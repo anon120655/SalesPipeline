@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class Master_Pre_App_Loan : IMaster_Pre_App_Loan
+	public class Master_Pre_App_Loan : IMaster_Pre_App_Loan
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -131,6 +131,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (model.isMatchCal == 1)
+			{
+				var pre_Cals = _repo.Context.Pre_Cals
+									 .Where(x => x.Status == StatusModel.Active)
+									 .Select(a => a.Master_Pre_Applicant_LoanId)
+									 .Distinct(); // ใช้ Distinct เพื่อลดการจับคู่ที่ไม่จำเป็น
+
+				query = from q in query
+						join c in pre_Cals on q.Id equals c
+						select q;
+
+				//query = query.Where(x => pre_Cals.Any(loanid => loanid == x.Id));
 			}
 
 			if (!String.IsNullOrEmpty(model.val1))

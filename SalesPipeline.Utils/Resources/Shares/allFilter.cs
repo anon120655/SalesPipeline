@@ -83,6 +83,8 @@ namespace SalesPipeline.Utils.Resources.Shares
         public List<string?>? StatusSales { get; set; }
 		public short? isScheduledJob { get; set; }
 		public short? isAll { get; set; }
+		public short? isMatchCal { get; set; }
+		public string? preapploanid { get; set; }
 
 		public string SetParameter(bool? isPage = null)
 		{
@@ -314,6 +316,12 @@ namespace SalesPipeline.Utils.Resources.Shares
 
 			if (isAll.HasValue)
 				ParameterAll += $"&isAll={isAll}";
+
+			if (isMatchCal.HasValue)
+				ParameterAll += $"&isMatchCal={isMatchCal}";
+
+			if (!String.IsNullOrEmpty(preapploanid))
+				ParameterAll += $"&preapploanid={preapploanid}";
 
 			return ParameterAll;
 		}
