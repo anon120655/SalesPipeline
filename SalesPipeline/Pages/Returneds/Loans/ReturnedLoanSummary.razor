@@ -66,7 +66,7 @@
 						</div>
 						<div class="row mt-4 mb-2">
 							<div class="col">
-								<h5 class="fw-bold">เลือกกิจการสาขาที่รับผิดชอบ</h5>
+								<h5 class="fw-bold">เลือกผู้รับผิดชอบ</h5>
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -93,7 +93,7 @@
 								</div>
 							</div>
 							<div class="col mb-2">
-								<label class="form-label">ชื่อกิจการสาขา</label>
+								<label class="form-label">ชื่อผู้จัดการศูนย์</label>
 								<select value="@filter.provinceid" id="Province" class="selectpickerdefault " data-style="select_btn_set" data-live-search="true">
 									<option value="">ทั้งหมด</option>
 									@if (LookUp.Provinces?.Count > 0)
@@ -117,10 +117,11 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">รหัสสาขา</th>
-												<th class="text-center">สาขา</th>
-												<th class="text-center">ชื่อกิจการสาขา</th>
+												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
 												<th class="text-center">เบอร์โทรศัพท์</th>
+												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
 												<th class="text-center">มอบหมาย</th>
 											</tr>
 										</thead>
@@ -145,11 +146,14 @@
 											{
 												foreach (var item in Items)
 												{
+													int NumberAfterAssignment = (item.CurrentNumber + 1) ?? 0;
+
 													<tr>
-														<td class="text-center">@item.BranchCode</td>
-														<td class="text-center">@item.BranchName</td>
 														<td class="text-center">@item.EmployeeName</td>
 														<td class="text-center">@item.Tel</td>
+														<td class="text-center">@item.RMNumber</td>
+														<td class="text-center">@(item.CurrentNumber)/100</td>
+														<td class="text-center">@NumberAfterAssignment</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">
 																<input class="form-check-input" type="checkbox" checked="@item.IsSelected"
@@ -206,10 +210,11 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">รหัสสาขา</th>
-												<th class="text-center">สาขา</th>
-												<th class="text-center">ชื่อกิจการสาขา</th>
+												<th class="text-center">ชื่อผู้จัดการศูนย์</th>
 												<th class="text-center">เบอร์โทรศัพท์</th>
+												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
+												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -223,11 +228,13 @@
 											}
 											else
 											{
+												int NumberAfterAssignment = (_itemsNew.CurrentNumber + 1) ?? 0;
 												<tr>
-													<td class="text-center">@_itemsNew.BranchCode</td>
-													<td class="text-center">@_itemsNew.BranchName</td>
 													<td class="text-center">@_itemsNew.EmployeeName</td>
 													<td class="text-center">@_itemsNew.Tel</td>
+													<td class="text-center">@_itemsNew.RMNumber</td>
+													<td class="text-center">@_itemsNew.CurrentNumber</td>
+													<td class="text-center">@NumberAfterAssignment</td>
 												</tr>
 											}
 										</tbody>

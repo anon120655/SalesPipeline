@@ -23,7 +23,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		private User_PermissionCustom _permission = new();
 		private LookUpResource LookUp = new();
 		private SaleCustom? formModel;
-		private List<Assignment_BranchRegCustom>? Items;
+		private List<Assignment_CenterCustom>? Items;
 		private int stepAssign = StepAssignLoanModel.Assigned;
 		private AssignModel AssignModel = new();
 
@@ -102,7 +102,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 		protected async Task SetModelAssigned()
 		{
 			filter.pagesize = 100;
-			var data = await _assignmentBranchViewModel.GetListBranch(filter);
+			var data = await _assignmentCenterViewModel.GetListCenter(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
@@ -159,7 +159,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 			_Navs.NavigateTo("/return/loan");
 		}
 
-		protected void OnCheckEmployee(Assignment_BranchRegCustom model, object? checkedValue)
+		protected void OnCheckEmployee(Assignment_CenterCustom model, object? checkedValue)
 		{
 			if (Items?.Count > 0)
 			{
@@ -192,7 +192,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 					var saleModel = GeneralUtils.DeepCopyJson(formModel);
 					saleModel.Customer = null;
 
-					AssignModel.AssignMBranch = _itemsAssign;
+					AssignModel.AssignMCenter = _itemsAssign;
 					AssignModel.Sales = new()
 					{
 						saleModel
@@ -249,7 +249,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 
 			if (Items != null)
 			{
-				var response = await _assignmentBranchViewModel.Assign(AssignModel);
+				var response = await _assignmentCenterViewModel.Assign(AssignModel);
 
 				if (response.Status)
 				{
@@ -269,6 +269,20 @@ namespace SalesPipeline.Pages.Returneds.Loans
 
 		protected async Task SearchStepAssigned()
 		{
+			await SetModelAssigned();
+			StateHasChanged();
+		}
+
+		protected async Task OnAssignment(object? val)
+		{
+			filter.assignmentid = null;
+			StateHasChanged();
+
+			if (val != null && Guid.TryParse(val.ToString(), out Guid _id))
+			{
+				filter.assignmentid = _id.ToString();
+			}
+
 			await SetModelAssigned();
 			StateHasChanged();
 		}
@@ -321,6 +335,7 @@ namespace SalesPipeline.Pages.Returneds.Loans
 			await SetModelAssigned();
 			StateHasChanged();
 		}
+
 
 
 	}
