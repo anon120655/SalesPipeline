@@ -74,6 +74,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(user);
 					await _db.SaveAsync();
 
+					if (user.Role != null && user.Role.Status != StatusModel.Active) throw new ExceptionCustom("ไม่พบบทบาทการใช้งาน");
+
 					if (user.Role != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 					{
 						if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))

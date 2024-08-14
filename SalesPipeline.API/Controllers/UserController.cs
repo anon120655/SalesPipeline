@@ -241,6 +241,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpGet("GetUserByRole")]
+		public async Task<IActionResult> GetUserByRole([FromQuery] int roleId)
+		{
+			try
+			{
+				var response = await _repo.User.GetUserByRole(roleId);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpGet("GetListLevel")]
 		public async Task<IActionResult> GetListLevel([FromQuery] allFilter model)
 		{

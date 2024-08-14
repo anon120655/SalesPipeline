@@ -28,7 +28,8 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<User_RoleCustom> GetRoleById(int id);
 		Task<string?> GetRoleCodeById(int id);
 		Task<User_RoleCustom?> GetRoleByUserId(int id);
-		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model); 
+		Task<PaginationView<List<User_RoleCustom>>> GetListRole(allFilter model);
+		Task<List<UserCustom>> GetUserByRole(int roleId);
 		Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model);
 		Task UpdateUserTarget(User_Main model);
 		Task LogLogin(User_Login_LogCustom model);

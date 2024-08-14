@@ -45,6 +45,11 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public int? SpecialType { get; set; }
 
 		/// <summary>
+		/// อัตราดอกเบี้ยตาม master
+		/// </summary>
+		public decimal? RateValueOriginal { get; set; }
+
+		/// <summary>
 		/// ค่าเพิ่มลบดอกเบี้ย %
 		/// </summary>
 		public decimal? SpecialRate { get; set; }
@@ -60,9 +65,5 @@ namespace SalesPipeline.Utils.Resources.Loans
 		public int? StartYear { get; set; }
 
 		public virtual LoanCustom? Loan { get; set; }
-
-		//Custom
-		public decimal? RateValueOriginal { get; set; }
-
 	}
 }

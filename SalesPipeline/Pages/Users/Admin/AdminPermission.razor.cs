@@ -8,7 +8,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-    public partial class AdminPermission
+	public partial class AdminPermission
 	{
 		public int? id { get; set; }
 		string? _errorMessage = null;
@@ -81,7 +81,20 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected async Task ConfirmDelete(string? id, string? txt)
 		{
-			await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span>");
+			string? textMore = string.Empty;
+			if (int.TryParse(id, out int _id))
+			{
+				var userRoleUsed = await _userViewModel.GetUserByRole(_id);
+				if (userRoleUsed != null && userRoleUsed.Status)
+				{
+					if (userRoleUsed.Data?.Count > 0)
+					{
+						textMore = "(มีผู้ใช้ที่ได้รับสิทธิ์นี้แล้ว)";
+					}
+				}
+			}
+
+			await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span><br /><span class='text-danger'>{textMore}</span>");
 		}
 
 		protected async Task Delete(string id)

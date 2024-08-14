@@ -721,7 +721,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<List<User_AreaCustom>> GetAreaByUserId(int id)
 		{
-			var query = await _repo.Context.User_Areas				
+			var query = await _repo.Context.User_Areas
 				.Where(x => x.UserId == id).ToListAsync();
 			return _mapper.Map<List<User_AreaCustom>>(query);
 		}
@@ -1021,6 +1021,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				Items = _mapper.Map<List<User_RoleCustom>>(await items.ToListAsync()),
 				Pager = pager
 			};
+		}
+
+		public async Task<List<UserCustom>> GetUserByRole(int roleId)
+		{
+			var user = await _repo.Context.Users.Where(x => x.Status == StatusModel.Active && x.RoleId == roleId).ToListAsync();
+			return _mapper.Map<List<UserCustom>>(user);
 		}
 
 		public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)

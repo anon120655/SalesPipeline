@@ -1057,6 +1057,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.RateValue)
                 .HasPrecision(18, 3)
                 .HasComment("อัตราดอกเบี้ย %");
+            entity.Property(e => e.RateValueOriginal)
+                .HasPrecision(18, 3)
+                .HasComment("อัตราดอกเบี้ยตาม master");
             entity.Property(e => e.SpecialRate)
                 .HasPrecision(18, 2)
                 .HasComment("ค่าเพิ่มลบดอกเบี้ย %");

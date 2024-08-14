@@ -216,6 +216,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<UserCustom>>> GetUserByRole(int roleId)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/User/GetUserByRole?roleId={roleId}");
+				var dataMap = JsonConvert.DeserializeObject<List<UserCustom>>(content);
+
+				return new ResultModel<List<UserCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<UserCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<User_RoleCustom>> CreateRole(User_RoleCustom model)
 		{
 			try

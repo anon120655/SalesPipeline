@@ -185,6 +185,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลประวัติการติดต่อทั้งหมด
 		/// </summary>
+		[AllowAnonymous]
 		[HttpGet("GetListContactHistory")]
 		public async Task<IActionResult> GetListContactHistory([FromQuery] allFilter model)
 		{
@@ -193,6 +194,7 @@ namespace SalesPipeline.API.Controllers
 				var response = await _repo.ProcessSale.GetListContactHistory(model);
 
 				short iSCloseSale = 0;
+				short iSPhoenix = 0;
 				if (model.id != Guid.Empty)
 				{
 					var sale = await _repo.Sales.GetStatusById(model.id);
@@ -202,12 +204,17 @@ namespace SalesPipeline.API.Controllers
 					{
 						iSCloseSale = 1;
 					}
+					if (sale.StatusSaleId >= StatusSaleModel.WaitAPIPHOENIX)
+					{
+						iSPhoenix = 1;
+					}
 				}
 
 				return Ok(new ContactHistoryMain()
 				{
 					History = response,
-					ISCloseSale = iSCloseSale
+					ISCloseSale = iSCloseSale,
+					ISPhoenix = iSPhoenix
 				});
 			}
 			catch (Exception ex)

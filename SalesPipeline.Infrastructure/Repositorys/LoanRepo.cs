@@ -132,6 +132,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 						loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
 						loan_Period.Master_Pre_Interest_RateTypeCode = master_Pre_Interest_RateTypeCode;
+						loan_Period.RateValueOriginal = period.RateValueOriginal;
 						loan_Period.SpecialType = period.SpecialType;
 						loan_Period.SpecialRate = period.SpecialRate;
 						loan_Period.RateValue = period.RateValue;
@@ -264,6 +265,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							loan_Period.Master_Pre_Interest_RateTypeId = period.Master_Pre_Interest_RateTypeId;
 							loan_Period.Master_Pre_Interest_RateTypeName = master_Pre_Interest_RateTypeName;
 							loan_Period.Master_Pre_Interest_RateTypeCode = master_Pre_Interest_RateTypeCode;
+							loan_Period.RateValueOriginal = period.RateValueOriginal;
 							loan_Period.SpecialType = period.SpecialType;
 							loan_Period.SpecialRate = period.SpecialRate;
 							loan_Period.RateValue = period.RateValue;

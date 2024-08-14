@@ -24,7 +24,14 @@
 						<div class="col-lg-12">
 							<div class="mx-md-4">
 								<div class="text-center fw-bold">
-									<img src="/image/logo/logo_bacc.png" width="140" />
+									@if (_appSet.Value.Logo == LogoTypeModel.BAAC)
+									{
+										<img src="/image/logo/logo_bacc.png" width="140" />
+									}
+									else if (_appSet.Value.Logo == LogoTypeModel.FCC)
+									{
+										<img src="/image/logo/fcc_logo_white_bg.png" width="170" />
+									}
 									<h2 class="text-warning mt-5">ยินดีต้อนรับ</h2>
 									<small class="mt-1 mb-5 pb-3 text-secondary">LAST UPDATE @_appSet.Value.SiteUpdate</small>
 								</div>

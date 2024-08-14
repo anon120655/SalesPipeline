@@ -14,7 +14,14 @@
 							<div class="card-body p-md-5 mx-md-4">
 								<div class="text-center fw-bold">
 									<NavLink href="/">
-										<img src="/image/logo/logo_bacc.png" width="100" />
+										@if (_appSet.Value.Logo == LogoTypeModel.BAAC)
+										{
+											<img src="/image/logo/logo_bacc.png" width="100" />
+										}
+										else if (_appSet.Value.Logo == LogoTypeModel.FCC)
+										{
+											<img src="/image/logo/fcc_logo_white_bg.png" width="130" />
+										}
 									</NavLink>
 									<h4 class="mt-5 pb-3">Log in to your account</h4>
 									<EditForm Model="@loginModel" OnValidSubmit="SubmitLogin" class="bg-white p-2">
