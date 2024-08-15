@@ -547,19 +547,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var _dnow = DateTime.Now.Date;
 
-					//query = query.Include(x => x.Sale_Contacts.Where(c => c.AppointmentDate.HasValue))
-					//			 .Include(x => x.Sale_Meets.Where(c => c.AppointmentDate.HasValue))
-					//			 .Include(x => x.Sale_Documents.Where(c => c.SubmitDate.HasValue))
-					//			 .Include(x => x.Sale_Results.Where(c => c.AppointmentDate.HasValue))
-					//			 .Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale &&
-					//			   (x.Sale_Contacts.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
-					//			 || x.Sale_Meets.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)
-					//			 || x.Sale_Documents.Any(a => a.SubmitDate != null && a.SubmitDate.Value.Date < _dnow)
-					//			 || x.Sale_Results.Any(a => a.AppointmentDate != null && a.AppointmentDate.Value.Date < _dnow)));
-
-
-					query = query.Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale &&
-								   (x.StatusSaleMainId == StatusSaleMainModel.Contact && x.StatusSaleId == StatusSaleModel.WaitContact
+					query = query.Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale
+					              && x.StatusSaleId != StatusSaleModel.CloseSaleNotLoan
+								  && x.StatusSaleId != StatusSaleModel.ResultsNotConsidered
+								  && x.StatusSaleId != StatusSaleModel.NotApproveLoanRequest
+					              && x.StatusSaleId != StatusSaleModel.MCenterReturnLoan
+								  && x.StatusSaleId != StatusSaleModel.RMReturnMCenter
+								  && (x.StatusSaleMainId == StatusSaleMainModel.Contact && x.StatusSaleId == StatusSaleModel.WaitContact
 								 || x.StatusSaleMainId == StatusSaleMainModel.Contact && x.Sale_Contacts.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Contact))
 								 || x.StatusSaleMainId == StatusSaleMainModel.Meet && x.Sale_Meets.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Meet))
 								 || x.StatusSaleMainId == StatusSaleMainModel.Document && x.Sale_Documents.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Document))
