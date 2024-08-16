@@ -1,20 +1,25 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Sales;
+using System.Text;
 
 namespace SalesPipeline.Pages.Login
 {
 	public partial class SignIn
 	{
+		[Inject] protected IOptions<AppSettings> _appSet { get; set; } = null!;
+
 		string? _errorMessage = null;
 		bool isLoading = false;
 		bool toggleEye = false;
 		LoginRequestModel loginModel = new();
-		
+		string base64redirecturl = string.Empty;
+
 		//[CascadingParameter] protected List<System_ConfigCustom>? ItemConfig { get; set; } = default!;
 
 		protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,10 +42,11 @@ namespace SalesPipeline.Pages.Login
 			}
 		}
 
-		//protected override async Task OnInitializedAsync()
-		//{
-		//	await _authApi.LogoutAsync();
-		//}
+		protected override async Task OnInitializedAsync()
+		{
+			 base64redirecturl = Convert.ToBase64String(Encoding.UTF8.GetBytes(_appSet.Value?.baseUriWeb ?? string.Empty));
+			await Task.Delay(1);
+		}
 
 		protected async Task SubmitLogin()
 		{

@@ -37,15 +37,15 @@
 											<Icon @onclick="TogglePassword" Name="@(toggleEye ? IconName.Eye : IconName.EyeSlash)" Class="field-icon"></Icon>
 											<ValidationMessage For="@(() => loginModel.Password)" />
 										</div>
-										<div class="form-outline mb-4 text-start">
+										@* <div class="form-outline mb-4 text-start">
 											<div class="form-check">
 												<input @onchange="( (e) => OnRememberMe(e.Value))" class="form-check-input mt-0" type="checkbox" id="rememberMe">
 												<label class="form-check-label text-muted ms-2" for="rememberMe">
 													Remember me
 												</label>
 											</div>
-										</div>
-										<div class="text-center pt-1 mb-5 pb-1">
+										</div> *@
+										<div class="text-center pt-1 mb-2 pb-1">
 											<Button Color="ButtonColor.Info"
 													Type="ButtonType.Submit"
 													Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100 text-white">
@@ -57,6 +57,18 @@
 												}
 												Sign in
 											</Button>
+										</div>
+										<div class="form-outline mb-4 text-start">
+											<div class="row d-flex align-items-center">
+												<div class="col-6">
+													<a href="http://172.26.82.211:9105/resetpassword?redirecturl=@base64redirecturl">ลืมรหัสผ่าน</a>
+												</div>
+												<div class="col-6 text-end">
+													<a href="https://iauthen.int.baac.or.th/about" target="_blank">
+														<img src="/image/logo/iauthen_200px.png" width="25" />
+													</a>
+												</div>
+											</div>
 										</div>
 										@if (_errorMessage is not null)
 										{
