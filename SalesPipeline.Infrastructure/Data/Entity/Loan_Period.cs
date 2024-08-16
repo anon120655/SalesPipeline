@@ -37,14 +37,14 @@ public partial class Loan_Period
     public string? Master_Pre_Interest_RateTypeCode { get; set; }
 
     /// <summary>
-    /// 1=เพิ่ม 2=ลบ
-    /// </summary>
-    public int? SpecialType { get; set; }
-
-    /// <summary>
     /// อัตราดอกเบี้ยตาม master
     /// </summary>
     public decimal? RateValueOriginal { get; set; }
+
+    /// <summary>
+    /// 1=เพิ่ม 2=ลบ
+    /// </summary>
+    public int? SpecialType { get; set; }
 
     /// <summary>
     /// ค่าเพิ่มลบดอกเบี้ย %

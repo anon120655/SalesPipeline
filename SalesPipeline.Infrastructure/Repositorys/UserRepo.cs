@@ -852,6 +852,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					IsModify = model.IsModify,
 					IsAssignCenter = model.IsAssignCenter,
 					IsAssignRM = model.IsAssignRM,
+					org_id = model.org_id,
+					org_name = model.org_name,
 				};
 				await _db.InsterAsync(userRole);
 				await _db.SaveAsync();
@@ -898,6 +900,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					userRole.IsModify = model.IsModify;
 					userRole.IsAssignCenter = model.IsAssignCenter;
 					userRole.IsAssignRM = model.IsAssignRM;
+					userRole.org_id = model.org_id;
+					userRole.org_name = model.org_name;
 					_db.Update(userRole);
 					await _db.SaveAsync();
 

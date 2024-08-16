@@ -54,6 +54,10 @@ public partial class User_Role
     /// </summary>
     public bool IsAssignRM { get; set; }
 
+    public string? org_id { get; set; }
+
+    public string? org_name { get; set; }
+
     public virtual ICollection<User_Permission> User_Permissions { get; set; } = new List<User_Permission>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();

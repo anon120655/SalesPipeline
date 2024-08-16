@@ -59,6 +59,10 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// </summary>
 		public bool IsAssignRM { get; set; }
 
+		public string? org_id { get; set; }
+
+		public string? org_name { get; set; }
+
 		public virtual ICollection<User_PermissionCustom>? User_Permissions { get; set; }
 
         //Custom

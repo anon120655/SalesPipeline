@@ -24,10 +24,17 @@
 						<div class="row mt-5">
 							<div class="col-12">
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสหน้าที่<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสระบบ</label>
 									<div class="col-sm-4">
-										<input @bind="formModel.Code" type="text" class="form-control">
+										<input @bind="formModel.Code" type="text" class="form-control" disabled>
 										<ValidationMessage For="@(() => formModel.Code)" />
+									</div>
+								</div>
+								<div class="row mb-3">
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสหน้าที่(job_id)</label>
+									<div class="col-sm-4">
+										<input @bind="formModel.iAuthenRoleCode" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.iAuthenRoleCode)" />
 									</div>
 								</div>
 								<div class="row mb-3">
@@ -45,10 +52,10 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">iAuthen Code</label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสสังกัด(org_id)</label>
 									<div class="col-sm-4">
-										<input @bind="formModel.iAuthenRoleCode" type="text" class="form-control">
-										<ValidationMessage For="@(() => formModel.iAuthenRoleCode)" />
+										<input @bind="formModel.org_id" type="text" class="form-control">
+										<ValidationMessage For="@(() => formModel.org_id)" />
 									</div>
 								</div>
 								@* <div class="row mb-3">
