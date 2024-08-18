@@ -41,7 +41,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -446,45 +446,44 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var user = await _repo.User.GetById(userid);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+
+			if (user.Role.IsAssignRM)
 			{
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+				var areaCenter = user.User_Areas?.Select(x => x.ProvinceId).ToList();
+				if (areaCenter == null || areaCenter.Count == 0) return false;
+
+				var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
+				if (sale == null) throw new ExceptionCustom("sale not found.");
+				//เช็คว่าถูกมอบหมายให้ ผจศ หรือไม่
+				if (sale.AssCenterUserId != userid)
 				{
-					var areaCenter = user.User_Areas?.Select(x => x.ProvinceId).ToList();
-					if (areaCenter == null || areaCenter.Count == 0) return false;
-
-					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
-					if (sale == null) throw new ExceptionCustom("sale not found.");
-					//เช็คว่าถูกมอบหมายให้ ผจศ หรือไม่
-					if (sale.AssCenterUserId != userid)
+					//99999999-9999-9999-9999-999999999999 ผจศ เห็นทั้งประเทศ
+					if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 					{
-						//99999999-9999-9999-9999-999999999999 ผจศ เห็นทั้งประเทศ
-						if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+						if (!sale.AssUserId.HasValue) return false; //ยังไม่ถูกมอบหมายให้ RM
+
+						var userRM = await _repo.Context.Users.Include(x => x.User_Areas).FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == sale.AssUserId);
+						if (userRM == null) throw new ExceptionCustom("users rm not found.");
+						var areaRM = user.User_Areas?.Select(x => x.ProvinceId).ToList();
+						if (areaRM == null || areaRM.Count == 0) return false;
+
+						//99999999-9999-9999-9999-999999999999 RM เห็นทั้งประเทศ
+						if (userRM.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 						{
-							if (!sale.AssUserId.HasValue) return false; //ยังไม่ถูกมอบหมายให้ RM
+							if (user.Master_Branch_RegionId != userRM.Master_Branch_RegionId) return false; //กิจการสาขาไม่ตรงกัน
 
-							var userRM = await _repo.Context.Users.Include(x => x.User_Areas).FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == sale.AssUserId);
-							if (userRM == null) throw new ExceptionCustom("users rm not found.");
-							var areaRM = user.User_Areas?.Select(x => x.ProvinceId).ToList();
-							if (areaRM == null || areaRM.Count == 0) return false;
+							//9999 ผจศ และ RM เห็นทุกจังหวัดในภาค
+							if (areaCenter.Any(x => x == 9999) && areaRM.Any(x => x == 9999)) return true;
 
-							//99999999-9999-9999-9999-999999999999 RM เห็นทั้งประเทศ
-							if (userRM.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
-							{
-								if (user.Master_Branch_RegionId != userRM.Master_Branch_RegionId) return false; //กิจการสาขาไม่ตรงกัน
+							//เช็คพนักงาน RM อยู่ภายใต้พื้นที่การดูแลหรือไม่ (เช็คพื้นที่ดูแล ผจศ และ พนักงาน RM ว่าตรงกันหรือไม่)
+							var check = GeneralUtils.HasAtLeastOneCommonElement(areaRM, areaCenter);
 
-								//9999 ผจศ และ RM เห็นทุกจังหวัดในภาค
-								if (areaCenter.Any(x => x == 9999) && areaRM.Any(x => x == 9999)) return true;
-
-								//เช็คพนักงาน RM อยู่ภายใต้พื้นที่การดูแลหรือไม่ (เช็คพื้นที่ดูแล ผจศ และ พนักงาน RM ว่าตรงกันหรือไม่)
-								var check = GeneralUtils.HasAtLeastOneCommonElement(areaRM, areaCenter);
-
-								return check;
-							}
+							return check;
 						}
 					}
 				}
 			}
+
 			return true;
 		}
 
@@ -548,10 +547,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var _dnow = DateTime.Now.Date;
 
 					query = query.Where(x => x.StatusSaleMainId != StatusSaleMainModel.CloseSale
-					              && x.StatusSaleId != StatusSaleModel.CloseSaleNotLoan
+								  && x.StatusSaleId != StatusSaleModel.CloseSaleNotLoan
 								  && x.StatusSaleId != StatusSaleModel.ResultsNotConsidered
 								  && x.StatusSaleId != StatusSaleModel.NotApproveLoanRequest
-					              && x.StatusSaleId != StatusSaleModel.MCenterReturnLoan
+								  && x.StatusSaleId != StatusSaleModel.MCenterReturnLoan
 								  && x.StatusSaleId != StatusSaleModel.RMReturnMCenter
 								  && (x.StatusSaleMainId == StatusSaleMainModel.Contact && x.StatusSaleId == StatusSaleModel.WaitContact
 								 || x.StatusSaleMainId == StatusSaleMainModel.Contact && x.Sale_Contacts.Any(a => a.CreateDate.Date < _dnow.AddDays(_date_Contact))

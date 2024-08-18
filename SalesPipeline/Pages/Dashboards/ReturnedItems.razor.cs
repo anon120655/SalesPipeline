@@ -94,18 +94,14 @@ namespace SalesPipeline.Pages.Dashboards
 
 			if (UserInfo.RoleCode != null)
 			{
-				if (UserInfo.RoleCode == RoleCodes.CENTER)
+				if (UserInfo.IsAssignRM)
 				{
 					filter.assigncenter = UserInfo.Id;
 					filter.statussaleid = StatusSaleModel.RMReturnMCenter;
 				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
+				else if (UserInfo.IsAssignCenter)
 				{
 					filter.statussaleid = StatusSaleModel.MCenterReturnLoan;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN) || UserInfo.RoleCode.Contains(RoleCodes.ADMIN))
-				{
-					filter.statussaleid = StatusSaleModel.BranchReturnLCenter;
 				}
 			}
 

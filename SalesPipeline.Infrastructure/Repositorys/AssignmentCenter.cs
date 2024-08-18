@@ -116,10 +116,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			//if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && !user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN))
-			//{
-			//	return new();
-			//}
 			if (!user.Role.IsAssignCenter)
 			{
 				return new() { Items = new() };
@@ -374,7 +370,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.User_Areas)
-										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.CENTER)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.IsAssignRM)
 										   .OrderBy(x => x.Id)
 										   .AsQueryable();
 
@@ -431,7 +427,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.Assignment_Centers)
-										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Code == RoleCodes.CENTER && x.Assignment_Centers.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.IsAssignRM && x.Assignment_Centers.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 

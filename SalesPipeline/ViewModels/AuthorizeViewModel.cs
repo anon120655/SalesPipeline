@@ -267,6 +267,8 @@ namespace SalesPipeline.ViewModels
 								{
 									data.RoleCode = datauserMap.Role.Code;
 									data.RoleName = datauserMap.Role.Name;
+									data.IsAssignCenter = datauserMap.Role.IsAssignCenter;
+									data.IsAssignRM = datauserMap.Role.IsAssignRM;
 								}
 
 								var dataRole = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetRoleById?id={datauserMap.RoleId}");

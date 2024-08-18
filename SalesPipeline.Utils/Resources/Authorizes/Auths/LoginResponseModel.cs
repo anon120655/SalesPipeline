@@ -32,6 +32,8 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public int? RoleId { get; set; }
 		public string? RoleCode { get; set; }
 		public string? RoleName { get; set; }
+		public bool IsAssignCenter { get; set; }
+		public bool IsAssignRM { get; set; }
 		public string? LevelName { get; set; }
 		public string? access_token { get; set; }
 		public string? expires_in { get; set; }

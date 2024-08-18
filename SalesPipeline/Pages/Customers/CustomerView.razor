@@ -23,19 +23,16 @@
 									<Content>
 										<div class="row">
 											<div class="col-12 col-xl-8"></div>
-											@if (UserInfo.RoleCode != RoleCodes.BRANCH_REG_01)
-											{
-												<div class="col-12 col-xl-3 text-end">
-													<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.Customer?.Id">แก้ไขข้อมูล</a>
-												</div>
-											}
+											<div class="col-12 col-xl-3 text-end">
+												<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.Customer?.Id">แก้ไขข้อมูล</a>
+											</div>
 										</div>
 										@if (formModel.StatusSaleId == StatusSaleModel.WaitAPIPHOENIX)
 										{
 											<div class="row">
 												@* <div class="col-12 col-xl-4 text-end">
-													<a class="btn btn-outline-success mw_6r" @onclick=UpdateStatusWaitResults>ผ่านการวิเคราะห์สินเชื่อ(PHOENIX) -> รอบันทึกผลลัพธ์</a>
-												</div> *@
+										<a class="btn btn-outline-success mw_6r" @onclick=UpdateStatusWaitResults>ผ่านการวิเคราะห์สินเชื่อ(PHOENIX) -> รอบันทึกผลลัพธ์</a>
+										</div> *@
 											</div>
 										}
 										@if (formModel != null)

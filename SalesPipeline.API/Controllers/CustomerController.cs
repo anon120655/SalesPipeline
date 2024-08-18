@@ -255,23 +255,21 @@ namespace SalesPipeline.API.Controllers
 				//SaleCustom? modelSale = null;
 
 				rolecode = rolecode.ToUpper();
+				bool IsAssignRM = false;
+				bool IsAssignCenter = false;
 				if (rolecode.StartsWith("C"))
 				{
-					rolecode = RoleCodes.CENTER;
-				}
-				else if (rolecode.StartsWith("B"))
-				{
-					rolecode = RoleCodes.BRANCH_REG;
+					IsAssignRM = true;
 				}
 				else if (rolecode.StartsWith("L"))
 				{
-					rolecode = RoleCodes.LOAN;
+					IsAssignCenter = true;
 				}
 
 				for (int i = 1; i <= number; i++)
 				{
 					bool checkCreate = true;
-					if (rolecode == RoleCodes.RM)
+					if (!IsAssignRM && !IsAssignCenter)
 					{
 						var user = await _repo.User.GetUserRMByProvinceId(provinceId);
 						if (user == null)
@@ -289,7 +287,7 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentRM currentUserId={currentUserId}");
 						}
 					}
-					else if (rolecode == RoleCodes.CENTER)
+					else if (IsAssignRM)
 					{
 						currentUserId = 11;
 						employeeName = $"CENTER_{i} ทดสอบ";
@@ -306,13 +304,7 @@ namespace SalesPipeline.API.Controllers
 							throw new ExceptionCustom($"ไม่พบข้อมูล AssignmentCenter currentUserId={currentUserId}");
 						}
 					}
-					else if (rolecode == RoleCodes.BRANCH_REG)
-					{
-						currentUserId = 9;
-						employeeName = $"BRANCH_REG_{i} ทดสอบ";
-						_statusSaleId = StatusSaleModel.WaitAssignCenter;
-					}
-					else if (rolecode == RoleCodes.LOAN)
+					else if (IsAssignCenter)
 					{
 						currentUserId = 5;
 						employeeName = $"LOAN_{i} ทดสอบ";

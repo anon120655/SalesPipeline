@@ -34,10 +34,6 @@ namespace SalesPipeline.Pages.Customers
 		{
 			isLoadingContent = true;
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
-			if (UserInfo.RoleCode == RoleCodes.BRANCH_REG_01)
-			{
-				_permission.IsView = false;
-			}
 			StateHasChanged();
 
 			await SetModel();
@@ -215,9 +211,9 @@ namespace SalesPipeline.Pages.Customers
 						{
 							formModel.Branch_RegionId = sales.Master_Branch_RegionId;
 
-							if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
+							if (data.Data.ProvinceId.HasValue)
 							{
-								if (UserInfo.RoleCode == RoleCodes.CENTER)
+								if (UserInfo.IsAssignRM)
 								{
 									//เช็คว่าถูกมอบหมายหรือไม่
 									if (sales.AssCenterUserId != UserInfo.Id)
@@ -514,23 +510,15 @@ namespace SalesPipeline.Pages.Customers
 
 			formModel.StatusSaleId = StatusSaleModel.NotStatus;
 
-			if (UserInfo.RoleCode != null)
+			if (UserInfo.IsAssignCenter)
 			{
-				if (UserInfo.RoleCode.StartsWith(RoleCodes.LOAN))
-				{
-					//Role สายงานธุรกิจสินเชื่อ --> รอมอบหมาย
-					formModel.StatusSaleId = StatusSaleModel.WaitAssign;
-				}
-				else if (UserInfo.RoleCode.StartsWith(RoleCodes.BRANCH_REG))
-				{
-					//Role กิจการสาขาภาค --> รอมอบหมาย(ศูนย์สาขา)
-					formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
-				}
-				else if (UserInfo.RoleCode == RoleCodes.CENTER || UserInfo.RoleCode == RoleCodes.SUPERADMIN)
-				{
-					//Role ผู้จัดการศูนย์ --> รอมอบหมาย
-					formModel.StatusSaleId = StatusSaleModel.WaitAssign;
-				}
+				//Role สายงานธุรกิจสินเชื่อ --> รอมอบหมาย
+				formModel.StatusSaleId = StatusSaleModel.WaitAssignCenter;
+			}
+			else if (UserInfo.IsAssignRM)
+			{
+				//Role ผู้จัดการศูนย์ --> รอมอบหมาย
+				formModel.StatusSaleId = StatusSaleModel.WaitAssign;
 			}
 
 			if (id != Guid.Empty)
@@ -647,23 +635,6 @@ namespace SalesPipeline.Pages.Customers
 			await SetInitManual();
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 		}
-
-		//[JSInvokable]
-		//public async Task OnDepBranch(string _ids, string _name)
-		//{
-		//	formModel.Branch_RegionId = null;
-
-		//	if (_ids != null)
-		//	{
-		//		if (Guid.TryParse(_ids, out Guid id))
-		//		{
-		//			formModel.Branch_RegionId = id;
-		//		}
-		//	}
-		//	StateHasChanged();
-		//	await Task.Delay(1);
-		//}
-
 
 	}
 }

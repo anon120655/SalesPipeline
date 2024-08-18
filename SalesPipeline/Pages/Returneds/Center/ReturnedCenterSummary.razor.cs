@@ -102,11 +102,6 @@ namespace SalesPipeline.Pages.Returneds.Center
 			if (UserInfo.RoleCode != null)
 			{
 				filter.assigncenter = UserInfo.Id;
-				if (UserInfo.RoleCode == RoleCodes.SUPERADMIN)
-				{
-					filter.assigncenter = null;
-					filter.assignrm = null;
-				}
 			}
 
 			filter.pagesize = 100;

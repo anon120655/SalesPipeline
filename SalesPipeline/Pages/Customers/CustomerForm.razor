@@ -53,8 +53,6 @@
 					else
 					{
 						bool IsDisabled = id != Guid.Empty;
-						bool isLoanAdmin = UserInfo.RoleCode != null && (UserInfo.RoleCode == RoleCodes.SUPERADMIN || UserInfo.RoleCode.StartsWith(RoleCodes.LOAN));
-						isLoanAdmin = false;
 						
 						@if (isLoadingContent)
 						{
@@ -89,22 +87,6 @@
 												<ValidationMessage For="@(() => formModel.Master_ContactChannelId)" />
 											</div>
 										</div>
-
-										@* <div class="form-group row mb-3 @(isLoanAdmin ? "": "d-none")">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">กิจการสาขาภาค</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<select @bind="formModel.Branch_RegionId" id="DepBranch" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true" disabled=@(IsDisabled)>
-													<option value="">เลือก</option>
-													@if (LookUp.DepartmentBranch?.Count > 0)
-													{
-														foreach (var item in LookUp.DepartmentBranch)
-														{
-															<option value="@item.Id">@item.Name</option>
-														}
-													}
-												</select>
-											</div>
-										</div> *@
 
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา</label>

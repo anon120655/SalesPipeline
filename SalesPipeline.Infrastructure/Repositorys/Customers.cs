@@ -206,7 +206,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					foreach (var item_sale in customers.Sales)
 					{
-						if (user != null && user.Role != null && !user.Role.Code.Contains(RoleCodes.ADMIN))
+						if (user != null && user.Role != null && !user.Role.IsAssignCenter)
 						{
 							if (user.Role.Code == RoleCodes.RM && item_sale.AssUserId != user.Id)
 							{
@@ -484,7 +484,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int statusSaleId = StatusSaleModel.WaitApprove;
 				Guid? master_Branch_RegionId = null;
 				int? provinceId = null;
-				int? branchId = null;
 				int? assCenterUserId = null;
 				string? assCenterUserName = null;
 				int? assUserId = null;
@@ -498,7 +497,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+				else if (user.Role.IsAssignRM)
 				{
 					statusSaleId = StatusSaleModel.WaitAssign;
 					assCenterUserId = user.Id;
@@ -506,11 +505,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					master_Branch_RegionId = user.Master_Branch_RegionId;
 					provinceId = user.ProvinceId;
 				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-				{
-					statusSaleId = StatusSaleModel.WaitAssignCenter;
-				}
-				else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+				else if (user.Role.IsAssignCenter)
 				{
 					statusSaleId = StatusSaleModel.WaitAssignCenter;
 				}

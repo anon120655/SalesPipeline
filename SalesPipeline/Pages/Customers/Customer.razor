@@ -91,18 +91,15 @@
 								<i class="fa fa-search fa-xs"></i> ค้นหา
 							</button>
 						</div>
-						@if (UserInfo.RoleCode != RoleCodes.BRANCH_REG_01)
-						{
-							<div class="col mb-2 mt-3">
-								<Dropdown Class="w-100">
-									<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
-									<DropdownMenu>
-										<DropdownItem To="/customer/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
-										<DropdownItem To="/customer/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
-									</DropdownMenu>
-								</Dropdown>
-							</div>
-						}
+						<div class="col mb-2 mt-3">
+							<Dropdown Class="w-100">
+								<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+								<DropdownMenu>
+									<DropdownItem To="/customer/create" Type="ButtonType.Link">รายบุคคล</DropdownItem>
+									<DropdownItem To="/customer/uploadfile" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
 					</div>
 					<div class="row mt-3">
 						<div class="col-12">

@@ -45,7 +45,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMaster_Pre_App_Loan Master_Pre_App_Loan { get; }
 		IMaster_Pre_BusType Master_Pre_BusType { get; }
 		IThailand Thailand { get; }
-		IAssignmentBranch AssignmentBranch { get; }
 		IAssignmentCenter AssignmentCenter { get; }
 		IAssignmentRM AssignmentRM { get; }
 		IReturnRepo Return { get; }

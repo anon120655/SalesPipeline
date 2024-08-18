@@ -43,7 +43,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -86,7 +86,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale_Duration, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -129,7 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale_Activity, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -172,7 +172,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale_Deliver, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -305,15 +305,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							dash_Status_Total.NumCusInProcess = dash_Status_Total.NumCusInProcess + item.Count;
 						}
 
-						if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER) && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
+						if (user.Role.IsAssignRM && item.StatusID == (int)StatusSaleModel.RMReturnMCenter)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
-						else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG) && item.StatusID == (int)StatusSaleModel.MCenterReturnLoan)
-						{
-							dash_Status_Total.NumCusReturn = item.Count;
-						}
-						else if ((user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN)) && item.StatusID == (int)StatusSaleModel.BranchReturnLCenter)
+						else if (user.Role.IsAssignCenter && item.StatusID == (int)StatusSaleModel.MCenterReturnLoan)
 						{
 							dash_Status_Total.NumCusReturn = item.Count;
 						}
@@ -329,7 +325,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						.Where(x => x.Status == StatusModel.Active && x.Year == _year && x.AmountActual < x.AmountTarget);
 
 					//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-					if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+					if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 					{
 						//9999 เห็นทุกจังหวัดในภาค
 						if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
@@ -521,7 +517,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+			if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 			{
 				//9999 เห็นทุกจังหวัดในภาค
 				if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
@@ -843,7 +839,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var statusTotal = new List<SaleStatusGroupByModel>();
 
-					if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+					if (user.Role.IsAssignRM)
 					{
 						var query = _repo.Context.Sales.Where(x => x.Status == StatusModel.Active);
 
@@ -1536,7 +1532,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-			if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+			if (!user.Role.IsAssignCenter && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 			{
 				//9999 เห็นทุกจังหวัดในภาค
 				if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))

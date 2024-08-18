@@ -45,7 +45,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			else
 			{
 				//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-				if (!user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN) && user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 				{
 					Expression<Func<Sale, bool>> orExpression = x => false;
 					//9999 เห็นทุกจังหวัดในภาค
@@ -286,7 +286,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (!user.Role.IsAssignRM)
 			{
 				return new();
 			}
@@ -315,9 +315,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			//var listRmAreas = query.ToList();
-
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				query = await QueryAreaAssignment_RM(query, user);
 			}
@@ -346,7 +344,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.AsQueryable();
 
 			//พื้นที่ดูแล
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				salesQuery = await QueryArea(salesQuery, user);
 			}
@@ -415,7 +413,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var user = await _repo.User.GetById(model.userid.Value);
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (!user.Role.IsAssignRM)
 			{
 				return new();
 			}
@@ -451,7 +449,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//var listRmAreas = query.ToList();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				query = await QueryAreaAssignment_RM(query, user);
 			}
@@ -480,7 +478,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.AsQueryable();
 
 			//พื้นที่ดูแล
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				salesQuery = await QueryArea(salesQuery, user);
 			}
@@ -563,11 +561,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!model.userid.HasValue) return new();
 
 			var user = await _repo.User.GetById(model.userid.Value);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
-			//if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
-			//{
-			//	return new();
-			//}
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");			
 			if (!user.Role.IsAssignRM)
 			{
 				return new() { Items = new() };
@@ -605,7 +599,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			//var listRmAreas = query.ToList();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				query = await QueryAreaAssignment_RM(query, user);
 			}
@@ -634,7 +628,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.AsQueryable();
 
 			//พื้นที่ดูแล
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CENTER))
+			if (user.Role.IsAssignRM)
 			{
 				salesQuery = await QueryArea(salesQuery, user);
 			}

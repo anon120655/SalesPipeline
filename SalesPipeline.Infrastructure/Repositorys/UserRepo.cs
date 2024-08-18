@@ -196,21 +196,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (roleCode != null)
-			{
-				if (roleCode.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
-				{
-				}
-				else if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
-				{
-					//** comment ออก เพราะใน iAuthen ผู้จัดการศูนย์มี level ส่งมมา
-					//model.LevelId = null;
-				}
-				else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
-				{
-				}
-			}
-
 			return model;
 		}
 
@@ -342,10 +327,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//RM Role Create Default Assignment
 				if (model.RoleId.HasValue)
 				{
-					var roleCode = await GetRoleCodeById(model.RoleId.Value);
-					if (roleCode != null && user.BranchId.HasValue)
+					var userRole = await GetRoleById(model.RoleId.Value);
+					if (userRole != null && user.BranchId.HasValue)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
+						if (userRole.IsAssignRM)
 						{
 							var assignmentCenter = await _repo.AssignmentCenter.Create(new()
 							{
@@ -358,7 +343,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								CurrentNumber = 0
 							});
 						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+						else if (model.RoleId == 8)
 						{
 							//เช็คว่ายังไม่เคยบันทึกข้อมูลใน AssignmentRM
 							if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
@@ -404,10 +389,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					branchName = await _repo.Thailand.GetBranchNameByid(model.BranchId.Value);
 				}
 
-				string? roleCode = null;
+				User_RoleCustom? userRole = null;
 				if (model.RoleId.HasValue)
 				{
-					roleCode = await GetRoleCodeById(model.RoleId.Value);
+					userRole = await GetRoleById(model.RoleId.Value);
 				}
 
 				var user = await _repo.Context.Users.Include(x => x.Assignment_RMs.Where(x => x.Status != StatusModel.Delete))
@@ -502,7 +487,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						foreach (var item in model.User_Areas)
 						{
-							if (roleCode != null && roleCode == RoleCodes.CENTER)
+							if (userRole != null && userRole.IsAssignRM)
 							{
 								var user_AreaCheck = _repo.Context.Users
 															.Include(x => x.User_Areas)
@@ -528,9 +513,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//RM Role Create Default Assignment
-					if (roleCode != null)
+					if (userRole != null)
 					{
-						if (roleCode.ToUpper().StartsWith(RoleCodes.CENTER))
+						if (userRole.IsAssignRM)
 						{
 							Assignment_CenterCustom assignmentCenterModel = new()
 							{
@@ -555,7 +540,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 
 						}
-						else if (roleCode.ToUpper().StartsWith(RoleCodes.RM))
+						else if (userRole.Id == 8)
 						{
 							Assignment_RMCustom assignment_RM = new()
 							{
@@ -1065,11 +1050,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				if (model.type == UserTypes.Admin)
 				{
-					query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
+					query = query.Where(x => x.Role != null && x.Role.IsAssignCenter);
 				}
 				else if (model.type == UserTypes.User)
 				{
-					query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
+					query = query.Where(x => x.Role != null && !x.Role.IsAssignCenter);
 				}
 			}
 

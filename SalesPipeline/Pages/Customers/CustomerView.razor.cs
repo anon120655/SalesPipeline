@@ -47,18 +47,15 @@ namespace SalesPipeline.Pages.Customers
 				var data = await _salesViewModel.GetById(id);
 				if (data != null && data.Status && data.Data != null)
 				{
-					if (UserInfo.RoleCode != null && !UserInfo.RoleCode.Contains(RoleCodes.ADMIN) && data.Data.ProvinceId.HasValue)
+					if (UserInfo.IsAssignRM)
 					{
-						if (UserInfo.RoleCode == RoleCodes.CENTER)
+						//เช็คว่าถูกมอบหมายหรือไม่
+						if (data.Data.AssCenterUserId != UserInfo.Id)
 						{
-							//เช็คว่าถูกมอบหมายหรือไม่
-							if (data.Data.AssCenterUserId != UserInfo.Id)
+							var viewSales = await _salesViewModel.IsViewSales(id, UserInfo.Id);
+							if (viewSales != null)
 							{
-								var viewSales = await _salesViewModel.IsViewSales(id, UserInfo.Id);
-								if (viewSales != null)
-								{
-									IsView = viewSales.Data;
-								}
+								IsView = viewSales.Data;
 							}
 						}
 					}

@@ -38,18 +38,6 @@ namespace SalesPipeline.Utils.ConstTypeModel
         /// </summary>
         public const string LOAN02 = "LOAN02";
         /// <summary>
-        /// สายงานกิจการสาขาภาค
-        /// </summary>
-        public const string BRANCH_REG = "BRANCH_REG";
-        /// <summary>
-        /// สายงานกิจการสาขาภาค 10-12
-        /// </summary>
-        public const string BRANCH_REG_01 = "BRANCH_REG_01";
-        /// <summary>
-        /// สายงานกิจการสาขาภาค 4-9
-        /// </summary>
-        public const string BRANCH_REG_02 = "BRANCH_REG_02";
-        /// <summary>
         /// ผู้จัดการศูนย์
         /// </summary>
         public const string CENTER = "CENTER";
