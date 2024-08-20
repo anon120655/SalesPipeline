@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.Extensions.Options
 @using SalesPipeline.Utils
+@using SalesPipeline.Utils.ConstTypeModel
 @namespace SalesPipeline.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -29,7 +30,16 @@
 
     <link href="/css/site.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
     <link href="SalesPipeline.styles.css" rel="stylesheet" />
-	<link rel="icon" type="image/png" href="favicon.png" />
+	
+    @if (_appSet.Value.Logo == LogoTypeModel.FCC)
+    {
+        <link rel="icon" type="image/png" href="favicon_fcc.png" />
+    }
+    else
+    {
+        <link rel="icon" type="image/png" href="favicon.png" />
+    }
+
 
     @* bootstrap-icons offline โหลดจาก https://github.com/twbs/icons/releases เพราะ url cdn ใช้บน server ธนาคาร ไม่ได้ *@
 	<link href="/lib/bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
