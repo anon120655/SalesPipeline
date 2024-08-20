@@ -11,5 +11,6 @@ namespace SalesPipeline.Utils.Resources.Loggers
 		public bool IsEnabled { get; set; }
 		public string? Name { get; set; }
 		public string? DateTimeFormat { get; set; }
+		public string? ErrorToMail { get; set; }
 	}
 }

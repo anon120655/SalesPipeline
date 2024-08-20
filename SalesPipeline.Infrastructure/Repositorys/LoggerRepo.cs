@@ -6,6 +6,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Loggers;
+using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +89,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						lineNotiMsg += $"{Environment.NewLine} PATH : {logging.Path}";
 						lineNotiMsg += $"{Environment.NewLine} STATUS : {logging.ResponseStatus}";
 						lineNotiMsg += $"{Environment.NewLine} MSG : {_responseBodyLine}";
-						await _repo.Notifys.LineNotify(lineNotiMsg);
+						//await _repo.Notifys.LineNotify(lineNotiMsg);
+
+						if (_appSet.RequestResponseLogger != null)
+						{
+							SendMailModel modelMail = new();
+							modelMail.Subject = $"เกิดข้อผิดพลาด LOGID : {logging.LogId}";
+							modelMail.Email = _appSet.RequestResponseLogger.ErrorToMail;
+							modelMail.Body = $"{lineNotiMsg}";
+
+							await _repo.EmailSender.SendEmail(modelMail);
+						}
 					}
 				}
 				catch (Exception ex)
