@@ -17,6 +17,7 @@ namespace SalesPipeline.Pages.Login
 		string? _errorMessage = null;
 		bool isLoading = false;
 		bool toggleEye = false;
+		string customIconName = "fa-regular fa-eye-slash field-icon";
 		LoginRequestModel loginModel = new();
 		string base64redirecturl = string.Empty;
 
@@ -44,7 +45,7 @@ namespace SalesPipeline.Pages.Login
 
 		protected override async Task OnInitializedAsync()
 		{
-			 base64redirecturl = Convert.ToBase64String(Encoding.UTF8.GetBytes(_appSet.Value?.baseUriWeb ?? string.Empty));
+			base64redirecturl = Convert.ToBase64String(Encoding.UTF8.GetBytes(_appSet.Value?.baseUriWeb ?? string.Empty));
 			await Task.Delay(1);
 		}
 
@@ -85,6 +86,15 @@ namespace SalesPipeline.Pages.Login
 		protected void TogglePassword()
 		{
 			toggleEye = !toggleEye;
+			if (toggleEye)
+			{
+				customIconName = "fa-regular fa-eye-slash field-icon";
+			}
+			else
+			{
+				customIconName = "fa-regular fa-eye field-icon";
+			}
+			StateHasChanged();
 		}
 
 
