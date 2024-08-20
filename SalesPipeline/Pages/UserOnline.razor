@@ -8,9 +8,18 @@
 
 <nav class="d-flex align-items-center sb-topnav navbar navbar-expand  bg-header">
 	<!-- Navbar Brand-->
-	<a class="navbar-brand ps-3 text-white" href="/">
-		<img src="/image/logo/logo_bacc.png" width="35" /> <span class="d-none d-md-inline-block">BAAC RM SALES</span>
-	</a>
+	@if (_appSet.Value.Logo == LogoTypeModel.BAAC)
+	{
+		<a class="navbar-brand ps-3 text-white" href="/">
+			<img src="/image/logo/logo_bacc.png" width="35" /> <span class="d-none d-md-inline-block">BAAC RM SALES</span>
+		</a>
+	}
+	else if (_appSet.Value.Logo == LogoTypeModel.FCC)
+	{
+		<a class="navbar-brand ps-3 text-white" href="/">
+			<img src="/image/logo/fcc_logo_white_bg.png" width="50" /><span class="d-none d-md-inline-block ms-2">FCC Sales Pipeline</span>
+		</a>
+	}
 	<!-- Navbar Search-->
 	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 		@if (_appSet.Value.ServerSite != ServerSites.PRO)
