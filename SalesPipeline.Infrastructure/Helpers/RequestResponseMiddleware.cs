@@ -135,9 +135,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 				LogError(log, exception);
 			}
 
-			_ = repo.Logger.SaveLog(log).ConfigureAwait(false); //บันทึก log ในพื้นหลัง โดยไม่รอให้เสร็จสิ้น
-			//await repo.Logger.SaveLog(log);			
-
+			//_ = repo.Logger.SaveLog(log).ConfigureAwait(false); //บันทึก log ในพื้นหลัง โดยไม่รอให้เสร็จสิ้น
+			await repo.Logger.SaveLog(log);	
 		}
 
 		private void LogError(RequestResponseLogModel log, Exception exception)

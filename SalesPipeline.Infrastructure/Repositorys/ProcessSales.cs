@@ -1836,6 +1836,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (phoenix != null && phoenix.Count > 0)
 			{
 				_repo.Context.Sale_Phoenixes.RemoveRange(_repo.Context.Sale_Phoenixes.Where(x => x.SaleId == id));
+				await _db.SaveAsync();
+
 				foreach (var item in phoenix)
 				{
 					Sale_Phoenix sale_Phoenix = new();

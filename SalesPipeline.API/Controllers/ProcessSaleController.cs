@@ -204,7 +204,7 @@ namespace SalesPipeline.API.Controllers
 					{
 						iSCloseSale = 1;
 					}
-					if (sale.StatusSaleId >= StatusSaleModel.WaitAPIPHOENIX)
+					if (sale.StatusSaleId > StatusSaleModel.WaitAPIPHOENIX)
 					{
 						iSPhoenix = 1;
 					}
@@ -382,15 +382,15 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpPut("SyncPhoenixBySaleId")]
-		public async Task<IActionResult> SyncPhoenixBySaleId([FromQuery] Guid saleid)
+		public async Task<IActionResult> SyncPhoenixBySaleId(PhoenixModel model)
 		{
 			try
 			{
 				List<Sale_PhoenixCustom>? phoenixModel = null;
 
-				var sale = await _repo.Sales.GetStatusById(saleid);
+				var sale = await _repo.Sales.GetStatusById(model.SaleId);
 				if (sale == null) throw new ExceptionCustom("saleid not found.");
-				if (!string.IsNullOrEmpty(sale.CIF)) throw new ExceptionCustom("ไม่พบข้อมูล CIF ในกระบวนการขายนี้");
+				if (string.IsNullOrEmpty(sale.CIF)) throw new ExceptionCustom("ไม่พบข้อมูล CIF ในกระบวนการขายนี้");
 
 				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect)
 				{
@@ -475,7 +475,7 @@ namespace SalesPipeline.API.Controllers
 					phoenixModel = PhoenixsDataTest;
 				}
 
-				await _repo.ProcessSale.SyncPhoenixBySaleId(saleid, phoenixModel);
+				await _repo.ProcessSale.SyncPhoenixBySaleId(model.SaleId, phoenixModel);
 
 				return Ok();
 			}
