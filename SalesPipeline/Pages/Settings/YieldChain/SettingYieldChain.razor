@@ -8,6 +8,20 @@
 
 @if (_permission.IsView)
 {
+	string? productName = "";
+	string? chainName = "";
+
+	@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+	{
+		productName = "Product";
+		chainName = "Value Chain";
+	}
+	else
+	{
+		productName = "ผลผลิต";
+		chainName = "ห่วงโซ่";
+	}
+
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-12 my-2">
@@ -15,7 +29,14 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ตั้งค่า ผลผลิตและห่วงโซ่</p>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<p class="back_topic">ตั้งค่า Product & Value Chain</p>
+							}
+							else
+							{
+								<p class="back_topic">ตั้งค่า ผลผลิตและห่วงโซ่</p>
+							}
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -33,7 +54,7 @@
 										<table class="table table_list">
 											<thead>
 												<tr>
-													<th class="text-center">ผลผลิต</th>
+													<th class="text-center">@productName</th>
 													<th class="text-center">จัดการ</th>
 													<th class="text-center">การใช้งาน</th>
 												</tr>
@@ -96,7 +117,7 @@
 										<table class="table table_list">
 											<thead>
 												<tr>
-													<th class="text-center">ห่วงโซ่</th>
+													<th class="text-center">@chainName</th>
 													<th class="text-center">จัดการ</th>
 													<th class="text-center">การใช้งาน</th>
 												</tr>
@@ -153,7 +174,7 @@
 
 
 	<Modal @ref="modalFormYield"
-		   Title="ผลผลิต"
+		   Title="@productName"
 		   IsVerticallyCentered="true"
 		   HeaderCssClass="headermodal_default">
 		<BodyTemplate>
@@ -162,7 +183,7 @@
 				<div class="row my-3">
 					<div class="col-12">
 						<div class="form-group row mb-3">
-							<label class="col-4 col-form-label text-lg-end">ผลผลิต</label>
+							<label class="col-4 col-form-label text-lg-end">@productName</label>
 							<div class="col-7">
 								<input @bind="formModelYield.Name" type="text" class="form-control">
 								<ValidationMessage For="@(() => formModelYield.Name)" />
@@ -191,7 +212,7 @@
 	</Modal>
 
 	<Modal @ref="modalFormChain"
-		   Title="ห่วงโซ่"
+		   Title="@chainName"
 		   IsVerticallyCentered="true"
 		   HeaderCssClass="headermodal_default">
 		<BodyTemplate>
@@ -200,7 +221,7 @@
 				<div class="row my-3">
 					<div class="col-12">
 						<div class="form-group row mb-3">
-							<label class="col-4 col-form-label text-lg-end">ห่วงโซ่</label>
+							<label class="col-4 col-form-label text-lg-end">@chainName</label>
 							<div class="col-7">
 								<input @bind="formModelChain.Name" type="text" class="form-control">
 								<ValidationMessage For="@(() => formModelChain.Name)" />

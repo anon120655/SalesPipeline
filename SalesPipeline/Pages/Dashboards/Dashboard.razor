@@ -34,7 +34,7 @@
 								<input type="date" class="form-control" @onchange="OnDateEnd">
 							</div>
 							<div class="col mb-2">
-								<label class="form-label">กิจการสาขาภาค</label>
+								<label class="form-label">ภูมิภาค</label>
 								<div class="">
 									<select id="DepBranch" class="selectpicker" data-style="select_btn_set" title="ทั้งหมด" data-actions-box="true" data-live-search="true">
 										@if (LookUp.DepartmentBranch?.Count > 0)
@@ -89,7 +89,16 @@
 							<div class="col-12 col-md-4 col-xl-2 ps-lg-1 pe-lg-1 mt-2">
 								<div role="button" class="box-text_main box-2 w-100 px-2 pe-none">
 									<div class="box-text">
-										<div class="mb-auto"><p class="">รอผู้จัดการศูนย์มอบหมาย</p></div>
+										<div class="mb-auto">
+											@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+											{
+												<p class="">รอผู้จัดการมอบหมาย</p>
+											}
+											else
+											{
+												<p class="">รอผู้จัดการศูนย์มอบหมาย</p>
+											}
+											</div>
 										<div class=""><h3 class="mw_3r">@status_TotalModel.NumCusWaitMCenterAssign</h3></div>
 									</div>
 								</div>
@@ -98,7 +107,14 @@
 								<div role="button" class="box-text_main box-3 w-100 px-2 pe-none">
 									<div class="box-text">
 										<div class="mb-auto">
+											@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+											{
+												<p class="">ผู้จัดการมอบหมาย</p>
+											}
+											else
+											{
 											<p class="">ผู้จัดการศูนย์มอบหมาย</p>
+											}
 										</div>
 										<div class="">
 											<h3 class="mw_3r">
@@ -269,7 +285,14 @@
 											<div role="button" class="box-text_main w-100 px-0">
 												<div class="box-text text-blue">
 													<div class="mb-auto">
-														<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
+														@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+														{
+															<p class="">เหตุผลการปิดการขายไม่สำเร็จ</p>
+														}
+														else
+														{
+															<p class="">เหตุผลไม่ประสงค์ขอสินเชื่อ</p>
+														}
 													</div>
 													<div class="d-flex align-items-end mt-2">
 														<div class="chart-container" style="position: relative; height:33vh; max-width:300px;">

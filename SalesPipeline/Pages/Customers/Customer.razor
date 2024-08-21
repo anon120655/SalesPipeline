@@ -18,7 +18,14 @@
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
 						<div class="col mb-2">
-							<label class="form-label">CIF</label>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<label class="form-label">รหัสลูกค้า</label>
+							}
+							else
+							{
+								<label class="form-label">CIF</label>
+							}
 							<div class="input-group">
 								<input @bind="filter.cif" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
@@ -108,12 +115,25 @@
 									<thead>
 										<tr>
 											<th class="text-center">ลำดับที่</th>
-											<th class="text-center">เลข CIF</th>
+											@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+											{
+												<th class="text-center">รหัสลูกค้า</th>
+											}
+											else
+											{
+												<th class="text-center">เลข CIF</th>
+											}
 											<th class="text-center">เลขนิติบุคคล</th>
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">ห่วงโซ่</th>
-											@* <th class="text-center">กิจการสาขา</th> *@
+											@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+											{
+												<th class="text-center">Value Chain</th>
+											}
+											else
+											{
+												<th class="text-center">ห่วงโซ่</th>
+											}
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">สาขา</th>
 											<th class="text-center">สถานะ</th>

@@ -65,7 +65,14 @@
 									</div>
 								</div> *@
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายผู้จัดการศูนย์</label>
+									@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+									{
+										<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายผู้จัดการ</label>
+									}
+									else
+									{
+										<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายผู้จัดการศูนย์</label>
+									}
 									<div class="col-sm-4">
 										<div class="form-check">
 											<input class="form-check-input" type="checkbox" @bind="formModel.IsAssignCenter">
@@ -73,7 +80,14 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายพนักงาน RM</label>
+									@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+									{
+										<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายพนักงานขาย</label>
+									}
+									else
+									{
+										<label class="col-sm-2 col-form-label text-lg-end fw-bold">มอบหมายพนักงาน RM</label>
+									}
 									<div class="col-sm-4">
 										<div class="form-check">
 											<input class="form-check-input" type="checkbox" @bind="@formModel.IsAssignRM">
@@ -107,7 +121,7 @@
 																		   id="@item.MenuNumber"
 																		   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
 
-																	<span class="ms-2">	@item.Name</span>
+																	<span class="ms-2">	@item._NameSystem(_appSet.Value.SystemType)</span>
 																</a>
 															</li>
 														}
@@ -119,7 +133,7 @@
 																		   id="@item.MenuNumber"
 																		   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
 
-																	<span class="ms-2">	@item.Name</span>
+																	<span class="ms-2">	@item._NameSystem(_appSet.Value.SystemType)</span>
 																</a>
 																<ul class="ul_dot_none">
 																	@foreach (var iteml2 in menuLevel2)
@@ -135,7 +149,7 @@
 																						   id="@iteml2.MenuNumber"
 																						   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
 
-																					<span class="ms-2">	@iteml2.Name</span>
+																					<span class="ms-2">	@iteml2._NameSystem(_appSet.Value.SystemType)</span>
 																				</a>
 																			</li>
 																		}
@@ -147,7 +161,7 @@
 																						   id="@iteml2.MenuNumber"
 																						   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
 
-																					<span class="ms-2">	@iteml2.Name</span>
+																					<span class="ms-2">	@iteml2._NameSystem(_appSet.Value.SystemType)</span>
 																				</a>
 																				<ul class="ul_dot_none">
 																					@foreach (var iteml3 in menuLevel3)
@@ -160,7 +174,7 @@
 																									   id="@iteml3.MenuNumber"
 																									   value="@iteml3.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml3.MenuNumber,1))" />
 
-																								<span class="ms-2">	@iteml3.Name</span>
+																								<span class="ms-2">	@iteml3._NameSystem(_appSet.Value.SystemType)</span>
 																							</a>
 																						</li>
 																					}

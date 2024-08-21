@@ -1,6 +1,13 @@
 ﻿@page "/assign/rm"
 
-<PageTitle>มอบหมายพนักงานธุรกิจสินเชื่อ</PageTitle>
+@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+{
+	<PageTitle>มอบหมายพนักงานขาย</PageTitle>
+}
+else
+{
+	<PageTitle>มอบหมายพนักงานธุรกิจสินเชื่อ</PageTitle>
+}
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +22,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายพนักงานขาย</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ</p>
+								}
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -82,7 +96,7 @@
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">เบอร์ติดต่อ</th>
 												@* <th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">สาขาที่ดูแล</th> *@
+										<th class="text-center">สาขาที่ดูแล</th> *@
 												<th class="text-center">พื้นที่ดูแล</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">จำนวนการมอบหมาย</th>
@@ -180,7 +194,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกลูกค้า</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายพนักงานขาย > เลือกลูกค้า</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกลูกค้า</p>
+								}
 							</div>
 						</div>
 						<div class="@(formView != null ? "d-none" : "")">
@@ -392,7 +413,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปลูกค้าที่ส่งคืนสำนักงานใหญ่</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายพนักงานขาย > สรุปลูกค้าที่ส่งคืนสำนักงานใหญ่</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปลูกค้าที่ส่งคืนสำนักงานใหญ่</p>
+								}
 							</div>
 						</div>
 						<div class="row mt-4 mb-2">
@@ -476,7 +504,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกผู้รับผิดชอบ</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายพนักงานขาย > เลือกผู้รับผิดชอบ</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > เลือกผู้รับผิดชอบ</p>
+								}
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -632,7 +667,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปผู้รับผิดชอบและลูกค้า</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายพนักงานขาย > สรุปผู้รับผิดชอบและลูกค้า</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายพนักงานธุรกิจสินเชื่อ > สรุปผู้รับผิดชอบและลูกค้า</p>
+								}
 							</div>
 						</div>
 						<div class="row mt-4 mb-2">

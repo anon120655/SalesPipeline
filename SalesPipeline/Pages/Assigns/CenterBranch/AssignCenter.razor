@@ -1,6 +1,13 @@
 ﻿@page "/assign/center"
 
-<PageTitle>มอบหมายผู้จัดการศูนย์</PageTitle>
+@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+{
+	<PageTitle>มอบหมายผู้จัดการ</PageTitle>
+}
+else
+{
+	<PageTitle>มอบหมายผู้จัดการศูนย์</PageTitle>
+}
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +22,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายผู้จัดการศูนย์</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายผู้จัดการ</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายผู้จัดการศูนย์</p>
+								}
 							</div>
 						</div>
 						<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -74,7 +88,14 @@
 												<th class="text-center">รหัสพนักงาน</th>
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">พื้นที่ดูแล</th>
-												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+												{
+													<th class="text-center">จำนวนพนักงานขาย</th>
+												}
+												else
+												{
+													<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												}
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">จำนวนการมอบหมาย</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>
@@ -171,7 +192,14 @@
 						<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 							<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 							<div class="p-2">
-								<p class="back_topic">มอบหมายผู้จัดการศูนย์ > สรุปผู้รับผิดชอบและลูกค้า</p>
+								@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+								{
+									<p class="back_topic">มอบหมายผู้จัดการ > สรุปผู้รับผิดชอบและลูกค้า</p>
+								}
+								else
+								{
+									<p class="back_topic">มอบหมายผู้จัดการศูนย์ > สรุปผู้รับผิดชอบและลูกค้า</p>
+								}
 							</div>
 						</div>
 						<div class="row mt-4 mb-2">
@@ -188,7 +216,14 @@
 												<th class="text-center">รหัสพนักงาน</th>
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">พื้นที่ดูแล</th>
-												<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+												{
+													<th class="text-center">จำนวนพนักงานขาย</th>
+												}
+												else
+												{
+													<th class="text-center">จำนวนพนง.สินเชื่อ</th>
+												}
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">จำนวนการมอบหมาย</th>
 												<th class="text-center">ลูกค้าหลังมอบหมาย</th>

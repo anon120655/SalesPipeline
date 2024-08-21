@@ -13,7 +13,14 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">รายการส่งคืนจากจากผู้จัดการศูนย์</p>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<p class="back_topic">รายการส่งคืนจากจากผู้จัดการ</p>
+							}
+							else
+							{
+								<p class="back_topic">รายการส่งคืนจากจากผู้จัดการศูนย์</p>
+							}
 						</div>
 					</div>
 
@@ -30,7 +37,14 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ห่วงโซ่</label>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<label class="form-label">Value Chain</label>
+							}
+							else
+							{
+								<label class="form-label">ห่วงโซ่</label>
+							}
 							<select id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
 								@if (LookUp.Chain?.Count > 0)

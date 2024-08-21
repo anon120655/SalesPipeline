@@ -144,7 +144,7 @@
 															   id="@item.MenuNumber"
 															   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
 
-														<span class="ms-2">	@item.Name</span>
+														<span class="ms-2">	@item._NameSystem(_appSet.Value.SystemType)</span>
 													</a>
 												</li>
 											}
@@ -156,7 +156,7 @@
 															   id="@item.MenuNumber"
 															   value="@item.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,item.MenuNumber,1))" />
 
-														<span class="ms-2">	@item.Name</span>
+														<span class="ms-2">	@item._NameSystem(_appSet.Value.SystemType)</span>
 													</a>
 													<ul class="ul_dot_none">
 														@foreach (var iteml2 in menuLevel2)
@@ -172,7 +172,7 @@
 																			   id="@iteml2.MenuNumber"
 																			   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
 
-																		<span class="ms-2">	@iteml2.Name</span>
+																		<span class="ms-2">	@iteml2._NameSystem(_appSet.Value.SystemType)</span>
 																	</a>
 																</li>
 															}
@@ -184,7 +184,7 @@
 																			   id="@iteml2.MenuNumber"
 																			   value="@iteml2.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml2.MenuNumber,1))" />
 
-																		<span class="ms-2">	@iteml2.Name</span>
+																		<span class="ms-2">	@iteml2._NameSystem(_appSet.Value.SystemType)</span>
 																	</a>
 																	<ul class="ul_dot_none">
 																		@foreach (var iteml3 in menuLevel3)
@@ -197,7 +197,7 @@
 																						   id="@iteml3.MenuNumber"
 																						   value="@iteml3.MenuNumber" @onchange="(e =>  CheckChanged(e.Value,iteml3.MenuNumber,1))" />
 
-																					<span class="ms-2">	@iteml3.Name</span>
+																					<span class="ms-2">	@iteml3._NameSystem(_appSet.Value.SystemType)</span>
 																				</a>
 																			</li>
 																		}

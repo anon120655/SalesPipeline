@@ -15,7 +15,14 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><img src="/image/icon/assign_user128x.png" width="55" /></div>
 						<div class="p-2">
-							<p class="back_topic">ตั้งค่า กิจการสาขา</p>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<p class="back_topic">ตั้งค่า ภูมิภาค</p>
+							}
+							else
+							{
+								<p class="back_topic">ตั้งค่า กิจการสาขา</p>
+							}
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -31,7 +38,14 @@
 							</div>
 						</div>
 						<div class="col mb-2">
-							<label class="form-label">ชื่อกิจการสาขา</label>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<label class="form-label">ชื่อภูมิภาค</label>
+							}
+							else
+							{
+								<label class="form-label">ชื่อกิจการสาขา</label>
+							}
 							<div class="input-group">
 								<input @bind="filter.branch_name" class="form-control" type="search" placeholder="">
 								<span class="input-group-append ms-0">
@@ -54,7 +68,7 @@
 									<thead>
 										<tr>
 											<th class="text-center">รหัส</th>
-											<th class="text-center">ชื่อกิจการสาขา</th>
+											<th class="text-center">ชื่อ</th>
 											<th class="text-center">จัดการ</th>
 											<th class="text-center">สถานะ</th>
 										</tr>

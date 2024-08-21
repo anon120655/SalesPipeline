@@ -14,7 +14,14 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic_active">ตั้งค่ากิจการสาขา</p>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<p class="back_topic_active">ตั้งค่าภูมิภาค</p>
+							}
+							else
+							{
+								<p class="back_topic_active">ตั้งค่ากิจการสาขา</p>
+							}
 						</div>
 					</div>
 					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
@@ -29,7 +36,7 @@
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อกิจการสาขา<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อ<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<input @bind="formModel.Name" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.Name)" />

@@ -14,7 +14,14 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic_active">เหตุผลการส่งคืนและปฏิเสธ</p>
+							@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+							{
+								<p class="back_topic_active">เหตุผลการปิดการขายไม่สำเร็จ</p>
+							}
+							else
+							{
+								<p class="back_topic_active">เหตุผลการส่งคืนและปฏิเสธ</p>
+							}
 						</div>
 					</div>
 					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
