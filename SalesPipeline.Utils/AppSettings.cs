@@ -5,12 +5,12 @@ namespace SalesPipeline.Utils
 	public class AppSettings
 	{
 		public string? Secret { get; set; }
-		public string? SiteUpdate { get; set; } = $"2567-08-20";
+		public string? SiteUpdate { get; set; } = $"2567-08-21";
 		public string ServerSite { get; set; } = null!;
 		public string? baseUriApi { get; set; }
 		public string? baseUriWeb { get; set; }
 		public string? ContentRootPath { get; set; }
-		public string? Logo { get; set; }
+		public string? SystemType { get; set; }
 		public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }

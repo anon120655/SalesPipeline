@@ -1527,6 +1527,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.MenuNumber).HasColumnType("int(11)");
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.NameFCC).HasMaxLength(255);
             entity.Property(e => e.ParentNumber).HasColumnType("int(11)");
             entity.Property(e => e.Path).HasMaxLength(255);
             entity.Property(e => e.Sequence).HasColumnType("int(11)");

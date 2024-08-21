@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.ConstTypeModel
 {
-	public class LogoTypeModel
+	public class SystemTypeModel
 	{
 		/// <summary>
 		/// BAAC

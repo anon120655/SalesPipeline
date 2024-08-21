@@ -23,6 +23,8 @@ public partial class MenuItem
 
     public string Name { get; set; } = null!;
 
+    public string? NameFCC { get; set; }
+
     public int Sequence { get; set; }
 
     public string? Path { get; set; }

@@ -1,13 +1,13 @@
 ﻿
 <nav class="d-flex align-items-center sb-topnav navbar navbar-expand  bg-header">
 	<!-- Navbar Brand-->
-	@if (_appSet.Value.Logo == LogoTypeModel.BAAC)
+	@if (_appSet.Value.SystemType == SystemTypeModel.BAAC)
 	{
 		<a class="navbar-brand ps-3 text-white" href="/">
 			<img src="/image/logo/logo_bacc.png" width="35" /> <span class="d-none d-md-inline-block">BAAC RM SALES</span>
 		</a>
 	}
-	else if (_appSet.Value.Logo == LogoTypeModel.FCC)
+	else if (_appSet.Value.SystemType == SystemTypeModel.FCC)
 	{
 		<a class="navbar-brand ps-3 text-white" href="/">
 			<img src="/image/logo/fcc_logo_white_bg.png" width="50" /><span class="d-none d-md-inline-block ms-2">FCC Sales Pipeline</span>

@@ -47,7 +47,7 @@
 											<NavLink Match="NavLinkMatch.Prefix" href="@item.Path" class="nav-link btn btn-toggle rounded nav_click">
 												<div class="">
 													@* <i class="fa-solid fa-chart-line me-2"></i> *@
-													<span>@item.Name</span>
+													<span>@item._NameSystem(_appSet.Value.SystemType)</span>
 													@if (item.MenuNumber == MenuNumbers.Overdue && UserInfo.OverdueNotify > 0)
 													{
 														<span id="@(MenuNumbers.Overdue)" class="red-dot ms-2"></span>
@@ -70,7 +70,7 @@
 											<button class="nav-link btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#@(item.MenuNumber)-collapse" aria-expanded="@(activel2 ? "true" : "false")">
 												<div class="">
 													@* <i class="fa-solid fa-user-gear me-2"></i> *@
-													<span>@item.Name</span>
+													<span>@item._NameSystem(_appSet.Value.SystemType)</span>
 													<div class="sb-sidenav-collapse-arrow allow_right"><i class="fas fa-angle-down"></i></div>
 												</div>
 											</button>
@@ -86,7 +86,7 @@
 															{
 																<li>
 																	<NavLink Match="NavLinkMatch.Prefix" href="@iteml2.Path" class="nav-link nav_click">
-																		<i class="fa-solid fa-table-cells-large me-2"></i> @iteml2.Name
+																		<i class="fa-solid fa-table-cells-large me-2"></i> @iteml2._NameSystem(_appSet.Value.SystemType)
 																	</NavLink>
 																</li>
 															}
@@ -100,7 +100,7 @@
 																	<button class="nav-link btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#@(iteml2.MenuNumber)-collapse" aria-expanded="@(activel3 ? "true" : "false")">
 																		<div class="">
 																			<i class="fa-solid fa-table-cells-large me-2"></i>
-																			<span>@iteml2.Name</span>
+																			<span>@iteml2._NameSystem(_appSet.Value.SystemType)</span>
 																			<div class="sb-sidenav-collapse-arrow allow_right"><i class="fas fa-angle-down"></i></div>
 																		</div>
 																	</button>
@@ -113,7 +113,7 @@
 																					indexl3++;
 																					<li>
 																						<NavLink Match="NavLinkMatch.Prefix" href="@iteml3.Path" class="nav-link nav_click h_two">
-																							<i class="fa-solid fa-table-cells-large me-2"></i> @iteml3.Name
+																							<i class="fa-solid fa-table-cells-large me-2"></i> @iteml3._NameSystem(_appSet.Value.SystemType)
 																						</NavLink>
 																					</li>
 																				}
@@ -317,10 +317,19 @@
 					</ul>
 				</div>
 			</Animate>
-		</div>
-		<div class="sb-sidenav-footer text-center text-white-50">
-			RM Sales
-		</div>
+		</div> 
+		@if (_appSet.Value.SystemType == SystemTypeModel.FCC)
+		{
+			<div class="sb-sidenav-footer text-center text-white-50">
+				FCC Sales Pipeline
+			</div>
+		}
+		else
+		{
+			<div class="sb-sidenav-footer text-center text-white-50">
+				RM Sales
+			</div>
+		}
 	</nav>
 </div>
 

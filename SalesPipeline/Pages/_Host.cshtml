@@ -31,7 +31,7 @@
     <link href="/css/site.css?v=@(_appSet.Value.Version)" rel="stylesheet" />
     <link href="SalesPipeline.styles.css" rel="stylesheet" />
 	
-    @if (_appSet.Value.Logo == LogoTypeModel.FCC)
+    @if (_appSet.Value.SystemType == SystemTypeModel.FCC)
     {
         <link rel="icon" type="image/png" href="favicon_fcc.png" />
     }
