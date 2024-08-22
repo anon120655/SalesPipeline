@@ -317,6 +317,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (model.StatusId == StatusSaleModel.WaitAPIPHOENIX)
 				{
+					string? topicName = "ผจศ. อนุมัติคำขอสินเชื่อ";
+					string? noteSystem = "รอวิเคราะห์สินเชื่อ(PHOENIX)";
+					if (_appSet.SystemType == SystemTypeModel.FCC)
+					{
+						topicName = "ผจก. อนุมัติคำขอสินเชื่อ";
+						noteSystem = "รอวิเคราะห์เอกสาร";
+					}
 					//กรณี ผจศ. ถูกมอบหมายแล้ว
 					if (sales.AssCenterUserId.HasValue && sales.AssCenterUserId.Value != model.CreateBy)
 					{
@@ -339,8 +346,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						SaleId = model.SaleId,
 						ProcessSaleCode = ProcessSaleCodeModel.Document,
 						StatusSaleId = model.StatusId,
-						TopicName = "ผจศ. อนุมัติคำขอสินเชื่อ",
-						NoteSystem = "รอวิเคราะห์สินเชื่อ(PHOENIX)"
+						TopicName = topicName,
+						NoteSystem = noteSystem
 					});
 
 					if (sales.AssUserId.HasValue)
