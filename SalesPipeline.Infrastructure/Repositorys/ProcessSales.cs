@@ -1671,6 +1671,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Sale_ContactCustom> CreateContactDiscard(Sale_ContactCustom model)
 		{
+			//20240826 คุณเจนขอปรับ โดยตัดบางส่วนออก เลย fix ส่วนนี้
+			model.NextActionId = 3;
+			model.DesireLoanId = 2;
+
 			var sale = await _repo.Sales.GetStatusById(model.SaleId);
 			if (sale == null) throw new ExceptionCustom("saleid not found.");
 
@@ -1682,10 +1686,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (String.IsNullOrEmpty(model.Name)) throw new ExceptionCustom("ระบุชื่อผู้ติดต่อ");
 			if (String.IsNullOrEmpty(model.Tel)) throw new ExceptionCustom("ระบุเบอร์ติดต่อ");
 			if (!model.ContactDate.HasValue) throw new ExceptionCustom("ระบุวันที่ติดต่อ");
-			if (!model.ContactResult.HasValue) throw new ExceptionCustom("ระบุผลการติดต่อ");
+			//if (!model.ContactResult.HasValue) throw new ExceptionCustom("ระบุผลการติดต่อ");
 			if (!model.NextActionId.HasValue) throw new ExceptionCustom("ระบุ Next Action");
 			if (!model.DesireLoanId.HasValue) throw new ExceptionCustom("ระบุความประสงค์กู้");
-			if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
+			//if (model.ContactResult != 1 && model.ContactResult != 2) throw new ExceptionCustom("contactResult not match");
 			if (model.NextActionId != 3) throw new ExceptionCustom("nextActionId not match");
 			if (model.DesireLoanId != 2) throw new ExceptionCustom("desireLoanId not match");
 
@@ -1715,10 +1719,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(sale_Contact);
 			await _db.SaveAsync();
 
-			if (model.ContactResult == 1 || model.ContactResult == 2)
-			{
-				resultContactName = model.ContactResult == 1 ? "รับสาย" : "ไม่รับสาย";
-			}
+			//if (model.ContactResult == 1 || model.ContactResult == 2)
+			//{
+			//	resultContactName = model.ContactResult == 1 ? "รับสาย" : "ไม่รับสาย";
+			//}
 			if (model.NextActionId == 3)
 			{
 				nextActionName = "ส่งกลับรายการ";
@@ -1829,7 +1833,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task SyncPhoenixBySaleId(Guid id, List<Sale_PhoenixCustom>? phoenix)
 		{
 			var sales = await _repo.Context.Sales.Where(x => x.Id == id).FirstOrDefaultAsync();
-			if(sales == null) throw new ExceptionCustom("ไม่พบข้อมูล");
+			if (sales == null) throw new ExceptionCustom("ไม่พบข้อมูล");
 
 			DateTime _dateNow = DateTime.Now;
 
