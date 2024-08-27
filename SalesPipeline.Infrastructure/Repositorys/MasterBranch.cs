@@ -11,7 +11,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterBranch : IMasterBranch
+	public class MasterBranch : IMasterBranch
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -51,7 +51,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				var infoBranches = new Data.Entity.InfoBranch()
 				{
-					BranchID = id,	
+					BranchID = id,
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
 					CreateBy = model.CurrentUserId,
@@ -161,6 +161,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!String.IsNullOrEmpty(model.branch_name))
 			{
 				query = query.Where(x => x.BranchName != null && x.BranchName.Contains(model.branch_name));
+			}
+
+			if (model.provinceid > 0)
+			{
+				query = query.Where(x => x.ProvinceID == model.provinceid);
 			}
 
 			var pager = new Pager(query.Count(), model.page, model.pagesize, null);

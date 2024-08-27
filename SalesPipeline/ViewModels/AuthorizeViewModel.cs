@@ -14,6 +14,8 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using static Dapper.SqlMapper;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace SalesPipeline.ViewModels
 {
@@ -235,53 +237,78 @@ namespace SalesPipeline.ViewModels
 					var data = JsonConvert.DeserializeObject<LoginResponseModel>(await response.Content.ReadAsStringAsync());
 					if (data != null)
 					{
-						_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data.access_token);
-						var datauser = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetById?id={data.Id}");
-						if (datauser.StatusCode == System.Net.HttpStatusCode.OK && datauser.Content != null)
+						if (data.Id > 0 && !string.IsNullOrEmpty(data.access_token))
 						{
-							var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
-							if (datauserMap != null)
+							_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data.access_token);
+							var datauser = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetById?id={data.Id}");
+							if (datauser.StatusCode == System.Net.HttpStatusCode.OK && datauser.Content != null)
 							{
-								data.Master_Department_BranchId = datauserMap.Master_Branch_RegionId;
-								data.ProvinceId = datauserMap.ProvinceId;
-								data.ProvinceName = datauserMap.ProvinceName;
-								data.BranchId = datauserMap.BranchId;
-								data.BranchName = datauserMap.BranchName;
-								data.PositionId = datauserMap.PositionId;
-								data.RoleId = datauserMap.RoleId;
-								data.EmployeeId = datauserMap.EmployeeId;
-								data.TitleName = datauserMap.TitleName;
-								data.FirstName = datauserMap.FirstName;
-								data.LastName = datauserMap.LastName;
-
-								if (datauserMap.Master_Branch_Region != null)
-									data.Master_Department_BranchName = datauserMap.Master_Branch_Region.Name;
-
-								if (datauserMap.LevelId != null)
-									data.LevelName = datauserMap.LevelId.ToString();
-
-								if (datauserMap.Position != null)
-									data.PositionName = datauserMap.Position.Name;
-
-								if (datauserMap.Role != null)
+								var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
+								if (datauserMap != null)
 								{
-									data.RoleCode = datauserMap.Role.Code;
-									data.RoleName = datauserMap.Role.Name;
-									data.IsAssignCenter = datauserMap.Role.IsAssignCenter;
-									data.IsAssignRM = datauserMap.Role.IsAssignRM;
-								}
+									data.Master_Department_BranchId = datauserMap.Master_Branch_RegionId;
+									data.ProvinceId = datauserMap.ProvinceId;
+									data.ProvinceName = datauserMap.ProvinceName;
+									data.BranchId = datauserMap.BranchId;
+									data.BranchName = datauserMap.BranchName;
+									data.PositionId = datauserMap.PositionId;
+									data.RoleId = datauserMap.RoleId;
+									data.EmployeeId = datauserMap.EmployeeId;
+									data.TitleName = datauserMap.TitleName;
+									data.FirstName = datauserMap.FirstName;
+									data.LastName = datauserMap.LastName;
 
-								var dataRole = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetRoleById?id={datauserMap.RoleId}");
-								if (dataRole.StatusCode == System.Net.HttpStatusCode.OK && dataRole.Content != null)
-								{
-									var dataRoleMap = JsonConvert.DeserializeObject<User_RoleCustom>(await dataRole.Content.ReadAsStringAsync());
-									if (dataRoleMap != null && dataRoleMap.User_Permissions != null)
+									if (datauserMap.Master_Branch_Region != null)
+										data.Master_Department_BranchName = datauserMap.Master_Branch_Region.Name;
+
+									if (datauserMap.LevelId != null)
+										data.LevelName = datauserMap.LevelId.ToString();
+
+									if (datauserMap.Position != null)
+										data.PositionName = datauserMap.Position.Name;
+
+									if (datauserMap.Role != null)
 									{
-										data.User_Permissions = dataRoleMap.User_Permissions.ToList();
+										data.RoleCode = datauserMap.Role.Code;
+										data.RoleName = datauserMap.Role.Name;
+										data.IsAssignCenter = datauserMap.Role.IsAssignCenter;
+										data.IsAssignRM = datauserMap.Role.IsAssignRM;
 									}
-								}
 
-								data.User_Areas = datauserMap.User_Areas;
+									var dataRole = await _httpClient.GetAsync($"{_appSet.baseUriApi}/v1/User/GetRoleById?id={datauserMap.RoleId}");
+									if (dataRole.StatusCode == System.Net.HttpStatusCode.OK && dataRole.Content != null)
+									{
+										var dataRoleMap = JsonConvert.DeserializeObject<User_RoleCustom>(await dataRole.Content.ReadAsStringAsync());
+										if (dataRoleMap != null && dataRoleMap.User_Permissions != null)
+										{
+											data.User_Permissions = dataRoleMap.User_Permissions.ToList();
+										}
+									}
+
+									data.User_Areas = datauserMap.User_Areas;
+								}
+							}
+						}
+						else
+						{
+							if (data.iauthen != null && data.iauthen.response_data != null)
+							{
+								var base64redirecturl = Convert.ToBase64String(Encoding.UTF8.GetBytes(_appSet?.baseUriWeb ?? string.Empty));
+
+								if (!data.iauthen.response_data.password_unexpire && !string.IsNullOrEmpty(data.iauthen.response_data.change_password_url))
+								{
+									string? _url = $"{data.iauthen.response_data.change_password_url}&redirecturl={base64redirecturl}";
+									_Nav.NavigateTo(_url, true);
+								}
+								else if (!data.iauthen.response_data.username_existing && !string.IsNullOrEmpty(data.iauthen.response_data.create_password_url))
+								{
+									string? _url = $"{data.iauthen.response_data.create_password_url}&redirecturl={base64redirecturl}";
+									_Nav.NavigateTo(_url, true);
+								}
+							}
+							else
+							{
+								throw new Exception($"เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
 							}
 						}
 					}

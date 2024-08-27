@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.iAuthen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? Email { get; set; }
 		public string? access_token { get; set; }
         public string? expires_in { get; set; }
+        public iAuthenResponse? iauthen { get; set; }
 
         public AuthenticateResponse(UserCustom user, string token, string expires)
 		{

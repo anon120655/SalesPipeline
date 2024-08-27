@@ -470,6 +470,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == user.Id).ToList();
 					if (user_AreaR.Count > 0)
 					{
+						//กรณี iauth จะไม่ได้ส่งมาจะ default ค่าเดิม
+						if (model.User_Areas == null || model.User_Areas?.Count == 0)
+						{
+							model.User_Areas = _mapper.Map<List<User_AreaCustom>>(user_AreaR);
+						}
+
 						_db.DeleteRange(user_AreaR);
 						await _db.SaveAsync();
 					}

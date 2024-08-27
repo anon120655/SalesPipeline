@@ -218,13 +218,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 						if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
 						{
-							if (!isProceed)
-							{
-								code = "proceed";
-								message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
-								isProceed = true;
-								break;
-							}
+							//if (!isProceed)
+							//{
+							//	code = "proceed";
+							//	message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
+							//	isProceed = true;
+							//	break;
+							//}
 						}
 					}
 				}

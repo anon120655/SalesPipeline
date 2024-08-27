@@ -1,4 +1,5 @@
 ﻿using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.iAuthen;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public int? OverdueNotify { get; set; }
 		public List<User_PermissionCustom> User_Permissions { get; set; }
 		public List<User_AreaCustom>? User_Areas { get; set; }
+		public iAuthenResponse? iauthen { get; set; }
 
 		public string? FullName
 		{

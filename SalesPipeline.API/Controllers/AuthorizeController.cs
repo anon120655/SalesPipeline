@@ -102,7 +102,13 @@ namespace SalesPipeline.API.Controllers
 					{
 						string responseBody = await responseAPI.Content.ReadAsStringAsync();
 						iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
-						throw new ExceptionCustom($"{iAuthenData?.response_message}");
+						//throw new ExceptionCustom($"{iAuthenData?.response_message}");
+					}
+
+					if (iAuthenData != null && iAuthenData.response_data != null)
+					{
+						if (response == null) response = new AuthenticateResponse(new(),string.Empty,string.Empty);
+						response.iauthen = iAuthenData;
 					}
 				}
 				else
