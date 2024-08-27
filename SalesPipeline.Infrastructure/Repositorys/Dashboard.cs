@@ -36,7 +36,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
@@ -82,7 +82,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.Sale.AssUserId == user.Id);
 			}
@@ -128,7 +128,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.Sale.AssUserId == user.Id);
 			}
@@ -174,7 +174,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.Sale.AssUserId == user.Id);
 			}
@@ -279,7 +279,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && !user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				var statusTotal = new List<SaleStatusGroupByModel>();
 
@@ -367,7 +367,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 				var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (user.Role.Code != null && !user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					var dash_Status_Total = await _repo.Context.Dash_Status_Totals
 																	   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
@@ -396,7 +396,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								   Count = group.Count()
 							   }).OrderBy(x => x.StatusID).ToListAsync();
 
-					//if (user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
+					//if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.CEN_BRANCH))
 					//{
 					//	statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.userid.Value).GroupBy(info => info.StatusSaleId)
 					//			   .Select(group => new SaleStatusGroupByModel()
@@ -405,7 +405,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//				   Count = group.Count()
 					//			   }).OrderBy(x => x.StatusID).ToListAsync();
 					//}
-					//else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
+					//else if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.BRANCH_REG))
 					//{
 					//	statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active && x.Master_Branch_RegionId == user.Master_Branch_RegionId).GroupBy(info => info.StatusSaleId)
 					//			   .Select(group => new SaleStatusGroupByModel()
@@ -414,7 +414,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//				   Count = group.Count()
 					//			   }).OrderBy(x => x.StatusID).ToListAsync();
 					//}
-					//else if (user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
+					//else if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.LOAN) || user.Role.Code.ToUpper().Contains(RoleCodes.ADMIN))
 					//{
 					//	statusTotal = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active).GroupBy(info => info.StatusSaleId)
 					//			   .Select(group => new SaleStatusGroupByModel()
@@ -834,7 +834,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 				var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-				if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (user.Role.Code != null && !user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					var dash_Avg_Number = await _repo.Context.Dash_Avg_Numbers
 																	   .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.UserId == model.userid.Value);
@@ -1446,7 +1446,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var response = new List<Dash_PieCustom>();
 
-			if (!user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && !user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				response = await GetDataPieCloseSale(model, response);
 				response = await GetDataPieReasonFail(model, response);
@@ -2820,7 +2820,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var response = new List<Dash_PieCustom>();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				response = await GetDataTypeBusiness(model, response);
 				response = await GetDataPieCloseSale(model, response);

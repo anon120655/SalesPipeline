@@ -489,7 +489,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				int? assUserId = null;
 				string? assUserName = null;
 
-				if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+				if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 				{
 					statusSaleId = StatusSaleModel.WaitApprove;
 					assUserId = model.CurrentUserId;

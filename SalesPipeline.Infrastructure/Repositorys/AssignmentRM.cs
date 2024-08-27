@@ -38,7 +38,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
