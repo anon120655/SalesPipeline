@@ -18,7 +18,7 @@ namespace SalesPipeline.Pages.Assigns.CenterBranch
 
 		protected override async Task OnInitializedAsync()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignLoan) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignManager) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 		}

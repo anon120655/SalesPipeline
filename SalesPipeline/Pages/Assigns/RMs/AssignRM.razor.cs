@@ -41,7 +41,7 @@ namespace SalesPipeline.Pages.Assigns.RMs
 		protected override async Task OnInitializedAsync()
 		{
 			stepAssign = StepAssignLoanModel.Home;
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignLoan) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.AssignRm) ?? new User_PermissionCustom();
 			StateHasChanged();
 			await Task.Delay(1);
 		}

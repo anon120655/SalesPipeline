@@ -4,7 +4,7 @@
 	{
 		public const int Dashboard = 110000;
 		public const int AssignManager = 120000;
-		public const int AssignLoan = 130000;
+		public const int AssignRm = 130000;
 
 		//รายการส่งคืนจากผู้จัดการศูนย์
 		public const int ReturnedBranch = 140000;
