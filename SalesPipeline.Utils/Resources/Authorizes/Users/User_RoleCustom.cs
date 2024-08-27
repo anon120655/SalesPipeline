@@ -30,8 +30,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 		/// </summary>
 		public bool IsModify { get; set; }
 
-		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public string Code { get; set; } = null!;
+		public string? Code { get; set; }
 
 		/// <summary>
 		/// ชื่อหน้าที่

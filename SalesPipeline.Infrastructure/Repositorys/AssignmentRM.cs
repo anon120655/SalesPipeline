@@ -62,7 +62,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x =>
+						(x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
@@ -102,7 +105,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			foreach (var provinceId in user_Areas)
 			{
 				var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-				orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+				orExpression = orExpression.Or(x =>
+				(x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+				|| (x.User.User_Areas.Any(s => s.ProvinceId == 9999))
+				);
 			}
 
 			orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));

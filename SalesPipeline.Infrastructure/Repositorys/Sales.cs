@@ -58,7 +58,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x =>
+						(x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ

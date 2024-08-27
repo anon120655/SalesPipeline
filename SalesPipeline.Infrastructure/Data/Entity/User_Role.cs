@@ -28,7 +28,7 @@ public partial class User_Role
     /// </summary>
     public bool IsModify { get; set; }
 
-    public string Code { get; set; } = null!;
+    public string? Code { get; set; }
 
     /// <summary>
     /// ชื่อหน้าที่

@@ -138,7 +138,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				FirstName = modeliAuth.first_name_th,
 				LastName = modeliAuth.last_name_th,
 				FullName = $"{modeliAuth.first_name_th} {modeliAuth.last_name_th}",
-				Email = model.Username,
+				Email = modeliAuth.email,
 				Tel = modeliAuth.mobile_no,
 				RoleId = roleId,
 				LevelId = levelId,

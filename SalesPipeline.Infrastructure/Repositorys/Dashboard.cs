@@ -60,7 +60,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x =>
+						(x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
@@ -103,7 +106,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x =>
+						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
@@ -145,8 +151,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
 					foreach (var provinceId in user_Areas)
 					{
-						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						var tempProvinceId = provinceId; 
+						orExpression = orExpression.Or(x =>
+						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
@@ -189,7 +198,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
-						orExpression = orExpression.Or(x => x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
+						orExpression = orExpression.Or(x =>
+						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						);
 					}
 
 					//งานที่สร้างเอง หรือถูกมอบหมายมาจาก ธญ
