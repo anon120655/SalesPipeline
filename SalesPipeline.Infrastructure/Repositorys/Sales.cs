@@ -926,7 +926,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();
 
-			if (user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
 			{
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
