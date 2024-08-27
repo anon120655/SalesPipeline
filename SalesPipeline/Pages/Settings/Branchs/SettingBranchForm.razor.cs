@@ -15,6 +15,7 @@ namespace SalesPipeline.Pages.Settings.Branchs
 
 		string? _errorMessage = null;
 		private bool isLoading = false;
+		private LookUpResource LookUp = new();
 		private User_PermissionCustom _permission = new();
 		private InfoBranchCustom formModel = new();
 
@@ -29,12 +30,31 @@ namespace SalesPipeline.Pages.Settings.Branchs
 		{
 			if (firstRender)
 			{
+				await SetInitManual();
+
 				await SetModel();
 				StateHasChanged();
 
 				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
 				firstRender = false;
 			}
+		}
+
+		protected async Task SetInitManual()
+		{
+			var province = await _masterViewModel.GetProvince();
+			if (province != null && province.Status)
+			{
+				LookUp.Provinces = province.Data;
+			}
+			else
+			{
+				_errorMessage = province?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+			StateHasChanged();
+			await Task.Delay(1);
 		}
 
 		protected async Task OnInvalidSubmit()

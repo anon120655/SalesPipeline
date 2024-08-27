@@ -5,6 +5,7 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
 
@@ -25,15 +26,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+
+		public async Task Validate(InfoBranchCustom model)
+		{
+			var infoBranches = await _repo.Context.InfoBranches.Where(x => x.Status == StatusModel.Active
+			&& x.BranchID != model.BranchID
+			&& x.BranchCode == model.BranchCode).FirstOrDefaultAsync();
+			if (infoBranches != null)
+			{
+				throw new ExceptionCustom("มีรหัสสาขานี้แล้ว");
+			}
+		}
+
 		//สาขา
 		public async Task<InfoBranchCustom> Create(InfoBranchCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
+				await Validate(model);
+
 				DateTime _dateNow = DateTime.Now;
+
+				int id = _repo.Context.InfoBranches.Max(u => u.BranchID) + 1;
 
 				var infoBranches = new Data.Entity.InfoBranch()
 				{
+					BranchID = id,	
 					Status = StatusModel.Active,
 					CreateDate = _dateNow,
 					CreateBy = model.CurrentUserId,
@@ -41,6 +59,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					UpdateBy = model.CurrentUserId,
 					BranchCode = model.BranchCode,
 					BranchName = model.BranchName,
+					ProvinceID = model.ProvinceID
 				};
 				await _db.InsterAsync(infoBranches);
 				await _db.SaveAsync();
@@ -55,6 +74,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
+				await Validate(model);
+
 				var _dateNow = DateTime.Now;
 
 				var infoBranches = await _repo.Context.InfoBranches.Where(x => x.BranchID == model.BranchID).FirstOrDefaultAsync();
@@ -64,6 +85,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					infoBranches.UpdateBy = model.CurrentUserId;
 					infoBranches.BranchCode = model.BranchCode;
 					infoBranches.BranchName = model.BranchName;
+					infoBranches.ProvinceID = model.ProvinceID;
 					_db.Update(infoBranches);
 					await _db.SaveAsync();
 
