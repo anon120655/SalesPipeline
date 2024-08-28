@@ -178,6 +178,7 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 
 		protected async Task OnSelectPage(string parematerAll)
 		{
+			checkall = false;
 			await SetQuery(parematerAll);
 			StateHasChanged();
 		}
@@ -306,22 +307,31 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		{
 			if (Items != null)
 			{
-				ItemsSelected.Clear();
 				if (checkedValue != null && (bool)checkedValue)
 				{
+					checkall = true;
 					foreach (var item in Items)
 					{
 						item.IsSelected = true;
-						ItemsSelected.Add(item);
+						if (!ItemsSelected.Any(x=>x.Id == item.Id))
+						{
+							ItemsSelected.Add(item);
+						}
 					}
 				}
 				else
 				{
+					checkall = false;
 					foreach (var item in Items)
 					{
 						item.IsSelected = false;
+						if (ItemsSelected.Any(x => x.Id == item.Id))
+						{
+							ItemsSelected.Remove(item);
+						}
 					}
 				}
+				StateHasChanged();
 			}
 		}
 
