@@ -291,24 +291,38 @@ namespace SalesPipeline.ViewModels
 						}
 						else
 						{
-							if (data.iauthen != null && data.iauthen.response_data != null)
+							if (data.iauthen != null)
 							{
 								var base64redirecturl = Convert.ToBase64String(Encoding.UTF8.GetBytes(_appSet?.baseUriWeb ?? string.Empty));
-
-								if (!data.iauthen.response_data.password_unexpire && !string.IsNullOrEmpty(data.iauthen.response_data.change_password_url))
+								if (data.iauthen.response_data != null)
 								{
-									string? _url = $"{data.iauthen.response_data.change_password_url}&redirecturl={base64redirecturl}";
-									_Nav.NavigateTo(_url, true);
+									if (!data.iauthen.response_data.password_unexpire && !string.IsNullOrEmpty(data.iauthen.response_data.change_password_url))
+									{
+										string? _url = $"{data.iauthen.response_data.change_password_url}&redirecturl={base64redirecturl}";
+										_Nav.NavigateTo(_url, true);
+									}
+									else if (!data.iauthen.response_data.username_existing && !string.IsNullOrEmpty(data.iauthen.response_data.create_password_url))
+									{
+										string? _url = $"{data.iauthen.response_data.create_password_url}&redirecturl={base64redirecturl}";
+										_Nav.NavigateTo(_url, true);
+									}
+									else
+									{
+										throw new ExceptionCustom($"เชื่อมต่อ iAuth ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
+									}
 								}
-								else if (!data.iauthen.response_data.username_existing && !string.IsNullOrEmpty(data.iauthen.response_data.create_password_url))
+								else if (data.iauthen.response_status != "pass")
 								{
-									string? _url = $"{data.iauthen.response_data.create_password_url}&redirecturl={base64redirecturl}";
-									_Nav.NavigateTo(_url, true);
+									throw new Exception($"iAuth : {data.iauthen.response_message}");
+								}
+								else
+								{
+									throw new ExceptionCustom($"เชื่อมต่อ iAuth ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
 								}
 							}
 							else
 							{
-								throw new Exception($"เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแลระบบ");
+								throw new ExceptionCustom($"เชื่อมต่อ iAuth ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
 							}
 						}
 					}

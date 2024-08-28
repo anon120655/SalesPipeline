@@ -105,7 +105,7 @@ namespace SalesPipeline.API.Controllers
 						//throw new ExceptionCustom($"{iAuthenData?.response_message}");
 					}
 
-					if (iAuthenData != null && iAuthenData.response_data != null)
+					if (iAuthenData != null)
 					{
 						if (response == null) response = new AuthenticateResponse(new(),string.Empty,string.Empty);
 						response.iauthen = iAuthenData;

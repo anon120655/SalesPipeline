@@ -59,13 +59,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					model.ValidateError.Add(errorMessage);
 					if (isThrow) throw new ExceptionCustom(errorMessage);
 				}
-				if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
-				{
-					errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
-					if (isThrow) throw new ExceptionCustom(errorMessage);
-				}
+				//if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
+				//{
+				//	errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
+				//	model.IsValidate = false;
+				//	model.ValidateError.Add(errorMessage);
+				//	if (isThrow) throw new ExceptionCustom(errorMessage);
+				//}
 			}
 
 			if (model.BranchId.HasValue)
