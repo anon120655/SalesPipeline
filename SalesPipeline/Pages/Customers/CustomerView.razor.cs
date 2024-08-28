@@ -1,3 +1,4 @@
+using BlazorBootstrap;
 using global::Microsoft.AspNetCore.Components;
 using Hangfire.Common;
 using Microsoft.JSInterop;
@@ -23,6 +24,9 @@ namespace SalesPipeline.Pages.Customers
 		private LookUpResource LookUp = new();
 		private SaleCustom formModel = new();
 
+		Modal modalHistory = default!;
+		private List<Customer_HistoryCustom>? ItemsHistory;
+
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
@@ -35,6 +39,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			if (firstRender)
 			{
+				await Task.Delay(1);
 				StateHasChanged();
 				firstRender = false;
 			}
@@ -60,6 +65,23 @@ namespace SalesPipeline.Pages.Customers
 						}
 					}
 					formModel = data.Data;
+				}
+				else
+				{
+					_errorMessage = data?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		protected async Task SetModelHistory()
+		{
+			if (id != Guid.Empty)
+			{
+				var data = await _customerViewModel.GetListHistory(new() { customerid = formModel.CustomerId, pagesize = 1000 });
+				if (data != null && data.Status && data.Data != null)
+				{
+					ItemsHistory = data.Data.Items;
 				}
 				else
 				{
@@ -177,6 +199,17 @@ namespace SalesPipeline.Pages.Customers
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+		}
+
+		private async Task OnShowHistory()
+		{
+			await SetModelHistory();
+			await modalHistory.ShowAsync();
+		}
+
+		private async Task OnHideHistory()
+		{
+			await modalHistory.HideAsync();
 		}
 
 	}

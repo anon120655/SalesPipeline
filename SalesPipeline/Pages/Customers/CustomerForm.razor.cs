@@ -251,8 +251,11 @@ namespace SalesPipeline.Pages.Customers
 			//	formModel.DateContact = DateTime.Now.Date;
 			//}
 
-			formModel.EmployeeId = UserInfo.EmployeeId;
-			formModel.EmployeeName = UserInfo.FullName;
+			if (string.IsNullOrEmpty(formModel.EmployeeId))
+			{
+				formModel.EmployeeId = UserInfo.EmployeeId;
+				formModel.EmployeeName = UserInfo.FullName;
+			}
 			//formModel.BranchName = UserInfo.BranchName;
 			//if (UserInfo.RoleCode != null)
 			//{
