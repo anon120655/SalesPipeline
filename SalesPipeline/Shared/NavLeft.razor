@@ -23,10 +23,10 @@
 					<p class="text-break">พื้นที่ดูแล : @UserInfo.AreasJoin</p>
 				</div>
 			}
-			@if (!String.IsNullOrEmpty(UserInfo.LevelName))
+			@if (UserInfo.LevelId > 0)
 			{
 				<div class="col-12">
-					<p class="text-break">ระดับ : @UserInfo.LevelName</p>
+					<p class="text-break">ระดับ : @UserInfo.LevelId</p>
 				</div>
 			}
 		</div>

@@ -460,7 +460,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user.Role.IsAssignRM)
 			{
 				var areaCenter = user.User_Areas?.Select(x => x.ProvinceId).ToList();
-				if (areaCenter == null || areaCenter.Count == 0) return false;
 
 				var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
 				if (sale == null) throw new ExceptionCustom("sale not found.");
@@ -483,6 +482,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							if (user.Master_Branch_RegionId != userRM.Master_Branch_RegionId) return false; //กิจการสาขาไม่ตรงกัน
 
 							//9999 ผจศ และ RM เห็นทุกจังหวัดในภาค
+							if (areaCenter == null || areaCenter.Count == 0) return false;
 							if (areaCenter.Any(x => x == 9999) && areaRM.Any(x => x == 9999)) return true;
 
 							//เช็คพนักงาน RM อยู่ภายใต้พื้นที่การดูแลหรือไม่ (เช็คพื้นที่ดูแล ผจศ และ พนักงาน RM ว่าตรงกันหรือไม่)

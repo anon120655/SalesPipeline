@@ -91,7 +91,7 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center">ลำดับที่</th>
+											@* <th class="text-center">ลำดับที่</th> *@
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อ-สกุล</th>
 											<th class="text-center">อีเมล</th>
@@ -100,7 +100,7 @@
 											<th class="text-center">ระดับ</th>
 											<th class="text-center">กิจการสาขา</th>
 											<th class="text-center">พื้นที่ดูแล</th>
-											<th class="text-center">จัดการ</th>
+											<th class="text-center mw_5r">จัดการ</th>
 											<th class="text-center">การใช้งาน</th>
 										</tr>
 									</thead>
@@ -130,7 +130,7 @@
 												bool status = item.Status == StatusModel.Active;
 
 												<tr>
-													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
+													@* <td class="text-center">@(_orderNo + (SequenceNo + 1))</td> *@
 													<td class="text-center">@item.EmployeeId</td>
 													<td class="">@GeneralUtils.EmptyTo(item.FullName)</td>
 													<td class="">@GeneralUtils.EmptyTo(item.Email)</td>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -650,9 +651,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
 					}
 
-
-					var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
-					if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
+					var user = await _repo.User.GetById(model.CurrentUserId);
+					if (user == null) throw new ExceptionCustom("currentUserId not found.");
+					//var userRole = await _repo.User.GetRoleByUserId(model.CurrentUserId);
+					//if (userRole == null) throw new ExceptionCustom("currentUserId not map role.");
 
 					customer.UpdateDate = _dateNow;
 					customer.UpdateBy = model.CurrentUserId;
@@ -669,7 +671,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.ContactTel = model.ContactTel;
 					customer.CIF = model.CIF;
 					customer.CompanyName = model.CompanyName;
-					//customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber; //ไม่ต้อง update กรณีแก้ไข
+
+					//แก้ไขเลขนิติบุคคลได้ เฉพาะระดับ 10,11,12
+					if (user.LevelId >= 10 && user.LevelId <= 12)
+					{
+						if (customer.JuristicPersonRegNumber != model.JuristicPersonRegNumber)
+						{
+							if (_repo.Context.Customers.Any(x => x.Id != model.Id && x.JuristicPersonRegNumber == model.JuristicPersonRegNumber))
+								throw new ExceptionCustom($"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว");
+
+							customer.JuristicPersonRegNumber = model.JuristicPersonRegNumber;
+						}
+					}
+
 					customer.Master_BusinessTypeId = model.Master_BusinessTypeId;
 					customer.Master_BusinessTypeName = master_BusinessTypeName;
 					customer.Master_BusinessSizeId = model.Master_BusinessSizeId;

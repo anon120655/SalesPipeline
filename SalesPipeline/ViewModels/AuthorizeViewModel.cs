@@ -257,12 +257,10 @@ namespace SalesPipeline.ViewModels
 									data.TitleName = datauserMap.TitleName;
 									data.FirstName = datauserMap.FirstName;
 									data.LastName = datauserMap.LastName;
+									data.LevelId = datauserMap.LevelId;
 
 									if (datauserMap.Master_Branch_Region != null)
 										data.Master_Department_BranchName = datauserMap.Master_Branch_Region.Name;
-
-									if (datauserMap.LevelId != null)
-										data.LevelName = datauserMap.LevelId.ToString();
 
 									if (datauserMap.Position != null)
 										data.PositionName = datauserMap.Position.Name;

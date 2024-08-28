@@ -52,8 +52,8 @@
 					}
 					else
 					{
-						bool IsDisabled = id != Guid.Empty;
-						
+						bool IsDisabledJuristicPersonNumber = !(UserInfo.LevelId >= 10 && UserInfo.LevelId <= 12);
+
 						@if (isLoadingContent)
 						{
 							<div class="text-center">
@@ -154,7 +154,7 @@
 											</div>
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เลขทะเบียนนิติบุคคล</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<input @bind="formModel.JuristicPersonRegNumber" type="text" class="form-control numberonly" disabled>
+												<input @bind="formModel.JuristicPersonRegNumber" type="text" class="form-control numberonly" disabled=@IsDisabledJuristicPersonNumber >
 												<ValidationMessage For="@(() => formModel.JuristicPersonRegNumber)" />
 											</div>
 										</div>
@@ -248,21 +248,21 @@
 											</div>
 										</div>
 										@* <div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทสินเชื่อ</label>
-											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
-												<select @bind="formModel.Master_LoanTypeId" id="LoanType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
-													<option value="">เลือก</option>
-													@if (LookUp.LoanType?.Count > 0)
-													{
-														foreach (var item in LookUp.LoanType)
-														{
-															<option value="@item.Id">@item.Name</option>
-														}
-													}
-												</select>
-												<ValidationMessage For="@(() => formModel.Master_LoanTypeId)" />
-											</div>
-										</div> *@
+								<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">ประเภทสินเชื่อ</label>
+								<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
+								<select @bind="formModel.Master_LoanTypeId" id="LoanType" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">เลือก</option>
+								@if (LookUp.LoanType?.Count > 0)
+								{
+								foreach (var item in LookUp.LoanType)
+								{
+								<option value="@item.Id">@item.Name</option>
+								}
+								}
+								</select>
+								<ValidationMessage For="@(() => formModel.Master_LoanTypeId)" />
+								</div>
+								</div> *@
 										<div class="form-group row mb-3">
 											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">อีเมล</label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
