@@ -24,6 +24,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<Customer_Committee> Customer_Committees { get; set; }
 
+    public virtual DbSet<Customer_History> Customer_Histories { get; set; }
+
     public virtual DbSet<Customer_Shareholder> Customer_Shareholders { get; set; }
 
     public virtual DbSet<Dash_Avg_Number> Dash_Avg_Numbers { get; set; }
@@ -704,6 +706,20 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("customer_committee_ibfk_1");
+        });
+
+        modelBuilder.Entity<Customer_History>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("Customer_History");
+
+            entity.Property(e => e.CreateBy).HasColumnType("int(11)");
+            entity.Property(e => e.CreateByFullName).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
         });
 
         modelBuilder.Entity<Customer_Shareholder>(entity =>

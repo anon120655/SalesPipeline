@@ -189,6 +189,22 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[AllowAnonymous]
+		[HttpGet("GetListHistory")]
+		public async Task<IActionResult> GetListHistory([FromQuery] allFilter model)
+		{
+			try
+			{
+				var response = await _repo.Customer.GetListHistory(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
 		[HttpGet("CreateTestData")]
 		public async Task<IActionResult> CreateTestData([FromQuery] string check, int number, int provinceId, int amphurId, int tambolId, Guid? branch_RegionId, string rolecode, int? statusSaleId = null, int? assignedCenterUserId = null)
 		{

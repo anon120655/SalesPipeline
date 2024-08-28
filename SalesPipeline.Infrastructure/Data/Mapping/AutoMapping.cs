@@ -137,6 +137,7 @@ namespace SalesPipeline.Infrastructure.Data.Mapping
 			CreateMap<Entity.Customer, CustomerCustom>().ReverseMap();
 			CreateMap<Entity.Customer_Committee, Customer_CommitteeCustom>().ReverseMap();
 			CreateMap<Entity.Customer_Shareholder, Customer_ShareholderCustom>().ReverseMap();
+			CreateMap<Entity.Customer_History, Customer_HistoryCustom>().ReverseMap();
 
 			//Systems
 			CreateMap<Entity.System_Signature, System_SignatureCustom>().ReverseMap();

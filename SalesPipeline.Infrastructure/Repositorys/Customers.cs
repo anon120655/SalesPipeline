@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -10,7 +11,9 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System.Text.Json;
+using System;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+//using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -248,8 +251,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<CustomerCustom> Create(CustomerCustom model)
 		{
-			//string strJson = JsonSerializer.Serialize<CustomerCustom>(model);
-
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				await Validate(model);
@@ -554,10 +555,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<CustomerCustom> Update(CustomerCustom model)
 		{
-			string strJson = JsonSerializer.Serialize<CustomerCustom>(model);
-
 			using (var _transaction = _repo.BeginTransaction())
 			{
+				await CreateHistory(model);
+
 				var _dateNow = DateTime.Now;
 
 				var customer = await _repo.Context.Customers.Where(x => x.Id == model.Id).FirstOrDefaultAsync();
@@ -756,19 +757,21 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var customer_Committees = _repo.Context.Customer_Committees.Where(x => x.CustomerId == model.Id).ToList();
 					if (customer_Committees.Count > 0)
 					{
-						foreach (var committ_item in customer_Committees)
-						{
-							committ_item.Status = StatusModel.Delete;
-						}
+						//foreach (var committ_item in customer_Committees)
+						//{
+						//	committ_item.Status = StatusModel.Delete;
+						//}
+						_db.DeleteRange(customer_Committees);
 						await _db.SaveAsync();
 					}
 					var customer_Shareholders = _repo.Context.Customer_Shareholders.Where(x => x.CustomerId == model.Id).ToList();
 					if (customer_Shareholders.Count > 0)
 					{
-						foreach (var sharehold_item in customer_Shareholders)
-						{
-							sharehold_item.Status = StatusModel.Delete;
-						}
+						//foreach (var sharehold_item in customer_Shareholders)
+						//{
+						//	sharehold_item.Status = StatusModel.Delete;
+						//}
+						_db.DeleteRange(customer_Shareholders);
 						await _db.SaveAsync();
 					}
 
@@ -777,32 +780,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (!string.IsNullOrEmpty(item.Name))
 						{
-							var customerCommittee = await _repo.Context.Customer_Committees
-															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
-							if (item.Status == StatusModel.Active)
+							var customerCommittee = new Data.Entity.Customer_Committee()
 							{
-								int CRUD = CRUDModel.Update;
-
-								if (customerCommittee == null)
-								{
-									CRUD = CRUDModel.Create;
-									customerCommittee = new();
-								}
-								customerCommittee.Status = item.Status;
-								customerCommittee.SequenceNo = indexCommittee++;
-								customerCommittee.CustomerId = customer.Id;
-								customerCommittee.Name = item.Name;
-
-								if (CRUD == CRUDModel.Create)
-								{
-									await _db.InsterAsync(customerCommittee);
-								}
-								else
-								{
-									_db.Update(customerCommittee);
-								}
-								await _db.SaveAsync();
-							}
+								Status = StatusModel.Active,
+								SequenceNo = indexCommittee++,
+								CustomerId = customer.Id,
+								Name = item.Name,
+							};
+							await _db.InsterAsync(customerCommittee);
+							await _db.SaveAsync();
 						}
 					}
 
@@ -811,38 +797,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					{
 						if (!string.IsNullOrEmpty(item.Name))
 						{
-							var customerShareholder = await _repo.Context.Customer_Shareholders
-															   .FirstOrDefaultAsync(x => x.CustomerId == model.Id && x.Id == item.Id);
-
-							if (item.Status == StatusModel.Active)
+							var customerShareholder = new Data.Entity.Customer_Shareholder()
 							{
-								int CRUD = CRUDModel.Update;
-
-								if (customerShareholder == null)
-								{
-									CRUD = CRUDModel.Create;
-									customerShareholder = new();
-								}
-
-								customerShareholder.Status = item.Status;
-								customerShareholder.SequenceNo = indexShareholder++;
-								customerShareholder.CustomerId = customer.Id;
-								customerShareholder.Name = item.Name;
-								customerShareholder.Nationality = item.Nationality;
-								customerShareholder.Proportion = item.Proportion;
-								customerShareholder.NumberShareholder = item.NumberShareholder;
-								customerShareholder.TotalShareValue = item.TotalShareValue;
-
-								if (CRUD == CRUDModel.Create)
-								{
-									await _db.InsterAsync(customerShareholder);
-								}
-								else
-								{
-									_db.Update(customerShareholder);
-								}
-								await _db.SaveAsync();
-							}
+								Status = StatusModel.Active,
+								SequenceNo = indexShareholder++,
+								CustomerId = customer.Id,
+								Name = item.Name,
+								Nationality = item.Nationality,
+								Proportion = item.Proportion,
+								NumberShareholder = item.NumberShareholder,
+								TotalShareValue = item.TotalShareValue,
+							};
+							await _db.InsterAsync(customerShareholder);
+							await _db.SaveAsync();
 						}
 					}
 
@@ -961,6 +928,70 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			var companyName = await _repo.Context.Customers.Where(x => x.Id == id).Select(x => x.CompanyName).FirstOrDefaultAsync();
 			return companyName;
+		}
+
+		public async Task CreateHistory(CustomerCustom model)
+		{
+			DateTime _dateNow = DateTime.Now;
+
+			string? fullNameUser = await _repo.User.GetFullNameById(model.CurrentUserId);
+			string? originalJson = null;
+			string? changeJson = null;
+
+			var customer = await _repo.Context.Customers
+				.Include(x => x.Customer_Committees)
+				.Include(x => x.Customer_Shareholders)
+				.FirstOrDefaultAsync(x => x.Id == model.Id);
+			if (customer == null) throw new ExceptionCustom("customer not found.");
+
+			var customerMap = _mapper.Map<CustomerCustom>(customer);
+			customerMap.Sales = null;
+			originalJson = JsonConvert.SerializeObject(customerMap);
+
+			model.Sales = null;
+			changeJson = JsonConvert.SerializeObject(model);
+
+			//originalJson = JsonConvert.SerializeObject(customer, new JsonSerializerSettings
+			//{
+			//	ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			//});
+
+			var customer_History = new Data.Entity.Customer_History();
+			customer_History.Status = StatusModel.Active;
+			customer_History.CreateDate = _dateNow;
+			customer_History.CreateBy = model.CurrentUserId;
+			customer_History.CreateByFullName = fullNameUser;
+			customer_History.CustomerId = model.Id;
+			customer_History.OriginalJson = originalJson;
+			customer_History.ChangeJson = changeJson;
+			await _db.InsterAsync(customer_History);
+			await _db.SaveAsync();
+		}
+
+		public async Task<PaginationView<List<Customer_HistoryCustom>>> GetListHistory(allFilter model)
+		{
+			var query = _repo.Context.Customer_Histories.Where(x => x.Status != StatusModel.Delete)
+												 .OrderByDescending(x => x.CreateDate)
+												 .AsQueryable();
+			if (model.status.HasValue)
+			{
+				query = query.Where(x => x.Status == model.status);
+			}
+
+			if (model.customerid.HasValue)
+			{
+				query = query.Where(x => x.CustomerId == model.customerid);
+			}
+
+			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+
+			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+
+			return new PaginationView<List<Customer_HistoryCustom>>()
+			{
+				Items = _mapper.Map<List<Customer_HistoryCustom>>(await items.ToListAsync()),
+				Pager = pager
+			};
 		}
 
 	}

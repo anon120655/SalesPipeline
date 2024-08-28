@@ -22,5 +22,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<CustomerCustom> GetById(Guid id);
 		Task<string?> GetCompanyNameById(Guid id);
 		Task<PaginationView<List<CustomerCustom>>> GetList(allFilter model);
+		Task CreateHistory(CustomerCustom model);
+		Task<PaginationView<List<Customer_HistoryCustom>>> GetListHistory(allFilter model);
 	}
 }

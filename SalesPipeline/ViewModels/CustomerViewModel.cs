@@ -190,5 +190,27 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<PaginationView<List<Customer_HistoryCustom>>>> GetListHistory(allFilter model)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/Customer/GetListHistory?{model.SetParameter(true)}");
+				var dataMap = JsonConvert.DeserializeObject<PaginationView<List<Customer_HistoryCustom>>>(content);
+
+				return new ResultModel<PaginationView<List<Customer_HistoryCustom>>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<PaginationView<List<Customer_HistoryCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 	}
 }
