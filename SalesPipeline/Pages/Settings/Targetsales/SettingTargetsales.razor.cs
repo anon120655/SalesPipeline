@@ -26,6 +26,7 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 		public bool isSetting = false;
 		public decimal amountTarget { get; set; } = 0;
 		protected Modal modalTarget = default!;
+		public bool checkall = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -154,6 +155,11 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 
 		protected async Task SetSetting()
 		{
+			foreach (var item in Items ?? new())
+			{
+				item.IsSelected = false;
+			}
+			checkall = false;
 			ItemsSelected = new();
 			isSetting = !isSetting;
 			StateHasChanged();
@@ -293,6 +299,29 @@ namespace SalesPipeline.Pages.Settings.Targetsales
 			{
 				model.IsSelected = false;
 				ItemsSelected.Remove(model);
+			}
+		}
+
+		protected void OnCheckAll(object? checkedValue)
+		{
+			if (Items != null)
+			{
+				ItemsSelected.Clear();
+				if (checkedValue != null && (bool)checkedValue)
+				{
+					foreach (var item in Items)
+					{
+						item.IsSelected = true;
+						ItemsSelected.Add(item);
+					}
+				}
+				else
+				{
+					foreach (var item in Items)
+					{
+						item.IsSelected = false;
+					}
+				}
 			}
 		}
 

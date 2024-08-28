@@ -137,7 +137,15 @@
 								<table class="table table_list">
 									<thead>
 										<tr>
-											<th class="text-center"></th>
+											<th class="text-center">
+												@if (isSetting)
+												{
+													<div class="form-check d-flex justify-content-center">
+														<input class="form-check-input" type="checkbox" checked="@checkall"
+															   @onchange="( (e) => OnCheckAll(e.Value))">
+													</div>
+												}
+											</th>
 											<th class="text-center">ปี</th>
 											<th class="text-center">รหัสพนักงาน</th>
 											<th class="text-center">ชื่อพนักงาน</th>
