@@ -163,6 +163,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
 				foreach (var item_center in userAssignment)
 				{
+					//if (item_center.UserId == 68)
+					//{
+					//}
 					var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
 
 					//9999 เห็นทุกจังหวัดในภาค
