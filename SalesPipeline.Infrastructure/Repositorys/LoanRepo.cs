@@ -122,7 +122,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 
 						if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
-						if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
+						//11e23023-18cd-11ef-93aa-30e37aef72fb=Special - ระบุ
+						if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"))
+						{
+							if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
+						}
 
 						var loan_Period = new Data.Entity.Loan_Period();
 						loan_Period.Status = StatusModel.Active;
@@ -255,7 +259,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 
 							if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
-							if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
+							//11e23023-18cd-11ef-93aa-30e37aef72fb=Special - ระบุ
+							if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"))
+							{
+								if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
+							}
 
 							var loan_Period = new Data.Entity.Loan_Period();
 							loan_Period.Status = StatusModel.Active;
