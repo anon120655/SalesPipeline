@@ -61,6 +61,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 			if (formModel.Id == Guid.Empty)
 			{
+				formModel.Pre_Cal_Fetu_App_Items = new();
 				await InsertItem();
 			}
 

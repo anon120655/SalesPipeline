@@ -83,7 +83,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					calWeightAppLoan = calWeightList.FirstOrDefault(x => x.Type == PreCalType.AppLoan);
 					calWeightBusType = calWeightList.FirstOrDefault(x => x.Type == PreCalType.BusType);
 
-					var checkWeight100 = (calWeightInfo?._TotalPercent + calWeightStan?._TotalPercent + calWeightAppLoan?._TotalPercent + calWeightBusType?._TotalPercent);
+					decimal checkWeight100 = (calWeightInfo?._TotalPercent ?? 0)
+				   + (calWeightStan?._TotalPercent ?? 0)
+				   + (calWeightAppLoan?._TotalPercent ?? 0)
+				   + (calWeightBusType?._TotalPercent ?? 0);
+
 					if (checkWeight100 != 100)
 					{
 						throw new ExceptionCustom($"ตัวแปรคำนวณ น้ำหนักของแต่ละปัจจัยยังไม่สมบูรณ์");

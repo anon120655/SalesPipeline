@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Entity;
@@ -28,6 +29,7 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
+		[AllowAnonymous]
 		[HttpPost("Process")]
 		public async Task<IActionResult> Process(Pre_FactorCustom model)
 		{
