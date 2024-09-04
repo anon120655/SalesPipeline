@@ -806,3 +806,7 @@ form .row {
 	.loading-container.loading_select .selectpickerdefault {
 		background-image:none;
 	}
+
+.col-form-label span.text-danger {
+	margin-right: -10px;
+}
