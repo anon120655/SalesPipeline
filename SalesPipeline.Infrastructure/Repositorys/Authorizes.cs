@@ -44,6 +44,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			try
 			{
+				if (user.Status == StatusModel.Delete)
+					throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง!");
+
 				if (user.Status == StatusModel.InActive)
 					throw new ExceptionCustom($"ท่านถูกปิดการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
 
