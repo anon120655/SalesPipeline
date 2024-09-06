@@ -41,6 +41,13 @@ public partial class Customer
     public string? Master_ContactChannelName { get; set; }
 
     /// <summary>
+    /// จังหวัดผู้ติดต่อ
+    /// </summary>
+    public int? ContactProvinceId { get; set; }
+
+    public string? ContactProvinceName { get; set; }
+
+    /// <summary>
     /// สาขา
     /// </summary>
     public int? BranchId { get; set; }

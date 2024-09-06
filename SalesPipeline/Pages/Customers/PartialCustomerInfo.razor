@@ -30,12 +30,21 @@
 				</div>
 			</div>
 			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด : </label>
+				<div class="col-6 col-md-7 col-xl-3">
+					<label class="col-form-label">
+						@GeneralUtils.EmptyTo(formModel.Customer.ContactProvinceName)
+					</label>
+				</div>
 				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สาขา : </label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@GeneralUtils.EmptyTo(formModel.Customer.BranchName)
 					</label>
-				</div><label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ. :</label>
+				</div>
+			</div>
+			<div class="form-group row mb-1">
+				<label class="col-6 col-md-4 col-xl-2 col-form-label text-lg-end">สนจ. :</label>
 				<div class="col-6 col-md-7 col-xl-3">
 					<label class="col-form-label">
 						@GeneralUtils.EmptyTo(formModel.Customer.ProvincialOffice)

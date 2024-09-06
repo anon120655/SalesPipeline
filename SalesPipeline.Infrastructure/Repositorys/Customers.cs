@@ -268,6 +268,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//string? amphurName = null;
 				//string? tambolName = null;
 
+
+				if (model.ContactProvinceId.HasValue)
+				{
+					model.ContactProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ContactProvinceId.Value);
+				}
+
 				if (model.BranchId.HasValue && model.BranchId > 0)
 				{
 					branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
@@ -366,6 +372,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				customer.DateContact = model.DateContact;
 				customer.Master_ContactChannelId = model.Master_ContactChannelId;
 				customer.Master_ContactChannelName = master_ContactChannelName;
+				customer.ContactProvinceId = model.ContactProvinceId > 0 ? model.ContactProvinceId.Value : null;
+				customer.ContactProvinceName = model.ContactProvinceName;
 				customer.BranchId = model.BranchId > 0 ? model.BranchId.Value : null;
 				customer.BranchName = branchName;
 				customer.ProvincialOffice = model.ProvincialOffice;
@@ -577,6 +585,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//string? amphurName = null;
 					//string? tambolName = null;
 
+					if (model.ContactProvinceId.HasValue)
+					{
+						model.ContactProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ContactProvinceId.Value);
+					}
+
 					if (model.BranchId.HasValue && model.BranchId.Value > 0)
 					{
 						branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
@@ -663,6 +676,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					customer.DateContact = model.DateContact;
 					customer.Master_ContactChannelId = model.Master_ContactChannelId;
 					customer.Master_ContactChannelName = master_ContactChannelName;
+					customer.ContactProvinceId = model.ContactProvinceId > 0 ? model.ContactProvinceId.Value : null;
+					customer.ContactProvinceName = model.ContactProvinceName;
 					customer.BranchId = model.BranchId > 0 ? model.BranchId.Value : null;
 					customer.BranchName = branchName;
 					customer.ProvincialOffice = model.ProvincialOffice;

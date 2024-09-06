@@ -456,6 +456,10 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.ContactName)
                 .HasMaxLength(255)
                 .HasComment("ชื่อผู้ติดต่อ");
+            entity.Property(e => e.ContactProvinceId)
+                .HasComment("จังหวัดผู้ติดต่อ")
+                .HasColumnType("int(11)");
+            entity.Property(e => e.ContactProvinceName).HasMaxLength(255);
             entity.Property(e => e.ContactTel)
                 .HasMaxLength(255)
                 .HasComment("โทรศัพท์");

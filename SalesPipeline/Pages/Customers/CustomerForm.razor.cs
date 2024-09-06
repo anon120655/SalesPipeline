@@ -9,6 +9,7 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SalesPipeline.Pages.Customers
@@ -150,31 +151,19 @@ namespace SalesPipeline.Pages.Customers
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Chain");
 			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "LoanType");
 
-			var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
-			if (branchs != null && branchs.Status)
-			{
-				LookUp.Branchs = branchs.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = branchs?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-
-			//var iSICCode = await _masterViewModel.GetISICCode(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
-			//if (iSICCode != null && iSICCode.Status)
+			//var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, pagesize = 2000 });
+			//if (branchs != null && branchs.Status)
 			//{
-			//	LookUp.ISICCode = iSICCode.Data?.Items;
+			//	LookUp.Branchs = branchs.Data?.Items;
 			//}
 			//else
 			//{
-			//	_errorMessage = iSICCode?.errorMessage;
+			//	_errorMessage = branchs?.errorMessage;
 			//	_utilsViewModel.AlertWarning(_errorMessage);
 			//}
 
-			StateHasChanged();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Branch");
-			//await _jsRuntimes.InvokeVoidAsync("BootSelectId", "ISICCode");
+			//StateHasChanged();
+			//await _jsRuntimes.InvokeVoidAsync("BootSelectId", "Branch");
 
 			var province = await _masterViewModel.GetProvince();
 			if (province != null && province.Status)
@@ -189,6 +178,7 @@ namespace SalesPipeline.Pages.Customers
 
 			StateHasChanged();
 			await Task.Delay(10);
+			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnContactProvince", "#ContactProvince");
 			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "OnProvince", "#Province");
 
 			await Task.Delay(10);
@@ -293,6 +283,25 @@ namespace SalesPipeline.Pages.Customers
 				}
 			}
 
+			if (formModel.ContactProvinceId.HasValue)
+			{
+				LookUp.Branchs = new();
+				StateHasChanged();
+				await Task.Delay(10);
+				await _jsRuntimes.InvokeVoidAsync("BootSelectDestroy", "Branch");
+
+				var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, provinceid = formModel.ContactProvinceId });
+				if (branchs != null && branchs.Status)
+				{
+					if (branchs.Data?.Items.Count > 0)
+					{
+						LookUp.Branchs = [new() { BranchID = 0, BranchName = "--เลือก--" }, .. branchs.Data.Items];
+						StateHasChanged();
+						await Task.Delay(10);
+					}
+				}
+			}
+
 			if (formModel.ProvinceId.HasValue)
 			{
 				LookUp.Amphurs = new List<InfoAmphurCustom>();
@@ -364,6 +373,40 @@ namespace SalesPipeline.Pages.Customers
 				else
 				{
 					_errorMessage = iSICCode?.errorMessage;
+					_utilsViewModel.AlertWarning(_errorMessage);
+				}
+			}
+		}
+
+		[JSInvokable]
+		public async Task OnContactProvince(string _provinceID, string _provinceName)
+		{
+			LookUp.Branchs = new();
+			formModel.ContactProvinceId = null;
+			formModel.BranchId = null;
+			StateHasChanged();
+
+			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+
+			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+			{
+				formModel.ContactProvinceId = provinceID;
+
+				var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, provinceid = provinceID });
+				if (branchs != null && branchs.Status)
+				{
+					if (branchs.Data?.Items.Count > 0)
+					{
+						LookUp.Branchs = new() { new() { BranchID = 0, BranchName = "--เลือก--" } };
+						LookUp.Branchs.AddRange(branchs.Data.Items);
+
+						StateHasChanged();
+						await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+					}
+				}
+				else
+				{
+					_errorMessage = branchs?.errorMessage;
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
