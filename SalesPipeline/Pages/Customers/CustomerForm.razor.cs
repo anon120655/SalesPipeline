@@ -392,7 +392,7 @@ namespace SalesPipeline.Pages.Customers
 			{
 				formModel.ContactProvinceId = provinceID;
 
-				var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, provinceid = provinceID });
+				var branchs = await _masterViewModel.GetBranchs(new allFilter() { status = StatusModel.Active, provinceid = provinceID, pagesize = 500 });
 				if (branchs != null && branchs.Status)
 				{
 					if (branchs.Data?.Items.Count > 0)
