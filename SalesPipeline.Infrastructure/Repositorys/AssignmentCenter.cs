@@ -158,6 +158,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var salesCustomer = await salesQuery.ToListAsync();
 
+
+			List<Guid> duplicateAssignment_Sales = new();
+
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
 				//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
@@ -197,13 +200,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						assignment_Center.Assignment_Sales = new();
 						foreach (var item_sale in sales)
 						{
-							assignment_Center.Assignment_Sales.Add(new()
+							if (!duplicateAssignment_Sales.Contains(item_sale.Id))
 							{
-								SaleId = item_sale.Id,
-								IsActive = StatusModel.Active,
-								IsSelect = true,
-								Sale = _mapper.Map<SaleCustom>(item_sale)
-							});
+								assignment_Center.Assignment_Sales.Add(new()
+								{
+									SaleId = item_sale.Id,
+									IsActive = StatusModel.Active,
+									IsSelect = true,
+									Sale = _mapper.Map<SaleCustom>(item_sale)
+								});
+
+								duplicateAssignment_Sales.Add(item_sale.Id);
+							}
 						}
 
 						assignment_Center.User = null;
