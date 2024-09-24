@@ -151,7 +151,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							lookupArray = lookupArray.OrderByDescending(x => x.CheckValue).ToList();
 
 							// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-							var lookupResult = LoanCalculator.XLookupList((double)loanValue, lookupArray, 0);
+							//-ทำการติดลบตัวแปร loanValue ก่อนจะนำมา xlookup เพื่อให้สอดคล้องต่อตัว Logic ของ xlookup 
+							var lookupResult = LoanCalculator.XLookupList((double)loanValue, lookupArray, -1);
 							if (lookupResult != null)
 							{
 								var scoreClosest = calInfo.Pre_Cal_Info_Scores.FirstOrDefault(x => x.Id == lookupResult.ID);

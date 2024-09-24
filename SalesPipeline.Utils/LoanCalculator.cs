@@ -78,7 +78,7 @@ namespace SalesPipeline.Utils
 				}
 
 				// ถ้าไม่พบค่าที่ตรงเงื่อนไขจะคืนค่าสุดท้าย
-				//return lookUpModel[lookUpModel.Count - 1];
+				return lookUpModel[lookUpModel.Count - 1];
 			}
 
 			return null;
