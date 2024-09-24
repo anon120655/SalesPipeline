@@ -52,7 +52,7 @@ namespace SalesPipeline.Utils
 
 			if (searchMode == -1)
 			{
-				// ค้นหาจากหลังไปแรก
+				// ค้นหาจากหลังไปแรก (default)
 				for (int i = lookUpModel.Count - 1; i >= 0; i--)
 				{
 					var checkValue = lookUpModel[i].CheckValue;
@@ -63,11 +63,11 @@ namespace SalesPipeline.Utils
 				}
 
 				// ถ้าไม่พบค่าที่ตรงเงื่อนไขจะคืนค่าแรก
-				return lookUpModel[0];
+				//return lookUpModel[0];
 			}
 			else
 			{
-				// ค้นหาจากแรกไปหลัง (default)
+				// ค้นหาจากแรกไปหลัง
 				for (int i = 0; i < lookUpModel.Count; i++)
 				{
 					var checkValue = lookUpModel[i].CheckValue;
@@ -78,8 +78,10 @@ namespace SalesPipeline.Utils
 				}
 
 				// ถ้าไม่พบค่าที่ตรงเงื่อนไขจะคืนค่าสุดท้าย
-				return lookUpModel[lookUpModel.Count - 1];
+				//return lookUpModel[lookUpModel.Count - 1];
 			}
+
+			return null;
 		}
 
 	}
