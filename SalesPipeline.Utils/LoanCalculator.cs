@@ -45,6 +45,11 @@ namespace SalesPipeline.Utils
 		{
 			// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า
 
+			if (lookUpModel == null || lookUpModel.Count == 0)
+			{
+				return null;
+			}
+
 			if (searchMode == -1)
 			{
 				// ค้นหาจากหลังไปแรก
@@ -56,6 +61,9 @@ namespace SalesPipeline.Utils
 						return lookUpModel[i];
 					}
 				}
+
+				// ถ้าไม่พบค่าที่ตรงเงื่อนไขจะคืนค่าแรก
+				return lookUpModel[0];
 			}
 			else
 			{
@@ -68,9 +76,10 @@ namespace SalesPipeline.Utils
 						return lookUpModel[i];
 					}
 				}
-			}
 
-			return null;
+				// ถ้าไม่พบค่าที่ตรงเงื่อนไขจะคืนค่าสุดท้าย
+				return lookUpModel[lookUpModel.Count - 1];
+			}
 		}
 
 	}

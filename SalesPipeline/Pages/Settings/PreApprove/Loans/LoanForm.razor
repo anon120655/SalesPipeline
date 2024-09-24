@@ -66,7 +66,7 @@
 								<div class="row mb-3">
 									<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">Risk Premium รายปี</label>
 									<div class="col-12 col-md-7 col-xl-3">
-										<input @onchange="@((ChangeEventArgs e) => formModel.RiskPremiumYear = GeneralUtils.ToDecimal(e.Value))" disabled
+										<input @onchange="@((ChangeEventArgs e) => formModel.RiskPremiumYear = GeneralUtils.ToDecimal(e.Value))"
 											   value="@formModel.RiskPremiumYear?.ToString(GeneralTxt.FormatDecimal2)" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.RiskPremiumYear)" />
 									</div>

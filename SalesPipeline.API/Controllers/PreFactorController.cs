@@ -43,8 +43,9 @@ namespace SalesPipeline.API.Controllers
 			{
 				return new ErrorResultCustom(new ErrorCustom(), ex);
 			}
-		}			
+		}
 
+		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] Guid id)
 		{
@@ -112,6 +113,29 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		/// <summary>
+		/// ทดสอบ Function XLookup
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[AllowAnonymous]
+		[HttpPost("XLookup_Calculator")]
+		public async Task<IActionResult> XLookup_Calculator(XLookupRequest model)
+		{
+			try
+			{
+				var lookupResult = LoanCalculator.XLookupList(model.lookupValue, model.lookUpModel, model.searchMode);
+
+				await Task.CompletedTask;
+
+				return Ok(lookupResult);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		static void PrintAmortizationSchedule(double principal, double monthlyInterestRate, int numberOfPayments, double monthlyPayment)
 		{
 			double balance = principal;
@@ -128,8 +152,6 @@ namespace SalesPipeline.API.Controllers
 				var xxx = $"{period}\t{monthlyPayment:F2}\t{interest:F2}\t{principalPayment:F2}\t{balance:F2}";
 
 				Console.WriteLine("ok");
-
-
 			}
 		}
 

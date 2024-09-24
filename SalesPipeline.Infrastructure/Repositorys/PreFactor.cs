@@ -357,7 +357,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								});
 							}
 
-							//อัตราส่วนหนี้สินอื่นๆต่อรายได้
+							//อัตราส่วนภาระชำระหนี้สินอื่น ๆ ต่อรายได้ (ตามรอบธุรกิจ/รอบผลผลิต)
 							if (weighLiabilitieOtherIncome.Count > 0)
 							{
 								score = 0;
@@ -365,7 +365,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								scoreResult = null;
 								string? _feature = null;
 
-								//รายได้ที่ได้ตามระยะงวดหนี้สินด้านบน/หนี้สินอื่นๆ
+								//(รายได้ตามรอบธุรกิจ/รอบผลผลิต) / อัตราส่วนภาระชำระหนี้สินอื่น ๆ ต่อรายได้ (ตามรอบธุรกิจ/รอบผลผลิต)
 								var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
 
 								var lookupArray = weighLiabilitieOtherIncome.Select(s =>
@@ -599,7 +599,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					if (calWeightAppLoan?.Pre_Cal_WeightFactor_Items?.Count != model.Pre_Factor_Apps.Count)
 					{
-						throw new ExceptionCustom($"คุณสมบัติตามประเภทผู้ขอไม่	ครบ");
+						throw new ExceptionCustom($"คุณสมบัติตามประเภทผู้ขอไม่ครบ");
 					}
 					foreach (var item in model.Pre_Factor_Apps)
 					{

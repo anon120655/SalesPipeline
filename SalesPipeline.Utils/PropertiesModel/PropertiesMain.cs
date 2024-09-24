@@ -128,7 +128,7 @@ namespace SalesPipeline.Utils.PropertiesModel
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.WeighLiabilitieOtherIncome.ToString(),
-					Name = "อัตราส่วนหนี้สินอื่นๆต่อรายได้"
+					Name = "อัตราส่วนภาระชำระหนี้สินอื่น ๆ ต่อรายได้ (ตามรอบธุรกิจ/รอบผลผลิต)"
 				},
 				new PropertiesOptions()
 				{
