@@ -11,6 +11,7 @@ namespace SalesPipeline.Utils.Resources.Shares
 		//double lookupValue, List<XLookUpModel> lookUpModel, int searchMode = -1
 		public double lookupValue { get; set; }
 		public List<XLookUpModel> lookUpModel { get; set; } = new();
-		public int searchMode { get; set; } = -1;
+		public int match_mode { get; set; } = 1;
+		public int search_mode { get; set; } = 1;
 	}
 }

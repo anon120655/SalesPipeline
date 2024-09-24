@@ -152,7 +152,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
 							//-ทำการติดลบตัวแปร loanValue ก่อนจะนำมา xlookup เพื่อให้สอดคล้องต่อตัว Logic ของ xlookup 
-							var lookupResult = LoanCalculator.XLookupList((double)loanValue, lookupArray, -1);
+							var lookupResult = LoanCalculator.XLookupLists((double)loanValue, lookupArray, -1);
 							if (lookupResult != null)
 							{
 								var scoreClosest = calInfo.Pre_Cal_Info_Scores.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -268,7 +268,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupList((double)incomeExpenses, lookupArray, -1);
+								var lookupResult = LoanCalculator.XLookupLists((double)incomeExpenses, lookupArray, -1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = weightIncomeExpenses.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -328,7 +328,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupList((double)collValueloanValue, lookupArray, -1);
+								var lookupResult = LoanCalculator.XLookupLists((double)collValueloanValue, lookupArray, -1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = weighCollateraltDebtValue.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -389,7 +389,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupList((double)incomeDebtPeriodOtherDebts, lookupArray, -1);
+								var lookupResult = LoanCalculator.XLookupLists((double)incomeDebtPeriodOtherDebts, lookupArray, -1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = weighLiabilitieOtherIncome.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -442,7 +442,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupList((double)depositBAAC, lookupArray, -1);
+								var lookupResult = LoanCalculator.XLookupLists((double)depositBAAC, lookupArray, -1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = cashBank.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -533,7 +533,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupList((double)collValue, lookupArray, -1);
+								var lookupResult = LoanCalculator.XLookupLists((double)collValue, lookupArray, -1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = collateralValue.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -799,7 +799,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
 						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-						var lookupResult = LoanCalculator.XLookupList((double)totalScore, lookupArray, -1);
+						var lookupResult = LoanCalculator.XLookupLists((double)totalScore, lookupArray, -1);
 						if (lookupResult != null)
 						{
 							var scoreClosest = creditScoreList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -841,7 +841,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						lookupArray = lookupArray.OrderByDescending(x => x.CheckValue).ToList();
 
 						// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-						var lookupResult = LoanCalculator.XLookupList((double)totalScore, lookupArray, 0);
+						var lookupResult = LoanCalculator.XLookupLists((double)totalScore, lookupArray, -1);
 						if (lookupResult != null)
 						{
 							var scoreClosest = chancePassList.Items.FirstOrDefault(x => x.Id == lookupResult.ID);

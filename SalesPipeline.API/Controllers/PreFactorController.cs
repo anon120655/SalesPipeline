@@ -124,7 +124,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var lookupResult = LoanCalculator.XLookupList(model.lookupValue, model.lookUpModel, model.searchMode);
+				var lookupResult = LoanCalculator.XLookupLists(model.lookupValue, model.lookUpModel, model.match_mode, model.search_mode);
 
 				await Task.CompletedTask;
 
