@@ -116,6 +116,29 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 					var jsonTxt_Old = JsonConvert.SerializeObject(model);
 
+					//var message = new NotificationMobileNew()
+					//{
+					//	message = new()
+					//	{
+					//		token = model.to,
+					//		notification = new()
+					//		{
+					//			title = model.notification?.title,
+					//			body = model.notification?.body
+					//		},
+					//		android = new()
+					//		{
+					//			priority = "high"
+					//		},
+					//		apns = new()
+					//		{
+					//			headers = new()
+					//			{
+					//				apnspriority = "10"
+					//			}
+					//		}
+					//	}
+					//};
 					var message = new NotificationMobileNew()
 					{
 						message = new()
@@ -123,8 +146,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 							token = "ffB93iaISyyvrDUOGDAljd:APA91bGQ_Qb7osi4tfFfLpBaH30P2wh80heroHDHVl9MVdrZTefAo51-PBpCHZl9D1Y5cURrzNBN_Ib9O-JRcXQmjyKqgSQUsnAEkvXWjy_iANEfu22SdyT55TQ4SwIwVc3kgOdvYCxe",
 							notification = new()
 							{
-								title = model.notification?.title,
-								body = model.notification?.body
+								title = "ทดสอบ noti new",
+								body = "เนื้อหา noti new "
 							},
 							android = new()
 							{
