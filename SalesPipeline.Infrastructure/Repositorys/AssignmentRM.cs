@@ -85,59 +85,46 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 			var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
 
-			// ดึงข้อมูล User ก่อน
-			var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
-
-			// จากนั้นค่อยดึง User_Areas
-			var user_AreasRms = users
-				.SelectMany(u => u.User_Areas.Select(s => new
-				{
-					UserId = u.Id,
-					ProvinceId = s.ProvinceId,
-					// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
-				}))
-				.ToList();
-
-
-			// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
-			Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
-
-			foreach (var provinceId in user_Areas)
+			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+			if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 			{
-				var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-				orExpression = orExpression.Or(x =>
-				(x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-				|| (x.User.User_Areas.Any(s => s.ProvinceId == 9999))
-				);
-			}
+				// ดึงข้อมูล User ก่อน
+				var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
 
-			orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
-			// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-			query = query.Where(orExpression);
-			var queryL = query.Where(orExpression).ToList();
+				// จากนั้นค่อยดึง User_Areas
+				var user_AreasRms = users
+					.SelectMany(u => u.User_Areas.Select(s => new
+					{
+						UserId = u.Id,
+						ProvinceId = s.ProvinceId,
+						// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
+					}))
+					.ToList();
+
+
+				// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
+				Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
+
+				foreach (var provinceId in user_Areas)
+				{
+					var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
+					orExpression = orExpression.Or(x =>
+					(x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+					|| (x.User.User_Areas.Any(s => s.ProvinceId == 9999))
+					);
+				}
+
+				orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
+				// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+				query = query.Where(orExpression);
+				var queryL = query.Where(orExpression).ToList();
+
+			}
 
 			await Task.CompletedTask;
 
 			return query;
 		}
-
-		//private IQueryable<Assignment_RM> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
-		//{
-		//	if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
-		//	var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
-
-		//	// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
-		//	Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
-		//	foreach (var provinceId in user_Areas)
-		//	{
-		//		var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-		//		orExpression = orExpression.Or(x => x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId));
-		//	}
-		//	// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-		//	query = query.Where(orExpression);
-
-		//	return query;
-		//}
 
 		public async Task<Assignment_RMCustom> Create(Assignment_RMCustom model)
 		{
@@ -734,7 +721,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
-												 .Include(x => x.User)
+												 .Include(x => x.User).ThenInclude(x => x.User_Areas)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
