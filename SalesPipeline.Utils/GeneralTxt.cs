@@ -13,5 +13,6 @@ namespace SalesPipeline.Utils
 		public const String FormatDecimal = "#,##0";
 		public const String FormatDecimal2 = "#,##0.00";
 		public const String FormatDecimal3 = "#,##0.000";
+		public const String FormatDecimal4 = "#,##0.0000";
 	}
 }

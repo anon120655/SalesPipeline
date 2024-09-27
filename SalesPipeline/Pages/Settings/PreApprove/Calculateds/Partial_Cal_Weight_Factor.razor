@@ -67,7 +67,7 @@
 			<div class="progress-percentage">
 				@if (weightInfo != null)
 				{
-					<input value="@weightInfo._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+					<input value="@weightInfo._TotalPercent.ToString(GeneralTxt.FormatDecimal4)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 				}
 			</div>
 		</div>
@@ -82,10 +82,10 @@
 								<div class="col-12 col-md-9">
 									<p>มูลค่าสินเชื่อ</p>
 								</div>
-								<div class="col-11 col-md-1">
+								<div class="col-11 col-md-2">
 									<input type="text" class="form-control form-control-sm score"
 										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
-										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal4)">
 								</div>
 								<div class="col-1">
 									<span class="ms-2">%</span>
@@ -110,7 +110,7 @@
 			<div class="progress-percentage">
 				@if (weightStan != null)
 				{
-					<input value="@weightStan._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+					<input value="@weightStan._TotalPercent.ToString(GeneralTxt.FormatDecimal4)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 				}
 			</div>
 		</div>
@@ -126,10 +126,10 @@
 								<div class="col-12 col-md-9">
 									<p>@item.Name</p>
 								</div>
-								<div class="col-11 col-md-1">
+								<div class="col-11 col-md-2">
 									<input type="text" class="form-control form-control-sm score"
 										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
-										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal4)">
 								</div>
 								<div class="col-1">
 									<span class="ms-2">%</span>
@@ -153,7 +153,7 @@
 			<div class="progress-percentage">
 				@if (weightApp != null)
 				{
-					<input value="@weightApp._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+					<input value="@weightApp._TotalPercent.ToString(GeneralTxt.FormatDecimal4)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 				}
 			</div>
 		</div>
@@ -168,10 +168,10 @@
 								<div class="col-12 col-md-9">
 									<p>@item.Name</p>
 								</div>
-								<div class="col-11 col-md-1">
+								<div class="col-11 col-md-2">
 									<input type="text" class="form-control form-control-sm score"
 										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
-										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal4)">
 								</div>
 								<div class="col-1">
 									<span class="ms-2">%</span>
@@ -195,7 +195,7 @@
 			<div class="progress-percentage">
 				@if (weightBus != null)
 				{
-					<input value="@weightBus._TotalPercent.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+					<input value="@weightBus._TotalPercent.ToString(GeneralTxt.FormatDecimal4)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 				}
 			</div>
 		</div>
@@ -210,10 +210,10 @@
 								<div class="col-12 col-md-9">
 									<p>@item.Name</p>
 								</div>
-								<div class="col-11 col-md-1">
+								<div class="col-11 col-md-2">
 									<input type="text" class="form-control form-control-sm score"
 										   @onchange="@((ChangeEventArgs e) => item.Percent = GeneralUtils.ToDecimal(e.Value))"
-										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal2)">
+										   value="@item.Percent.ToString(GeneralTxt.FormatDecimal4)">
 								</div>
 								<div class="col-1">
 									<span class="ms-2">%</span>
@@ -234,7 +234,7 @@
 		<div class="progress-bar"></div>
 		<h6 class="progress-text">น้ำหนักรวม</h6>
 		<div class="progress-percentage">			
-			<input class="@(isDisableSave ? "text-danger":"text-success")" value="@TotalPercentAll.ToString(GeneralTxt.FormatDecimal2)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
+			<input class="@(isDisableSave ? "text-danger":"text-success")" value="@TotalPercentAll.ToString(GeneralTxt.FormatDecimal4)" readonly /> <span class="bg-header text-white ms-2 score"> %</span>
 		</div>
 	</div>
 
