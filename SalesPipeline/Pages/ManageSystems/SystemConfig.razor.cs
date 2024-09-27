@@ -1,5 +1,6 @@
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.ManageSystems;
@@ -37,7 +38,7 @@ namespace SalesPipeline.Pages.ManageSystems
 			var data = await _systemViewModel.GetConfig();
 			if (data != null && data.Status && data.Data != null)
 			{
-				Items = data.Data;				
+				Items = data.Data;
 			}
 			else
 			{
@@ -77,6 +78,19 @@ namespace SalesPipeline.Pages.ManageSystems
 			isLoading = false;
 			StateHasChanged();
 		}
+
+		private void HandleCHANCEPASS_Z(string option)
+		{
+			if (Items != null)
+			{
+				var chancepass_z = Items.FirstOrDefault(x => x.Code == ConfigCode.CHANCEPASS_Z);
+				if (chancepass_z != null)
+				{
+					chancepass_z.Value = option;
+				}
+			}
+		}
+
 
 	}
 }

@@ -9,8 +9,12 @@ namespace SalesPipeline.Utils.ConstTypeModel
     public class ConfigCode
     {
         /// <summary>
-        /// จำนวนสูงสุดที่อนุญาติในการ Login Fail
+        /// จำนวนครั้งในการล็อกอินผิดพลาด
         /// </summary>
         public const string LOGIN_FAIL = "LOGIN_FAIL";
-    }
+		/// <summary>
+		/// เปิดปิดแถว Z 0=ปิด
+		/// </summary>
+		public const string CHANCEPASS_Z = "CHANCEPASS_Z";
+	}
 }

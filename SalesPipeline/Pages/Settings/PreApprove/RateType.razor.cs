@@ -28,14 +28,29 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (firstRender)
 			{
-				await SetModel();
+				await SetQuery();
 				StateHasChanged();
+
 				firstRender = false;
 			}
 		}
 
+		protected async Task SetQuery(string? parematerAll = null)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filter.SetUriQuery(uriQuery);
+
+			await SetModel();
+			StateHasChanged();
+		}
+
 		protected async Task SetModel()
 		{
+			filter.id = Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb");
 			var data = await _masterViewModel.GetPre_RateType(filter);
 			if (data != null && data.Status)
 			{
@@ -106,6 +121,22 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			StateHasChanged();
 		}
 
+
+		protected async Task OnSelectPagesize(int _number)
+		{
+			Items = null;
+			StateHasChanged();
+			filter.page = 1;
+			filter.pagesize = _number;
+			await SetModel();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSelectPage(string parematerAll)
+		{
+			await SetQuery(parematerAll);
+			StateHasChanged();
+		}
 
 	}
 }

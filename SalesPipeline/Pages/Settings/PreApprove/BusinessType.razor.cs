@@ -18,6 +18,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private allFilter filter = new();
 		private bool isLoading = false;
 		private List<Master_Pre_BusinessTypeCustom>? Items;
+		public Pager? Pager;
 		private Master_Pre_BusinessTypeCustom formModel = new();
 
 		Modal modalForm = default!;
@@ -34,19 +35,37 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (firstRender)
 			{
-				await SetModel();
+				await SetQuery();
 				StateHasChanged();
+
 				firstRender = false;
 			}
 		}
 
+		protected async Task SetQuery(string? parematerAll = null)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filter.SetUriQuery(uriQuery);
+
+			await SetModel();
+			StateHasChanged();
+		}
+
 		protected async Task SetModel()
 		{
-			filter.pagesize = 100;
 			var data = await _masterViewModel.GetPre_BusType(filter);
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/setting/pre/bustype";
+				}
 			}
 			else
 			{
@@ -177,5 +196,20 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			StateHasChanged();
 		}
 
+		protected async Task OnSelectPagesize(int _number)
+		{
+			Items = null;
+			StateHasChanged();
+			filter.page = 1;
+			filter.pagesize = _number;
+			await SetModel();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSelectPage(string parematerAll)
+		{
+			await SetQuery(parematerAll);
+			StateHasChanged();
+		}
 	}
 }

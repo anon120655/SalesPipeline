@@ -150,9 +150,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							lookupArray = lookupArray.OrderByDescending(x => x.CheckValue).ToList();
 
-							// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-							//-ทำการติดลบตัวแปร loanValue ก่อนจะนำมา xlookup เพื่อให้สอดคล้องต่อตัว Logic ของ xlookup 
-							var lookupResult = LoanCalculator.XLookupLists((double)loanValue, lookupArray, -1);
+							//20240926 ตัวแปรและคะแนนสวนทางกันได้ตามการหารือ (ยิ่งค่าน้อย คะแนนยิ่งสูง) 
+							//20240926 ทำการปรับแก้ Logic ใช้ match_mode=1
+							var lookupResult = LoanCalculator.XLookupLists((double)loanValue, lookupArray, 1);
 							if (lookupResult != null)
 							{
 								var scoreClosest = calInfo.Pre_Cal_Info_Scores.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -306,7 +306,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								string? _feature = null;
 
 								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
-								var collValueloanValue = collValue / loanValue;
+								//var collValueloanValue = collValue / loanValue;
+
+								//20240926 ทำการปรับแก้ Logic แก้ไขเป็น มูลค่าสินเชื่อ/มูลค่าหลักประกัน
+								var collValueloanValue = loanValue / collValue;
 
 								var lookupArray = weighCollateraltDebtValue.Select(s =>
 								{
@@ -327,8 +330,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
-								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupLists((double)collValueloanValue, lookupArray, -1);
+								//20240926 ตัวแปรและคะแนนสวนทางกันได้ตามการหารือ (ยิ่งค่าน้อย คะแนนยิ่งสูง) 
+								//20240926 ทำการปรับแก้ Logic ใช้ match_mode=1
+								var lookupResult = LoanCalculator.XLookupLists((double)collValueloanValue, lookupArray, 1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = weighCollateraltDebtValue.FirstOrDefault(x => x.Id == lookupResult.ID);
@@ -367,7 +371,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								string? _feature = null;
 
 								//(รายได้ตามรอบธุรกิจ/รอบผลผลิต) / อัตราส่วนภาระชำระหนี้สินอื่น ๆ ต่อรายได้ (ตามรอบธุรกิจ/รอบผลผลิต)
-								var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
+								//var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
+
+								//20240926 ทำการปรับแก้ Logic ในการคำนวณเป็น “ภาระชำระหนี้สินอื่น ๆ ตามรอบธุรกิจ/รอบผลผลิต” / “รายได้ตามรอบธุรกิจ/รอบผลผลิต”
+								var incomeDebtPeriodOtherDebts = otherDebts / incomeDebtPeriod;
 
 								var lookupArray = weighLiabilitieOtherIncome.Select(s =>
 								{
@@ -388,8 +395,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								lookupArray = lookupArray.OrderBy(x => x.CheckValue).ToList();
 
-								// ค้นหาค่าที่ระบุ ถ้าไม่พบจะคืนค่าลำดับที่น้อยกว่า	
-								var lookupResult = LoanCalculator.XLookupLists((double)incomeDebtPeriodOtherDebts, lookupArray, -1);
+								//20240926 ตัวแปรและคะแนนสวนทางกันได้ตามการหารือ (ยิ่งค่าน้อย คะแนนยิ่งสูง) 
+								//20240926 ทำการปรับแก้ Logic ใช้ match_mode=1
+								var lookupResult = LoanCalculator.XLookupLists((double)incomeDebtPeriodOtherDebts, lookupArray, 1);
 								if (lookupResult != null)
 								{
 									var scoreClosest = weighLiabilitieOtherIncome.FirstOrDefault(x => x.Id == lookupResult.ID);

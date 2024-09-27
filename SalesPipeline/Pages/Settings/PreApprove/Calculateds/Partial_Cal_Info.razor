@@ -198,7 +198,7 @@
 		<div class="d-flex justify-content-end  align-items-center">
 			<div class="p-2">คะแนนสูงสุด</div>
 			<div class="p-2">
-				<input @bind="formModel.HighScore" type="text" class="form-control form-control-sm score">
+				<input @bind="formModel.HighScore" type="text" class="form-control form-control-sm score" disabled>
 			</div>
 		</div>
 		<div class="row p-3">
@@ -218,16 +218,16 @@
 
 									<div class="row d-flex align-items-center mb-1">
 										<div class="col-12 col-lg-6 mb-1">
-											<input @bind="item.Name" type="text" class="form-control form-control-sm">
+											<input @bind="item.Name" type="text" class="form-control form-control-sm" disabled>
 										</div>
 										<div class="col-4 col-lg-2 mb-1 text-end">
 											<span>คะแนน</span>
 										</div>
 										<div class="col-3 col-lg-1 mb-1">
-											<input @bind="item.Score" type="text" class="form-control form-control-sm score">
+											<input @bind="item.Score" type="text" class="form-control form-control-sm score" disabled>
 										</div>
 										<div class="col-5 col-lg-3 mb-1">
-											@if (formModel.Pre_Cal_Info_Scores.Count > 1)
+											@* @if (formModel.Pre_Cal_Info_Scores.Count > 1)
 											{
 												<Button @onclick="async () => await RemoveScore(ID)" Color="ButtonColor.Danger" Type="ButtonType.Button" Class="me-2">
 													<i class="fa-regular fa-trash-can"></i>
@@ -238,7 +238,7 @@
 												<Button @onclick="async () => await InsertScore()" Color="ButtonColor.Primary" Type="ButtonType.Button" Class="">
 													<i class="fa-solid fa-circle-plus"></i>
 												</Button>
-											}
+											} *@
 										</div>
 									</div>
 									index++;

@@ -6,7 +6,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 {
-    public partial class Partial_Cal_Info
+	public partial class Partial_Cal_Info
 	{
 		[Parameter]
 		public Guid pre_CalId { get; set; }
@@ -59,10 +59,12 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 				}
 			}
 
-			if (formModel.Pre_Cal_Info_Scores == null || formModel.Pre_Cal_Info_Scores.Count == 0)
-			{
-				formModel.Pre_Cal_Info_Scores = new() { new() { Id = Guid.NewGuid() } };
-			}
+			//ปิดชั่วคราว
+			//if (formModel.Pre_Cal_Info_Scores == null || formModel.Pre_Cal_Info_Scores.Count == 0)
+			//{
+			formModel.HighScore = 0;
+			formModel.Pre_Cal_Info_Scores = new() { new() { Id = Guid.NewGuid(), Name = 0 ,Score = 0 } };
+			//}
 
 			await Task.Delay(1);
 		}

@@ -24,6 +24,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private Pre_CreditScoreCustom formModel = new();
 
 		Modal modalForm = default!;
+		ModalConfirm modalConfirm = default!;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -85,7 +86,14 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 			formModel.CurrentUserId = UserInfo.Id;
 
-			response = await _preCreditViewModel.Update(formModel);
+			if (id.HasValue && id.Value != Guid.Empty)
+			{
+				response = await _preCreditViewModel.Update(formModel);
+			}
+			else
+			{
+				response = await _preCreditViewModel.Create(formModel);
+			}
 
 			if (response.Status)
 			{
@@ -121,6 +129,24 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			id = null;
 			await modalForm.HideAsync();
+		}
+
+		protected async Task ConfirmDelete(string? id, string? txt)
+		{
+			await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span>");
+		}
+
+		protected async Task Delete(string id)
+		{
+			await modalConfirm.OnHideConfirm();
+
+			var data = await _preCreditViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+			await SetModel();
 		}
 
 		private void ShowLoading()

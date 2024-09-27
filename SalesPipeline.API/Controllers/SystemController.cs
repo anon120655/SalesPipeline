@@ -143,6 +143,22 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpGet("GetConfigByCode")]
+		public async Task<IActionResult> GetConfigByCode(string code)
+		{
+			try
+			{
+				var response = await _repo.System.GetConfigByCode(code);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPut("UpdateConfig")]
 		public async Task<IActionResult> UpdateConfig(List<System_ConfigCustom> model)
 		{

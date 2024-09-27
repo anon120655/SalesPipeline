@@ -127,7 +127,7 @@ namespace SalesPipeline.ViewModels
 				};
 			}
 		}
-				
+
 		public async Task<ResultModel<System_SLACustom>?> GetSLAById(Guid id)
 		{
 			try
@@ -186,6 +186,28 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<List<System_ConfigCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<System_ConfigCustom>> GetConfigByCode(string code)
+		{
+			try
+			{
+				var content = await _httpClient.GetAsync($"/v1/System/GetConfigByCode?code={code}");
+				var dataMap = JsonConvert.DeserializeObject<System_ConfigCustom>(content);
+
+				return new ResultModel<System_ConfigCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<System_ConfigCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

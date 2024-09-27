@@ -85,6 +85,15 @@
 									</div>
 								</div>
 							</div>
+							<div>
+								<PaginationBack DisplayItems="@(Items?.Count ?? 0)"
+												TotalItems="@(Pager?.TotalItems ?? 0)"
+												Pager="@Pager"
+												OnShowOnPage="@OnSelectPagesize"
+												OnSelectedPage="@OnSelectPage"
+												ParameterAll="@filter?.SetParameter()">
+								</PaginationBack>
+							</div>
 						</div>
 					</div>
 				</div>

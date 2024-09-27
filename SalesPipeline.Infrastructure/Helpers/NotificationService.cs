@@ -116,6 +116,11 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 					var jsonTxt_Old = JsonConvert.SerializeObject(model);
 
+					if (_appSet.ServerSite == ServerSites.DEV && false)
+					{
+						model.to = "";
+					}
+
 					var message = new NotificationMobileNew()
 					{
 						message = new()

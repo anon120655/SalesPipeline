@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.DataCustom;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
@@ -21,6 +23,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private User_PermissionCustom _permission = new();
 		private List<Pre_ChancePassCustom>? Items;
 		private Pre_ChancePassCustom formModel = new();
+		private System_ConfigCustom configModel = new();
 
 		Modal modalForm = default!;
 
@@ -44,6 +47,12 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModel()
 		{
+			var data_config = await _systemViewModel.GetConfigByCode(ConfigCode.CHANCEPASS_Z);
+			if (data_config != null && data_config.Status && data_config.Data != null)
+			{
+				configModel = data_config.Data;
+			}
+
 			filter.pagesize = 300;
 			var data = await _preChanceViewModel.GetList(filter);
 			if (data != null && data.Status)

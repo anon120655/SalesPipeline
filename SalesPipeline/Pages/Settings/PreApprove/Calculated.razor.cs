@@ -19,6 +19,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private LookUpResource LookUp = new();
 		private bool isLoading = false;
 		private List<Pre_CalCustom>? Items;
+		public Pager? Pager;
 		private Pre_CalCustom formModel = new();
 
 		Modal modalForm = default!;
@@ -35,10 +36,24 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			if (firstRender)
 			{
-				await SetModel();
+				await SetQuery();
 				StateHasChanged();
+
 				firstRender = false;
 			}
+		}
+
+		protected async Task SetQuery(string? parematerAll = null)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filter.SetUriQuery(uriQuery);
+
+			await SetModel();
+			StateHasChanged();
 		}
 
 		protected async Task SetInitManual()
@@ -81,6 +96,11 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 			if (data != null && data.Status)
 			{
 				Items = data.Data?.Items;
+				Pager = data.Data?.Pager;
+				if (Pager != null)
+				{
+					Pager.UrlAction = "/setting/pre/calculated";
+				}
 			}
 			else
 			{
@@ -213,6 +233,22 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private void HideLoading()
 		{
 			isLoading = false;
+			StateHasChanged();
+		}
+
+		protected async Task OnSelectPagesize(int _number)
+		{
+			Items = null;
+			StateHasChanged();
+			filter.page = 1;
+			filter.pagesize = _number;
+			await SetModel();
+			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+		}
+
+		protected async Task OnSelectPage(string parematerAll)
+		{
+			await SetQuery(parematerAll);
 			StateHasChanged();
 		}
 

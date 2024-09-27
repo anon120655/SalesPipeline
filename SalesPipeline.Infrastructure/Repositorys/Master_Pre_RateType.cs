@@ -69,6 +69,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
+
+			if (model.id != Guid.Empty)
+			{
+				query = query.Where(x => x.Id != model.id);
+			}
+
 			if (model.status.HasValue)
 			{
 				query = query.Where(x => x.Status == model.status);

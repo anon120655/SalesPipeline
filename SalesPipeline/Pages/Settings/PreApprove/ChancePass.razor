@@ -1,5 +1,4 @@
-﻿
-@page "/setting/pre/chancepass"
+﻿@page "/setting/pre/chancepass"
 
 <PageTitle>โอกาสขอสินเชื่อผ่าน</PageTitle>
 
@@ -24,9 +23,12 @@
 									<table class="table table_list">
 										<thead>
 											<tr>
-												<th class="text-center">Z</th>
+												@if (configModel.Value == "1")
+												{
+													<th class="text-center">Z</th>
+												}
 												<th class="text-center">Credit Score</th>
-												<th class="text-center">Prob(default)</th>
+												<th class="text-center">โอกาสขอสินเชื่อไม่ผ่าน</th>
 												<th class="text-center">จัดการ</th>
 											</tr>
 										</thead>
@@ -52,7 +54,10 @@
 												foreach (var item in Items)
 												{
 													<tr>
-														<td class="text-center">@item.Z</td>
+														@if (configModel.Value == "1")
+														{
+															<td class="text-center">@item.Z</td>
+														}
 														<td class="text-center">@item.CreditScore</td>
 														<td class="text-center">@item.Prob</td>
 														<td class="text-center">
@@ -82,15 +87,18 @@
 			<EditForm Model="@formModel" OnValidSubmit="Save">
 				<DataAnnotationsValidator />
 				<div class="row my-3">
-					<div class="col-12">
-						<div class="form-group row mb-3">
-							<label class="col-4 col-form-label text-lg-end">Z</label>
-							<div class="col-7">
-								<label class="col-form-label">@formModel.Z</label>
-								<ValidationMessage For="@(() => formModel.Z)" />
+					@if (configModel.Value == "1")
+					{
+						<div class="col-12">
+							<div class="form-group row mb-3">
+								<label class="col-4 col-form-label text-lg-end">Z</label>
+								<div class="col-7">
+									<label class="col-form-label">@formModel.Z</label>
+									<ValidationMessage For="@(() => formModel.Z)" />
+								</div>
 							</div>
 						</div>
-					</div>
+					}
 					<div class="col-12">
 						<div class="form-group row mb-3">
 							<label class="col-4 col-form-label text-lg-end">Credit Score</label>

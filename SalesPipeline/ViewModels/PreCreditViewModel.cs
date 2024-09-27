@@ -21,6 +21,29 @@ namespace SalesPipeline.ViewModels
 			_authorizeViewModel = authorizeViewModel;
 		}
 
+		public async Task<ResultModel<Pre_CreditScoreCustom>> Create(Pre_CreditScoreCustom model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/PreCredit/Create", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<Pre_CreditScoreCustom>(content);
+				return new ResultModel<Pre_CreditScoreCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<Pre_CreditScoreCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		public async Task<ResultModel<Pre_CreditScoreCustom>> Update(Pre_CreditScoreCustom model)
 		{
 			try
@@ -37,6 +60,23 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<Pre_CreditScoreCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<bool>?> DeleteById(UpdateModel model)
+		{
+			try
+			{
+				await _httpClient.DeleteAsync($"/v1/PreCredit/DeleteById?{model.SetParameter(true)}");
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

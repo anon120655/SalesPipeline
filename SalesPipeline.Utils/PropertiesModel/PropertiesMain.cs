@@ -123,7 +123,7 @@ namespace SalesPipeline.Utils.PropertiesModel
 				new PropertiesOptions()
 				{
 					Code = PreStanScoreType.WeighCollateraltDebtValue.ToString(),
-					Name = "อัตราส่วนหลักประกันต่อมูลค่าหนี้"
+					Name = "มูลค่าหนี้ต่อหลักประกัน (Loan to Value)"
 				},
 				new PropertiesOptions()
 				{

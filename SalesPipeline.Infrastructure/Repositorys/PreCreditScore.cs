@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class PreCreditScore : IPreCreditScore
+	public class PreCreditScore : IPreCreditScore
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -31,6 +32,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+		public async Task<Pre_CreditScoreCustom> Create(Pre_CreditScoreCustom model)
+		{
+			using (var _transaction = _repo.BeginTransaction())
+			{
+				var _dateNow = DateTime.Now;
+
+				var pre_CreditScores = new Pre_CreditScore();
+
+				pre_CreditScores.CreateBy = model.CurrentUserId;
+				pre_CreditScores.CreateDate = _dateNow;
+				pre_CreditScores.UpdateBy = model.CurrentUserId;
+				pre_CreditScores.UpdateDate = _dateNow;
+				pre_CreditScores.Level = model.Level;
+				pre_CreditScores.CreditScore = model.CreditScore;
+				pre_CreditScores.Grade = model.Grade;
+				pre_CreditScores.LimitMultiplier = model.LimitMultiplier;
+				pre_CreditScores.RateMultiplier = model.RateMultiplier;
+				pre_CreditScores.CreditScoreColor = model.CreditScoreColor;
+				await _db.InsterAsync(pre_CreditScores);
+				await _db.SaveAsync();
+
+				_transaction.Commit();
+
+				return _mapper.Map<Pre_CreditScoreCustom>(pre_CreditScores);
+			}
+		}
+
 		public async Task<Pre_CreditScoreCustom> Update(Pre_CreditScoreCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
@@ -42,11 +70,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					pre_CreditScores.UpdateDate = _dateNow;
 					pre_CreditScores.UpdateBy = model.CurrentUserId;
+					pre_CreditScores.Level = model.Level;
 					pre_CreditScores.CreditScore = model.CreditScore;
-					//pre_CreditScores.Grade = model.Grade;
+					pre_CreditScores.Grade = model.Grade;
 					pre_CreditScores.LimitMultiplier = model.LimitMultiplier;
 					pre_CreditScores.RateMultiplier = model.RateMultiplier;
-					//pre_CreditScores.CreditScoreColor = model.CreditScoreColor;
+					pre_CreditScores.CreditScoreColor = model.CreditScoreColor;
 					_db.Update(pre_CreditScores);
 					await _db.SaveAsync();
 
@@ -54,6 +83,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 
 				return _mapper.Map<Pre_CreditScoreCustom>(pre_CreditScores);
+			}
+		}
+
+		public async Task DeleteById(UpdateModel model)
+		{
+			Guid id = Guid.Parse(model.id);
+			var query = await _repo.Context.Pre_CreditScores.Where(x => x.Status != StatusModel.Delete && x.Id == id).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				query.UpdateDate = DateTime.Now;
+				query.UpdateBy = model.userid;
+				query.Status = StatusModel.Delete;
+				_db.Update(query);
+				await _db.SaveAsync();
 			}
 		}
 

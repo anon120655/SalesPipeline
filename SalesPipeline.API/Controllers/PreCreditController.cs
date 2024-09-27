@@ -27,6 +27,20 @@ namespace SalesPipeline.API.Controllers
 			_appSet = appSet.Value;
 		}
 
+		[HttpPost("Create")]
+		public async Task<IActionResult> Create(Pre_CreditScoreCustom model)
+		{
+			try
+			{
+				var data = await _repo.PreCreditScore.Create(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		[HttpPut("Update")]
 		public async Task<IActionResult> Update(Pre_CreditScoreCustom model)
 		{
@@ -34,6 +48,20 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.PreCreditScore.Update(model);
 				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[HttpDelete("DeleteById")]
+		public async Task<IActionResult> DeleteById([FromQuery] UpdateModel model)
+		{
+			try
+			{
+				await _repo.PreCreditScore.DeleteById(model);
+				return Ok();
 			}
 			catch (Exception ex)
 			{

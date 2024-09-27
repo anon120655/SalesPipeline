@@ -20,6 +20,10 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 		private Pre_Cal_Fetu_StanCustom formModel = new();
 		public bool _internalIsShowTab { get; set; }
 
+		//ใช้ชั่วคราว
+		public string? IsShowHideSome = " d-none";
+		//public string? IsShowHideSome = " ";
+
 		protected override async Task OnInitializedAsync()
 		{
 			_internalIsShowTab = IsShowTab;
@@ -62,6 +66,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove.Calculateds
 
 			if (formModel.Id == Guid.Empty)
 			{
+				formModel.Pre_Cal_Fetu_Stan_ItemOptions = new();
+				formModel.Pre_Cal_Fetu_Stan_Scores = new();
 				await InsertDropDown(PreStanDropDownType.CollateralType);
 				await InsertDropDown(PreStanDropDownType.PaymentHistory);
 
