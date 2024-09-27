@@ -104,6 +104,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 				filter.assigncenter = UserInfo.Id;
 			}
 
+			filter.userid = UserInfo.Id;
 			filter.pagesize = 100;
 			var data = await _assignmentRMViewModel.GetListRM(filter);
 			if (data != null && data.Status)

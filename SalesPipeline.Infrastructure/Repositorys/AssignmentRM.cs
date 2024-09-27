@@ -116,6 +116,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			query = query.Where(orExpression);
 			var queryL = query.Where(orExpression).ToList();
 
+			await Task.CompletedTask;
+
 			return query;
 		}
 
@@ -567,7 +569,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!model.userid.HasValue) return new();
 
 			var user = await _repo.User.GetById(model.userid.Value);
-			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");			
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
 			if (!user.Role.IsAssignRM)
 			{
 				return new() { Items = new() };
@@ -722,19 +724,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<Assignment_RMCustom>>> GetListRM(allFilter model)
 		{
+			if (!model.userid.HasValue) return new();
+
+			var user = await _repo.User.GetById(model.userid.Value);
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+			if (!user.Role.IsAssignRM)
+			{
+				return new() { Items = new() };
+			}
+
 			var query = _repo.Context.Assignment_RMs.Where(x => x.Status != StatusModel.Delete)
 												 .Include(x => x.User)
 												 .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
 												 .AsQueryable();
 
-			if (model.assigncenter.HasValue)
-			{
-				//var assignment = await _repo.AssignmentCenter.GetByUserId(model.assigncenter.Value);
-				//if (assignment != null)
-				//{
-				//	query = query.Where(x => x.AssignmentId == assignment.Id);
-				//}
-			}
+			query = await QueryAreaAssignment_RM(query, user);
+
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
