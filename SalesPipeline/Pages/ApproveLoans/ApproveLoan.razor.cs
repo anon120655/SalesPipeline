@@ -202,6 +202,7 @@ namespace SalesPipeline.Pages.ApproveLoans
 			{
 				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
 				{
+					userid = UserInfo.Id,
 					pagesize = 100,
 					status = StatusModel.Active,
 					Branchs = filter.Branchs

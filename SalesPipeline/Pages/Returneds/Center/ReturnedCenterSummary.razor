@@ -133,8 +133,7 @@
 												<th class="text-center">รหัสพนักงาน</th>
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">พื้นที่ดูแล</th>
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">มอบหมาย</th>
 											</tr>
@@ -160,12 +159,27 @@
 											{
 												foreach (var item in _items)
 												{
+													string? areaNameJoin = null;
+													if (item.User?.User_Areas != null)
+													{
+														string provinceNames = string.Join(",", item.User.User_Areas.Select(x => x.ProvinceName));
+														areaNameJoin = provinceNames;
+													}
+
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
 														<td class="text-center">@item.User?.Tel</td>
-														<td class="text-center">@item.User?.ProvinceName</td>
-														<td class="text-center">@item.User?.BranchName</td>
+														<td class="text-center">
+															@if (!string.IsNullOrEmpty(areaNameJoin))
+															{
+																<span>@areaNameJoin</span>
+															}
+															else
+															{
+																<span>-</span>
+															}
+														</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">

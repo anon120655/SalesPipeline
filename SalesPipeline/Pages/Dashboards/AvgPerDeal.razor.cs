@@ -7,7 +7,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-    public partial class AvgPerDeal
+	public partial class AvgPerDeal
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -197,6 +197,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
 				{
+					userid = UserInfo.Id,
 					pagesize = 100,
 					status = StatusModel.Active,
 					Branchs = filter.Branchs
@@ -351,6 +352,7 @@ namespace SalesPipeline.Pages.Dashboards
 
 				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
 				{
+					userid = UserInfo.Id,
 					pagesize = 100,
 					status = StatusModel.Active,
 					Branchs = filterBottomEnd.Branchs

@@ -11,7 +11,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Pages.Returneds.Center
 {
-    public partial class ReturnedCenterSummary
+	public partial class ReturnedCenterSummary
 	{
 		[Parameter]
 		public Guid id { get; set; }
@@ -104,6 +104,7 @@ namespace SalesPipeline.Pages.Returneds.Center
 				filter.assigncenter = UserInfo.Id;
 			}
 
+			filter.userid = UserInfo.Id;
 			filter.pagesize = 100;
 			var data = await _assignmentRMViewModel.GetListRM(filter);
 			if (data != null && data.Status)

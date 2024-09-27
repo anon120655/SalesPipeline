@@ -9,7 +9,7 @@ using SalesPipeline.Utils.Resources.Thailands;
 
 namespace SalesPipeline.Pages.AssignsHistory
 {
-    public partial class HistoryAssign
+	public partial class HistoryAssign
 	{
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
@@ -197,6 +197,7 @@ namespace SalesPipeline.Pages.AssignsHistory
 			{
 				var dataUsersRM = await _assignmentRMViewModel.GetListRM(new allFilter()
 				{
+					userid = UserInfo.Id,
 					pagesize = 100,
 					status = StatusModel.Active,
 					Branchs = filter.Branchs
