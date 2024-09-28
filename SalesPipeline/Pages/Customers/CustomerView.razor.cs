@@ -27,6 +27,8 @@ namespace SalesPipeline.Pages.Customers
 		Modal modalHistory = default!;
 		private List<Customer_HistoryCustom>? ItemsHistory;
 
+		ModalConfirm modalConfirmRePurpose = default!;
+
 		protected override async Task OnInitializedAsync()
 		{
 			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
@@ -210,6 +212,31 @@ namespace SalesPipeline.Pages.Customers
 		private async Task OnHideHistory()
 		{
 			await modalHistory.HideAsync();
+		}
+
+		protected async Task OnShowConfirmRePurpose(string? id, string? txt)
+		{
+			await modalConfirmRePurpose.OnShowConfirm(id, $"คุณต้องการ Re-Purpose <span class='text-primary'>{txt}</span>");
+		}
+
+		protected async Task ConfirmRePurpose(string id)
+		{
+			Guid _id = Guid.Parse(id);
+			var data = await _salesViewModel.RePurpose(new()
+			{
+				SaleId = _id,
+				CurrentUserId = UserInfo.Id
+			});
+			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+			else
+			{
+				await modalConfirmRePurpose.OnHideConfirm();
+				Cancel();
+			}
 		}
 
 	}

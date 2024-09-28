@@ -428,9 +428,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
-				//.Include(x => x.Sale_Contact_Histories.OrderBy(x => x.CreateDate))
 				.Where(x => x.Id == id).FirstOrDefaultAsync();
-			return _mapper.Map<SaleCustom>(query);
+
+			var dataMap = _mapper.Map<SaleCustom>(query);
+
+			if (dataMap.StatusSaleId == StatusSaleModel.NotApprove
+				|| dataMap.StatusSaleId == StatusSaleModel.NotApproveLoanRequest
+				|| dataMap.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSaleNotLoan
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSale
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSaleFail)
+			{
+				dataMap.IsShowRePurpose = true;
+			}
+			return dataMap;
 		}
 
 		public async Task<SaleCustom> GetByCustomerId(Guid id)
@@ -439,9 +450,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
 				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
 				.Include(x => x.StatusSale)
-				//.Include(x => x.Sale_Contact_Histories.OrderBy(x => x.CreateDate))
 				.Where(x => x.CustomerId == id).FirstOrDefaultAsync();
-			return _mapper.Map<SaleCustom>(query);
+
+			var dataMap = _mapper.Map<SaleCustom>(query);
+
+			if (dataMap.StatusSaleId == StatusSaleModel.NotApprove
+				|| dataMap.StatusSaleId == StatusSaleModel.NotApproveLoanRequest
+				|| dataMap.StatusSaleId == StatusSaleModel.ResultsNotConsidered
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSaleNotLoan
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSale
+				|| dataMap.StatusSaleId == StatusSaleModel.CloseSaleFail)
+			{
+				dataMap.IsShowRePurpose = true;
+			}
+			return dataMap;
 		}
 
 		public async Task<SaleCustom> GetStatusById(Guid id)
@@ -1221,6 +1243,22 @@ namespace SalesPipeline.Infrastructure.Repositorys
 										.ToListAsync();
 
 			return historyLoan;
+		}
+
+		public async Task<SaleCustom> RePurpose(RePurposeModel model)
+		{
+			var sales = await _repo.Context.Sales
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
+				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
+				.Include(x => x.StatusSale)
+				.Where(x => x.Id == model.SaleId).FirstOrDefaultAsync();
+			if (sales == null) throw new ExceptionCustom("sales not found.");
+
+			var salesMap = _mapper.Map<SaleCustom>(sales);
+
+			//var data =  await Create(salesMap);
+
+			return salesMap;
 		}
 
 	}

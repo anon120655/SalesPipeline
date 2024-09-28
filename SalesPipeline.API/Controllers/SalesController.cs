@@ -385,6 +385,22 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost("RePurpose")]
+		public async Task<IActionResult> RePurpose(RePurposeModel model)
+		{
+			try
+			{
+				var response = await _repo.Sales.RePurpose(model);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 
 
 	}

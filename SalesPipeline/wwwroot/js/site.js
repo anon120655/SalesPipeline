@@ -202,6 +202,10 @@ window.captureDashboard = (name) => {
 	//	});
 }
 
+window.updateUrlWithoutNavigation = (url) => {
+	window.history.pushState(null, '', url);
+}
+
 $(document).on("keypress", ".numberonly", function (e) {
 	return (e.charCode != 8 && e.charCode == 0 || (e.charCode >= 48 && e.charCode <= 57) || e.charCode == 46);
 });

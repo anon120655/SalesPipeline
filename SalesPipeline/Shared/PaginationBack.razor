@@ -32,14 +32,15 @@
 				{
 					int tempCurrentPage = (Pager.CurrentPage - 1);
 					<li>
-						<a href="@(Pager.UrlAction)" @onclick="(async ()=> await SelectCurrentPage(1))">
+
+						<button href="@(Pager.UrlAction)" @onclick="(async ()=> await SelectCurrentPage(1))">
 							หน้าแรก
-						</a>
+						</button>
 					</li>
 					<li>
-						<a href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
+						<button href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
 							<img src="/image/icon/left-anticon@2x.png" width="8" />
-						</a>
+						</button>
 					</li>
 				}
 
@@ -47,7 +48,9 @@
 				{
 					int tempint = page;
 					<li class="@(page == Pager.CurrentPage ? "active" : "")">
-						<a class="@(page == Pager.CurrentPage ? "circle" : "")" href="@(Pager.UrlAction)?page=@(page+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempint))">@(page)</a>
+						<button class="@(page == Pager.CurrentPage ? "circle" : "")" href="@(Pager.UrlAction)?page=@(page+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempint))">
+							@(page)
+						</button>
 					</li>
 				}
 
@@ -56,14 +59,14 @@
 					int tempCurrentPage = (Pager.CurrentPage + 1);
 					int tempTotalPages = Pager.TotalPages;
 					<li>
-						<a href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
+						<button href="@(Pager.UrlAction)?page=@(tempCurrentPage+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempCurrentPage))">
 							<img src="/image/icon/right-anticon-copy@2x.png" width="8" />
-						</a>
+						</button>
 					</li>
 					<li>
-						<a href="@(Pager.UrlAction)?page=@(tempTotalPages+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempTotalPages))">
+						<button href="@(Pager.UrlAction)?page=@(tempTotalPages+ParameterAll)" @onclick="(async ()=> await SelectCurrentPage(tempTotalPages))">
 							หน้าสุดท้าย
-						</a>
+						</button>
 					</li>
 				}
 			</ul>
@@ -72,6 +75,8 @@
 </div>
 
 @code {
+	[Inject] public IJSRuntime JSRuntime { get; set; } = null!;
+
 	[Parameter]
 	public int DisplayItems { get; set; }
 	[Parameter]
@@ -87,13 +92,20 @@
 
 	private async Task SelectCurrentPage(int pageItem)
 	{
-		if (ParameterAll != null)
+		// if (ParameterAll != null)
+		// {
+		// 	await OnSelectedPage.InvokeAsync($"page={pageItem}{ParameterAll}");
+		// }
+		// else
+		// {
+		// 	await OnSelectedPage.InvokeAsync($"page={pageItem}");
+		// }
+
+		if (Pager != null)
 		{
-			await OnSelectedPage.InvokeAsync($"page={pageItem}{ParameterAll}");
-		}
-		else
-		{
-			await OnSelectedPage.InvokeAsync($"page={pageItem}");
+			string pageUrl = $"page={pageItem}{ParameterAll}";
+			await OnSelectedPage.InvokeAsync(pageUrl);
+			await JSRuntime.InvokeVoidAsync("updateUrlWithoutNavigation", $"{Pager.UrlAction}?{pageUrl}");
 		}
 	}
 
@@ -106,9 +118,16 @@
 			var status = e.Value.ToString();
 			if (int.TryParse(status, out int _pagesize))
 			{
+				// if (Pager != null)
+				// {
+				// 	_Navs.NavigateTo($"{Pager.UrlAction}?page=1&pagesize={_pagesize}");
+				// }
+				// await OnShowOnPage.InvokeAsync(_pagesize);
 				if (Pager != null)
 				{
-					_Navs.NavigateTo($"{Pager.UrlAction}?page=1&pagesize={_pagesize}");
+					string pageUrl = $"page=1&pagesize={_pagesize}";
+					await OnSelectedPage.InvokeAsync(pageUrl);
+					await JSRuntime.InvokeVoidAsync("updateUrlWithoutNavigation", $"{Pager.UrlAction}?{pageUrl}");
 				}
 				await OnShowOnPage.InvokeAsync(_pagesize);
 			}

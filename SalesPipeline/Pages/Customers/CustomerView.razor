@@ -20,9 +20,15 @@
 							<Tabs EnableFadeEffect="true" NavStyle="NavStyle.Pills">
 								<Tab Title="ข้อมูลลูกค้า" IsActive="true">
 									<Content>
-										<div class="row">
-											<div class="col-12 col-xl-8"></div>
-											<div class="col-12 col-xl-3 text-end">
+										<div class="row mt-2">
+											<div class="col-12 col-xl-@(formModel.IsShowRePurpose ? "9": "10")"></div>
+											@if (formModel.IsShowRePurpose)
+											{
+												<div class="col-12 col-xl-auto text-end">
+													<a @onclick='(()=> OnShowConfirmRePurpose(formModel.Id.ToString(),formModel.CompanyName))' class="btn btn-success mw_6r">re-purpose</a>
+												</div>
+											}
+											<div class="col-12 col-xl-auto text-end">
 												<a class="btn btn-primary mw_6r" href="/customer/update/@formModel.Customer?.Id">แก้ไขข้อมูล</a>
 											</div>
 										</div>
@@ -136,6 +142,8 @@
 			</div>
 		</BodyTemplate>
 	</Modal>
+
+	<ModalConfirm @ref="modalConfirmRePurpose" CallbackConfirm="ConfirmRePurpose" _errorMessage="@_errorMessage" />
 }
 else
 {

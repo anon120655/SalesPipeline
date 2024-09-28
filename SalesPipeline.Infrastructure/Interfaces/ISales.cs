@@ -34,5 +34,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Sale_PartnerCustom> GetPartnerById(Guid id);
 		Task<PaginationView<List<Sale_PartnerCustom>>> GetListPartner(allFilter model);
 		Task<List<HistoryLoanModel>> GetListHistoryLoan(allFilter model);
+
+		Task<SaleCustom> RePurpose(RePurposeModel model);
 	}
 }

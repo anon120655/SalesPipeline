@@ -247,5 +247,28 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<SaleCustom>> RePurpose(RePurposeModel model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Sales/RePurpose", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<SaleCustom>(content);
+
+				return new ResultModel<SaleCustom>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<SaleCustom>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
 	}
 }
