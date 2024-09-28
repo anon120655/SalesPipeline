@@ -35,6 +35,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<Sale_PartnerCustom>>> GetListPartner(allFilter model);
 		Task<List<HistoryLoanModel>> GetListHistoryLoan(allFilter model);
 
-		Task<SaleCustom> RePurpose(RePurposeModel model);
+		Task<CustomerCustom> RePurpose(RePurposeModel model);
 	}
 }

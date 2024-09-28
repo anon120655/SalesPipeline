@@ -771,7 +771,22 @@ namespace SalesPipeline.Utils
 
 		public static T DeepCopyJson<T>(this T input)
 		{
-			var serialized = JsonConvert.SerializeObject(input);
+			//var serialized = JsonConvert.SerializeObject(input);
+			//return JsonConvert.DeserializeObject<T>(serialized);
+
+			var settings = new JsonSerializerSettings
+			{
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			};
+
+			var serialized = JsonConvert.SerializeObject(input, settings);
+
+			// ตรวจสอบว่าค่า serialized เป็น null หรือไม่
+			if (serialized == null)
+			{
+				return default(T); // คืนค่าเริ่มต้นของประเภท T หาก serialized เป็น null
+			}
+
 			return JsonConvert.DeserializeObject<T>(serialized);
 		}
 

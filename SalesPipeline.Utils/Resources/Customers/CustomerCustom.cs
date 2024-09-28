@@ -425,5 +425,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public bool IsKeep { get; set; } = false;
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }
+		public bool? IsRePurpose { get; set; }
 	}
 }

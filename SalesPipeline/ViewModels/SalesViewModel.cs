@@ -247,23 +247,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
-		public async Task<ResultModel<SaleCustom>> RePurpose(RePurposeModel model)
+		public async Task<ResultModel<CustomerCustom>> RePurpose(RePurposeModel model)
 		{
 			try
 			{
 				string tokenJwt = await _authorizeViewModel.GetAccessToken();
 				string dataJson = JsonConvert.SerializeObject(model);
 				var content = await _httpClient.PostAsync($"/v1/Sales/RePurpose", dataJson, token: tokenJwt);
-				var dataMap = JsonConvert.DeserializeObject<SaleCustom>(content);
+				var dataMap = JsonConvert.DeserializeObject<CustomerCustom>(content);
 
-				return new ResultModel<SaleCustom>()
+				return new ResultModel<CustomerCustom>()
 				{
 					Data = dataMap
 				};
 			}
 			catch (Exception ex)
 			{
-				return new ResultModel<SaleCustom>
+				return new ResultModel<CustomerCustom>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

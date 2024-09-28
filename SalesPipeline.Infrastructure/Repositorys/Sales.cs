@@ -11,6 +11,7 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System.Linq.Expressions;
 using SalesPipeline.Infrastructure.Helpers;
+using SalesPipeline.Utils.Resources.Customers;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -1245,20 +1246,27 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return historyLoan;
 		}
 
-		public async Task<SaleCustom> RePurpose(RePurposeModel model)
+		public async Task<CustomerCustom> RePurpose(RePurposeModel model)
 		{
-			var sales = await _repo.Context.Sales
-				.Include(x => x.Customer).ThenInclude(x => x.Customer_Committees)
-				.Include(x => x.Customer).ThenInclude(x => x.Customer_Shareholders)
-				.Include(x => x.StatusSale)
-				.Where(x => x.Id == model.SaleId).FirstOrDefaultAsync();
+			if (model.CurrentUserId == 0) throw new ExceptionCustom("userId not found.");
+			var user = await _repo.User.GetById(model.CurrentUserId);
+			if (user == null || user.Role == null) throw new ExceptionCustom("User not found.");
+
+			var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Id == model.SaleId);
 			if (sales == null) throw new ExceptionCustom("sales not found.");
 
-			var salesMap = _mapper.Map<SaleCustom>(sales);
+			var customer = await _repo.Customer.GetById(sales.CustomerId);
+			if (customer == null) throw new ExceptionCustom("customer not found.");
 
-			//var data =  await Create(salesMap);
+			var formModel = GeneralUtils.DeepCopyJson(customer);
 
-			return salesMap;
+			formModel.IsRePurpose = true;
+			formModel.CurrentUserId = model.CurrentUserId;
+			formModel.CIF = null;
+
+			var data = await _repo.Customer.Create(formModel);
+
+			return data;
 		}
 
 	}

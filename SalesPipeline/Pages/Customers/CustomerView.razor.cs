@@ -28,6 +28,7 @@ namespace SalesPipeline.Pages.Customers
 		private List<Customer_HistoryCustom>? ItemsHistory;
 
 		ModalConfirm modalConfirmRePurpose = default!;
+		private bool IsToCancel = false;
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -234,7 +235,15 @@ namespace SalesPipeline.Pages.Customers
 			}
 			else
 			{
+				IsToCancel = true;
 				await modalConfirmRePurpose.OnHideConfirm();
+			}
+		}
+
+		private void OnModalHiddenRePurpose()
+		{
+			if (IsToCancel)
+			{
 				Cancel();
 			}
 		}

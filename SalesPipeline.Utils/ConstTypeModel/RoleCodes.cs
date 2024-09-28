@@ -41,10 +41,10 @@ namespace SalesPipeline.Utils.ConstTypeModel
         /// ผู้จัดการศูนย์
         /// </summary>
         public const string CENTER = "CENTER";
-        /// <summary>
-        /// RM พนักงานขาย
-        /// </summary>
-        public const string RM = "RM";
+		/// <summary>
+		/// พนักงานธุรกิจสินเชื่อ RM
+		/// </summary>
+		public const string RM = "RM";
     }
 }
 
