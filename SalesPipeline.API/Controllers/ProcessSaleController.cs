@@ -322,8 +322,11 @@ namespace SalesPipeline.API.Controllers
 							phoenixModel = new();
 							foreach (var item in data.result)
 							{
+								int.TryParse(item.workflow_id, out int _workflow_id_int);
+
 								phoenixModel.Add(new()
 								{
+									workflow_id_int = _workflow_id_int,
 									workflow_id = item.workflow_id,
 									app_no = item.app_no,
 									ana_no = item.ana_no,
@@ -343,6 +346,7 @@ namespace SalesPipeline.API.Controllers
 									approve_date = item.approve_date
 								});
 							}
+							phoenixModel = phoenixModel.OrderByDescending(x => x.workflow_id_int).ToList();
 						}
 					}
 				}
@@ -441,8 +445,11 @@ namespace SalesPipeline.API.Controllers
 								phoenixModel = new();
 								foreach (var item in data.result)
 								{
+									int.TryParse(item.workflow_id, out int _workflow_id_int);
+
 									phoenixModel.Add(new()
 									{
+										workflow_id_int = _workflow_id_int,
 										workflow_id = item.workflow_id,
 										app_no = item.app_no,
 										ana_no = item.ana_no,
@@ -462,6 +469,7 @@ namespace SalesPipeline.API.Controllers
 										approve_date = item.approve_date
 									});
 								}
+								phoenixModel = phoenixModel.OrderByDescending(x => x.workflow_id_int).ToList();
 							}
 						}
 					}
@@ -541,8 +549,11 @@ namespace SalesPipeline.API.Controllers
 								phoenixModel = new();
 								foreach (var item in data.result)
 								{
+									int.TryParse(item.workflow_id, out int _workflow_id_int);
+
 									phoenixModel.Add(new()
 									{
+										workflow_id_int = _workflow_id_int,
 										workflow_id = item.workflow_id,
 										app_no = item.app_no,
 										ana_no = item.ana_no,
@@ -562,6 +573,7 @@ namespace SalesPipeline.API.Controllers
 										approve_date = item.approve_date
 									});
 								}
+								phoenixModel = phoenixModel.OrderByDescending(x => x.workflow_id_int).ToList();
 							}
 						}
 					}

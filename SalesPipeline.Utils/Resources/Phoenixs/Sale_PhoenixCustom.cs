@@ -52,5 +52,8 @@ namespace SalesPipeline.Utils.Resources.Phoenixs
 		public string? approve_by { get; set; }
 
 		public string? approve_date { get; set; }
+
+		//custom
+		public int? workflow_id_int { get; set; }
 	}
 }
