@@ -1810,7 +1810,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sales);
 				await _db.SaveAsync();
 
-				DateTime _dateNow = DateTime.Now;
+				var customers = await _repo.Context.Customers.Where(x => x.Id == sales.CustomerId).FirstOrDefaultAsync();
+				if (customers != null)
+				{
+					customers.CIF = model.CIF;
+					_db.Update(customers);
+					await _db.SaveAsync();
+				}
 
 				if (phoenix != null && phoenix.Count > 0)
 				{

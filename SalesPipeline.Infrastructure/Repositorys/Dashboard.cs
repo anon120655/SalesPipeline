@@ -57,12 +57,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//ในพื้นที่จังหวัด หรือ ดูแลทุกจังหวัดในภาค
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x =>
 						(x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 						);
 					}
 
@@ -103,12 +104,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//ในพื้นที่จังหวัด หรือ ดูแลทุกจังหวัดในภาค
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x =>
 						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 						);
 					}
 
@@ -149,12 +151,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//ในพื้นที่จังหวัด หรือ ดูแลทุกจังหวัดในภาค
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId; 
 						orExpression = orExpression.Or(x =>
 						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 						);
 					}
 
@@ -195,12 +198,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//ในพื้นที่จังหวัด หรือ ดูแลทุกจังหวัดในภาค
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x =>
 						(x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						|| (x.Sale.AssUser != null && x.Sale.AssUser.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 						);
 					}
 

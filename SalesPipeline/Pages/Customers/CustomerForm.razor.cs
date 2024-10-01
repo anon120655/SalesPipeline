@@ -199,6 +199,11 @@ namespace SalesPipeline.Pages.Customers
 						var sales = formModel.Sales.FirstOrDefault();
 						if (sales != null)
 						{
+							if (string.IsNullOrEmpty(formModel.CIF) && !string.IsNullOrEmpty(sales.CIF))
+							{
+								formModel.CIF = sales.CIF;
+							}
+
 							formModel.Branch_RegionId = sales.Master_Branch_RegionId;
 
 							if (data.Data.ProvinceId.HasValue)

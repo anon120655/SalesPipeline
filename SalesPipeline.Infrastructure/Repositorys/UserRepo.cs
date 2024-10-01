@@ -500,6 +500,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 															.Any(x => x.Status == StatusModel.Active
 															&& x.Id != model.Id
 															&& x.RoleId == 7
+															&& x.Master_Branch_RegionId == model.Master_Branch_RegionId
 															&& x.User_Areas.Any(a => a.ProvinceId == item.ProvinceId));
 								if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
 							}

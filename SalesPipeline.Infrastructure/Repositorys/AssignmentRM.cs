@@ -59,12 +59,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 
 					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล
+					//ในพื้นที่จังหวัด หรือ ดูแลทุกจังหวัดในภาค
 					foreach (var provinceId in user_Areas)
 					{
 						var tempProvinceId = provinceId;
 						orExpression = orExpression.Or(x =>
 						(x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.ProvinceId == 9999))
+						|| (x.AssUser != null && x.AssUser.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 						);
 					}
 
@@ -83,24 +84,49 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
-			var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
+			//var user_AreasRm = query.Select(x => x.User.User_Areas.Select(s => s.ProvinceId).ToList());
 
 			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
 			if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
 			{
-				// ดึงข้อมูล User ก่อน
-				var users = query.Select(x => x.User).Where(x => x.Master_Branch_RegionId == user.Master_Branch_RegionId).ToList();
-
-				// จากนั้นค่อยดึง User_Areas
-				var user_AreasRms = users
-					.SelectMany(u => u.User_Areas.Select(s => new
+				Expression<Func<Assignment_RM, bool>> orExpression = x => false;
+				//9999 เห็นทุกจังหวัดในภาค
+				if (user.Master_Branch_RegionId.HasValue && user_Areas.Any(x => x == 9999))
+				{
+					var provinces = await _repo.Thailand.GetProvince(user.Master_Branch_RegionId);
+					if (provinces?.Count > 0)
 					{
-						UserId = u.Id,
-						ProvinceId = s.ProvinceId,
-						// เพิ่มฟิลด์อื่นๆ ที่คุณต้องการจาก User_Areas ตรงนี้
-					}))
-					.ToList();
+						user_Areas = provinces.Select(x => x.ProvinceID).ToList();
+					}
+				}
 
+				foreach (var provinceId in user_Areas)
+				{
+					var tempProvinceId = provinceId;
+					orExpression = orExpression.Or(x =>
+					(x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
+				    || (x.User.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
+					);
+				}
+
+				orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
+				// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
+				query = query.Where(orExpression);
+			}
+
+			await Task.CompletedTask;
+
+			return query;
+		}
+
+		private async Task<IQueryable<Assignment_RM>> QueryAreaAssignment_RM_Old(IQueryable<Assignment_RM> query, UserCustom user)
+		{
+			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
+			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
+
+			//99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
+			if (user.Master_Branch_RegionId != Guid.Parse("99999999-9999-9999-9999-999999999999"))
+			{
 
 				// สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
 				Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
@@ -117,8 +143,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
 				// ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
 				query = query.Where(orExpression);
-				var queryL = query.Where(orExpression).ToList();
-
 			}
 
 			await Task.CompletedTask;
