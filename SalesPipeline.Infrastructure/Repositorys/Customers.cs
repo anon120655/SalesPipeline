@@ -840,6 +840,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						CustomerId = customer.Id,
 						ProvinceId = model.ProvinceId,
 						BranchId = model.BranchId,
+						CIF = model.CIF,
 						StatusSaleId = StatusSaleModel.NotStatus
 					};
 
