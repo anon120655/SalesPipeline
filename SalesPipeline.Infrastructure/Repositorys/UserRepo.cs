@@ -1281,6 +1281,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				var assignment_Center = await _repo.Context.Assignment_Centers.Where(x => x.UserId > 0).ToListAsync();
 				if (assignment_Center.Count > 0)
 				{
+					List<int> itemDelete = new();
 					foreach (var item in assignment_Center)
 					{
 						var users = await _repo.Context.Users
@@ -1293,10 +1294,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							if (!users.Role.IsAssignRM || (users.Role.IsAssignRM && users.Role.Status != StatusModel.Active))
 							{
 								_db.Delete(item);
+								await _db.SaveAsync();
+								itemDelete.Add(item.UserId);
 							}
 						}
 					}
-					await _db.SaveAsync();
+					if (itemDelete.Count > 0)
+					{
+
+					}
 				}
 			}
 			catch (Exception ex)
