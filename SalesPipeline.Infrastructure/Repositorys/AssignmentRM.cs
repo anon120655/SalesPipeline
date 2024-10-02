@@ -974,5 +974,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 		}
+
 	}
 }

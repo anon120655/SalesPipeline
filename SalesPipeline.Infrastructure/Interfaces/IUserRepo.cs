@@ -36,5 +36,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<UserCustom>> GetNewUserSendMail(int? id);
 		Task<UserCustom> UpdateNewUserSendMail(int id);
 		Task ChangePassword(ChangePasswordModel model);
+		Task RemoveUserNotAssignment();
 	}
 }

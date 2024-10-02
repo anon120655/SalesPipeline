@@ -15,6 +15,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Assignment_CenterCustom> GetByUserId(int id);
 		Task<Assignment_CenterCustom> Create(Assignment_CenterCustom model);
 		Task<Assignment_CenterCustom> Update(Assignment_CenterCustom model);
+		Task DeleteByUserId(Guid id);
 		Task<PaginationView<List<Assignment_CenterCustom>>> GetListAutoAssign(allFilter model);
 		Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model);
 		Task Assign(AssignModel model);

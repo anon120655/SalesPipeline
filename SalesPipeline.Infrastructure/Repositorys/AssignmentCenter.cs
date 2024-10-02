@@ -110,6 +110,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
 		}
 
+		public async Task DeleteByUserId(Guid id)
+		{
+			var assignment_Center = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
+			if (assignment_Center != null)
+			{
+				_db.Delete(assignment_Center);
+				await _db.SaveAsync();
+			}
+		}
+
 		public async Task<PaginationView<List<Assignment_CenterCustom>>> GetListAutoAssign(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
@@ -436,9 +446,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task CreateAssignmentCenterAll(allFilter model)
 		{
-			var usersCenter = await _repo.Context.Users.Include(x => x.Role)
+			await _repo.User.RemoveUserNotAssignment();
+
+			var usersCenter = await _repo.Context.Users
+											.Include(x => x.Role)
 										   .Include(x => x.Assignment_Centers)
-										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.IsAssignRM && x.Assignment_Centers.Count == 0)
+										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.Status == StatusModel.Active && x.Role.IsAssignRM && x.Assignment_Centers.Count == 0)
 										   .OrderBy(x => x.Id)
 										   .ToListAsync();
 
@@ -458,6 +471,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					});
 				}
 			}
+
+
+
 		}
 
 	}

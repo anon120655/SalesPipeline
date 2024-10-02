@@ -1274,5 +1274,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
+		public async Task RemoveUserNotAssignment()
+		{
+			try
+			{
+				var assignment_Center = await _repo.Context.Assignment_Centers.Where(x => x.UserId > 0).ToListAsync();
+				if (assignment_Center.Count > 0)
+				{
+					foreach (var item in assignment_Center)
+					{
+						var users = await _repo.Context.Users
+							.AsTracking()
+							.Include(x => x.Role)
+							.FirstOrDefaultAsync(x => x.Id == item.UserId);
+						if (users != null && users.Role != null)
+						{
+							//ผู้ที่ไม่มีสิทธ์มอบหมาย RM หรือมีสิทธิ์มอบหมายแต่สิทธิ์ถูกลบไปแล้ว
+							if (!users.Role.IsAssignRM || (users.Role.IsAssignRM && users.Role.Status != StatusModel.Active))
+							{
+								_db.Delete(item);
+							}
+						}
+					}
+					await _db.SaveAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+
+			}
+		}
+
+
 	}
 }

@@ -72,10 +72,10 @@ namespace SalesPipeline.API.Controllers
 			{
 				var data = await _repo.User.Update(model);
 
-				if (data.RoleId == 7)
-				{
-					await _repo.AssignmentCenter.UpdateCurrentNumber(data.Id);
-				}
+				//if (data.RoleId == 7)
+				//{
+				//	await _repo.AssignmentCenter.UpdateCurrentNumber(data.Id);
+				//}
 
 				return Ok(data);
 			}
