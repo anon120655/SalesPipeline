@@ -169,7 +169,8 @@ namespace SalesPipeline.Helpers
 
 				var options = new RestClientOptions(baseUri + url)
 				{
-					ThrowOnAnyError = false
+					ThrowOnAnyError = false,
+					Timeout = TimeSpan.FromMinutes(5)
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
@@ -254,7 +255,8 @@ namespace SalesPipeline.Helpers
 			{
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
-					ThrowOnAnyError = false
+					ThrowOnAnyError = false,
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
@@ -337,7 +339,8 @@ namespace SalesPipeline.Helpers
 			{
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
-					ThrowOnAnyError = false
+					ThrowOnAnyError = false,
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 				var client = new RestClient(options);
 
@@ -421,7 +424,8 @@ namespace SalesPipeline.Helpers
 			{
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
-					ThrowOnAnyError = true
+					ThrowOnAnyError = true,
+					Timeout = TimeSpan.FromMinutes(2)
 				};
 				var client = new RestClient(options);
 

@@ -60,6 +60,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return entity;
 		}
 
+		public void UpdateRange<T>(IEnumerable<T> entities) where T : class
+		{
+			unitofWork.Context.ChangeTracker.Clear();
+			unitofWork.Context.Set<T>().UpdateRange(entities);
+		}
+
 		public void Delete<T>(T entity) where T : class
 		{
 			unitofWork.Context.ChangeTracker.Clear();

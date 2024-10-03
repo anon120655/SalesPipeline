@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
 using NPOI.SS.Formula.Functions;
+using SalesPipeline.Infrastructure.Data.Context;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -105,7 +106,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var tempProvinceId = provinceId;
 					orExpression = orExpression.Or(x =>
 					(x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-				    || (x.User.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
+					|| (x.User.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
 					);
 				}
 
@@ -798,6 +799,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (assignment_RM != null && sales_select?.Count > 0)
 				{
+					var salesToWaitUpdate = new List<SaleCustom>();
+
 					foreach (var item_sale in sales_select)
 					{
 						var currentUserName = await _repo.User.GetFullNameById(item.CurrentUserId);
@@ -811,29 +814,47 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							SaleId = item_sale.SaleId
 						});
 
-						var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item_sale.SaleId);
-						if (sales != null)
+						salesToWaitUpdate.Add(new()
 						{
-							sales.AssUserId = assignment_RM.UserId;
-							sales.AssUserName = assUserName;
-							_db.Update(sales);
-							await _db.SaveAsync();
-						}
+							Id = item_sale.SaleId,
+							AssUserId = assignment_RM.UserId,
+							AssUserName = assUserName
+						});
 
 						await _repo.Sales.UpdateStatusOnly(new()
 						{
 							SaleId = item_sale.SaleId,
 							StatusId = StatusSaleModel.WaitContact,
 							CreateBy = item.CurrentUserId,
-							CreateByName = currentUserName,
+							CreateByName = currentUserName
 						});
 
 						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item_sale.SaleId });
 					}
 
+					// รวบรวมการอัปเดตแล้วทำครั้งเดียว UpdateRange
+					if (salesToWaitUpdate.Any())
+					{
+						var salesToUpdate = new List<Sale>();
+						foreach (var item_upate in salesToWaitUpdate)
+						{
+							var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == item_upate.Id);
+							if (sales != null)
+							{
+								sales.AssUserId = item_upate.AssUserId;
+								sales.AssUserName = item_upate.AssUserName;
+								salesToUpdate.Add(sales);
+							}
+						}
+						if (salesToUpdate.Any())
+						{
+							_db.UpdateRange(salesToUpdate);
+							await _db.SaveAsync();
+						}
+					}
+
 					await UpdateCurrentNumber(assignment_RM.UserId);
 				}
-
 			}
 		}
 

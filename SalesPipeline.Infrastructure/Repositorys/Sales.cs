@@ -174,7 +174,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<SaleCustom>(sale);
 		}
 
-		public async Task UpdateStatusOnly(Sale_StatusCustom model, SaleCustom? modelSale = null)
+		public async Task UpdateStatusOnly(Sale_StatusCustom model, SaleCustom? modelSale = null, SaleCustom? modelSaleAss = null)
 		{
 			var sale_Statuses = await _repo.Context.Sale_Statuses.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId).ToListAsync();
 			if (sale_Statuses != null && sale_Statuses.Count > 0)
@@ -252,6 +252,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						sales.ContactStartDate = modelSale.ContactStartDate;
 					}
 					sales.LoanAmount = modelSale.LoanAmount;
+				}
+
+				if (modelSaleAss != null)
+				{
+					if (sales.AssUserId != modelSaleAss.AssUserId || sales.AssUserName != modelSaleAss.AssUserName)
+					{
+						sales.AssUserId = modelSaleAss.AssUserId;
+						sales.AssUserName = modelSaleAss.AssUserName;
+					}
 				}
 
 				_db.Update(sales);

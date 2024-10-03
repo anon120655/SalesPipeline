@@ -8,7 +8,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	{
 		Task<SaleCustom> Create(SaleCustom model);
 		Task<SaleCustom> Update(SaleCustom model);
-		Task UpdateStatusOnly(Sale_StatusCustom model, SaleCustom? modelSale = null);
+		Task UpdateStatusOnly(Sale_StatusCustom model, SaleCustom? modelSale = null, SaleCustom? modelSaleAss = null);
 		Task<bool> CheckStatusById(Guid id, int statusid);
 		Task<SaleCustom> GetById(Guid id); 
 		Task<SaleCustom> GetByCustomerId(Guid id); 

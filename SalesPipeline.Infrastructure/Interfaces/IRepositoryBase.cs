@@ -16,6 +16,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<T> InsterAsync<T>(T entity) where T : class;
 		void InsterRange<T>(IEnumerable<T> entities) where T : class;
 		T Update<T>(T entity) where T : class;
+		void UpdateRange<T>(IEnumerable<T> entities) where T : class;
 		void Delete<T>(T entity) where T : class;
 		void DeleteRange<T>(IEnumerable<T> entity) where T : class;
 		Task SaveAsync();
