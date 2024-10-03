@@ -89,7 +89,7 @@ namespace SalesPipeline.Utils
 		// [search_mode] คือ กำหนดค่าโหมดของการค้นหา
 		//     1 คือ ทำการค้นหาตั้งแต่รายการแรกเป็นต้นไป(หากไม่ระบุ จะเป็นค่าตั้งต้น)
 		//    -1 คือ ทำการค้นหารายการสุดท้ายเป็นต้นไป
-		public static XLookUpModel? XLookupLists(double lookupValue, List<XLookUpModel> lookUpModel, int match_mode = 1, int search_mode = 1)
+		public static XLookUpModel? XLookupLists2(double lookupValue, List<XLookUpModel> lookUpModel, int match_mode = 1, int search_mode = 1)
 		{
 			if (lookUpModel == null || lookUpModel.Count == 0)
 			{
@@ -149,5 +149,83 @@ namespace SalesPipeline.Utils
 				return lookUpModel[0];
 			}
 		}
+
+		public static XLookUpModel? XLookupLists(double lookupValue, List<XLookUpModel> lookUpModel, int match_mode = 1, int search_mode = 1)
+		{
+			if (lookUpModel == null || lookUpModel.Count == 0)
+			{
+				return null;
+			}
+
+			// Ensure the list is sorted
+			lookUpModel = lookUpModel.OrderBy(m => m.CheckValue).ToList();
+
+			if (match_mode == 0 || match_mode == -1)
+			{
+				XLookUpModel? lessThanMatch = null;
+
+				if (search_mode == 1) // Forward search
+				{
+					foreach (var model in lookUpModel)
+					{
+						if (lookupValue == model.CheckValue)
+						{
+							return model;
+						}
+						if (lookupValue > model.CheckValue)
+						{
+							lessThanMatch = model;
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+				else // Backward search
+				{
+					for (int i = lookUpModel.Count - 1; i >= 0; i--)
+					{
+						if (lookupValue == lookUpModel[i].CheckValue)
+						{
+							return lookUpModel[i];
+						}
+						if (lookupValue > lookUpModel[i].CheckValue)
+						{
+							lessThanMatch = lookUpModel[i];
+							break;
+						}
+					}
+				}
+
+				return match_mode == 0 ? null : lessThanMatch;
+			}
+
+			if (search_mode == 1)
+			{
+				foreach (var model in lookUpModel)
+				{
+					if (lookupValue >= model.CheckValue)
+					{
+						return model;
+					}
+				}
+
+				return lookUpModel[lookUpModel.Count - 1];
+			}
+			else
+			{
+				for (int i = lookUpModel.Count - 1; i >= 0; i--)
+				{
+					if (lookupValue >= lookUpModel[i].CheckValue)
+					{
+						return lookUpModel[i];
+					}
+				}
+
+				return lookUpModel[0];
+			}
+		}
+
 	}
 }
