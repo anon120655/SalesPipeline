@@ -1692,7 +1692,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Score)
-                .HasPrecision(18, 2)
+                .HasPrecision(18, 4)
                 .HasComment("คะแนน");
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
@@ -1763,7 +1763,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Score)
-                .HasPrecision(18, 2)
+                .HasPrecision(18, 4)
                 .HasComment("คะแนน");
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
@@ -1837,7 +1837,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Score)
-                .HasPrecision(18, 2)
+                .HasPrecision(18, 4)
                 .HasComment("คะแนน");
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
@@ -1888,7 +1888,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasColumnType("int(11)");
             entity.Property(e => e.Score)
-                .HasPrecision(18, 2)
+                .HasPrecision(18, 4)
                 .HasComment("คะแนน");
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
@@ -1915,7 +1915,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Status)
                 .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
                 .HasColumnType("smallint(6)");
-            entity.Property(e => e.TotalPercent).HasPrecision(18, 2);
+            entity.Property(e => e.TotalPercent).HasPrecision(18, 4);
             entity.Property(e => e.Type)
                 .HasComment("1=ข้อมูลการขอสินเชื่อ\r\n2=คุณสมบัติมารตฐาน\r\n3=คุณสมบัติตามประเภทผู้ขอ\r\n4=คุณสมบัติตามประเภทธุรกิจ")
                 .HasColumnType("smallint(6)");
@@ -1936,7 +1936,7 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Percent).HasPrecision(18, 2);
+            entity.Property(e => e.Percent).HasPrecision(18, 4);
             entity.Property(e => e.SequenceNo)
                 .HasComment("ลำดับ")
                 .HasColumnType("int(11)");
