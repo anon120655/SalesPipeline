@@ -387,6 +387,90 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
+		public async Task AssignCenterUpdateRange(List<Assignment_CenterCustom> model)
+		{
+			foreach (var item_center in model)
+			{
+				if (item_center.Assignment_Sales?.Count > 0)
+				{
+					var assignment_Center = await _repo.Context.Assignment_Centers
+						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_center.Id);
+					if (assignment_Center == null) throw new ExceptionCustom("ไม่พบข้อมูลผู้จัดการศูนย์");
+
+					var salesToWaitUpdate = new List<SaleCustom>();
+
+					foreach (var item_sale in item_center.Assignment_Sales)
+					{
+						//var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_sale.SaleId);
+						//if (sale == null) throw new ExceptionCustom("ไม่พบข้อมูลูกค้า");
+
+						//sale.AssUser = null;
+						//sale.AssCenterUser = null;
+						//sale.AssCenterAlready = true;
+						//sale.AssCenterUserId = item_center.UserId;
+						//sale.AssCenterUserName = item_center.EmployeeName;
+						//sale.AssCenterCreateBy = item_center.CurrentUserId;
+						//sale.AssCenterDate = DateTime.Now;
+						//_db.Update(sale);
+						//await _db.SaveAsync();
+
+						salesToWaitUpdate.Add(new()
+						{
+							Id = item_sale.SaleId,
+							AssCenterUserId = item_center.UserId,
+							AssCenterUserName = item_center.EmployeeName,
+							AssCenterCreateBy = item_center.CurrentUserId,
+						});
+
+						var currentUserName = await _repo.User.GetFullNameById(item_center.CurrentUserId);
+
+						await _repo.Sales.UpdateStatusOnly(new()
+						{
+							SaleId = item_sale.SaleId,
+							StatusId = StatusSaleModel.WaitAssign,
+							CreateBy = item_center.CurrentUserId,
+							CreateByName = currentUserName,
+						});
+
+						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item_sale.SaleId });
+					}
+
+					assignment_Center.CurrentNumber = item_center.NumberAfterAssignment;
+					_db.Update(assignment_Center);
+					await _db.SaveAsync();
+
+
+					// รวบรวมการอัปเดตแล้วทำครั้งเดียว UpdateRange
+					if (salesToWaitUpdate.Any())
+					{
+						var salesToUpdate = new List<Sale>();
+						foreach (var item_upate in salesToWaitUpdate)
+						{
+							var sales = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_upate.Id);
+							if (sales != null)
+							{
+								sales.AssUser = null;
+								sales.AssCenterUser = null;
+								sales.AssCenterAlready = true;
+								sales.AssCenterUserId = item_upate.AssCenterUserId;
+								sales.AssCenterUserName = item_upate.AssCenterUserName;
+								sales.AssCenterCreateBy = item_upate.AssCenterCreateBy;
+								sales.AssCenterDate = DateTime.Now;
+								salesToUpdate.Add(sales);
+							}
+						}
+						if (salesToUpdate.Any())
+						{
+							_db.UpdateRange(salesToUpdate);
+							await _db.SaveAsync();
+						}
+					}
+
+
+				}
+			}
+		}
+
 		public async Task UpdateCurrentNumber(int? userid = null)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)

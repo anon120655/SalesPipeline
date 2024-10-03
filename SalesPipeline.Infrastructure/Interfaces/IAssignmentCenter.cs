@@ -20,6 +20,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<PaginationView<List<Assignment_CenterCustom>>> GetListCenter(allFilter model);
 		Task Assign(AssignModel model);
 		Task AssignCenter(List<Assignment_CenterCustom> model);
+		Task AssignCenterUpdateRange(List<Assignment_CenterCustom> model);
 		Task UpdateCurrentNumber(int? userid = null);
 		Task CreateAssignmentCenterAll(allFilter model);
 	}

@@ -100,7 +100,8 @@ namespace SalesPipeline.API.Controllers
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					await _repo.AssignmentCenter.AssignCenter(model);
+					//await _repo.AssignmentCenter.AssignCenter(model);
+					await _repo.AssignmentCenter.AssignCenterUpdateRange(model);
 
 					_transaction.Commit();
 				}
