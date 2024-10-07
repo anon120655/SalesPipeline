@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.DataCustom;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Sales;
@@ -22,6 +24,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		private User_PermissionCustom _permission = new();
 		private List<Pre_CreditScoreCustom>? Items;
 		private Pre_CreditScoreCustom formModel = new();
+		private System_ConfigCustom configModel = new();
 
 		Modal modalForm = default!;
 		ModalConfirm modalConfirm = default!;
@@ -46,6 +49,12 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModel()
 		{
+			var data_config = await _systemViewModel.GetConfigByCode(ConfigCode.CREDITSCORE_LM_MT);
+			if (data_config != null && data_config.Status && data_config.Data != null)
+			{
+				configModel = data_config.Data;
+			}
+
 			filter.pagesize = 300;
 			var data = await _preCreditViewModel.GetList(filter);
 			if (data != null && data.Status)

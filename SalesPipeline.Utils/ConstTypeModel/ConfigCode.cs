@@ -16,5 +16,9 @@ namespace SalesPipeline.Utils.ConstTypeModel
 		/// เปิดปิดแถว Z 0=ปิด
 		/// </summary>
 		public const string CHANCEPASS_Z = "CHANCEPASS_Z";
+		/// <summary>
+		/// เปิดปิดแถว Limit Multiplier 0=ปิด
+		/// </summary>
+		public const string CREDITSCORE_LM_MT = "CREDITSCORE_LM_MT";
 	}
 }

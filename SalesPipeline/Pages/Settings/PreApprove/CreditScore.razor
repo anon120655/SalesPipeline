@@ -33,7 +33,10 @@
 												<th class="text-center">Level</th>
 												<th class="text-center">Credit Score</th>
 												<th class="text-center">Grade</th>
-												<th class="text-center">Limit Multiplier</th>
+												@if (configModel.Value == "1")
+												{
+													<th class="text-center">Limit Multiplier</th>
+												}
 												<th class="text-center">Rate Multiplier</th>
 												<th class="text-center">จัดการ</th>
 											</tr>
@@ -63,7 +66,10 @@
 														<td class="text-center">@item.Level</td>
 														<td class="text-center" style="background-color:@item.CreditScoreColor">@item.CreditScore</td>
 														<td class="text-center">@item.Grade</td>
-														<td class="text-center">@item.LimitMultiplier</td>
+														@if (configModel.Value == "1")
+														{
+															<td class="text-center">@item.LimitMultiplier</td>
+														}
 														<td class="text-center">@item.RateMultiplier</td>
 														<td class="text-center">
 															<a class="text-action" role="button" @onclick="(async()=> await OnShow(item.Id))">แก้ไข</a> /
@@ -120,15 +126,18 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-12">
-						<div class="form-group row mb-3">
-							<label class="col-4 col-form-label text-lg-end">Limit Multiplier</label>
-							<div class="col-7">
-								<input @bind="formModel.LimitMultiplier" type="text" class="form-control">
-								<ValidationMessage For="@(() => formModel.LimitMultiplier)" />
+					@if (configModel.Value == "1")
+					{
+						<div class="col-12">
+							<div class="form-group row mb-3">
+								<label class="col-4 col-form-label text-lg-end">Limit Multiplier</label>
+								<div class="col-7">
+									<input @bind="formModel.LimitMultiplier" type="text" class="form-control">
+									<ValidationMessage For="@(() => formModel.LimitMultiplier)" />
+								</div>
 							</div>
 						</div>
-					</div>
+					}
 					<div class="col-12">
 						<div class="form-group row mb-3">
 							<label class="col-4 col-form-label text-lg-end">Rate Multiplier</label>

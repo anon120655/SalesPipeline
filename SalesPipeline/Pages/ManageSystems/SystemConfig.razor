@@ -50,12 +50,31 @@
 										<div>
 											<div class="form-check form-check-inline">
 												<input @onclick="@(() => HandleCHANCEPASS_Z("1"))"
-													   class="form-check-input" type="radio" name="gender" value="1" checked="@(item.Value == "1")">
+													   class="form-check-input" type="radio" name="CHANCEPASS_Z" value="1" checked="@(item.Value == "1")">
 												<label class="form-check-label">แสดง</label>
 											</div>
 											<div class="form-check form-check-inline">
 												<input @onclick="@(() => HandleCHANCEPASS_Z("0"))"
-													   class="form-check-input" type="radio" name="gender" value="0" checked="@(item.Value == "0")">
+													   class="form-check-input" type="radio" name="CHANCEPASS_Z" value="0" checked="@(item.Value == "0")">
+												<label class="form-check-label">ไม่แสดง</label>
+											</div>
+										</div>
+									</div>
+								}
+								else if (item.Code == ConfigCode.CREDITSCORE_LM_MT)
+								{
+									<div class="d-flex justify-content-center"><hr class="w-100"></div>
+									<div class="mb-3">
+										<label for="gender" class="form-label fw-bold">เปิดปิดแถว LimitMultiplier เมนู Credit Score</label>
+										<div>
+											<div class="form-check form-check-inline">
+												<input @onclick="@(() => HandleCREDITSCORE_LM_MT("1"))"
+													   class="form-check-input" type="radio" name="CREDITSCORE_LM_MT" value="1" checked="@(item.Value == "1")">
+												<label class="form-check-label">แสดง</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input @onclick="@(() => HandleCREDITSCORE_LM_MT("0"))"
+													   class="form-check-input" type="radio" name="CREDITSCORE_LM_MT" value="0" checked="@(item.Value == "0")">
 												<label class="form-check-label">ไม่แสดง</label>
 											</div>
 										</div>

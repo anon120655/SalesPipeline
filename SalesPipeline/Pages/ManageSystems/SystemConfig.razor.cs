@@ -83,10 +83,22 @@ namespace SalesPipeline.Pages.ManageSystems
 		{
 			if (Items != null)
 			{
-				var chancepass_z = Items.FirstOrDefault(x => x.Code == ConfigCode.CHANCEPASS_Z);
-				if (chancepass_z != null)
+				var data = Items.FirstOrDefault(x => x.Code == ConfigCode.CHANCEPASS_Z);
+				if (data != null)
 				{
-					chancepass_z.Value = option;
+					data.Value = option;
+				}
+			}
+		}
+
+		private void HandleCREDITSCORE_LM_MT(string option)
+		{
+			if (Items != null)
+			{
+				var data = Items.FirstOrDefault(x => x.Code == ConfigCode.CREDITSCORE_LM_MT);
+				if (data != null)
+				{
+					data.Value = option;
 				}
 			}
 		}
