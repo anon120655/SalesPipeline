@@ -25,6 +25,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
+		public async Task<Master_ChainCustom> Validate(Master_ChainCustom model, bool isThrow = true, bool? isSetMaster = false)
+		{
+			string errorMessage = string.Empty;
+			model.IsValidate = true;
+			if (model.ValidateError == null) model.ValidateError = new();
+
+			if (model.Id == Guid.Empty)
+			{
+				if (model.Name != null && _repo.Context.Master_Chains.Any(x => x.Status != StatusModel.Delete && x.Name == model.Name))
+				{
+					errorMessage = $"มีห่วงโซ่ {model.Name} แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+			}
+
+			await Task.CompletedTask;
+
+			return model;
+		}
+
+		public async Task<List<Master_ChainCustom>> ValidateUpload(List<Master_ChainCustom> model)
+		{
+			for (int i = 0; i < model.Count; i++)
+			{
+				model[i] = await Validate(model[i], false, true);
+			}
+			return model;
+		}
+
 		public async Task<Master_ChainCustom> Create(Master_ChainCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())

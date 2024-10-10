@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.Thailands;
@@ -879,6 +880,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
+		[HttpPost("ValidateUploadYield")]
+		public async Task<IActionResult> ValidateUploadYield(List<Master_YieldCustom> model)
+		{
+			try
+			{
+				var data = await _repo.MasterYield.ValidateUpload(model);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 		//ห่วงโซ่
 		[HttpPost("CreateChain")]
 		public async Task<IActionResult> CreateChain(Master_ChainCustom model)
@@ -942,6 +958,21 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				var data = await _repo.MasterChain.GetById(id);
+				return Ok(data);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
+		[HttpPost("ValidateUploadChain")]
+		public async Task<IActionResult> ValidateUploadChain(List<Master_ChainCustom> model)
+		{
+			try
+			{
+				var data = await _repo.MasterChain.ValidateUpload(model);
 				return Ok(data);
 			}
 			catch (Exception ex)

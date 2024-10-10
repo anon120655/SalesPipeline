@@ -18,10 +18,13 @@ namespace SalesPipeline.Pages.Settings.YieldChain
 		string? _errorMessage = null;
 		private bool isLoading = false;
 		private User_PermissionCustom _permission = new();
-		private allFilter filter = new();
 		private LookUpResource LookUp = new();
+		private allFilter filterYield = new();
 		private List<Master_YieldCustom>? ItemsYield;
+		public Pager? PagerYield;
+		private allFilter filterChain = new();
 		private List<Master_ChainCustom>? ItemsChain;
+		public Pager? PagerChain;
 		private Master_YieldCustom formModelYield = new();
 		private Master_ChainCustom formModelChain = new();
 
@@ -53,10 +56,15 @@ namespace SalesPipeline.Pages.Settings.YieldChain
 		//¼Å¼ÅÔµ
 		protected async Task SetModelYield()
 		{
-			var data = await _masterViewModel.GetYields(filter);
+			var data = await _masterViewModel.GetYields(filterYield);
 			if (data != null && data.Status)
 			{
 				ItemsYield = data.Data?.Items;
+				PagerYield = data.Data?.Pager;
+				if (PagerYield != null)
+				{
+					PagerYield.UrlAction = "/setting/yieldchain";
+				}
 			}
 			else
 			{
@@ -177,13 +185,40 @@ namespace SalesPipeline.Pages.Settings.YieldChain
 			await modalFormYield.HideAsync();
 		}
 
+		protected async Task OnSelectPagesizeYield(int _number)
+		{
+			ItemsYield = null;
+			StateHasChanged();
+			filterYield.page = 1;
+			filterYield.pagesize = _number;
+			await SetModelYield();
+		}
+
+		protected async Task OnSelectPageYield(string parematerAll)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filterYield.SetUriQuery(uriQuery);
+
+			await SetModelYield();
+			StateHasChanged();
+		}
+
 		//ËèÇ§â«è
 		protected async Task SetModelChain()
 		{
-			var data = await _masterViewModel.GetChains(filter);
+			var data = await _masterViewModel.GetChains(filterChain);
 			if (data != null && data.Status)
 			{
 				ItemsChain = data.Data?.Items;
+				PagerChain = data.Data?.Pager;
+				if (PagerChain != null)
+				{
+					PagerChain.UrlAction = "/setting/yieldchain";
+				}
 			}
 			else
 			{
@@ -302,6 +337,28 @@ namespace SalesPipeline.Pages.Settings.YieldChain
 		{
 			idChain = null;
 			await modalFormChain.HideAsync();
+		}
+
+		protected async Task OnSelectPagesizeChain(int _number)
+		{
+			ItemsChain  = null;
+			StateHasChanged();
+			filterChain.page = 1;
+			filterChain.pagesize = _number;
+			await SetModelChain();
+		}
+
+		protected async Task OnSelectPageChain(string parematerAll)
+		{
+			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+
+			if (parematerAll != null)
+				uriQuery = $"?{parematerAll}";
+
+			filterChain.SetUriQuery(uriQuery);
+
+			await SetModelChain();
+			StateHasChanged();
 		}
 
 		private void ShowLoading()

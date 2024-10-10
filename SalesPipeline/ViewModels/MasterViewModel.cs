@@ -7,6 +7,7 @@ using SalesPipeline.Utils.Resources.Masters;
 using System.Net.Http;
 using SalesPipeline.Utils.Resources.Thailands;
 using SalesPipeline.Utils.Resources.Assignments;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.ViewModels
 {
@@ -1055,6 +1056,29 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<List<Master_YieldCustom>>> ValidateUploadYield(List<Master_YieldCustom>? model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/ValidateUploadYield", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<Master_YieldCustom>>(content);
+				return new ResultModel<List<Master_YieldCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Master_YieldCustom>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 		//ห่วงโซ่
 		public async Task<ResultModel<Master_ChainCustom>> CreateChain(Master_ChainCustom model)
 		{
@@ -1174,6 +1198,29 @@ namespace SalesPipeline.ViewModels
 			catch (Exception ex)
 			{
 				return new ResultModel<PaginationView<List<Master_ChainCustom>>>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
+		public async Task<ResultModel<List<Master_ChainCustom>>> ValidateUploadChain(List<Master_ChainCustom>? model)
+		{
+			try
+			{
+				string tokenJwt = await _authorizeViewModel.GetAccessToken();
+				string dataJson = JsonConvert.SerializeObject(model);
+				var content = await _httpClient.PostAsync($"/v1/Master/ValidateUploadChain", dataJson, token: tokenJwt);
+				var dataMap = JsonConvert.DeserializeObject<List<Master_ChainCustom>>(content);
+				return new ResultModel<List<Master_ChainCustom>>()
+				{
+					Data = dataMap
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<List<Master_ChainCustom>>
 				{
 					Status = false,
 					errorMessage = GeneralUtils.GetExMessage(ex)

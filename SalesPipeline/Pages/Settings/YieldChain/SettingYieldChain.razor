@@ -43,9 +43,13 @@
 						<div class="col-12 col-xl-6 border-end">
 							<div class="row my-4 filter_s text-end">
 								<div class="col mb-2 mt-3">
-									<Button @onclick="(async()=> await OnShowYield())" Color="ButtonColor.Success" Class="mw_6r">
-										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
-									</Button>
+									<Dropdown Class="mw_6r">
+										<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+										<DropdownMenu>
+											<DropdownItem @onclick="(async()=> await OnShowYield())">เพิ่ม</DropdownItem>
+											<DropdownItem To="/setting/yieldchain/uploadyield" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
 								</div>
 							</div>
 							<div class="row">
@@ -102,13 +106,27 @@
 									</div>
 								</div>
 							</div>
+							<div>
+								<PaginationBack DisplayItems="@(ItemsYield?.Count ?? 0)"
+												TotalItems="@(PagerYield?.TotalItems ?? 0)"
+												Pager="@PagerYield"
+												OnShowOnPage="@OnSelectPagesizeYield"
+												OnSelectedPage="@OnSelectPageYield"
+												ParameterAll="@filterYield?.SetParameter()"
+												IsUpdateUrl="false">
+								</PaginationBack>
+							</div>
 						</div>
 						<div class="col-12 col-xl-6">
 							<div class="row my-4 filter_s text-end">
 								<div class="col mb-2 mt-3">
-									<Button @onclick="(async()=> await OnShowChain())" Color="ButtonColor.Primary" Class="mw_6r">
-										<i class="fa-solid fa-plus"></i> เพิ่มรายการ
-									</Button>
+									<Dropdown Class="mw_6r">
+										<DropdownToggleButton Color="ButtonColor.Primary"><i class="fa-solid fa-plus"></i> เพิ่มรายการ</DropdownToggleButton>
+										<DropdownMenu>
+											<DropdownItem @onclick="(async()=> await OnShowChain())">เพิ่ม</DropdownItem>
+											<DropdownItem To="/setting/yieldchain/uploadchain" Type="ButtonType.Link">ไฟล์แนบ</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
 								</div>
 							</div>
 							<div class="row">
@@ -164,6 +182,16 @@
 										</table>
 									</div>
 								</div>
+							</div>
+							<div>
+								<PaginationBack DisplayItems="@(ItemsChain?.Count ?? 0)"
+												TotalItems="@(PagerChain?.TotalItems ?? 0)"
+												Pager="@PagerChain"
+												OnShowOnPage="@OnSelectPagesizeChain"
+												OnSelectedPage="@OnSelectPageChain"
+												ParameterAll="@filterChain?.SetParameter()"
+												IsUpdateUrl="false">
+								</PaginationBack>
 							</div>
 						</div>
 					</div>

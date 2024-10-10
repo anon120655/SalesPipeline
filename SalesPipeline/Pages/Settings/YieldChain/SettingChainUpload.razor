@@ -1,8 +1,6 @@
-﻿@page "/admin/uploadfile"
+﻿@page "/setting/yieldchain/uploadchain"
 
-<PageTitle>เพิ่มผู้ใช้งาน(แนบไฟล์)</PageTitle>
-
-<MessageError errorMessage="@_errorMessage" />
+<PageTitle>แนบไฟล์ห่วงโซ่</PageTitle>
 
 @if (_permission.IsView)
 {
@@ -13,7 +11,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic">ระบบผู้ใช้งาน > (แนบไฟล์)</p>
+							<p class="back_topic">ตั้งค่าผลผลิตและห่วงโซ่ > (แนบไฟล์ห่วงโซ่)</p>
 						</div>
 					</div>
 					<div class="row mt-3">
@@ -23,7 +21,7 @@
 								<div class="col-12 col-sm-10">
 									<div class=" dropzone @dropClass rounded">
 										<div class="drag-image h_10r mb-2">
-											@if (UserList != null && UserList.Count > 0 && _fileName != null)
+											@if (ChainList != null && ChainList.Count > 0 && _fileName != null)
 											{
 												<p>@_fileName</p>
 											}
@@ -57,7 +55,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										@if (UserList == null)
+										@if (ChainList == null)
 										{
 											<tr class="text-center align-middle">
 												<td colspan="100">
@@ -65,7 +63,7 @@
 												</td>
 											</tr>
 										}
-										else if (UserList.Count == 0)
+										else if (ChainList.Count == 0)
 										{
 											<tr class="text-center align-middle">
 												<td colspan="100">
@@ -75,7 +73,7 @@
 										}
 										else
 										{
-											foreach (var item in UserList)
+											foreach (var item in ChainList)
 											{
 												<tr style="@(item.IsValidate == false ? "background-color: #fff5f6;" : "")">
 													<td class="">
@@ -96,14 +94,7 @@
 															}
 														}
 													</td>
-													<td class="text-center">@item.EmployeeId</td>
-													<td class="">@item.FullName</td>
-													<td class="text-center">@item.Email</td>
-													<td class="text-center">@item.Tel</td>
-													<td class="text-center">@item.PositionName</td>
-													<td class="text-center">@item.Master_DepartmentName</td>
-													<td class="text-center">@item.RoleName</td>
-													<td class="text-center">@item.LevelId</td>
+													<td class="text-center">@item.Name</td>
 												</tr>
 											}
 										}
@@ -119,7 +110,7 @@
 									กลับ
 								</Button>
 							</div>
-							@if (UserList?.Where(x => x.IsValidate == true).Count() > 0)
+							@if (ChainList?.Where(x => x.IsValidate == true).Count() > 0)
 							{
 								<div class="p-2 bd-highlight">
 									<Button Color="ButtonColor.Primary" @onclick=Save Type="ButtonType.Submit" Disabled="@isLoading" Class="mw_6r">
@@ -167,3 +158,8 @@ else
 {
 	<NotPermissionPage />
 }
+
+
+
+
+

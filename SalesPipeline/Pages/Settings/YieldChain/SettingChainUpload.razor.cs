@@ -1,17 +1,17 @@
+using BlazorBootstrap;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Data;
-using SalesPipeline.Utils;
-using BlazorBootstrap;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Masters;
+using SalesPipeline.Utils.Resources.Shares;
 
-namespace SalesPipeline.Pages.Users.Admin
+namespace SalesPipeline.Pages.Settings.YieldChain
 {
-    public partial class AdminUserUploadFile
+	public partial class SettingChainUpload
 	{
 		private string? _errorMessage = null;
 		private bool isLoading = false;
@@ -20,7 +20,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		private string _inputFileId = Guid.NewGuid().ToString();
 
 		private User_PermissionCustom _permission = new();
-		List<UserCustom>? UserList = new();
+		List<Master_ChainCustom>? ChainList = new();
 		private Modal modalResult = default!;
 		List<ResultImport> resultImport = new();
 		private string dropClass = "";
@@ -29,14 +29,14 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected override void OnInitialized()
 		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanUser) ?? new User_PermissionCustom();
+			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetYieldChain) ?? new User_PermissionCustom();
 			StateHasChanged();
 		}
 
 		protected async Task OnChooseFile(InputFileChangeEventArgs inputFileChangeEvent)
 		{
 			_errorMessage = null;
-			UserList = null;
+			ChainList = null;
 			var file = inputFileChangeEvent.File;
 
 			int _SizeLimit = 10; //MB
@@ -60,7 +60,7 @@ namespace SalesPipeline.Pages.Users.Admin
 						stream.Close();
 
 						var bytefile = ms.ToArray();
-						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "UserAdminImport.xlsx");
+						IFormFile files = new FormFile(ms, 0, bytefile.Length, "name", "ChainImport.xlsx");
 						if (files == null) throw new Exception("File Not Support.");
 
 						string folderName = @$"{_appSet.Value.ContentRootPath}\import\excel";
@@ -91,21 +91,7 @@ namespace SalesPipeline.Pages.Users.Admin
 								try
 								{
 									var row_0 = row_header.GetCell(0).ToString()?.Trim();
-									var row_1 = row_header.GetCell(1).ToString()?.Trim();
-									var row_2 = row_header.GetCell(2).ToString()?.Trim();
-									var row_3 = row_header.GetCell(3).ToString()?.Trim();
-									var row_4 = row_header.GetCell(4).ToString()?.Trim();
-									var row_5 = row_header.GetCell(5).ToString()?.Trim();
-									var row_6 = row_header.GetCell(6).ToString()?.Trim();
-									var row_7 = row_header.GetCell(7).ToString()?.Trim();
-									if (row_0 != "รหัสพนักงาน"
-										|| row_1 != "ชื่อ-สกุล"
-										|| row_2 != "Email"
-										|| row_3 != "Tel"
-										|| row_4 != "ตำแหน่ง"
-										|| row_5 != "ฝ่าย"
-										|| row_6 != "ระดับหน้าที่"
-										|| row_7 != "ระดับ")
+									if (row_0 != "ชื่อห่วงโซ่")
 									{
 										throw new Exception("Template file not support.");
 									}
@@ -122,135 +108,45 @@ namespace SalesPipeline.Pages.Users.Admin
 																  .ToDictionary(x => x.StringCellValue, x => x.ColumnIndex);
 
 								header_list_key = header_list.Select(x => x.Key).ToList();
-								if (header_list_key.Count < 8)
+								if (header_list_key.Count != 1)
 								{
 									throw new Exception("Template file not support.");
 								}
 
-								string? EmployeeId = null;
-								string? FullName = null;
-								string? Email = null;
-								string? Tel = null;
-								int? PositionId = null;
-								Guid? Master_DepartmentId = null;
-								int? RoleId = null;
-								int? LevelId = null;
+								string? Name = null;
 
 								for (var rowIndex = 1; rowIndex <= sheet.LastRowNum; rowIndex++)
 								{
-									EmployeeId = null;
-									FullName = null;
-									Email = null;
-									Tel = null;
-									PositionId = null;
-									Master_DepartmentId = null;
-									RoleId = null;
-									LevelId = null;
+									Name = null;
 
 									var row = sheet.GetRow(rowIndex);
 									int cellIndex = 0;
-									int idMaster = 0;
-									Guid guidMaster = Guid.Empty;
 
-									if (header_list.TryGetValue("รหัสพนักงาน", out cellIndex))
+									if (header_list.TryGetValue("ชื่อห่วงโซ่", out cellIndex))
 									{
-										EmployeeId = row.GetCell(cellIndex).ToString();
-									}
-									if (header_list.TryGetValue("ชื่อ-สกุล", out cellIndex))
-									{
-										FullName = row.GetCell(cellIndex).ToString();
-									}
-									if (header_list.TryGetValue("Email", out cellIndex))
-									{
-										Email = row.GetCell(cellIndex).ToString();
-									}
-									if (header_list.TryGetValue("Tel", out cellIndex))
-									{
-										Tel = row.GetCell(cellIndex).ToString();
-									}
-									if (header_list.TryGetValue("ตำแหน่ง", out cellIndex))
-									{
-										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
-										{
-											PositionId = idMaster;
-										}
-									}
-									if (header_list.TryGetValue("ฝ่าย", out cellIndex))
-									{
-										if (Guid.TryParse(row.GetCell(cellIndex).ToString(), out guidMaster))
-										{
-											Master_DepartmentId = guidMaster;
-										}
-									}
-									if (header_list.TryGetValue("ระดับหน้าที่", out cellIndex))
-									{
-										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
-										{
-											RoleId = idMaster;
-										}
-									}
-									if (header_list.TryGetValue("ระดับ", out cellIndex))
-									{
-										if (int.TryParse(row.GetCell(cellIndex).ToString(), out idMaster))
-										{
-											LevelId = idMaster;
-										}
+										Name = row.GetCell(cellIndex).ToString();
 									}
 
-									if (UserList == null) UserList = new();
+									if (ChainList == null) ChainList = new();
 
-									if (string.IsNullOrEmpty(EmployeeId))
-										throw new Exception("รหัสพนักงาน ไม่ครบถ้วน");
+									if (string.IsNullOrEmpty(Name))
+										throw new Exception("ชื่อห่วงโซ่ ไม่ครบถ้วน");
 
-									if (string.IsNullOrEmpty(FullName))
-										throw new Exception("ชื่อ-สกุล ไม่ครบถ้วน");
-
-									if (string.IsNullOrEmpty(Email))
-										throw new Exception("Email ไม่ครบถ้วน");
-
-									if (string.IsNullOrEmpty(Tel))
-										throw new Exception("Tel ไม่ครบถ้วน");
-
-									if (!PositionId.HasValue)
-										throw new Exception("ตำแหน่ง ไม่ครบถ้วน");
-
-									if (UserList.Select(x => x.EmployeeId).Any(x => x == EmployeeId))
-										throw new Exception("มีรหัสพนักงานซ้ำ กรุณาตรวจสอบอีกครั้ง");
-
-									if (!RoleId.HasValue)
-										throw new Exception("ระดับหน้าที่ ไม่ครบถ้วน");
-
-									if (RoleId < 3 || RoleId > 4)
-									{
-										throw new Exception("ระดับหน้าที่ไม่ถูกต้อง ต้องอยู่ในช่วง(3-4)");
-									}
-
-									if (!LevelId.HasValue)
-										throw new Exception("ระดับ ไม่ครบถ้วน");
-
-
-									UserList.Add(new UserCustom()
+									ChainList.Add(new()
 									{
 										Status = StatusModel.Active,
 										CurrentUserId = UserInfo.Id,
-										EmployeeId = EmployeeId,
-										FullName = FullName,
-										Email = Email,
-										Tel = Tel,
-										PositionId = PositionId,
-										Master_DepartmentId = Master_DepartmentId,
-										RoleId = RoleId,
-										LevelId = LevelId
+										Name = Name,
 									});
 								}
 
-								if (UserList?.Count > 0)
+								if (ChainList?.Count > 0)
 								{
-									var response = await _userViewModel.ValidateUpload(UserList);
+									var response = await _masterViewModel.ValidateUploadChain(ChainList);
 
 									if (response.Status)
 									{
-										UserList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
+										ChainList = response.Data?.OrderBy(x => x.IsValidate == true).ToList();
 									}
 									else
 									{
@@ -277,7 +173,7 @@ namespace SalesPipeline.Pages.Users.Admin
 		{
 			//UserList = UserList?.Where(x => x.IsValidate == true).ToList();
 
-			if (UserList == null || UserList.Count(x => x.IsValidate == true) == 0)
+			if (ChainList == null || ChainList.Count(x => x.IsValidate == true) == 0)
 			{
 				_errorMessage = "ตรวจสอบไฟล์แนบอีกครั้ง";
 				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
@@ -287,12 +183,12 @@ namespace SalesPipeline.Pages.Users.Admin
 				_errorMessage = null;
 				ShowLoading();
 
-				foreach (var item in UserList.Where(x => x.IsValidate == true).ToList())
+				foreach (var item in ChainList.Where(x => x.IsValidate == true).ToList())
 				{
 					var resultModel = new ResultImport();
-					resultModel.Name = item.FullName;
+					resultModel.Name = item.Name;
 
-					var response = await _userViewModel.Create(item);
+					var response = await _masterViewModel.CreateChain(item);
 					if (!response.Status)
 					{
 						resultModel.Success = false;
@@ -308,7 +204,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		public void Cancel()
 		{
-			_Navs.NavigateTo("/admin");
+			_Navs.NavigateTo("/setting/yieldchain");
 		}
 
 		protected void ShowLoading()
@@ -325,7 +221,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected void ClearInputFile()
 		{
-			UserList = new();
+			ChainList = new();
 			bClearInputFile = true;
 			StateHasChanged();
 			bClearInputFile = false;

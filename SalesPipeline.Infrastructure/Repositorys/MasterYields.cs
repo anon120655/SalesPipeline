@@ -7,10 +7,11 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Utils.ConstTypeModel;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterYields : IMasterYields
+	public class MasterYields : IMasterYields
 	{
 		private IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
@@ -23,6 +24,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 			_mapper = mapper;
 			_appSet = appSet.Value;
+		}
+
+		public async Task<Master_YieldCustom> Validate(Master_YieldCustom model, bool isThrow = true, bool? isSetMaster = false)
+		{
+			string errorMessage = string.Empty;
+			model.IsValidate = true;
+			if (model.ValidateError == null) model.ValidateError = new();
+
+			if (model.Id == Guid.Empty)
+			{
+				if (model.Name != null && _repo.Context.Master_Yields.Any(x => x.Status != StatusModel.Delete && x.Name == model.Name))
+				{
+					errorMessage = $"มีผลผลิต {model.Name} แล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
+				}
+			}
+
+			await Task.CompletedTask;
+
+			return model;
+		}
+
+		public async Task<List<Master_YieldCustom>> ValidateUpload(List<Master_YieldCustom> model)
+		{
+			for (int i = 0; i < model.Count; i++)
+			{
+				model[i] = await Validate(model[i], false, true);
+			}
+			return model;
 		}
 
 		public async Task<Master_YieldCustom> Create(Master_YieldCustom model)

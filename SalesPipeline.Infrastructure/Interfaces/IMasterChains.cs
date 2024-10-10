@@ -10,6 +10,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IMasterChains
 	{
+		Task<List<Master_ChainCustom>> ValidateUpload(List<Master_ChainCustom> model);
 		Task<Master_ChainCustom> Create(Master_ChainCustom model);
 		Task<Master_ChainCustom> Update(Master_ChainCustom model);
 		Task DeleteById(UpdateModel model);

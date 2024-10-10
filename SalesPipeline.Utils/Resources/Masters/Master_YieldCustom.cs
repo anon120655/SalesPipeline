@@ -27,5 +27,9 @@ namespace SalesPipeline.Utils.Resources.Masters
 
 		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? Name { get; set; }
+
+		//custom
+		public bool? IsValidate { get; set; }
+		public List<string?>? ValidateError { get; set; }
 	}
 }
