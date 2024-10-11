@@ -35,7 +35,7 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				var response = await _repo.AssignmentRM.GetListAutoAssign3(model);
+				var response = await _repo.AssignmentRM.GetListAutoAssign4(model);
 
 				return Ok(response);
 			}
