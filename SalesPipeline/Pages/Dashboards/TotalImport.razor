@@ -1,6 +1,6 @@
-﻿@page "/dashboard/totalimport"
+﻿@page "/dashboard/totalimport/{page_name?}"
 
-<PageTitle>รายงานจำนวนลูกค้านำเข้าทั้งหมด</PageTitle>
+<PageTitle>@topicName</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,7 @@
 							<a href="/dashboard"><img src="/image/icon/circle-left-x100.png" width="40" /></a>
 						</div>
 						<div class="p-2">
-							<p class="back_topic">รายงานจำนวนลูกค้านำเข้าทั้งหมด</p>
+							<p class="back_topic">@topicName</p>
 						</div>
 					</div>
 					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 row-cols-xxl-6 my-4 filter_s">
@@ -56,7 +56,7 @@
 								}
 							</select>
 						</div>
-						<div class="col mb-2">
+						<div class="col mb-2 @(page_name != null ? "d-none":"")">
 							<label class="form-label">สถานะ</label>
 							<select @onchange="OnStatusSale" value="@filter.statussaleid" id="StatusSale" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
@@ -94,7 +94,7 @@
 											<th class="text-center">ชื่อลูกค้า</th>
 											<th class="text-center">ผู้ติดต่อ</th>
 											<th class="text-center">ประเภทธุรกิจ</th>
-											<th class="text-center">กิจการสาขาภาค</th>
+											<th class="text-center">ห่วงโซ่</th>
 											<th class="text-center">จังหวัด</th>
 											<th class="text-center">สาขา</th>
 											<th class="text-center">สถานะ</th>
@@ -127,8 +127,8 @@
 													<td class="text-center">@(_orderNo + (SequenceNo + 1))</td>
 													<td class="">@item.CompanyName</td>
 													<td class="text-center">@item.Customer?.ContactName</td>
-													<td class="text-center">@item.Customer?.Master_BusinessTypeName</td>
-													<td class="text-center">@GeneralUtils.EmptyTo(item.Master_Branch_RegionName)</td>
+													<td class="text-center">@GeneralUtils.EmptyTo(item.Customer?.Master_BusinessTypeName)</td>
+													<td class="">@GeneralUtils.EmptyTo(item.Customer?.Master_ChainName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.ProvinceName)</td>
 													<td class="text-center">@GeneralUtils.EmptyTo(item.BranchName)</td>
 													<td class="text-center fw-bold">

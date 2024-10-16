@@ -8,14 +8,18 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Dashboards
 {
-    public partial class TotalImport
-    {
+	public partial class TotalImport
+	{
+		[Parameter]
+		public string? page_name { get; set; }
+
 		string? _errorMessage = null;
 		private User_PermissionCustom _permission = new();
 		private allFilter filter = new();
 		private LookUpResource LookUp = new();
 		private List<SaleCustom>? Items;
 		public Pager? Pager;
+		string? topicName = "รายงานจำนวนลูกค้านำเข้าทั้งหมด";
 
 		protected override async Task OnInitializedAsync()
 		{
@@ -131,6 +135,43 @@ namespace SalesPipeline.Pages.Dashboards
 		protected async Task SetModel(bool resetPage = true)
 		{
 			if (resetPage) filter.page = 1;
+
+			if (!string.IsNullOrEmpty(page_name))
+			{				
+				if (page_name == "waitassign")
+				{
+					topicName = "รอผู้จัดการศูนย์มอบหมาย";
+					filter.StatusSales = new()
+					{
+						StatusSaleModel.WaitAssign.ToString()
+					};
+				}
+				else if (page_name == "centerassign")
+				{
+					topicName = "ผู้จัดการศูนย์มอบหมาย";
+					filter.StatusSales = new()
+					{
+						StatusSaleModel.WaitContact.ToString()
+					};
+				}
+				else if (page_name == "inprocess")
+				{
+					topicName = "อยู่ในกระบวนการ";
+					filter.StatusSales = new()
+					{
+						StatusSaleModel.Contact.ToString(),
+						StatusSaleModel.WaitMeet.ToString(),
+						StatusSaleModel.Meet.ToString(),
+						StatusSaleModel.WaitSubmitDocument.ToString(),
+						StatusSaleModel.SubmitDocument.ToString(),
+						StatusSaleModel.WaitApproveLoanRequest.ToString(),
+						StatusSaleModel.WaitAPIPHOENIX.ToString(),
+						StatusSaleModel.WaitResults.ToString(),
+						StatusSaleModel.Results.ToString()
+					};
+				}
+			}
+
 
 			filter.userid = UserInfo.Id;
 			var data = await _salesViewModel.GetList(filter);

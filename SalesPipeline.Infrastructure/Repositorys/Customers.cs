@@ -84,6 +84,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				{
 					errorMessage = $"วันที่เข้ามาติดต่อ ต้องไม่มากกว่าวันที่ปัจจุบัน";
 					model.IsValidate = false;
+					model.IsSelectVersion = false;
 					model.ValidateError.Add(errorMessage);
 				}
 			}
@@ -92,6 +93,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				errorMessage = $"ระบุ ชื่อบริษัท";
 				model.IsValidate = false;
+				model.IsSelectVersion = false;
 				model.ValidateError.Add(errorMessage);
 				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
@@ -100,30 +102,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				errorMessage = $"ระบุ บ้านเลขที่";
 				model.IsValidate = false;
-				model.ValidateError.Add(errorMessage);
-				if (isThrow) throw new ExceptionCustom(errorMessage);
-			}
-
-			if (!model.ProvinceId.HasValue)
-			{
-				errorMessage = $"ระบุ จังหวัด";
-				model.IsValidate = false;
-				model.ValidateError.Add(errorMessage);
-				if (isThrow) throw new ExceptionCustom(errorMessage);
-			}
-
-			if (!model.AmphurId.HasValue)
-			{
-				errorMessage = $"ระบุ เขต/อำเภอ";
-				model.IsValidate = false;
-				model.ValidateError.Add(errorMessage);
-				if (isThrow) throw new ExceptionCustom(errorMessage);
-			}
-
-			if (!model.TambolId.HasValue)
-			{
-				errorMessage = $"ระบุ แขวง/ตำบล";
-				model.IsValidate = false;
+				model.IsSelectVersion = false;
 				model.ValidateError.Add(errorMessage);
 				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
@@ -210,6 +189,33 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
 				}
 
+			}
+
+			if (!model.ProvinceId.HasValue)
+			{
+				errorMessage = $"ระบุ จังหวัด";
+				model.IsValidate = false;
+				model.IsSelectVersion = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (!model.AmphurId.HasValue)
+			{
+				errorMessage = $"ระบุ เขต/อำเภอ";
+				model.IsValidate = false;
+				model.IsSelectVersion = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (!model.TambolId.HasValue)
+			{
+				errorMessage = $"ระบุ แขวง/ตำบล";
+				model.IsValidate = false;
+				model.IsSelectVersion = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
 
 			return model;
