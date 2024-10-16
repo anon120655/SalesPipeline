@@ -1447,6 +1447,7 @@ namespace SalesPipeline.Pages.Customers
 									{
 										customerImportList.Add(new()
 										{
+											IsFileUpload = true,
 											CurrentUserId = UserInfo.Id,
 											DateContact = DateContact,
 											Master_ContactChannelId = Master_ContactChannelId,

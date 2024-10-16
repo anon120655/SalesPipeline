@@ -134,7 +134,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			//รูปแบบการมอบหมายตามเกณฑ์
 			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
 			//2. ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
-			//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
+			//3. มอบหมาย ผจธ. ตามพื้นที่ดูแล
 
 			//1. ดึงข้อมูลผู้จัดการศูนย์ทั้งหมด
 			var query = _repo.Context.Assignment_Centers.Where(x => x.Status == StatusModel.Active)
@@ -173,7 +173,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
 			{
-				//3. มอบหมาย ผจศ. ตามพื้นที่ดูแล
+				//3. มอบหมาย ผจธ. ตามพื้นที่ดูแล
 				foreach (var item_center in userAssignment)
 				{
 					//if (item_center.UserId == 68)
@@ -502,7 +502,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 														.Include(x => x.AssUser).ThenInclude(t => t.User_Areas)
 														.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Branch_Region)
 														.AsQueryable();
-					//ผจศ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
+					//ผจธ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
 					Expression<Func<User, bool>> orExpressionRM = x => false;
 					Expression<Func<Sale, bool>> orExpressionSale = x => false;
 					foreach (var provinceId in user_Areas)

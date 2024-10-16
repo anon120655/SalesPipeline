@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SalesPipeline.Infrastructure.Data.Entity;
@@ -32,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true, bool? isSetMaster = false)
+		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true, bool? isSetMaster = false, bool? isFileUpload = false)
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
@@ -42,10 +43,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			string? juristicPersonRegNumber = model.JuristicPersonRegNumber?.Trim();
 
-			if (juristicPersonRegNumber == null || juristicPersonRegNumber.Length < 10)
+			if (juristicPersonRegNumber == null || juristicPersonRegNumber.Length != 13)
 			{
 				errorMessage = $"เลขทะเบียนนิติบุคคลไม่ถูกต้อง";
 				model.IsValidate = false;
+				model.IsSelectVersion = false;
 				model.ValidateError.Add(errorMessage);
 				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
@@ -91,6 +93,39 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				errorMessage = $"ระบุ ชื่อบริษัท";
 				model.IsValidate = false;
 				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (string.IsNullOrEmpty(model.HouseNo))
+			{
+				errorMessage = $"ระบุ บ้านเลขที่";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (!model.ProvinceId.HasValue)
+			{
+				errorMessage = $"ระบุ จังหวัด";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (!model.AmphurId.HasValue)
+			{
+				errorMessage = $"ระบุ เขต/อำเภอ";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
+			}
+
+			if (!model.TambolId.HasValue)
+			{
+				errorMessage = $"ระบุ แขวง/ตำบล";
+				model.IsValidate = false;
+				model.ValidateError.Add(errorMessage);
+				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
 
 			if (isSetMaster == true)
@@ -184,7 +219,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			for (int i = 0; i < model.Count; i++)
 			{
-				model[i] = await Validate(model[i], false, true);
+				model[i] = await Validate(model[i], false, true, true);
 			}
 			return model;
 		}
@@ -201,6 +236,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (userid.HasValue)
 			{
 				user = await _repo.User.GetById(userid.Value);
+			}
+
+			if (juristicNumber == null || juristicNumber.Length != 13)
+			{
+				code = "error";
+				message = "เลขทะเบียนนิติบุคคลไม่ถูกต้อง";
+				return new()
+				{
+					Code = code,
+					Message = message,
+					ID = id
+				};
 			}
 
 			var customers = await _repo.Context.Customers.Include(x => x.Sales).FirstOrDefaultAsync(x => x.JuristicPersonRegNumber == juristicNumber);

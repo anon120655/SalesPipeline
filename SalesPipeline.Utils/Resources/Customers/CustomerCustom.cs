@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.ValidationAtt;
 
 namespace SalesPipeline.Utils.Resources.Customers
 {
@@ -95,13 +96,13 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ชื่อบริษัท
 		/// </summary>
-		[Required(ErrorMessage = "ระบุชื่อบริษัท")]
+		[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? CompanyName { get; set; }
 
 		/// <summary>
 		/// เลขทะเบียนนิติบุคคล
 		/// </summary>
-		[Required(ErrorMessage = "ระบุเลขทะเบียนนิติบุคคล")]
+		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
 		//[MinLength(13, ErrorMessage = "ระบุข้อมูล 13 หลัก")]
 		public string? JuristicPersonRegNumber { get; set; }
 
@@ -177,7 +178,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// บ้านเลขที่
 		/// </summary>
-		//[Required(ErrorMessage = "ระบุบ้านเลขที่")]
+		[CustomerAtt(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? HouseNo { get; set; }
 
 		/// <summary>
@@ -188,7 +189,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		//[Required(ErrorMessage = "ระบุจังหวัด")]
+		[CustomerAtt(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -196,7 +197,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
-		//[Required(ErrorMessage = "ระบุอำเภอ")]
+		[CustomerAtt(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -204,7 +205,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ตำบล
 		/// </summary>
-		//[Required(ErrorMessage = "ระบุตำบล")]
+		[CustomerAtt(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public int? TambolId { get; set; }
 
 		public string? TambolName { get; set; }
@@ -212,7 +213,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// รหัสไปรษณีย์
 		/// </summary>
-		//[Required(ErrorMessage = "ระบุรหัสไปรษณีย์")]
+		//[CustomerAtt(ErrorMessage = "กรุณาระบุข้อมูล")]
 		public string? ZipCode { get; set; }
 
 		/// <summary>
@@ -426,5 +427,6 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }
 		public bool? IsRePurpose { get; set; }
+		public bool? IsFileUpload { get; set; }
 	}
 }

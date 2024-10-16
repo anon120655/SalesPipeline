@@ -311,7 +311,7 @@
 											</div>
 										</div>
 										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่</label>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">บ้านเลขที่ <span class="text-danger">*</span></label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<input @bind="formModel.HouseNo" type="text" class="form-control">
 												<ValidationMessage For="@(() => formModel.HouseNo)" />
@@ -323,7 +323,7 @@
 											</div>
 										</div>
 										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด</label>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">จังหวัด <span class="text-danger">*</span></label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<select @bind="formModel.ProvinceId" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 													<option value="">เลือก</option>
@@ -337,7 +337,7 @@
 												</select>
 												<ValidationMessage For="@(() => formModel.ProvinceId)" />
 											</div>
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ</label>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">เขต/อำเภอ <span class="text-danger">*</span></label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<select @bind="formModel.AmphurId" id="Amphur" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 													@if (LookUp.Amphurs?.Count > 0)
@@ -352,7 +352,7 @@
 											</div>
 										</div>
 										<div class="form-group row mb-3">
-											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล</label>
+											<label class="col-12 col-md-4 col-xl-2 col-form-label text-lg-end">แขวง/ตำบล <span class="text-danger">*</span></label>
 											<div class="col-12 col-md-7 col-xl-3 mb-3 mb-xl-0">
 												<select @bind="formModel.TambolId" id="Tambol" class="selectpicker selectInit" data-style="select_btn_set" data-live-search="true">
 													@if (LookUp.Tambols?.Count > 0)
