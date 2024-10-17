@@ -1881,15 +1881,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			if (model.Files == null || model.Files.FileData == null) throw new ExceptionCustom("files not found");
 
-			var UploaR = await _repo.Context.Sale_Document_Uploads
-				.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId && x.Type == model.Type).ToListAsync();
-			if (UploaR.Count > 0)
+			if (model.Type != 6)
 			{
-				foreach (var item in UploaR)
+				var UploaR = await _repo.Context.Sale_Document_Uploads
+					.Where(x => x.Status == StatusModel.Active && x.SaleId == model.SaleId && x.Type == model.Type).ToListAsync();
+				if (UploaR.Count > 0)
 				{
-					item.Status = StatusModel.Delete;
-					_db.Update(item);
-					await _db.SaveAsync();
+					foreach (var item in UploaR)
+					{
+						item.Status = StatusModel.Delete;
+						_db.Update(item);
+						await _db.SaveAsync();
+					}
 				}
 			}
 
