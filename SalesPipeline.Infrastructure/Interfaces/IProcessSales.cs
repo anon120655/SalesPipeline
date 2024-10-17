@@ -36,5 +36,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<Sale_Document_UploadCustom> GetDocumentFileSaleType(Guid saleid, short type);
 		Task DocumentFileById(UpdateModel model);
 		Task<List<Sale_Document_UploadCustom>> GetListDocumentFile(allFilter model);
+		Task DocumentFileDeleteById(UpdateModel model);
 	}
 }

@@ -1982,5 +1982,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<List<Sale_Document_UploadCustom>>(query);
 		}
 
+		public async Task DocumentFileDeleteById(UpdateModel model)
+		{
+			Guid id = Guid.Parse(model.id);
+			var query = await _repo.Context.Sale_Document_Uploads.Where(x => x.Id == id).FirstOrDefaultAsync();
+			if (query != null)
+			{
+				query.Status = StatusModel.Delete;
+				_db.Update(query);
+				await _db.SaveAsync();
+			}
+		}
 	}
 }

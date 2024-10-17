@@ -2,9 +2,11 @@ using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.ManageSystems;
 using SalesPipeline.Utils.Resources.Sales;
+using SalesPipeline.Utils.Resources.Shares;
 using System.IO;
 using static System.Net.WebRequestMethods;
 
@@ -29,6 +31,8 @@ namespace SalesPipeline.Pages.Customers
 		Sale_Document_UploadCustom formUploadModel = new();
 		System_SignatureCustom dataSignature = new();
 		Sale_StatusCustom? approveDateCenter;
+
+		ModalConfirm modalConfirm = default!;
 
 		protected override async Task OnParametersSetAsync()
 		{
@@ -193,6 +197,24 @@ namespace SalesPipeline.Pages.Customers
 					_utilsViewModel.AlertWarning(_errorMessage);
 				}
 			}
+		}
+
+		protected async Task ConfirmDelete(string? id, string? txt)
+		{
+			await modalConfirm.OnShowConfirm(id, $"§ÿ≥µÈÕß°“√≈∫‰ø≈Ï <span class='text-primary'>{txt}</span>");
+		}
+
+		protected async Task Delete(string id)
+		{
+			await modalConfirm.OnHideConfirm();
+
+			var data = await _processSaleViewModel.DocumentFileDeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+			await SetModelDocument();
 		}
 
 	}

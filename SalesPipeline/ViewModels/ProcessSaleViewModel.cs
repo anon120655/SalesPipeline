@@ -306,6 +306,23 @@ namespace SalesPipeline.ViewModels
 			}
 		}
 
+		public async Task<ResultModel<bool>?> DocumentFileDeleteById(UpdateModel model)
+		{
+			try
+			{
+				await _httpClient.DeleteAsync($"/v1/ProcessSale/DocumentFileDeleteById?{model.SetParameter(true)}");
+				return new ResultModel<bool>();
+			}
+			catch (Exception ex)
+			{
+				return new ResultModel<bool>
+				{
+					Status = false,
+					errorMessage = GeneralUtils.GetExMessage(ex)
+				};
+			}
+		}
+
 
 	}
 }

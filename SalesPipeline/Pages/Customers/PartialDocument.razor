@@ -35,6 +35,7 @@
 						<tr>
 							<th scope="col">ชื่อ</th>
 							<th scope="col">วันที่นำเข้า</th>
+							<th scope="col">#</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -67,6 +68,18 @@
 									</td>
 									<td>
 										@GeneralUtils.DateToThString(item.CreateDate)
+									</td>
+									<td>
+										@if (item.Type == 6)
+										{
+											<a class="text-action" role="button" @onclick='(()=> ConfirmDelete(item.Id.ToString(),item.OriginalFileName))'>
+												ลบ
+											</a>
+										}
+										else
+										{
+											@* <span>-</span> *@
+										}
 									</td>
 								</tr>
 							}
@@ -306,6 +319,8 @@
 		</div>
 	}
 </div>
+
+<ModalConfirm @ref="modalConfirm" CallbackConfirm="Delete" />
 
 <Modal @ref="modalUploadFile"
 	   Title="เอกสารเพิ่มเติม"

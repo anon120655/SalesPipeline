@@ -660,5 +660,19 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[HttpDelete("DocumentFileDeleteById")]
+		public async Task<IActionResult> DocumentFileDeleteById([FromQuery] UpdateModel model)
+		{
+			try
+			{
+				await _repo.ProcessSale.DocumentFileDeleteById(model);
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
 	}
 }
