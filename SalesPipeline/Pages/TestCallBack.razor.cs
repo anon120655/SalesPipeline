@@ -48,8 +48,8 @@ namespace SalesPipeline.Pages
                 if (!string.IsNullOrEmpty(redirecturl_decode))
                 {
                     // ลองสั่งเปิด app ด้วย custom URL scheme
-                    await _jsRuntimes.InvokeVoidAsync("openCustomUrlScheme", redirecturl_decode);
-                    //_Navs.NavigateTo(redirecturl_decode, forceLoad: true);
+                    //await _jsRuntimes.InvokeVoidAsync("openCustomUrlScheme", redirecturl_decode);
+                    _Navs.NavigateTo(redirecturl_decode);
                 }
             }
             catch (Exception ex)
