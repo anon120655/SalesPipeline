@@ -1,0 +1,28 @@
+﻿
+@page "/testcallback"
+
+<MessageError errorMessage="@_errorMessage" />
+
+<div class="container-xxl">
+	<div class="row">
+		<div class="col-12 my-2">
+			<div class="box_content mh_40r">
+				<div class="d-flex flex-row align-items-center mb-3 border-bottom">
+					<div class="p-2"><img src="/image/icon/customerinfo.png" width="45" /></div>
+					<div class="p-2">
+						<p class="back_topic_active">Test CallBack</p>
+					</div>
+				</div>
+				<div class="row my-3 text-center">
+					<div class="col-12">
+						<Button @onclick=ToApp Color="ButtonColor.Primary" Type="ButtonType.Button" Class="mw_6r">
+							GO TO APP <i class="fa-solid fa-mobile-screen-button ms-2"></i>
+						</Button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+

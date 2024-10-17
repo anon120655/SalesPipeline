@@ -319,3 +319,23 @@ function isMyScriptLoaded(pathname) {
 	}
 	return false;
 }
+
+function openCustomUrlScheme(url) {
+	var isCustomUrlOpened = false;
+	var timeout = setTimeout(function () {
+		if (!isCustomUrlOpened) {
+			alert(url + ' Unable to open the app. Please ensure the app is installed.');
+			// ลอง redirect ไปที่ URL อื่นหากแอปไม่สามารถเปิดได้
+			//window.location.href = "https://example.com";
+		}
+	}, 2000); // ให้รอ 2 วินาที
+
+	// ลองเปิดแอปด้วย custom URL scheme
+	window.location.href = url;
+
+	// เช็คว่าถ้าแอปสามารถเปิดได้ให้ clear timeout
+	window.addEventListener("blur", function () {
+		isCustomUrlOpened = true;
+		clearTimeout(timeout);
+	});
+}
