@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Utils.ValidationAtt
 {
-	public class CustomerAtt : ValidationAttribute
+	public class CustomerAddressAtt : ValidationAttribute
 	{
 		public string? FieldName { get; set; }
 
@@ -19,8 +19,7 @@ namespace SalesPipeline.Utils.ValidationAtt
 			// ดึงค่า IsValidate จาก Object ที่กำลัง Validate
 			var model = (CustomerCustom)validationContext.ObjectInstance;
 
-			// ถ้า IsValidate เป็น true และ HouseNo เป็นค่าว่าง ให้แสดงข้อผิดพลาด
-			if (model.IsFileUpload != true && string.IsNullOrEmpty(value?.ToString()))
+			if (model.IsExceptValidAddress != true && string.IsNullOrEmpty(value?.ToString()))
 			{
 				return resultValidate;
 			}

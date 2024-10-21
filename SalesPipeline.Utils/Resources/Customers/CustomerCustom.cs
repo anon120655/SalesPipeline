@@ -178,7 +178,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// บ้านเลขที่
 		/// </summary>
-		[CustomerAtt]
+		[CustomerAddressAtt]
 		public string? HouseNo { get; set; }
 
 		/// <summary>
@@ -189,7 +189,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// จังหวัด
 		/// </summary>
-		[CustomerAtt]
+		[CustomerAddressAtt]
 		public int? ProvinceId { get; set; }
 
 		public string? ProvinceName { get; set; }
@@ -197,7 +197,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// อำเภอ
 		/// </summary>
-		[CustomerAtt]
+		[CustomerAddressAtt]
 		public int? AmphurId { get; set; }
 
 		public string? AmphurName { get; set; }
@@ -205,7 +205,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// <summary>
 		/// ตำบล
 		/// </summary>
-		[CustomerAtt]
+		[CustomerAddressAtt]
 		public int? TambolId { get; set; }
 
 		public string? TambolName { get; set; }
@@ -427,6 +427,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		public bool? IsValidate { get; set; }
 		public List<string?>? ValidateError { get; set; }
 		public bool? IsRePurpose { get; set; }
-		public bool? IsFileUpload { get; set; }
+		//ข้ามการตรวจสอบที่อยู่
+		public bool? IsExceptValidAddress { get; set; }
 	}
 }

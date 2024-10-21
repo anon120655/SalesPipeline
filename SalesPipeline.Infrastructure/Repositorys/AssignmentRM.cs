@@ -859,6 +859,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						Sale = _mapper.Map<SaleCustom>(job)
 					};
 
+					//ไม่ต้องตรวจสอบที่อยู่
+					if (RM_Sales.Sale != null && RM_Sales.Sale.Customer != null)
+					{
+						RM_Sales.Sale.Customer.IsExceptValidAddress = true;
+					}
+
 					var existingAssignment = responseItems.FirstOrDefault(e => e.UserId == selectedEmployee.UserId);
 					if (existingAssignment != null)
 					{

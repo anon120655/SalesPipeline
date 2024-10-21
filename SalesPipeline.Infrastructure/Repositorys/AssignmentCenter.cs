@@ -212,12 +212,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (!duplicateAssignment_Sales.Contains(item_sale.Id))
 							{
+								var _sale = _mapper.Map<SaleCustom>(item_sale);
+
+								//ไม่ต้องตรวจสอบที่อยู่
+								if (_sale.Customer != null)
+								{
+									_sale.Customer.IsExceptValidAddress = true;
+								}
+
 								assignment_Center.Assignment_Sales.Add(new()
 								{
 									SaleId = item_sale.Id,
 									IsActive = StatusModel.Active,
 									IsSelect = true,
-									Sale = _mapper.Map<SaleCustom>(item_sale)
+									Sale = _sale
 								});
 
 								duplicateAssignment_Sales.Add(item_sale.Id);
