@@ -60,8 +60,9 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 		{
 			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-			filter.pagesize = 100;
-			var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filter);
+			var filterMaster = new allFilter() { page = 1, pagesize = 300 };
+
+			var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filterMaster);
 			if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
 			{
 				LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
@@ -75,7 +76,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
 
-			var dataPre_BusType = await _masterViewModel.GetPre_BusType(filter);
+			var dataPre_BusType = await _masterViewModel.GetPre_BusType(filterMaster);
 			if (dataPre_BusType != null && dataPre_BusType.Status)
 			{
 				LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
@@ -92,6 +93,7 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 
 		protected async Task SetModel()
 		{
+			filter.pagesize = 10;
 			var data = await _preCalViewModel.GetList(filter);
 			if (data != null && data.Status)
 			{
@@ -150,7 +152,10 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
 				HideLoading();
 				await OnHide();
+
+				filter.page = 1;
 				await SetModel();
+				StateHasChanged();
 			}
 			else
 			{
@@ -175,6 +180,8 @@ namespace SalesPipeline.Pages.Settings.PreApprove
 				_errorMessage = data?.errorMessage;
 				_utilsViewModel.AlertWarning(_errorMessage);
 			}
+
+			filter.page = 1;
 			await SetModel();
 		}
 

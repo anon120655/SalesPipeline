@@ -1616,6 +1616,9 @@ public partial class SalesPipelineContext : DbContext
 
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DisplayResultType)
+                .HasComment("1=แสดงเฉพาะคะแนนรวม")
+                .HasColumnType("int(11)");
             entity.Property(e => e.Master_Pre_Applicant_LoanId).HasComment("ประเภทผู้ขอสินเชื่อ");
             entity.Property(e => e.Master_Pre_Applicant_LoanName).HasMaxLength(255);
             entity.Property(e => e.Master_Pre_BusinessTypeId).HasComment("ประเภทธุรกิจ");
@@ -2184,6 +2187,9 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.Cr_RateMultiplier).HasMaxLength(255);
             entity.Property(e => e.CreateBy).HasColumnType("int(11)");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.DisplayResultType)
+                .HasComment("1=แสดงเฉพาะคะแนนรวม")
+                .HasColumnType("int(11)");
             entity.Property(e => e.IncomeTotal)
                 .HasPrecision(18, 2)
                 .HasComment("รายได้ทั้งหมด");

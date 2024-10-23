@@ -885,6 +885,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Result.ResultLoan = resultLoan;
 				pre_Result.ChanceNumber = chanceNumber;
 				pre_Result.ChancePercent = chancePercent;
+				pre_Result.DisplayResultType = pre_Cal.DisplayResultType;
 				await _db.InsterAsync(pre_Result);
 				await _db.SaveAsync();
 

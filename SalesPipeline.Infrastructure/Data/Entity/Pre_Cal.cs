@@ -36,6 +36,11 @@ public partial class Pre_Cal
 
     public string? Master_Pre_BusinessTypeName { get; set; }
 
+    /// <summary>
+    /// 1=แสดงเฉพาะคะแนนรวม
+    /// </summary>
+    public int? DisplayResultType { get; set; }
+
     public virtual Master_Pre_Applicant_Loan? Master_Pre_Applicant_Loan { get; set; }
 
     public virtual Master_Pre_BusinessType? Master_Pre_BusinessType { get; set; }

@@ -39,6 +39,11 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 
 		public string? Master_Pre_BusinessTypeName { get; set; }
 
+		/// <summary>
+		/// 1=แสดงเฉพาะคะแนนรวม
+		/// </summary>
+		public int? DisplayResultType { get; set; }
+
 		public virtual List<Pre_Cal_Fetu_AppCustom>? Pre_Cal_Fetu_Apps { get; set; }
 
 		public virtual List<Pre_Cal_Fetu_BuCustom>? Pre_Cal_Fetu_Bus { get; set; }

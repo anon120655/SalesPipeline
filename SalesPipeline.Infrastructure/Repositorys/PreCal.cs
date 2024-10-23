@@ -76,6 +76,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				pre_Cal.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
 				pre_Cal.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
 				pre_Cal.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+				pre_Cal.DisplayResultType = model.DisplayResultType;
 				await _db.InsterAsync(pre_Cal);
 				await _db.SaveAsync();
 
@@ -114,6 +115,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					pre_Cal.Master_Pre_Applicant_LoanName = master_Pre_Applicant_LoanIdName;
 					pre_Cal.Master_Pre_BusinessTypeId = model.Master_Pre_BusinessTypeId;
 					pre_Cal.Master_Pre_BusinessTypeName = master_Pre_BusinessTypeName;
+					pre_Cal.DisplayResultType = model.DisplayResultType;
 					_db.Update(pre_Cal);
 					await _db.SaveAsync();
 				}

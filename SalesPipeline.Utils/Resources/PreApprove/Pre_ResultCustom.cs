@@ -75,6 +75,11 @@ namespace SalesPipeline.Utils.Resources.PreApprove
 		/// </summary>
 		public short? PresSave { get; set; }
 
+		/// <summary>
+		/// 1=แสดงเฉพาะคะแนนรวม
+		/// </summary>
+		public int? DisplayResultType { get; set; }
+
 		public virtual List<Pre_Result_ItemCustom>? Pre_Result_Items { get; set; }
 	}
 }
