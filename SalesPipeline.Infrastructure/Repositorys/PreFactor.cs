@@ -953,6 +953,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Pre_FactorCustom> GetLastProcessBySaleId(Guid id)
 		{
 			var query = await _repo.Context.Pre_Factors
+				.AsNoTracking()
+				.Include(x => x.Pre_Cal)
 				.Include(x => x.Pre_Factor_Infos)
 				.Include(x => x.Pre_Factor_Stans)
 				.Include(x => x.Pre_Factor_Apps)
@@ -960,6 +962,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				.Include(x => x.Pre_Results).ThenInclude(x => x.Pre_Result_Items.OrderBy(o => o.SequenceNo))
 				.OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.SaleId == id);
+
+			if (query != null && query.Pre_Cal != null)
+			{
+				var result = query.Pre_Results.FirstOrDefault();
+				if (result != null)
+				{
+					result.DisplayResultType = query.Pre_Cal.DisplayResultType;
+				}
+			}
 
 			return _mapper.Map<Pre_FactorCustom>(query);
 		}
