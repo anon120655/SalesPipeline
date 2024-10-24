@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace SalesPipeline.API.Controllers
 {
 	//[ApiExplorerSettings(IgnoreApi = true)]
-	[Authorizes]
+	//[Authorizes]
 	[ApiVersion(1.0)]
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]

@@ -9,7 +9,7 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Assigns.RMs
 {
-    public partial class AssignRM
+	public partial class AssignRM
 	{
 		string? _errorMessage = null;
 		string? _errorMessageModal = null;
@@ -222,54 +222,109 @@ namespace SalesPipeline.Pages.Assigns.RMs
 			StateHasChanged();
 		}
 
-		protected void SetModelRMNew()
+		protected async Task SetModelRMNew()
 		{
-			if (ItemsAll?.Count > 0)
+			var data = await _assignmentRMViewModel.GetListRM(new() { pagesize = 500, userid = UserInfo.Id });
+			if (data != null && data.Status)
 			{
-				ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);
-				//ItemsRMNew = new(ItemsAll);
+				ItemsRMNew = data.Data?.Items;
 
-				if (IsSelectNewAssign.HasValue && IsSelectNewAssign != Guid.Empty)
+				if (ItemsRMNew != null)
 				{
-					var isSelect = ItemsRMNew.FirstOrDefault(x => x.Id == IsSelectNewAssign);
-					if (isSelect != null)
+					if (IsSelectNewAssign.HasValue && IsSelectNewAssign != Guid.Empty)
 					{
-						isSelect.IsSelect = true;
+						var isSelect = ItemsRMNew.FirstOrDefault(x => x.Id == IsSelectNewAssign);
+						if (isSelect != null)
+						{
+							isSelect.IsSelect = true;
+						}
+					}
+
+					if (assignmentIdPrevious.HasValue)
+					{
+						ItemsRMNew = ItemsRMNew.Where(x => x.Id != assignmentIdPrevious).ToList();
+					}
+
+					if (!String.IsNullOrEmpty(filterRMNew.emp_id))
+					{
+						ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(filterRMNew.emp_id)).ToList();
+					}
+
+					if (!String.IsNullOrEmpty(filterRMNew.emp_name))
+					{
+						ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRMNew.emp_name)).ToList();
+					}
+
+					if (!String.IsNullOrEmpty(filterRMNew.province_name))
+					{
+						ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province_name)).ToList();
+					}
+
+					if (!String.IsNullOrEmpty(filterRMNew.branch_name))
+					{
+						ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.branch_name)).ToList();
+					}
+
+					PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
+					if (PagerRMNew != null)
+					{
+						PagerRMNew.UrlAction = "/assign/rm";
+						ItemsRMNew = ItemsRMNew.Skip((PagerRMNew.CurrentPage - 1) * PagerRMNew.PageSize).Take(PagerRMNew.PageSize).ToList();
 					}
 				}
-
-				if (assignmentIdPrevious.HasValue)
-				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.Id != assignmentIdPrevious).ToList();
-				}
-
-				if (!String.IsNullOrEmpty(filterRMNew.emp_id))
-				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(filterRMNew.emp_id)).ToList();
-				}
-
-				if (!String.IsNullOrEmpty(filterRMNew.emp_name))
-				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRMNew.emp_name)).ToList();
-				}
-
-				if (!String.IsNullOrEmpty(filterRMNew.province_name))
-				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province_name)).ToList();
-				}
-
-				if (!String.IsNullOrEmpty(filterRMNew.branch_name))
-				{
-					ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.branch_name)).ToList();
-				}
-
-				PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
-				if (PagerRMNew != null)
-				{
-					PagerRMNew.UrlAction = "/assign/rm";
-					ItemsRMNew = ItemsRMNew.Skip((PagerRMNew.CurrentPage - 1) * PagerRMNew.PageSize).Take(PagerRMNew.PageSize).ToList();
-				}
 			}
+			else
+			{
+				_errorMessage = data?.errorMessage;
+				_utilsViewModel.AlertWarning(_errorMessage);
+			}
+
+
+			//if (ItemsAll?.Count > 0)
+			//{
+			//	ItemsRMNew = GeneralUtils.DeepCopyJson(ItemsAll);				
+
+			//	if (IsSelectNewAssign.HasValue && IsSelectNewAssign != Guid.Empty)
+			//	{
+			//		var isSelect = ItemsRMNew.FirstOrDefault(x => x.Id == IsSelectNewAssign);
+			//		if (isSelect != null)
+			//		{
+			//			isSelect.IsSelect = true;
+			//		}
+			//	}
+
+			//	if (assignmentIdPrevious.HasValue)
+			//	{
+			//		ItemsRMNew = ItemsRMNew.Where(x => x.Id != assignmentIdPrevious).ToList();
+			//	}
+
+			//	if (!String.IsNullOrEmpty(filterRMNew.emp_id))
+			//	{
+			//		ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(filterRMNew.emp_id)).ToList();
+			//	}
+
+			//	if (!String.IsNullOrEmpty(filterRMNew.emp_name))
+			//	{
+			//		ItemsRMNew = ItemsRMNew.Where(x => x.EmployeeName != null && x.EmployeeName.Contains(filterRMNew.emp_name)).ToList();
+			//	}
+
+			//	if (!String.IsNullOrEmpty(filterRMNew.province_name))
+			//	{
+			//		ItemsRMNew = ItemsRMNew.Where(x => x.ProvinceName != null && x.ProvinceName.Contains(filterRMNew.province_name)).ToList();
+			//	}
+
+			//	if (!String.IsNullOrEmpty(filterRMNew.branch_name))
+			//	{
+			//		ItemsRMNew = ItemsRMNew.Where(x => x.BranchName != null && x.BranchName.Contains(filterRMNew.branch_name)).ToList();
+			//	}
+
+			//	PagerRMNew = new Pager(ItemsRMNew.Count(), filterRMNew.page, filterRMNew.pagesize, null);
+			//	if (PagerRMNew != null)
+			//	{
+			//		PagerRMNew.UrlAction = "/assign/rm";
+			//		ItemsRMNew = ItemsRMNew.Skip((PagerRMNew.CurrentPage - 1) * PagerRMNew.PageSize).Take(PagerRMNew.PageSize).ToList();
+			//	}
+			//}
 
 			StateHasChanged();
 		}

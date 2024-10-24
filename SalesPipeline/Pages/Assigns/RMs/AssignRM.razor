@@ -305,9 +305,9 @@ else
 														<tr>
 															<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
 															<td class="text-center">@item.Sale?.CompanyName</td>
-															<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
-															<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
-															<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+															<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.ProvinceName)</td>
+															<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.AmphurName)</td>
+															<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.Master_BusinessTypeName)</td>
 															<td class="text-center">
 																<a @onclick="(() => OnViewCustomer(item.Sale))" class="btn btn-info btn-circle">
 																	<i class="fa-solid fa-eye text-white fs_15e"></i>
@@ -463,9 +463,9 @@ else
 													<tr>
 														<td class="text-center">@item.Sale?.Customer?.JuristicPersonRegNumber</td>
 														<td class="text-center">@item.Sale?.CompanyName</td>
-														<td class="text-center">@item.Sale?.Customer?.ProvinceName</td>
-														<td class="text-center">@item.Sale?.Customer?.AmphurName</td>
-														<td class="text-center">@item.Sale?.Customer?.Master_BusinessTypeName</td>
+														<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.ProvinceName)</td>
+														<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.AmphurName)</td>
+														<td class="text-center">@GeneralUtils.EmptyTo(item.Sale?.Customer?.Master_BusinessTypeName)</td>
 													</tr>
 												}
 											}
@@ -575,8 +575,8 @@ else
 												<th class="text-center">รหัสพนักงาน</th>
 												<th class="text-center">ชื่อพนักงาน</th>
 												<th class="text-center">เบอร์ติดต่อ</th>
-												<th class="text-center">จังหวัดที่ดูแล</th>
-												<th class="text-center">สาขาที่ดูแล</th>
+												<th class="text-center">พื้นที่ดูแล</th>
+												@* <th class="text-center">สาขาที่ดูแล</th> *@
 												<th class="text-center">ลูกค้าดูแลปัจจุบัน</th>
 												<th class="text-center">มอบหมาย</th>
 											</tr>
@@ -602,12 +602,26 @@ else
 											{
 												foreach (var item in _items.Where(x => x.IsShow))
 												{
+													string? areaNameJoin = string.Empty;
+													if (item.User?.User_Areas != null)
+													{
+														string provinceNames = string.Join(",", item.User.User_Areas.Select(x => x.ProvinceName));
+														areaNameJoin = provinceNames;
+													}
 													<tr>
 														<td class="text-center">@item.EmployeeId</td>
 														<td class="text-center">@item.EmployeeName</td>
-														<td class="text-center">@item.Tel</td>
-														<td class="text-center">@item.ProvinceName</td>
-														<td class="text-center">@item.BranchName</td>
+														<td class="text-center">@GeneralUtils.EmptyTo(item.User?.Tel)</td>
+														<td class="text-center">
+															@if (!string.IsNullOrEmpty(areaNameJoin))
+															{
+																<span>@areaNameJoin</span>
+															}
+															else
+															{
+																<span>-</span>
+															}
+														</td>
 														<td class="text-center">@(item.CurrentNumber)/100</td>
 														<td class="text-center">
 															<div class="form-check d-flex justify-content-center">
