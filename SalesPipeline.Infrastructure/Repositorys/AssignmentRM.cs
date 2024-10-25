@@ -886,6 +886,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						responseItems.Add(assignment_RM);
 					}
 				}
+
+				// เพิ่มพนักงานที่ยังไม่มีงานเข้าไปใน responseItems
+				var remainingEmployees = EmployeesList
+					.Where(employee => !responseItems.Any(r => r.UserId == employee.UserId))
+					.ToList();
+
+				foreach (var employee in remainingEmployees)
+				{
+					var assignment_RM = _mapper.Map<Assignment_RMCustom>(employee);
+					assignment_RM.Tel = assignment_RM.User?.Tel;
+
+					// เพิ่มข้อมูลพื้นที่รับผิดชอบ
+					if (assignment_RM.User?.User_Areas?.Count > 0)
+					{
+						string provinceNames = string.Join(",",
+							assignment_RM.User.User_Areas.Select(x => x.ProvinceName));
+						assignment_RM.AreaNameJoin = provinceNames;
+					}
+
+					// สร้าง list งานเปล่า
+					assignment_RM.Assignment_RM_Sales = new List<Assignment_RM_SaleCustom>();
+
+					// เพิ่มเข้า responseItems
+					responseItems.Add(assignment_RM);
+				}
+
 			}
 
 			return new PaginationView<List<Assignment_RMCustom>>()
