@@ -170,7 +170,8 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(baseUri + url)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(5)
+					Timeout = TimeSpan.FromMinutes(5),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
@@ -256,7 +257,8 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(5),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
@@ -467,7 +469,8 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(5),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
