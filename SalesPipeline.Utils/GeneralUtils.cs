@@ -886,5 +886,36 @@ namespace SalesPipeline.Utils
 			return false;
 		}
 
+		// ตรวจสอบว่ามีข้อความหน้าหรือไม่
+		public static bool HasPrefix(string text, string[] prefixes)
+		{
+			if (string.IsNullOrEmpty(text) || prefixes == null || prefixes.Length == 0)
+			{
+				return false;
+			}
+
+			return prefixes.Any(prefix =>
+				!string.IsNullOrEmpty(prefix) && text.StartsWith(prefix));
+		}
+
+		// ลบข้อความหน้าออก
+		public static string RemovePrefixes(string text, string[] prefixes)
+		{
+			if (string.IsNullOrEmpty(text) || prefixes == null || prefixes.Length == 0)
+			{
+				return text;
+			}
+
+			foreach (string prefix in prefixes)
+			{
+				if (!string.IsNullOrEmpty(prefix) && text.StartsWith(prefix))
+				{
+					return text.Substring(prefix.Length);
+				}
+			}
+
+			return text;
+		}
+
 	}
 }

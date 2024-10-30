@@ -107,6 +107,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				if (isThrow) throw new ExceptionCustom(errorMessage);
 			}
 
+			string[] prefixAmphurToRemove = { "กิ่ง", "เขต" };
+
 			if (isSetMaster == true)
 			{
 				if (model.Branch_RegionId.HasValue)
@@ -177,6 +179,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 				else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
 				{
+					if (GeneralUtils.HasPrefix(model.AmphurName, prefixAmphurToRemove))
+					{
+						model.AmphurName = GeneralUtils.RemovePrefixes(model.AmphurName, prefixAmphurToRemove);
+					}
 					model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
 				}
 

@@ -810,6 +810,8 @@ namespace SalesPipeline.Pages.Customers
 			{
 				try
 				{
+					ShowLoading();
+
 					using (var stream = file.OpenReadStream(TenMegaBytes))
 					{
 						MemoryStream ms = new MemoryStream();
@@ -1542,9 +1544,12 @@ namespace SalesPipeline.Pages.Customers
 							}
 						}
 					}
+
+					HideLoading();
 				}
 				catch (Exception ex)
 				{
+					HideLoading();
 					ClearInputFile();
 					_errorMessage = ex.Message;
 					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
