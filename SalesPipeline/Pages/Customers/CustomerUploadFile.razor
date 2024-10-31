@@ -257,6 +257,12 @@
 					<div class="p-2">
 						<Button Class="mw_6r" Color="ButtonColor.Primary" @onclick="OnHideResult">เสร็จสิ้น</Button>
 					</div>
+					@if (UserInfo.IsAssignCenter)
+					{
+						<div class="p-2">
+							<Button @onclick="GoToAssignCenter" Class="mw_6r" Color="ButtonColor.Success">มอบหมาย(ผจธ.)</Button>
+						</div>
+					}
 				</div>
 			</div>
 		</BodyTemplate>

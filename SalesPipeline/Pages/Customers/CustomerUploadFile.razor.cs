@@ -33,6 +33,7 @@ namespace SalesPipeline.Pages.Customers
 		private string dropClass = "";
 		private string? _fileName = null;
 		private List<string> header_list_key = new();
+		bool isGoToAssignCenter = false;
 
 		private Modal modalVersion = default!;
 
@@ -790,6 +791,7 @@ namespace SalesPipeline.Pages.Customers
 
 		protected async Task OnChooseFileTemplateFCC(InputFileChangeEventArgs inputFileChangeEvent)
 		{
+			isGoToAssignCenter = false;
 			_fileName = null;
 			dropClass = "";
 			_errorMessage = null;
@@ -1572,6 +1574,7 @@ namespace SalesPipeline.Pages.Customers
 		{
 			//UserList = UserList?.Where(x => x.IsValidate == true).ToList();
 
+			isGoToAssignCenter = false;
 			if (customerImportList == null || customerImportList.Count(x => x.IsValidate == true || x.IsKeep) == 0)
 			{
 				_errorMessage = "µ√«® Õ∫‰ø≈Ï·π∫Õ’°§√—Èß";
@@ -1652,7 +1655,14 @@ namespace SalesPipeline.Pages.Customers
 
 		private void OnHiddenResult()
 		{
-			Cancel();
+			if (isGoToAssignCenter)
+			{
+				_Navs.NavigateTo("/assign/center");
+			}
+			else
+			{
+				Cancel();
+			}
 		}
 
 		private void HandleDragEnter()
@@ -1718,6 +1728,12 @@ namespace SalesPipeline.Pages.Customers
 		private async void OnHiddenVersion()
 		{
 			await Task.Delay(1);
+		}
+
+		private async Task GoToAssignCenter()
+		{
+			isGoToAssignCenter = true;
+			await OnHideResult();
 		}
 
 
