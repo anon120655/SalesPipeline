@@ -2414,6 +2414,7 @@ public partial class SalesPipelineContext : DbContext
             entity.Property(e => e.DateAppointment)
                 .HasComment("วันที่นัดหมาย")
                 .HasColumnType("datetime");
+            entity.Property(e => e.IsRePurpose).HasComment("สร้างโดยกด Re-Purpose");
             entity.Property(e => e.LoanAmount)
                 .HasPrecision(18, 2)
                 .HasComment("จำนวนการกู้");

@@ -597,7 +597,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					AssCenterUserId = assCenterUserId,
 					AssCenterUserName = assCenterUserName,
 					AssUserId = assUserId,
-					AssUserName = assUserName
+					AssUserName = assUserName,
+					IsRePurpose = model.IsRePurpose
 				};
 				var sale = await _repo.Sales.Create(saleData);
 

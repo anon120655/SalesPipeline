@@ -168,6 +168,11 @@ namespace SalesPipeline.Utils.Resources.Sales
 		/// </summary>
 		public DateTime? AssUserDate { get; set; }
 
+		/// <summary>
+		/// สร้างโดยกด Re-Purpose
+		/// </summary>
+		public bool? IsRePurpose { get; set; }
+
 		public virtual CustomerCustom? Customer { get; set; }
 
 		public virtual UserCustom? AssCenterUser { get; set; }

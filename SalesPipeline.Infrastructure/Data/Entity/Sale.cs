@@ -163,6 +163,11 @@ public partial class Sale
     /// </summary>
     public DateTime? AssUserDate { get; set; }
 
+    /// <summary>
+    /// สร้างโดยกด Re-Purpose
+    /// </summary>
+    public bool? IsRePurpose { get; set; }
+
     public virtual User? AssCenterUser { get; set; }
 
     public virtual User? AssUser { get; set; }

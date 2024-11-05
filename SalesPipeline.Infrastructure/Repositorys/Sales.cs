@@ -123,6 +123,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				sale.AssUserName = model.AssUserName;
 			}
 
+			sale.IsRePurpose = model.IsRePurpose;
+
 			await _db.InsterAsync(sale);
 			await _db.SaveAsync();
 
