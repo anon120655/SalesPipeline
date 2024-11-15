@@ -37,13 +37,17 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? _requestBody = logs.RequestBody;
 				string? _responseBody = logs.ResponseBody;
 
-				if (_requestBody != null && _requestBody.Length > BodyLimit)
+				bool responseExceptLimin = GeneralUtils.LOGExceptLimin(logs.RequestPath);
+				if (!responseExceptLimin)
 				{
-					_requestBody = _requestBody.Substring(0, BodyLimit);
-				}
-				if (_responseBody != null && _responseBody.Length > BodyLimit)
-				{
-					_responseBody = _responseBody.Substring(0, BodyLimit);
+					if (_requestBody != null && _requestBody.Length > BodyLimit)
+					{
+						_requestBody = _requestBody.Substring(0, BodyLimit);
+					}
+					if (_responseBody != null && _responseBody.Length > BodyLimit)
+					{
+						_responseBody = _responseBody.Substring(0, BodyLimit);
+					}
 				}
 
 				try

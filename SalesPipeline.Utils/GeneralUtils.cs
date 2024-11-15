@@ -535,6 +535,25 @@ namespace SalesPipeline.Utils
 			return false;
 		}
 
+		public static bool LOGExceptLimin(string? requestPath)
+		{
+			if (requestPath == null) return false;
+
+			List<string> list = new List<string>();
+
+			list.Add("/v1/ProcessSale/CreateReply");
+
+			foreach (var item in list)
+			{
+				if (requestPath.Contains(item))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public static bool LineTxtAlert(string? txt)
 		{
 			if (txt == null) return false;

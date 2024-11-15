@@ -21,7 +21,6 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 		public async Task InvokeAsync(HttpContext httpContext, IRepositoryWrapper repo)
 		{
-
 			RequestResponseLogModel log = new();
 			// Middleware is enabled only when the 
 			// EnableRequestResponseLogging config value is set.
