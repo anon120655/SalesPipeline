@@ -132,6 +132,7 @@ namespace SalesPipeline.API.Controllers
 		/// <summary>
 		/// ข้อมูลกระบวนการขาย ById
 		/// </summary>
+		[AllowAnonymous]
 		[HttpGet("GetReplyById")]
 		public async Task<IActionResult> GetReplyById([FromQuery] Guid id)
 		{
