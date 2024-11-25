@@ -168,7 +168,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var salesCustomer = await salesQuery.ToListAsync();
 
-
 			List<Guid> duplicateAssignment_Sales = new();
 
 			if (salesCustomer.Count > 0 && userAssignment.Count > 0)
