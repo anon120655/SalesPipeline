@@ -181,15 +181,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					//}
 					var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
 
-					//9999 เห็นทุกจังหวัดในภาค
-					if (areaList.Any(x => x == 9999))
+					//เห็นทุกภาค
+					if (item_center.User.Master_Branch_RegionId == Guid.Parse("99999999-9999-9999-9999-999999999999"))
 					{
-						var branch_RegionId = _repo.Context.Users.FirstOrDefault(x => x.Id == item_center.UserId)?.Master_Branch_RegionId;
-						if (branch_RegionId.HasValue)
+						areaList = _repo.Context.InfoProvinces
+									.Where(x => x.ProvinceID > 0)
+									.Select(x => x.ProvinceID).ToList();
+					}
+					else
+					{
+						//9999 เห็นทุกจังหวัดในภาค
+						if (areaList.Any(x => x == 9999))
 						{
-							areaList = _repo.Context.InfoProvinces
-								.Where(x => x.Master_Department_BranchId == branch_RegionId)
-								.Select(x => x.ProvinceID).ToList();
+							var branch_RegionId = _repo.Context.Users.FirstOrDefault(x => x.Id == item_center.UserId)?.Master_Branch_RegionId;
+							if (branch_RegionId.HasValue)
+							{
+								areaList = _repo.Context.InfoProvinces
+									.Where(x => x.Master_Department_BranchId == branch_RegionId)
+									.Select(x => x.ProvinceID).ToList();
+							}
 						}
 					}
 

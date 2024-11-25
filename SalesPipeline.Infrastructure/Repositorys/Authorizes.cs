@@ -134,6 +134,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				Status = StatusModel.Active,
 				Create_Type = 1,
+				UpdateChannel = 1,
 				CurrentUserId = 0,
 				UserName = modeliAuth.Username,
 				EmployeeId = modeliAuth.employee_id,

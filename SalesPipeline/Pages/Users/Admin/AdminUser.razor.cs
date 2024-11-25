@@ -143,11 +143,20 @@ namespace SalesPipeline.Pages.Users.Admin
 
 		protected string? GetDepBranchName(Guid? id)
 		{
-			if (LookUp.DepartmentBranch != null && id.HasValue)
+			if (id.HasValue)
 			{
-				return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
+				if (id.Value == Guid.Parse("99999999-9999-9999-9999-999999999999"))
+				{
+					return "ทั้งหมด";
+				}
+				else
+				{
+					if (LookUp.DepartmentBranch != null)
+					{
+						return LookUp.DepartmentBranch.FirstOrDefault(x => x.Id == id)?.Name;
+					}
+				}
 			}
-
 			return null;
 		}
 

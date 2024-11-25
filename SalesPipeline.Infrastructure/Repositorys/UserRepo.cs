@@ -409,15 +409,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					user.FullName = model.FullName;
 					user.Email = model.Email;
 					user.Tel = model.Tel;
-					user.BranchId = model.BranchId;
-					user.Master_DepartmentId = model.Master_DepartmentId;
-					user.Master_Branch_RegionId = model.Master_Branch_RegionId;
-					user.ProvinceId = model.ProvinceId;
-					user.ProvinceName = provinceName;
-					user.BranchId = model.BranchId;
-					user.BranchName = branchName;
-					user.PositionId = model.PositionId;
-					user.LevelId = model.LevelId;
+					if (model.UpdateChannel != 1)
+					{
+						user.BranchId = model.BranchId;
+						user.Master_DepartmentId = model.Master_DepartmentId;
+						user.Master_Branch_RegionId = model.Master_Branch_RegionId;
+						user.ProvinceId = model.ProvinceId;
+						user.ProvinceName = provinceName;
+						user.BranchId = model.BranchId;
+						user.BranchName = branchName;
+						user.PositionId = model.PositionId;
+						user.LevelId = model.LevelId;
+					}
 					user.RoleId = model.RoleId;
 					//user.Create_Type = model.Create_Type;
 					user.authen_fail_time = model.authen_fail_time;

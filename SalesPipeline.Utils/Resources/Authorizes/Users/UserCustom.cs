@@ -221,6 +221,11 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Users
 
 
 		//Custom
+
+		/// <summary>
+		/// 1=IAuth
+		/// </summary>
+		public int? UpdateChannel { get; set; }
 		public string? DefaultPassword { get; set; }
         public string? Master_DepartmentName { get; set; }
 		public string? Master_Branch_RegionName { get; set; }
