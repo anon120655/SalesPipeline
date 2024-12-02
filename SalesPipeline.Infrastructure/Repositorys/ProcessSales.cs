@@ -927,6 +927,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (!model.AppointmentTime.HasValue) throw new ExceptionCustom("ระบุเวลาที่นัดหมาย");
 			if (String.IsNullOrEmpty(model.Location)) throw new ExceptionCustom("ระบุสถานที่");
 
+
+			if (!model.Master_YieldId.HasValue) throw new ExceptionCustom("ระบุ ผลผลิตหลัก");
+			if (!model.Master_ChainId.HasValue) throw new ExceptionCustom("ระบุ ห่วงโซ่คุณค่า");
+
 			var currentUserName = await _repo.User.GetFullNameById(model.CurrentUserId);
 
 			int statusSaleId = StatusSaleModel.NotStatus;
