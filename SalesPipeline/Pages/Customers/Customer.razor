@@ -60,6 +60,19 @@
 							</select>
 						</div>
 						<div class="col mb-2">
+							<label class="form-label">ห่วงโซ่</label>
+							<select @onchange="OnChain" value="@filter.chain" id="Chain" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
+								<option value="">ทั้งหมด</option>
+								@if (LookUp.Chain?.Count > 0)
+								{
+									foreach (var item in LookUp.Chain)
+									{
+										<option value="@item.Id">@item.Name</option>
+									}
+								}
+							</select>
+						</div>
+						<div class="col mb-2">
 							<label class="form-label">จังหวัด</label>
 							<select @onchange="OnProvince" value="@filter.provinceid" id="Province" class="selectpickerdefault" data-style="select_btn_set" data-live-search="true">
 								<option value="">ทั้งหมด</option>
