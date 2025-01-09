@@ -107,6 +107,13 @@ builder.Services.AddDataProtection()
 	.PersistKeysToFileSystem(new DirectoryInfo(keysDirectory))
 	.SetApplicationName("SalesPipeline");
 
+// ใช้ชั่วคราวเพื่อทดสอบ ลงทะเบียน HttpClient ที่ข้ามการตรวจสอบใบรับรอง SSL สำหรับทุกคำขอ
+//builder.Services.AddHttpClient("IgnoreSslClient")
+//	.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+//	{
+//		ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+//	});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -127,7 +134,9 @@ else
 //	app.UseHsts();
 //}
 
-app.UseHttpsRedirection();
+// ปิดใช้ชั่วคราวเพื่อทดสอบบน prod ต้องเปิด
+//app.UseHttpsRedirection();
+
 
 app.UseStaticFiles();
 
