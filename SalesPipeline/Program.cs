@@ -114,6 +114,7 @@ builder.Services.AddDataProtection()
 //		ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
 //	});
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

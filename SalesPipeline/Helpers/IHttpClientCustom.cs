@@ -49,14 +49,24 @@ namespace SalesPipeline.Helpers
 
 		public async Task<string> GetAsync(string url, string? token = null, string? baseUri = null, string? userName = null, string? password = null)
 		{
+			string fullUrl = string.Empty;
+
 			try
 			{
 				if (baseUri == null) baseUri = _appSet.baseUriApi;
 
-				var options = new RestClientOptions(baseUri + url)
+				fullUrl = baseUri + url;
+
+				if (fullUrl.Contains("/User/GetListLevel"))
+				{
+					fullUrl = "https://rm-sale.app.baac.or.th/api/v1/User/GetListLevel?page=1&pagesize=10&saleid=&status=1";
+				}
+
+				var options = new RestClientOptions(fullUrl)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(2),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 
 				if (!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(password))
@@ -68,7 +78,7 @@ namespace SalesPipeline.Helpers
 
 				var request = new RestRequest();
 
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
 				//ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
@@ -150,24 +160,28 @@ namespace SalesPipeline.Helpers
 
 				if (responseClient.StatusCode == System.Net.HttpStatusCode.Unauthorized)
 				{
-					throw new Exception("Unauthorized!");
+					throw new Exception($"Unauthorized! {fullUrl} _accessoken={_accessoken}");
 				}
 
 				throw new Exception($"StatusCode : {responseClient.StatusCode} Error : {responseClient.ErrorMessage}");
 			}
 			catch (Exception ex)
 			{
-				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)} {fullUrl}");
 			}
 		}
 
 		public async Task<string> PostAsync(string url, string dataJson, string? token = null, string? baseUri = null)
 		{
+			string fullUrl = string.Empty;
+
 			try
 			{
 				if (baseUri == null) baseUri = _appSet.baseUriApi;
 
-				var options = new RestClientOptions(baseUri + url)
+				fullUrl = baseUri + url;
+
+				var options = new RestClientOptions(fullUrl)
 				{
 					ThrowOnAnyError = false,
 					Timeout = TimeSpan.FromMinutes(5),
@@ -176,7 +190,7 @@ namespace SalesPipeline.Helpers
 				var client = new RestClient(options);
 				var request = new RestRequest();
 
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.Method = Method.Post;
 				request.AddHeader("Content-Type", "application/json");
 
@@ -246,7 +260,7 @@ namespace SalesPipeline.Helpers
 			}
 			catch (Exception ex)
 			{
-				throw new Exception($"{GeneralUtils.GetExMessage(ex)}");
+				throw new Exception($"{GeneralUtils.GetExMessage(ex)} {fullUrl}");
 			}
 		}
 
@@ -262,7 +276,7 @@ namespace SalesPipeline.Helpers
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.Method = Method.Put;
 				request.AddHeader("Content-Type", "application/json");
 
@@ -342,12 +356,13 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(2),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 
 				var request = new RestRequest();
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.Method = Method.Delete;
 				request.AddHeader("Content-Type", "application/json");
 
@@ -427,12 +442,13 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = true,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(2),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 
 				var request = new RestRequest();
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
@@ -474,7 +490,7 @@ namespace SalesPipeline.Helpers
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.Method = Method.Post;
 				request.AddHeader("Content-Type", "application/json");
 
@@ -512,11 +528,12 @@ namespace SalesPipeline.Helpers
 				var options = new RestClientOptions(_appSet.baseUriApi + url)
 				{
 					ThrowOnAnyError = false,
-					Timeout = TimeSpan.FromMinutes(2)
+					Timeout = TimeSpan.FromMinutes(2),
+					RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true
 				};
 				var client = new RestClient(options);
 				var request = new RestRequest();
-				System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 				request.Method = Method.Post;
 				//request.AlwaysMultipartFormData = true;
 				request.AddHeader("Content-Type", "multipart/form-data");

@@ -43,6 +43,9 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public List<User_AreaCustom>? User_Areas { get; set; }
 		public iAuthenResponse? iauthen { get; set; }
 
+
+		public string? CheckData { get; set; }
+
 		public string? FullName
 		{
 			get

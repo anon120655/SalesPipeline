@@ -113,6 +113,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById([FromQuery] int id)
 		{
@@ -212,6 +213,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+		[AllowAnonymous]
 		[HttpGet("GetRoleById")]
 		public async Task<IActionResult> GetRoleById([FromQuery] int id)
 		{

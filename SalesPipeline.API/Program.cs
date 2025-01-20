@@ -19,13 +19,12 @@ using Hangfire;
 using System.Text.Json;
 using Hangfire.MySql;
 using SalesPipeline.Infrastructure.Data.Logger.Context;
+using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 //[JsonIgnore] ใช้ System.Text.Json.Serialization
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -249,7 +248,8 @@ app.UseStaticFiles(new StaticFileOptions()
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// ปิดใช้ชั่วคราวเพื่อทดสอบบน prod ต้องเปิด
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

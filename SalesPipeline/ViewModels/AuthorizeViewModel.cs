@@ -33,9 +33,18 @@ namespace SalesPipeline.ViewModels
 			, NavigationManager Nav)
 		{
 			_protectedLocalStorage = protectedLocalStorage;
-			_httpClient = httpClient;
+			//_httpClient = httpClient;
 			_appSet = appset.Value;
 			_Nav = Nav;
+
+			// สร้าง HttpClientHandler ที่ข้ามการตรวจสอบ Certificate
+			var handler = new HttpClientHandler
+			{
+				ServerCertificateCustomValidationCallback = (message, certificate, chain, errors) => true
+			};
+
+			// กำหนด HttpClient ที่ใช้ Handler นี้
+			_httpClient = new HttpClient(handler);
 		}
 
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -231,6 +240,7 @@ namespace SalesPipeline.ViewModels
 		{
 			try
 			{
+				var fullUrl = $"{_appSet.baseUriApi}/v1/Authorize";
 				var response = await _httpClient.PostAsJsonAsync($"{_appSet.baseUriApi}/v1/Authorize", model);
 				if (response.IsSuccessStatusCode && response.StatusCode == System.Net.HttpStatusCode.OK && response.Content != null)
 				{
@@ -246,6 +256,7 @@ namespace SalesPipeline.ViewModels
 								var datauserMap = JsonConvert.DeserializeObject<UserCustom>(await datauser.Content.ReadAsStringAsync());
 								if (datauserMap != null)
 								{
+									data.CheckData = data.access_token;
 									data.Master_Department_BranchId = datauserMap.Master_Branch_RegionId;
 									data.ProvinceId = datauserMap.ProvinceId;
 									data.ProvinceName = datauserMap.ProvinceName;
