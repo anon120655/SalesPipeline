@@ -59,7 +59,7 @@ namespace SalesPipeline.Helpers
 
 				if (fullUrl.Contains("/User/GetListLevel"))
 				{
-					fullUrl = "https://rm-sale.app.baac.or.th/api/v1/User/GetListLevel?page=1&pagesize=10&saleid=&status=1";
+					//fullUrl = "https://rm-sale.app.baac.or.th/api/v1/User/GetListLevel?page=1&pagesize=10&saleid=&status=1";
 				}
 
 				var options = new RestClientOptions(fullUrl)
