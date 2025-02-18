@@ -5,7 +5,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IJwtUtils
 	{
-		public string GenerateJwtToken(UserCustom user, int days);
+		public string GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null);
 		public int? ValidateJwtToken(string? token);
 	}
 }

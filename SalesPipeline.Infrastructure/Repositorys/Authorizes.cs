@@ -33,7 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
 		{
-			int expires_in = 1; //days
+			int? expires_in = 1; //days
 
 			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.UserName == model.Username);
 
@@ -101,10 +101,18 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			var userMap = _mapper.Map<UserCustom>(user);
 
+			string txt_exp_res = $"{expires_in}d";
+			int? expires_in_fcc = 1; //days
+			if (_appSet.SystemType == SystemTypeModel.FCC)
+			{
+				expires_in = null;
+				expires_in_fcc = 1;
+				txt_exp_res = $"{expires_in_fcc}m";
+			}
 			// authentication successful so generate jwt token
-			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in);
+			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
 
-			return new AuthenticateResponse(userMap, token, expires_in + "d");
+			return new AuthenticateResponse(userMap, token, txt_exp_res);
 		}
 
 		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)

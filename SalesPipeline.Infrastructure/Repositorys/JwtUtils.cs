@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -22,15 +23,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("JWT secret not configured");
 		}
 
-		public string GenerateJwtToken(UserCustom user,int days)
+		public string GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null)
 		{
+			DateTime expirationTime;
+			
+			if (days.HasValue)
+			{
+				expirationTime = DateTime.UtcNow.AddDays(days.Value);
+			}
+			else if (minutes.HasValue)
+			{
+				expirationTime = DateTime.UtcNow.AddMinutes(minutes.Value);
+			}
+			else
+			{
+				throw new ArgumentException("Either days or minutes must be provided.");
+			}
+
 			// generate token that is valid for {days} days
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var key = Encoding.ASCII.GetBytes(_appSet.Secret!);
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-				Expires = DateTime.UtcNow.AddDays(days),
+				Expires = expirationTime,
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 			};
 			var token = tokenHandler.CreateToken(tokenDescriptor);
