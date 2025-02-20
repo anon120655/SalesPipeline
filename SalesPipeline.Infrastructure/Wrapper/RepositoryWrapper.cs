@@ -20,7 +20,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		private readonly IHttpContextAccessor _accessor;
 		private readonly HttpClient _httpClient;
 		private readonly IMapper _mapper;
-		private readonly IJwtUtils _jwtUtils;
+		//private readonly IJwtUtils _jwtUtils;
 		private bool _isDisposed;
 		private readonly NotificationService _notiService;
 		private readonly IBackgroundJobClient _backgroundJobClient;
@@ -30,6 +30,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IRepositoryBase _db { get; }
 		public ILoggerRepo Logger { get; }
 		public IAuthorizes Authorizes { get; }
+		public IJwtUtils jwtUtils { get; }
 		public INotifys Notifys { get; }
 		public IFileRepository Files { get; }
 		public IMaster Master { get; }
@@ -76,7 +77,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public RepositoryWrapper(SalesPipelineContext _context, SalesPipelineLogContext _contextLog, IOptions<AppSettings> settings, IMapper mapper,
 													IHttpContextAccessor accessor, 
 													HttpClient httpClient, 
-													IJwtUtils jwtUtils, 
+													//IJwtUtils jwtUtils, 
 													NotificationService notificationService
 			, IBackgroundJobClient backgroundJobClient)
 		{
@@ -85,13 +86,14 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			_accessor = accessor;
 			_mapper = mapper;
 			_httpClient = httpClient;
-			_jwtUtils = jwtUtils;
+			//_jwtUtils = jwtUtils;
 			_notiService = notificationService;
 			_backgroundJobClient = backgroundJobClient;
 
 			_db = new RepositoryBase(this);
 			Logger = new LoggerRepo(this, settings, ContextLog);
-			Authorizes = new Authorizes(this, _db, settings, _jwtUtils, _mapper);
+			Authorizes = new Authorizes(this, _db, settings, _mapper);
+			jwtUtils = new JwtUtils(this, settings);
 			Notifys = new Notifys(this, _db, settings, _mapper, _notiService, _backgroundJobClient);
 			Files = new FileRepository(this, _db, settings, _mapper);
 			Master = new Master(this, _db, settings, _mapper);

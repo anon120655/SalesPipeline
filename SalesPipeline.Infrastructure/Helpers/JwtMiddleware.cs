@@ -18,10 +18,10 @@ namespace SalesPipeline.Infrastructure.Helpers
 			_next = next;
 		}
 
-		public async Task InvokeAsync(HttpContext context, IRepositoryWrapper repo, IJwtUtils jwtUtils)
+		public async Task InvokeAsync(HttpContext context, IRepositoryWrapper repo)
 		{
 			var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-			var userId = jwtUtils.ValidateJwtToken(token);
+			var userId = repo.jwtUtils.ValidateJwtToken(token);
 			if (userId != null)
 			{
 				// attach user to context on successful jwt validation

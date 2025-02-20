@@ -22,6 +22,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IRepositoryBase _db { get; }
 		ILoggerRepo Logger { get; }
 		IAuthorizes Authorizes { get; }
+		IJwtUtils jwtUtils { get; }
 		IFileRepository Files { get; }
 		INotifys Notifys { get; }
 		IMaster Master { get; }

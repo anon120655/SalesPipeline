@@ -9,16 +9,19 @@ using System.Text;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.ConstTypeModel;
 using System.Security.Cryptography;
+using SalesPipeline.Infrastructure.Wrapper;
+using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class JwtUtils : IJwtUtils
 	{
-		private readonly AppSettings _appSet; 
-		private readonly Dictionary<string, (int UserId, DateTime Expiration)> _refreshTokens = new(); // ใช้ Dictionary จำลองฐานข้อมูล
+		private IRepositoryWrapper _repo;
+		private readonly AppSettings _appSet;
 
-		public JwtUtils(IOptions<AppSettings> appSet)
+		public JwtUtils(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
 		{
+			_repo = repo;
 			_appSet = appSet.Value;
 
 			if (string.IsNullOrEmpty(_appSet.Secret))
@@ -54,11 +57,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		//	var token = tokenHandler.CreateToken(tokenDescriptor);
 		//	return tokenHandler.WriteToken(token);
 		//}
-
-		/// <summary>
-		/// สร้าง Access Token และ Refresh Token
-		/// </summary>
-		public (string AccessToken, string RefreshToken) GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null)
+				
+		public async Task<(string? AccessToken, string? RefreshToken)> GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null)
 		{
 			DateTime expirationTime = days.HasValue
 				? DateTime.UtcNow.AddDays(days.Value)
@@ -79,7 +79,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			// สร้าง Refresh Token
 			string refreshToken = GenerateRefreshToken();
-			_refreshTokens[refreshToken] = (user.Id, DateTime.UtcNow.AddDays(7)); // Refresh Token มีอายุ 7 วัน
+			//_refreshTokens[refreshToken] = (user.Id, DateTime.UtcNow.AddDays(7)); // Refresh Token มีอายุ 7 วัน
+			await _repo.Authorizes.CreateRefreshJwtToken(new()
+			{
+				UserId = user.Id,
+				TokenValue = refreshToken,
+				ExpiryDate = DateTime.UtcNow.AddDays(7)
+			});
 
 			return (accessToken, refreshToken);
 		}
@@ -87,30 +93,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		/// <summary>
 		/// ใช้ Refresh Token เพื่อขอ Access Token ใหม่
 		/// </summary>
-		public (string? AccessToken, string? RefreshToken) RefreshJwtToken(string refreshToken)
+		public async Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken)
 		{
-			if (!_refreshTokens.ContainsKey(refreshToken)) return (null, null);
-
-			var (userId, expiration) = _refreshTokens[refreshToken];
+			var refreshJwtTokens = await _repo.Authorizes.GetRefreshJwtToken(refreshToken);
+			if(refreshJwtTokens == null ) return (null, null);
 
 			// ตรวจสอบว่า Refresh Token หมดอายุหรือไม่
-			if (expiration < DateTime.UtcNow)
+			if (refreshJwtTokens.ExpiryDate < DateTime.UtcNow)
 			{
-				_refreshTokens.Remove(refreshToken);
+				await _repo.Authorizes.RemoveRefreshJwtToken(refreshToken);
 				return (null, null);
 			}
 
 			// ลบ Refresh Token เก่า
-			_refreshTokens.Remove(refreshToken);
+			await _repo.Authorizes.RemoveRefreshJwtToken(refreshToken);
 
 			// สร้าง Access Token และ Refresh Token ใหม่
-			var newTokens = GenerateJwtToken(new UserCustom { Id = userId }, minutes: 15); // Access Token อายุ 15 นาที
+			var newTokens = await GenerateJwtToken(new UserCustom { Id = refreshJwtTokens.UserId }, minutes: 15); // Access Token อายุ 15 นาที
 			return (newTokens.AccessToken, newTokens.RefreshToken);
 		}
-
-		/// <summary>
-		/// สร้าง Refresh Token ที่ปลอดภัย
-		/// </summary>
+				
 		private string GenerateRefreshToken()
 		{
 			var randomBytes = new byte[64];
@@ -120,10 +122,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 			return Convert.ToBase64String(randomBytes);
 		}
-
-		/// <summary>
-		/// ตรวจสอบและคืนค่า userId จาก JWT Token
-		/// </summary>
+				
 		public int? ValidateJwtToken(string? token)
 		{
 			if (token == null) return null;

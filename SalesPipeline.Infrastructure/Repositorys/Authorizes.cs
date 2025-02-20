@@ -11,6 +11,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.iAuthen;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -19,15 +20,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		private IRepositoryWrapper _repo;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
-		private readonly IJwtUtils _jwtUtils;
+		//private readonly IJwtUtils _jwtUtils;
 		private readonly IMapper _mapper;
 
-		public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IJwtUtils jwtUtils, IMapper mapper)
+		public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet/*, IJwtUtils jwtUtils*/, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_appSet = appSet.Value;
-			_jwtUtils = jwtUtils;
+			//_jwtUtils = jwtUtils;
 			_mapper = mapper;
 		}
 
@@ -110,9 +111,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				txt_exp_res = $"{expires_in_fcc}m";
 			}
 			// authentication successful so generate jwt token
-			var generate_response = _jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
+			var generate_response = await _repo.jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
 
-			return new AuthenticateResponse(userMap, generate_response.AccessToken, generate_response.RefreshToken, txt_exp_res);
+			return new AuthenticateResponse(userMap, generate_response.AccessToken, txt_exp_res, generate_response.RefreshToken);
 		}
 
 		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)
@@ -215,9 +216,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var userMap = _mapper.Map<UserCustom>(user);
 
 			// authentication successful so generate jwt token
-			var generate_response = _jwtUtils.GenerateJwtToken(userMap, expires_in);
+			var generate_response = await _repo.jwtUtils.GenerateJwtToken(userMap, expires_in);
 
-			return new AuthenticateResponse(userMap, generate_response.AccessToken, generate_response.RefreshToken, expires_in + "d");
+			return new AuthenticateResponse(userMap, generate_response.AccessToken, expires_in + "d", generate_response.RefreshToken);
 		}
 
 		public UserAuth? GetById(int id)
@@ -234,9 +235,45 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return userAuth;
 		}
 
+		public async Task CreateRefreshJwtToken(User_RefreshTokenCustom model)
+		{
+			var user_RefreshToken = new Data.Entity.User_RefreshToken();
+			user_RefreshToken.Status = StatusModel.Active;
+			user_RefreshToken.CreateDate = DateTime.Now;
+			user_RefreshToken.UserId = model.UserId;
+			user_RefreshToken.TokenValue = model.TokenValue;
+			user_RefreshToken.ExpiryDate = model.ExpiryDate;
+			await _db.InsterAsync(user_RefreshToken);
+			await _db.SaveAsync();
+		}
+
+		public async Task<User_RefreshTokenCustom?> GetRefreshJwtToken(string refreshToken)
+		{
+			var user_RefreshToken = await _repo.Context.User_RefreshTokens.FirstOrDefaultAsync(x => x.TokenValue == refreshToken);
+			if (user_RefreshToken == null) return null;
+
+			var user_RefreshTokenMap = _mapper.Map<User_RefreshTokenCustom>(user_RefreshToken);
+			return user_RefreshTokenMap;
+		}
+
+		public async Task RemoveRefreshJwtToken(string refreshToken)
+		{
+			var user_Login_TokenNotis = await _repo.Context.User_RefreshTokens.FirstOrDefaultAsync(x => x.TokenValue == refreshToken);
+			if (user_Login_TokenNotis != null)
+			{
+				_db.Delete(user_Login_TokenNotis);
+				await _db.SaveAsync();
+			}
+		}
+
+		public async Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken)
+		{
+			return await _repo.jwtUtils.RefreshJwtToken(refreshToken);
+		}
+
 		public bool ExpireToken(string? token)
 		{
-			var valToken = _jwtUtils.ValidateJwtToken(token);
+			var valToken = _repo.jwtUtils.ValidateJwtToken(token);
 			if (valToken == null) return false;
 
 			return true;

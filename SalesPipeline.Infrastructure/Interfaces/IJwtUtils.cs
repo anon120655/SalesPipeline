@@ -11,7 +11,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		/// <summary>
 		/// สร้าง Access Token และ Refresh Token สำหรับผู้ใช้
 		/// </summary>
-		public (string AccessToken, string RefreshToken) GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null);
+		public Task<(string? AccessToken, string? RefreshToken)> GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null);
 
 		/// <summary>
 		/// ตรวจสอบและคืนค่า UserId จาก Access Token
@@ -21,6 +21,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		/// <summary>
 		/// ใช้ Refresh Token เพื่อขอ Access Token ใหม่
 		/// </summary>
-		public (string? AccessToken, string? RefreshToken) RefreshJwtToken(string refreshToken);
+		public Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken);
 	}
 }

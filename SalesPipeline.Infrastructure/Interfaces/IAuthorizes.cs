@@ -14,6 +14,10 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model);
 		Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth);
 		UserAuth? GetById(int id);
+		Task CreateRefreshJwtToken(User_RefreshTokenCustom model);
+		Task<User_RefreshTokenCustom?> GetRefreshJwtToken(string refreshToken);
+		Task RemoveRefreshJwtToken(string refreshToken);
+		Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken);
 		Boolean ExpireToken(string? token);
 		Task RemoveNotiToken(User_Login_LogCustom model);
 	}

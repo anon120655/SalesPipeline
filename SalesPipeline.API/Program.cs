@@ -123,7 +123,7 @@ builder.Services.AddTransient<SalesPipelineContext>();
 builder.Services.AddTransient<SalesPipelineLogContext>();
 builder.Services.AddAutoMapper(typeof(AutoMapping));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+//builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddSingleton<NotificationService>();

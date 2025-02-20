@@ -226,6 +226,8 @@ public partial class SalesPipelineContext : DbContext
 
     public virtual DbSet<User_Permission> User_Permissions { get; set; }
 
+    public virtual DbSet<User_RefreshToken> User_RefreshTokens { get; set; }
+
     public virtual DbSet<User_Role> User_Roles { get; set; }
 
     public virtual DbSet<User_Target_Sale> User_Target_Sales { get; set; }
@@ -3791,6 +3793,21 @@ public partial class SalesPipelineContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("user_permission_ibfk_1");
+        });
+
+        modelBuilder.Entity<User_RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("User_RefreshToken");
+
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasComment("-1=ลบ  ,0=ไม่ใช้งาน  ,1=ใช้งาน")
+                .HasColumnType("smallint(6)");
+            entity.Property(e => e.TokenValue).HasMaxLength(300);
+            entity.Property(e => e.UserId).HasColumnType("int(11)");
         });
 
         modelBuilder.Entity<User_Role>(entity =>

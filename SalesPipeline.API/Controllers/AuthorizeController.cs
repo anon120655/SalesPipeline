@@ -144,6 +144,22 @@ namespace SalesPipeline.API.Controllers
 		}
 
 		[AllowAnonymous]
+		[HttpGet("RefreshJwtToken")]
+		public IActionResult RefreshJwtToken([FromQuery] string refreshToken)
+		{
+			try
+			{
+				var response = _repo.Authorizes.RefreshJwtToken(refreshToken);
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return new ErrorResultCustom(new ErrorCustom(), ex);
+			}
+		}
+
+		[AllowAnonymous]
 		[HttpGet("ExpireToken")]
 		public IActionResult ExpireToken([FromQuery] string token)
 		{

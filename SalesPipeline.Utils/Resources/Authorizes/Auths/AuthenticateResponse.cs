@@ -19,7 +19,7 @@ namespace SalesPipeline.Utils.Resources.Authorizes.Auths
 		public string? expires_in { get; set; }
         public iAuthenResponse? iauthen { get; set; }
 
-        public AuthenticateResponse(UserCustom user, string token, string expires, string refresh)
+        public AuthenticateResponse(UserCustom user, string? token, string expires, string? refresh)
 		{
 			Id = user.Id;
 			FirstName = user.FirstName;
