@@ -17,7 +17,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task CreateRefreshJwtToken(User_RefreshTokenCustom model);
 		Task<User_RefreshTokenCustom?> GetRefreshJwtToken(string refreshToken);
 		Task RemoveRefreshJwtToken(string refreshToken);
-		Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken);
+		Task<RefreshTokenResponse> RefreshJwtToken(string refreshToken);
 		Boolean ExpireToken(string? token);
 		Task RemoveNotiToken(User_Login_LogCustom model);
 	}

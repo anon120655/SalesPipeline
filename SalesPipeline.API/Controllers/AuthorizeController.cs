@@ -13,6 +13,7 @@ using SalesPipeline.Utils;
 using Microsoft.Extensions.Options;
 using System.Net.NetworkInformation;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
+using Azure.Core;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -145,11 +146,11 @@ namespace SalesPipeline.API.Controllers
 
 		[AllowAnonymous]
 		[HttpGet("RefreshJwtToken")]
-		public IActionResult RefreshJwtToken([FromQuery] string refreshToken)
+		public async Task<IActionResult> RefreshJwtToken([FromQuery] string refreshToken)
 		{
 			try
 			{
-				var response = _repo.Authorizes.RefreshJwtToken(refreshToken);
+				var response = await _repo.Authorizes.RefreshJwtToken(refreshToken);
 
 				return Ok(response);
 			}

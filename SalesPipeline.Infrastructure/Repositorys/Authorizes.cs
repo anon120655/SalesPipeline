@@ -266,9 +266,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<(string? AccessToken, string? RefreshToken)> RefreshJwtToken(string refreshToken)
+		public async Task<RefreshTokenResponse> RefreshJwtToken(string refreshToken)
 		{
-			return await _repo.jwtUtils.RefreshJwtToken(refreshToken);
+			var response =  await _repo.jwtUtils.RefreshJwtToken(refreshToken);
+
+			return new RefreshTokenResponse() { access_token = response.AccessToken,refresh_token = response.RefreshToken };
 		}
 
 		public bool ExpireToken(string? token)
