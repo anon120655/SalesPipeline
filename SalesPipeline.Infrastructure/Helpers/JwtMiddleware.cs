@@ -30,6 +30,5 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 			await _next(context);
 		}
-		//11 22 33
 	}
 }
