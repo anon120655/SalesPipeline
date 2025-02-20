@@ -110,9 +110,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				txt_exp_res = $"{expires_in_fcc}m";
 			}
 			// authentication successful so generate jwt token
-			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
+			var generate_response = _jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
 
-			return new AuthenticateResponse(userMap, token, txt_exp_res);
+			return new AuthenticateResponse(userMap, generate_response.AccessToken, generate_response.RefreshToken, txt_exp_res);
 		}
 
 		public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)
@@ -215,9 +215,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var userMap = _mapper.Map<UserCustom>(user);
 
 			// authentication successful so generate jwt token
-			var token = _jwtUtils.GenerateJwtToken(userMap, expires_in);
+			var generate_response = _jwtUtils.GenerateJwtToken(userMap, expires_in);
 
-			return new AuthenticateResponse(userMap, token, expires_in + "d");
+			return new AuthenticateResponse(userMap, generate_response.AccessToken, generate_response.RefreshToken, expires_in + "d");
 		}
 
 		public UserAuth? GetById(int id)

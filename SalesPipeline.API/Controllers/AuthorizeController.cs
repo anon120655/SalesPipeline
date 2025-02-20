@@ -107,7 +107,7 @@ namespace SalesPipeline.API.Controllers
 
 					if (iAuthenData != null)
 					{
-						if (response == null) response = new AuthenticateResponse(new(),string.Empty,string.Empty);
+						if (response == null) response = new AuthenticateResponse(new(),string.Empty,string.Empty, string.Empty);
 						response.iauthen = iAuthenData;
 					}
 				}
