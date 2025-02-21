@@ -103,12 +103,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var userMap = _mapper.Map<UserCustom>(user);
 
 			string txt_exp_res = $"{expires_in}d";
-			int? expires_in_fcc = 1; //days
+			int? expires_in_fcc = null; //days
 			if (_appSet.SystemType == SystemTypeModel.FCC)
 			{
-				expires_in = null;
-				expires_in_fcc = 1;
-				txt_exp_res = $"{expires_in_fcc}m";
+				//expires_in = null;
+				//expires_in_fcc = 1;
+				//txt_exp_res = $"{expires_in_fcc}m";
 			}
 			// authentication successful so generate jwt token
 			var generate_response = await _repo.jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
