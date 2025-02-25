@@ -10,6 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Drawing;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using static NPOI.HSSF.Util.HSSFColor;
@@ -1180,6 +1181,26 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						};
 						_db.Inster(logLogin);
 						await _db.SaveAsync();
+
+						try
+						{
+							//string filePath = @"C:\inetpub\wwwroot\logs\user_login_log_file.txt";
+							if (!string.IsNullOrWhiteSpace(_appSet.LogLoginPath))
+							{
+								string filefullpath = $"{_appSet.LogLoginPath}\\user_login_log_file.txt";
+
+								FileInfo fileInfo = new FileInfo(filefullpath);
+								if (!fileInfo.Exists && fileInfo.Directory != null && !fileInfo.Directory.Exists)
+									Directory.CreateDirectory(fileInfo.Directory.FullName);
+
+								string logMessage = $"[{DateTime.Now}] UserId: {logLogin.UserId}, FullName: {logLogin.FullName}, IPAddress: {logLogin.IPAddress}, DeviceId: {logLogin.DeviceId}, DeviceVersion: {logLogin.DeviceVersion}, SystemVersion: {logLogin.SystemVersion}, AppVersion: {logLogin.AppVersion}, tokenNoti: {logLogin.tokenNoti}{Environment.NewLine}";
+
+								System.IO.File.AppendAllText(filefullpath, logMessage);
+							}
+						}
+						catch (Exception ex)
+						{
+						}
 					}
 
 					if (!String.IsNullOrEmpty(model.DeviceId) && !String.IsNullOrEmpty(model.tokenNoti))

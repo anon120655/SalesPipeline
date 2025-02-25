@@ -10,6 +10,7 @@ namespace SalesPipeline.Utils
 		public string? baseUriApi { get; set; }
 		public string? baseUriWeb { get; set; }
 		public string? ContentRootPath { get; set; }
+		public string? LogLoginPath { get; set; }
 		public string? SystemType { get; set; }
 		public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
         public LineNotifys? LineNotify { get; set; }
