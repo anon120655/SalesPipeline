@@ -26,7 +26,7 @@ function initializeinactivitytimer(dotnetHelper) {
 		//1000 = 1 วินาที //1000*5 = 5 วินาที
 		//60000 = 1 นาที //60000*3 = 3 นาที
 		//600000 = 10 minuts //600000*3 = 30 นาที
-		var milliseconds = 60000 * 30;
+		var milliseconds = 60000 * 15;
 		var _path = window.location.pathname;
 		clearTimeout(timer);
 		if (_path == "/user") {
