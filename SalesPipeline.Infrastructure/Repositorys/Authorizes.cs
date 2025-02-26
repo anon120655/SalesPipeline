@@ -39,14 +39,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = _repo.Context.Users.Include(x => x.Role).SingleOrDefault(x => x.UserName == model.Username);
 
 			// return null if user not found
-			if (user == null) throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
+			if (user == null) throw new ExceptionCustom($"อีเมลหรือรหัสผ่านของท่านไม่ถูกต้อง");
 
-			if (user.PasswordHash == null) throw new ExceptionCustom("อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
+			if (user.PasswordHash == null) throw new ExceptionCustom("อีเมลหรือรหัสผ่านของท่านไม่ถูกต้อง");
 
 			try
 			{
 				if (user.Status == StatusModel.Delete)
-					throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง!");
+					throw new ExceptionCustom($"อีเมลหรือรหัสผ่านของท่านไม่ถูกต้อง!");
 
 				if (user.Status == StatusModel.InActive)
 					throw new ExceptionCustom($"ท่านถูกปิดการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
@@ -70,7 +70,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(user);
 					await _db.SaveAsync();
 
-					throw new ExceptionCustom($"อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง ท่านกรอกผิดอีก {maxLoginFail - user.LoginFail} ครั้ง จะถูกระงับการใช้งาน");
+					throw new ExceptionCustom($"อีเมลหรือรหัสผ่านของท่านไม่ถูกต้อง ท่านกรอกผิดอีก {maxLoginFail - user.LoginFail} ครั้ง จะถูกระงับการใช้งาน");
 				}
 				else
 				{

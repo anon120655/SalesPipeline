@@ -1270,7 +1270,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
 			if (user == null) throw new ExceptionCustom($"Id not found.");
 
-			if (user.PasswordHash == null) throw new ExceptionCustom("อีเมล์หรือรหัสผ่านของท่านไม่ถูกต้อง");
+			if (user.PasswordHash == null) throw new ExceptionCustom("อีเมลหรือรหัสผ่านของท่านไม่ถูกต้อง");
 
 			bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.OldPassword, user.PasswordHash, hashType: HashType.SHA384);
 			if (!verified)
