@@ -47,8 +47,8 @@
 										</div> *@
 										<div class="text-center pt-1 mb-2 pb-1">
 											<Button Color="ButtonColor.Info"
-													Type="ButtonType.Submit"
-													Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100 text-white">
+											Type="ButtonType.Submit"
+											Disabled="@isLoading" Class="btn-block fa-lg gradient-custom-2 mb-3 w-100 text-white">
 												@if (isLoading)
 												{
 													<span>
@@ -61,7 +61,14 @@
 										<div class="form-outline mb-4 text-start">
 											<div class="row d-flex align-items-center">
 												<div class="col-6">
-													<a href="http://172.26.82.211:9105/resetpassword?redirecturl=@base64redirecturl">ลืมรหัสผ่าน</a>
+													@if (_appSet.Value.ServerSite == ServerSites.PRO)
+													{
+														<a href="https://iauthen.int.baac.or.th/resetpassword?redirecturl=@base64redirecturl">ลืมรหัสผ่าน</a>
+													}
+													else
+													{
+														<a href="http://172.26.82.211:9105/resetpassword?redirecturl=@base64redirecturl">ลืมรหัสผ่าน</a>
+													}
 												</div>
 												<div class="col-6 text-end">
 													<a href="https://iauthen.int.baac.or.th/about" target="_blank">
