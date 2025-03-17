@@ -54,7 +54,8 @@ namespace SalesPipeline.API.Controllers
 						{
 							foreach (NetworkInterface adapter in adapters)
 							{
-								if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
+								if ((adapter.Description.Contains("Array Networks VPN Adapter") || adapter.Name.Contains("_Common_all-network - green.baac.or.th") )
+									&& adapter.OperationalStatus == OperationalStatus.Up)
 								{
 									isVpnConnect = true;
 								}
