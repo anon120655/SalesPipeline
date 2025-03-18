@@ -2,6 +2,7 @@
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -1187,15 +1188,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							//string filePath = @"C:\inetpub\wwwroot\logs\user_login_log_file.txt";
 							if (!string.IsNullOrWhiteSpace(_appSet.LogLoginPath))
 							{
-								string filefullpath = $"{_appSet.LogLoginPath}\\user_login_log_file.txt";
+								var yearEn = GeneralUtils.GetYearEn(DateTime.Now.Year);
+								var Month = DateTime.Now.ToString("MM");
+								var Day = DateTime.Now.ToString("dd");
+								string formattedDate = $"{yearEn}_{Month}_{Day}";
+								Console.WriteLine(formattedDate);
+								string filefullpath = $"{_appSet.LogLoginPath}\\user_login_log_file_{formattedDate}.txt";
 
 								FileInfo fileInfo = new FileInfo(filefullpath);
 								if (!fileInfo.Exists && fileInfo.Directory != null && !fileInfo.Directory.Exists)
 									Directory.CreateDirectory(fileInfo.Directory.FullName);
 
-								string logMessage = $"[{DateTime.Now}] UserId: {logLogin.UserId}, FullName: {logLogin.FullName}, IPAddress: {logLogin.IPAddress}, DeviceId: {logLogin.DeviceId}, DeviceVersion: {logLogin.DeviceVersion}, SystemVersion: {logLogin.SystemVersion}, AppVersion: {logLogin.AppVersion}, tokenNoti: {logLogin.tokenNoti}{Environment.NewLine}";
+								//string logMessage = $"[{DateTime.Now}] UserId: {logLogin.UserId}, FullName: {logLogin.FullName}, IPAddress: {logLogin.IPAddress}, DeviceId: {logLogin.DeviceId}, DeviceVersion: {logLogin.DeviceVersion}, SystemVersion: {logLogin.SystemVersion}, AppVersion: {logLogin.AppVersion}, tokenNoti: {logLogin.tokenNoti}{Environment.NewLine}";
 
-								System.IO.File.AppendAllText(filefullpath, logMessage);
+								// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
+								string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "[]"; // เริ่มด้วย array ว่างถ้าไม่มีไฟล์
+								var logList = JsonConvert.DeserializeObject<List<User_Login_Log>>(existingData); // แปลงเป็น List เพื่อเพิ่มข้อมูล
+
+								// เพิ่มข้อมูลใหม่
+								string dataJson = JsonConvert.SerializeObject(logLogin);
+								logList.Add(JsonConvert.DeserializeObject<User_Login_Log>(dataJson)); // เพิ่ม object ใหม่เข้าไปใน List
+
+								// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
+								//string updatedJson = JsonConvert.SerializeObject(logList, Formatting.Indented); // ทำให้ JSON อ่านง่าย
+								string updatedJson = JsonConvert.SerializeObject(logList); // ทำให้ JSON อ่านง่าย
+								File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
 							}
 						}
 						catch (Exception ex)
