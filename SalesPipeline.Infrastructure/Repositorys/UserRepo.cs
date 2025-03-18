@@ -1201,17 +1201,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								//string logMessage = $"[{DateTime.Now}] UserId: {logLogin.UserId}, FullName: {logLogin.FullName}, IPAddress: {logLogin.IPAddress}, DeviceId: {logLogin.DeviceId}, DeviceVersion: {logLogin.DeviceVersion}, SystemVersion: {logLogin.SystemVersion}, AppVersion: {logLogin.AppVersion}, tokenNoti: {logLogin.tokenNoti}{Environment.NewLine}";
 
-								// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
-								string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "[]"; // เริ่มด้วย array ว่างถ้าไม่มีไฟล์
-								var logList = JsonConvert.DeserializeObject<List<User_Login_Log>>(existingData); // แปลงเป็น List เพื่อเพิ่มข้อมูล
+								//// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
+								//string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "[]"; // เริ่มด้วย array ว่างถ้าไม่มีไฟล์
+								//var logList = JsonConvert.DeserializeObject<List<User_Login_Log>>(existingData); // แปลงเป็น List เพื่อเพิ่มข้อมูล
 
-								// เพิ่มข้อมูลใหม่
+								//// เพิ่มข้อมูลใหม่
+								//string dataJson = JsonConvert.SerializeObject(logLogin);
+								//logList.Add(JsonConvert.DeserializeObject<User_Login_Log>(dataJson)); // เพิ่ม object ใหม่เข้าไปใน List
+
+								//// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
+								////string updatedJson = JsonConvert.SerializeObject(logList, Formatting.Indented); // ทำให้ JSON อ่านง่าย
+								//string updatedJson = JsonConvert.SerializeObject(logList); // ทำให้ JSON อ่านง่าย
+								//File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
+								// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
+
+								string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "{}"; // เริ่มด้วย object ว่างถ้าไม่มีไฟล์
+								var logDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(existingData); // แปลงเป็น Dictionary
+
+								// สร้าง key สำหรับ log ใหม่ (เช่น ใช้ timestamp)
+								string key = DateTime.Now.ToString("yyyyMMddHHmmssfff"); // key ไม่ซ้ำกันจาก timestamp
 								string dataJson = JsonConvert.SerializeObject(logLogin);
-								logList.Add(JsonConvert.DeserializeObject<User_Login_Log>(dataJson)); // เพิ่ม object ใหม่เข้าไปใน List
+								logDict[key] = JsonConvert.DeserializeObject<object>(dataJson); // เพิ่ม log ใหม่เข้า Dictionary
 
 								// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
-								//string updatedJson = JsonConvert.SerializeObject(logList, Formatting.Indented); // ทำให้ JSON อ่านง่าย
-								string updatedJson = JsonConvert.SerializeObject(logList); // ทำให้ JSON อ่านง่าย
+								string updatedJson = JsonConvert.SerializeObject(logDict, Formatting.Indented); // ทำให้ JSON อ่านง่าย
 								File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
 							}
 						}
