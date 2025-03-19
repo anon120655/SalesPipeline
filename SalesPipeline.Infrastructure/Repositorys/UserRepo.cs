@@ -1224,7 +1224,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								logDict[key] = JsonConvert.DeserializeObject<object>(dataJson); // เพิ่ม log ใหม่เข้า Dictionary
 
 								// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
-								string updatedJson = JsonConvert.SerializeObject(logDict, Formatting.Indented); // ทำให้ JSON อ่านง่าย
+								string updatedJson = JsonConvert.SerializeObject(logDict); // ทำให้ JSON อ่านง่าย
 								File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
 							}
 						}
