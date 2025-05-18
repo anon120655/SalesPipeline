@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using SalesPipeline.ViewModels;
 using Newtonsoft.Json;
 using SalesPipeline.Utils.Resources.Shares;
+using Newtonsoft.Json.Linq;
 
 namespace SalesPipeline.Helpers
 {
@@ -86,7 +87,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+				
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken) && userName == null)
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -195,7 +199,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -281,7 +288,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -367,7 +377,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -452,7 +465,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -495,7 +511,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "application/json");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
@@ -539,7 +558,10 @@ namespace SalesPipeline.Helpers
 				request.AddHeader("Content-Type", "multipart/form-data");
 
 				var _accessoken = await _authorizeViewModel.GetAccessToken();
-				if (token is not null) _accessoken = token;
+
+				if (!string.IsNullOrEmpty(token))
+					_accessoken = token;
+
 				if (!string.IsNullOrWhiteSpace(_accessoken))
 				{
 					var _authHeader = new AuthenticationHeaderValue("Bearer", _accessoken);
