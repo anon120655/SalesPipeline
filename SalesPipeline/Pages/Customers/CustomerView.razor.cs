@@ -1,4 +1,4 @@
-using BlazorBootstrap;
+Ôªøusing BlazorBootstrap;
 using global::Microsoft.AspNetCore.Components;
 using Hangfire.Common;
 using Microsoft.JSInterop;
@@ -12,241 +12,241 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Customers
 {
-	public partial class CustomerView
-	{
-		[Parameter]
-		public Guid id { get; set; }
+    public partial class CustomerView
+    {
+        [Parameter]
+        public Guid id { get; set; }
 
-		string? _errorMessage = null;
-		private bool isLoading = false;
-		private User_PermissionCustom _permission = new();
-		private bool IsView = true;
-		private LookUpResource LookUp = new();
-		private SaleCustom formModel = new();
+        string? _errorMessage = null;
+        private bool isLoading = false;
+        private User_PermissionCustom _permission = new();
+        private bool IsView = true;
+        private LookUpResource LookUp = new();
+        private SaleCustom formModel = new();
 
-		Modal modalHistory = default!;
-		private List<Customer_HistoryCustom>? ItemsHistory;
+        Modal modalHistory = default!;
+        private List<Customer_HistoryCustom>? ItemsHistory;
 
-		ModalConfirm modalConfirmRePurpose = default!;
-		private bool IsToCancel = false;
+        ModalConfirm modalConfirmRePurpose = default!;
+        private bool IsToCancel = false;
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
-			StateHasChanged();
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.Customers) ?? new User_PermissionCustom();
+            StateHasChanged();
 
-			await SetModel();
-		}
+            await SetModel();
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await Task.Delay(1);
-				StateHasChanged();
-				firstRender = false;
-			}
-		}
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await Task.Delay(1);
+                StateHasChanged();
+                firstRender = false;
+            }
+        }
 
-		protected async Task SetModel()
-		{
-			if (id != Guid.Empty)
-			{
-				var data = await _salesViewModel.GetById(id);
-				if (data != null && data.Status && data.Data != null)
-				{
-					if (UserInfo.IsAssignRM)
-					{
-						//‡™Á§«Ë“∂Ÿ°¡Õ∫À¡“¬À√◊Õ‰¡Ë
-						if (data.Data.AssCenterUserId != UserInfo.Id)
-						{
-							var viewSales = await _salesViewModel.IsViewSales(id, UserInfo.Id);
-							if (viewSales != null)
-							{
-								IsView = viewSales.Data;
-							}
-						}
-					}
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModel()
+        {
+            if (id != Guid.Empty)
+            {
+                var data = await _salesViewModel.GetById(id);
+                if (data != null && data.Status && data.Data != null)
+                {
+                    if (UserInfo.IsAssignRM)
+                    {
+                        //‡πÄ‡∏ä‡πá‡∏Ñ‡∏ß‡πà‡∏≤‡∏ñ‡∏π‡∏Å‡∏°‡∏≠‡∏ö‡∏´‡∏°‡∏≤‡∏¢‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà
+                        if (data.Data.AssCenterUserId != UserInfo.Id)
+                        {
+                            var viewSales = await _salesViewModel.IsViewSales(id, UserInfo.Id);
+                            if (viewSales != null)
+                            {
+                                IsView = viewSales.Data;
+                            }
+                        }
+                    }
+                    formModel = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task SetModelHistory()
-		{
-			if (id != Guid.Empty)
-			{
-				var data = await _customerViewModel.GetListHistory(new() { customerid = formModel.CustomerId, pagesize = 1000 });
-				if (data != null && data.Status && data.Data != null)
-				{
-					ItemsHistory = data.Data.Items;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModelHistory()
+        {
+            if (id != Guid.Empty)
+            {
+                var data = await _customerViewModel.GetListHistory(new() { customerid = formModel.CustomerId, pagesize = 1000 });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    ItemsHistory = data.Data.Items;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected void Cancel()
-		{
-			_Navs.NavigateTo("/customer");
-		}
+        protected void Cancel()
+        {
+            _Navs.NavigateTo("/customer");
+        }
 
-		protected async Task UpdateStatusWaitResults()
-		{
-			if (id != Guid.Empty)
-			{
-				var response = await _salesViewModel.UpdateStatusOnly(new()
-				{
-					SaleId = id,
-					StatusId = StatusSaleModel.WaitResults,
-					CreateBy = UserInfo.Id
-				});
+        protected async Task UpdateStatusWaitResults()
+        {
+            if (id != Guid.Empty)
+            {
+                var response = await _salesViewModel.UpdateStatusOnly(new()
+                {
+                    SaleId = id,
+                    StatusId = StatusSaleModel.WaitResults,
+                    CreateBy = UserInfo.Id
+                });
 
-				if (response.Status)
-				{
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-					Cancel();
-				}
-				else
-				{
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
-			}
-		}
+                if (response.Status)
+                {
+                    await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                    Cancel();
+                }
+                else
+                {
+                    _errorMessage = response.errorMessage;
+                    await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+                }
+            }
+        }
 
-		protected async Task ShowTabContactInfo()
-		{
-			if (formModel.Sale_Contact_Infos == null || formModel.Sale_Contact_Infos.Count == 0)
-			{
-				var data = await _salesViewModel.GetListInfo(new() { id = id, pagesize = 200, saleid = formModel.Id });
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel.Sale_Contact_Infos = data.Data.Items;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task ShowTabContactInfo()
+        {
+            if (formModel.Sale_Contact_Infos == null || formModel.Sale_Contact_Infos.Count == 0)
+            {
+                var data = await _salesViewModel.GetListInfo(new() { id = id, pagesize = 200, saleid = formModel.Id });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel.Sale_Contact_Infos = data.Data.Items;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task ShowTabDocument()
-		{
-			if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
-			{
-				var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 200 });
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel.Sale_Documents = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-			if (formModel.Sale_Document_Files == null || formModel.Sale_Document_Files.Count == 0)
-			{
-				var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = id, pagesize = 200 });
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel.Sale_Document_Files = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task ShowTabDocument()
+        {
+            if (formModel.Sale_Documents == null || formModel.Sale_Documents.Count == 0)
+            {
+                var data = await _processSaleViewModel.GetListDocument(new() { id = id, pagesize = 200 });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel.Sale_Documents = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+            if (formModel.Sale_Document_Files == null || formModel.Sale_Document_Files.Count == 0)
+            {
+                var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = id, pagesize = 200 });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel.Sale_Document_Files = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task ShowTabContactHistory()
-		{
-			if (formModel.Sale_Contact_Histories == null || formModel.Sale_Contact_Histories.Count == 0)
-			{
-				var data = await _processSaleViewModel.GetListContactHistory(new() { id = id, pagesize = 200 });
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel.Sale_Contact_Histories = data.Data.Items;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task ShowTabContactHistory()
+        {
+            if (formModel.Sale_Contact_Histories == null || formModel.Sale_Contact_Histories.Count == 0)
+            {
+                var data = await _processSaleViewModel.GetListContactHistory(new() { id = id, pagesize = 200 });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel.Sale_Contact_Histories = data.Data.Items;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task ShowTabPartneInfo()
-		{
-			if (formModel.Sale_Partners == null || formModel.Sale_Partners.Count == 0)
-			{
-				var data = await _salesViewModel.GetListPartner(new() { id = id, pagesize = 200, saleid = formModel.Id });
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel.Sale_Partners = data.Data.Items;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task ShowTabPartneInfo()
+        {
+            if (formModel.Sale_Partners == null || formModel.Sale_Partners.Count == 0)
+            {
+                var data = await _salesViewModel.GetListPartner(new() { id = id, pagesize = 200, saleid = formModel.Id });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel.Sale_Partners = data.Data.Items;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		private async Task OnShowHistory()
-		{
-			await SetModelHistory();
-			await modalHistory.ShowAsync();
-		}
+        private async Task OnShowHistory()
+        {
+            await SetModelHistory();
+            await modalHistory.ShowAsync();
+        }
 
-		private async Task OnHideHistory()
-		{
-			await modalHistory.HideAsync();
-		}
+        private async Task OnHideHistory()
+        {
+            await modalHistory.HideAsync();
+        }
 
-		protected async Task OnShowConfirmRePurpose(string? id, string? txt)
-		{
-			await modalConfirmRePurpose.OnShowConfirm(id, $"§ÿ≥µÈÕß°“√ Re-Purpose <span class='text-primary'>{txt}</span>");
-		}
+        protected async Task OnShowConfirmRePurpose(string? id, string? txt)
+        {
+            await modalConfirmRePurpose.OnShowConfirm(id, $"‡∏Ñ‡∏∏‡∏ì‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£ Re-Purpose <span class='text-primary'>{txt}</span>");
+        }
 
-		protected async Task ConfirmRePurpose(string id)
-		{
-			Guid _id = Guid.Parse(id);
-			var data = await _salesViewModel.RePurpose(new()
-			{
-				SaleId = _id,
-				CurrentUserId = UserInfo.Id
-			});
-			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-			else
-			{
-				IsToCancel = true;
-				await modalConfirmRePurpose.OnHideConfirm();
-			}
-		}
+        protected async Task ConfirmRePurpose(string id)
+        {
+            Guid _id = Guid.Parse(id);
+            var data = await _salesViewModel.RePurpose(new()
+            {
+                SaleId = _id,
+                CurrentUserId = UserInfo.Id
+            });
+            if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
+            else
+            {
+                IsToCancel = true;
+                await modalConfirmRePurpose.OnHideConfirm();
+            }
+        }
 
-		private void OnModalHiddenRePurpose()
-		{
-			if (IsToCancel)
-			{
-				Cancel();
-			}
-		}
+        private void OnModalHiddenRePurpose()
+        {
+            if (IsToCancel)
+            {
+                Cancel();
+            }
+        }
 
-	}
+    }
 }

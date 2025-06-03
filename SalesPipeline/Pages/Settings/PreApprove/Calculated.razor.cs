@@ -1,4 +1,4 @@
-using BlazorBootstrap;
+Ôªøusing BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
@@ -9,255 +9,255 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Settings.PreApprove
 {
-	public partial class Calculated
-	{
-		public Guid? id { get; set; }
+    public partial class Calculated
+    {
+        public Guid? id { get; set; }
 
-		string? _errorMessage = null;
-		private User_PermissionCustom _permission = new();
-		private allFilter filter = new();
-		private LookUpResource LookUp = new();
-		private bool isLoading = false;
-		private List<Pre_CalCustom>? Items;
-		public Pager? Pager;
-		private Pre_CalCustom formModel = new();
+        string? _errorMessage = null;
+        private User_PermissionCustom _permission = new();
+        private allFilter filter = new();
+        private LookUpResource LookUp = new();
+        private bool isLoading = false;
+        private List<Pre_CalCustom>? Items;
+        public Pager? Pager;
+        private Pre_CalCustom formModel = new();
 
-		Modal modalForm = default!;
-		ModalConfirm modalConfirm = default!;
+        Modal modalForm = default!;
+        ModalConfirm modalConfirm = default!;
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetPreApprove) ?? new User_PermissionCustom();
-			StateHasChanged();
-			await Task.Delay(1);
-		}
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetPreApprove) ?? new User_PermissionCustom();
+            StateHasChanged();
+            await Task.Delay(1);
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await SetQuery();
-				StateHasChanged();
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await SetQuery();
+                StateHasChanged();
 
-				firstRender = false;
-			}
-		}
+                firstRender = false;
+            }
+        }
 
-		protected async Task SetQuery(string? parematerAll = null)
-		{
-			string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
+        protected async Task SetQuery(string? parematerAll = null)
+        {
+            string uriQuery = _Navs.ToAbsoluteUri(_Navs.Uri).Query;
 
-			if (parematerAll != null)
-				uriQuery = $"?{parematerAll}";
+            if (parematerAll != null)
+                uriQuery = $"?{parematerAll}";
 
-			filter.SetUriQuery(uriQuery);
+            filter.SetUriQuery(uriQuery);
 
-			await SetModel();
-			StateHasChanged();
-		}
+            await SetModel();
+            StateHasChanged();
+        }
 
-		protected async Task SetInitManual()
-		{
-			await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
+        protected async Task SetInitManual()
+        {
+            await _jsRuntimes.InvokeVoidAsync("BootSelectClass", "selectInit");
 
-			var filterMaster = new allFilter() { page = 1, pagesize = 300 };
+            var filterMaster = new allFilter() { page = 1, pagesize = 300 };
 
-			var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filterMaster);
-			if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
-			{
-				LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
-				StateHasChanged();
-				await Task.Delay(10);
-				await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_Applicant_Loan");
-			}
-			else
-			{
-				_errorMessage = dataPre_App_Loan?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+            var dataPre_App_Loan = await _masterViewModel.GetPre_App_Loan(filterMaster);
+            if (dataPre_App_Loan != null && dataPre_App_Loan.Status)
+            {
+                LookUp.Pre_Applicant_Loan = dataPre_App_Loan.Data?.Items;
+                StateHasChanged();
+                await Task.Delay(10);
+                await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_Applicant_Loan");
+            }
+            else
+            {
+                _errorMessage = dataPre_App_Loan?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			var dataPre_BusType = await _masterViewModel.GetPre_BusType(filterMaster);
-			if (dataPre_BusType != null && dataPre_BusType.Status)
-			{
-				LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
-				StateHasChanged();
-				await Task.Delay(10);
-				await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_BusinessType");
-			}
-			else
-			{
-				_errorMessage = dataPre_BusType?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-		}
+            var dataPre_BusType = await _masterViewModel.GetPre_BusType(filterMaster);
+            if (dataPre_BusType != null && dataPre_BusType.Status)
+            {
+                LookUp.Pre_BusinessType = dataPre_BusType.Data?.Items;
+                StateHasChanged();
+                await Task.Delay(10);
+                await _jsRuntimes.InvokeVoidAsync("BootDestroyAndNewSelectId", "Pre_BusinessType");
+            }
+            else
+            {
+                _errorMessage = dataPre_BusType?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
+        }
 
-		protected async Task SetModel()
-		{
-			filter.pagesize = 10;
-			var data = await _preCalViewModel.GetList(filter);
-			if (data != null && data.Status)
-			{
-				Items = data.Data?.Items;
-				Pager = data.Data?.Pager;
-				if (Pager != null)
-				{
-					Pager.UrlAction = "/setting/pre/calculated";
-				}
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-		}
+        protected async Task SetModel()
+        {
+            filter.pagesize = 10;
+            var data = await _preCalViewModel.GetList(filter);
+            if (data != null && data.Status)
+            {
+                Items = data.Data?.Items;
+                Pager = data.Data?.Pager;
+                if (Pager != null)
+                {
+                    Pager.UrlAction = "/setting/pre/calculated";
+                }
+            }
+            else
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
+        }
 
-		protected async Task SetModelById(Guid id)
-		{
-			var data = await _preCalViewModel.GetById(id);
-			if (data != null && data.Status)
-			{
-				if (data.Data != null)
-				{
-					formModel = data.Data;
-					StateHasChanged();
-				}
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-		}
+        protected async Task SetModelById(Guid id)
+        {
+            var data = await _preCalViewModel.GetById(id);
+            if (data != null && data.Status)
+            {
+                if (data.Data != null)
+                {
+                    formModel = data.Data;
+                    StateHasChanged();
+                }
+            }
+            else
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
+        }
 
-		private async Task Save()
-		{
-			_errorMessage = null;
-			ShowLoading();
+        private async Task Save()
+        {
+            _errorMessage = null;
+            ShowLoading();
 
-			ResultModel<Pre_CalCustom> response;
+            ResultModel<Pre_CalCustom> response;
 
-			formModel.CurrentUserId = UserInfo.Id;
+            formModel.CurrentUserId = UserInfo.Id;
 
-			if (id.HasValue && id != Guid.Empty)
-			{
-				response = await _preCalViewModel.Update(formModel);
-			}
-			else
-			{
-				response = await _preCalViewModel.Create(formModel);
-			}
+            if (id.HasValue && id != Guid.Empty)
+            {
+                response = await _preCalViewModel.Update(formModel);
+            }
+            else
+            {
+                response = await _preCalViewModel.Create(formModel);
+            }
 
-			if (response.Status)
-			{
-				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-				HideLoading();
-				await OnHide();
+            if (response.Status)
+            {
+                await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                HideLoading();
+                await OnHide();
 
-				filter.page = 1;
-				await SetModel();
-				StateHasChanged();
-			}
-			else
-			{
-				HideLoading();
-				_errorMessage = response.errorMessage;
-				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			}
-		}
+                filter.page = 1;
+                await SetModel();
+                StateHasChanged();
+            }
+            else
+            {
+                HideLoading();
+                _errorMessage = response.errorMessage;
+                await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+            }
+        }
 
-		protected async Task ConfirmDelete(string? id, string? txt)
-		{
-			await modalConfirm.OnShowConfirm(id, $"§ÿ≥µÈÕß°“√≈∫¢ÈÕ¡Ÿ≈ <span class='text-primary'>{txt}</span>");
-		}
+        protected async Task ConfirmDelete(string? id, string? txt)
+        {
+            await modalConfirm.OnShowConfirm(id, $"‡∏Ñ‡∏∏‡∏ì‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• <span class='text-primary'>{txt}</span>");
+        }
 
-		protected async Task Delete(string id)
-		{
-			await modalConfirm.OnHideConfirm();
+        protected async Task Delete(string id)
+        {
+            await modalConfirm.OnHideConfirm();
 
-			var data = await _preCalViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
-			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+            var data = await _preCalViewModel.DeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+            if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			filter.page = 1;
-			await SetModel();
-		}
+            filter.page = 1;
+            await SetModel();
+        }
 
-		protected async Task StatusChanged(ChangeEventArgs e, Guid id)
-		{
-			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
-			{
-				var data = await _preCalViewModel.UpdateStatusById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
-				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-				else
-				{
-					string? actiontxt = val ? "<i class=\"fa-regular fa-circle-check\"></i> ‡ª‘¥" : "<i class=\"fa-solid fa-circle-xmark\"></i> ª‘¥";
-					string fulltxt = $"{actiontxt}°“√„™Èß“π‡√’¬∫√ÈÕ¬";
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
-					await SetModel();
-				}
-			}
-		}
+        protected async Task StatusChanged(ChangeEventArgs e, Guid id)
+        {
+            if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool val))
+            {
+                var data = await _preCalViewModel.UpdateStatusById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = val.ToString() });
+                if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+                else
+                {
+                    string? actiontxt = val ? "<i class=\"fa-regular fa-circle-check\"></i> ‡πÄ‡∏õ‡∏¥‡∏î" : "<i class=\"fa-solid fa-circle-xmark\"></i> ‡∏õ‡∏¥‡∏î";
+                    string fulltxt = $"{actiontxt}‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢";
+                    await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
+                    await SetModel();
+                }
+            }
+        }
 
-		private async Task OnShow(Guid? _id = null)
-		{
-			if (_id.HasValue && _id.Value != Guid.Empty)
-			{
-				id = _id;
-				await SetModelById(_id.Value);
-			}
-			else
-			{
-				id = null;
-				formModel = new();
-			}
-			await modalForm.ShowAsync();
-		}
+        private async Task OnShow(Guid? _id = null)
+        {
+            if (_id.HasValue && _id.Value != Guid.Empty)
+            {
+                id = _id;
+                await SetModelById(_id.Value);
+            }
+            else
+            {
+                id = null;
+                formModel = new();
+            }
+            await modalForm.ShowAsync();
+        }
 
-		private async Task OnHide()
-		{
-			id = null;
-			await modalForm.HideAsync();
-		}
+        private async Task OnHide()
+        {
+            id = null;
+            await modalForm.HideAsync();
+        }
 
-		private async Task OnModalShown()
-		{
-			await SetInitManual();
-		}
+        private async Task OnModalShown()
+        {
+            await SetInitManual();
+        }
 
-		private void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        private void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		private void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        private void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
-		protected async Task OnSelectPagesize(int _number)
-		{
-			Items = null;
-			StateHasChanged();
-			filter.page = 1;
-			filter.pagesize = _number;
-			await SetModel();
-			_Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
-		}
+        protected async Task OnSelectPagesize(int _number)
+        {
+            Items = null;
+            StateHasChanged();
+            filter.page = 1;
+            filter.pagesize = _number;
+            await SetModel();
+            _Navs.NavigateTo($"{Pager?.UrlAction}?{filter.SetParameter(true)}");
+        }
 
-		protected async Task OnSelectPage(string parematerAll)
-		{
-			await SetQuery(parematerAll);
-			StateHasChanged();
-		}
+        protected async Task OnSelectPage(string parematerAll)
+        {
+            await SetQuery(parematerAll);
+            StateHasChanged();
+        }
 
-	}
+    }
 }

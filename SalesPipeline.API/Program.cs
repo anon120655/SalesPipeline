@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SalesPipeline.Infrastructure.Helpers;
@@ -24,7 +24,7 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//[JsonIgnore] �� System.Text.Json.Serialization
+//[JsonIgnore] ใช้ System.Text.Json.Serialization
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -73,26 +73,26 @@ builder.Services.AddDbContext<SalesPipelineContext>(
        );
 
 builder.Services.AddDbContext<SalesPipelineLogContext>(
-		   dbContextOptions => dbContextOptions
-			   .UseMySql(SalesPipelineLogContext, autoDetectVersion)
-			   .LogTo(Console.WriteLine, LogLevel.Information)
-			   .EnableSensitiveDataLogging()
-			   .EnableDetailedErrors()
-	   );
+           dbContextOptions => dbContextOptions
+               .UseMySql(SalesPipelineLogContext, autoDetectVersion)
+               .LogTo(Console.WriteLine, LogLevel.Information)
+               .EnableSensitiveDataLogging()
+               .EnableDetailedErrors()
+       );
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
-//**���Ը�����ʴ�ᴪ���촷���������� �ҧ˹����˹����ҧ ��˹� Allow User Variables=true � ConnectionStrings
+//**แก้วิธีให้แสดงแดชบอร์ดทั้งหมดไม่ได้ บางหน้าเป็นหน้าว่าง กำหนด Allow User Variables=true ใน ConnectionStrings
 builder.Services.AddHangfire(config =>
     config.UseStorage(new MySqlStorage(SalesPipelineJobContext, new MySqlStorageOptions
     {
-        TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // ��駤���дѺ����¡��÷Ӹ�á���
-        QueuePollInterval = TimeSpan.FromSeconds(15), // ��駤�Ҫ�ǧ��������Ѻ����礤��
-        JobExpirationCheckInterval = TimeSpan.FromHours(1), // ��駤�Ҫ�ǧ��������Ѻ��õ�Ǩ�ͺ�ҹ����������
-        CountersAggregateInterval = TimeSpan.FromMinutes(5), // ��駤�Ҫ�ǧ��������Ѻ�������Ţͧ�ҹ�����
-        PrepareSchemaIfNecessary = true, // ������ҧ schema ��Ҩ���
-        DashboardJobListLimit = 5000, // �ӹǹ�٧�ش�ͧ��¡�çҹ�����ʴ�� dashboard
-        TransactionTimeout = TimeSpan.FromMinutes(1), // ��駤������ timeout ����Ѻ��á���
+        TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // ตั้งค่าระดับการแยกการทำธุรกรรม
+        QueuePollInterval = TimeSpan.FromSeconds(15), // ตั้งค่าช่วงเวลาสำหรับการเช็คคิว
+        JobExpirationCheckInterval = TimeSpan.FromHours(1), // ตั้งค่าช่วงเวลาสำหรับการตรวจสอบงานที่หมดอายุ
+        CountersAggregateInterval = TimeSpan.FromMinutes(5), // ตั้งค่าช่วงเวลาสำหรับการรวมผลของเคาน์เตอร์
+        PrepareSchemaIfNecessary = true, // ให้สร้าง schema ถ้าจำเป็น
+        DashboardJobListLimit = 5000, // จำนวนสูงสุดของรายการงานที่จะแสดงใน dashboard
+        TransactionTimeout = TimeSpan.FromMinutes(1), // ตั้งค่าเวลา timeout สำหรับธุรกรรม
         TablesPrefix = "Hangfire_"
     }))
     .UseSimpleAssemblyNameTypeSerializer()
@@ -195,10 +195,10 @@ var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
 //builder.Services.AddHangfire(config =>
 //{
-//	// �� Memory Storage ᷹����������Ͱҹ������
+//	// ใช้ Memory Storage แทนการเชื่อมต่อฐานข้อมูล
 //	config.UseMemoryStorage();
 
-//	// ��˹� TimeZone �� TimeZone �ͧ��ا෾� (Bangkok)
+//	// กำหนด TimeZone เป็น TimeZone ของกรุงเทพฯ (Bangkok)
 //	var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 //	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
 //		  .UseSimpleAssemblyNameTypeSerializer()
@@ -208,12 +208,12 @@ var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowSpecificMethods",
-		builder =>
-		{
-			builder.WithMethods("GET", "POST", "PUT", "DELETE")
-				   .AllowAnyHeader();
-		});
+    options.AddPolicy("AllowSpecificMethods",
+        builder =>
+        {
+            builder.WithMethods("GET", "POST", "PUT", "DELETE")
+                   .AllowAnyHeader();
+        });
 });
 
 var app = builder.Build();
@@ -248,7 +248,7 @@ app.UseStaticFiles(new StaticFileOptions()
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// �Դ����Ǥ������ͷ��ͺ�� prod ��ͧ�Դ
+// ปิดใช้ชั่วคราวเพื่อทดสอบบน prod ต้องเปิด
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -267,7 +267,7 @@ app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
 
 //app.UseHangfireDashboard();
-// ��˹������ Hangfire middleware �������õ�駤�ҡ���Ѻ�ͧ�����١��ͧ
+// กำหนดให้ใช้ Hangfire middleware พร้อมการตั้งค่าการรับรองความถูกต้อง
 app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 {
     Authorization = new[] { new MyAuthorizationFilter() }

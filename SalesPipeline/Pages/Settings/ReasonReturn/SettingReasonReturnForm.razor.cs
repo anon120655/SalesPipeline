@@ -7,105 +7,105 @@ using SalesPipeline.Utils;
 
 namespace SalesPipeline.Pages.Settings.ReasonReturn
 {
-	public partial class SettingReasonReturnForm
-	{
-		[Parameter]
-		public Guid? id { get; set; }
+    public partial class SettingReasonReturnForm
+    {
+        [Parameter]
+        public Guid? id { get; set; }
 
-		string? _errorMessage = null;
-		private bool isLoading = false;
-		private LookUpResource LookUp = new();
-		private User_PermissionCustom _permission = new();
-		private Master_ReasonReturnCustom formModel = new();
+        string? _errorMessage = null;
+        private bool isLoading = false;
+        private LookUpResource LookUp = new();
+        private User_PermissionCustom _permission = new();
+        private Master_ReasonReturnCustom formModel = new();
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetReason) ?? new User_PermissionCustom();
-			StateHasChanged();
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetReason) ?? new User_PermissionCustom();
+            StateHasChanged();
 
-			await SetModel();
-		}
+            await SetModel();
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
-				StateHasChanged();
-				firstRender = false;
-			}
-		}
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+                StateHasChanged();
+                firstRender = false;
+            }
+        }
 
-		protected async Task SetModel()
-		{
-			if (id.HasValue)
-			{
-				var data = await _masterViewModel.GetReasonReturnById(id.Value);
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModel()
+        {
+            if (id.HasValue)
+            {
+                var data = await _masterViewModel.GetReasonReturnById(id.Value);
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task OnInvalidSubmit()
-		{
-			await Task.Delay(100);
-			await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
-		}
+        protected async Task OnInvalidSubmit()
+        {
+            await Task.Delay(100);
+            await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
+        }
 
-		protected async Task Save()
-		{
-			_errorMessage = null;
-			ShowLoading();
+        protected async Task Save()
+        {
+            _errorMessage = null;
+            ShowLoading();
 
-			ResultModel<Master_ReasonReturnCustom> response;
+            ResultModel<Master_ReasonReturnCustom> response;
 
-			formModel.CurrentUserId = UserInfo.Id;
+            formModel.CurrentUserId = UserInfo.Id;
 
-			if (id.HasValue)
-			{
-				response = await _masterViewModel.UpdateReasonReturn(formModel);
-			}
-			else
-			{
-				response = await _masterViewModel.CreateReasonReturn(formModel);
-			}
+            if (id.HasValue)
+            {
+                response = await _masterViewModel.UpdateReasonReturn(formModel);
+            }
+            else
+            {
+                response = await _masterViewModel.CreateReasonReturn(formModel);
+            }
 
-			if (response.Status)
-			{
-				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-				Cancel();
-			}
-			else
-			{
-				HideLoading();
-				_errorMessage = response.errorMessage;
-				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			}
-		}
+            if (response.Status)
+            {
+                await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                Cancel();
+            }
+            else
+            {
+                HideLoading();
+                _errorMessage = response.errorMessage;
+                await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+            }
+        }
 
-		public void Cancel()
-		{
-			_Navs.NavigateTo("/setting/reason");
-		}
+        public void Cancel()
+        {
+            _Navs.NavigateTo("/setting/reason");
+        }
 
-		protected void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        protected void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		protected void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        protected void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
-	}
+    }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Utils;
 using System.Text;
@@ -22,16 +22,16 @@ namespace SalesPipeline.Pages
                 {
                     try
                     {
-                        // �ŧ Base64 ��Ѻ�� byte array
+                        // แปลง Base64 กลับเป็น byte array
                         var bytes = Convert.FromBase64String(redirecturl);
 
-                        // �ŧ byte array ��Ѻ��ʵ�ԧ���� (UTF-8)
+                        // แปลง byte array กลับเป็นสตริงปกติ (UTF-8)
                         redirecturl_decode = Encoding.UTF8.GetString(bytes);
 
                     }
                     catch (Exception)
                     {
-                        _errorMessage = "�ٻẺ base64 ���١��ͧ";
+                        _errorMessage = "รูปแบบ base64 ไม่ถูกต้อง";
                     }
                     await Task.CompletedTask;
                 }
@@ -47,15 +47,15 @@ namespace SalesPipeline.Pages
             {
                 if (!string.IsNullOrEmpty(redirecturl_decode))
                 {
-                    // �ͧ����Դ app ���� custom URL scheme
+                    // ลองสั่งเปิด app ด้วย custom URL scheme
                     //await _jsRuntimes.InvokeVoidAsync("openCustomUrlScheme", redirecturl_decode);
                     _Navs.NavigateTo(redirecturl_decode);
                 }
             }
             catch (Exception ex)
             {
-                _errorMessage  = GeneralUtils.GetExMessage(ex);
-                // handle �óշ���������ö�Դ��
+                _errorMessage = GeneralUtils.GetExMessage(ex);
+                // handle กรณีที่ไม่สามารถเปิดได้
             }
         }
 

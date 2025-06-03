@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+Ôªøusing Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils.Resources.Assignments;
@@ -12,315 +12,315 @@ using SalesPipeline.Utils.ConstTypeModel;
 namespace SalesPipeline.Pages.Returneds.Branchs
 {
     public partial class ReturnedBranchSummary
-	{
-		[Parameter]
-		public Guid id { get; set; }
+    {
+        [Parameter]
+        public Guid id { get; set; }
 
-		string? _errorMessage = null;
-		private bool isLoading = false;
-		private bool isDisabled = true;
-		private allFilter filter = new();
-		private User_PermissionCustom _permission = new();
-		private LookUpResource LookUp = new();
-		private SaleCustom? formModel;
-		private List<Assignment_CenterCustom>? Items;
-		private int stepAssign = StepAssignLoanModel.Assigned;
-		private AssignModel AssignModel = new();
+        string? _errorMessage = null;
+        private bool isLoading = false;
+        private bool isDisabled = true;
+        private allFilter filter = new();
+        private User_PermissionCustom _permission = new();
+        private LookUpResource LookUp = new();
+        private SaleCustom? formModel;
+        private List<Assignment_CenterCustom>? Items;
+        private int stepAssign = StepAssignLoanModel.Assigned;
+        private AssignModel AssignModel = new();
 
-		ModalConfirm modalConfirmAssign = default!;
-		ModalSuccessful modalSuccessfulAssign = default!;
-		private bool IsToClose = false;
+        ModalConfirm modalConfirmAssign = default!;
+        ModalSuccessful modalSuccessfulAssign = default!;
+        private bool IsToClose = false;
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
-			StateHasChanged();
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.ReturnedBranch) ?? new User_PermissionCustom();
+            StateHasChanged();
 
-			await SetModel();
-			await SetModelAssigned();
-		}
+            await SetModel();
+            await SetModelAssigned();
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await SetInitManual();
-				await Task.Delay(10);
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await SetInitManual();
+                await Task.Delay(10);
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
-				firstRender = false;
-			}
-		}
+                await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+                firstRender = false;
+            }
+        }
 
-		protected async Task SetInitManual()
-		{
-			var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
-			if (businessType != null && businessType.Status)
-			{
-				LookUp.BusinessType = businessType.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = businessType?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+        protected async Task SetInitManual()
+        {
+            var businessType = await _masterViewModel.GetBusinessType(new() { status = StatusModel.Active });
+            if (businessType != null && businessType.Status)
+            {
+                LookUp.BusinessType = businessType.Data?.Items;
+            }
+            else
+            {
+                _errorMessage = businessType?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			var province = await _masterViewModel.GetProvince();
-			if (province != null && province.Status)
-			{
-				LookUp.Provinces = province.Data;
-			}
-			else
-			{
-				_errorMessage = province?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+            var province = await _masterViewModel.GetProvince();
+            if (province != null && province.Status)
+            {
+                LookUp.Provinces = province.Data;
+            }
+            else
+            {
+                _errorMessage = province?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			StateHasChanged();
-			await Task.Delay(10);
-			await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
-			await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
-		}
+            StateHasChanged();
+            await Task.Delay(10);
+            await _jsRuntimes.InvokeVoidAsync("BootSelectId", "BusinessType");
+            await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "ProvinceChange", "#Province");
+        }
 
-		protected async Task SetModel()
-		{
-			if (id != Guid.Empty)
-			{
-				var data = await _salesViewModel.GetById(id);
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModel()
+        {
+            if (id != Guid.Empty)
+            {
+                var data = await _salesViewModel.GetById(id);
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task SetModelAssigned()
-		{
-			filter.pagesize = 100;
-			var data = await _assignmentCenterViewModel.GetListCenter(filter);
-			if (data != null && data.Status)
-			{
-				Items = data.Data?.Items;
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+        protected async Task SetModelAssigned()
+        {
+            filter.pagesize = 100;
+            var data = await _assignmentCenterViewModel.GetListCenter(filter);
+            if (data != null && data.Status)
+            {
+                Items = data.Data?.Items;
+            }
+            else
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			StateHasChanged();
-		}
+            StateHasChanged();
+        }
 
-		protected async Task GotoStep(int step)
-		{
-			bool isNext = true;
+        protected async Task GotoStep(int step)
+        {
+            bool isNext = true;
 
-			if (step == StepAssignLoanModel.Assigned)
-			{
+            if (step == StepAssignLoanModel.Assigned)
+            {
 
-			}
-			else if (step == StepAssignLoanModel.Summary)
-			{
-				isNext = Summary();
-				if (!isNext)
-				{
-					_utilsViewModel.AlertWarning("‡≈◊Õ°ºŸÈ√—∫º‘¥™Õ∫„À¡Ë");
-				}
-			}
+            }
+            else if (step == StepAssignLoanModel.Summary)
+            {
+                isNext = Summary();
+                if (!isNext)
+                {
+                    _utilsViewModel.AlertWarning("‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡∏ú‡∏π‡πâ‡∏£‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏ä‡∏≠‡∏ö‡πÉ‡∏´‡∏°‡πà");
+                }
+            }
 
-			if (isNext)
-			{
-				stepAssign = step;
-				StateHasChanged();
-			}
+            if (isNext)
+            {
+                stepAssign = step;
+                StateHasChanged();
+            }
 
-			await Task.Delay(10);
-		}
+            await Task.Delay(10);
+        }
 
-		protected void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        protected void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		protected void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        protected void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
-		protected void Cancel()
-		{
-			_Navs.NavigateTo("/return/branch");
-		}
+        protected void Cancel()
+        {
+            _Navs.NavigateTo("/return/branch");
+        }
 
-		protected void OnCheckEmployee(Assignment_CenterCustom model, object? checkedValue)
-		{
-			if (Items?.Count > 0)
-			{
-				foreach (var item in Items.Where(x => x.IsSelected))
-				{
-					item.IsSelected = false;
-				}
-			}
+        protected void OnCheckEmployee(Assignment_CenterCustom model, object? checkedValue)
+        {
+            if (Items?.Count > 0)
+            {
+                foreach (var item in Items.Where(x => x.IsSelected))
+                {
+                    item.IsSelected = false;
+                }
+            }
 
-			if (checkedValue != null && (bool)checkedValue)
-			{
-				model.IsSelected = true;
-			}
-			else
-			{
-				model.IsSelected = false;
-			}
+            if (checkedValue != null && (bool)checkedValue)
+            {
+                model.IsSelected = true;
+            }
+            else
+            {
+                model.IsSelected = false;
+            }
 
-			isDisabled = !model.IsSelected;
-		}
+            isDisabled = !model.IsSelected;
+        }
 
-		protected bool Summary()
-		{
-			if (Items?.Count > 0 && formModel != null)
-			{
-				//_itemsAssign ºŸÈ√—∫º‘¥™Õ∫„À¡Ë∑’Ë∂Ÿ°¡Õ∫À¡“¬„À¡Ë
-				var _itemsAssign = Items.Where(x => x.IsSelected).FirstOrDefault();
-				if (_itemsAssign != null)
-				{
-					var saleModel = GeneralUtils.DeepCopyJson(formModel);
-					saleModel.Customer = null;
+        protected bool Summary()
+        {
+            if (Items?.Count > 0 && formModel != null)
+            {
+                //_itemsAssign ‡∏ú‡∏π‡πâ‡∏£‡∏±‡∏ö‡∏ú‡∏¥‡∏î‡∏ä‡∏≠‡∏ö‡πÉ‡∏´‡∏°‡πà‡∏ó‡∏µ‡πà‡∏ñ‡∏π‡∏Å‡∏°‡∏≠‡∏ö‡∏´‡∏°‡∏≤‡∏¢‡πÉ‡∏´‡∏°‡πà
+                var _itemsAssign = Items.Where(x => x.IsSelected).FirstOrDefault();
+                if (_itemsAssign != null)
+                {
+                    var saleModel = GeneralUtils.DeepCopyJson(formModel);
+                    saleModel.Customer = null;
 
-					AssignModel.AssignMCenter = _itemsAssign;
-					AssignModel.Sales = new()
-					{
-						saleModel
-					};
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			return false;
-		}
+                    AssignModel.AssignMCenter = _itemsAssign;
+                    AssignModel.Sales = new()
+                    {
+                        saleModel
+                    };
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
 
-		protected async Task InitShowConfirmAssign()
-		{
-			await ShowConfirmAssign(null, "°√ÿ≥“°¥ ¬◊π¬—π ¡Õ∫À¡“¬„À¡Ë", "<img src=\"/image/icon/do.png\" width=\"65\" />");
-		}
+        protected async Task InitShowConfirmAssign()
+        {
+            await ShowConfirmAssign(null, "‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏Å‡∏î ‡∏¢‡∏∑‡∏ô‡∏¢‡∏±‡∏ô ‡∏°‡∏≠‡∏ö‡∏´‡∏°‡∏≤‡∏¢‡πÉ‡∏´‡∏°‡πà", "<img src=\"/image/icon/do.png\" width=\"65\" />");
+        }
 
-		protected async Task ShowConfirmAssign(string? id, string? txt, string? icon = null)
-		{
-			IsToClose = false;
-			await modalConfirmAssign.OnShowConfirm(id, $"{txt}", icon);
-		}
+        protected async Task ShowConfirmAssign(string? id, string? txt, string? icon = null)
+        {
+            IsToClose = false;
+            await modalConfirmAssign.OnShowConfirm(id, $"{txt}", icon);
+        }
 
-		protected async Task ConfirmAssign(string id)
-		{
-			ShowLoading();
-			await Task.Delay(1);
-			await AssignChange();
-		}
+        protected async Task ConfirmAssign(string id)
+        {
+            ShowLoading();
+            await Task.Delay(1);
+            await AssignChange();
+        }
 
-		protected async Task ShowSuccessfulAssign(string? id, string? txt)
-		{
-			await modalSuccessfulAssign.OnShow(id, $"{txt}");
-		}
+        protected async Task ShowSuccessfulAssign(string? id, string? txt)
+        {
+            await modalSuccessfulAssign.OnShow(id, $"{txt}");
+        }
 
-		private async Task OnModalHidden()
-		{
-			if (IsToClose)
-			{
-				await Task.Delay(1);
-				Cancel();
-			}
-		}
+        private async Task OnModalHidden()
+        {
+            if (IsToClose)
+            {
+                await Task.Delay(1);
+                Cancel();
+            }
+        }
 
-		protected async Task AssignChange()
-		{
-			await Task.Delay(1);
-			_errorMessage = null;
-			ShowLoading();
+        protected async Task AssignChange()
+        {
+            await Task.Delay(1);
+            _errorMessage = null;
+            ShowLoading();
 
-			AssignModel.CurrentUserId = UserInfo.Id;
+            AssignModel.CurrentUserId = UserInfo.Id;
 
-			if (Items != null)
-			{
-				var response = await _assignmentCenterViewModel.Assign(AssignModel);
+            if (Items != null)
+            {
+                var response = await _assignmentCenterViewModel.Assign(AssignModel);
 
-				if (response.Status)
-				{
-					IsToClose = true;
-					await modalConfirmAssign.OnHideConfirm();
-					await modalSuccessfulAssign.OnShow(null, "‡ √Á® ‘Èπ°“√¡Õ∫À¡“¬ß“π");
-					HideLoading();
-				}
-				else
-				{
-					HideLoading();
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
-			}
-		}
+                if (response.Status)
+                {
+                    IsToClose = true;
+                    await modalConfirmAssign.OnHideConfirm();
+                    await modalSuccessfulAssign.OnShow(null, "‡πÄ‡∏™‡∏£‡πá‡∏à‡∏™‡∏¥‡πâ‡∏ô‡∏Å‡∏≤‡∏£‡∏°‡∏≠‡∏ö‡∏´‡∏°‡∏≤‡∏¢‡∏á‡∏≤‡∏ô");
+                    HideLoading();
+                }
+                else
+                {
+                    HideLoading();
+                    _errorMessage = response.errorMessage;
+                    await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+                }
+            }
+        }
 
-		protected async Task SearchStepAssigned()
-		{
-			await SetModelAssigned();
-			StateHasChanged();
-		}
+        protected async Task SearchStepAssigned()
+        {
+            await SetModelAssigned();
+            StateHasChanged();
+        }
 
-		[JSInvokable]
-		public async Task ProvinceChange(string _provinceID, string _provinceName)
-		{
-			filter.provinceid = null;
-			filter.branchid = null;
-			LookUp.Branchs = new();
-			StateHasChanged();
-			await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
+        [JSInvokable]
+        public async Task ProvinceChange(string _provinceID, string _provinceName)
+        {
+            filter.provinceid = null;
+            filter.branchid = null;
+            LookUp.Branchs = new();
+            StateHasChanged();
+            await _jsRuntimes.InvokeVoidAsync("BootSelectEmptyID", "Branch");
 
-			if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
-			{
-				filter.provinceid = provinceID;
+            if (_provinceID != null && int.TryParse(_provinceID, out int provinceID))
+            {
+                filter.provinceid = provinceID;
 
-				var branchs = await _masterViewModel.GetBranch(provinceID);
-				if (branchs != null && branchs.Data?.Count > 0)
-				{
-					LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--‡≈◊Õ°--" } };
-					LookUp.Branchs.AddRange(branchs.Data);
+                var branchs = await _masterViewModel.GetBranch(provinceID);
+                if (branchs != null && branchs.Data?.Count > 0)
+                {
+                    LookUp.Branchs = new List<InfoBranchCustom>() { new InfoBranchCustom() { BranchID = 0, BranchName = "--‡πÄ‡∏•‡∏∑‡∏≠‡∏Å--" } };
+                    LookUp.Branchs.AddRange(branchs.Data);
 
-					StateHasChanged();
-					await Task.Delay(10);
-					await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
-					await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
-				}
-				else
-				{
-					_errorMessage = branchs?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
+                    StateHasChanged();
+                    await Task.Delay(10);
+                    await _jsRuntimes.InvokeVoidAsync("InitSelectPicker", DotNetObjectReference.Create(this), "BranchChange", "#Branch");
+                    await _jsRuntimes.InvokeVoidAsync("BootSelectRefreshID", "Branch", 100);
+                }
+                else
+                {
+                    _errorMessage = branchs?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
 
-			await SetModelAssigned();
-			StateHasChanged();
+            await SetModelAssigned();
+            StateHasChanged();
 
-		}
+        }
 
-		[JSInvokable]
-		public async Task BranchChange(string _branchID, string _branchName)
-		{
-			filter.branchid = null;
-			if (_branchID != null && int.TryParse(_branchID, out int branchID))
-			{
-				filter.branchid = branchID.ToString();
-			}
+        [JSInvokable]
+        public async Task BranchChange(string _branchID, string _branchName)
+        {
+            filter.branchid = null;
+            if (_branchID != null && int.TryParse(_branchID, out int branchID))
+            {
+                filter.branchid = branchID.ToString();
+            }
 
-			await SetModelAssigned();
-			StateHasChanged();
-		}
+            await SetModelAssigned();
+            StateHasChanged();
+        }
 
-	}
+    }
 }

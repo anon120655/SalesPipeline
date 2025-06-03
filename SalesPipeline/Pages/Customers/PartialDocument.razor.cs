@@ -1,4 +1,4 @@
-using BlazorBootstrap;
+Ôªøusing BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
@@ -12,210 +12,210 @@ using static System.Net.WebRequestMethods;
 
 namespace SalesPipeline.Pages.Customers
 {
-	public partial class PartialDocument
-	{
-		[Parameter]
-		public SaleCustom? formModel { get; set; }
+    public partial class PartialDocument
+    {
+        [Parameter]
+        public SaleCustom? formModel { get; set; }
 
-		string? _errorMessage = null;
-		private bool isLoading = false;
-		bool showDocumentType = true;
+        string? _errorMessage = null;
+        private bool isLoading = false;
+        bool showDocumentType = true;
 
-		Modal modalUploadFile = default!;
-		private bool bClearInput = false;
-		//„ Ë°√≥’ clear file ·≈È« input ‰¡Ë update
-		string _inputFileId = Guid.NewGuid().ToString();
+        Modal modalUploadFile = default!;
+        private bool bClearInput = false;
+        //‡πÉ‡∏™‡πà‡∏Å‡∏£‡∏ì‡∏µ clear file ‡πÅ‡∏•‡πâ‡∏ß input ‡πÑ‡∏°‡πà update
+        string _inputFileId = Guid.NewGuid().ToString();
 
-		Sale_DocumentCustom? document = null;
-		List<Sale_Document_UploadCustom>? document_Upload = null;
-		Sale_Document_UploadCustom formUploadModel = new();
-		System_SignatureCustom dataSignature = new();
-		Sale_StatusCustom? approveDateCenter;
+        Sale_DocumentCustom? document = null;
+        List<Sale_Document_UploadCustom>? document_Upload = null;
+        Sale_Document_UploadCustom formUploadModel = new();
+        System_SignatureCustom dataSignature = new();
+        Sale_StatusCustom? approveDateCenter;
 
-		ModalConfirm modalConfirm = default!;
+        ModalConfirm modalConfirm = default!;
 
-		protected override async Task OnParametersSetAsync()
-		{
-			if (formModel != null)
-			{
-				formUploadModel.CurrentUserId = UserInfo.Id;
-				formUploadModel.SaleId = formModel.Id;
+        protected override async Task OnParametersSetAsync()
+        {
+            if (formModel != null)
+            {
+                formUploadModel.CurrentUserId = UserInfo.Id;
+                formUploadModel.SaleId = formModel.Id;
 
-				document = formModel.Sale_Documents?.FirstOrDefault();
-				document_Upload = formModel.Sale_Document_Files;
+                document = formModel.Sale_Documents?.FirstOrDefault();
+                document_Upload = formModel.Sale_Document_Files;
 
-				await GetSignatureLast();
-				await Task.Delay(1);
-			}
-		}
+                await GetSignatureLast();
+                await Task.Delay(1);
+            }
+        }
 
-		protected async Task GetSignatureLast()
-		{
-			if (formModel != null && formModel.AssCenterUserId.HasValue)
-			{
-				var data = await _systemViewModel.GetSignatureLast(formModel.AssCenterUserId.Value);
-				if (data != null && data.Status && data.Data != null)
-				{
-					dataSignature = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
+        protected async Task GetSignatureLast()
+        {
+            if (formModel != null && formModel.AssCenterUserId.HasValue)
+            {
+                var data = await _systemViewModel.GetSignatureLast(formModel.AssCenterUserId.Value);
+                if (data != null && data.Status && data.Data != null)
+                {
+                    dataSignature = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
 
-				var dataStatus = await _salesViewModel.GetListStatusById(formModel.Id);
-				if (dataStatus != null && dataStatus.Status && dataStatus.Data != null)
-				{
-					approveDateCenter = dataStatus.Data.FirstOrDefault(x => x.StatusId == StatusSaleModel.WaitAPIPHOENIX);
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+                var dataStatus = await _salesViewModel.GetListStatusById(formModel.Id);
+                if (dataStatus != null && dataStatus.Status && dataStatus.Data != null)
+                {
+                    approveDateCenter = dataStatus.Data.FirstOrDefault(x => x.StatusId == StatusSaleModel.WaitAPIPHOENIX);
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		void ToggleDocumentType()
-		{
-			showDocumentType = !showDocumentType;
-		}
+        void ToggleDocumentType()
+        {
+            showDocumentType = !showDocumentType;
+        }
 
-		private async Task OnUploadFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
-		{
-			_errorMessage = null;
-			StateHasChanged();
-			var file = inputFileChangeEvent.File;
-			int _SizeLimit = 5; //MB
-			var _Size = 1024000 * _SizeLimit;
+        private async Task OnUploadFileChanged(InputFileChangeEventArgs inputFileChangeEvent)
+        {
+            _errorMessage = null;
+            StateHasChanged();
+            var file = inputFileChangeEvent.File;
+            int _SizeLimit = 5; //MB
+            var _Size = 1024000 * _SizeLimit;
 
-			if (file.Size > _Size)
-			{
-				_errorMessage = $"Limited Max. {_SizeLimit} MB per file.";
-				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			}
-			else
-			{
-				using (var stream = file.OpenReadStream(_Size))
-				{
-					MemoryStream ms = new MemoryStream();
-					await stream.CopyToAsync(ms);
+            if (file.Size > _Size)
+            {
+                _errorMessage = $"Limited Max. {_SizeLimit} MB per file.";
+                await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+            }
+            else
+            {
+                using (var stream = file.OpenReadStream(_Size))
+                {
+                    MemoryStream ms = new MemoryStream();
+                    await stream.CopyToAsync(ms);
 
-					var fileBytes = ms.ToArray();
+                    var fileBytes = ms.ToArray();
 
-					if (formUploadModel.Files == null) formUploadModel.Files = new();
-					formUploadModel.Files.appSet = new();
-					formUploadModel.Files.FileName = file.Name;
-					formUploadModel.Files.FileName = file.Name;
-					formUploadModel.Files.FileByte = fileBytes;
-				}
-			}
-			_inputFileId = Guid.NewGuid().ToString();
-		}
+                    if (formUploadModel.Files == null) formUploadModel.Files = new();
+                    formUploadModel.Files.appSet = new();
+                    formUploadModel.Files.FileName = file.Name;
+                    formUploadModel.Files.FileName = file.Name;
+                    formUploadModel.Files.FileByte = fileBytes;
+                }
+            }
+            _inputFileId = Guid.NewGuid().ToString();
+        }
 
-		private void ClearInputFileMedia()
-		{
-			_errorMessage = null;
-			StateHasChanged();
-			bClearInput = true;
-			StateHasChanged();
-			bClearInput = false;
-			StateHasChanged();
-		}
+        private void ClearInputFileMedia()
+        {
+            _errorMessage = null;
+            StateHasChanged();
+            bClearInput = true;
+            StateHasChanged();
+            bClearInput = false;
+            StateHasChanged();
+        }
 
-		private async Task SaveFile()
-		{
-			_errorMessage = null;
-			ShowLoading();
+        private async Task SaveFile()
+        {
+            _errorMessage = null;
+            ShowLoading();
 
-			if (formUploadModel.Files == null || formUploadModel.Files.FileByte == null)
-			{
-				HideLoading();
-				_errorMessage = "‡≈◊Õ°‰ø≈Ï";
-				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			}
-			else
-			{
-				formUploadModel.Files.appSet = _appSet.Value;
-				formUploadModel.CurrentUserId = UserInfo.Id;
+            if (formUploadModel.Files == null || formUploadModel.Files.FileByte == null)
+            {
+                HideLoading();
+                _errorMessage = "‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÑ‡∏ü‡∏•‡πå";
+                await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+            }
+            else
+            {
+                formUploadModel.Files.appSet = _appSet.Value;
+                formUploadModel.CurrentUserId = UserInfo.Id;
 
-				var response = await _processSaleViewModel.CreateDocumentFile(formUploadModel);
+                var response = await _processSaleViewModel.CreateDocumentFile(formUploadModel);
 
-				if (response.Status)
-				{
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-					await OnHideUploadFile();
-					await SetModelDocument();
-				}
-				else
-				{
-					HideLoading();
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
-			}
+                if (response.Status)
+                {
+                    await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                    await OnHideUploadFile();
+                    await SetModelDocument();
+                }
+                else
+                {
+                    HideLoading();
+                    _errorMessage = response.errorMessage;
+                    await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+                }
+            }
 
-		}
+        }
 
-		private async Task OnShowUploadFile()
-		{
-			ClearInputFileMedia();
-			await modalUploadFile.ShowAsync();
-		}
+        private async Task OnShowUploadFile()
+        {
+            ClearInputFileMedia();
+            await modalUploadFile.ShowAsync();
+        }
 
-		private async Task OnHideUploadFile()
-		{
-			await modalUploadFile.HideAsync();
-		}
+        private async Task OnHideUploadFile()
+        {
+            await modalUploadFile.HideAsync();
+        }
 
-		private void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        private void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		private void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        private void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
-		protected async Task SetModelDocument()
-		{
-			if (formModel != null && document_Upload != null)
-			{
-				var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = formModel.Id, pagesize = 200 });
-				if (data != null && data.Status && data.Data != null)
-				{
-					document_Upload = data.Data;
-					StateHasChanged();
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModelDocument()
+        {
+            if (formModel != null && document_Upload != null)
+            {
+                var data = await _processSaleViewModel.GetListDocumentFile(new() { saleid = formModel.Id, pagesize = 200 });
+                if (data != null && data.Status && data.Data != null)
+                {
+                    document_Upload = data.Data;
+                    StateHasChanged();
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task ConfirmDelete(string? id, string? txt)
-		{
-			await modalConfirm.OnShowConfirm(id, $"§ÿ≥µÈÕß°“√≈∫‰ø≈Ï <span class='text-primary'>{txt}</span>");
-		}
+        protected async Task ConfirmDelete(string? id, string? txt)
+        {
+            await modalConfirm.OnShowConfirm(id, $"‡∏Ñ‡∏∏‡∏ì‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏•‡∏ö‡πÑ‡∏ü‡∏•‡πå <span class='text-primary'>{txt}</span>");
+        }
 
-		protected async Task Delete(string id)
-		{
-			await modalConfirm.OnHideConfirm();
+        protected async Task Delete(string id)
+        {
+            await modalConfirm.OnHideConfirm();
 
-			var data = await _processSaleViewModel.DocumentFileDeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
-			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
-			await SetModelDocument();
-		}
+            var data = await _processSaleViewModel.DocumentFileDeleteById(new UpdateModel() { id = id, userid = UserInfo.Id });
+            if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
+            await SetModelDocument();
+        }
 
-	}
+    }
 }

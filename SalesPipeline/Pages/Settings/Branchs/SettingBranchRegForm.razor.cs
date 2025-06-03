@@ -7,105 +7,105 @@ using SalesPipeline.Utils.Resources.Masters;
 
 namespace SalesPipeline.Pages.Settings.Branchs
 {
-	public partial class SettingBranchRegForm
-	{
-		[Parameter]
-		public Guid? id { get; set; }
+    public partial class SettingBranchRegForm
+    {
+        [Parameter]
+        public Guid? id { get; set; }
 
-		string? _errorMessage = null;
-		private bool isLoading = false;
-		private User_PermissionCustom _permission = new();
-		private Master_Branch_RegionCustom formModel = new();
+        string? _errorMessage = null;
+        private bool isLoading = false;
+        private User_PermissionCustom _permission = new();
+        private Master_Branch_RegionCustom formModel = new();
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetBranchReg) ?? new User_PermissionCustom();
-			StateHasChanged();
-			await Task.Delay(1);
-		}
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.SetBranchReg) ?? new User_PermissionCustom();
+            StateHasChanged();
+            await Task.Delay(1);
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await SetModel();
-				StateHasChanged();
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await SetModel();
+                StateHasChanged();
 
-				await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
-				firstRender = false;
-			}
-		}
+                await _jsRuntimes.InvokeVoidAsync("selectPickerInitialize");
+                firstRender = false;
+            }
+        }
 
-		protected async Task OnInvalidSubmit()
-		{
-			await Task.Delay(100);
-			await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
-		}
+        protected async Task OnInvalidSubmit()
+        {
+            await Task.Delay(100);
+            await _jsRuntimes.InvokeVoidAsync("scrollToElement", "validation-message");
+        }
 
-		protected async Task SetModel()
-		{
-			if (id.HasValue)
-			{
-				var data = await _masterViewModel.GetDepBranchById(id.Value);
-				if (data != null && data.Status && data.Data != null)
-				{
-					formModel = data.Data;
-				}
-				else
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-			}
-		}
+        protected async Task SetModel()
+        {
+            if (id.HasValue)
+            {
+                var data = await _masterViewModel.GetDepBranchById(id.Value);
+                if (data != null && data.Status && data.Data != null)
+                {
+                    formModel = data.Data;
+                }
+                else
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+            }
+        }
 
-		protected async Task Save()
-		{
-			_errorMessage = null;
-			ShowLoading();
+        protected async Task Save()
+        {
+            _errorMessage = null;
+            ShowLoading();
 
-			ResultModel<Master_Branch_RegionCustom> response;
+            ResultModel<Master_Branch_RegionCustom> response;
 
-			formModel.CurrentUserId = UserInfo.Id;
+            formModel.CurrentUserId = UserInfo.Id;
 
-			if (id.HasValue)
-			{
-				response = await _masterViewModel.UpdateDepBranch(formModel);
-			}
-			else
-			{
-				response = await _masterViewModel.CreateDepBranch(formModel);
-			}
+            if (id.HasValue)
+            {
+                response = await _masterViewModel.UpdateDepBranch(formModel);
+            }
+            else
+            {
+                response = await _masterViewModel.CreateDepBranch(formModel);
+            }
 
-			if (response.Status)
-			{
-				await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-				Cancel();
-			}
-			else
-			{
-				HideLoading();
-				_errorMessage = response.errorMessage;
-				await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-			}
-		}
+            if (response.Status)
+            {
+                await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                Cancel();
+            }
+            else
+            {
+                HideLoading();
+                _errorMessage = response.errorMessage;
+                await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+            }
+        }
 
-		public void Cancel()
-		{
-			_Navs.NavigateTo("/setting/branchreg");
-		}
+        public void Cancel()
+        {
+            _Navs.NavigateTo("/setting/branchreg");
+        }
 
-		protected void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        protected void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		protected void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        protected void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
-	}
+    }
 }

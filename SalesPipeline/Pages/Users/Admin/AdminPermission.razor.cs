@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SalesPipeline.Shared.Modals;
 using SalesPipeline.Utils;
@@ -8,259 +8,259 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Pages.Users.Admin
 {
-	public partial class AdminPermission
-	{
-		public int? id { get; set; }
-		string? _errorMessage = null;
-		bool isLoading = false;
-		bool agree1;
-		private User_PermissionCustom _permission = new();
-		protected allFilter filter = new();
-		private LookUpResource LookUp = new();
-		private List<User_RoleCustom>? Items;
-		private User_RoleCustom? formModel;
-		//private UserRoleCustom formModel = new();
-		public Pager? Pager;
-		bool checkOnAccess = false;
+    public partial class AdminPermission
+    {
+        public int? id { get; set; }
+        string? _errorMessage = null;
+        bool isLoading = false;
+        bool agree1;
+        private User_PermissionCustom _permission = new();
+        protected allFilter filter = new();
+        private LookUpResource LookUp = new();
+        private List<User_RoleCustom>? Items;
+        private User_RoleCustom? formModel;
+        //private UserRoleCustom formModel = new();
+        public Pager? Pager;
+        bool checkOnAccess = false;
 
-		ModalConfirm modalConfirm = default!;
+        ModalConfirm modalConfirm = default!;
 
-		protected override async Task OnInitializedAsync()
-		{
-			_permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanPermission) ?? new User_PermissionCustom();
-			StateHasChanged();
-			await SetInitManual();
-		}
+        protected override async Task OnInitializedAsync()
+        {
+            _permission = UserInfo.User_Permissions.FirstOrDefault(x => x.MenuNumber == MenuNumbers.LoanPermission) ?? new User_PermissionCustom();
+            StateHasChanged();
+            await SetInitManual();
+        }
 
-		protected async override Task OnAfterRenderAsync(bool firstRender)
-		{
-			if (firstRender)
-			{
-				await SetModel();
-				StateHasChanged();
-				firstRender = false;
-			}
-		}
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await SetModel();
+                StateHasChanged();
+                firstRender = false;
+            }
+        }
 
-		protected async Task SetInitManual()
-		{
-			var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
-			if (dataMenuItem != null && dataMenuItem.Status)
-			{
-				LookUp.MenuItem = dataMenuItem.Data;
-			}
-			else
-			{
-				_errorMessage = dataMenuItem?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+        protected async Task SetInitManual()
+        {
+            var dataMenuItem = await _masterViewModel.MenuItem(new allFilter() { status = StatusModel.Active });
+            if (dataMenuItem != null && dataMenuItem.Status)
+            {
+                LookUp.MenuItem = dataMenuItem.Data;
+            }
+            else
+            {
+                _errorMessage = dataMenuItem?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			StateHasChanged();
-		}
+            StateHasChanged();
+        }
 
-		protected async Task SetModel()
-		{
-			var data = await _userViewModel.GetListRole(filter);
-			if (data != null && data.Status)
-			{
-				Items = data.Data?.Items;
-				Pager = data.Data?.Pager;
-				if (Pager != null)
-				{
-					Pager.UrlAction = "/permission";
-				}
-			}
-			else
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+        protected async Task SetModel()
+        {
+            var data = await _userViewModel.GetListRole(filter);
+            if (data != null && data.Status)
+            {
+                Items = data.Data?.Items;
+                Pager = data.Data?.Pager;
+                if (Pager != null)
+                {
+                    Pager.UrlAction = "/permission";
+                }
+            }
+            else
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			StateHasChanged();
-		}
+            StateHasChanged();
+        }
 
-		protected async Task ConfirmDelete(string? id, string? txt)
-		{
-			string? textMore = string.Empty;
-			if (int.TryParse(id, out int _id))
-			{
-				var userRoleUsed = await _userViewModel.GetUserByRole(_id);
-				if (userRoleUsed != null && userRoleUsed.Status)
-				{
-					if (userRoleUsed.Data?.Count > 0)
-					{
-						textMore = "(�ռ���������Ѻ�Է���������)";
-					}
-				}
-			}
+        protected async Task ConfirmDelete(string? id, string? txt)
+        {
+            string? textMore = string.Empty;
+            if (int.TryParse(id, out int _id))
+            {
+                var userRoleUsed = await _userViewModel.GetUserByRole(_id);
+                if (userRoleUsed != null && userRoleUsed.Status)
+                {
+                    if (userRoleUsed.Data?.Count > 0)
+                    {
+                        textMore = "(มีผู้ใช้ที่ได้รับสิทธิ์นี้แล้ว)";
+                    }
+                }
+            }
 
-			await modalConfirm.OnShowConfirm(id, $"�س��ͧ���ź������ <span class='text-primary'>{txt}</span><br /><span class='text-danger'>{textMore}</span>");
-		}
+            await modalConfirm.OnShowConfirm(id, $"คุณต้องการลบข้อมูล <span class='text-primary'>{txt}</span><br /><span class='text-danger'>{textMore}</span>");
+        }
 
-		protected async Task Delete(string id)
-		{
-			await modalConfirm.OnHideConfirm();
+        protected async Task Delete(string id)
+        {
+            await modalConfirm.OnHideConfirm();
 
-			var data = await _userViewModel.DeleteRoleById(new UpdateModel() { id = id, userid = UserInfo.Id });
-			if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-			{
-				_errorMessage = data?.errorMessage;
-				_utilsViewModel.AlertWarning(_errorMessage);
-			}
+            var data = await _userViewModel.DeleteRoleById(new UpdateModel() { id = id, userid = UserInfo.Id });
+            if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+            {
+                _errorMessage = data?.errorMessage;
+                _utilsViewModel.AlertWarning(_errorMessage);
+            }
 
-			Cancel();
+            Cancel();
 
-			await SetModel();
-		}
+            await SetModel();
+        }
 
-		protected async Task ModifyRoleChanged(ChangeEventArgs e, int id)
-		{
-			if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool parsedValue))
-			{
-				var data = await _userViewModel.UpdateIsModifyRoleById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = parsedValue.ToString() });
-				if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
-				{
-					_errorMessage = data?.errorMessage;
-					_utilsViewModel.AlertWarning(_errorMessage);
-				}
-				else
-				{
-					string? actiontxt = parsedValue ? "<i class=\"fa-regular fa-circle-check\"></i> �Դ" : "<i class=\"fa-solid fa-circle-xmark\"></i> �Դ";
-					string fulltxt = $"{actiontxt}͹حҵ����������º����";
-					//_utilsViewModel.AlertSuccess(fulltxt);
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
-					await SetModel();
-				}
-			}
-		}
+        protected async Task ModifyRoleChanged(ChangeEventArgs e, int id)
+        {
+            if (e.Value != null && Boolean.TryParse(e.Value.ToString(), out bool parsedValue))
+            {
+                var data = await _userViewModel.UpdateIsModifyRoleById(new UpdateModel() { id = id.ToString(), userid = UserInfo.Id, value = parsedValue.ToString() });
+                if (data != null && !data.Status && !String.IsNullOrEmpty(data.errorMessage))
+                {
+                    _errorMessage = data?.errorMessage;
+                    _utilsViewModel.AlertWarning(_errorMessage);
+                }
+                else
+                {
+                    string? actiontxt = parsedValue ? "<i class=\"fa-regular fa-circle-check\"></i> เปิด" : "<i class=\"fa-solid fa-circle-xmark\"></i> ปิด";
+                    string fulltxt = $"{actiontxt}อนุญาติให้แก้ไขเรียบร้อย";
+                    //_utilsViewModel.AlertSuccess(fulltxt);
+                    await _jsRuntimes.InvokeVoidAsync("SuccessAlert", fulltxt);
+                    await SetModel();
+                }
+            }
+        }
 
-		protected async Task OnAccess(User_RoleCustom model)
-		{
-			formModel = null;
-			id = null;
+        protected async Task OnAccess(User_RoleCustom model)
+        {
+            formModel = null;
+            id = null;
 
-			if (Items != null)
-			{
-				foreach (var item in Items)
-				{
-					if (item.Id != model.Id)
-					{
-						item.IsAccess = false;
-					}
-				}
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (item.Id != model.Id)
+                    {
+                        item.IsAccess = false;
+                    }
+                }
 
-				model.IsAccess = !model.IsAccess;
+                model.IsAccess = !model.IsAccess;
 
-				if (model.IsAccess)
-				{
-					id = model.Id;
-					var data = await _userViewModel.GetRoleById(model.Id);
-					if (data != null && data.Status && data.Data != null)
-					{
-						formModel = data.Data;
-					}
-					else
-					{
-						_errorMessage = data?.errorMessage;
-						_utilsViewModel.AlertWarning(_errorMessage);
-					}
-				}
-			}
-		}
+                if (model.IsAccess)
+                {
+                    id = model.Id;
+                    var data = await _userViewModel.GetRoleById(model.Id);
+                    if (data != null && data.Status && data.Data != null)
+                    {
+                        formModel = data.Data;
+                    }
+                    else
+                    {
+                        _errorMessage = data?.errorMessage;
+                        _utilsViewModel.AlertWarning(_errorMessage);
+                    }
+                }
+            }
+        }
 
-		protected void CheckChanged(object? valChecked, int menuNumber, int type)
-		{
-			if (id > 0 && formModel != null && valChecked != null)
-			{
-				bool isChecked = (bool)valChecked ? true : false;
+        protected void CheckChanged(object? valChecked, int menuNumber, int type)
+        {
+            if (id > 0 && formModel != null && valChecked != null)
+            {
+                bool isChecked = (bool)valChecked ? true : false;
 
-				int roleId = 0;
-				int.TryParse(id.ToString(), out roleId);
+                int roleId = 0;
+                int.TryParse(id.ToString(), out roleId);
 
-				if (formModel.User_Permissions == null) formModel.User_Permissions = new List<User_PermissionCustom>();
+                if (formModel.User_Permissions == null) formModel.User_Permissions = new List<User_PermissionCustom>();
 
-				var model = formModel.User_Permissions.FirstOrDefault(x => x.MenuNumber == menuNumber);
-				if (model == null)
-				{
-					var permission = new User_PermissionCustom();
-					permission.Status = StatusModel.Active;
-					permission.MenuNumber = menuNumber;
-					permission.RoleId = roleId;
-					if (type == 1) permission.IsView = isChecked;
+                var model = formModel.User_Permissions.FirstOrDefault(x => x.MenuNumber == menuNumber);
+                if (model == null)
+                {
+                    var permission = new User_PermissionCustom();
+                    permission.Status = StatusModel.Active;
+                    permission.MenuNumber = menuNumber;
+                    permission.RoleId = roleId;
+                    if (type == 1) permission.IsView = isChecked;
 
-					formModel.User_Permissions.Add(permission);
-				}
-				else
-				{
-					if (type == 1) model.IsView = isChecked;
-				}
-				this.StateHasChanged();
-			}
-		}
+                    formModel.User_Permissions.Add(permission);
+                }
+                else
+                {
+                    if (type == 1) model.IsView = isChecked;
+                }
+                this.StateHasChanged();
+            }
+        }
 
-		protected async Task Save()
-		{
-			_errorMessage = null;
-			ShowLoading();
+        protected async Task Save()
+        {
+            _errorMessage = null;
+            ShowLoading();
 
-			ResultModel<User_RoleCustom> response;
+            ResultModel<User_RoleCustom> response;
 
-			if (formModel != null)
-			{
-				formModel.CurrentUserId = UserInfo.Id;
+            if (formModel != null)
+            {
+                formModel.CurrentUserId = UserInfo.Id;
 
-				if (id.HasValue)
-				{
-					response = await _userViewModel.UpdateRole(formModel);
-				}
-				else
-				{
-					response = await _userViewModel.CreateRole(formModel);
-				}
+                if (id.HasValue)
+                {
+                    response = await _userViewModel.UpdateRole(formModel);
+                }
+                else
+                {
+                    response = await _userViewModel.CreateRole(formModel);
+                }
 
-				if (response.Status)
-				{
-					HideLoading();
-					await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
-				}
-				else
-				{
-					HideLoading();
-					_errorMessage = response.errorMessage;
-					await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
-				}
-			}
-		}
+                if (response.Status)
+                {
+                    HideLoading();
+                    await _jsRuntimes.InvokeVoidAsync("SuccessAlert");
+                }
+                else
+                {
+                    HideLoading();
+                    _errorMessage = response.errorMessage;
+                    await _jsRuntimes.InvokeVoidAsync("WarningAlert", _errorMessage);
+                }
+            }
+        }
 
-		protected void Cancel()
-		{
-			//�Դ˹����¡�����ٷ���Դ���
-			formModel = null;
+        protected void Cancel()
+        {
+            //ปิดหน้ารายการเมนูที่เปิดไว้
+            formModel = null;
 
-			//�Դ Active �����Ҷ֧
-			if (Items?.Count > 0)
-			{
-				foreach (var item in Items)
-				{
-					item.IsAccess = false;
-				}
-			}
+            //ปิด Active การเข้าถึง
+            if (Items?.Count > 0)
+            {
+                foreach (var item in Items)
+                {
+                    item.IsAccess = false;
+                }
+            }
 
-			StateHasChanged();
-		}
+            StateHasChanged();
+        }
 
-		protected void ShowLoading()
-		{
-			isLoading = true;
-			StateHasChanged();
-		}
+        protected void ShowLoading()
+        {
+            isLoading = true;
+            StateHasChanged();
+        }
 
-		protected void HideLoading()
-		{
-			isLoading = false;
-			StateHasChanged();
-		}
+        protected void HideLoading()
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
 
 
-	}
+    }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Components.Authorization;
+Ôªøusing Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.FileProviders;
 using SalesPipeline.Helpers;
 using SalesPipeline.Hubs;
@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 
 
-//***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport ‡ª≈’Ë¬π‰ª„™È SixLabors.ImageSharp *****
+//***** Not use System.Drawing.Common on .Net7  server  non-Windows support System.Drawing.EnableUnixSupport ‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡πÑ‡∏õ‡πÉ‡∏ä‡πâ SixLabors.ImageSharp *****
 //***** FontAwesome <i></i> not use near code c# error Ex. <span><i></i></span>
 //***** timestamp Update not use table have count
-//***** RestSharp „™È°—∫ AuthenticationStateProvider ‰¡Ë‰¥È
-// Resource temporarily unavailable µÈÕß‰ª·°È DNS servers „π Webmin 
-// if Cascading ¡’º≈∑”„ÀÈ SEO Meta ‰¡Ë· ¥ß ∂È“‰¡Ë if µÕπ reload ÀπÈ“π—ÈπÊ ¢ÈÕ¡Ÿ≈„π Cascading ÀπÈ“∑’Ë‡√’¬°®–‡ªÁπ null ∑”„ÀÈ‚ª√·°√¡§È“ß ∂È“‰¡Ë if µÈÕß‰ª‡™Á§‡æ‘Ë¡„π OnParametersSet
-// [JsonIgnore] „™È System.Text.Json.Serialization
+//***** RestSharp ‡πÉ‡∏ä‡πâ‡∏Å‡∏±‡∏ö AuthenticationStateProvider ‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ
+// Resource temporarily unavailable ‡∏ï‡πâ‡∏≠‡∏á‡πÑ‡∏õ‡πÅ‡∏Å‡πâ DNS servers ‡πÉ‡∏ô Webmin 
+// if Cascading ‡∏°‡∏µ‡∏ú‡∏•‡∏ó‡∏≥‡πÉ‡∏´‡πâ SEO Meta ‡πÑ‡∏°‡πà‡πÅ‡∏™‡∏î‡∏á ‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà if ‡∏ï‡∏≠‡∏ô reload ‡∏´‡∏ô‡πâ‡∏≤‡∏ô‡∏±‡πâ‡∏ô‡πÜ ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô Cascading ‡∏´‡∏ô‡πâ‡∏≤‡∏ó‡∏µ‡πà‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡∏à‡∏∞‡πÄ‡∏õ‡πá‡∏ô null ‡∏ó‡∏≥‡πÉ‡∏´‡πâ‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°‡∏Ñ‡πâ‡∏≤‡∏á ‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà if ‡∏ï‡πâ‡∏≠‡∏á‡πÑ‡∏õ‡πÄ‡∏ä‡πá‡∏Ñ‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÉ‡∏ô OnParametersSet
+// [JsonIgnore] ‡πÉ‡∏ä‡πâ System.Text.Json.Serialization
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,7 +83,7 @@ builder.Services.AddScoped<NotifyViewModel>();
 //StateProvider
 builder.Services.AddScoped<AuthorizeViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<AuthorizeViewModel>());
-// ≈ß∑–‡∫’¬π AuthorizeView
+// ‡∏•‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô AuthorizeView
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
@@ -100,14 +100,14 @@ string currentDirectory = Directory.GetCurrentDirectory();
 
 
 // Configure Data Protection
-// ∂È“„™È ProtectedLocalStorage ®–‡¢È“√À— ¢ÈÕ¡Ÿ≈·≈–„™È Key ‡¢È“√À—  ∂È“À“ Key ‡¥‘¡‰¡Ë‡®Õ®– error ·≈–µÈÕß √È“ß¢÷Èπ„À¡Ë
-// ®–‡°‘¥°√≥’¡’°“√ restart server
+// ‡∏ñ‡πâ‡∏≤‡πÉ‡∏ä‡πâ ProtectedLocalStorage ‡∏à‡∏∞‡πÄ‡∏Ç‡πâ‡∏≤‡∏£‡∏´‡∏±‡∏™‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÅ‡∏•‡∏∞‡πÉ‡∏ä‡πâ Key ‡πÄ‡∏Ç‡πâ‡∏≤‡∏£‡∏´‡∏±‡∏™ ‡∏ñ‡πâ‡∏≤‡∏´‡∏≤ Key ‡πÄ‡∏î‡∏¥‡∏°‡πÑ‡∏°‡πà‡πÄ‡∏à‡∏≠‡∏à‡∏∞ error ‡πÅ‡∏•‡∏∞‡∏ï‡πâ‡∏≠‡∏á‡∏™‡∏£‡πâ‡∏≤‡∏á‡∏Ç‡∏∂‡πâ‡∏ô‡πÉ‡∏´‡∏°‡πà
+// ‡∏à‡∏∞‡πÄ‡∏Å‡∏¥‡∏î‡∏Å‡∏£‡∏ì‡∏µ‡∏°‡∏µ‡∏Å‡∏≤‡∏£ restart server
 var keysDirectory = @$"{contentRootPath}\appkeys";
 builder.Services.AddDataProtection()
-	.PersistKeysToFileSystem(new DirectoryInfo(keysDirectory))
-	.SetApplicationName("SalesPipeline");
+    .PersistKeysToFileSystem(new DirectoryInfo(keysDirectory))
+    .SetApplicationName("SalesPipeline");
 
-// „™È™—Ë«§√“«‡æ◊ËÕ∑¥ Õ∫ ≈ß∑–‡∫’¬π HttpClient ∑’Ë¢È“¡°“√µ√«® Õ∫„∫√—∫√Õß SSL  ”À√—∫∑ÿ°§”¢Õ
+// ‡πÉ‡∏ä‡πâ‡∏ä‡∏±‡πà‡∏ß‡∏Ñ‡∏£‡∏≤‡∏ß‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ó‡∏î‡∏™‡∏≠‡∏ö ‡∏•‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô HttpClient ‡∏ó‡∏µ‡πà‡∏Ç‡πâ‡∏≤‡∏°‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡πÉ‡∏ö‡∏£‡∏±‡∏ö‡∏£‡∏≠‡∏á SSL ‡∏™‡∏≥‡∏´‡∏£‡∏±‡∏ö‡∏ó‡∏∏‡∏Å‡∏Ñ‡∏≥‡∏Ç‡∏≠
 //builder.Services.AddHttpClient("IgnoreSslClient")
 //	.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 //	{
@@ -119,12 +119,12 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-	app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
-	app.UseExceptionHandler("/Error");
-	app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
 
 //app.UseDeveloperExceptionPage();
@@ -135,7 +135,7 @@ else
 //	app.UseHsts();
 //}
 
-// ª‘¥„™È™—Ë«§√“«‡æ◊ËÕ∑¥ Õ∫∫π prod µÈÕß‡ª‘¥
+// ‡∏õ‡∏¥‡∏î‡πÉ‡∏ä‡πâ‡∏ä‡∏±‡πà‡∏ß‡∏Ñ‡∏£‡∏≤‡∏ß‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ó‡∏î‡∏™‡∏≠‡∏ö‡∏ö‡∏ô prod ‡∏ï‡πâ‡∏≠‡∏á‡πÄ‡∏õ‡∏¥‡∏î
 //app.UseHttpsRedirection();
 
 
@@ -147,27 +147,27 @@ string currentDirectoryFiles = contentRootPath;
 
 if (serverSite != ServerSites.DEV && !baseUriApi.Contains("localhost"))
 {
-	//Server Linix
-	if (serverSite == ServerSites.UAT)
-	{
-		//currentDirectoryRoot = "/home/thanapat/uat/frontend/wwwroot";
-		//currentDirectoryFiles = $"/home/thanapat/uat/files";
-	}
-	else if (serverSite == ServerSites.PRO)
-	{
-		//currentDirectoryRoot = "/home/thanapat/prd/frontend/wwwroot";
-		//currentDirectoryFiles = $"/home/thanapat/prd/files";
-	}
+    //Server Linix
+    if (serverSite == ServerSites.UAT)
+    {
+        //currentDirectoryRoot = "/home/thanapat/uat/frontend/wwwroot";
+        //currentDirectoryFiles = $"/home/thanapat/uat/files";
+    }
+    else if (serverSite == ServerSites.PRO)
+    {
+        //currentDirectoryRoot = "/home/thanapat/prd/frontend/wwwroot";
+        //currentDirectoryFiles = $"/home/thanapat/prd/files";
+    }
 }
 
 app.UseStaticFiles(new StaticFileOptions() { FileProvider = new PhysicalFileProvider(currentDirectoryRoot) });
 app.UseStaticFiles(new StaticFileOptions()
 {
-	FileProvider = new PhysicalFileProvider(currentDirectoryFiles),
-	OnPrepareResponse = ctx =>
-	{
-		ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
-	}
+    FileProvider = new PhysicalFileProvider(currentDirectoryFiles),
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
+    }
 });
 
 app.UseRouting();
