@@ -1,0 +1,36 @@
+﻿@page "/maintenance"
+
+@layout MainLayoutBlank
+
+@if (isShowContent)
+{
+	<div class="container">
+		<div class="row pt-5">
+			<div class="col-12 text-center">
+				<h3 class="mb-2"><i class="fa-solid fa-screwdriver-wrench"></i> ระบบกำลังปรับปรุง </h3>
+				<h6>ขออภัยในความไม่สะดวก ระบบกำลังอยู่ในระหว่างการปรับปรุง กรุณาลองใหม่ในภายหลัง</h6>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+	public bool isShowContent { get; set; } = false;
+
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			if (_appSet.Value.SystemStatus == 1)
+			{
+				_Navs.NavigateTo("/", true);
+			}
+
+			isShowContent = true;
+			StateHasChanged();
+			await Task.CompletedTask;
+			firstRender = false;
+		}
+	}
+
+}

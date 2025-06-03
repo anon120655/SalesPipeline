@@ -12,7 +12,8 @@ namespace SalesPipeline.Utils
 		public string? ContentRootPath { get; set; }
 		public string? LogLoginPath { get; set; }
 		public string? SystemType { get; set; }
-		public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
+        public int SystemStatus { get; set; }
+        public RequestResponseLoggerOption? RequestResponseLogger { get; set; }
         public LineNotifys? LineNotify { get; set; }
 		public EmailSetting? EmailConfig { get; set; }
 		public iAuthens? iAuthen { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
@@ -127,5 +128,12 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-	}
+        [AllowAnonymous]
+        [HttpGet("GetReconnect")]
+        public IActionResult GetReconnect()
+        {
+            return Ok("Server is alive");
+        }
+
+    }
 }

@@ -48,6 +48,11 @@ namespace SalesPipeline.Shared
         private int counterDate;
         protected override async Task OnInitializedAsync()
         {
+            if (_appSet.Value.SystemStatus == 0)
+            {
+                _Navs.NavigateTo("/maintenance", true);
+            }
+
             AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
             baseUriWeb = _appSet.Value.baseUriWeb;

@@ -10,6 +10,7 @@ window.AfterRenderMainLayout = () => {
 
 	baseUriWeb = $('#baseUriWeb').val()
 	_baseUriApi = $('#baseUriApi').val()
+	//console.log('_baseUriApi', _baseUriApi)
 
 	setTimeout(function () {
 		var sidebarToggleAll = document.querySelectorAll('.sidebarToggleClick');
