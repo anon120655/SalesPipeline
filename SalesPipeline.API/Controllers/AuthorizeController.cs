@@ -65,12 +65,12 @@ namespace SalesPipeline.API.Controllers
 						if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
 					}
 					string base64password = Convert.ToBase64String(Encoding.UTF8.GetBytes(model.Password ?? ""));
-					var requester_id = $"R00001";
+					//var requester_id = $"R00001";
 					var iAuthenRequest = new iAuthenRequest()
 					{
 						user = model.Username, //1000040
 						password = base64password, //"YmFhY0AxMjM="
-						requester_id = requester_id,
+						requester_id = _appSet.iAuthen.Requester_ID,
 						reference_id = _appSet.iAuthen.Reference_ID,
 						ipaddress = _appSet.iAuthen.IPAddress,
 						authen_type = 4,

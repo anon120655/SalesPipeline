@@ -5,7 +5,7 @@ namespace SalesPipeline.Utils
 	public class AppSettings
 	{
 		public string? Secret { get; set; }
-		public string? SiteUpdate { get; set; } = $"2568-06-03";
+		public string? SiteUpdate { get; set; } = $"2568-06-11";
 		public string ServerSite { get; set; } = null!;
 		public string? baseUriApi { get; set; }
 		public string? baseUriWeb { get; set; }
@@ -47,7 +47,8 @@ namespace SalesPipeline.Utils
 			public string? ApiKey { get; set; }
 			public string? IPAddress { get; set; }
 			public string? Reference_ID { get; set; }
-		}
+            public string? Requester_ID { get; set; }
+        }
 
 		public class Phoenixs
 		{
