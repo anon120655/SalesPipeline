@@ -397,7 +397,7 @@ namespace SalesPipeline.API.Controllers
 				if (sale == null) throw new ExceptionCustom("saleid not found.");
 				if (string.IsNullOrEmpty(sale.CIF)) throw new ExceptionCustom("ไม่พบข้อมูล CIF ในกระบวนการขายนี้");
 
-				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect)
+				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect && MoreDataModel.Phoenixs()?.Select(x => x.cif_no).Contains(sale.CIF) == false)
 				{
 					if (_appSet.ServerSite == ServerSites.DEV)
 					{
