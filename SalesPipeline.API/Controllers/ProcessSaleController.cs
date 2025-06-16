@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -501,7 +502,7 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				List<Sale_PhoenixCustom>? phoenixModel = null;
-				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect)
+				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect && MoreDataModel.Phoenixs()?.Select(x => x.cif_no).Contains(model.CIF) == false)
 				{
 					if (_appSet.ServerSite == ServerSites.DEV)
 					{
