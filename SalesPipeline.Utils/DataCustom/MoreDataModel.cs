@@ -58,6 +58,7 @@ namespace SalesPipeline.Utils.DataCustom
 						cif_name = $"บริษัท 00{i}_{j}",
 						status_type = $"วิเคราะห์โครงการ00{i}_{j}",
 						status_code = $"100 - RM วิเคราะห์โครงการ{i}_{j}",
+						ana_no = $"0458CA67000{i}{j}"
 					});
 				}
 			}
