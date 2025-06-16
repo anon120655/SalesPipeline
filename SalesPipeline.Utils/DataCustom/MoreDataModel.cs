@@ -54,7 +54,7 @@ namespace SalesPipeline.Utils.DataCustom
 				{
 					phoenixModel.Add(new Sale_PhoenixCustom
 					{
-						cif_no = $"1000{i}",
+						cif_no = $"T000{i}",
 						cif_name = $"บริษัท 00{i}_{j}",
 						status_type = $"วิเคราะห์โครงการ00{i}_{j}",
 						status_code = $"100 - RM วิเคราะห์โครงการ{i}_{j}",

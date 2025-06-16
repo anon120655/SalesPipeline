@@ -274,7 +274,7 @@ namespace SalesPipeline.API.Controllers
 			try
 			{
 				List<Sale_PhoenixCustom>? phoenixModel = null;
-				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect)
+				if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect && MoreDataModel.Phoenixs()?.Select(x=>x.cif_no).Contains(cif) == false)
 				{
 					if (_appSet.ServerSite == ServerSites.DEV)
 					{
