@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesPipeline.Utils", "Sale
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesPipeline.Infrastructure", "SalesPipeline.Infrastructure\SalesPipeline.Infrastructure.csproj", "{20564074-C92D-486D-A7DB-F3740D11E890}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesPipeline.Tests", "SalesPipeline.Tests\SalesPipeline.Tests.csproj", "{A4D2F91F-B9B4-474C-9310-77F85915C6AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{20564074-C92D-486D-A7DB-F3740D11E890}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20564074-C92D-486D-A7DB-F3740D11E890}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20564074-C92D-486D-A7DB-F3740D11E890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4D2F91F-B9B4-474C-9310-77F85915C6AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4D2F91F-B9B4-474C-9310-77F85915C6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D2F91F-B9B4-474C-9310-77F85915C6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4D2F91F-B9B4-474C-9310-77F85915C6AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
