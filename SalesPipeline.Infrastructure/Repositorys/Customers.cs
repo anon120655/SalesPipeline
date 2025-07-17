@@ -54,31 +54,32 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.IsRePurpose != true)
 			{
-				var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
-				if (customer != null)
-				{
-					model.Id = customer.Id;
-					errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
-					model.IsValidate = false;
-					model.ValidateError.Add(errorMessage);
-					if (isThrow) throw new ExceptionCustom(errorMessage);
+                //ปิดไว้ชั่วคราวทดสอบ performance test
+                //var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
+                //if (customer != null)
+                //{
+                //	model.Id = customer.Id;
+                //	errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
+                //	model.IsValidate = false;
+                //	model.ValidateError.Add(errorMessage);
+                //	if (isThrow) throw new ExceptionCustom(errorMessage);
 
-					if (juristicPersonRegNumber != null)
-					{
-						var juristicNumber = await VerifyByNumber(juristicPersonRegNumber, model.CurrentUserId);
-						if (juristicNumber.Code == "proceed")
-						{
-							errorMessage = juristicNumber.Message ?? string.Empty;
-							model.IsValidate = false;
-							model.IsSelectVersion = false;
-							model.ValidateError.Add(errorMessage);
-							if (isThrow) throw new ExceptionCustom(errorMessage);
-						}
-					}
-				}
-			}
+                //	if (juristicPersonRegNumber != null)
+                //	{
+                //		var juristicNumber = await VerifyByNumber(juristicPersonRegNumber, model.CurrentUserId);
+                //		if (juristicNumber.Code == "proceed")
+                //		{
+                //			errorMessage = juristicNumber.Message ?? string.Empty;
+                //			model.IsValidate = false;
+                //			model.IsSelectVersion = false;
+                //			model.ValidateError.Add(errorMessage);
+                //			if (isThrow) throw new ExceptionCustom(errorMessage);
+                //		}
+                //	}
+                //}
+            }
 
-			if (model.DateContact.HasValue)
+            if (model.DateContact.HasValue)
 			{
 				if (model.DateContact.Value.Date > DateTime.Now.Date)
 				{

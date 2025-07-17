@@ -82,10 +82,11 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		/// <summary>
-		/// เพิ่มข้อมูลลูกค้า
-		/// </summary>
-		[HttpPost("Create")]
+        /// <summary>
+        /// เพิ่มข้อมูลลูกค้า
+        /// </summary>
+        [AllowAnonymous]
+        [HttpPost("Create")]
 		public async Task<IActionResult> Create(CustomerCustom model)
 		{
 			try
