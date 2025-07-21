@@ -173,5 +173,21 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-	}
+        [AllowAnonymous]
+        [HttpGet("ClearDatabase")]
+        public async Task<IActionResult> ClearDatabase(string code)
+        {
+            try
+            {
+                await _repo.System.ClearDatabase(code);
+
+                return Ok("clear db success");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
+        }
+
+    }
 }

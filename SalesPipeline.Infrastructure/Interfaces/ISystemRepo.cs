@@ -21,5 +21,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 		Task<List<System_ConfigCustom>> GetConfig();
 		Task<System_ConfigCustom?> GetConfigByCode(string code);
 		Task UpdateConfig(List<System_ConfigCustom> model);
-	}
+        Task ClearDatabase(string code);
+    }
 }
