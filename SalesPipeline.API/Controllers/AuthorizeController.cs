@@ -125,19 +125,20 @@ namespace SalesPipeline.API.Controllers
 
 				if (response != null)
 				{
-					await _repo.User.LogLogin(new()
-					{
-						UserId = response.Id,
-						IPAddress = model.IPAddress,
-						DeviceId = model.DeviceId,
-						DeviceVersion = model.DeviceVersion,
-						SystemVersion = model.SystemVersion,
-						AppVersion = model.AppVersion,
-						tokenNoti = model.tokenNoti
-					});
-				}
+                    //นำออกชั่วคราวเพื่อทดสอบ JMeter
+                    //await _repo.User.LogLogin(new()
+                    //{
+                    //	UserId = response.Id,
+                    //	IPAddress = model.IPAddress,
+                    //	DeviceId = model.DeviceId,
+                    //	DeviceVersion = model.DeviceVersion,
+                    //	SystemVersion = model.SystemVersion,
+                    //	AppVersion = model.AppVersion,
+                    //	tokenNoti = model.tokenNoti
+                    //});
+                }
 
-				return Ok(response);
+                return Ok(response);
 			}
 			catch (Exception ex)
 			{

@@ -104,8 +104,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Master_LoanTypeCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_LoanTypes
-				.OrderByDescending(o => o.CreateDate)
+			var query = await _repo.Context.Master_LoanTypes.AsNoTracking()
+                .OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
 			return _mapper.Map<Master_LoanTypeCustom>(query);
@@ -113,8 +113,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<PaginationView<List<Master_LoanTypeCustom>>> GetList(allFilter model)
 		{
-			var query = _repo.Context.Master_LoanTypes
-												 .Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Master_LoanTypes.AsNoTracking()
+                                                 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 												 .AsQueryable();
 			if (model.status.HasValue)
@@ -140,7 +140,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_LoanTypes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_LoanTypes.AsNoTracking().Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 	}

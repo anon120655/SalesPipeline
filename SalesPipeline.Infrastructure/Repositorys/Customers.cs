@@ -315,9 +315,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				await Validate(model);
+                //นำออกชั่วคราวเพื่อทดสอบ JMeter
+                //await Validate(model);
 
-				string? branchName = null;
+                string? branchName = null;
 				string? master_ContactChannelName = null;
 				string? master_BusinessTypeName = null;
 				string? master_BusinessSizeName = null;
@@ -1005,7 +1006,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetCompanyNameById(Guid id)
 		{
-			var companyName = await _repo.Context.Customers.Where(x => x.Id == id).Select(x => x.CompanyName).FirstOrDefaultAsync();
+			var companyName = await _repo.Context.Customers.AsNoTracking().Where(x => x.Id == id).Select(x => x.CompanyName).FirstOrDefaultAsync();
 			return companyName;
 		}
 

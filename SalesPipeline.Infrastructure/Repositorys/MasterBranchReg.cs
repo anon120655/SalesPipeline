@@ -107,8 +107,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Master_Branch_RegionCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_Branch_Regions
-				.OrderByDescending(o => o.CreateDate)
+			var query = await _repo.Context.Master_Branch_Regions.AsNoTracking()
+                .OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == id);
 
 			return _mapper.Map<Master_Branch_RegionCustom>(query);
@@ -116,14 +116,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_Branch_Regions.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_Branch_Regions.AsNoTracking().Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<PaginationView<List<Master_Branch_RegionCustom>>> GetBranchRegs(allFilter model)
 		{
-			var query = _repo.Context.Master_Branch_Regions
-												 .Where(x => x.Status != StatusModel.Delete)
+			var query = _repo.Context.Master_Branch_Regions.AsNoTracking()
+                                                 .Where(x => x.Status != StatusModel.Delete)
 												 .OrderBy(x => x.CreateDate)
 												 .AsQueryable();
 

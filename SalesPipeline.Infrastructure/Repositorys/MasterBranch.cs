@@ -138,7 +138,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetNameById(int id)
 		{
-			var name = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
+			var name = await _repo.Context.InfoBranches.AsNoTracking().Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
 			return name;
 		}
 

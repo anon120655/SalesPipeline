@@ -62,13 +62,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetNameById(Guid id)
 		{
-			var name = await _repo.Context.Master_BusinessSizes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_BusinessSizes.AsNoTracking().Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<Guid?> GetIdByName(string name)
 		{
-			var query = await _repo.Context.Master_BusinessSizes.Where(x => x.Name == name).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_BusinessSizes.AsNoTracking().Where(x => x.Name == name).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.Id;

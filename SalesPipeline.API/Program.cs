@@ -47,22 +47,7 @@ var SalesPipelineContext = con_root["ConnectionStrings:SalesPipelineContext"];
 var SalesPipelineLogContext = con_root["ConnectionStrings:SalesPipelineLogContext"];
 var contentRootPath = con_root["AppSettings:ContentRootPath"] ?? String.Empty;
 
-//builder.Services.AddDbContext<SalesPipelineContext>(options =>
-//options.UseSqlServer(SalesPipelineContext));
-
-//builder.Services.AddDbContext<SalesPipelineContext>(options =>
-//	options.UseMySql(SalesPipelineContext, ServerVersion.Parse("10.11.6-MariaDB", ServerType.MariaDb), options => options.UseNetTopologySuite()));
-
 var autoDetectVersion = ServerVersion.AutoDetect(SalesPipelineContext);
-//builder.Services.AddDbContext<SalesPipelineContext>(options =>
-//	options.UseMySql(SalesPipelineContext,
-//				autoDetectVersion,
-//				options => options.EnableRetryOnFailure(
-//					maxRetryCount: 10,
-//					maxRetryDelay: System.TimeSpan.FromSeconds(60),
-//					errorNumbersToAdd: null
-//					)
-//				));
 
 builder.Services.AddDbContext<SalesPipelineContext>(
            dbContextOptions => dbContextOptions
@@ -79,6 +64,43 @@ builder.Services.AddDbContext<SalesPipelineLogContext>(
                .EnableSensitiveDataLogging()
                .EnableDetailedErrors()
        );
+
+//** ปรับให้ผล JMeter ดีขึ้น ใช้ไม่ได้ error DbContext.Database.CreateExecutionStrategy()
+//builder.Services.AddDbContext<SalesPipelineContext>(dbContextOptions =>
+//    dbContextOptions
+//        .UseMySql(SalesPipelineContext, autoDetectVersion,
+//            mySqlOptions => mySqlOptions.EnableRetryOnFailure(
+//                maxRetryCount: 5,
+//                maxRetryDelay: TimeSpan.FromSeconds(3),
+//                errorNumbersToAdd: null
+//            )
+//        )
+//        .LogTo(Console.WriteLine, LogLevel.Information)
+//        .EnableSensitiveDataLogging()
+//        .EnableDetailedErrors()
+//);
+
+//builder.Services.AddDbContext<SalesPipelineLogContext>(dbContextOptions =>
+//    dbContextOptions
+//        .UseMySql(SalesPipelineLogContext, autoDetectVersion,
+//            mySqlOptions => mySqlOptions.EnableRetryOnFailure(
+//                maxRetryCount: 5,
+//                maxRetryDelay: TimeSpan.FromSeconds(3),
+//                errorNumbersToAdd: null
+//            )
+//        )
+//        .LogTo(Console.WriteLine, LogLevel.Information)
+//        .EnableSensitiveDataLogging()
+//        .EnableDetailedErrors()
+//);
+
+
+//** ปรับให้ผล JMeter ดีขึ้น
+//ลดขนาด response ที่ส่งกลับ ทำให้ response time ดีขึ้น
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
@@ -226,6 +248,7 @@ app.Use(async (context, next) =>
         httpMaxRequestBodySizeFeature.MaxRequestBodySize = null; //unlimited I guess
     await next(context);
 });
+app.UseResponseCompression();
 
 //"C:\\DataRM"
 app.UseStaticFiles(new StaticFileOptions()

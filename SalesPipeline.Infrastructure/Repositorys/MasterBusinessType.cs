@@ -52,8 +52,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<Master_BusinessTypeCustom> GetById(Guid id)
 		{
-			var query = await _repo.Context.Master_BusinessTypes
-				.OrderByDescending(o => o.CreateDate)
+			var query = await _repo.Context.Master_BusinessTypes.AsNoTracking()
+                .OrderByDescending(o => o.CreateDate)
 				.FirstOrDefaultAsync(x => x.Status != StatusModel.Delete && x.Id == id);
 
 			return _mapper.Map<Master_BusinessTypeCustom>(query);
@@ -62,13 +62,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<string?> GetNameById(Guid id)
 		{
 			var idStr = id.ToString();
-			var name = await _repo.Context.Master_BusinessTypes.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
+			var name = await _repo.Context.Master_BusinessTypes.AsNoTracking().Where(x => x.Id == id).Select(x => x.Name).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<Guid?> GetIdByName(string name)
 		{
-			var query = await _repo.Context.Master_BusinessTypes.Where(x => x.Name == name).FirstOrDefaultAsync();
+			var query = await _repo.Context.Master_BusinessTypes.AsNoTracking().Where(x => x.Name == name).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.Id;

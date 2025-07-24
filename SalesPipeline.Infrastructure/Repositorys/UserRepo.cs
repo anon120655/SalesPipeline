@@ -683,8 +683,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<UserCustom> GetById(int id)
 		{
-			var query = await _repo.Context.Users
-				.Include(x => x.User_Areas)
+			var query = await _repo.Context.Users.AsNoTracking()
+                .Include(x => x.User_Areas)
 				.Include(x => x.Master_Branch_Region)
 				.Include(x => x.Position)
 				.Include(x => x.Role)
@@ -725,7 +725,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetFullNameById(int id)
 		{
-			var fullName = await _repo.Context.Users.Where(x => x.Id == id).Select(x => x.FullName).FirstOrDefaultAsync();
+			var fullName = await _repo.Context.Users.AsNoTracking().Where(x => x.Id == id).Select(x => x.FullName).FirstOrDefaultAsync();
 			return fullName;
 		}
 

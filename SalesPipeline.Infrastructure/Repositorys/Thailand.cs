@@ -35,7 +35,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoProvinceCustom>> GetProvince(Guid? department_BranchId = null)
 		{
-			var query = _repo.Context.InfoProvinces.AsQueryable();
+			var query = _repo.Context.InfoProvinces.AsNoTracking().AsQueryable();
 
 			if (department_BranchId.HasValue)
 			{
@@ -47,56 +47,56 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoAmphurCustom>> GetAmphur(int provinceID)
 		{
-			var query = _repo.Context.InfoAmphurs.Where(x => x.ProvinceID == provinceID).AsQueryable();
+			var query = _repo.Context.InfoAmphurs.AsNoTracking().Where(x => x.ProvinceID == provinceID).AsQueryable();
 			return _mapper.Map<IList<InfoAmphurCustom>>(await query.ToListAsync());
 		}
 
 		public async Task<IList<InfoTambolCustom>> GetTambol(int provinceID, int amphurID)
 		{
-			var query = _repo.Context.InfoTambols.Where(x => x.ProvinceID == provinceID && x.AmphurID == amphurID).AsQueryable();
+			var query = _repo.Context.InfoTambols.AsNoTracking().Where(x => x.ProvinceID == provinceID && x.AmphurID == amphurID).AsQueryable();
 			return _mapper.Map<IList<InfoTambolCustom>>(await query.ToListAsync());
 		}
 
 		public async Task<InfoProvinceCustom> GetProvinceByid(int id)
 		{
-			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceID == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoProvinces.AsNoTracking().Where(x => x.ProvinceID == id).FirstOrDefaultAsync();
 			return _mapper.Map<InfoProvinceCustom>(query);
 		}
 
 		public async Task<InfoAmphurCustom> GetAmphurByid(int id)
 		{
-			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurID == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoAmphurs.AsNoTracking().Where(x => x.AmphurID == id).FirstOrDefaultAsync();
 			return _mapper.Map<InfoAmphurCustom>(query);
 		}
 
 		public async Task<InfoTambolCustom> GetTambolByid(int id)
 		{
-			var query = await _repo.Context.InfoTambols.Where(x => x.TambolID == id).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoTambols.AsNoTracking().Where(x => x.TambolID == id).FirstOrDefaultAsync();
 			return _mapper.Map<InfoTambolCustom>(query);
 		}
 
 		public async Task<string?> GetProvinceNameByid(int id)
 		{
-			var name = await _repo.Context.InfoProvinces.Where(x => x.ProvinceID == id).Select(x => x.ProvinceName).FirstOrDefaultAsync();
+			var name = await _repo.Context.InfoProvinces.AsNoTracking().Where(x => x.ProvinceID == id).Select(x => x.ProvinceName).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<string?> GetAmphurNameByid(int id)
 		{
-			var name = await _repo.Context.InfoAmphurs.Where(x => x.AmphurID == id).Select(x => x.AmphurName).FirstOrDefaultAsync();
+			var name = await _repo.Context.InfoAmphurs.AsNoTracking().Where(x => x.AmphurID == id).Select(x => x.AmphurName).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<string?> GetTambolNameByid(int id)
 		{
-			var name = await _repo.Context.InfoTambols.Where(x => x.TambolID == id).Select(x => x.TambolName).FirstOrDefaultAsync();
+			var name = await _repo.Context.InfoTambols.AsNoTracking().Where(x => x.TambolID == id).Select(x => x.TambolName).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<int?> GetProvinceIdByName(string name)
 		{
 			name = name.Replace("จังหวัด", string.Empty);
-			var query = await _repo.Context.InfoProvinces.Where(x => x.ProvinceName.Contains(name)).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoProvinces.AsNoTracking().Where(x => x.ProvinceName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.ProvinceID;
@@ -108,7 +108,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			name = name.Replace("เขต", string.Empty);
 			name = name.Replace("อำเภอ", string.Empty);
-			var query = await _repo.Context.InfoAmphurs.Where(x => x.AmphurName.Contains(name)).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoAmphurs.AsNoTracking().Where(x => x.AmphurName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.AmphurID;
@@ -118,7 +118,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<int?> GetTambolIdByName(string name)
 		{
-			var query = await _repo.Context.InfoTambols.Where(x => x.TambolName.Contains(name)).FirstOrDefaultAsync();
+			var query = await _repo.Context.InfoTambols.AsNoTracking().Where(x => x.TambolName.Contains(name)).FirstOrDefaultAsync();
 			if (query != null)
 			{
 				return query.TambolID;
@@ -192,7 +192,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoBranchCustom>> GetBranch(int provinceID)
 		{
-			var query = _repo.Context.InfoBranches.AsQueryable();
+			var query = _repo.Context.InfoBranches.AsNoTracking().AsQueryable();
 
 			if (provinceID > 0)
 			{
@@ -236,13 +236,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<string?> GetBranchNameByid(int id)
 		{
-			var name = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
+			var name = await _repo.Context.InfoBranches.AsNoTracking().Where(x => x.BranchID == id).Select(x => x.BranchName).FirstOrDefaultAsync();
 			return name;
 		}
 
 		public async Task<InfoBranchCustom?> GetBranchByid(int id)
 		{
-			var InfoBranches = await _repo.Context.InfoBranches.Where(x => x.BranchID == id).FirstOrDefaultAsync();
+			var InfoBranches = await _repo.Context.InfoBranches.AsNoTracking().Where(x => x.BranchID == id).FirstOrDefaultAsync();
 			return _mapper.Map<InfoBranchCustom>(InfoBranches);
 		}
 
