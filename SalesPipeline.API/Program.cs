@@ -97,10 +97,10 @@ builder.Services.AddDbContext<SalesPipelineLogContext>(
 
 //** ปรับให้ผล JMeter ดีขึ้น
 //ลดขนาด response ที่ส่งกลับ ทำให้ response time ดีขึ้น
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-});
+//builder.Services.AddResponseCompression(options =>
+//{
+//    options.EnableForHttps = true;
+//});
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
@@ -248,7 +248,9 @@ app.Use(async (context, next) =>
         httpMaxRequestBodySizeFeature.MaxRequestBodySize = null; //unlimited I guess
     await next(context);
 });
-app.UseResponseCompression();
+
+//JMeter
+//app.UseResponseCompression();
 
 //"C:\\DataRM"
 app.UseStaticFiles(new StaticFileOptions()

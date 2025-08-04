@@ -80,19 +80,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
                     if (user.Role != null && user.Role.Status != StatusModel.Active) throw new ExceptionCustom("ไม่พบบทบาทการใช้งาน");
 
-                    if (user.Role != null && user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-                    {
-                        if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
-                        {
-                            var assignment = await _repo.AssignmentRM.Create(new()
-                            {
-                                Status = StatusModel.Active,
-                                UserId = user.Id,
-                                EmployeeId = user.EmployeeId,
-                                EmployeeName = user.FullName,
-                            });
-                        }
-                    }
+                    //นำออกชั่วคราวเพื่อทดสอบ JMeter
+                    //if (user.Role != null && user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+                    //{
+                    //    if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+                    //    {
+                    //        var assignment = await _repo.AssignmentRM.Create(new()
+                    //        {
+                    //            Status = StatusModel.Active,
+                    //            UserId = user.Id,
+                    //            EmployeeId = user.EmployeeId,
+                    //            EmployeeName = user.FullName,
+                    //        });
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)
