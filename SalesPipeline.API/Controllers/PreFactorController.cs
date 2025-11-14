@@ -21,12 +21,10 @@ namespace SalesPipeline.API.Controllers
 	public class PreFactorController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public PreFactorController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public PreFactorController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[AllowAnonymous]

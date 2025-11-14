@@ -19,12 +19,10 @@ namespace SalesPipeline.API.Controllers
 	public class PreCreditController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public PreCreditController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public PreCreditController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPost("Create")]

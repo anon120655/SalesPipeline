@@ -20,12 +20,10 @@ namespace SalesPipeline.API.Controllers
 	public class AssignmentCenterController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public AssignmentCenterController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public AssignmentCenterController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpGet("GetById")]

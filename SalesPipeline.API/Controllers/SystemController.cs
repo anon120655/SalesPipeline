@@ -20,12 +20,10 @@ namespace SalesPipeline.API.Controllers
 	public class SystemController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public SystemController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public SystemController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPost("CreateSignature")]

@@ -18,16 +18,10 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class JobsController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly AppSettings _appSet;
 		private readonly DatabaseBackupService _databaseBackup;
 
-		public JobsController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, DatabaseBackupService databaseBackup)
+		public JobsController(DatabaseBackupService databaseBackup)
 		{
-			_repo = repo;
-			_httpClientFactory = httpClientFactory;
-			_appSet = appSet.Value;
 			_databaseBackup = databaseBackup;
 		}
 

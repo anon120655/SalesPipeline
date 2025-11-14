@@ -31,58 +31,32 @@ namespace SalesPipeline.Utils
 			return messageError;
 		}
 
-		public static string? MapErrorModel(string? content)
-		{
-			if (content != null)
-			{
-				var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(content);
-				if (dataMap != null)
-				{
-					return dataMap?.Message;
-				}
-			}
-			return string.Empty;
-		}
+        public static string MapErrorModel(string? content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return string.Empty;
 
-		public static string DateToThString(DateTime? datetime, string separator = "/")
-		{
-			if (datetime.HasValue && datetime != DateTime.MinValue)
-			{
-				string _datetime = datetime.Value.ToString("dd/MM/yyyy HH:mm:ss");
-				//DateTime dateeng = DateTime.TryParseExact(_datetime, "dd/MM/yyyy HH:mm:ss", new CultureInfo("en-US"));
-				DateTime dateeng;
-				if (DateTime.TryParseExact(_datetime, "dd/MM/yyyy HH:mm:ss",
-						   System.Globalization.CultureInfo.InvariantCulture,
-						   System.Globalization.DateTimeStyles.None, out dateeng))
-				{
-					int thaiYear = new ThaiBuddhistCalendar().GetYear(dateeng);
-					int thaiMonth = new ThaiBuddhistCalendar().GetMonth(dateeng);
-					int thaiDay = new ThaiBuddhistCalendar().GetDayOfMonth(dateeng);
+            var dataMap = JsonConvert.DeserializeObject<ErrorCustom>(content);
+            return dataMap?.Message ?? string.Empty;
+        }
 
-					if (thaiYear < 2500)
-					{
-						thaiYear = thaiYear + 543;
-					}
-					if (thaiYear > 3000)
-					{
-						thaiYear = thaiYear - 543;
-					}
+        public static string DateToThString(DateTime? datetime, string separator = "/")
+        {
+            if (!datetime.HasValue || datetime.Value == DateTime.MinValue)
+                return string.Empty;
 
-					string _thaiDay = thaiDay < 10 ? string.Format("{0}{1}", "0", thaiDay) : thaiDay.ToString();
-					string _thaiMonth = thaiMonth < 10 ? string.Format("{0}{1}", "0", thaiMonth) : thaiMonth.ToString();
+            var date = datetime.Value;
 
-					return $"{_thaiDay}{separator}{_thaiMonth}{separator}{thaiYear}";
-				}
+            // แปลงปีเป็น พ.ศ.
+            int year = date.Year + 543;
 
-				return String.Empty;
-			}
-			else
-			{
-				return String.Empty;
-			}
-		}
+            string day = date.Day.ToString("D2");     // "D2" = เติม 0 อัตโนมัติ
+            string month = date.Month.ToString("D2");
 
-		public static DateTime? DateToEn(string? datetime, string format = "dd/MM/yyyy", string Culture = "en-US")
+            return $"{day}{separator}{month}{separator}{year}";
+        }
+
+        public static DateTime? DateToEn(string? datetime, string format = "dd/MM/yyyy", string Culture = "en-US")
 		{
 			if (DateTime.TryParseExact(datetime, format, new CultureInfo(Culture), DateTimeStyles.None, out DateTime date))
 			{

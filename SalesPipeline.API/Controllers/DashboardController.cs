@@ -19,12 +19,10 @@ namespace SalesPipeline.API.Controllers
 	public class DashboardController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public DashboardController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public DashboardController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPost("GetStatus_TotalById")]

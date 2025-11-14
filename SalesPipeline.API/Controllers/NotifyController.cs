@@ -30,13 +30,11 @@ namespace SalesPipeline.API.Controllers
 		private readonly IBackgroundJobClient _backgroundJobClient;
 		private readonly NotificationService _notiService;
 		private IRepositoryWrapper _repo;
-		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly AppSettings _appSet;
 
-		public NotifyController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient, NotificationService notificationService)
+		public NotifyController(IRepositoryWrapper repo, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient, NotificationService notificationService)
 		{
 			_repo = repo;
-			_httpClientFactory = httpClientFactory;
 			_appSet = appSet.Value;
 			_backgroundJobClient = backgroundJobClient;
 			_notiService = notificationService;

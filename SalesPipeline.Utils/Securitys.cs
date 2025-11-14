@@ -24,7 +24,7 @@ namespace SalesPipeline.Utils
 			csp.Key = _sellTokenKey;
 			csp.Padding = PaddingMode.ISO10126;
 			csp.Mode = CipherMode.CBC;
-			//csp.KeySize = 256;
+			
 			using (var encryptor = csp.CreateEncryptor(csp.Key, csp.IV))
 			{
 				using (MemoryStream msEncrypt = new MemoryStream())

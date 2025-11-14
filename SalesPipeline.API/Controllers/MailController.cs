@@ -18,12 +18,10 @@ namespace SalesPipeline.API.Controllers
 	public class MailController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public MailController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public MailController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[AllowAnonymous]

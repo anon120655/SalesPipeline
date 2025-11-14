@@ -22,13 +22,11 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class CustomerController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
+		private readonly IRepositoryWrapper _repo;
 
-		public CustomerController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public CustomerController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[ApiExplorerSettings(IgnoreApi = true)]
@@ -269,17 +267,17 @@ namespace SalesPipeline.API.Controllers
 				int currentUserId = 0;
 				int _statusSaleId = StatusSaleModel.NotStatus;
 
-				//SaleCustom? modelSale = null;
-
 				rolecode = rolecode.ToUpper();
 				bool IsAssignRM = false;
 				bool IsAssignCenter = false;
-				if (rolecode.StartsWith("C"))
-				{
+				if (rolecode.StartsWith('C'))
+
+                {
 					IsAssignRM = true;
 				}
-				else if (rolecode.StartsWith("L"))
-				{
+				else if (rolecode.StartsWith('L'))
+
+                {
 					IsAssignCenter = true;
 				}
 

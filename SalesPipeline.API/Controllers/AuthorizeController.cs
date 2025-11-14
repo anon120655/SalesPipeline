@@ -24,13 +24,11 @@ namespace SalesPipeline.API.Controllers
 	public class AuthorizeController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly AppSettings _appSet;
 
-		public AuthorizeController(IRepositoryWrapper repo, IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSet, DatabaseBackupService databaseBackup)
+		public AuthorizeController(IRepositoryWrapper repo, IOptions<AppSettings> appSet, DatabaseBackupService databaseBackup)
 		{
 			_repo = repo;
-			_httpClientFactory = httpClientFactory;
 			_appSet = appSet.Value;
 		}
 

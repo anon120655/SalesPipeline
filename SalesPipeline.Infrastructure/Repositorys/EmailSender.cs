@@ -18,7 +18,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class EmailSender : IEmailSender
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
@@ -40,7 +40,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<SendMail_TemplateCustom>(query);
 		}
 
-		public async Task SendEmail(SendMailModel data)
+		public async Task SendEmail(SendMailModel indata)
 		{
 			ResourceEmail resource = new ResourceEmail();
 
@@ -56,12 +56,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					resource.MailPort = _setting.MailPort;
 
 					//indata
-					resource.TemplateId = data.TemplateId;
-					resource.Subject = data.Subject ?? String.Empty;
-					resource.Email = data.Email ?? String.Empty;
-					resource.Builder.HtmlBody = data.Body ?? String.Empty;
-					resource.CcList = data.CcList;
-					resource.CurrentUserId = data.CurrentUserId;
+					resource.TemplateId = indata.TemplateId;
+					resource.Subject = indata.Subject ?? String.Empty;
+					resource.Email = indata.Email ?? String.Empty;
+					resource.Builder.HtmlBody = indata.Body ?? String.Empty;
+					resource.CcList = indata.CcList;
+					resource.CurrentUserId = indata.CurrentUserId;
 
 					var context = _accessor.HttpContext;
 
@@ -99,7 +99,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					mimeMessage.Body = resource.Builder.ToMessageBody();
 
 					mimeMessage.From.Add(new MimeKit.MailboxAddress(resource.SenderName, resource.Sender));
-					//mimeMessage.To.Add(new MailboxAddress("Mrs. Chanandler Bong", "chandler@friends.com")); EX.
+					
 					mimeMessage.To.Add(new MailboxAddress(resource.SenderName, resource.Email));
 					mimeMessage.Subject = resource.Subject;
 
@@ -116,20 +116,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							}
 						}
 
-						//mimeMessage.Cc.Add(new MailboxAddress(resource.SenderName, "arnon.w@ibusiness.co.th"));
 					}
 
 					using (var client = new SmtpClient())
 					{
-						// For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
 						client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-						// The third parameter is useSSL (true if the client should make an SSL-wrapped
-						// connection to the server; otherwise, false).
-						//await client.ConnectAsync(resource.MailServer, resource.MailPort, false);
 						await client.ConnectAsync(resource.MailServer, resource.MailPort, SecureSocketOptions.Auto);
 
-						// Note: only needed if the SMTP server requires authentication
 						await client.AuthenticateAsync(resource.Sender, resource.Password);
 
 						await Task.Delay(200);

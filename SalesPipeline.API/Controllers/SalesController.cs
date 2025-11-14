@@ -20,12 +20,10 @@ namespace SalesPipeline.API.Controllers
 	public class SalesController : Controller
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public SalesController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public SalesController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		/// <summary>

@@ -16,14 +16,7 @@ namespace SalesPipeline.API.Controllers
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class SecurityController : ControllerBase
-	{
-		private IRepositoryWrapper _repo;
-
-		public SecurityController(IRepositoryWrapper repo)
-		{
-			_repo = repo;
-		}
-
+	{		
 		[HttpGet("EnhancedHash")]
 		public IActionResult EnhancedHash([FromQuery] string val)
 		{

@@ -18,12 +18,10 @@ namespace SalesPipeline.API.Controllers
 	public class PreChanceController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public PreChanceController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public PreChanceController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPut("Update")]

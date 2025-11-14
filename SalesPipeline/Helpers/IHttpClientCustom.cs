@@ -58,11 +58,6 @@ namespace SalesPipeline.Helpers
 
 				fullUrl = baseUri + url;
 
-				if (fullUrl.Contains("/User/GetListLevel"))
-				{
-					//fullUrl = "https://rm-sale.app.baac.or.th/api/v1/User/GetListLevel?page=1&pagesize=10&saleid=&status=1";
-				}
-
 				var options = new RestClientOptions(fullUrl)
 				{
 					ThrowOnAnyError = false,
@@ -78,10 +73,6 @@ namespace SalesPipeline.Helpers
 				var client = new RestClient(options);
 
 				var request = new RestRequest();
-
-				//System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-				//ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 				request.Method = Method.Get;
 				request.AddHeader("Content-Type", "application/json");

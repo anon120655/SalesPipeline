@@ -18,12 +18,10 @@ namespace SalesPipeline.Infrastructure.Helpers
 {
 	public class NotificationService
 	{
-		private readonly HttpClient _httpClient;
 		private readonly AppSettings _appSet;
 
-		public NotificationService(HttpClient httpClient, IOptions<AppSettings> appSet)
+		public NotificationService(IOptions<AppSettings> appSet)
 		{
-			_httpClient = httpClient;
 			_appSet = appSet.Value;
 		}
 

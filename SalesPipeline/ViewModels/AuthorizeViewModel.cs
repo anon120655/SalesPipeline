@@ -22,8 +22,8 @@ namespace SalesPipeline.ViewModels
 	public class AuthorizeViewModel : AuthenticationStateProvider
 	{
 		private readonly ProtectedLocalStorage _protectedLocalStorage;
-		private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
-		private NavigationManager _Nav;
+		private readonly ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+		private readonly NavigationManager _Nav;
 		private readonly HttpClient _httpClient;
 		private readonly AppSettings _appSet;
 
@@ -33,7 +33,6 @@ namespace SalesPipeline.ViewModels
 			, NavigationManager Nav)
 		{
 			_protectedLocalStorage = protectedLocalStorage;
-			//_httpClient = httpClient;
 			_appSet = appset.Value;
 			_Nav = Nav;
 

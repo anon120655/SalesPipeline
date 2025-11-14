@@ -21,12 +21,10 @@ namespace SalesPipeline.API.Controllers
 	public class AssignmentRMController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public AssignmentRMController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public AssignmentRMController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		//[AllowAnonymous]

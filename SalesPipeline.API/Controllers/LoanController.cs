@@ -19,12 +19,10 @@ namespace SalesPipeline.API.Controllers
 	public class LoanController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public LoanController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public LoanController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPost("Create")]

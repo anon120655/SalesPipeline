@@ -18,12 +18,10 @@ namespace SalesPipeline.API.Controllers
 	public class PreCalStanController : ControllerBase
 	{
 		private IRepositoryWrapper _repo;
-		private readonly AppSettings _appSet;
 
-		public PreCalStanController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+		public PreCalStanController(IRepositoryWrapper repo)
 		{
 			_repo = repo;
-			_appSet = appSet.Value;
 		}
 
 		[HttpPost("Create")]
