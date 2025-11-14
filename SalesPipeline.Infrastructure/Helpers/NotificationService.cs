@@ -19,11 +19,13 @@ namespace SalesPipeline.Infrastructure.Helpers
 	public class NotificationService
 	{
 		private readonly AppSettings _appSet;
+        private bool isDevOrUat = false;
 
-		public NotificationService(IOptions<AppSettings> appSet)
+        public NotificationService(IOptions<AppSettings> appSet)
 		{
 			_appSet = appSet.Value;
-		}
+            isDevOrUat = _appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT;
+        }
 
 		[JobDisplayName("SendNoti Mobile_Backup")]
 		public async Task<NotificationMobileResponse?> SendNotificationAsync_Backup(NotificationMobile model)
@@ -33,10 +35,16 @@ namespace SalesPipeline.Infrastructure.Helpers
 			{
 				if (_appSet.NotiMobile != null)
 				{
-					var httpClient = new HttpClient(new HttpClientHandler()
-					{
-						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-					});
+                    var handler = new HttpClientHandler();
+                    if (isDevOrUat)
+                    {
+                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                        {
+                            return true;
+                        };
+                    }
+
+                    var httpClient = new HttpClient(handler);
 
 					model.priority = "high";
 					if (model.notification != null)
@@ -84,7 +92,6 @@ namespace SalesPipeline.Infrastructure.Helpers
 			{
 				if (_appSet.NotiMobile != null)
 				{
-					// Step 1: Read Service Account JSON and generate Access Token
 					string[] scopes = { "https://www.googleapis.com/auth/firebase.messaging" };
 					GoogleCredential credential;
 
@@ -96,12 +103,16 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 					var token = await credential.UnderlyingCredential.GetAccessTokenForRequestAsync();
 
-					var httpClient = new HttpClient(new HttpClientHandler()
-					{
-						ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-					});
+                    var handler = new HttpClientHandler();
+                    if (isDevOrUat)
+                    {
+                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                        {
+                            return true;
+                        };
+                    }
+                    var httpClient = new HttpClient(handler);
 
-					// Step 2: Set the notification priority and properties
 					model.priority = "high";
 					if (model.notification != null)
 					{
@@ -114,7 +125,6 @@ namespace SalesPipeline.Infrastructure.Helpers
 
 					var jsonTxt_Old = JsonConvert.SerializeObject(model);
 
-					//true false
 					if (_appSet.ServerSite == ServerSites.DEV && false)
 					{
 						model.to = "cH6wn-FaQfue-jdbWXZL04:APA91bHSVWxWqKAxBlDJZvfRVgJ7rShpGHlDQCTdKeCC8hUoQ_DlwTMb-VJIwPxqoLm671lh-BuHNRn2V7z5tGth3LTXOYUptk1OiGqNT7-aHy9dH4CUyvAAoD_Ewrt4MvUWauFYRlwU";
@@ -143,31 +153,6 @@ namespace SalesPipeline.Infrastructure.Helpers
 							}
 						}
 					};
-					//var message = new NotificationMobileNew()
-					//{
-					//	message = new()
-					//	{
-					//		token = "ffB93iaISyyvrDUOGDAljd:APA91bGQ_Qb7osi4tfFfLpBaH30P2wh80heroHDHVl9MVdrZTefAo51-PBpCHZl9D1Y5cURrzNBN_Ib9O-JRcXQmjyKqgSQUsnAEkvXWjy_iANEfu22SdyT55TQ4SwIwVc3kgOdvYCxe",
-					//		notification = new()
-					//		{
-					//			title = "ทดสอบ noti new",
-					//			body = "เนื้อหา noti new "
-					//		},
-					//		android = new()
-					//		{
-					//			priority = "high"
-					//		},
-					//		apns = new()
-					//		{
-					//			headers = new()
-					//			{
-					//				apnspriority = "10"
-					//			}
-					//		}
-					//	}
-					//};
-
-					// Step 3: Serialize the model to JSON
 					var jsonTxt = JsonConvert.SerializeObject(message);
 					var postData = new StringContent(
 						jsonTxt,
@@ -175,10 +160,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 						"application/json"
 					);
 
-					// Step 4: Set the Authorization header with the generated Access Token
 					httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-					// Step 5: Send the notification using the new API URL
 					HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.NotiMobile.baseUri}/v1/projects/{_appSet.NotiMobile.ProjectId}/messages:send", postData);
 					if (responseAPI.IsSuccessStatusCode)
 					{

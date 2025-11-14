@@ -24,7 +24,7 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class FileController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
 
 		public FileController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
@@ -38,7 +38,6 @@ namespace SalesPipeline.API.Controllers
 		{
 			try
 			{
-				//var parametere = Securitys.Base64StringEncode("all/1.jpg"); //YWxsLzEuanBn
 				ResponseHeaders headers = this.Response.GetTypedHeaders();
 				headers.CacheControl = new CacheControlHeaderValue
 				{
@@ -49,13 +48,10 @@ namespace SalesPipeline.API.Controllers
 
 				var parameter = Securitys.Base64StringDecode(id);
 				var path = $@"{_appSet.ContentRootPath}/files/{parameter}";
-				//var path = $@"C://DataRM//files//all//{id}.jpg";
 
 				string? contentType = string.Empty;
 				new FileExtensionContentTypeProvider().TryGetContentType(path, out contentType);
 
-				//"image/jpeg"
-				var filename = Path.GetFileName(path);
 				return PhysicalFile(path, contentType ?? string.Empty);
 			}
 			catch (Exception ex)
@@ -79,84 +75,128 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPost("ImportZipCode")]
-		public async Task<IActionResult> ImportZipCode(IFormFile files)
-		{
-			try
-			{
-				await Task.Delay(1);
-				List<InfoTambolCustom> TambolList = new List<InfoTambolCustom>();
+        [HttpPost("ImportZipCode")]
+        public async Task<IActionResult> ImportZipCode(IFormFile file)
+        {
+            try
+            {
+                ValidateUploadFile(file);
 
-				if (files == null) throw new ExceptionCustom("Select File.");
+                var uploadFolder = Path.Combine(_appSet.ContentRootPath, "import", "excel");
+                Directory.CreateDirectory(uploadFolder);
 
-				int fileLimit = 100; //MB
-				int TenMegaBytes = fileLimit * 1024 * 1024;
-				var fileSize = files.Length;
-				if (fileSize > TenMegaBytes)
-				{
-					throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
-				}
+                var safeFileName = Path.GetFileName(file.FileName); // ป้องกัน Path Traversal
+                var fullPath = Path.Combine(uploadFolder, safeFileName);
 
-				string folderName = @$"{_appSet.ContentRootPath}\import\excel";
+                var listTambol = new List<InfoTambolCustom>();
 
-				if (files.Length > 0)
-				{
-					string sFileExtension = Path.GetExtension(files.FileName).ToLower();
-					if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-						throw new ExceptionCustom("FileExtension Not Support.");
+                await using (var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Position = 0;
 
-					ISheet sheet;
-					string fullPath = Path.Combine(folderName, files.FileName);
-					using (var stream = new FileStream(fullPath, FileMode.Create))
-					{
-						files.CopyTo(stream);
-						stream.Position = 0;
-						int sheetCount = 0;
-						if (sFileExtension == ".xls")
-						{
-							throw new ExceptionCustom("not support  Excel 97-2000 formats.");
-						}
+                    listTambol = ReadTambolFromExcel(stream, file.FileName);
+                }
 
-						XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
-						sheetCount = hssfwb.NumberOfSheets;
-						sheet = hssfwb.GetSheetAt(0);
+                if (listTambol.Count > 0)
+                {
+                    await _repo.Thailand.MapZipCode(listTambol);
+                }
 
-						int firstRowNum = sheet.FirstRowNum;
-						for (int i = (firstRowNum + 1); i <= sheet.LastRowNum; i++)
-						{
-							IRow row = sheet.GetRow(i);
-							if (row == null) continue;
-							if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
+        }
 
-							var tambolCode = row.GetCell(0) != null ? row.GetCell(0).ToString() : null;
-							var zipCode = row.GetCell(1) != null ? row.GetCell(1).ToString() : null;
+        private void ValidateUploadFile(IFormFile file)
+        {
+            if (file == null)
+                throw new ExceptionCustom("Select File.");
 
-							if (tambolCode != null)
-							{
-								TambolList.Add(new()
-								{
-									TambolCode = tambolCode,
-									ZipCode = zipCode
-								});
-							}
-						}
+            const int limitMb = 100;
+            const int maxBytes = limitMb * 1024 * 1024;
 
-						if (TambolList.Count > 0)
-						{
-							await _repo.Thailand.MapZipCode(TambolList);
-						}
+            if (file.Length > maxBytes)
+                throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {limitMb} MB");
+
+            var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+
+            switch (ext)
+            {
+                case ".xlsx":
+                case ".csv":
+                    break;
+
+                case ".xls":
+                    throw new ExceptionCustom("ไม่รองรับไฟล์ Excel 97-2000 (.xls)");
+
+                default:
+                    throw new ExceptionCustom("FileExtension Not Support.");
+            }
+        }
+
+        private List<InfoTambolCustom> ReadTambolFromExcel(Stream stream, string fileName)
+        {
+            var result = new List<InfoTambolCustom>();
+            var ext = Path.GetExtension(fileName).ToLowerInvariant();
+
+            if (ext == ".csv")
+                return ReadCsv(stream);
+
+            // Default = xlsx
+            var workbook = new XSSFWorkbook(stream);
+            var sheet = workbook.GetSheetAt(0);
+
+            for (int i = sheet.FirstRowNum + 1; i <= sheet.LastRowNum; i++)
+            {
+                var row = sheet.GetRow(i);
+                if (row == null) continue;
+                if (row.Cells.All(c => c.CellType == CellType.Blank)) continue;
+
+                var tambolCode = row.GetCell(0)?.ToString();
+                if (string.IsNullOrWhiteSpace(tambolCode)) continue;
+
+                result.Add(new InfoTambolCustom
+                {
+                    TambolCode = tambolCode,
+                    ZipCode = row.GetCell(1)?.ToString()
+                });
+            }
+
+            return result;
+        }
+
+        private List<InfoTambolCustom> ReadCsv(Stream stream)
+        {
+            var result = new List<InfoTambolCustom>();
+
+            using var reader = new StreamReader(stream);
+
+            // skip header
+            _ = reader.ReadLine();
+
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var parts = line.Split(',');
+
+                if (parts.Length >= 1)
+                {
+                    result.Add(new InfoTambolCustom
+                    {
+                        TambolCode = parts[0],
+                        ZipCode = parts.Length > 1 ? parts[1] : null
+                    });
+                }
+            }
+            return result;
+        }
 
 
-					}
-				}
-
-				return Ok();
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-	}
+    }
 }

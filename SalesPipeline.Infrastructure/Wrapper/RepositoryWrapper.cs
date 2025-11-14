@@ -129,7 +129,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			PreCalWeight = new PreCalWeight(this, _db, settings, _mapper);
 			PreCreditScore = new PreCreditScore(this, _db, settings, _mapper);
 			PreChancePass = new PreChancePass(this, _db, settings, _mapper);
-			PreFactor = new PreFactor(this, _db, settings, _mapper);
+			PreFactor = new PreFactor(this, _db, _mapper);
 			ProcessSale = new ProcessSales(this, _db, settings, _mapper);
 			Sales = new Sales(this, _db, settings, _mapper);
 			User = new UserRepo(this, _db, settings, _mapper);

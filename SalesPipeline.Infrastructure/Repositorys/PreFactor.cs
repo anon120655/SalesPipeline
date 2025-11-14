@@ -135,7 +135,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						score = null;
 						ratio = null;
-						scoreResult = null;
 
 						if (calInfo != null && calInfo.Pre_Cal_Info_Scores?.Count > 0)
 						{
@@ -304,7 +303,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								string? _feature = null;
 
 								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
-								//var collValueloanValue = collValue / loanValue;
 
 								//20240926 ทำการปรับแก้ Logic แก้ไขเป็น มูลค่าสินเชื่อ/มูลค่าหลักประกัน
 								var collValueloanValue = loanValue / collValue;
@@ -365,11 +363,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								score = 0;
 								ratio = null;
-								scoreResult = null;
 								string? _feature = null;
 
 								//(รายได้ตามรอบธุรกิจ/รอบผลผลิต) / อัตราส่วนภาระชำระหนี้สินอื่น ๆ ต่อรายได้ (ตามรอบธุรกิจ/รอบผลผลิต)
-								//var incomeDebtPeriodOtherDebts = incomeDebtPeriod / otherDebts;
 
 								//20240926 ทำการปรับแก้ Logic ในการคำนวณเป็น “ภาระชำระหนี้สินอื่น ๆ ตามรอบธุรกิจ/รอบผลผลิต” / “รายได้ตามรอบธุรกิจ/รอบผลผลิต”
 								var incomeDebtPeriodOtherDebts = otherDebts / incomeDebtPeriod;
@@ -481,7 +477,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								score = null;
 								ratio = null;
-								scoreResult = null;
 								string? _feature = null;
 
 								if (item.Stan_ItemOptionId_Type1.HasValue)

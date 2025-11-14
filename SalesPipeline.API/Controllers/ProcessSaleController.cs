@@ -1,26 +1,18 @@
 ﻿using Asp.Versioning;
-using Hangfire.MemoryStorage.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.DataCustom;
-using SalesPipeline.Utils.Resources.Customers;
-using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Phoenixs;
 using SalesPipeline.Utils.Resources.ProcessSales;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
-using System.Net.Http;
 using System.Net.NetworkInformation;
-using static SalesPipeline.Utils.AppSettings;
-using static SalesPipeline.Utils.Resources.Notifications.NotificationMobile;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -31,16 +23,16 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class ProcessSaleController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
-		private HttpClient _httpClient;
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
+        private bool isDevOrUat = false;
 
-		public ProcessSaleController(IRepositoryWrapper repo, HttpClient httpClient, IOptions<AppSettings> appSet)
+        public ProcessSaleController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
 		{
 			_repo = repo;
-			_httpClient = httpClient;
 			_appSet = appSet.Value;
-		}
+            isDevOrUat = _appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT;
+        }
 
 		/// <summary>
 		/// ข้อมูลฟอร์มกระบวนการขาย ById
@@ -295,13 +287,16 @@ namespace SalesPipeline.API.Controllers
 
 						if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
 					}
-					// Add handler to bypass SSL validation
-					var handler = new HttpClientHandler
-					{
-						ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
-					};
+                    var handler = new HttpClientHandler();
+                    if (isDevOrUat)
+                    {
+                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                        {
+                            return true;
+                        };
+                    }
 
-					_httpClient = new HttpClient(handler);
+                    var _httpClient = new HttpClient(handler);
 
 					string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbycif/{cif}";
 					var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
@@ -419,15 +414,18 @@ namespace SalesPipeline.API.Controllers
 						if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
 
 
-						// Add handler to bypass SSL validation
-						var handler = new HttpClientHandler
-						{
-							ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
-						};
+                        var handler = new HttpClientHandler();
+                        if (isDevOrUat)
+                        {
+                            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                            {
+                                return true;
+                            };
+                        }
 
-						_httpClient = new HttpClient(handler);
+                        var _httpClient = new HttpClient(handler);
 
-						string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbyana/{sale.CIF}";
+                        string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbyana/{sale.CIF}";
 						var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
 
 						request.Headers.Add("apikey", _appSet.Phoenix.ApiKey);
@@ -523,15 +521,18 @@ namespace SalesPipeline.API.Controllers
 						if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
 
 
-						// Add handler to bypass SSL validation
-						var handler = new HttpClientHandler
-						{
-							ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
-						};
+                        var handler = new HttpClientHandler();
+                        if (isDevOrUat)
+                        {
+                            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                            {
+                                return true;
+                            };
+                        }
 
-						_httpClient = new HttpClient(handler);
+                        var _httpClient = new HttpClient(handler);
 
-						string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbyana/{model.CIF}";
+                        string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbyana/{model.CIF}";
 						var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
 
 						request.Headers.Add("apikey", _appSet.Phoenix.ApiKey);
