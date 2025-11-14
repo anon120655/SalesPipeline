@@ -1,0 +1,1 @@
+﻿# เพิ่ม Soanr Scan Code
