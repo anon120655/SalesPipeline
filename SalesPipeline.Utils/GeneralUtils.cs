@@ -638,7 +638,6 @@ namespace SalesPipeline.Utils
         public static async Task<FileResponseModel?> UploadFormFile(FileModel upload)
         {
             if (upload.FileData == null || upload.FileData.Length <= 0) return null;
-
             var response = new FileResponseModel();
             AppSettings _appSet = upload.appSet ?? new AppSettings();
 
@@ -652,7 +651,7 @@ namespace SalesPipeline.Utils
             string relativePath = Path.Combine(sanitizedFolder, $"{sanitizedId}{sanitizedMimeType}");
             string fullPathSave = Path.Combine(basePath, relativePath);
 
-            // ✅ 3. ตรวจสอบว่า path ที่ได้อยู่ภายใน basePath จริง (ป้องกัน Path Traversal)
+            // ✅ 3. Normalize และตรวจสอบ Path Traversal
             string normalizedPath = Path.GetFullPath(fullPathSave);
             string normalizedBase = Path.GetFullPath(basePath);
 
@@ -661,15 +660,15 @@ namespace SalesPipeline.Utils
                 throw new SecurityException("Invalid file path detected");
             }
 
-            // ✅ 4. สร้าง directory
-            string? directory = Path.GetDirectoryName(fullPathSave);
+            // ✅ 4. สร้าง directory - ใช้ normalizedPath แทน fullPathSave
+            string? directory = Path.GetDirectoryName(normalizedPath);
             if (!string.IsNullOrEmpty(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            // ✅ 5. บันทึกไฟล์
-            using (var fileStream = new FileStream(fullPathSave, FileMode.Create, FileAccess.Write))
+            // ✅ 5. บันทึกไฟล์ - ใช้ normalizedPath แทน fullPathSave
+            using (var fileStream = new FileStream(normalizedPath, FileMode.Create, FileAccess.Write))
             {
                 await upload.FileData.CopyToAsync(fileStream);
             }

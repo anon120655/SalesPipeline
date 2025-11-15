@@ -1055,9 +1055,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 throw new ExceptionCustom($"จำนวนงวดต้องอยู่ระหว่าง 1-{MAX_PAYMENTS} งวด");
             }
 
-            for (int i = 0; i <= model.NumberOfPayments; i++)
-			{
-				if (i != 0)
+            int safeNumberOfPayments = Math.Min(Math.Max(model.NumberOfPayments, 1), MAX_PAYMENTS);
+            for (int i = 0; i <= safeNumberOfPayments; i++)
+            {
+                if (i != 0)
 				{
 					interest = Math.Round(balance * monthlyInterestRate, 2);
 					principalPayment = Math.Round(monthlyPayment - interest, 2);
