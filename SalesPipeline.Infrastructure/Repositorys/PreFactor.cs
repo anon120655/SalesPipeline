@@ -239,7 +239,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								score = 0;
 								ratio = null;
-								scoreResult = null;
 								string? _feature = null;
 
 								//รายได้/รายจ่าย

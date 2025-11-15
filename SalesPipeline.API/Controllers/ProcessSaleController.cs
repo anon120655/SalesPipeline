@@ -26,7 +26,7 @@ namespace SalesPipeline.API.Controllers
     {
         private readonly IRepositoryWrapper _repo;
         private readonly AppSettings _appSet;
-        private bool isDevOrUat = false;
+        private readonly bool isDevOrUat = false;
 
         public ProcessSaleController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
         {

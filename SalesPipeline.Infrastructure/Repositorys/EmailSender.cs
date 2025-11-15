@@ -13,6 +13,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Net.Security;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -23,6 +24,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
         private readonly IRepositoryBase _db;
         private readonly AppSettings _appSet;
         private readonly IHttpContextAccessor _accessor;
+        private readonly bool isDevOrUat = false;
 
         public EmailSender(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper, IHttpContextAccessor accessor)
         {
@@ -31,6 +33,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             _mapper = mapper;
             _appSet = appSet.Value;
             _accessor = accessor;
+            isDevOrUat = _appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT;
         }
 
         public async Task<SendMail_TemplateCustom> GetTemplate(string code)
@@ -113,16 +116,25 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
                     }
 
-                    var isDev = _appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT;
-
                     using (var client = new SmtpClient())
                     {
-                        if (isDev)
+                        if (isDevOrUat)
                         {
-                            // Allow invalid certificate only on DEV/UAT
                             client.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
                             {
-                                return true;
+                                // ยอมรับเฉพาะกรณีที่ไม่มี error
+                                if (sslPolicyErrors == SslPolicyErrors.None)
+                                    return true;
+
+                                // ยอมรับเฉพาะ self-signed certificate error
+                                // (ไม่ยอมรับ error อื่นๆ เช่น hostname mismatch, expired cert)
+                                if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+                                {
+                                    // อาจเพิ่มการตรวจสอบ certificate thumbprint ด้วย
+                                    return true;
+                                }
+
+                                return false;
                             };
                         }
 

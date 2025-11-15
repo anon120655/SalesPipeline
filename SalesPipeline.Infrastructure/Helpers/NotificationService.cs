@@ -20,7 +20,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 	public class NotificationService
 	{
 		private readonly AppSettings _appSet;
-        private bool isDevOrUat = false;
+        private readonly bool isDevOrUat = false;
 
         public NotificationService(IOptions<AppSettings> appSet)
 		{

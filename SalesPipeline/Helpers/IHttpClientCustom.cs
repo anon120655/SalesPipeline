@@ -8,6 +8,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.ViewModels;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Security;
 
 namespace SalesPipeline.Helpers
 {
@@ -30,7 +31,7 @@ namespace SalesPipeline.Helpers
         private readonly HttpClient _httpClient;
         private readonly AuthorizeViewModel _authorizeViewModel;
         private readonly AppSettings _appSet;
-        private bool isDevOrUat = false;
+        private readonly bool isDevOrUat = false;
         private const string HeaderContentType = "Content-Type";
         private const string MediaTypeJson = "application/json";
         public const string Authorization = "Authorization";
@@ -75,7 +76,19 @@ namespace SalesPipeline.Helpers
 
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 if (!String.IsNullOrEmpty(userName) && !String.IsNullOrEmpty(password))
@@ -190,7 +203,19 @@ namespace SalesPipeline.Helpers
 
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);
@@ -283,7 +308,19 @@ namespace SalesPipeline.Helpers
                 };
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);
@@ -371,7 +408,19 @@ namespace SalesPipeline.Helpers
                 };
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);
@@ -460,7 +509,19 @@ namespace SalesPipeline.Helpers
                 };
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);
@@ -504,7 +565,19 @@ namespace SalesPipeline.Helpers
                 };
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);
@@ -548,7 +621,19 @@ namespace SalesPipeline.Helpers
                 };
                 if (isDevOrUat)
                 {
-                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                    options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    {
+                        // ยอมรับเฉพาะกรณีที่ไม่มี error
+                        if (errors == SslPolicyErrors.None)
+                            return true;
+
+                        // ยอมรับเฉพาะ self-signed certificate error
+                        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
+                            return true;
+
+                        // ปฏิเสธ error อื่นๆ เช่น hostname mismatch, expired cert
+                        return false;
+                    };
                 }
 
                 var client = new RestClient(options);

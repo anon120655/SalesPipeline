@@ -43,7 +43,7 @@ namespace SalesPipeline.API.Controllers
                 await Task.Factory.StartNew(async () =>
                 {
                     string urlFull = $"{_appSet.baseUriApi}/v1/Mail/SendNewUser?id={data.Id}";
-                    HttpResponseMessage response = await _httpClient.GetAsync(urlFull);
+                    await _httpClient.GetAsync(urlFull);
                 });
 
                 if (data.RoleId == 7)
