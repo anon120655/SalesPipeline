@@ -1,19 +1,12 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Notifications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Helpers
 {
