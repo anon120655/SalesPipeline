@@ -298,7 +298,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							{
 								score = 0;
 								ratio = null;
-								scoreResult = null;
 								string? _feature = null;
 
 								//มูลค่าหลักประกัน/มูลค่าสินเชื่อที่ขอ
@@ -1050,8 +1049,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var balance = principal;
 			double interest = 0;
 			double principalPayment = 0;
+            const int MAX_PAYMENTS = 600;
+            if (model.NumberOfPayments <= 0 || model.NumberOfPayments > MAX_PAYMENTS)
+            {
+                throw new ExceptionCustom($"จำนวนงวดต้องอยู่ระหว่าง 1-{MAX_PAYMENTS} งวด");
+            }
 
-			for (int i = 0; i <= model.NumberOfPayments; i++)
+            for (int i = 0; i <= model.NumberOfPayments; i++)
 			{
 				if (i != 0)
 				{

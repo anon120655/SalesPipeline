@@ -286,75 +286,75 @@ namespace SalesPipeline.API.Controllers
                 await Task.Delay(1);
                 List<UserCustom> UserList = new List<UserCustom>();
 
-                if (files == null) throw new ExceptionCustom("Select File.");
+                if (files == null)
+                    throw new ExceptionCustom("Select File.");
 
-                int fileLimit = 100; //MB
+                int fileLimit = 100; // MB
                 int TenMegaBytes = fileLimit * 1024 * 1024;
-                var fileSize = files.Length;
-                if (fileSize > TenMegaBytes)
-                {
+                if (files.Length > TenMegaBytes)
                     throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
-                }
 
-                string folderName = @$"{_appSet.ContentRootPath}\import\excel";
+                // 1. ตรวจสอบนามสกุลไฟล์อย่างปลอดภัย
+                string fileExtension = Path.GetExtension(files.FileName)?.ToLowerInvariant();
+                if (fileExtension != ".xlsx" && fileExtension != ".csv")
+                    throw new ExceptionCustom("FileExtension Not Support. Only .xlsx and .csv are allowed.");
 
-                if (files.Length > 0)
+                if (fileExtension == ".xls")
+                    throw new ExceptionCustom("not support Excel 97-2000 formats.");
+
+                // 2. สร้างชื่อไฟล์ใหม่ที่ปลอดภัย (ใช้ Guid)
+                string safeFileName = Guid.NewGuid().ToString("N") + fileExtension;
+
+                // 3. โฟลเดอร์ปลอดภัย (ใช้ Path.Combine + Directory.CreateDirectory)
+                string folderName = Path.Combine(_appSet.ContentRootPath, "import", "excel");
+                Directory.CreateDirectory(folderName); // สร้างโฟลเดอร์ถ้ายังไม่มี
+
+                string fullPath = Path.Combine(folderName, safeFileName);
+
+                ISheet sheet;
+                using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
-                    string sFileExtension = Path.GetExtension(files.FileName).ToLower();
-                    if (sFileExtension != ".xls" && sFileExtension != ".xlsx" && sFileExtension != ".csv")
-                        throw new ExceptionCustom("FileExtension Not Support.");
+                    await files.CopyToAsync(stream);
+                    stream.Position = 0;
 
-                    ISheet sheet;
-                    string fullPath = Path.Combine(folderName, files.FileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    XSSFWorkbook hssfwb = new XSSFWorkbook(stream);
+                    sheet = hssfwb.GetSheetAt(0);
+                    int firstRowNum = sheet.FirstRowNum;
+
+                    for (int i = firstRowNum + 1; i <= sheet.LastRowNum; i++)
                     {
-                        files.CopyTo(stream);
-                        stream.Position = 0;
-                        int sheetCount = 0;
-                        if (sFileExtension == ".xls")
+                        IRow row = sheet.GetRow(i);
+                        if (row == null) continue;
+                        if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
+
+                        var EmployeeId = row.GetCell(0)?.ToString();
+                        var FullName = row.GetCell(1)?.ToString();
+                        var Email = row.GetCell(2)?.ToString();
+                        var PositionId = row.GetCell(3)?.ToString();
+                        var LevelId = row.GetCell(4)?.ToString();
+                        var RoleId = row.GetCell(5)?.ToString();
+
+                        int.TryParse(PositionId, out int _positionId);
+                        int.TryParse(LevelId, out int _levelid);
+                        int.TryParse(RoleId, out int _roleid);
+
+                        UserList.Add(new UserCustom
                         {
-                            throw new ExceptionCustom("not support  Excel 97-2000 formats.");
-                        }
-
-                        XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
-                        sheetCount = hssfwb.NumberOfSheets;
-                        sheet = hssfwb.GetSheetAt(0);
-
-                        int firstRowNum = sheet.FirstRowNum;
-                        for (int i = (firstRowNum + 1); i <= sheet.LastRowNum; i++)
-                        {
-                            IRow row = sheet.GetRow(i);
-                            if (row == null) continue;
-                            if (row.Cells.All(d => d.CellType == CellType.Blank)) continue;
-
-                            var EmployeeId = row.GetCell(0) != null ? row.GetCell(0).ToString() : null;
-                            var FullName = row.GetCell(1) != null ? row.GetCell(1).ToString() : null;
-                            var Email = row.GetCell(2) != null ? row.GetCell(2).ToString() : null;
-                            var PositionId = row.GetCell(3) != null ? row.GetCell(3).ToString() : null;
-                            var LevelId = row.GetCell(4) != null ? row.GetCell(4).ToString() : null;
-                            var RoleId = row.GetCell(5) != null ? row.GetCell(5).ToString() : null;
-
-                            int.TryParse(PositionId, out int _positionId);
-                            int.TryParse(LevelId, out int _levelid);
-                            int.TryParse(RoleId, out int _roleid);
-
-                            UserList.Add(new UserCustom()
-                            {
-                                CurrentUserId = 2,
-                                EmployeeId = EmployeeId,
-                                FullName = FullName,
-                                Email = Email,
-                                PositionId = _positionId > 0 ? _positionId : null,
-                                LevelId = _levelid > 0 ? _levelid : null,
-                                RoleId = _roleid > 0 ? _roleid : null
-                            });
-
-                        }
-
+                            CurrentUserId = 2,
+                            EmployeeId = EmployeeId,
+                            FullName = FullName,
+                            Email = Email,
+                            PositionId = _positionId > 0 ? _positionId : null,
+                            LevelId = _levelid > 0 ? _levelid : null,
+                            RoleId = _roleid > 0 ? _roleid : null
+                        });
                     }
                 }
 
-                return Ok();
+                // (Optional) ลบไฟล์หลังใช้งานเสร็จ
+                // File.Delete(fullPath);
+
+                return Ok(UserList);
             }
             catch (Exception ex)
             {

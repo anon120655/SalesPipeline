@@ -1,18 +1,19 @@
 ﻿
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Cmp;
+using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Shares;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Org.BouncyCastle.Asn1.Cmp;
-using Newtonsoft.Json;
-using System.Runtime.Serialization;
-using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Utils
 {
@@ -20,7 +21,7 @@ namespace SalesPipeline.Utils
     {
         private const string DefaultCulture = "en-US";
         private const string DefaultDateFormat = "dd/MM/yyyy";
-        private const string DateTimeFormat = "dd/MM/yyyy HH:mm:ss";
+        private const string DateTimeWithSecondsFormat = "dd/MM/yyyy HH:mm:ss";
         private const int ThaiYearOffset = 543;
         private const int ThaiYearLowerBound = 2500;
         private const int ThaiYearUpperBound = 3000;
@@ -132,11 +133,11 @@ namespace SalesPipeline.Utils
 
         private static ThaiDateInfo? ParseDateTime(DateTime datetime)
         {
-            string dateString = datetime.ToString(DateTimeFormat);
+            string dateString = datetime.ToString(DateTimeWithSecondsFormat);
 
             if (!DateTime.TryParseExact(
                 dateString,
-                DateTimeFormat,
+                DateTimeWithSecondsFormat,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out DateTime parsedDate))
@@ -218,8 +219,8 @@ namespace SalesPipeline.Utils
 
         public static string getThaiYear(DateTime datetime)
         {
-            string _datetime = datetime.ToString("dd/MM/yyyy HH:mm:ss");
-            DateTime dateeng = DateTime.ParseExact(_datetime, "dd/MM/yyyy HH:mm:ss", new CultureInfo(DefaultCulture));
+            string _datetime = datetime.ToString(DateTimeWithSecondsFormat);
+            DateTime dateeng = DateTime.ParseExact(_datetime, DateTimeWithSecondsFormat, new CultureInfo(DefaultCulture));
             int thaiYear = new ThaiBuddhistCalendar().GetYear(dateeng);
             if (thaiYear > 3000)
             {
@@ -233,8 +234,8 @@ namespace SalesPipeline.Utils
         {
             if (datetime.HasValue && datetime != DateTime.MinValue)
             {
-                string _datetime = datetime.Value.ToString("dd/MM/yyyy HH:mm:ss");
-                DateTime dateeng = DateTime.ParseExact(_datetime, "dd/MM/yyyy HH:mm:ss", new CultureInfo(DefaultCulture));
+                string _datetime = datetime.Value.ToString(DateTimeWithSecondsFormat);
+                DateTime dateeng = DateTime.ParseExact(_datetime, DateTimeWithSecondsFormat, new CultureInfo(DefaultCulture));
                 int thaiYear = new ThaiBuddhistCalendar().GetYear(dateeng);
                 if (thaiYear < 2500)
                 {
@@ -286,8 +287,8 @@ namespace SalesPipeline.Utils
         {
             if (datetime.HasValue && datetime != DateTime.MinValue)
             {
-                string _datetime = datetime.Value.ToString("dd/MM/yyyy HH:mm:ss");
-                if (DateTime.TryParseExact(_datetime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateeng))
+                string _datetime = datetime.Value.ToString(DateTimeWithSecondsFormat);
+                if (DateTime.TryParseExact(_datetime, DateTimeWithSecondsFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateeng))
                 {
                     int thaiYear = new ThaiBuddhistCalendar().GetYear(dateeng);
                     if (thaiYear < 2500)
@@ -347,11 +348,11 @@ namespace SalesPipeline.Utils
 
         private static ThaiDateInfo? ConvertToThaiDate(DateTime datetime)
         {
-            string dateString = datetime.ToString(DateTimeFormat);
+            string dateString = datetime.ToString(DateTimeWithSecondsFormat);
 
             if (!DateTime.TryParseExact(
                 dateString,
-                DateTimeFormat,
+                DateTimeWithSecondsFormat,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out DateTime parsedDate))
@@ -435,7 +436,7 @@ namespace SalesPipeline.Utils
         {
             if (datetime.HasValue && datetime != DateTime.MinValue)
             {
-                if (DateTime.TryParseExact(datetime.Value.ToString("dd/MM/yyyy HH:mm:ss"), "dd/MM/yyyy HH:mm:ss",
+                if (DateTime.TryParseExact(datetime.Value.ToString(DateTimeWithSecondsFormat), DateTimeWithSecondsFormat,
                            System.Globalization.CultureInfo.InvariantCulture,
                            System.Globalization.DateTimeStyles.None, out DateTime dateeng))
                 {
@@ -462,7 +463,7 @@ namespace SalesPipeline.Utils
         {
             if (datetime.HasValue && datetime != DateTime.MinValue)
             {
-                if (DateTime.TryParseExact(datetime.Value.ToString("dd/MM/yyyy HH:mm:ss"), "dd/MM/yyyy HH:mm:ss",
+                if (DateTime.TryParseExact(datetime.Value.ToString(DateTimeWithSecondsFormat), DateTimeWithSecondsFormat,
                            System.Globalization.CultureInfo.InvariantCulture,
                            System.Globalization.DateTimeStyles.None, out DateTime dateeng))
                 {
@@ -639,21 +640,75 @@ namespace SalesPipeline.Utils
             if (upload.FileData == null || upload.FileData.Length <= 0) return null;
 
             var response = new FileResponseModel();
-
             AppSettings _appSet = upload.appSet ?? new AppSettings();
-            string path = $@"{upload.Folder}\{upload.Id}{upload.MimeType}";
-            string fullPathSave = $@"{_appSet.ContentRootPath}\files\{path}";
 
-            GeneralUtils.CreateDirectory(fullPathSave);
+            // ✅ 1. Validate และ Sanitize input
+            string sanitizedFolder = SanitizePath(upload.Folder);
+            string sanitizedId = SanitizePath(upload.Id);
+            string sanitizedMimeType = SanitizeMimeType(upload.MimeType);
 
+            // ✅ 2. สร้าง path อย่างปลอดภัย
+            string basePath = Path.Combine(_appSet.ContentRootPath, "files");
+            string relativePath = Path.Combine(sanitizedFolder, $"{sanitizedId}{sanitizedMimeType}");
+            string fullPathSave = Path.Combine(basePath, relativePath);
+
+            // ✅ 3. ตรวจสอบว่า path ที่ได้อยู่ภายใน basePath จริง (ป้องกัน Path Traversal)
+            string normalizedPath = Path.GetFullPath(fullPathSave);
+            string normalizedBase = Path.GetFullPath(basePath);
+
+            if (!normalizedPath.StartsWith(normalizedBase, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new SecurityException("Invalid file path detected");
+            }
+
+            // ✅ 4. สร้าง directory
+            string? directory = Path.GetDirectoryName(fullPathSave);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            // ✅ 5. บันทึกไฟล์
             using (var fileStream = new FileStream(fullPathSave, FileMode.Create, FileAccess.Write))
             {
                 await upload.FileData.CopyToAsync(fileStream);
             }
-            var parametere = Securitys.Base64StringEncode(path);
-            response.UploadUrl = $"{_appSet.baseUriApi}/v1/file/v?id={parametere}";
+
+            // ✅ 6. สร้าง URL response
+            string pathForUrl = Path.Combine(sanitizedFolder, $"{sanitizedId}{sanitizedMimeType}");
+            var parameter = Securitys.Base64StringEncode(pathForUrl);
+            response.UploadUrl = $"{_appSet.baseUriApi}/v1/file/v?id={parameter}";
 
             return response;
+        }
+
+        // Helper Methods
+        private static string SanitizePath(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            // ลบ characters อันตราย
+            char[] invalidChars = Path.GetInvalidFileNameChars()
+                .Concat(Path.GetInvalidPathChars())
+                .Concat(new[] { '.', '/' }).ToArray();
+
+            return string.Join("", input.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        private static string SanitizeMimeType(string mimeType)
+        {
+            if (string.IsNullOrWhiteSpace(mimeType))
+                return string.Empty;
+
+            // อนุญาตเฉพาะ extension ที่ปลอดภัย
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx" };
+
+            string normalized = mimeType.ToLowerInvariant();
+            if (!normalized.StartsWith("."))
+                normalized = "." + normalized;
+
+            return allowedExtensions.Contains(normalized) ? normalized : string.Empty;
         }
 
         public static void SaveBase64ToImage(string? base64Only, string fullPathSave, int thumbnailSize)
@@ -708,7 +763,10 @@ namespace SalesPipeline.Utils
 
         public static void CreateDirectory(string filefullpath)
         {
-            FileInfo fileInfo = new FileInfo(filefullpath);
+            // ✅ Validate path ก่อนใช้งาน
+            string normalizedPath = Path.GetFullPath(filefullpath);
+
+            FileInfo fileInfo = new FileInfo(normalizedPath);
 
             if (!fileInfo.Exists && fileInfo.Directory != null && !fileInfo.Directory.Exists)
                 Directory.CreateDirectory(fileInfo.Directory.FullName);

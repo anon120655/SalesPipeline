@@ -14,6 +14,7 @@ using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 using System.Net.NetworkInformation;
 using System.Net.Security;
+using System.Text.RegularExpressions;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -250,7 +251,7 @@ namespace SalesPipeline.API.Controllers
                 {
                     var data = await _repo.ProcessSale.CreateContactDiscard(model);
 
-                    _transaction.Commit();
+                    await _transaction.CommitAsync();
 
                     return Ok(data);
                 }
@@ -261,33 +262,35 @@ namespace SalesPipeline.API.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet("CallApiPhoenixByCIF")]
+        [AllowAnonymous]
         public async Task<IActionResult> CallApiPhoenixByCIF([FromQuery] string? cif)
         {
             try
             {
                 List<Sale_PhoenixCustom>? phoenixModel = null;
-                if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect && MoreDataModel.Phoenixs()?.Select(x => x.cif_no).Contains(cif) == false)
+
+                // 1. ตรวจสอบ cif ว่าถูกต้องตามรูปแบบ
+                if (string.IsNullOrWhiteSpace(cif))
                 {
+                    throw new ExceptionCustom("CIF ไม่ถูกต้องหรือรูปแบบไม่ถูกต้อง");
+                }
+
+                if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect &&
+                    MoreDataModel.Phoenixs()?.Select(x => x.cif_no).Contains(cif) == false)
+                {
+                    // ตรวจสอบ VPN (DEV)
                     if (_appSet.ServerSite == ServerSites.DEV)
                     {
-                        bool isVpnConnect = false;
-                        // รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
-                        var adapters = NetworkInterface.GetAllNetworkInterfaces();
-                        if (adapters.Length > 0)
-                        {
-                            foreach (NetworkInterface adapter in adapters)
-                            {
-                                if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
-                                {
-                                    isVpnConnect = true;
-                                }
-                            }
-                        }
+                        bool isVpnConnect = NetworkInterface.GetAllNetworkInterfaces()
+                            .Any(adapter =>
+                                adapter.Description.Contains("Array Networks VPN Adapter") &&
+                                adapter.OperationalStatus == OperationalStatus.Up);
 
-                        if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
+                        if (!isVpnConnect)
+                            throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
                     }
+
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
@@ -297,62 +300,55 @@ namespace SalesPipeline.API.Controllers
                             // ตรวจสอบเฉพาะ error ที่ยอมรับได้
                             if (errors == SslPolicyErrors.None)
                                 return true;
-
                             // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
                             return errors == SslPolicyErrors.RemoteCertificateChainErrors;
                         };
                     }
 
-                    var _httpClient = new HttpClient(handler);
+                    using var _httpClient = new HttpClient(handler);
 
-                    string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbycif/{cif}";
+                    // 2. สร้าง URL อย่างปลอดภัย: ใช้ UriBuilder + Path.Combine
+                    var uriBuilder = new UriBuilder(_appSet.Phoenix.baseUri)
+                    {
+                        Path = Path.Combine("phoenixbybaac", "hisbycif", cif.Trim()).Replace("\\", "/")
+                    };
+
+                    string fullUrl = uriBuilder.ToString();
+
                     var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-
                     request.Headers.Add("apikey", _appSet.Phoenix.ApiKey);
 
-                    // ส่ง request
                     var response = await _httpClient.SendAsync(request);
-
-                    var datas = await response.Content.ReadAsStringAsync();
                     var data = await response.Content.ReadFromJsonAsync<PhoenixResponse>();
-                    if (data == null || data.status != "pass")
+
+                    if (data == null || data.status != "pass" || data.result == null || data.result.Count == 0)
                     {
                         throw new ExceptionCustom($"ไม่พบข้อมูล CIF {cif}");
                     }
-                    else
-                    {
-                        if (data.result != null && data.result.Count > 0)
-                        {
-                            phoenixModel = new();
-                            foreach (var item in data.result)
-                            {
-                                int.TryParse(item.workflow_id, out int _workflow_id_int);
 
-                                phoenixModel.Add(new()
-                                {
-                                    workflow_id_int = _workflow_id_int,
-                                    workflow_id = item.workflow_id,
-                                    app_no = item.app_no,
-                                    ana_no = item.ana_no,
-                                    fin_type = item.fin_type,
-                                    cif_no = item.cif_no,
-                                    cif_name = item.cif_name,
-                                    branch_customer = item.branch_customer,
-                                    branch_user = item.branch_user,
-                                    approve_level = item.approve_level,
-                                    status_type = item.status_type,
-                                    status_code = item.status_code,
-                                    create_by = item.create_by,
-                                    created_date = item.created_date,
-                                    update_by = item.update_by,
-                                    update_date = item.update_date,
-                                    approve_by = item.approve_by,
-                                    approve_date = item.approve_date
-                                });
-                            }
-                            phoenixModel = phoenixModel.OrderByDescending(x => x.workflow_id_int).ToList();
-                        }
-                    }
+                    phoenixModel = data.result.Select(item => new Sale_PhoenixCustom
+                    {
+                        workflow_id_int = int.TryParse(item.workflow_id, out int wid) ? wid : 0,
+                        workflow_id = item.workflow_id,
+                        app_no = item.app_no,
+                        ana_no = item.ana_no,
+                        fin_type = item.fin_type,
+                        cif_no = item.cif_no,
+                        cif_name = item.cif_name,
+                        branch_customer = item.branch_customer,
+                        branch_user = item.branch_user,
+                        approve_level = item.approve_level,
+                        status_type = item.status_type,
+                        status_code = item.status_code,
+                        create_by = item.create_by,
+                        created_date = item.created_date,
+                        update_by = item.update_by,
+                        update_date = item.update_date,
+                        approve_by = item.approve_by,
+                        approve_date = item.approve_date
+                    })
+                    .OrderByDescending(x => x.workflow_id_int)
+                    .ToList();
                 }
                 else
                 {
@@ -361,7 +357,6 @@ namespace SalesPipeline.API.Controllers
                         throw new ExceptionCustom($"ไม่พบข้อมูล CIF {cif}");
 
                     phoenixModel = PhoenixsDataTest;
-
                 }
 
                 return Ok(phoenixModel);
@@ -507,108 +502,106 @@ namespace SalesPipeline.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPut("UpdatePhoenix")]
+        [HttpPost("UpdatePhoenix")]
         public async Task<IActionResult> UpdatePhoenix(PhoenixModel model)
         {
             try
             {
+                // 1. ตรวจสอบ model และ CIF
+                if (model == null || string.IsNullOrWhiteSpace(model.CIF))
+                    throw new ExceptionCustom("ข้อมูลไม่ถูกต้อง");
+
+                string cif = model.CIF.Trim();
+
                 List<Sale_PhoenixCustom>? phoenixModel = null;
-                if (_appSet.Phoenix != null && _appSet.Phoenix.IsConnect && MoreDataModel.Phoenixs()?.Select(x => x.cif_no).Contains(model.CIF) == false)
+
+                // 2. ตรวจสอบว่าต้องเรียก API หรือใช้ mock data
+                bool shouldCallApi = _appSet.Phoenix != null
+                                     && _appSet.Phoenix.IsConnect
+                                     && (MoreDataModel.Phoenixs()?.Any(x => x.cif_no == cif) != true);
+
+                if (shouldCallApi)
                 {
+                    // --- ตรวจสอบ VPN (เฉพาะ DEV) ---
                     if (_appSet.ServerSite == ServerSites.DEV)
                     {
-                        bool isVpnConnect = false;
-                        // รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
-                        var adapters = NetworkInterface.GetAllNetworkInterfaces();
-                        if (adapters.Length > 0)
-                        {
-                            foreach (NetworkInterface adapter in adapters)
-                            {
-                                if (adapter.Description.Contains("Array Networks VPN Adapter") && adapter.OperationalStatus == OperationalStatus.Up)
-                                {
-                                    isVpnConnect = true;
-                                }
-                            }
-                        }
+                        bool isVpnConnected = NetworkInterface.GetAllNetworkInterfaces()
+                            .Any(adapter =>
+                                adapter.Description.Contains("Array Networks VPN Adapter")
+                                && adapter.OperationalStatus == OperationalStatus.Up);
 
-                        if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
-
-
-                        var handler = new HttpClientHandler();
-                        if (isDevOrUat)
-                        {
-                            handler.ServerCertificateCustomValidationCallback =
-                            (message, cert, chain, errors) =>
-                            {
-                                // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                                if (errors == SslPolicyErrors.None)
-                                    return true;
-
-                                // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                                return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                            };
-                        }
-
-                        var _httpClient = new HttpClient(handler);
-
-                        string? fullUrl = $"{_appSet.Phoenix.baseUri}/phoenixbybaac/hisbyana/{model.CIF}";
-                        var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-
-                        request.Headers.Add("apikey", _appSet.Phoenix.ApiKey);
-
-                        // ส่ง request
-                        var response = await _httpClient.SendAsync(request);
-
-                        var data = await response.Content.ReadFromJsonAsync<PhoenixResponse>();
-                        if (data == null || data.status == "fail")
-                        {
-                            throw new ExceptionCustom($"ไม่พบข้อมูล CIF {model.CIF}");
-                        }
-                        else
-                        {
-                            if (data.result != null && data.result.Count > 0)
-                            {
-                                phoenixModel = new();
-                                foreach (var item in data.result)
-                                {
-                                    int.TryParse(item.workflow_id, out int _workflow_id_int);
-
-                                    phoenixModel.Add(new()
-                                    {
-                                        workflow_id_int = _workflow_id_int,
-                                        workflow_id = item.workflow_id,
-                                        app_no = item.app_no,
-                                        ana_no = item.ana_no,
-                                        fin_type = item.fin_type,
-                                        cif_no = item.cif_no,
-                                        cif_name = item.cif_name,
-                                        branch_customer = item.branch_customer,
-                                        branch_user = item.branch_user,
-                                        approve_level = item.approve_level,
-                                        status_type = item.status_type,
-                                        status_code = item.status_code,
-                                        create_by = item.create_by,
-                                        created_date = item.created_date,
-                                        update_by = item.update_by,
-                                        update_date = item.update_date,
-                                        approve_by = item.approve_by,
-                                        approve_date = item.approve_date
-                                    });
-                                }
-                                phoenixModel = phoenixModel.OrderByDescending(x => x.workflow_id_int).ToList();
-                            }
-                        }
+                        if (!isVpnConnected)
+                            throw new ExceptionCustom("เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
                     }
+
+                    // --- สร้าง HttpClient อย่างปลอดภัย ---
+                    var handler = new HttpClientHandler();
+                    bool isDevOrUat = _appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT;
+
+                    if (isDevOrUat)
+                    {
+                        handler.ServerCertificateCustomValidationCallback =
+                            (message, cert, chain, errors) => errors == SslPolicyErrors.None;
+                    }
+
+                    using var httpClient = new HttpClient(handler);
+
+                    // --- สร้าง URL อย่างปลอดภัย (ป้องกัน Path Traversal) ---
+                    var uriBuilder = new UriBuilder(_appSet.Phoenix.baseUri)
+                    {
+                        Path = Path.Combine("phoenixbybaac", "hisbyana", cif).Replace("\\", "/")
+                    };
+                    string fullUrl = uriBuilder.ToString();
+
+                    var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+                    request.Headers.Add("apikey", _appSet.Phoenix.ApiKey);
+
+                    // --- เรียก API ---
+                    var response = await httpClient.SendAsync(request);
+                    var data = await response.Content.ReadFromJsonAsync<PhoenixResponse>();
+
+                    if (data == null || data.status == "fail" || data.result == null || data.result.Count == 0)
+                    {
+                        throw new ExceptionCustom($"ไม่พบข้อมูล CIF {cif}");
+                    }
+
+                    // --- แปลงข้อมูล ---
+                    phoenixModel = data.result
+                        .Select(item => new Sale_PhoenixCustom
+                        {
+                            workflow_id_int = int.TryParse(item.workflow_id, out int wid) ? wid : 0,
+                            workflow_id = item.workflow_id,
+                            app_no = item.app_no,
+                            ana_no = item.ana_no,
+                            fin_type = item.fin_type,
+                            cif_no = item.cif_no,
+                            cif_name = item.cif_name,
+                            branch_customer = item.branch_customer,
+                            branch_user = item.branch_user,
+                            approve_level = item.approve_level,
+                            status_type = item.status_type,
+                            status_code = item.status_code,
+                            create_by = item.create_by,
+                            created_date = item.created_date,
+                            update_by = item.update_by,
+                            update_date = item.update_date,
+                            approve_by = item.approve_by,
+                            approve_date = item.approve_date
+                        })
+                        .OrderByDescending(x => x.workflow_id_int)
+                        .ToList();
                 }
                 else
                 {
-                    var PhoenixsDataTest = MoreDataModel.Phoenixs()?.Where(x => x.cif_no == model.CIF).ToList();
-                    if (PhoenixsDataTest == null || PhoenixsDataTest.Count == 0)
-                        throw new ExceptionCustom($"ไม่พบข้อมูล CIF {model.CIF}");
+                    // --- ใช้ข้อมูลจาก MoreDataModel (mock) ---
+                    var phoenixData = MoreDataModel.Phoenixs()?.Where(x => x.cif_no == cif).ToList();
+                    if (phoenixData == null || phoenixData.Count == 0)
+                        throw new ExceptionCustom($"ไม่พบข้อมูล CIF {cif}");
 
-                    phoenixModel = PhoenixsDataTest;
+                    phoenixModel = phoenixData;
                 }
 
+                // --- อัปเดตข้อมูลใน Repository ---
                 await _repo.ProcessSale.UpdatePhoenix(model, phoenixModel);
 
                 return Ok();
@@ -628,7 +621,7 @@ namespace SalesPipeline.API.Controllers
                 {
                     var data = await _repo.ProcessSale.CreateDocumentFile(model);
 
-                    _transaction.Commit();
+                    await _transaction.CommitAsync();
 
                     return Ok(data);
                 }
@@ -638,20 +631,6 @@ namespace SalesPipeline.API.Controllers
                 return new ErrorResultCustom(new ErrorCustom(), ex);
             }
         }
-
-        //[HttpPut("UpdateDocumentFile")]
-        //public async Task<IActionResult> UpdateDocumentFile(Sale_Document_UploadCustom model)
-        //{
-        //	try
-        //	{
-        //		var data = await _repo.ProcessSale.UpdateDocumentFile(model);
-        //		return Ok(data);
-        //	}
-        //	catch (Exception ex)
-        //	{
-        //		return new ErrorResultCustom(new ErrorCustom(), ex);
-        //	}
-        //}
 
         [HttpGet("GetDocumentFileById")]
         public async Task<IActionResult> GetDocumentFileById([FromQuery] Guid id)
