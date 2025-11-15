@@ -136,9 +136,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 						model.notification.nocache = 1;
 					}
 
-					var jsonTxt_Old = JsonConvert.SerializeObject(model);
-
-					if (_appSet.ServerSite == ServerSites.DEV && false)
+					if (_appSet.ServerSite == ServerSites.DEV)
 					{
 						model.to = "cH6wn-FaQfue-jdbWXZL04:APA91bHSVWxWqKAxBlDJZvfRVgJ7rShpGHlDQCTdKeCC8hUoQ_DlwTMb-VJIwPxqoLm671lh-BuHNRn2V7z5tGth3LTXOYUptk1OiGqNT7-aHy9dH4CUyvAAoD_Ewrt4MvUWauFYRlwU";
 					}
@@ -183,7 +181,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 					}
 					else
 					{
-						string responseBody = await responseAPI.Content.ReadAsStringAsync();
+						await responseAPI.Content.ReadAsStringAsync();
 						throw new ExceptionCustom("Noti Error.");
 					}
 				}
