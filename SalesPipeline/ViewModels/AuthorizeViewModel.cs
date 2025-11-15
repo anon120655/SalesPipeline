@@ -2,20 +2,21 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.Resources.iAuthen;
+using SalesPipeline.Utils.Resources.Shares;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Security.Claims;
-using static Dapper.SqlMapper;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using static Dapper.SqlMapper;
 
 namespace SalesPipeline.ViewModels
 {
@@ -40,7 +41,16 @@ namespace SalesPipeline.ViewModels
             var handler = new HttpClientHandler();
             if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
             {
-                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                handler.ServerCertificateCustomValidationCallback =
+                (message, cert, chain, errors) =>
+                {
+                    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                    if (errors == SslPolicyErrors.None)
+                        return true;
+
+                    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                };
             }
 
             _httpClient = new HttpClient(handler);

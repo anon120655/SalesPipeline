@@ -1,18 +1,19 @@
-﻿using Newtonsoft.Json;
-using SalesPipeline.Utils.Resources.Notifications;
+﻿using Google.Apis.Auth.OAuth2;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
-using Google.Apis.Auth.OAuth2;
 
 namespace SalesPipeline.Infrastructure.Helpers
 {
@@ -38,7 +39,16 @@ namespace SalesPipeline.Infrastructure.Helpers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            if (errors == SslPolicyErrors.None)
+                                return true;
+
+                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        };
                     }
 
                     var httpClient = new HttpClient(handler);
@@ -103,7 +113,16 @@ namespace SalesPipeline.Infrastructure.Helpers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            if (errors == SslPolicyErrors.None)
+                                return true;
+
+                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        };
                     }
                     var httpClient = new HttpClient(handler);
 

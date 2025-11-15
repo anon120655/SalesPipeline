@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SalesPipeline.Utils.Resources.Authorizes.Auths;
-using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils.Resources.iAuthen;
-using Asp.Versioning;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Wrapper;
-using SalesPipeline.Utils.ValidationModel;
-using Newtonsoft.Json;
-using System.Text;
 using SalesPipeline.Utils;
-using Microsoft.Extensions.Options;
-using System.Net.NetworkInformation;
+using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
-using Azure.Core;
+using SalesPipeline.Utils.Resources.iAuthen;
+using SalesPipeline.Utils.Resources.Shares;
+using SalesPipeline.Utils.ValidationModel;
+using System.Net.NetworkInformation;
+using System.Net.Security;
+using System.Text;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -79,7 +80,16 @@ namespace SalesPipeline.API.Controllers
 
                     if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
                     {
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            if (errors == SslPolicyErrors.None)
+                                return true;
+
+                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        };
                     }
 
                     var httpClient = new HttpClient(handler);

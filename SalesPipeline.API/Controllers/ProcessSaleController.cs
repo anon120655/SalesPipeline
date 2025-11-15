@@ -13,6 +13,7 @@ using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
 using System.Net.NetworkInformation;
+using System.Net.Security;
 
 namespace SalesPipeline.API.Controllers
 {
@@ -290,7 +291,16 @@ namespace SalesPipeline.API.Controllers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            if (errors == SslPolicyErrors.None)
+                                return true;
+
+                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        };
                     }
 
                     var _httpClient = new HttpClient(handler);
@@ -414,7 +424,16 @@ namespace SalesPipeline.API.Controllers
                         var handler = new HttpClientHandler();
                         if (isDevOrUat)
                         {
-                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                            handler.ServerCertificateCustomValidationCallback =
+                            (message, cert, chain, errors) =>
+                            {
+                                // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                                if (errors == SslPolicyErrors.None)
+                                    return true;
+
+                                // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                                return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                            };
                         }
 
                         var _httpClient = new HttpClient(handler);
@@ -518,7 +537,16 @@ namespace SalesPipeline.API.Controllers
                         var handler = new HttpClientHandler();
                         if (isDevOrUat)
                         {
-                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                            handler.ServerCertificateCustomValidationCallback =
+                            (message, cert, chain, errors) =>
+                            {
+                                // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                                if (errors == SslPolicyErrors.None)
+                                    return true;
+
+                                // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                                return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                            };
                         }
 
                         var _httpClient = new HttpClient(handler);
