@@ -40,10 +40,7 @@ namespace SalesPipeline.ViewModels
             var handler = new HttpClientHandler();
             if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
             {
-                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                {
-                    return true; // Allow only for DEV/UAT
-                };
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             }
 
             _httpClient = new HttpClient(handler);

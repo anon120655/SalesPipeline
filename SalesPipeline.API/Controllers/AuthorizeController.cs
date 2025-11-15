@@ -79,10 +79,7 @@ namespace SalesPipeline.API.Controllers
 
                     if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
                     {
-                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                        {
-                            return true; // Allow only for DEV/UAT
-                        };
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
 
                     var httpClient = new HttpClient(handler);

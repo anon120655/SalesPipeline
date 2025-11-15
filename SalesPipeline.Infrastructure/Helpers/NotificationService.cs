@@ -38,10 +38,7 @@ namespace SalesPipeline.Infrastructure.Helpers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                        {
-                            return true;
-                        };
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
 
                     var httpClient = new HttpClient(handler);
@@ -106,10 +103,7 @@ namespace SalesPipeline.Infrastructure.Helpers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                        {
-                            return true;
-                        };
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
                     var httpClient = new HttpClient(handler);
 
