@@ -67,7 +67,6 @@ namespace SalesPipeline.Tests
             var service = new Customers(
                 mockRepoWrapper.Object,
                 mockRepoBase.Object,
-                mockOptions.Object,
                 realMapper
             );
 

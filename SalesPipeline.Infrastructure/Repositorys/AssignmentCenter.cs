@@ -18,17 +18,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class AssignmentCenter : IAssignmentCenter
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public AssignmentCenter(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public AssignmentCenter(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<bool> CheckAssignmentByUserId(int id)

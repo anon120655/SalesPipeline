@@ -12,17 +12,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class MasterReasonReturns : IMasterReasonReturns
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public MasterReasonReturns(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterReasonReturns(IRepositoryWrapper repo, IRepositoryBase db,  IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<Master_ReasonReturnCustom> Create(Master_ReasonReturnCustom model)

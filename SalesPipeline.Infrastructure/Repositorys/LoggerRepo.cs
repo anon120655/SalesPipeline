@@ -18,7 +18,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 	public class LoggerRepo : ILoggerRepo
 	{
 		SalesPipelineLogContext _contextLog { get; }
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
 
 		public LoggerRepo(IRepositoryWrapper repo, IOptions<AppSettings> appSet, SalesPipelineLogContext contextLog)

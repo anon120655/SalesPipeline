@@ -18,17 +18,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class MasterStatusSale : IMasterStatusSale
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
-		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public MasterStatusSale(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterStatusSale(IRepositoryWrapper repo, IMapper mapper)
 		{
-			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public Task<Master_StatusSaleCustom> Create(Master_StatusSaleCustom model)

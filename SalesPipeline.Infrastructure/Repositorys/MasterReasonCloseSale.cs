@@ -17,17 +17,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class MasterReasonCloseSale  : IMasterReasonCloseSale
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
-		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public MasterReasonCloseSale(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterReasonCloseSale(IRepositoryWrapper repo, IOptions<AppSettings> appSet, IMapper mapper)
 		{
-			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<string?> GetNameById(Guid id)

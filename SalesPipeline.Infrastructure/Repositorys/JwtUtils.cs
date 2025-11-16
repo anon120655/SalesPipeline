@@ -16,7 +16,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class JwtUtils : IJwtUtils
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
 
 		public JwtUtils(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
@@ -28,36 +28,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				throw new ExceptionCustom("JWT secret not configured");
 		}
 
-		//public string GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null)
-		//{
-		//	DateTime expirationTime;
-
-		//	if (days.HasValue)
-		//	{
-		//		expirationTime = DateTime.UtcNow.AddDays(days.Value);
-		//	}
-		//	else if (minutes.HasValue)
-		//	{
-		//		expirationTime = DateTime.UtcNow.AddMinutes(minutes.Value);
-		//	}
-		//	else
-		//	{
-		//		throw new ArgumentException("Either days or minutes must be provided.");
-		//	}
-
-		//	// generate token that is valid for {days} days
-		//	var tokenHandler = new JwtSecurityTokenHandler();
-		//	var key = Encoding.ASCII.GetBytes(_appSet.Secret!);
-		//	var tokenDescriptor = new SecurityTokenDescriptor
-		//	{
-		//		Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-		//		Expires = expirationTime,
-		//		SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-		//	};
-		//	var token = tokenHandler.CreateToken(tokenDescriptor);
-		//	return tokenHandler.WriteToken(token);
-		//}
-				
 		public async Task<(string? AccessToken, string? RefreshToken)> GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null)
 		{
 			DateTime expirationTime = days.HasValue

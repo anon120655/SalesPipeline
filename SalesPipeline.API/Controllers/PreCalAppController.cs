@@ -17,7 +17,7 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class PreCalAppController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 
 		public PreCalAppController(IRepositoryWrapper repo)
 		{

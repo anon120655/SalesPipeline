@@ -55,7 +55,6 @@ namespace SalesPipeline.Tests
             var service = new MasterChains(
                 mockRepo.Object,
                 mockDb.Object,
-                mockOptions.Object,
                 realMapper
             );
 

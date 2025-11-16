@@ -18,17 +18,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class Dashboard : IDashboard
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public Dashboard(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Dashboard(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		private async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user)

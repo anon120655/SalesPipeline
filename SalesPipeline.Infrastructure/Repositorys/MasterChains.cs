@@ -12,17 +12,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class MasterChains : IMasterChains
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public MasterChains(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterChains(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<Master_ChainCustom> Validate(Master_ChainCustom model, bool isThrow = true, bool? isSetMaster = false)

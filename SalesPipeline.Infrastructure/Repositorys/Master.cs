@@ -21,17 +21,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class Master : IMaster
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
-		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public Master(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Master(IRepositoryWrapper repo,  IMapper mapper)
 		{
-			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<IList<Master_ListCustom>> MasterLists(allFilter model)

@@ -17,7 +17,7 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class PreCalWeightController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 
 		public PreCalWeightController(IRepositoryWrapper repo)
 		{

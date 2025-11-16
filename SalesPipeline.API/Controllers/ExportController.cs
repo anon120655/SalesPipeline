@@ -1,18 +1,13 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils;
 using SalesPipeline.Utils.ValidationModel;
 using System.Data;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Wrapper;
-using Microsoft.JSInterop;
-using System.Linq;
-using System;
 using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.API.Controllers
@@ -21,13 +16,24 @@ namespace SalesPipeline.API.Controllers
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
-	public class ExportController : Controller
-	{
-		private IRepositoryWrapper _repo;
+	public class ExportController : ControllerBase
+    {
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
-		private LookUpResource LookUp = new();
+		private readonly LookUpResource LookUp = new(); 
+		private const string DefaultSheetName = "Sheet1"; 
+		public const string CustomerName = "ชื่อลูกค้า";
+        public const string ContactPerson = "ผู้ติดต่อ";
+        public const string BusinessType = "ประเภทธุรกิจ";
+        public const string BranchActivity = "กิจการสาขาภาค";
+        public const string Province = "จังหวัด";
+        public const string Branch = "สาขา";
+        public const string Status = "สถานะ";
+		public const string ContactStartDate = "วันที่เริ่มติดต่อ ";
+        public const string Responsible = "ผู้รับผิดชอบ";
+        public const string FileContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-		public ExportController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
+        public ExportController(IRepositoryWrapper repo, IOptions<AppSettings> appSet)
 		{
 			_repo = repo;
 			_appSet = appSet.Value;
@@ -46,24 +52,24 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+                    var workbook = new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ชื่อลูกค้า";
-					string Column2 = "ผู้ติดต่อ";
-					string Column3 = "ประเภทธุรกิจ";
-					string Column4 = "กิจการสาขาภาค";
-					string Column5 = "จังหวัด";
-					string Column6 = "สาขา";
-					string Column7 = "สถานะ";
+					string Column1 = CustomerName;
+					string Column2 = ContactPerson;
+					string Column3 = BusinessType;
+					string Column4 = BranchActivity;
+					string Column5 = Province;
+					string Column6 = Branch;
+					string Column7 = Status;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -110,15 +116,14 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
+												
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
 
 						rowIndex++;
 					}
@@ -131,7 +136,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -156,25 +161,25 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ชื่อลูกค้า";
-					string Column2 = "ผู้ติดต่อ";
-					string Column3 = "ประเภทธุรกิจ";
-					string Column4 = "กิจการสาขาภาค";
-					string Column5 = "จังหวัด";
-					string Column6 = "สาขา";
+					string Column1 = CustomerName;
+					string Column2 = ContactPerson;
+					string Column3 = BusinessType;
+					string Column4 = BranchActivity;
+					string Column5 = Province;
+					string Column6 = Branch;
 					string Column7 = "วันที่ส่งกลับ";
-					string Column8 = "ผู้รับผิดชอบ";
+					string Column8 = Responsible;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -228,16 +233,15 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+												
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -250,7 +254,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -275,21 +279,21 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
 					string Column1 = "รหัสพนักงาน";
 					string Column2 = "ชื่อ-สกุล";
-					string Column3 = "กิจการสาขาภาค";
-					string Column4 = "สาขา";
+					string Column3 = BranchActivity;
+					string Column4 = Branch;
 					string Column5 = "ยอดเป้าหมาย";
 					string Column6 = "ยอดที่ทำได้";
 					string Column7 = "การบรรลุเป้าหมาย";
@@ -360,15 +364,14 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
+												
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
 
 						rowIndex++;
 					}
@@ -381,7 +384,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -406,25 +409,25 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "วันที่เริ่มติดต่อ";
-					string Column2 = "ชื่อลูกค้า";
-					string Column3 = "ผู้ติดต่อ";
+					string Column1 = ContactStartDate;
+					string Column2 = CustomerName;
+					string Column3 = ContactPerson;
 					string Column4 = "รอการติดต่อ (วัน)";
 					string Column5 = "เข้าพบ (วัน)";
 					string Column6 = "พิจารณาเอกสาร (วัน)";
 					string Column7 = "ระยะเวลารวม (วัน)";
-					string Column8 = "ผู้รับผิดชอบ";
+					string Column8 = Responsible;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -474,16 +477,15 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+											
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -496,7 +498,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -521,25 +523,25 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "วันที่เริ่มติดต่อ";
-					string Column2 = "ชื่อลูกค้า";
-					string Column3 = "ผู้ติดต่อ";
+					string Column1 = ContactStartDate;
+					string Column2 = CustomerName;
+					string Column3 = ContactPerson;
 					string Column4 = "รอการติดต่อ (วัน)";
 					string Column5 = "เข้าพบ (วัน)";
 					string Column6 = "พิจารณาเอกสาร (วัน)";
 					string Column7 = "ระยะเวลารวม (วัน)";
-					string Column8 = "ผู้รับผิดชอบ";
+					string Column8 = Responsible;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -589,16 +591,15 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+												
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -611,7 +612,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -636,24 +637,24 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ชื่อลูกค้า";
-					string Column2 = "ผู้ติดต่อ";
+					string Column1 = CustomerName;
+					string Column2 = ContactPerson;
 					string Column3 = "ห่วงโซ่";
-					string Column4 = "ประเภทธุรกิจ";
-					string Column5 = "กิจการสาขาภาค";
-					string Column6 = "จังหวัด";
-					string Column7 = "สาขา";
+					string Column4 = BusinessType;
+					string Column5 = BranchActivity;
+					string Column6 = Province;
+					string Column7 = Branch;
 					string Column8 = "การปิดการขาย";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -704,16 +705,15 @@ namespace SalesPipeline.API.Controllers
 					foreach (DataRow item_row in dt.Rows)
 					{
 						row = excelSheet1.CreateRow(rowIndex);
-
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+												
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -726,7 +726,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -751,24 +751,24 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ชื่อลูกค้า";
-					string Column2 = "ผู้ติดต่อ";
-					string Column3 = "ประเภทธุรกิจ";
-					string Column4 = "กิจการสาขาภาค";
-					string Column5 = "จังหวัด";
-					string Column6 = "สาขา";
-					string Column7 = "ผู้รับผิดชอบ";
+					string Column1 = CustomerName;
+					string Column2 = ContactPerson;
+					string Column3 = BusinessType;
+					string Column4 = BranchActivity;
+					string Column5 = Province;
+					string Column6 = Branch;
+					string Column7 = Responsible;
 					string Column8 = "ยอดการกู้";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -820,15 +820,15 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -841,7 +841,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -866,18 +866,18 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "จังหวัด";
+					string Column1 = Province;
 					string Column2 = "ยอดขาย";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -917,9 +917,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
 
 						rowIndex++;
 					}
@@ -932,7 +932,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -957,18 +957,18 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "จังหวัด";
+					string Column1 = Province;
 					string Column2 = "ยอดขาย";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -1008,9 +1008,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
 
 						rowIndex++;
 					}
@@ -1023,7 +1023,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1048,20 +1048,20 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
 					string Column1 = "เลขนิติบุคคล";
-					string Column2 = "ชื่อลูกค้า";
-					string Column3 = "สาขา";
+					string Column2 = CustomerName;
+					string Column3 = Branch;
 					string Column4 = "ติดต่อ (วัน)";
 					string Column5 = "เข้าพบ (วัน)";
 					string Column6 = "ยื่นเอกสาร (วัน)";
@@ -1117,15 +1117,15 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -1138,7 +1138,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1163,18 +1163,18 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "สาขา";
+					string Column1 = Branch;
 					string Column2 = "จำนวนดีล";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -1213,9 +1213,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
 
 						rowIndex++;
 					}
@@ -1228,7 +1228,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1253,20 +1253,20 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ชื่อลูกค้า";
+					string Column1 = CustomerName;
 					string Column2 = "ชื่อผู้ติดต่อ";
-					string Column3 = "สาขา";
+					string Column3 = Branch;
 					string Column4 = "ติดต่อ (ครั้ง)";
 					string Column5 = "เข้าพบ (ครั้ง)";
 					string Column6 = "ยื่นเอกสาร (ครั้ง)";
@@ -1318,14 +1318,14 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
 
 						rowIndex++;
 					}
@@ -1338,7 +1338,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1363,25 +1363,25 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
 					string Column1 = "เลขนิติบุคคล";
-					string Column2 = "ชื่อลูกค้า";
-					string Column3 = "สาขา";
+					string Column2 = CustomerName;
+					string Column3 = Branch;
 					string Column4 = "สสผ. ส่งมอบ (วัน)";
 					string Column5 = "ผจภ. ส่งมอบ (วัน)";
 					string Column6 = "ผจศ. ส่งมอบ (วัน)";
 					string Column7 = "ปิดการขาย (วัน)";
-					string Column8 = "ผู้รับผิดชอบ";
+					string Column8 = Responsible;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -1431,15 +1431,15 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
 
 						rowIndex++;
 					}
@@ -1452,7 +1452,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1477,19 +1477,19 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
 					string Column1 = "รายชื่อพนักงาน";
-					string Column2 = "สาขา";
+					string Column2 = Branch;
 					string Column3 = "จำนวนดีล";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -1530,10 +1530,10 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
 
 						rowIndex++;
 					}
@@ -1546,7 +1546,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1571,18 +1571,18 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "ประเภทธุรกิจ";
+					string Column1 = BusinessType;
 					string Column2 = "จำนวนดีล";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -1621,9 +1621,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
 
 						rowIndex++;
 					}
@@ -1636,7 +1636,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1661,13 +1661,13 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
@@ -1711,9 +1711,9 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
 
 						rowIndex++;
 					}
@@ -1726,7 +1726,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1751,26 +1751,26 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
-					string Column1 = "วันที่เริ่มติดต่อ";
-					string Column2 = "ชื่อลูกค้า";
-					string Column3 = "ผู้ติดต่อ";
-					string Column4 = "ประเภทธุรกิจ";
-					string Column5 = "กิจการสาขาภาค";
-					string Column6 = "จังหวัด";
-					string Column7 = "สาขา";
+					string Column1 = ContactStartDate;
+					string Column2 = CustomerName;
+					string Column3 = ContactPerson;
+					string Column4 = BusinessType;
+					string Column5 = BranchActivity;
+					string Column6 = Province;
+					string Column7 = Branch;
 					string Column8 = "เหตุผล";
-					string Column9 = "ผู้รับผิดชอบ";
+					string Column9 = Responsible;
 
 					//เพิ่มคอลัมน์ลงใน Datatable
 					dt.Columns.Add(Column1);
@@ -1822,16 +1822,16 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column9].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
+						row.CreateCell(8).SetCellValue(item_row[Column9].ToString());
 
 						rowIndex++;
 					}
@@ -1844,7 +1844,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{
@@ -1869,25 +1869,25 @@ namespace SalesPipeline.API.Controllers
 				path = path.Replace(@"\", "/");
 				using (var fs = new FileStream(Path.Combine(path, sFileName), FileMode.Create, FileAccess.Write))
 				{
-					IWorkbook workbook = new XSSFWorkbook();
+					var workbook =  new XSSFWorkbook();
 					var titleFont = workbook.CreateFont();
 					titleFont.IsBold = true;
 					var titleStyle = workbook.CreateCellStyle();
 					titleStyle.SetFont(titleFont);
 
-					ISheet excelSheet1 = workbook.CreateSheet("Sheet1");
+					ISheet excelSheet1 = workbook.CreateSheet(DefaultSheetName);
 					IRow row = excelSheet1.CreateRow(0);
 
 					DataTable dt = new DataTable();
 
 					string Column1 = "วันที่";
 					string Column2 = "เลขทะเบียนนิติบุคคล";
-					string Column3 = "ชื่อลูกค้า";
-					string Column4 = "กิจการสาขาภาค";
-					string Column5 = "สาขา";
-					string Column6 = "ประเภทธุรกิจ";
+					string Column3 = CustomerName;
+					string Column4 = BranchActivity;
+					string Column5 = Branch;
+					string Column6 = BusinessType;
 					string Column7 = "เบอร์โทรศัพท์";
-					string Column8 = "ผู้รับผิดชอบ";
+					string Column8 = Responsible;
 					string Column9 = "ยอดสินเชื่อ";
 
 					//เพิ่มคอลัมน์ลงใน Datatable
@@ -1940,16 +1940,16 @@ namespace SalesPipeline.API.Controllers
 					{
 						row = excelSheet1.CreateRow(rowIndex);
 
-						int cellIndex = 0;
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column1].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column2].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column3].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column4].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column5].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column6].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column7].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column8].ToString());
-						row.CreateCell(cellIndex++).SetCellValue(item_row[Column9].ToString());
+						
+						row.CreateCell(0).SetCellValue(item_row[Column1].ToString());
+						row.CreateCell(1).SetCellValue(item_row[Column2].ToString());
+						row.CreateCell(2).SetCellValue(item_row[Column3].ToString());
+						row.CreateCell(3).SetCellValue(item_row[Column4].ToString());
+						row.CreateCell(4).SetCellValue(item_row[Column5].ToString());
+						row.CreateCell(5).SetCellValue(item_row[Column6].ToString());
+						row.CreateCell(6).SetCellValue(item_row[Column7].ToString());
+						row.CreateCell(7).SetCellValue(item_row[Column8].ToString());
+						row.CreateCell(8).SetCellValue(item_row[Column9].ToString());
 
 						rowIndex++;
 					}
@@ -1962,7 +1962,7 @@ namespace SalesPipeline.API.Controllers
 				}
 				memory.Position = 0;
 
-				return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+				return File(memory, FileContentType, sFileName);
 			}
 			catch (Exception ex)
 			{

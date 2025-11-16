@@ -29,7 +29,7 @@ namespace SalesPipeline.API.Controllers
 	{
 		private readonly IBackgroundJobClient _backgroundJobClient;
 		private readonly NotificationService _notiService;
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly AppSettings _appSet;
 
 		public NotifyController(IRepositoryWrapper repo, IOptions<AppSettings> appSet, IBackgroundJobClient backgroundJobClient, NotificationService notificationService)

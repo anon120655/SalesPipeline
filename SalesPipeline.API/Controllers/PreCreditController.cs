@@ -18,7 +18,7 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class PreCreditController : ControllerBase
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 
 		public PreCreditController(IRepositoryWrapper repo)
 		{

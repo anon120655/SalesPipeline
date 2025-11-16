@@ -17,17 +17,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class PreCalBus : IPreCalBus
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public PreCalBus(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public PreCalBus(IRepositoryWrapper repo, IRepositoryBase db,  IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<Pre_Cal_Fetu_BuCustom> Validate(Pre_Cal_Fetu_BuCustom model)

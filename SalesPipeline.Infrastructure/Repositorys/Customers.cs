@@ -20,17 +20,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class Customers : ICustomers
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public Customers(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Customers(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<CustomerCustom> Validate(CustomerCustom model, bool isThrow = true, bool? isSetMaster = false, bool? isFileUpload = false)

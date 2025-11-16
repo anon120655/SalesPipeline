@@ -17,17 +17,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class MasterBusinessType : IMasterBusinessType
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
-		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public MasterBusinessType(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public MasterBusinessType(IRepositoryWrapper repo, IMapper mapper)
 		{
-			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public Task<Master_BusinessTypeCustom> Create(Master_BusinessTypeCustom model)

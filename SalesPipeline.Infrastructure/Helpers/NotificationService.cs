@@ -78,7 +78,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 				}
 				return response;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return null;
 			}
@@ -180,7 +180,7 @@ namespace SalesPipeline.Infrastructure.Helpers
 				}
 				return response;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return null;
 			}

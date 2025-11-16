@@ -17,7 +17,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class Sales : ISales
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;

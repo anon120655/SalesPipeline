@@ -17,18 +17,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class Authorizes : IAuthorizes
     {
-        private IRepositoryWrapper _repo;
+        private readonly IRepositoryWrapper _repo;
         private readonly IRepositoryBase _db;
         private readonly AppSettings _appSet;
-        //private readonly IJwtUtils _jwtUtils;
         private readonly IMapper _mapper;
 
-        public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet/*, IJwtUtils jwtUtils*/, IMapper mapper)
+        public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
         {
             _db = db;
             _repo = repo;
             _appSet = appSet.Value;
-            //_jwtUtils = jwtUtils;
             _mapper = mapper;
         }
 

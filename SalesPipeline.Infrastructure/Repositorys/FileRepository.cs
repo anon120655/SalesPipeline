@@ -16,16 +16,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class FileRepository : IFileRepository
 	{
-		private IRepositoryWrapper _repo;
-		private readonly IMapper _mapper;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IRepositoryBase _db;
 		private readonly AppSettings _appSet;
 
-		public FileRepository(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public FileRepository(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet)
 		{
 			_db = db;
 			_repo = repo;
-			_mapper = mapper;
 			_appSet = appSet.Value;
 		}
 

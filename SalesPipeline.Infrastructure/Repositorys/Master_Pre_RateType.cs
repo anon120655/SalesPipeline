@@ -17,17 +17,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
     public class Master_Pre_RateType : IMaster_Pre_RateType
 	{
-		private IRepositoryWrapper _repo;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public Master_Pre_RateType(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public Master_Pre_RateType(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;
 			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		public async Task<Master_Pre_Interest_RateTypeCustom> Update(Master_Pre_Interest_RateTypeCustom model)

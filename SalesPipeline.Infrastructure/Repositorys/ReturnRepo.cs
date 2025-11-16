@@ -18,17 +18,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 {
 	public class ReturnRepo : IReturnRepo
 	{
-		private IRepositoryWrapper _repo;
-		private readonly IMapper _mapper;
+		private readonly IRepositoryWrapper _repo;
 		private readonly IRepositoryBase _db;
-		private readonly AppSettings _appSet;
 
-		public ReturnRepo(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+		public ReturnRepo(IRepositoryWrapper repo, IRepositoryBase db)
 		{
 			_db = db;
 			_repo = repo;
-			_mapper = mapper;
-			_appSet = appSet.Value;
 		}
 
 		/// <summary>
