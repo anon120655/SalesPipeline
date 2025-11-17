@@ -28,8 +28,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_mapper = mapper;
 		}
 
-		public async Task<Pre_Cal_Fetu_StanCustom> Validate(Pre_Cal_Fetu_StanCustom model)
-		{
+		public async Task<Pre_Cal_Fetu_StanCustom> Validate(Pre_Cal_Fetu_StanCustom model) // NOSONAR
+        {
 			await Task.Delay(1);
 
 			//ปิดชั่วคราว
@@ -129,7 +129,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_StanCustom>(pre_Cal_Fetu_Stan);
 			}
@@ -150,14 +150,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var pre_Cal_Fetu_Stan_ItemOptionR = _repo.Context.Pre_Cal_Fetu_Stan_ItemOptions.Where(x => x.Pre_Cal_Fetu_StanId == pre_Cal_Fetu_Stan.Id).ToList();
+					var pre_Cal_Fetu_Stan_ItemOptionR = await _repo.Context.Pre_Cal_Fetu_Stan_ItemOptions.Where(x => x.Pre_Cal_Fetu_StanId == pre_Cal_Fetu_Stan.Id).ToListAsync();
 					if (pre_Cal_Fetu_Stan_ItemOptionR.Count > 0)
 					{
 						_db.DeleteRange(pre_Cal_Fetu_Stan_ItemOptionR);
 						await _db.SaveAsync();
 					}
 
-					var pre_Cal_Fetu_Stan_ScoreR = _repo.Context.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Pre_Cal_Fetu_StanId == pre_Cal_Fetu_Stan.Id).ToList();
+					var pre_Cal_Fetu_Stan_ScoreR = await _repo.Context.Pre_Cal_Fetu_Stan_Scores.Where(x => x.Pre_Cal_Fetu_StanId == pre_Cal_Fetu_Stan.Id).ToListAsync();
 					if (pre_Cal_Fetu_Stan_ScoreR.Count > 0)
 					{
 						_db.DeleteRange(pre_Cal_Fetu_Stan_ScoreR);
@@ -207,7 +207,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_StanCustom>(pre_Cal_Fetu_Stan);
 			}

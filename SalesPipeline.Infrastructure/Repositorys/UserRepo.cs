@@ -362,7 +362,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				var response = _mapper.Map<UserCustom>(user);
 
@@ -574,7 +574,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<UserCustom>(user);
@@ -677,7 +677,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 			}
 		}
 
@@ -798,9 +798,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.RoleId != null && x.RoleId == model.roleid);
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<UserCustom>>()
 			{
@@ -872,7 +875,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<User_RoleCustom>(userRole);
 			}
@@ -930,7 +933,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<User_RoleCustom>(userRole);
@@ -1013,9 +1016,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => (x.Name != null && x.Name.Contains(model.searchtxt))
 									|| (x.Description != null && x.Description.Contains(model.searchtxt)));
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<User_RoleCustom>>()
 			{
@@ -1106,9 +1112,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<UserCustom>>()
 			{
@@ -1150,7 +1159,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 			}
 		}
 

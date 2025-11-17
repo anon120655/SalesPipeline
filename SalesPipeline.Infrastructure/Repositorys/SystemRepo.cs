@@ -68,7 +68,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     }
                 }
 
-                _transaction.Commit();
+                await _transaction.CommitAsync();
 
                 return _mapper.Map<System_SignatureCustom>(systemSignature);
             }
@@ -103,7 +103,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 await _db.InsterAsync(systemSla);
                 await _db.SaveAsync();
 
-                _transaction.Commit();
+                await _transaction.CommitAsync();
 
                 return _mapper.Map<System_SLACustom>(systemSla);
             }
@@ -124,7 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     _db.Update(systemSlas);
                     await _db.SaveAsync();
 
-                    _transaction.Commit();
+                    await _transaction.CommitAsync();
                 }
 
                 return _mapper.Map<System_SLACustom>(systemSlas);
@@ -164,7 +164,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.Status == model.status);
             }
 
-            var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
+
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
 
             var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
@@ -207,7 +210,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     }
                 }
 
-                _transaction.Commit();
+                await _transaction.CommitAsync();
             }
         }
 

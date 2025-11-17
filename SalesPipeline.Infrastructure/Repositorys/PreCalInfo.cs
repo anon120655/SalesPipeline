@@ -93,7 +93,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_InfoCustom>(pre_Cal_Info);
 			}
@@ -114,7 +114,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var pre_Cal_Info_ScoreR = _repo.Context.Pre_Cal_Info_Scores.Where(x => x.Pre_Cal_InfoId == pre_Cal_Info.Id).ToList();
+					var pre_Cal_Info_ScoreR = await _repo.Context.Pre_Cal_Info_Scores.Where(x => x.Pre_Cal_InfoId == pre_Cal_Info.Id).ToListAsync();
 					if (pre_Cal_Info_ScoreR.Count > 0)
 					{
 						_db.DeleteRange(pre_Cal_Info_ScoreR);
@@ -141,7 +141,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_InfoCustom>(pre_Cal_Info);
 			}

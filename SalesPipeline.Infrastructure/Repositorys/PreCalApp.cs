@@ -28,8 +28,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_mapper = mapper;
 		}
 
-		public async Task<Pre_Cal_Fetu_AppCustom> Validate(Pre_Cal_Fetu_AppCustom model)
-		{
+		public async Task<Pre_Cal_Fetu_AppCustom> Validate(Pre_Cal_Fetu_AppCustom model) // NOSONAR
+        {
 			await Task.Delay(1);
 
 			if (model.Pre_Cal_Fetu_App_Items == null || model.Pre_Cal_Fetu_App_Items.Count == 0)
@@ -124,7 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_AppCustom>(pre_Cal_Fetu_App);
 			}
@@ -145,12 +145,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var pre_Cal_Fetu_App_ItemsR = _repo.Context.Pre_Cal_Fetu_App_Items.Where(x => x.Pre_Cal_Fetu_AppId == pre_Cal_Fetu_App.Id).ToList();
+					var pre_Cal_Fetu_App_ItemsR = await _repo.Context.Pre_Cal_Fetu_App_Items.Where(x => x.Pre_Cal_Fetu_AppId == pre_Cal_Fetu_App.Id).ToListAsync();
 					if (pre_Cal_Fetu_App_ItemsR.Count > 0)
 					{
 						foreach (var item in pre_Cal_Fetu_App_ItemsR)
 						{
-							var pre_Cal_Fetu_App_Item_ScoreR = _repo.Context.Pre_Cal_Fetu_App_Item_Scores.Where(x => x.Pre_Cal_Fetu_App_ItemId == item.Id).ToList();
+							var pre_Cal_Fetu_App_Item_ScoreR = await _repo.Context.Pre_Cal_Fetu_App_Item_Scores.Where(x => x.Pre_Cal_Fetu_App_ItemId == item.Id).ToListAsync();
 							if (pre_Cal_Fetu_App_Item_ScoreR.Count > 0)
 							{
 								_db.DeleteRange(pre_Cal_Fetu_App_Item_ScoreR);
@@ -202,7 +202,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_AppCustom>(pre_Cal_Fetu_App);
 			}

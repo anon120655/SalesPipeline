@@ -124,7 +124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_BuCustom>(pre_Cal_Fetu_Bus);
 			}
@@ -145,12 +145,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var pre_Cal_Fetu_Bus_ItemsR = _repo.Context.Pre_Cal_Fetu_Bus_Items.Where(x => x.Pre_Cal_Fetu_BusId == pre_Cal_Fetu_Bus.Id).ToList();
+					var pre_Cal_Fetu_Bus_ItemsR = await _repo.Context.Pre_Cal_Fetu_Bus_Items.Where(x => x.Pre_Cal_Fetu_BusId == pre_Cal_Fetu_Bus.Id).ToListAsync();
 					if (pre_Cal_Fetu_Bus_ItemsR.Count > 0)
 					{
 						foreach (var item in pre_Cal_Fetu_Bus_ItemsR)
 						{
-							var pre_Cal_Fetu_Bus_Item_ScoreR = _repo.Context.Pre_Cal_Fetu_Bus_Item_Scores.Where(x => x.Pre_Cal_Fetu_Bus_ItemId == item.Id).ToList();
+							var pre_Cal_Fetu_Bus_Item_ScoreR = await _repo.Context.Pre_Cal_Fetu_Bus_Item_Scores.Where(x => x.Pre_Cal_Fetu_Bus_ItemId == item.Id).ToListAsync();
 							if (pre_Cal_Fetu_Bus_Item_ScoreR.Count > 0)
 							{
 								_db.DeleteRange(pre_Cal_Fetu_Bus_Item_ScoreR);
@@ -201,7 +201,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_Cal_Fetu_BuCustom>(pre_Cal_Fetu_Bus);
 			}

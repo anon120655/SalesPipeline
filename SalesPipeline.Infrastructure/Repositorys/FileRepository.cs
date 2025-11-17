@@ -72,7 +72,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					response.OriginalFileName = fileUpload.OriginalFileName;
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 
 				}

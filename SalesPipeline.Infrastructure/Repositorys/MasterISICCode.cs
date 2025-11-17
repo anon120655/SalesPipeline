@@ -66,7 +66,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(master_ISICCode);
 					await _db.SaveAsync();
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<Master_ISICCodeCustom>(master_ISICCode);
@@ -137,9 +137,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				}
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<Master_ISICCodeCustom>>()
 			{

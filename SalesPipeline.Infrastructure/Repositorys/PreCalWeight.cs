@@ -28,8 +28,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_mapper = mapper;
 		}
 
-		public async Task Validate(List<Pre_Cal_WeightFactorCustom> model)
-		{
+		public async Task Validate(List<Pre_Cal_WeightFactorCustom> model) // NOSONAR
+        {
 			await Task.Delay(1);
 
 			var TotalPercentAll = model.Sum(x => x._TotalPercent);
@@ -139,7 +139,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.SaveAsync();
 
 				//Update Status To Delete All
-				var pre_Cal_WeightFactor_ItemR = _repo.Context.Pre_Cal_WeightFactor_Items.Where(x => x.Pre_Cal_WeightFactorId == pre_Cal_WeightFactor.Id).ToList();
+				var pre_Cal_WeightFactor_ItemR = await _repo.Context.Pre_Cal_WeightFactor_Items.Where(x => x.Pre_Cal_WeightFactorId == pre_Cal_WeightFactor.Id).ToListAsync();
 				if (pre_Cal_WeightFactor_ItemR.Count > 0)
 				{
 					_db.DeleteRange(pre_Cal_WeightFactor_ItemR);

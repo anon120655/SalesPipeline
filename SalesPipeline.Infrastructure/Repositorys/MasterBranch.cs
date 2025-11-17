@@ -62,7 +62,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				await _db.InsterAsync(infoBranches);
 				await _db.SaveAsync();
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<InfoBranchCustom>(infoBranches);
 			}
@@ -87,7 +87,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(infoBranches);
 					await _db.SaveAsync();
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<InfoBranchCustom>(infoBranches);
@@ -166,9 +166,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.ProvinceID == model.provinceid);
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<InfoBranchCustom>>()
 			{

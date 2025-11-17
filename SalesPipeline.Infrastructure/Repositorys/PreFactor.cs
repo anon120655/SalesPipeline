@@ -910,7 +910,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(sales);
 				await _db.SaveAsync();
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Pre_FactorCustom>(pre_Factor);
 			}
@@ -980,7 +980,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					_db.Update(pre_Result);
 					await _db.SaveAsync();
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<Pre_ResultCustom>(pre_Result);

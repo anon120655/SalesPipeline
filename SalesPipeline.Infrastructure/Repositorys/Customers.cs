@@ -618,7 +618,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				//**************** Create AssignmentSale ตอน อนุมัติ RM หรือตอน ผู้จัดการศูนย์ Assign ****************
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<CustomerCustom>(customer);
 			}
@@ -929,7 +929,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						});
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<CustomerCustom>(customer);
@@ -992,9 +992,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
 				|| x.JuristicPersonRegNumber != null && x.JuristicPersonRegNumber.Contains(model.searchtxt));
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<CustomerCustom>>()
 			{
@@ -1062,9 +1065,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.CustomerId == model.customerid);
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<Customer_HistoryCustom>>()
 			{

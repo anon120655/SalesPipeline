@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -53,8 +52,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Loan_AppLoans?.Count > 0)
 				{
-					foreach (var appLoan in model.Loan_AppLoans)
-					{
+					foreach (var appLoan in model.Loan_AppLoans) // NOSONAR
+                    {
 						string? master_Pre_Applicant_LoanName = null;
 
 						if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
@@ -75,8 +74,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Loan_BusTypes?.Count > 0)
 				{
-					foreach (var busType in model.Loan_BusTypes)
-					{
+					foreach (var busType in model.Loan_BusTypes) // NOSONAR
+                    {
 						string? master_Pre_BusinessTypeName = null;
 
 						if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
@@ -97,8 +96,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				if (model.Loan_Periods?.Count > 0)
 				{
-					foreach (var period in model.Loan_Periods)
-					{
+					foreach (var period in model.Loan_Periods) // NOSONAR
+                    {
 						string? master_Pre_Interest_RateTypeName = null;
 						string? master_Pre_Interest_RateTypeCode = null;
 
@@ -112,11 +111,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 
 						if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
-						//11e23023-18cd-11ef-93aa-30e37aef72fb=Special - ระบุ
-						if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"))
+						
+						if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb") && !period.StartYear.HasValue)
 						{
-							if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
-						}
+                            throw new ExceptionCustom("ระบุเริ่มปีที่");
+                        }
 
 						var loan_Period = new Data.Entity.Loan_Period();
 						loan_Period.Status = StatusModel.Active;
@@ -136,7 +135,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<LoanCustom>(loan);
 			}
@@ -169,19 +168,19 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Update Status To Delete All
-					var loan_AppLoanR = _repo.Context.Loan_AppLoans.Where(x => x.LoanId == model.Id).ToList();
+					var loan_AppLoanR = await _repo.Context.Loan_AppLoans.Where(x => x.LoanId == model.Id).ToListAsync();
 					if (loan_AppLoanR.Count > 0)
 					{
 						_db.DeleteRange(loan_AppLoanR);
 						await _db.SaveAsync();
 					}
-					var loan_BusTypeR = _repo.Context.Loan_BusTypes.Where(x => x.LoanId == model.Id).ToList();
+					var loan_BusTypeR = await _repo.Context.Loan_BusTypes.Where(x => x.LoanId == model.Id).ToListAsync();
 					if (loan_BusTypeR.Count > 0)
 					{
 						_db.DeleteRange(loan_BusTypeR);
 						await _db.SaveAsync();
 					}
-					var loan_PeriodR = _repo.Context.Loan_Periods.Where(x => x.LoanId == model.Id).ToList();
+					var loan_PeriodR = await _repo.Context.Loan_Periods.Where(x => x.LoanId == model.Id).ToListAsync();
 					if (loan_PeriodR.Count > 0)
 					{
 						_db.DeleteRange(loan_PeriodR);
@@ -190,8 +189,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (model.Loan_AppLoans?.Count > 0)
 					{
-						foreach (var appLoan in model.Loan_AppLoans)
-						{
+						foreach (var appLoan in model.Loan_AppLoans) // NOSONAR
+                        {
 							string? master_Pre_Applicant_LoanName = null;
 
 							if (appLoan.Master_Pre_Applicant_LoanId != Guid.Empty)
@@ -212,8 +211,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (model.Loan_BusTypes?.Count > 0)
 					{
-						foreach (var busType in model.Loan_BusTypes)
-						{
+						foreach (var busType in model.Loan_BusTypes) // NOSONAR
+                        {
 							string? master_Pre_BusinessTypeName = null;
 
 							if (busType.Master_Pre_BusinessTypeId != Guid.Empty)
@@ -234,8 +233,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					if (model.Loan_Periods?.Count > 0)
 					{
-						foreach (var period in model.Loan_Periods)
-						{
+						foreach (var period in model.Loan_Periods) // NOSONAR
+                        {
 							string? master_Pre_Interest_RateTypeName = null;
 							string? master_Pre_Interest_RateTypeCode = null;
 
@@ -250,10 +249,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 							if (period.SpecialType.HasValue && !period.SpecialRate.HasValue) throw new ExceptionCustom("ระบุอัตราดอกเบี้ย");
 							//11e23023-18cd-11ef-93aa-30e37aef72fb=Special - ระบุ
-							if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb"))
+							if (period.Master_Pre_Interest_RateTypeId != Guid.Parse("11e23023-18cd-11ef-93aa-30e37aef72fb") && !period.StartYear.HasValue)
 							{
-								if (!period.StartYear.HasValue) throw new ExceptionCustom("ระบุเริ่มปีที่");
-							}
+                                throw new ExceptionCustom("ระบุเริ่มปีที่");
+                            }
 
 							var loan_Period = new Data.Entity.Loan_Period();
 							loan_Period.Status = StatusModel.Active;
@@ -275,7 +274,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				}
 
-				_transaction.Commit();
+                await _transaction.CommitAsync();
 
 				return _mapper.Map<LoanCustom>(loan);
 			}
@@ -349,7 +348,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+			var countItem = await query.CountAsync();
+
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
 
 			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 

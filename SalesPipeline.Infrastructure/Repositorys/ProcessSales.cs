@@ -189,7 +189,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return _mapper.Map<ProcessSaleCustom>(processSales);
@@ -212,9 +212,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Name != null && x.Name.Contains(model.val1));
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<ProcessSaleCustom>>()
 			{
@@ -458,7 +461,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//SetNoti
 				await _repo.Notifys.SetScheduleNoti();
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
@@ -671,7 +674,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 				}
 
-				_transaction.Commit();
+				await _transaction.CommitAsync();
 
 				return _mapper.Map<Sale_ReplyCustom>(saleReply);
 			}
@@ -727,9 +730,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.ProcessSaleName != null && x.ProcessSaleName.Contains(model.val1));
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<Sale_ReplyCustom>>()
 			{
@@ -1554,9 +1560,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.SaleId == model.id);
 			}
 
-			var pager = new Pager(query.Count(), model.page, model.pagesize, null);
+            var countItem = await query.CountAsync();
 
-			var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
+            var pager = new Pager(countItem, model.page, model.pagesize, null);
+
+
+            var items = query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize);
 
 			return new PaginationView<List<Sale_Contact_HistoryCustom>>()
 			{
