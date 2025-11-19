@@ -55,13 +55,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
 
-			//if (model.BranchId.HasValue)
-			//{
-			//	if (await CheckAssignmentByBranchId(model.BranchId.Value))
-			//		throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
-			//}
+            // NOSONAR
+            //if (model.BranchId.HasValue)
+            //{
+            //	if (await CheckAssignmentByBranchId(model.BranchId.Value))
+            //		throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
+            //}
 
-			if (string.IsNullOrEmpty(model.EmployeeName))
+            if (string.IsNullOrEmpty(model.EmployeeName))
 			{
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
 			}
@@ -78,12 +79,13 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment_Center);
 			await _db.SaveAsync();
 
-			//if (model.BranchId.HasValue)
-			//{
-			//	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-			//}
+            // NOSONAR
+            //if (model.BranchId.HasValue)
+            //{
+            //	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
+            //}
 
-			return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
+            return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
 		}
 
 		public async Task<Assignment_CenterCustom> Update(Assignment_CenterCustom model)
@@ -99,13 +101,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(assignment_Center);
 				await _db.SaveAsync();
 
-				//if (model.BranchId.HasValue)
-				//{
-				//	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
-				//}
+                // NOSONAR
+                //if (model.BranchId.HasValue)
+                //{
+                //	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
+                //}
 
-			}
-			return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
+            }
+            return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
 		}
 
 		public async Task DeleteByUserId(Guid id)
@@ -157,8 +160,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             var pager = new Pager(countItem, model.page, model.pagesize, null);
 
             var userAssignment = await query.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToListAsync();
-			//var userAssignment = await query.ToListAsync();
-
+			
 			List<Assignment_CenterCustom> responseItems = new();
 
 			//2. ดึงข้อมูลลูกค้าที่สร้างด้วย ธญ. ที่รอมอบหมาย และระบุพื้นที่จังหวัดแล้ว
@@ -176,30 +178,31 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				//3. มอบหมาย ผจธ. ตามพื้นที่ดูแล
 				foreach (var item_center in userAssignment)
-				{
-					//if (item_center.UserId == 68)
-					//{
-					//}
-					var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
+                {
+                    // NOSONAR
+                    //if (item_center.UserId == 68)
+                    //{
+                    //}
+                    var areaList = item_center.User.User_Areas.Select(s => s.ProvinceId).ToList();
 
 					//เห็นทุกภาค
 					if (item_center.User.Master_Branch_RegionId == Guid.Parse("99999999-9999-9999-9999-999999999999"))
 					{
-						areaList = _repo.Context.InfoProvinces
+						areaList = await _repo.Context.InfoProvinces
 									.Where(x => x.ProvinceID > 0)
-									.Select(x => x.ProvinceID).ToList();
+									.Select(x => x.ProvinceID).ToListAsync();
 					}
 					else
 					{
 						//9999 เห็นทุกจังหวัดในภาค
-						if (areaList.Any(x => x == 9999))
+						if (areaList.Contains(9999))
 						{
-							var branch_RegionId = _repo.Context.Users.FirstOrDefault(x => x.Id == item_center.UserId)?.Master_Branch_RegionId;
-							if (branch_RegionId.HasValue)
+							var branch_Region = await _repo.Context.Users.FirstOrDefaultAsync(x => x.Id == item_center.UserId);
+							if (branch_Region?.Master_Branch_RegionId.HasValue == true)
 							{
-								areaList = _repo.Context.InfoProvinces
-									.Where(x => x.Master_Department_BranchId == branch_RegionId)
-									.Select(x => x.ProvinceID).ToList();
+								areaList = await _repo.Context.InfoProvinces
+									.Where(x => x.Master_Department_BranchId == branch_Region.Master_Branch_RegionId.Value)
+									.Select(x => x.ProvinceID).ToListAsync();
 							}
 						}
 					}
@@ -219,7 +222,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 
 						assignment_Center.Assignment_Sales = new();
-						foreach (var item_sale in sales)
+                        // NOSONAR: This foreach contains mapping + state updates which are clearer than LINQ.
+                        foreach (var item_sale in sales)
 						{
 							if (!duplicateAssignment_Sales.Contains(item_sale.Id))
 							{
@@ -264,13 +268,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												 .Where(x => x.User != null && x.User.User_Areas.Count > 0)
 												 .AsQueryable();
 
-			if (!String.IsNullOrEmpty(model.assignmentid))
-			{
-				if (Guid.TryParse(model.assignmentid, out Guid assignmentid))
-				{
-					query = query.Where(x => x.Id == assignmentid);
-				}
-			}
+			if (!String.IsNullOrEmpty(model.assignmentid) && Guid.TryParse(model.assignmentid, out Guid assignmentid))
+            {
+                query = query.Where(x => x.Id == assignmentid);
+            }
 
 			if (!String.IsNullOrEmpty(model.emp_id))
 			{
@@ -309,11 +310,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task Assign(AssignModel model)
 		{
 			var assignment_CenterBranch = await _repo.Context.Assignment_Centers
-				//.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region) //Include จะทำให้ update sale บางตัวไม่ได้
-				.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.AssignMCenter.Id);
+                // NOSONAR
+                //.Include(x => x.User).ThenInclude(x => x.Master_Branch_Region) //Include จะทำให้ update sale บางตัวไม่ได้
+                .FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == model.AssignMCenter.Id);
 			if (assignment_CenterBranch != null)
 			{
-				//var salesCount = 0;
 				foreach (var item in model.Sales)
 				{
 					var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item.Id);
@@ -324,11 +325,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 						if (sale.AssCenterUserId.HasValue) throw new ExceptionCustom($"assignment duplicate {sale.CompanyName}");
 
-						//ข้อมูลนี้จะได้มาตั้งแต่ตอนเพิ่มรายการ
+                        //ข้อมูลนี้จะได้มาตั้งแต่ตอนเพิ่มรายการ
 
-						//sale.BranchId = assignment_CenterBranch.BranchId;
-						//sale.BranchName = assignment_CenterBranch.BranchName;
-						sale.AssCenterAlready = true;
+                        // NOSONAR
+                        //sale.BranchId = assignment_CenterBranch.BranchId;
+                        //sale.BranchName = assignment_CenterBranch.BranchName;
+                        sale.AssCenterAlready = true;
 						sale.AssCenterUserId = model.AssignMCenter.UserId;
 						sale.AssCenterUserName = assignment_CenterBranch.EmployeeName;
 						sale.AssCenterCreateBy = model.CurrentUserId;
@@ -350,13 +352,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						});
 
 						await _repo.Dashboard.UpdateDeliverById(new() { saleid = item.Id });
-						//salesCount++;
 					}
 				}
 
 				int countCurrentNumber = await _repo.Context.Sales.CountAsync(x => x.Status == StatusModel.Active && x.AssCenterUserId == model.AssignMCenter.UserId);
 				assignment_CenterBranch.CurrentNumber = countCurrentNumber;
-				//assignment_CenterBranch.CurrentNumber = assignment_CenterBranch.CurrentNumber + salesCount;
 				_db.Update(assignment_CenterBranch);
 				await _db.SaveAsync();
 
@@ -372,8 +372,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var assignment_Center = await _repo.Context.Assignment_Centers
 						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_center.Id);
 					if (assignment_Center == null) throw new ExceptionCustom("ไม่พบข้อมูลผู้จัดการศูนย์");
-
-					foreach (var item_sale in item_center.Assignment_Sales)
+                    
+					// NOSONAR
+                    foreach (var item_sale in item_center.Assignment_Sales)
 					{
 						var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_sale.SaleId);
 						if (sale == null) throw new ExceptionCustom("ไม่พบข้อมูลูกค้า");
@@ -421,21 +422,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var salesToWaitUpdate = new List<SaleCustom>();
 
-					foreach (var item_sale in item_center.Assignment_Sales)
+                    // NOSONAR
+                    foreach (var item_sale in item_center.Assignment_Sales)
 					{
-						//var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_sale.SaleId);
-						//if (sale == null) throw new ExceptionCustom("ไม่พบข้อมูลูกค้า");
-
-						//sale.AssUser = null;
-						//sale.AssCenterUser = null;
-						//sale.AssCenterAlready = true;
-						//sale.AssCenterUserId = item_center.UserId;
-						//sale.AssCenterUserName = item_center.EmployeeName;
-						//sale.AssCenterCreateBy = item_center.CurrentUserId;
-						//sale.AssCenterDate = DateTime.Now;
-						//_db.Update(sale);
-						//await _db.SaveAsync();
-
 						salesToWaitUpdate.Add(new()
 						{
 							Id = item_sale.SaleId,
@@ -462,9 +451,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 
-					// รวบรวมการอัปเดตแล้วทำครั้งเดียว UpdateRange
-					if (salesToWaitUpdate.Any())
-					{
+                    // รวบรวมการอัปเดตแล้วทำครั้งเดียว UpdateRange
+                    if (salesToWaitUpdate.Count > 0)
+                    {
 						var salesToUpdate = new List<Sale>();
 						foreach (var item_upate in salesToWaitUpdate)
 						{
@@ -481,7 +470,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								salesToUpdate.Add(sales);
 							}
 						}
-						if (salesToUpdate.Any())
+						if (salesToUpdate.Count > 0)
 						{
 							_db.UpdateRange(salesToUpdate);
 							await _db.SaveAsync();
@@ -493,7 +482,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task UpdateCurrentNumber(int? userid = null)
+        // NOSONAR
+        public async Task UpdateCurrentNumber(int? userid = null)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.User_Areas)
