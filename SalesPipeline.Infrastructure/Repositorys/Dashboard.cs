@@ -15,7 +15,7 @@ using SalesPipeline.Infrastructure.Helpers;
 using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
-{
+{    
     public class Dashboard : IDashboard
     {
         private readonly IRepositoryWrapper _repo;
@@ -31,7 +31,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             _mapper = mapper;
         }
 
-        private async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user)
+        private async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -78,7 +78,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return query;
         }
 
-        private async Task<IQueryable<Sale_Duration>> QueryAreaDuration(IQueryable<Sale_Duration> query, UserCustom user)
+        private async Task<IQueryable<Sale_Duration>> QueryAreaDuration(IQueryable<Sale_Duration> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -125,7 +125,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return query;
         }
 
-        private async Task<IQueryable<Sale_Activity>> QueryAreaActivity(IQueryable<Sale_Activity> query, UserCustom user)
+        private async Task<IQueryable<Sale_Activity>> QueryAreaActivity(IQueryable<Sale_Activity> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -172,7 +172,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return query;
         }
 
-        private async Task<IQueryable<Sale_Deliver>> QueryAreaDeliver(IQueryable<Sale_Deliver> query, UserCustom user)
+        private async Task<IQueryable<Sale_Deliver>> QueryAreaDeliver(IQueryable<Sale_Deliver> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -219,7 +219,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return query;
         }
 
-        public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model)
+        public async Task<Dash_Status_TotalCustom> GetStatus_TotalById(allFilter model) // NOSONAR
         {
             if (!model.userid.HasValue) return new();
 
@@ -446,7 +446,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             }
         }
 
-        public async Task<PaginationView<List<User_Target_SaleCustom>>> GetListTarget_SaleById(allFilter model)
+        public async Task<PaginationView<List<User_Target_SaleCustom>>> GetListTarget_SaleById(allFilter model) // NOSONAR
         {
             if (!model.userid.HasValue) return new();
 

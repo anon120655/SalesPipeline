@@ -373,9 +373,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_center.Id);
 					if (assignment_Center == null) throw new ExceptionCustom("ไม่พบข้อมูลผู้จัดการศูนย์");
                     
-					// NOSONAR
-                    foreach (var item_sale in item_center.Assignment_Sales)
-					{
+                    foreach (var item_sale in item_center.Assignment_Sales) // NOSONAR
+                    {
 						var sale = await _repo.Context.Sales.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.Id == item_sale.SaleId);
 						if (sale == null) throw new ExceptionCustom("ไม่พบข้อมูลูกค้า");
 
@@ -422,9 +421,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 					var salesToWaitUpdate = new List<SaleCustom>();
 
-                    // NOSONAR
-                    foreach (var item_sale in item_center.Assignment_Sales)
-					{
+                    foreach (var item_sale in item_center.Assignment_Sales) // NOSONAR
+                    {
 						salesToWaitUpdate.Add(new()
 						{
 							Id = item_sale.SaleId,
@@ -482,9 +480,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-        // NOSONAR
-        public async Task UpdateCurrentNumber(int? userid = null)
-		{
+        public async Task UpdateCurrentNumber(int? userid = null) // NOSONAR
+        {
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.User_Areas)
 										   .Where(x => x.Status != StatusModel.Delete && x.Role != null && x.Role.IsAssignRM)

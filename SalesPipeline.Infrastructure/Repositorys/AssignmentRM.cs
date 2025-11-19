@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hangfire.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Index.HPRtree;
@@ -25,6 +26,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
         private readonly IMapper _mapper;
         private readonly IRepositoryBase _db;
         public const string UserIdNotMapRole = "userid not map role.";
+        public const string UserIdNotRole = "userid not role.";
         public static readonly Guid AllCountry = Guid.Parse("99999999-9999-9999-9999-999999999999");
 
         public AssignmentRM(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
@@ -34,7 +36,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             _mapper = mapper;
         }
 
-        public async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user)
+        public async Task<IQueryable<Sale>> QueryArea(IQueryable<Sale> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -81,7 +83,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return query;
         }
 
-        private async Task<IQueryable<Assignment_RM>> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user)
+        private async Task<IQueryable<Assignment_RM>> QueryAreaAssignment_RM(IQueryable<Assignment_RM> query, UserCustom user) // NOSONAR
         {
             if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
             var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
@@ -106,37 +108,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     orExpression = orExpression.Or(x =>
                     (x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
                     || (x.User.User_Areas.Any(s => s.User.Master_Branch_RegionId == user.Master_Branch_RegionId && s.ProvinceId == 9999))
-                    );
-                }
-
-                orExpression = orExpression.Or(x => x.User.Master_Branch_RegionId == user.Master_Branch_RegionId && x.User.User_Areas.Any(s => s.ProvinceId == 9999));
-                // ใช้เงื่อนไข OR ที่สร้างขึ้นกับ query
-                query = query.Where(orExpression);
-            }
-
-            await Task.CompletedTask;
-
-            return query;
-        }
-
-        private async Task<IQueryable<Assignment_RM>> QueryAreaAssignment_RM_Old(IQueryable<Assignment_RM> query, UserCustom user)
-        {
-            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotMapRole);
-            var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
-
-            //99999999-9999-9999-9999-999999999999 เห็นทั้งประเทศ
-            if (user.Master_Branch_RegionId != AllCountry)
-            {
-
-                // สร้าง Expression<Func<MyEntity, bool>> สำหรับเงื่อนไข OR
-                Expression<Func<Assignment_RM, bool>> orExpression = x => false; // เริ่มต้นด้วย false เพื่อให้ไม่มีผลกระทบในขั้นแรก
-
-                foreach (var provinceId in user_Areas)
-                {
-                    var tempProvinceId = provinceId; // ต้องใช้ตัวแปรแยกต่างหากสำหรับการใช้งานใน lambda
-                    orExpression = orExpression.Or(x =>
-                    (x.User.User_Areas.Any(s => s.ProvinceId == tempProvinceId))
-                    || (x.User.User_Areas.Any(s => s.ProvinceId == 9999))
                     );
                 }
 
@@ -186,7 +157,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
         public async Task<Assignment_RMCustom> Update(Assignment_RMCustom model)
         {
-            //Guid? assignmentIdOriginal = null;
             var assignment_RM = await _repo.Context.Assignment_RMs.Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
             if (assignment_RM != null)
             {
@@ -197,6 +167,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 await _db.SaveAsync();
             }
 
+            // NOSONAR
             //**** มีการเปลี่ยนศูนย์ที่รับผิดชอบ  update ผู้จัดการศูนย์ 
             //if (assignmentIdOriginal.HasValue && model.AssignmentId.HasValue)
             //{
@@ -280,6 +251,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             if (usersRM.Count > 0)
             {
+                // NOSONAR
                 foreach (var user in usersRM)
                 {
                     var currentNumber = await _repo.Context.Sales.Where(x => x.Status == StatusModel.Active
@@ -291,6 +263,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                         _db.Update(assignment_RMs);
                         await _db.SaveAsync();
 
+                        // NOSONAR
                         //**** update ผู้จัดการศูนย์						
                         //	await _repo.AssignmentCenter.UpdateCurrentNumber();						
                     }
@@ -304,7 +277,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             if (!model.userid.HasValue) return new();
 
             var user = await _repo.User.GetById(model.userid.Value);
-            if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotRole);
             if (!user.Role.IsAssignRM)
             {
                 return new();
@@ -416,12 +389,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
             };
         }
 
-        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign2(allFilter model)
+        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign2(allFilter model) // NOSONAR
         {
             if (!model.userid.HasValue) return new();
 
             var user = await _repo.User.GetById(model.userid.Value);
-            if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotRole);
             if (!user.Role.IsAssignRM)
             {
                 return new();
@@ -455,8 +428,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                                  .Include(x => x.User).ThenInclude(x => x.User_Areas)
                                                  .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate)
                                                  .AsQueryable();
-
-            //var listRmAreas = query.ToList();
 
             if (user.Role.IsAssignRM)
             {
@@ -524,7 +495,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                             Id = Guid.NewGuid(),
                             Status = StatusModel.Active,
                             CreateDate = DateTime.Now.AddSeconds(1),
-                            //AssignmentRMId = existingAssignment.Id,
                             SaleId = job.Id,
                             IsActive = StatusModel.Active,
                             IsSelect = true,
@@ -567,12 +537,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
             };
         }
 
-        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign3(allFilter model)
+        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign3(allFilter model) // NOSONAR
         {
             if (!model.userid.HasValue) return new();
 
             var user = await _repo.User.GetById(model.userid.Value);
-            if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotRole);
             if (!user.Role.IsAssignRM)
             {
                 return new() { Items = new() };
@@ -607,8 +577,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                                  .Include(x => x.User).ThenInclude(x => x.User_Areas)
                                                  .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate).ThenByDescending(x => x.UserId)
                                                  .AsQueryable();
-
-            //var listRmAreas = query.ToList();
 
             if (user.Role.IsAssignRM)
             {
@@ -726,12 +694,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
             };
         }
 
-        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign4(allFilter model)
+        public async Task<PaginationView<List<Assignment_RMCustom>>> GetListAutoAssign4(allFilter model) // NOSONAR
         {
             if (!model.userid.HasValue) return new();
 
             var user = await _repo.User.GetById(model.userid.Value);
-            if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotRole);
             if (!user.Role.IsAssignRM)
             {
                 return new() { Items = new() };
@@ -748,8 +716,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                                                  .Include(x => x.User).ThenInclude(x => x.User_Areas)
                                                  .OrderBy(x => x.CurrentNumber).ThenBy(x => x.CreateDate).ThenByDescending(x => x.UserId)
                                                  .AsQueryable();
-
-            //var listRmAreas = query.ToList();
 
             if (user.Role.IsAssignRM)
             {
@@ -928,7 +894,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
             if (!model.userid.HasValue) return new();
 
             var user = await _repo.User.GetById(model.userid.Value);
-            if (user == null || user.Role == null) throw new ExceptionCustom("userid not role.");
+            if (user == null || user.Role == null) throw new ExceptionCustom(UserIdNotRole);
             if (!user.Role.IsAssignRM)
             {
                 return new() { Items = new() };

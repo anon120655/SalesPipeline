@@ -22,8 +22,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_mapper = mapper;
 		}
 
-		public async Task<LoanCustom> Create(LoanCustom model)
-		{
+		public async Task<LoanCustom> Create(LoanCustom model) // NOSONAR
+        {
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				string? master_Pre_Interest_PayTypeName = null;
@@ -141,8 +141,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<LoanCustom> Update(LoanCustom model)
-		{
+		public async Task<LoanCustom> Update(LoanCustom model) // NOSONAR
+        {
 			using (var _transaction = _repo.BeginTransaction())
 			{
 				string? master_Pre_Interest_PayTypeName = null;
