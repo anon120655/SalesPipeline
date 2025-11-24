@@ -38,7 +38,7 @@ namespace SalesPipeline.Utils.Resources.Customers
 		/// วันที่เข้ามาติดต่อ
 		/// </summary>
 		//[Required(ErrorMessage = "กรุณาระบุข้อมูล")]
-		public DateTime?DateContact { get; set; }
+		public DateTime? DateContact { get; set; }
 
 		/// <summary>
 		/// ช่องทางการติดต่อ
