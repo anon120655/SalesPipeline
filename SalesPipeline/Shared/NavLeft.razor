@@ -5,6 +5,12 @@
 			<i class="fa-solid fa-user text-white fs_5r"></i>
 		</div>
 		<div class="row mt-2 mb-4 text-center text-white px-3">
+			@if (!String.IsNullOrEmpty(UserInfo.EmployeeId))
+			{
+				<div class="col-12">
+					<p class="text-break">รหัสพนักงาน : @UserInfo.EmployeeId</p>
+				</div>
+			}
 			<div class="col-12 mb-1">
 				<p class="text-break">@UserInfo.FullName (@UserInfo.Id)</p>
 			</div>
