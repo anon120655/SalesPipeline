@@ -276,6 +276,7 @@ namespace SalesPipeline.Pages.Users.Admin
         {
             formModel.ProvinceId = null;
             formModel.BranchId = null;
+            formModel.User_Areas = new();
             LookUp.Provinces = new();
             StateHasChanged();
 
@@ -386,7 +387,7 @@ namespace SalesPipeline.Pages.Users.Admin
 
         private void OnInputTel(KeyboardEventArgs e)
         {
-            if (formModel.Tel != null)
+            if (!string.IsNullOrEmpty(formModel.Tel) && formModel.Tel.Length > 10)
             {
                 formModel.Tel = formModel.Tel.Substring(0, 10);
             }
