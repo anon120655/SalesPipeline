@@ -11,7 +11,7 @@
   <HasBeginStepCommandLineCredentials>true</HasBeginStepCommandLineCredentials>
   <HasBeginStepCommandLineTruststorePassword>false</HasBeginStepCommandLineTruststorePassword>
   <SonarQubeHostUrl>https://sonarcloud.io</SonarQubeHostUrl>
-  <SonarQubeVersion>8.0.0.76666</SonarQubeVersion>
+  <SonarQubeVersion>8.0.0.76685</SonarQubeVersion>
   <SonarProjectKey>anon120655_SalesPipeline</SonarProjectKey>
   <AdditionalConfig>
     <ConfigSetting Id="BuildUri" />
@@ -208,11 +208,11 @@ Automatic Analysis will not be available between 07:00 CET and 09:00 CET</Proper
     <Property Name="sonar.maintenance_mode.link">https://community.sonarsource.com/t/sonarcloud-autoscan-maintenance-september-28th-07-00-and-09-00-cet/101442</Property>
     <Property Name="sonar.maintenance_mode.start_date">2023-09-28T09:10:00:00.000+01:00</Property>
     <Property Name="sonar.sensor.cache.baseUrl">https://api.sonarcloud.io/analysis</Property>
-    <Property Name="sonar.core.startTime">19/11/2568 15:53:24</Property>
+    <Property Name="sonar.core.startTime">19/11/2568 20:09:36</Property>
   </ServerSettings>
   <LocalSettings>
     <Property Name="sonar.host.url">https://sonarcloud.io</Property>
-    <Property Name="sonar.exclusions">SalesPipeline/**/*, SalesPipeline.Infrastructure/Data/Entity/**/*.cs, SalesPipeline.Infrastructure/Data/Mapping/**/*.cs, SalesPipeline.API/Controllers/ExportController.cs, SalesPipeline.Infrastructure/Helpers/NotificationService.cs, SalesPipeline.API/Controllers/ProcessSaleController.cs, SalesPipeline.Infrastructure/Repositorys/LoanRepo.cs, SalesPipeline.Infrastructure/Repositorys/MasterBusinessSize.cs, SalesPipeline.Infrastructure/Repositorys/MasterBusinessType.cs, SalesPipeline.Infrastructure/Repositorys/MasterChains.cs, SalesPipeline.Infrastructure/Repositorys/MasterContactChannel.cs, SalesPipeline.Infrastructure/Repositorys/MasterLoanTypes.cs, SalesPipeline.Infrastructure/Repositorys/MasterTSIC.cs, SalesPipeline.Infrastructure/Repositorys/PreCalInfo.cs, SalesPipeline.Infrastructure/Repositorys/Sales.cs, SalesPipeline.Infrastructure/Repositorys/ProcessSales.cs,SalesPipeline.Infrastructure/Repositorys/PreCalStan.cs ,SalesPipeline.Infrastructure/Repositorys/PreCalBus.cs ,SalesPipeline.Infrastructure/Repositorys/PreCalApp.cs ,SalesPipeline.Infrastructure/Repositorys/PreCal.cs, SalesPipeline.Infrastructure/Repositorys/MasterReasonReturns.cs, SalesPipeline.Infrastructure/Repositorys/AssignmentRM.cs,SalesPipeline.Infrastructure/Repositorys/Dashboard.cs</Property>
+    <Property Name="sonar.exclusions">SalesPipeline/**/*, SalesPipeline.Infrastructure/Data/Entity/**/*.cs, SalesPipeline.Infrastructure/Data/Mapping/**/*.cs, SalesPipeline.API/Controllers/ExportController.cs, SalesPipeline.Infrastructure/Helpers/NotificationService.cs, SalesPipeline.API/Controllers/ProcessSaleController.cs, SalesPipeline.Infrastructure/Repositorys/LoanRepo.cs, SalesPipeline.Infrastructure/Repositorys/MasterBusinessSize.cs, SalesPipeline.Infrastructure/Repositorys/MasterBusinessType.cs, SalesPipeline.Infrastructure/Repositorys/MasterChains.cs, SalesPipeline.Infrastructure/Repositorys/MasterContactChannel.cs, SalesPipeline.Infrastructure/Repositorys/MasterLoanTypes.cs, SalesPipeline.Infrastructure/Repositorys/MasterTSIC.cs, SalesPipeline.Infrastructure/Repositorys/PreCalInfo.cs, SalesPipeline.Infrastructure/Repositorys/Sales.cs, SalesPipeline.Infrastructure/Repositorys/ProcessSales.cs,SalesPipeline.Infrastructure/Repositorys/PreCalStan.cs ,SalesPipeline.Infrastructure/Repositorys/PreCalBus.cs ,SalesPipeline.Infrastructure/Repositorys/PreCalApp.cs ,SalesPipeline.Infrastructure/Repositorys/PreCal.cs, SalesPipeline.Infrastructure/Repositorys/MasterReasonReturns.cs, SalesPipeline.Infrastructure/Repositorys/AssignmentRM.cs,SalesPipeline.Infrastructure/Repositorys/Dashboard.cs, SalesPipeline.Infrastructure/**</Property>
     <Property Name="sonar.organization">anon120655</Property>
   </LocalSettings>
   <ScannerOptsSettings>

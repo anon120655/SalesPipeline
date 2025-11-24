@@ -80,16 +80,18 @@ namespace SalesPipeline.API.Controllers
 
                     if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
                     {
-                        handler.ServerCertificateCustomValidationCallback =
-                        (message, cert, chain, errors) =>
-                        {
-                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                            if (errors == SslPolicyErrors.None)
-                                return true;
+                        //handler.ServerCertificateCustomValidationCallback =
+                        //(message, cert, chain, errors) =>
+                        //{
+                        //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                        //    if (errors == SslPolicyErrors.None)
+                        //        return true;
 
-                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        };
+                        //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                        //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        //};
+
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
 
                     var httpClient = new HttpClient(handler);
@@ -101,7 +103,9 @@ namespace SalesPipeline.API.Controllers
                     );
                     httpClient.DefaultRequestHeaders.Add("apikey", _appSet.iAuthen.ApiKey);
 
-                    HttpResponseMessage responseAPI = await httpClient.PostAsync($"{_appSet.iAuthen.baseUri}/authen/authentication", postData);
+                    string fullUrlAuthen = $"{_appSet.iAuthen.baseUri}/authen/authentication";
+
+                    HttpResponseMessage responseAPI = await httpClient.PostAsync(fullUrlAuthen, postData);
                     if (responseAPI.IsSuccessStatusCode)
                     {
                         string responseBody = await responseAPI.Content.ReadAsStringAsync();

@@ -109,10 +109,10 @@ builder.Services.AddDataProtection()
 
 // ใช้ชั่วคราวเพื่อทดสอบ ลงทะเบียน HttpClient ที่ข้ามการตรวจสอบใบรับรอง SSL สำหรับทุกคำขอ
 //builder.Services.AddHttpClient("IgnoreSslClient")
-//	.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-//	{
-//		ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
-//	});
+//    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+//    {
+//        ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+//    });
 
 
 var app = builder.Build();
@@ -136,7 +136,7 @@ else
 //}
 
 // ปิดใช้ชั่วคราวเพื่อทดสอบบน prod ต้องเปิด
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 
 app.UseStaticFiles();
