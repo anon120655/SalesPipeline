@@ -502,7 +502,7 @@ namespace SalesPipeline.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("UpdatePhoenix")]
+        [HttpPut("UpdatePhoenix")]
         public async Task<IActionResult> UpdatePhoenix(PhoenixModel model)
         {
             try

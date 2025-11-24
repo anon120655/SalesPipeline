@@ -39,7 +39,7 @@
 								<td>@GeneralUtils.EmptyTo(item.Tel)</td>
 								<td>@GeneralUtils.EmptyTo(item.Email)</td>
 								<td>
-									@GeneralUtils.DateToThString(item.CreateDate)
+									@GeneralUtils.DateToThString(item.CreateDate) @GeneralUtils.DateToTimeString(item.CreateDate)
 								</td>
 							</tr>
 						}

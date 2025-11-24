@@ -1035,17 +1035,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			DateTime _dateNow = DateTime.Now;
 
 			var sale_Contact_Info = new Data.Entity.Sale_Contact_Info();
-			sale_Contact_Info.Status = StatusModel.Active;
-			sale_Contact_Info.CreateDate = _dateNow;
-			sale_Contact_Info.SaleId = model.SaleId;
-			sale_Contact_Info.FullName = model.FullName;
-			sale_Contact_Info.Position = model.Position;
-			sale_Contact_Info.Tel = model.Tel;
-			sale_Contact_Info.Email = model.Email;
-			sale_Contact_Info.Createdfrom = model.Createdfrom;
+			if (!string.IsNullOrEmpty(model.FullName))
+            {
+                sale_Contact_Info.Status = StatusModel.Active;
+                sale_Contact_Info.CreateDate = _dateNow;
+                sale_Contact_Info.SaleId = model.SaleId;
+                sale_Contact_Info.FullName = model.FullName;
+                sale_Contact_Info.Position = model.Position;
+                sale_Contact_Info.Tel = model.Tel;
+                sale_Contact_Info.Email = model.Email;
+                sale_Contact_Info.Createdfrom = model.Createdfrom;
 
-			await _db.InsterAsync(sale_Contact_Info);
-			await _db.SaveAsync();
+                await _db.InsterAsync(sale_Contact_Info);
+                await _db.SaveAsync();
+            }
 
 			return _mapper.Map<Sale_Contact_InfoCustom>(sale_Contact_Info);
 		}

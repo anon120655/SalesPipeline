@@ -13,7 +13,6 @@ using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
@@ -52,30 +51,30 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.IsRePurpose != true)
 			{
-                //ปิดไว้ชั่วคราวทดสอบ performance test
-                //var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
-                //if (customer != null)
-                //{
-                //	model.Id = customer.Id;
-                //	errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
-                //	model.IsValidate = false;
-                //	model.ValidateError.Add(errorMessage);
-                //	if (isThrow) throw new ExceptionCustom(errorMessage);
+                //นำออกชั่วคราวเพื่อทดสอบ JMeter
+                var customer = await _repo.Context.Customers.Where(x => x.JuristicPersonRegNumber == juristicPersonRegNumber).FirstOrDefaultAsync();
+				if (customer != null)
+				{
+					model.Id = customer.Id;
+					errorMessage = $"มีเลขทะเบียนนิติบุคคล {customer.JuristicPersonRegNumber} ในระบบแล้ว";
+					model.IsValidate = false;
+					model.ValidateError.Add(errorMessage);
+					if (isThrow) throw new ExceptionCustom(errorMessage);
 
-                //	if (juristicPersonRegNumber != null)
-                //	{
-                //		var juristicNumber = await VerifyByNumber(juristicPersonRegNumber, model.CurrentUserId);
-                //		if (juristicNumber.Code == "proceed")
-                //		{
-                //			errorMessage = juristicNumber.Message ?? string.Empty;
-                //			model.IsValidate = false;
-                //			model.IsSelectVersion = false;
-                //			model.ValidateError.Add(errorMessage);
-                //			if (isThrow) throw new ExceptionCustom(errorMessage);
-                //		}
-                //	}
-                //}
-            }
+					if (juristicPersonRegNumber != null)
+					{
+						var juristicNumber = await VerifyByNumber(juristicPersonRegNumber, model.CurrentUserId);
+						if (juristicNumber.Code == "proceed")
+						{
+							errorMessage = juristicNumber.Message ?? string.Empty;
+							model.IsValidate = false;
+							model.IsSelectVersion = false;
+							model.ValidateError.Add(errorMessage);
+							if (isThrow) throw new ExceptionCustom(errorMessage);
+						}
+					}
+				}
+			}
 
             if (model.DateContact.HasValue)
 			{
@@ -314,7 +313,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			using (var _transaction = _repo.BeginTransaction())
 			{
                 //นำออกชั่วคราวเพื่อทดสอบ JMeter
-                //await Validate(model);
+                await Validate(model);
 
                 string? branchName = null;
 				string? master_ContactChannelName = null;
@@ -325,101 +324,101 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				string? master_YieldName = null;
 				string? master_ChainName = null;
 				string? master_LoanTypeName = null;
-                //string? provinceName = null;
-                //string? amphurName = null;
-                //string? tambolName = null;
+				//string? provinceName = null;
+				//string? amphurName = null;
+				//string? tambolName = null;
 
 
-                //นำออกชั่วคราวเพื่อทดสอบ JMeter
-                //if (model.ContactProvinceId.HasValue)
-                //{
-                //	model.ContactProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ContactProvinceId.Value);
-                //}
+				//นำออกชั่วคราวเพื่อทดสอบ JMeter
+				if (model.ContactProvinceId.HasValue)
+				{
+					model.ContactProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ContactProvinceId.Value);
+				}
 
-                //if (model.BranchId.HasValue && model.BranchId > 0)
-                //{
-                //	branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
-                //}
+				if (model.BranchId.HasValue && model.BranchId > 0)
+				{
+					branchName = await _repo.MasterBranch.GetNameById(model.BranchId.Value);
+				}
 
-                //if (model.Master_ContactChannelId.HasValue)
-                //{
-                //	master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
-                //}
+				if (model.Master_ContactChannelId.HasValue)
+				{
+					master_ContactChannelName = await _repo.MasterContactChannel.GetNameById(model.Master_ContactChannelId.Value);
+				}
 
-                //if (model.Master_BusinessTypeId.HasValue)
-                //{
-                //	master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
-                //}
-                //else if (!model.Master_BusinessTypeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessTypeName))
-                //{
-                //	model.Master_BusinessTypeId = await _repo.MasterBusinessType.GetIdByName(model.Master_BusinessTypeName);
-                //}
+				if (model.Master_BusinessTypeId.HasValue)
+				{
+					master_BusinessTypeName = await _repo.MasterBusinessType.GetNameById(model.Master_BusinessTypeId.Value);
+				}
+				else if (!model.Master_BusinessTypeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessTypeName))
+				{
+					model.Master_BusinessTypeId = await _repo.MasterBusinessType.GetIdByName(model.Master_BusinessTypeName);
+				}
 
-                //if (model.Master_BusinessSizeId.HasValue)
-                //{
-                //	master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
-                //}
-                //else if (!model.Master_BusinessSizeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessSizeName))
-                //{
-                //	model.Master_BusinessSizeId = await _repo.MasterBusinessSize.GetIdByName(model.Master_BusinessSizeName);
-                //}
+				if (model.Master_BusinessSizeId.HasValue)
+				{
+					master_BusinessSizeName = await _repo.MasterBusinessSize.GetNameById(model.Master_BusinessSizeId.Value);
+				}
+				else if (!model.Master_BusinessSizeId.HasValue && !string.IsNullOrEmpty(model.Master_BusinessSizeName))
+				{
+					model.Master_BusinessSizeId = await _repo.MasterBusinessSize.GetIdByName(model.Master_BusinessSizeName);
+				}
 
-                //if (model.Master_ISICCodeId.HasValue)
-                //{
-                //	master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
-                //}
+				if (model.Master_ISICCodeId.HasValue)
+				{
+					master_ISICCodeName = await _repo.MasterISICCode.GetNameById(model.Master_ISICCodeId.Value);
+				}
 
-                //if (model.Master_TSICId.HasValue)
-                //{
-                //	master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
-                //}
-                //else if (!model.Master_TSICId.HasValue && !string.IsNullOrEmpty(model.Master_TSICName))
-                //{
-                //	model.Master_TSICId = await _repo.MasterBusinessSize.GetIdByName(model.Master_TSICName);
-                //}
+				if (model.Master_TSICId.HasValue)
+				{
+					master_TSICName = await _repo.MasterTSIC.GetNameById(model.Master_TSICId.Value);
+				}
+				else if (!model.Master_TSICId.HasValue && !string.IsNullOrEmpty(model.Master_TSICName))
+				{
+					model.Master_TSICId = await _repo.MasterBusinessSize.GetIdByName(model.Master_TSICName);
+				}
 
-                //if (model.Master_YieldId.HasValue)
-                //{
-                //	master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
-                //}
-                //if (model.Master_ChainId.HasValue)
-                //{
-                //	master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
-                //}
-                //if (model.Master_LoanTypeId.HasValue)
-                //{
-                //	master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
-                //}
+				if (model.Master_YieldId.HasValue)
+				{
+					master_YieldName = await _repo.MasterYield.GetNameById(model.Master_YieldId.Value);
+				}
+				if (model.Master_ChainId.HasValue)
+				{
+					master_ChainName = await _repo.MasterChain.GetNameById(model.Master_ChainId.Value);
+				}
+				if (model.Master_LoanTypeId.HasValue)
+				{
+					master_LoanTypeName = await _repo.MasterLoanTypes.GetNameById(model.Master_LoanTypeId.Value);
+				}
 
-                //if (model.ProvinceId.HasValue)
-                //{
-                //	model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
-                //}
-                //else if (!model.ProvinceId.HasValue && !string.IsNullOrEmpty(model.ProvinceName))
-                //{
-                //	model.ProvinceId = await _repo.Thailand.GetProvinceIdByName(model.ProvinceName);
-                //}
+				if (model.ProvinceId.HasValue)
+				{
+					model.ProvinceName = await _repo.Thailand.GetProvinceNameByid(model.ProvinceId.Value);
+				}
+				else if (!model.ProvinceId.HasValue && !string.IsNullOrEmpty(model.ProvinceName))
+				{
+					model.ProvinceId = await _repo.Thailand.GetProvinceIdByName(model.ProvinceName);
+				}
 
-                //if (model.AmphurId.HasValue)
-                //{
-                //	model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
-                //}
-                //else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
-                //{
-                //	model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
-                //}
+				if (model.AmphurId.HasValue)
+				{
+					model.AmphurName = await _repo.Thailand.GetAmphurNameByid(model.AmphurId.Value);
+				}
+				else if (!model.AmphurId.HasValue && !string.IsNullOrEmpty(model.AmphurName))
+				{
+					model.AmphurId = await _repo.Thailand.GetAmphurIdByName(model.AmphurName);
+				}
 
-                //if (model.TambolId.HasValue)
-                //{
-                //	model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
-                //}
-                //else if (!model.TambolId.HasValue && !string.IsNullOrEmpty(model.TambolName))
-                //{
-                //	model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
-                //}
+				if (model.TambolId.HasValue)
+				{
+					model.TambolName = await _repo.Thailand.GetTambolNameByid(model.TambolId.Value);
+				}
+				else if (!model.TambolId.HasValue && !string.IsNullOrEmpty(model.TambolName))
+				{
+					model.TambolId = await _repo.Thailand.GetTambolIdByName(model.TambolName);
+				}
 
 
-                var user = await _repo.User.GetById(model.CurrentUserId);
+				var user = await _repo.User.GetById(model.CurrentUserId);
 				if (user == null || user.Role == null) throw new ExceptionCustom("currentUserId not found!");
 
 				DateTime _dateNow = DateTime.Now;
