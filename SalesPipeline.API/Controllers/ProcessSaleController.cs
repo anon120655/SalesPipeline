@@ -294,15 +294,17 @@ namespace SalesPipeline.API.Controllers
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback =
-                        (message, cert, chain, errors) =>
-                        {
-                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                            if (errors == SslPolicyErrors.None)
-                                return true;
-                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        };
+                        //handler.ServerCertificateCustomValidationCallback =
+                        //(message, cert, chain, errors) =>
+                        //{
+                        //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                        //    if (errors == SslPolicyErrors.None)
+                        //        return true;
+                        //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                        //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        //};
+
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
 
                     using var _httpClient = new HttpClient(handler);
@@ -419,16 +421,17 @@ namespace SalesPipeline.API.Controllers
                         var handler = new HttpClientHandler();
                         if (isDevOrUat)
                         {
-                            handler.ServerCertificateCustomValidationCallback =
-                            (message, cert, chain, errors) =>
-                            {
-                                // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                                if (errors == SslPolicyErrors.None)
-                                    return true;
+                            //handler.ServerCertificateCustomValidationCallback =
+                            //(message, cert, chain, errors) =>
+                            //{
+                            //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            //    if (errors == SslPolicyErrors.None)
+                            //        return true;
 
-                                // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                                return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                            };
+                            //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                            //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                            //};
+                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                         }
 
                         var _httpClient = new HttpClient(handler);
@@ -540,8 +543,18 @@ namespace SalesPipeline.API.Controllers
 
                     if (isDevOrUat)
                     {
-                        handler.ServerCertificateCustomValidationCallback =
-                            (message, cert, chain, errors) => errors == SslPolicyErrors.None;
+                        //handler.ServerCertificateCustomValidationCallback =
+                        //   (message, cert, chain, errors) =>
+                        //   {
+                        //       // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                        //       if (errors == SslPolicyErrors.None)
+                        //           return true;
+
+                        //       // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
+                        //       return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                        //   };
+
+                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                     }
 
                     using var httpClient = new HttpClient(handler);

@@ -50,7 +50,7 @@ namespace SalesPipeline.Utils.DataCustom
 
 			for (int i = 1; i <= 9; i++)
 			{
-				for (int j = 0; j < 2; j++)
+				for (int j = 0; j < 1; j++)
 				{
 					phoenixModel.Add(new Sale_PhoenixCustom
 					{

@@ -2,7 +2,7 @@
 @page "/setting/branch/create"
 @page "/setting/branch/update/{id:int}"
 
-<PageTitle>ตั้งค่า สาขา</PageTitle>
+<PageTitle>ตั้งค่า พื้นที่ดูแล</PageTitle>
 
 <MessageError errorMessage="@_errorMessage" />
 
@@ -15,7 +15,7 @@
 					<div class="d-flex flex-row align-items-center mb-3 border-bottom">
 						<div class="p-2"><i class="fa-solid fa-user-gear text-secondary fs_2r"></i></div>
 						<div class="p-2">
-							<p class="back_topic_active">ตั้งค่าสาขา</p>
+							<p class="back_topic_active">ตั้งค่า พื้นที่ดูแล</p>
 						</div>
 					</div>
 					<EditForm Model="@formModel" OnInvalidSubmit="OnInvalidSubmit" OnValidSubmit="Save">
@@ -23,14 +23,14 @@
 						<div class="row mt-5">
 							<div class="col-12">
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสสาขา<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">รหัสพื้นที่ดูแล<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<input @bind="formModel.BranchCode" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.BranchCode)" />
 									</div>
 								</div>
 								<div class="row mb-3">
-									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อสาขา<span class="text-danger">*</span></label>
+									<label class="col-sm-2 col-form-label text-lg-end fw-bold">ชื่อพื้นที่ดูแล<span class="text-danger">*</span></label>
 									<div class="col-sm-4">
 										<input @bind="formModel.BranchName" type="text" class="form-control">
 										<ValidationMessage For="@(() => formModel.BranchName)" />
