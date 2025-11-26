@@ -890,29 +890,37 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 
-					var sale = new SaleCustom()
-					{
-						CurrentUserId = model.CurrentUserId,
-						CreateBy = model.CurrentUserId,
-						CreateDate = _dateNow,
-						UpdateBy = model.CurrentUserId,
-						UpdateDate = _dateNow,
-						CustomerId = customer.Id,
-						ProvinceId = model.ProvinceId,
-						BranchId = model.BranchId,
-						CIF = model.CIF,
-						StatusSaleId = StatusSaleModel.NotStatus
-					};
+					var sale = new SaleCustom();
 
 					var sales = await _repo.Context.Sales.Where(x => x.CustomerId == customer.Id).FirstOrDefaultAsync();
 					if (sales == null)
 					{
-						await _repo.Sales.Create(sale);
+                        sale = new SaleCustom
+                        {
+                            CurrentUserId = model.CurrentUserId,
+                            CreateBy = model.CurrentUserId,
+                            CreateDate = _dateNow,
+                            UpdateBy = model.CurrentUserId,
+                            UpdateDate = _dateNow,
+                            CustomerId = customer.Id,
+                            ProvinceId = model.ProvinceId,
+                            BranchId = model.BranchId,
+                            CIF = model.CIF,
+                            StatusSaleId = StatusSaleModel.NotStatus
+                        };
+                        await _repo.Sales.Create(sale);
 					}
 					else
-					{
-						sale.Id = sales.Id;
-						await _repo.Sales.Update(sale);
+                    {
+                        sale = _mapper.Map<SaleCustom>(sales);
+                        // อัปเดตเฉพาะฟิลด์ที่เปลี่ยน
+                        sale.Id = sales.Id;
+                        sale.UpdateBy = model.CurrentUserId;
+                        sale.UpdateDate = _dateNow;
+                        sale.ProvinceId = model.ProvinceId;
+                        sale.BranchId = model.BranchId;
+                        sale.CIF = model.CIF;
+                        await _repo.Sales.Update(sale);
 					}
 
 					var sale_Contact_Info = await _repo.Context.Sale_Contact_Infos.Where(x => x.SaleId == sale.Id && x.Createdfrom == 1)
