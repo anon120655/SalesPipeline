@@ -194,6 +194,7 @@ C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\css\switch.css
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\css\tree_level.css
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\favicon.png
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\favicon_fcc.png
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\files\template\customer_template.xlsx
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\font\mitr\Mitr-Bold.ttf
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\font\mitr\Mitr-ExtraLight.ttf
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline\wwwroot\font\mitr\Mitr-Light.ttf

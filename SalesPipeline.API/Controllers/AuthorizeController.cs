@@ -80,18 +80,22 @@ namespace SalesPipeline.API.Controllers
 
                     if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
                     {
-                        //handler.ServerCertificateCustomValidationCallback =
-                        //(message, cert, chain, errors) =>
-                        //{
-                        //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                        //    if (errors == SslPolicyErrors.None)
-                        //        return true;
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ผ่านถ้าปกติ
+                            if (errors == SslPolicyErrors.None)
+                                return true;
 
-                        //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                        //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        //};
+                            // ยอมรับ NameMismatch + ChainErrors
+                            if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                            {
+                                return true;
+                            }
 
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                            return false;
+                        };
                     }
 
                     var httpClient = new HttpClient(handler);

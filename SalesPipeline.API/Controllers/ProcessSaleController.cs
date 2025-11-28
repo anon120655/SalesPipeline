@@ -282,29 +282,43 @@ namespace SalesPipeline.API.Controllers
                     // ตรวจสอบ VPN (DEV)
                     if (_appSet.ServerSite == ServerSites.DEV)
                     {
-                        bool isVpnConnect = NetworkInterface.GetAllNetworkInterfaces()
-                            .Any(adapter =>
-                                adapter.Description.Contains("Array Networks VPN Adapter") &&
-                                adapter.OperationalStatus == OperationalStatus.Up);
+                        bool isVpnConnect = false;
+                        // รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
+                        var adapters = NetworkInterface.GetAllNetworkInterfaces();
+                        if (adapters.Length > 0)
+                        {
+                            foreach (NetworkInterface adapter in adapters)
+                            {
+                                if ((adapter.Description.Contains("Array Networks VPN Adapter") || adapter.Name.Contains("_Common_all-network - green.baac.or.th"))
+                                    && adapter.OperationalStatus == OperationalStatus.Up)
+                                {
+                                    isVpnConnect = true;
+                                }
+                            }
+                        }
 
-                        if (!isVpnConnect)
-                            throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
+                        if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ Phoenix ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
                     }
 
                     var handler = new HttpClientHandler();
                     if (isDevOrUat)
                     {
-                        //handler.ServerCertificateCustomValidationCallback =
-                        //(message, cert, chain, errors) =>
-                        //{
-                        //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                        //    if (errors == SslPolicyErrors.None)
-                        //        return true;
-                        //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                        //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        //};
+                        handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ผ่านถ้าปกติ
+                            if (errors == SslPolicyErrors.None)
+                                return true;
 
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                            // ยอมรับ NameMismatch + ChainErrors
+                            if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        };
                     }
 
                     using var _httpClient = new HttpClient(handler);
@@ -421,17 +435,22 @@ namespace SalesPipeline.API.Controllers
                         var handler = new HttpClientHandler();
                         if (isDevOrUat)
                         {
-                            //handler.ServerCertificateCustomValidationCallback =
-                            //(message, cert, chain, errors) =>
-                            //{
-                            //    // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                            //    if (errors == SslPolicyErrors.None)
-                            //        return true;
+                            handler.ServerCertificateCustomValidationCallback =
+                        (message, cert, chain, errors) =>
+                        {
+                            // ผ่านถ้าปกติ
+                            if (errors == SslPolicyErrors.None)
+                                return true;
 
-                            //    // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                            //    return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                            //};
-                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                            // ยอมรับ NameMismatch + ChainErrors
+                            if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        };
                         }
 
                         var _httpClient = new HttpClient(handler);
@@ -543,18 +562,22 @@ namespace SalesPipeline.API.Controllers
 
                     if (isDevOrUat)
                     {
-                        //handler.ServerCertificateCustomValidationCallback =
-                        //   (message, cert, chain, errors) =>
-                        //   {
-                        //       // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                        //       if (errors == SslPolicyErrors.None)
-                        //           return true;
+                        handler.ServerCertificateCustomValidationCallback =
+                         (message, cert, chain, errors) =>
+                         {
+                             // ผ่านถ้าปกติ
+                             if (errors == SslPolicyErrors.None)
+                                 return true;
 
-                        //       // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                        //       return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        //   };
+                             // ยอมรับ NameMismatch + ChainErrors
+                             if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                 errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                             {
+                                 return true;
+                             }
 
-                        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                             return false;
+                         };
                     }
 
                     using var httpClient = new HttpClient(handler);

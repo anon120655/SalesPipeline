@@ -35,12 +35,18 @@ namespace SalesPipeline.Infrastructure.Helpers
                         handler.ServerCertificateCustomValidationCallback =
                         (message, cert, chain, errors) =>
                         {
-                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
+                            // ผ่านถ้าปกติ
                             if (errors == SslPolicyErrors.None)
                                 return true;
 
-                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
+                            // ยอมรับ NameMismatch + ChainErrors
+                            if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                            {
+                                return true;
+                            }
+
+                            return false;
                         };
                     }
 
@@ -107,15 +113,21 @@ namespace SalesPipeline.Infrastructure.Helpers
                     if (isDevOrUat)
                     {
                         handler.ServerCertificateCustomValidationCallback =
-                        (message, cert, chain, errors) =>
-                        {
-                            // ตรวจสอบเฉพาะ error ที่ยอมรับได้
-                            if (errors == SslPolicyErrors.None)
-                                return true;
+                         (message, cert, chain, errors) =>
+                         {
+                             // ผ่านถ้าปกติ
+                             if (errors == SslPolicyErrors.None)
+                                 return true;
 
-                            // ยอมรับเฉพาะ self-signed cert ใน DEV/UAT
-                            return errors == SslPolicyErrors.RemoteCertificateChainErrors;
-                        };
+                             // ยอมรับ NameMismatch + ChainErrors
+                             if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
+                                 errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
+                             {
+                                 return true;
+                             }
+
+                             return false;
+                         };
                     }
                     var httpClient = new HttpClient(handler);
 
