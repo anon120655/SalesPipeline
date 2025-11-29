@@ -142,9 +142,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<InfoBranchCustom> CreateBranch(InfoBranchCustom model)
 		{
 			int id = 1;
-			if (_repo.Context.InfoBranches.FirstOrDefault() != null)
+			if (await _repo.Context.InfoBranches.FirstOrDefaultAsync() != null)
 			{
-				id = _repo.Context.InfoBranches.Max(u => u == null ? 0 : u.BranchID) + 1;
+				id = await _repo.Context.InfoBranches.MaxAsync(u => u == null ? 0 : u.BranchID) + 1;
 			}
 
 			var infoBranch = new Data.Entity.InfoBranch()
@@ -172,20 +172,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 
 			return new();
-
-			//var infoBranches = await _repo.Context.InfoBranches
-			//									   .FirstOrDefaultAsync(x => x.BranchID == model.BranchID);
-			//if (infoBranches != null)
-			//{
-			//	infoBranches.ProvinceID = model.ProvinceID;
-			//	infoBranches.BranchCode = model.BranchCode;
-			//	infoBranches.BranchName = model.BranchName;
-			//	infoBranches.BranchNameMain = model.BranchNameMain;
-			//	_db.Update(infoBranches);
-			//  await _db.SaveAsync();
-			//}
-
-			//return _mapper.Map<InfoBranchCustom>(infoBranches);
 		}
 
 		public async Task<IList<InfoBranchCustom>> GetBranch(int provinceID)
@@ -202,19 +188,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task<IList<InfoBranchCustom>> GetBranchByDepBranchId(allFilter model)
 		{
-			//if ((model.DepBranch == null || model.DepBranch.Count == 0) && model.ids != null)
-			//{
-			//	List<string> ids_list = model.ids.Split(',').ToList<string>();
-			//	if (ids_list.Count > 0)
-			//	{
-			//		model.Selecteds = new();
-			//		foreach (var item in ids_list)
-			//		{
-			//			model.Selecteds.Add(item);
-			//		}
-			//	}
-			//}
-
 			if (model.DepBranchs == null || model.DepBranchs.Count == 0) return new List<InfoBranchCustom>();
 
 			List<Guid?> idList = new();
@@ -223,7 +196,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				idList = GeneralUtils.ListStringToGuid(model.DepBranchs);
 			}
 
-			var infoProvinces = _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToList();
+			var infoProvinces = await _repo.Context.InfoProvinces.Where(x => idList.Contains(x.Master_Department_BranchId)).Select(x => x.ProvinceID).ToListAsync();
 			if (infoProvinces.Count > 0)
 			{
 				var query = _repo.Context.InfoBranches.Where(x => infoProvinces.Contains(x.ProvinceID)).AsQueryable();

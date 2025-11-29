@@ -81,7 +81,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentCenter.Assign(model);
 
-					_transaction.Commit();
+                    await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -98,10 +98,9 @@ namespace SalesPipeline.API.Controllers
 			{
 				using (var _transaction = _repo.BeginTransaction())
 				{
-					//await _repo.AssignmentCenter.AssignCenter(model);
 					await _repo.AssignmentCenter.AssignCenterUpdateRange(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -121,7 +120,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentCenter.UpdateCurrentNumber(userid);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 					return Ok();
 				}
@@ -142,7 +141,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentCenter.CreateAssignmentCenterAll(new());
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 					return Ok();
 				}

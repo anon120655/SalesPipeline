@@ -32,7 +32,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.Id == Guid.Empty)
 			{
-				if (model.Name != null && _repo.Context.Master_Yields.Any(x => x.Status != StatusModel.Delete && x.Name == model.Name))
+				if (model.Name != null && await _repo.Context.Master_Yields.AnyAsync(x => x.Status != StatusModel.Delete && x.Name == model.Name))
 				{
 					errorMessage = $"มีผลผลิต {model.Name} แล้ว";
 					model.IsValidate = false;

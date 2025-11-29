@@ -145,7 +145,6 @@ builder.Services.AddTransient<SalesPipelineContext>();
 builder.Services.AddTransient<SalesPipelineLogContext>();
 builder.Services.AddAutoMapper(typeof(AutoMapping));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-//builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddSingleton<NotificationService>();
@@ -154,14 +153,9 @@ builder.Services.AddControllers()
 .AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    //Ignore infinity loop class
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    //Json return normal First Upper 
-    //options.JsonSerializerOptions.PropertyNamingPolicy = null;
-    //options.JsonSerializerOptions.Converters.Add(new BangkokDateTimeConverter());
 });
 
-//builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
     var securitySchema = new OpenApiSecurityScheme
@@ -179,8 +173,10 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityDefinition("Bearer", securitySchema);
 
+    var bearer = new[] { "Bearer" };
+
     var securityRequirement = new OpenApiSecurityRequirement();
-    securityRequirement.Add(securitySchema, new[] { "Bearer" });
+    securityRequirement.Add(securitySchema, bearer);
     c.AddSecurityRequirement(securityRequirement);
 
     //add descrtion controller action
@@ -191,7 +187,6 @@ builder.Services.AddSwaggerGen(c =>
     //</PropertyGroup>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    //c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema { Type = "string", Format = "date-time" });
 });
 
 //Nuget Asp.Versioning.Mvc.ApiExplorer
@@ -209,24 +204,6 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddHttpClient();
-
-
-
-// Add Hangfire
-var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-
-//builder.Services.AddHangfire(config =>
-//{
-//	// ใช้ Memory Storage แทนการเชื่อมต่อฐานข้อมูล
-//	config.UseMemoryStorage();
-
-//	// กำหนด TimeZone เป็น TimeZone ของกรุงเทพฯ (Bangkok)
-//	var timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-//	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-//		  .UseSimpleAssemblyNameTypeSerializer()
-//		  .UseRecommendedSerializerSettings()
-//		  .UseTimeZone(timeZone);
-//});
 
 builder.Services.AddCors(options =>
 {
@@ -301,4 +278,4 @@ app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 // Schedule the job to run every hour
 RecurringJob.AddOrUpdate<DatabaseBackupService>("backup-job", x => x.BackupDatabase(), Cron.Hourly);
 
-app.Run();
+await app.RunAsync();

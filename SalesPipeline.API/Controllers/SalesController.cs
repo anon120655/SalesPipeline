@@ -17,7 +17,7 @@ namespace SalesPipeline.API.Controllers
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
-	public class SalesController : Controller
+	public class SalesController : ControllerBase
 	{
 		private readonly IRepositoryWrapper _repo;
 
@@ -125,7 +125,7 @@ namespace SalesPipeline.API.Controllers
 
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return Ok();
@@ -149,7 +149,7 @@ namespace SalesPipeline.API.Controllers
 						await _repo.Sales.UpdateStatusOnly(item);
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 
 				return Ok();

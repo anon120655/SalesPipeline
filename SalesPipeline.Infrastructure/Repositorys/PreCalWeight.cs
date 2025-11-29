@@ -76,7 +76,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		public async Task RemoveAllPreCall(Guid id)
 		{
-			var pre_Cal_WeightFactorR = _repo.Context.Pre_Cal_WeightFactors.Include(x => x.Pre_Cal_WeightFactor_Items).Where(x => x.Pre_CalId == id).ToList();
+			var pre_Cal_WeightFactorR = await _repo.Context.Pre_Cal_WeightFactors.Include(x => x.Pre_Cal_WeightFactor_Items).Where(x => x.Pre_CalId == id).ToListAsync();
 			if (pre_Cal_WeightFactorR.Count > 0)
 			{
 				foreach (var item in pre_Cal_WeightFactorR)

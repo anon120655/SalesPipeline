@@ -25,48 +25,91 @@ namespace SalesPipeline.API.Controllers
 			_databaseBackup = databaseBackup;
 		}
 
-		[HttpGet("BackupDatabase")]
-		public IActionResult BackupDatabase()
-		{
-			try
-			{
-				_databaseBackup.BackupDatabase();
+        [HttpGet("BackupDatabase")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResultCustom))]
+        public IActionResult BackupDatabase()
+        {
+            try
+            {
+                _databaseBackup.BackupDatabase();
+                return Ok("Backup completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
+        }
 
-				return Ok("Backup completed successfully.");
-			}
-			catch (Exception ex)
-			{
-				return new ErrorResultCustom(new ErrorCustom(), ex);
-			}
-		}
-
-		[HttpGet("fire-and-forget")]
+        [HttpGet("fire-and-forget")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResultCustom))]
         public IActionResult FireAndForget()
         {
-            BackgroundJob.Enqueue(() => Console.WriteLine("Fire-and-forget job executed"));
-            return Ok("Fire-and-forget job enqueued");
+            try
+            {
+                BackgroundJob.Enqueue(() => Console.WriteLine("Fire-and-forget job executed"));
+                return Ok("Fire-and-forget job enqueued");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
         }
 
         [HttpGet("delayed")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResultCustom))]
         public IActionResult Delayed()
         {
-            BackgroundJob.Schedule(() => Console.WriteLine("Delayed job executed"), TimeSpan.FromMinutes(1));
-            return Ok("Delayed job enqueued");
+            try
+            {
+                BackgroundJob.Schedule(() => Console.WriteLine("Delayed job executed"), TimeSpan.FromMinutes(1));
+                return Ok("Delayed job enqueued");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
         }
 
         [HttpGet("recurring")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResultCustom))]
         public IActionResult Recurring()
         {
-            RecurringJob.AddOrUpdate(() => Console.WriteLine("Recurring job executed"), Cron.Daily);
-            return Ok("Recurring job enqueued");
+            try
+            {
+                RecurringJob.AddOrUpdate(
+                    recurringJobId: "RecurringJobExecuted",
+                    methodCall: () => Console.WriteLine("Recurring job executed"),
+                    cronExpression: Cron.Daily,
+                    options: new RecurringJobOptions()
+                );
+                return Ok("Recurring job enqueued");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
         }
 
         [HttpGet("continuation")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResultCustom))]
         public IActionResult Continuation()
         {
-            var jobId = BackgroundJob.Enqueue(() => Console.WriteLine("Initial job executed"));
-            BackgroundJob.ContinueJobWith(jobId, () => Console.WriteLine("Continuation job executed"));
-            return Ok("Continuation job enqueued");
+            try
+            {
+                var jobId = BackgroundJob.Enqueue(() => Console.WriteLine("Initial job executed"));
+                BackgroundJob.ContinueJobWith(jobId, () => Console.WriteLine("Continuation job executed"));
+                return Ok("Continuation job enqueued");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResultCustom(new ErrorCustom(), ex);
+            }
         }
+
     }
 }

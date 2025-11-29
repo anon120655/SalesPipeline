@@ -16,8 +16,9 @@ namespace SalesPipeline.API.Controllers
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
 	public class SecurityController : ControllerBase
-	{		
-		[HttpGet("EnhancedHash")]
+	{
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("EnhancedHash")]
 		public IActionResult EnhancedHash([FromQuery] string val)
 		{
 			try
@@ -121,6 +122,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [AllowAnonymous]
         [HttpGet("GetReconnect")]
         public IActionResult GetReconnect()

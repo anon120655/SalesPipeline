@@ -295,7 +295,8 @@ namespace SalesPipeline.API.Controllers
                     throw new ExceptionCustom($"ขนาดไฟล์ไม่เกิน {fileLimit} MB");
 
                 // 1. ตรวจสอบนามสกุลไฟล์อย่างปลอดภัย
-                string fileExtension = Path.GetExtension(files.FileName)?.ToLowerInvariant();
+                string? fileExtension = Path.GetExtension(files.FileName)?.ToLowerInvariant();
+
                 if (fileExtension != ".xlsx" && fileExtension != ".csv")
                     throw new ExceptionCustom("FileExtension Not Support. Only .xlsx and .csv are allowed.");
 
@@ -305,7 +306,10 @@ namespace SalesPipeline.API.Controllers
                 // 2. สร้างชื่อไฟล์ใหม่ที่ปลอดภัย (ใช้ Guid)
                 string safeFileName = Guid.NewGuid().ToString("N") + fileExtension;
 
-                // 3. โฟลเดอร์ปลอดภัย (ใช้ Path.Combine + Directory.CreateDirectory)
+
+                if (_appSet.ContentRootPath == null)
+                    throw new InvalidOperationException("ContentRootPath cannot be null.");
+
                 string folderName = Path.Combine(_appSet.ContentRootPath, "import", "excel");
                 Directory.CreateDirectory(folderName); // สร้างโฟลเดอร์ถ้ายังไม่มี
 
@@ -334,9 +338,9 @@ namespace SalesPipeline.API.Controllers
                         var LevelId = row.GetCell(4)?.ToString();
                         var RoleId = row.GetCell(5)?.ToString();
 
-                        int.TryParse(PositionId, out int _positionId);
-                        int.TryParse(LevelId, out int _levelid);
-                        int.TryParse(RoleId, out int _roleid);
+                        bool _posOk = int.TryParse(PositionId, out int _positionId);
+                        bool _lvOk = int.TryParse(LevelId, out int _levelid);
+                        bool _roleOk = int.TryParse(RoleId, out int _roleid);
 
                         UserList.Add(new UserCustom
                         {
@@ -350,9 +354,6 @@ namespace SalesPipeline.API.Controllers
                         });
                     }
                 }
-
-                // (Optional) ลบไฟล์หลังใช้งานเสร็จ
-                // File.Delete(fullPath);
 
                 return Ok(UserList);
             }

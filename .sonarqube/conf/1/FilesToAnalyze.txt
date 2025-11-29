@@ -116,6 +116,7 @@ C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\Aut
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\ConfigureSwaggerOptions.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\DatabaseBackupService.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\ErrorResultCustom.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\HttpClientFactoryService.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\JobDisplayNameFilter.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\JwtMiddleware.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\MyAuthorizationFilter.cs

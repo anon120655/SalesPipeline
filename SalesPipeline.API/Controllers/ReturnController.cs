@@ -15,8 +15,8 @@ namespace SalesPipeline.API.Controllers
 	[ApiController]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
 	[Route("v{version:apiVersion}/[controller]")]
-	public class ReturnController : Controller
-	{
+	public class ReturnController : ControllerBase
+    {
 		private readonly IRepositoryWrapper _repo;
 
 		public ReturnController(IRepositoryWrapper repo)
@@ -38,7 +38,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.Return.RMToCenBranch(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -62,7 +62,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.Return.CenBranchToLoan(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -86,7 +86,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.Return.BranchRegToLoan(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}

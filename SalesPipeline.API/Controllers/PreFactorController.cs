@@ -134,24 +134,5 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		static void PrintAmortizationSchedule(double principal, double monthlyInterestRate, int numberOfPayments, double monthlyPayment)
-		{
-			double balance = principal;
-
-			Console.WriteLine("\nงวดที่\tยอดชำระ\tดอกเบี้ย\tเงินต้น\tยอดคงเหลือ");
-
-			for (int period = 1; period <= numberOfPayments; period++)
-			{
-				double interest = Math.Round(balance * monthlyInterestRate, 2);
-				double principalPayment = Math.Round(monthlyPayment - interest, 2);
-				balance = Math.Round(balance - principalPayment, 2);
-
-				// แสดงรายละเอียดในแต่ละงวด
-				var xxx = $"{period}\t{monthlyPayment:F2}\t{interest:F2}\t{principalPayment:F2}\t{balance:F2}";
-
-				Console.WriteLine("ok");
-			}
-		}
-
 	}
 }

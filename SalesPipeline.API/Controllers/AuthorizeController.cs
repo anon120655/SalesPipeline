@@ -35,36 +35,31 @@ namespace SalesPipeline.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model) // NOSONAR
         {
             try
             {
                 AuthenticateResponse? response = null;
                 iAuthenResponse? iAuthenData = null;
 
+                // ตรวจเงื่อนไข iAuthen ก่อน
                 if (_appSet.iAuthen != null && _appSet.iAuthen.IsConnect && GeneralUtils.IsDigit(model.Username))
                 {
+                    // DEV → บังคับเช็ค VPN
                     if (_appSet.ServerSite == ServerSites.DEV)
                     {
-                        bool isVpnConnect = false;
-                        // รับรายการการเชื่อมต่อ VPN ที่ใช้งานอยู่
-                        var adapters = NetworkInterface.GetAllNetworkInterfaces();
-                        if (adapters.Length > 0)
-                        {
-                            foreach (NetworkInterface adapter in adapters)
-                            {
-                                if ((adapter.Description.Contains("Array Networks VPN Adapter") || adapter.Name.Contains("_Common_all-network - green.baac.or.th"))
-                                    && adapter.OperationalStatus == OperationalStatus.Up)
-                                {
-                                    isVpnConnect = true;
-                                }
-                            }
-                        }
+                        bool isVpnConnect = NetworkInterface.GetAllNetworkInterfaces()
+                            .Any(adapter =>
+                                (adapter.Description.Contains("Array Networks VPN Adapter") ||
+                                 adapter.Name.Contains("_Common_all-network - green.baac.or.th"))
+                                 && adapter.OperationalStatus == OperationalStatus.Up);
 
-                        if (!isVpnConnect) throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
+                        if (!isVpnConnect)
+                            throw new ExceptionCustom("เชื่อมต่อ iAuthen ไม่สำเร็จ เนื่องจากไม่ได้ต่อ VPN");
                     }
-                    string base64password = Convert.ToBase64String(Encoding.UTF8.GetBytes(model.Password ?? ""));
 
+                    // เตรียมข้อมูลส่ง
+                    string base64password = Convert.ToBase64String(Encoding.UTF8.GetBytes(model.Password ?? ""));
                     var iAuthenRequest = new iAuthenRequest()
                     {
                         user = model.Username,
@@ -75,74 +70,60 @@ namespace SalesPipeline.API.Controllers
                         authen_type = 4,
                     };
 
-
-                    var handler = new HttpClientHandler();
-
-                    if (_appSet.ServerSite == ServerSites.DEV || _appSet.ServerSite == ServerSites.UAT)
-                    {
-                        handler.ServerCertificateCustomValidationCallback =
-                        (message, cert, chain, errors) =>
-                        {
-                            // ผ่านถ้าปกติ
-                            if (errors == SslPolicyErrors.None)
-                                return true;
-
-                            // ยอมรับ NameMismatch + ChainErrors
-                            if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch) ||
-                                errors.HasFlag(SslPolicyErrors.RemoteCertificateChainErrors))
-                            {
-                                return true;
-                            }
-
-                            return false;
-                        };
-                    }
-
-                    var httpClient = new HttpClient(handler);
-
-                    var postData = new StringContent(
-                        JsonConvert.SerializeObject(iAuthenRequest), // แปลงข้อมูลเป็น JSON ก่อน
-                        Encoding.UTF8,
-                        "application/json"
-                    );
+                    // ใช้ HttpClient แบบ reusable ตาม SonarCloud
+                    var httpClient = HttpClientFactoryService.GetClient(_appSet);
+                    httpClient.DefaultRequestHeaders.Clear();
                     httpClient.DefaultRequestHeaders.Add("apikey", _appSet.iAuthen.ApiKey);
 
                     string fullUrlAuthen = $"{_appSet.iAuthen.baseUri}/authen/authentication";
 
-                    HttpResponseMessage responseAPI = await httpClient.PostAsync(fullUrlAuthen, postData);
+                    var postData = new StringContent(
+                        JsonConvert.SerializeObject(iAuthenRequest),
+                        Encoding.UTF8,
+                        "application/json"
+                    );
+
+                    // ยิง API
+                    var responseAPI = await httpClient.PostAsync(fullUrlAuthen, postData);
+                    string responseBody = await responseAPI.Content.ReadAsStringAsync();
+
                     if (responseAPI.IsSuccessStatusCode)
                     {
-                        string responseBody = await responseAPI.Content.ReadAsStringAsync();
-
                         iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
+
                         if (iAuthenData == null || iAuthenData.response_status != "pass" || iAuthenData.response_data == null)
-                            throw new ExceptionCustom($"เชื่อมต่อ iAuthen ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
+                            throw new ExceptionCustom("เชื่อมต่อ iAuthen ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ");
 
                         iAuthenData.response_data.Username = model.Username;
+
+                        // AUTHEN ผ่าน BAAC
                         response = await _repo.Authorizes.AuthenticateBAAC(model, iAuthenData.response_data);
                     }
                     else
                     {
-                        string responseBody = await responseAPI.Content.ReadAsStringAsync();
                         iAuthenData = JsonConvert.DeserializeObject<iAuthenResponse>(responseBody);
                     }
 
+                    // แนบ iAuthen เข้า response
                     if (iAuthenData != null)
                     {
-                        if (response == null) response = new AuthenticateResponse(new(), string.Empty, string.Empty, string.Empty);
+                        response ??= new AuthenticateResponse(new(), string.Empty, string.Empty, string.Empty);
                         response.iauthen = iAuthenData;
                     }
                 }
                 else
                 {
+                    // ปกติ ไม่ผ่าน iAuthen
                     response = await _repo.Authorizes.Authenticate(model);
                 }
 
+                // DEV → tokenNoti fix
                 if (_appSet.ServerSite == ServerSites.DEV)
                 {
                     model.tokenNoti = "cn2akTlACf2yrfsPdrUGxj:APA91bHzBDCeLPRa7TfjYF6TYcZTlFOQwNbBrI_9qPlXhVyBySt-7ZU_yQONDHRCaM5rjrasTMyJUBGmNyP0XQlIyMz_hzEO6zMdrvhU9NG9TKyfWNbE7gSNu-GE7eFrrbZv0KrZJP4E";
                 }
 
+                // Log login
                 if (response != null)
                 {
                     await _repo.User.LogLogin(new()

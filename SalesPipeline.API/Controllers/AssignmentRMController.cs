@@ -52,7 +52,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.Assign(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -86,7 +86,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.AssignChange(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -105,7 +105,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.AssignReturnChange(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -125,7 +125,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.Update(model);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}
@@ -145,7 +145,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.UpdateCurrentNumber(userid);
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 					return Ok();
 				}
@@ -166,7 +166,7 @@ namespace SalesPipeline.API.Controllers
 				{
 					await _repo.AssignmentRM.CreateAssignmentRMAll(new());
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 					return Ok();
 				}

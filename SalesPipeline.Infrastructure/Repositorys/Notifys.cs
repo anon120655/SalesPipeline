@@ -177,7 +177,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
-				var notifications = _repo.Context.Notifications.Where(x => model.Contains(x.Id)).ToList();
+				var notifications = await _repo.Context.Notifications.Where(x => model.Contains(x.Id)).ToListAsync();
 				if (notifications.Count > 0)
 				{
 					foreach (var item in notifications)

@@ -25,13 +25,13 @@ namespace SalesPipeline.API.Controllers
 			_repo = repo;
 		}
 
-		[AllowAnonymous]
-		/// <summary>
-		/// ฝ่ายส่วนงานธุรกิจสินเชื่อ
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpGet("GetDepartments")]
+        /// <summary>
+        /// ฝ่ายส่วนงานธุรกิจสินเชื่อ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("GetDepartments")]
 		public async Task<IActionResult> GetDepartments([FromQuery] allFilter model)
 		{
 			try
@@ -1011,7 +1011,7 @@ namespace SalesPipeline.API.Controllers
 						await _repo.Master_Pre_RateType.Update(item);
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 				}
 				return Ok();
 			}

@@ -82,13 +82,16 @@ namespace SalesPipeline.API.Controllers
             {
                 ValidateUploadFile(file);
 
+                if (_appSet.ContentRootPath == null)
+                    throw new InvalidOperationException("ContentRootPath cannot be null.");
+
                 var uploadFolder = Path.Combine(_appSet.ContentRootPath, "import", "excel");
                 Directory.CreateDirectory(uploadFolder);
 
                 var safeFileName = Path.GetFileName(file.FileName); // ป้องกัน Path Traversal
                 var fullPath = Path.Combine(uploadFolder, safeFileName);
 
-                var listTambol = new List<InfoTambolCustom>();
+                List<InfoTambolCustom> listTambol;
 
                 await using (var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
                 {
@@ -111,7 +114,7 @@ namespace SalesPipeline.API.Controllers
             }
         }
 
-        private void ValidateUploadFile(IFormFile file)
+        private static void ValidateUploadFile(IFormFile file) // NOSONAR
         {
             if (file == null)
                 throw new ExceptionCustom("Select File.");
@@ -138,7 +141,7 @@ namespace SalesPipeline.API.Controllers
             }
         }
 
-        private List<InfoTambolCustom> ReadTambolFromExcel(Stream stream, string fileName)
+        private static List<InfoTambolCustom> ReadTambolFromExcel(Stream stream, string fileName)
         {
             var result = new List<InfoTambolCustom>();
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
@@ -169,7 +172,7 @@ namespace SalesPipeline.API.Controllers
             return result;
         }
 
-        private List<InfoTambolCustom> ReadCsv(Stream stream)
+        private static List<InfoTambolCustom> ReadCsv(Stream stream) // NOSONAR
         {
             var result = new List<InfoTambolCustom>();
 

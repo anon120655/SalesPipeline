@@ -45,7 +45,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				DateTime _dateNow = DateTime.Now;
 
-				int id = _repo.Context.InfoBranches.Max(u => u.BranchID) + 1;
+				int id = await _repo.Context.InfoBranches.MaxAsync(u => u.BranchID) + 1;
 
 				var infoBranches = new Data.Entity.InfoBranch()
 				{

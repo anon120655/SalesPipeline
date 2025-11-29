@@ -47,7 +47,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			if (model.Id == 0)
 			{
-				if (model.UserName != null && _repo.Context.Users.Any(x => x.UserName == model.UserName))
+				if (model.UserName != null && await _repo.Context.Users.AnyAsync(x => x.UserName == model.UserName))
 				{
 					errorMessage = $"มีผู้ใช้ UserName {model.UserName} แล้ว";
 					model.IsValidate = false;
@@ -84,85 +84,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						model.ValidateError.Add(errorMessage);
 						if (isThrow) throw new ExceptionCustom(errorMessage);
 					}
-				}
-			}
-
-			//if (model.RoleId == 3 || model.RoleId == 5)
-			//{
-			//	if (model.LevelId < 10 || model.LevelId > 12)
-			//	{
-			//		errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(10-12)";
-			//		model.IsValidate = false;
-			//		model.ValidateError.Add(errorMessage);
-			//		if (isThrow) throw new ExceptionCustom(errorMessage);
-			//	}
-			//}
-			//else if (model.RoleId == 4 || model.RoleId == 6)
-			//{
-			//	if (model.LevelId < 4 || model.LevelId > 9)
-			//	{
-			//		errorMessage = $"ระดับไม่ถูกต้อง ต้องอยู่ในช่วงระหว่าง(4-9)";
-			//		model.IsValidate = false;
-			//		model.ValidateError.Add(errorMessage);
-			//		if (isThrow) throw new ExceptionCustom(errorMessage);
-			//	}
-			//}
-
-			//if (model.PositionId.HasValue)
-			//{
-			//	if (model.RoleId == 3 || model.RoleId == 4)
-			//	{
-			//		var positionsList = await _repo.Master.Positions(new() { type = "1" });
-			//		if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
-			//		{
-			//			errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
-			//			model.IsValidate = false;
-			//			model.ValidateError.Add(errorMessage);
-			//			if (isThrow) throw new ExceptionCustom(errorMessage);
-			//		}
-			//	}
-			//	if (model.RoleId >= 5 && model.RoleId <= 8)
-			//	{
-			//		var positionsList = await _repo.Master.Positions(new() { type = "2" });
-			//		if (!positionsList.Select(x => x.Id).Contains(model.PositionId.Value))
-			//		{
-			//			errorMessage = $"ระบุตำแหน่งไม่ถูกต้อง";
-			//			model.IsValidate = false;
-			//			model.ValidateError.Add(errorMessage);
-			//			if (isThrow) throw new ExceptionCustom(errorMessage);
-			//		}
-			//	}
-			//}
-
-			if (model.Master_Branch_RegionId.HasValue)
-			{
-				var provinceList = await _repo.Thailand.GetProvince(model.Master_Branch_RegionId.Value);
-				if (provinceList.Count > 0)
-				{
-					//if (model.ProvinceId > 0)
-					//{
-					//	if (!provinceList.Select(x => x.ProvinceID).Contains(model.ProvinceId.Value))
-					//	{
-					//		errorMessage = $"ไม่พบจังหวัดภายใต้ กิจการสาขาภาคที่ระบุ";
-					//		model.IsValidate = false;
-					//		model.ValidateError.Add(errorMessage);
-					//		if (isThrow) throw new ExceptionCustom(errorMessage);
-					//	}
-					//	else
-					//	{
-					//		if (model.BranchId > 0)
-					//		{
-					//			var branchList = await _repo.Thailand.GetBranch(model.ProvinceId.Value);
-					//			if (!branchList.Select(x => x.BranchID).Contains(model.BranchId.Value))
-					//			{
-					//				errorMessage = $"ไม่พบสาขาภายใต้ จังหวัดที่ระบุ";
-					//				model.IsValidate = false;
-					//				model.ValidateError.Add(errorMessage);
-					//				if (isThrow) throw new ExceptionCustom(errorMessage);
-					//			}
-					//		}
-					//	}
-					//}
 				}
 			}
 
@@ -222,7 +143,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				//string defaultPassword = GeneralUtils.RandomString(8);
 				//string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword(defaultPassword, hashType: HashType.SHA384);
 
-				int id = _repo.Context.Users.Max(u => u.Id) + 1;
+				int id = await _repo.Context.Users.MaxAsync(u => u.Id) + 1;
 
 				string? provinceName = null;
 				string? branchName = null;
@@ -366,8 +287,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				var response = _mapper.Map<UserCustom>(user);
 
-				//response.DefaultPassword = defaultPassword;
-
 				return response;
 			}
 		}
@@ -472,7 +391,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _db.SaveAsync();
 
 					//Area
-					var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == user.Id).ToList();
+					var user_AreaR = await _repo.Context.User_Areas.Where(x => x.UserId == user.Id).ToListAsync();
 					if (user_AreaR.Count > 0)
 					{
 						//กรณีเป็น iauth จะไม่ได้ส่งมาจะ default ค่าเดิม
@@ -486,9 +405,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					}
 					if (model.User_Areas?.Count > 0)
 					{
-						var userRegion = _repo.Context.Users
+						var userRegion = await _repo.Context.Users
 							.Include(x => x.User_Areas)
-							.FirstOrDefault(x => x.Status == StatusModel.Active && x.RoleId == 7
+							.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.RoleId == 7
 							&& x.Master_Branch_RegionId == model.Master_Branch_RegionId);
 
 						if (userRegion != null && userRegion.User_Areas.Select(x => x.ProvinceId).Any(x => x == 9999))
@@ -500,9 +419,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						{
 							if (userRole != null && userRole.IsAssignRM)
 							{
-                                var user_AreaCheck = _repo.Context.Users
+                                var user_AreaCheck = await _repo.Context.Users
 															.Include(x => x.User_Areas)
-															.Any(x => x.Status == StatusModel.Active
+															.AnyAsync(x => x.Status == StatusModel.Active
 															&& x.Id != model.Id
 															&& x.RoleId == 7
 															&& x.Master_Branch_RegionId == model.Master_Branch_RegionId
@@ -593,7 +512,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				_db.Update(query);
 				await _db.SaveAsync();
 
-				var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToList();
+				var user_AreaR = await _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToListAsync();
 				if (user_AreaR.Count > 0)
 				{
 					foreach (var item in user_AreaR)
@@ -632,14 +551,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								await _db.SaveAsync();
 							}
 
-							var user_AreaR = _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToList();
+							var user_AreaR = await _repo.Context.User_Areas.Where(x => x.UserId == query.Id).ToListAsync();
 							if (user_AreaR.Count > 0)
 							{
 								if (_status == StatusModel.Active)
 								{
-									var userRegion = _repo.Context.Users
+									var userRegion = await _repo.Context.Users
 									.Include(x => x.User_Areas)
-									.FirstOrDefault(x => x.Status == StatusModel.Active && x.RoleId == 7
+									.FirstOrDefaultAsync(x => x.Status == StatusModel.Active && x.RoleId == 7
 									&& x.Master_Branch_RegionId == query.Master_Branch_RegionId);
 
 									if (userRegion != null && userRegion.User_Areas.Select(x => x.ProvinceId).Any(x => x == 9999))
@@ -652,7 +571,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								{
 									if (_status == StatusModel.Active)
 									{
-										var user_AreaCheck = _repo.Context.User_Areas.Any(x => x.Status == StatusModel.Active
+										var user_AreaCheck = await _repo.Context.User_Areas.AnyAsync(x => x.Status == StatusModel.Active
 											&& x.UserId != model.userid
 											&& x.ProvinceId == item.ProvinceId);
 										if (user_AreaCheck) throw new ExceptionCustom("มี ผจศ. ที่ดูแลพื้นที่นี้แล้ว");
@@ -747,19 +666,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 				query = query.Where(x => x.Status == model.status);
 			}
 
-			//*** ไม่มีส่วนนี้ ยุบเมนูจัดการ user มารวมกับ จัดการระบบผู้ใช้งาน
-			//if (!String.IsNullOrEmpty(model.type))
-			//{
-			//	if (model.type == UserTypes.Admin)
-			//	{
-			//		query = query.Where(x => x.Role != null && x.Role.Code.Contains(RoleCodes.LOAN));
-			//	}
-			//	else if (model.type == UserTypes.User)
-			//	{
-			//		query = query.Where(x => x.Role != null && !x.Role.Code.Contains(RoleCodes.LOAN));
-			//	}
-			//}
-
 			if (!String.IsNullOrEmpty(model.employeeid))
 				query = query.Where(x => x.EmployeeId != null && x.EmployeeId.Contains(model.employeeid));
 
@@ -834,7 +740,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				DateTime _dateNow = DateTime.Now;
 
-				int id = _repo.Context.User_Roles.Max(u => u.Id) + 1;
+				int id = await _repo.Context.User_Roles.MaxAsync(u => u.Id) + 1;
 
 				var userRole = new Data.Entity.User_Role()
 				{
@@ -870,7 +776,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							MenuNumber = item.MenuNumber,
 							IsView = item.IsView
 						};
-						_db.Inster(userPermissions);
+                        await _db.InsterAsync(userPermissions);
 						await _db.SaveAsync();
 					}
 				}
@@ -927,7 +833,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 									MenuNumber = item.MenuNumber,
 									IsView = item.IsView
 								};
-								_db.Inster(userPermissions);
+                                await _db.InsterAsync(userPermissions);
 								await _db.SaveAsync();
 							}
 						}
@@ -1189,7 +1095,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 							AppVersion = model.AppVersion,
 							tokenNoti = model.tokenNoti
 						};
-						_db.Inster(logLogin);
+                        await _db.InsterAsync(logLogin);
 						await _db.SaveAsync();
 
 						try
@@ -1208,23 +1114,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 								if (!fileInfo.Exists && fileInfo.Directory != null && !fileInfo.Directory.Exists)
 									Directory.CreateDirectory(fileInfo.Directory.FullName);
 
-								//string logMessage = $"[{DateTime.Now}] UserId: {logLogin.UserId}, FullName: {logLogin.FullName}, IPAddress: {logLogin.IPAddress}, DeviceId: {logLogin.DeviceId}, DeviceVersion: {logLogin.DeviceVersion}, SystemVersion: {logLogin.SystemVersion}, AppVersion: {logLogin.AppVersion}, tokenNoti: {logLogin.tokenNoti}{Environment.NewLine}";
-
-								//// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
-								//string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "[]"; // เริ่มด้วย array ว่างถ้าไม่มีไฟล์
-								//var logList = JsonConvert.DeserializeObject<List<User_Login_Log>>(existingData); // แปลงเป็น List เพื่อเพิ่มข้อมูล
-
-								//// เพิ่มข้อมูลใหม่
-								//string dataJson = JsonConvert.SerializeObject(logLogin);
-								//logList.Add(JsonConvert.DeserializeObject<User_Login_Log>(dataJson)); // เพิ่ม object ใหม่เข้าไปใน List
-
-								//// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
-								////string updatedJson = JsonConvert.SerializeObject(logList, Formatting.Indented); // ทำให้ JSON อ่านง่าย
-								//string updatedJson = JsonConvert.SerializeObject(logList); // ทำให้ JSON อ่านง่าย
-								//File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
-								// อ่านข้อมูลเดิมจากไฟล์ (ถ้ามี)
-
-								string existingData = File.Exists(filefullpath) ? File.ReadAllText(filefullpath) : "{}"; // เริ่มด้วย object ว่างถ้าไม่มีไฟล์
+								string existingData = File.Exists(filefullpath) ? await File.ReadAllTextAsync(filefullpath) : "{}"; // เริ่มด้วย object ว่างถ้าไม่มีไฟล์
 								var logDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(existingData); // แปลงเป็น Dictionary
 
 								// สร้าง key สำหรับ log ใหม่ (เช่น ใช้ timestamp)
@@ -1234,7 +1124,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 								// เขียนข้อมูลทั้งหมดกลับไปที่ไฟล์
 								string updatedJson = JsonConvert.SerializeObject(logDict); // ทำให้ JSON อ่านง่าย
-								File.WriteAllText(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
+								await File.WriteAllTextAsync(filefullpath, updatedJson); // เขียนทับไฟล์ด้วยข้อมูลใหม่
 							}
 						}
 						catch (Exception ex)

@@ -528,8 +528,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					var assignments = await _repo.Context.Assignment_Centers.FirstOrDefaultAsync(x => x.UserId == user.Id && x.Status == StatusModel.Active);
 					if (assignments != null)
 					{
-						assignments.RMNumber = queryRM.Count();
-						assignments.CurrentNumber = querySale.Count();
+						assignments.RMNumber = await queryRM.CountAsync();
+						assignments.CurrentNumber = await querySale.CountAsync();
 						_db.Update(assignments);
 						await _db.SaveAsync();
 					}

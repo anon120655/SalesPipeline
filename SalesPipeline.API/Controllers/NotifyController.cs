@@ -120,7 +120,8 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-		[HttpPost("ScheduleNotiTest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("ScheduleNotiTest")]
 		public IActionResult ScheduleNotiTest([FromBody] List<NotificationTestRequest> request)
 		{
 			if (_appSet.NotiMobile != null)
@@ -132,19 +133,6 @@ namespace SalesPipeline.API.Controllers
 					//แปลง UTC เป็น Local เพื่อให้สามารถส่ง format-time เป็น local ได้
 					var notiLocaltime = DateTime.SpecifyKind(item.NotifyAt, DateTimeKind.Local);
 					var notifyAt = TimeZoneInfo.ConvertTime(notiLocaltime, timeZone).AddMinutes(-_appSet.NotiMobile.NotiBeforeMinutes);
-
-					//var job = Job.FromExpression(() => _notiService.SendNotificationAsync(new()
-					//{
-					//	to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
-					//	notification = new()
-					//	{
-					//		title = "หัวข้อ01",
-					//		body = "ทดสอบข้อความ body " + notifyAt.ToString("t")
-					//	}
-					//}));
-					//var client = new BackgroundJobClient();
-					//client.Create(job, new ScheduledState(notifyAt));
-					//_backgroundJobClient.Create(job, new ScheduledState(notifyAt));
 
 					GlobalJobFilters.Filters.Add(new JobDisplayNameFilter($"{"ทดสอบ JobDisplay 01"}"));
 

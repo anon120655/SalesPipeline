@@ -41,7 +41,7 @@ namespace SalesPipeline.API.Controllers
 						await _repo.PreCalWeight.Create(item);
 					}
 
-					_transaction.Commit();
+					await _transaction.CommitAsync();
 
 					return Ok();
 				}
