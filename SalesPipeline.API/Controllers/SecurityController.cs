@@ -17,7 +17,7 @@ namespace SalesPipeline.API.Controllers
 	[Route("v{version:apiVersion}/[controller]")]
 	public class SecurityController : ControllerBase
 	{
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [HttpGet("EnhancedHash")]
 		public IActionResult EnhancedHash([FromQuery] string val)
 		{
@@ -122,12 +122,15 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [AllowAnonymous]
         [HttpGet("GetReconnect")]
         public IActionResult GetReconnect()
         {
-            return Ok("Server is alive");
+            return Ok(new ApiMessageResponse
+            {
+                Message = "Server is alive"
+            });
         }
 
     }

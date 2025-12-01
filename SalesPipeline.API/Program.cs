@@ -65,42 +65,6 @@ builder.Services.AddDbContext<SalesPipelineLogContext>(
                .EnableDetailedErrors()
        );
 
-//** ปรับให้ผล JMeter ดีขึ้น ใช้ไม่ได้ error DbContext.Database.CreateExecutionStrategy()
-//builder.Services.AddDbContext<SalesPipelineContext>(dbContextOptions =>
-//    dbContextOptions
-//        .UseMySql(SalesPipelineContext, autoDetectVersion,
-//            mySqlOptions => mySqlOptions.EnableRetryOnFailure(
-//                maxRetryCount: 5,
-//                maxRetryDelay: TimeSpan.FromSeconds(3),
-//                errorNumbersToAdd: null
-//            )
-//        )
-//        .LogTo(Console.WriteLine, LogLevel.Information)
-//        .EnableSensitiveDataLogging()
-//        .EnableDetailedErrors()
-//);
-
-//builder.Services.AddDbContext<SalesPipelineLogContext>(dbContextOptions =>
-//    dbContextOptions
-//        .UseMySql(SalesPipelineLogContext, autoDetectVersion,
-//            mySqlOptions => mySqlOptions.EnableRetryOnFailure(
-//                maxRetryCount: 5,
-//                maxRetryDelay: TimeSpan.FromSeconds(3),
-//                errorNumbersToAdd: null
-//            )
-//        )
-//        .LogTo(Console.WriteLine, LogLevel.Information)
-//        .EnableSensitiveDataLogging()
-//        .EnableDetailedErrors()
-//);
-
-
-//** ปรับให้ผล JMeter ดีขึ้น
-//ลดขนาด response ที่ส่งกลับ ทำให้ response time ดีขึ้น
-//builder.Services.AddResponseCompression(options =>
-//{
-//    options.EnableForHttps = true;
-//});
 
 var SalesPipelineJobContext = con_root["ConnectionStrings:SalesPipelineJobContext"];
 
@@ -173,7 +137,9 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityDefinition("Bearer", securitySchema);
 
-    var bearer = new[] { "Bearer" };
+    #pragma warning disable S3887
+        var bearer = new[] { "Bearer" };
+    #pragma warning restore S3887
 
     var securityRequirement = new OpenApiSecurityRequirement();
     securityRequirement.Add(securitySchema, bearer);
@@ -226,27 +192,11 @@ app.Use(async (context, next) =>
     await next(context);
 });
 
-//JMeter
-//app.UseResponseCompression();
-
-//"C:\\DataRM"
 app.UseStaticFiles(new StaticFileOptions()
 {
     FileProvider = new PhysicalFileProvider(contentRootPath),
-    //OnPrepareResponse = ctx =>
-    //{
-    //	ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=604800");
-    //}
 });
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//	app.UseSwagger();
-//	app.UseSwaggerUI();
-//}
-
-//var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -268,7 +218,6 @@ app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<RequestResponseMiddleware>();
 app.MapControllers();
 
-//app.UseHangfireDashboard();
 // กำหนดให้ใช้ Hangfire middleware พร้อมการตั้งค่าการรับรองความถูกต้อง
 app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 {

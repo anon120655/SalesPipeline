@@ -1,16 +1,17 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SalesPipeline.Infrastructure.Helpers;
-using SalesPipeline.Utils;
-using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Infrastructure.Wrapper;
-using SalesPipeline.Utils.Resources.Authorizes.Users;
 using Microsoft.Extensions.Options;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Repositorys;
+using SalesPipeline.Infrastructure.Wrapper;
+using SalesPipeline.Utils;
+using SalesPipeline.Utils.Resources.Authorizes.Users;
+using SalesPipeline.Utils.Resources.Shares;
 using SalesPipeline.Utils.ValidationModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
 namespace SalesPipeline.API.Controllers
@@ -279,6 +280,9 @@ namespace SalesPipeline.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("ImportUser")]
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
         public async Task<IActionResult> ImportUser(IFormFile files)
         {
             try
@@ -338,9 +342,9 @@ namespace SalesPipeline.API.Controllers
                         var LevelId = row.GetCell(4)?.ToString();
                         var RoleId = row.GetCell(5)?.ToString();
 
-                        bool _posOk = int.TryParse(PositionId, out int _positionId);
-                        bool _lvOk = int.TryParse(LevelId, out int _levelid);
-                        bool _roleOk = int.TryParse(RoleId, out int _roleid);
+                        bool posOk = int.TryParse(row.GetCell(3)?.ToString(), out int positionId);
+                        bool lvOk = int.TryParse(row.GetCell(4)?.ToString(), out int levelId);
+                        bool roleOk = int.TryParse(row.GetCell(5)?.ToString(), out int roleId);
 
                         UserList.Add(new UserCustom
                         {
@@ -348,9 +352,9 @@ namespace SalesPipeline.API.Controllers
                             EmployeeId = EmployeeId,
                             FullName = FullName,
                             Email = Email,
-                            PositionId = _positionId > 0 ? _positionId : null,
-                            LevelId = _levelid > 0 ? _levelid : null,
-                            RoleId = _roleid > 0 ? _roleid : null
+                            PositionId = posOk && positionId > 0 ? positionId : null,
+                            LevelId = lvOk && levelId > 0 ? levelId : null,
+                            RoleId = roleOk && roleId > 0 ? roleId : null
                         });
                     }
                 }

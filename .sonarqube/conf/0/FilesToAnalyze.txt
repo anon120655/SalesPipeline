@@ -1,4 +1,5 @@
-﻿C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\AppSettings.cs
+﻿C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\ApiMessageResponse.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\AppSettings.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\BrowserModel.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\ConstTypeModel\ConfigCode.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Utils\ConstTypeModel\CRUDModel.cs

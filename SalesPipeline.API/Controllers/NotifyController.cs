@@ -120,7 +120,7 @@ namespace SalesPipeline.API.Controllers
 			}
 		}
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [HttpPost("ScheduleNotiTest")]
 		public IActionResult ScheduleNotiTest([FromBody] List<NotificationTestRequest> request)
 		{
@@ -149,12 +149,19 @@ namespace SalesPipeline.API.Controllers
 
 				}
 
-				return Ok(new { Message = "Notification scheduled successfully" });
-			}
-			return Ok(new { Message = "Notification failed" });
-		}
+                return Ok(new ApiMessageResponse
+                {
+                    Message = "Notification scheduled successfully"
+                });
+            }
+            return Ok(new ApiMessageResponse
+            {
+                Message = "Notification failed"
+            });
+        }
 
-		[HttpGet("SetScheduleNoti")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [HttpGet("SetScheduleNoti")]
 		public async Task<IActionResult> SetScheduleNoti()
 		{
 			if (_appSet.NotiMobile != null)
@@ -163,9 +170,15 @@ namespace SalesPipeline.API.Controllers
 
 				countSchedule = await _repo.Notifys.SetScheduleNoti();
 
-				return Ok(new { Message = $"Notification scheduled successfully {countSchedule}" });
-			}
-			return Ok(new { Message = "Notification failed" });
+                return Ok(new ApiMessageResponse
+                {
+                    Message = $"Notification scheduled successfully {countSchedule}"
+                });
+            }
+            return Ok(new ApiMessageResponse
+            {
+                Message = "Notification failed"
+            });
 		}
 
 
