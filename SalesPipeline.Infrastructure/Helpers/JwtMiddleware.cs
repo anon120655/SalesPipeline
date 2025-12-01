@@ -19,8 +19,10 @@ namespace SalesPipeline.Infrastructure.Helpers
 		}
 
 		public async Task InvokeAsync(HttpContext context, IRepositoryWrapper repo)
-		{
-			var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        {
+            var authHeader = context.Request.Headers.Authorization.ToString();
+            var token = authHeader?.Split(" ").LastOrDefault();
+
 			var userId = repo.jwtUtils.ValidateJwtToken(token);
 			if (userId != null)
 			{

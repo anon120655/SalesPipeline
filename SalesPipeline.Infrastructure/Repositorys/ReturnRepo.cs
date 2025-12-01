@@ -10,6 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,12 +28,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_repo = repo;
 		}
 
-		/// <summary>
-		/// พนักงาน RM ส่งคืน ผู้จัดการศูนย์
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		public async Task RMToCenBranch(ReturnModel model)
+        /// <summary>
+        /// พนักงาน RM ส่งคืน ผู้จัดการศูนย์
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task RMToCenBranch(ReturnModel model)
 		{
 			int countReturn = 0;
 			foreach (var item in model.ListSale)

@@ -8,22 +8,20 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Helpers
 {
-	public class JobDisplayNameFilter : JobFilterAttribute, IClientFilter
-	{
-		private readonly string _displayName;
-
-		public JobDisplayNameFilter(string displayName)
-		{
-			_displayName = displayName;
-		}
-
-		public void OnCreating(CreatingContext filterContext)
-		{
-			filterContext.SetJobParameter("DisplayName", _displayName);
-		}
-
-		public void OnCreated(CreatedContext filterContext)
-		{
-		}
-	}
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
+    public class JobDisplayNameFilter : JobFilterAttribute, IClientFilter
+    {
+        private readonly string _displayName;
+        public JobDisplayNameFilter(string displayName)
+        {
+            _displayName = displayName;
+        }
+        public void OnCreating(CreatingContext context)
+        {
+            context.SetJobParameter("DisplayName", _displayName);
+        }
+        public void OnCreated(CreatedContext context)
+        {
+        }
+    }
 }

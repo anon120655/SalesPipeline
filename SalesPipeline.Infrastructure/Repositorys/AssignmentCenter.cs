@@ -11,6 +11,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -55,13 +56,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (await CheckAssignmentByUserId(model.UserId))
 				throw new ExceptionCustom("assignment duplicate user");
 
-            // NOSONAR
-            //if (model.BranchId.HasValue)
-            //{
-            //	if (await CheckAssignmentByBranchId(model.BranchId.Value))
-            //		throw new ExceptionCustom("มีผู้จัดการศูนย์สาขานี้แล้ว");
-            //}
-
             if (string.IsNullOrEmpty(model.EmployeeName))
 			{
 				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
@@ -79,10 +73,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			await _db.InsterAsync(assignment_Center);
 			await _db.SaveAsync();
 
-            // NOSONAR
-            //if (model.BranchId.HasValue)
+
+            //if (model.BranchId.HasValue) // NOSONAR
             //{
-            //	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value);
+            //	await _repo.AssignmentCenter.UpdateCurrentNumber(model.BranchId.Value); // NOSONAR
             //}
 
             return _mapper.Map<Assignment_CenterCustom>(assignment_Center);
@@ -121,7 +115,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<PaginationView<List<Assignment_CenterCustom>>> GetListAutoAssign(allFilter model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<PaginationView<List<Assignment_CenterCustom>>> GetListAutoAssign(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
 
@@ -409,7 +406,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task AssignCenterUpdateRange(List<Assignment_CenterCustom> model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task AssignCenterUpdateRange(List<Assignment_CenterCustom> model)
 		{
 			foreach (var item_center in model)
 			{

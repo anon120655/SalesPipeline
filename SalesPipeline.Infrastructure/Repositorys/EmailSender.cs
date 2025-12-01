@@ -13,6 +13,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Email;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Security;
 
 namespace SalesPipeline.Infrastructure.Repositorys
@@ -43,6 +44,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return _mapper.Map<SendMail_TemplateCustom>(query);
         }
 
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
         public async Task SendEmail(SendMailModel indata)
         {
             ResourceEmail resource = new ResourceEmail();

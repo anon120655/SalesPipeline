@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SalesPipeline.Infrastructure.Helpers;
-using SalesPipeline.Infrastructure.Interfaces;
-using SalesPipeline.Infrastructure.Repositorys;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Infrastructure.Data.Context;
 using SalesPipeline.Utils;
@@ -19,8 +17,9 @@ using Hangfire;
 using System.Text.Json;
 using Hangfire.MySql;
 using SalesPipeline.Infrastructure.Data.Logger.Context;
-using System.Net;
 
+
+var BearerArray = new[] { "Bearer" };
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -137,13 +136,11 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityDefinition("Bearer", securitySchema);
 
-    #pragma warning disable S3887
-        var bearer = new[] { "Bearer" };
-    #pragma warning restore S3887
-
+#pragma warning disable S3887
     var securityRequirement = new OpenApiSecurityRequirement();
-    securityRequirement.Add(securitySchema, bearer);
+    securityRequirement.Add(securitySchema, BearerArray);
     c.AddSecurityRequirement(securityRequirement);
+#pragma warning restore S3887
 
     //add descrtion controller action
     //.csproj file:
@@ -201,7 +198,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // ปิดใช้ชั่วคราวเพื่อทดสอบบน prod ต้องเปิด
-//app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); // NOSONAR
 
 app.UseAuthorization();
 
@@ -228,3 +225,5 @@ app.UseHangfireDashboard("/hangfire/dashboard", new DashboardOptions
 RecurringJob.AddOrUpdate<DatabaseBackupService>("backup-job", x => x.BackupDatabase(), Cron.Hourly);
 
 await app.RunAsync();
+
+

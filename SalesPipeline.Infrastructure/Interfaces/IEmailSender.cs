@@ -7,7 +7,7 @@ namespace SalesPipeline.Infrastructure.Interfaces
 	{
 		Task<SendMail_TemplateCustom> GetTemplate(string code);
 		Task SendEmail(SendMailModel indata);
-		Task LogSendEmail(ResourceEmail resource);
+		Task LogSendEmail(ResourceEmail data);
 		Task SendNewUser(int? id);
 	}
 }

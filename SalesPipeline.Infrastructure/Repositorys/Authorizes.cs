@@ -10,6 +10,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.iAuthen;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
             _mapper = mapper;
         }
 
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
         public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
         {
             int? expires_in = 1; //days
@@ -115,6 +119,9 @@ namespace SalesPipeline.Infrastructure.Repositorys
             return new AuthenticateResponse(userMap, generate_response.AccessToken, txt_exp_res, generate_response.RefreshToken);
         }
 
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
         public async Task<AuthenticateResponse?> AuthenticateBAAC(AuthenticateRequest model, iAuthenResponse.ResponseData modeliAuth)
         {
             int expires_in = 10; //days

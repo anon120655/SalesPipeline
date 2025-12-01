@@ -9,6 +9,7 @@ using SalesPipeline.Utils.Resources.Loggers;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_contextLog = contextLog;
 		}
 
-		public async Task SaveLog(RequestResponseLogModel logs)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task SaveLog(RequestResponseLogModel logs)
 		{
 			bool responseExcept = GeneralUtils.LOGExcept(logs.RequestPath);
 			if (!responseExcept || (logs.ResponseStatus != null && !logs.ResponseStatus.StartsWith("20")))

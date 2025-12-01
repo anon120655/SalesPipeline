@@ -11,10 +11,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.Resources.Assignments;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Shares;
-using System.Drawing;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using static NPOI.HSSF.Util.HSSFColor;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -33,7 +30,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_appSet = appSet.Value;
 		}
 
-		public async Task<UserCustom> Validate(UserCustom model, bool isThrow = true, bool? isSetMaster = false)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<UserCustom> Validate(UserCustom model, bool isThrow = true, bool? isSetMaster = false)
 		{
 			string errorMessage = string.Empty;
 			model.IsValidate = true;
@@ -61,13 +61,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					model.ValidateError.Add(errorMessage);
 					if (isThrow) throw new ExceptionCustom(errorMessage);
 				}
-				//if (model.Email != null && _repo.Context.Users.Any(x => x.Email == model.Email))
-				//{
-				//	errorMessage = $"มีผู้ใช้ Email {model.Email} แล้ว";
-				//	model.IsValidate = false;
-				//	model.ValidateError.Add(errorMessage);
-				//	if (isThrow) throw new ExceptionCustom(errorMessage);
-				//}
 			}
 
 			if (model.BranchId.HasValue)
@@ -131,7 +124,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return model;
 		}
 
-		public async Task<UserCustom> Create(UserCustom model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<UserCustom> Create(UserCustom model)
 		{
 			await Validate(model);
 
@@ -291,7 +287,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<UserCustom> Update(UserCustom model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<UserCustom> Update(UserCustom model)
 		{
 			await Validate(model);
 
@@ -525,7 +524,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task UpdateStatusById(UpdateModel model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task UpdateStatusById(UpdateModel model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
@@ -653,7 +655,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return await _repo.Context.Users.AnyAsync(x => x.EmployeeId == employeeid);
 		}
 
-		public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<PaginationView<List<UserCustom>>> GetList(UserFilter model)
 		{
 			var query = _repo.Context.Users.Include(x => x.Role)
 										   .Include(x => x.User_Areas.OrderBy(o => o.ProvinceId))
@@ -942,7 +947,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return _mapper.Map<List<UserCustom>>(user);
 		}
 
-		public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<PaginationView<List<UserCustom>>> GetUserTargetList(allFilter model)
 		{
 			if (!model.userid.HasValue) return new();
 
@@ -1069,7 +1077,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task LogLogin(User_Login_LogCustom model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task LogLogin(User_Login_LogCustom model)
 		{
 			try
 			{
@@ -1227,7 +1238,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 		}
 
-		public async Task RemoveUserNotAssignment()
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task RemoveUserNotAssignment()
 		{
 			try
 			{

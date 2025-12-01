@@ -73,11 +73,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			unitofWork.Context.Set<T>().Remove(entity);
 		}
 
-		public void DeleteRange<T>(IEnumerable<T> entitys) where T : class
+		public void DeleteRange<T>(IEnumerable<T> entity) where T : class
 		{
 			unitofWork.Context.ChangeTracker.Clear();
 
-			unitofWork.Context.Set<T>().RemoveRange(entitys);
+			unitofWork.Context.Set<T>().RemoveRange(entity);
 		}
 
 		public async Task SaveAsync()

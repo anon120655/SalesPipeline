@@ -5,9 +5,6 @@ namespace SalesPipeline.Infrastructure.Interfaces
 {
 	public interface IJwtUtils
 	{
-		//public string GenerateJwtToken(UserCustom user, int? days = null, int? minutes = null);
-		//public int? ValidateJwtToken(string? token);
-
 		/// <summary>
 		/// สร้าง Access Token และ Refresh Token สำหรับผู้ใช้
 		/// </summary>

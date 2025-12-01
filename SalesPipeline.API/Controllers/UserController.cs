@@ -342,9 +342,9 @@ namespace SalesPipeline.API.Controllers
                         var LevelId = row.GetCell(4)?.ToString();
                         var RoleId = row.GetCell(5)?.ToString();
 
-                        bool posOk = int.TryParse(row.GetCell(3)?.ToString(), out int positionId);
-                        bool lvOk = int.TryParse(row.GetCell(4)?.ToString(), out int levelId);
-                        bool roleOk = int.TryParse(row.GetCell(5)?.ToString(), out int roleId);
+                        bool posOk = int.TryParse(PositionId, out int positionId);
+                        bool lvOk = int.TryParse(LevelId, out int levelId);
+                        bool roleOk = int.TryParse(RoleId, out int roleId);
 
                         UserList.Add(new UserCustom
                         {

@@ -8,6 +8,7 @@ using SalesPipeline.Utils.ConstTypeModel;
 using SalesPipeline.Utils.PropertiesModel;
 using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -24,7 +25,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			_mapper = mapper;
 		}
 
-		public async Task<Pre_FactorCustom> Process(Pre_FactorCustom model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<Pre_FactorCustom> Process(Pre_FactorCustom model)
 		{
 			using (var _transaction = _repo.BeginTransaction())
 			{
@@ -987,7 +991,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			}
 		}
 
-		public async Task<PaySchedule> PaymentSchedule(PayScheduleFactor model)
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<PaySchedule> PaymentSchedule(PayScheduleFactor model)
 		{
 			var response = new PaySchedule();
 

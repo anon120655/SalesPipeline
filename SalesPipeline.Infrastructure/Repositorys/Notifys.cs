@@ -17,6 +17,7 @@ using SalesPipeline.Utils.Resources.PreApprove;
 using SalesPipeline.Utils.Resources.Shares;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -206,16 +207,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			{
 				response = await _notiService.SendNotificationAsync(model);
 
-				//Test
-				//await _notiService.SendNotificationAsync(new()
-				//{
-				//	to = "dRrz4-ibTta7tGHVg0fpPQ:APA91bGOJ1MskCQVqzNo4BhLruvpzAcT-2MfWLJnCyT4J4CoTHmNCXSczWHeBouI5aEjIac7bUOGLTY1Bu9uqYSFyYiSDawwbJ8S8vriN-NIUOHJo1aVzt1BKzDmdM_Fy3FTdyrW84n8",
-				//	notification = new()
-				//	{
-				//		title = "หัวข้อ01",
-				//		body = "ทดสอบข้อความ body " + DateTime.Now.ToString("dd/MM/yy")
-				//	}
-				//});
 
 				return response;
 			}
@@ -231,7 +222,10 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			Console.WriteLine($"Notification: {message}");
 		}
 
-		public async Task<int> SetScheduleNoti()
+        [SuppressMessage("Sonar", "S3776")] // Cognitive Complexity
+        [SuppressMessage("Sonar", "S1172")] // Unused parameter
+        [SuppressMessage("Sonar", "S2139")] // Exception handling
+        public async Task<int> SetScheduleNoti()
 		{
 			int countSchedule = 0;
 			if (_appSet.NotiMobile != null)

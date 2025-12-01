@@ -2,10 +2,8 @@
 using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SalesPipeline.Infrastructure.Data.Context;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Data.Logger.Context;
 using SalesPipeline.Infrastructure.Helpers;
 using SalesPipeline.Infrastructure.Interfaces;
@@ -14,13 +12,11 @@ using SalesPipeline.Utils;
 
 namespace SalesPipeline.Infrastructure.Wrapper
 {
-	public class RepositoryWrapper : IRepositoryWrapper
-	{
+	public class RepositoryWrapper : IRepositoryWrapper, IDisposable
+    {
 		private IDbContextTransaction transaction = null!;
 		private readonly IHttpContextAccessor _accessor;
-		private readonly HttpClient _httpClient;
 		private readonly IMapper _mapper;
-		//private readonly IJwtUtils _jwtUtils;
 		private bool _isDisposed;
 		private readonly NotificationService _notiService;
 		private readonly IBackgroundJobClient _backgroundJobClient;
@@ -76,8 +72,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 
 		public RepositoryWrapper(SalesPipelineContext _context, SalesPipelineLogContext _contextLog, IOptions<AppSettings> settings, IMapper mapper,
 													IHttpContextAccessor accessor, 
-													HttpClient httpClient, 
-													//IJwtUtils jwtUtils, 
 													NotificationService notificationService
 			, IBackgroundJobClient backgroundJobClient)
 		{
@@ -85,8 +79,6 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			ContextLog = _contextLog;
 			_accessor = accessor;
 			_mapper = mapper;
-			_httpClient = httpClient;
-			//_jwtUtils = jwtUtils;
 			_notiService = notificationService;
 			_backgroundJobClient = backgroundJobClient;
 
@@ -158,10 +150,9 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			{
 				Context.Dispose();
 				ContextLog.Dispose();
-
-				_isDisposed = true;
-			}
-		}
+            }
+            _isDisposed = true;
+        }
 
 		public void Dispose()
 		{
