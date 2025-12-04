@@ -4,24 +4,18 @@ using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils.Resources.Masters;
 using SalesPipeline.Utils.Resources.Shares;
-using SalesPipeline.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesPipeline.Utils.ConstTypeModel;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterTSIC : IMasterTSIC
-	{
+    public class MasterTsicRepo : IMasterTsicRepo
+    {
 		private readonly IRepositoryWrapper _repo;
 		private readonly IMapper _mapper;
 		private readonly IRepositoryBase _db;
 
-		public MasterTSIC(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
+		public MasterTsicRepo(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
 		{
 			_db = db;
 			_repo = repo;

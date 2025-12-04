@@ -3,8 +3,8 @@ using SalesPipeline.Utils.Resources.Shares;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
-	public interface IMasterISICCode
-	{
+	public interface IMasterIsicCodeRepo
+    {
 		Task<Master_ISICCodeCustom> Create(Master_ISICCodeCustom model);
 		Task<Master_ISICCodeCustom> Update(Master_ISICCodeCustom model);
 		Task DeleteById(UpdateModel model);

@@ -255,7 +255,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 										string? meetContent = item.MeetFullName != null ? item.MeetFullName : item.ContactFullName;
 
-										GlobalJobFilters.Filters.Add(new JobDisplayNameFilter($"{item.NextActionName}"));
+										GlobalJobFilters.Filters.Add(new JobDisplayNameFilterAttribute($"{item.NextActionName}"));
 
 										_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
 										{

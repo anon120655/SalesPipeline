@@ -56,7 +56,6 @@ namespace SalesPipeline.Infrastructure.Helpers
             log.RequestHost = request.Host.ToString();
             log.RequestContentType = request.ContentType;
 
-            string device_info = string.Empty;
             var browserinfo = new BrowserModel()
             {
                 userAgent = request.Headers.UserAgent.ToString(),

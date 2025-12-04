@@ -117,7 +117,7 @@ C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\Con
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\DatabaseBackupService.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\ErrorResultCustom.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\HttpClientFactoryService.cs
-C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\JobDisplayNameFilter.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\JobDisplayNameFilterAttribute .cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\JwtMiddleware.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\MyAuthorizationFilter.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Helpers\NotificationService.cs
@@ -141,12 +141,12 @@ C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterChains.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterContactChannel.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterDepartment.cs
-C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterISICCode.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterIsicCodeRepo.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterLoanTypes.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterReasonCloseSale.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterReasonReturns.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterStatusSale.cs
-C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterTSIC.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterTsicRepo.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMasterYields.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMaster_Pre_App_Loan.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Interfaces\IMaster_Pre_BusType.cs
@@ -187,12 +187,12 @@ C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterChains.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterContactChannel.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterDepartment.cs
-C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterISICCode.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterIsicCodeRepo.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterLoanTypes.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterReasonCloseSale.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterReasonReturns.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterStatusSale.cs
-C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterTSIC.cs
+C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterTsicRepo.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\MasterYields.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\Master_Pre_App_Loan.cs
 C:\WorkIBusiness\SalesPipeline\Code\Git\SalesPipeline.Infrastructure\Repositorys\Master_Pre_BusType.cs

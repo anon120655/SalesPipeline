@@ -14,28 +14,21 @@ namespace SalesPipeline.Infrastructure.Helpers
 {
     public class DatabaseBackupService
     {
-        private string mysqldumpPath = @"C:\Program Files\MariaDB 10.11\bin\mysqldump.exe";
-        private string backupDir = @"C:\DataRM\backups\database";
-        private string mysqlUser = "SA";
-        private string mysqlPassword = string.Empty;
-        private readonly string mysqlDatabase = "SalesPipeline";
-
         private readonly AppSettings _appSet;
 
         public DatabaseBackupService(IOptions<AppSettings> appSet)
         {
-            _appSet = appSet.Value;
+            _appSet = appSet!.Value!;
         }
 
         public void BackupDatabase()
         {
-            if (_appSet != null && _appSet.Database != null)
-            {
-                backupDir = _appSet.Database.BackupDatabaseDir;
-                mysqldumpPath = _appSet.Database.MySqlDumpPath;
-                mysqlUser = _appSet.Database.UserDB;
-                mysqlPassword = _appSet.Database.PasswordDB;
-            }
+
+            var mysqldumpPath = _appSet.Database!.MySqlDumpPath;
+            var backupDir = _appSet.Database.BackupDatabaseDir;
+            var mysqlUser = _appSet.Database.UserDB;
+            var mysqlPassword = _appSet.Database.PasswordDB;
+            var mysqlDatabase = "SalesPipeline";
 
             var timestamp = DateTime.Now.ToString("yyyyMMdd");
             var yearstamp = DateTime.Now.ToString("yyyy");
@@ -65,8 +58,8 @@ namespace SalesPipeline.Infrastructure.Helpers
 
             process.Start();
 
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
+            process.StandardOutput.ReadToEnd();
+            process.StandardError.ReadToEnd();
 
             process.WaitForExit();
 

@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace SalesPipeline.Infrastructure.Helpers
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    public class JobDisplayNameFilter : JobFilterAttribute, IClientFilter
+    public class JobDisplayNameFilterAttribute : JobFilterAttribute, IClientFilter
     {
         private readonly string _displayName;
-        public JobDisplayNameFilter(string displayName)
+        public JobDisplayNameFilterAttribute(string displayName)
         {
             _displayName = displayName;
         }

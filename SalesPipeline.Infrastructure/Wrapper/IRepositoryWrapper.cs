@@ -37,8 +37,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		IMasterBusinessSize MasterBusinessSize { get; }
 		IMasterBusinessType MasterBusinessType { get; }
 		IMasterContactChannel MasterContactChannel { get; }
-		IMasterISICCode MasterISICCode { get; }
-		IMasterTSIC MasterTSIC { get; }
+        IMasterIsicCodeRepo MasterISICCode { get; }
+        IMasterTsicRepo MasterTSIC { get; }
 		IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		IMasterStatusSale MasterStatusSale { get; }
 		IMaster_Pre_PayType Master_Pre_PayType { get; }

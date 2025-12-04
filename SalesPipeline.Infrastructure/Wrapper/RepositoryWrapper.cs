@@ -41,8 +41,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 		public IMasterBusinessSize MasterBusinessSize { get; }
 		public IMasterBusinessType MasterBusinessType { get; }
 		public IMasterContactChannel MasterContactChannel { get; }
-		public IMasterISICCode MasterISICCode { get; }
-		public IMasterTSIC MasterTSIC { get; }
+		public IMasterIsicCodeRepo MasterISICCode { get; }
+		public IMasterTsicRepo MasterTSIC { get; }
 		public IMasterReasonCloseSale MasterReasonCloseSale { get; }
 		public IMasterStatusSale MasterStatusSale { get; }
 		public IMaster_Pre_PayType Master_Pre_PayType { get; }
@@ -100,8 +100,8 @@ namespace SalesPipeline.Infrastructure.Wrapper
 			MasterBusinessSize = new MasterBusinessSize(this, _mapper);
 			MasterBusinessType = new MasterBusinessType(this, _mapper);
 			MasterContactChannel = new MasterContactChannel(this, _mapper);
-			MasterISICCode = new MasterISICCode(this, _db, _mapper);
-			MasterTSIC = new MasterTSIC(this, _db, _mapper);
+			MasterISICCode = new MasterIsicCodeRepo(this, _db, _mapper);
+			MasterTSIC = new MasterTsicRepo(this, _db, _mapper);
 			MasterReasonCloseSale = new MasterReasonCloseSale(this, settings, _mapper);
 			MasterStatusSale = new MasterStatusSale(this, _mapper);
 			Master_Pre_PayType = new Master_Pre_PayType(this, _mapper);

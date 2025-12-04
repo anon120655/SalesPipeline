@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
-    public class MasterISICCode : IMasterISICCode
+    public class MasterIsicCodeRepo : IMasterIsicCodeRepo
     {
         private readonly IRepositoryWrapper _repo;
         private readonly IMapper _mapper;
         private readonly IRepositoryBase _db;
 
-        public MasterISICCode(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
+        public MasterIsicCodeRepo(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
         {
             _db = db;
             _repo = repo;

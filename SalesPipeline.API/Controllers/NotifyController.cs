@@ -134,7 +134,7 @@ namespace SalesPipeline.API.Controllers
 					var notiLocaltime = DateTime.SpecifyKind(item.NotifyAt, DateTimeKind.Local);
 					var notifyAt = TimeZoneInfo.ConvertTime(notiLocaltime, timeZone).AddMinutes(-_appSet.NotiMobile.NotiBeforeMinutes);
 
-					GlobalJobFilters.Filters.Add(new JobDisplayNameFilter($"{"ทดสอบ JobDisplay 01"}"));
+					GlobalJobFilters.Filters.Add(new JobDisplayNameFilterAttribute($"{"ทดสอบ JobDisplay 01"}"));
 
 					_backgroundJobClient.Schedule(() => _notiService.SendNotificationAsync(new()
 					{

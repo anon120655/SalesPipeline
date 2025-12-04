@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Interfaces
 {
-	public interface IMasterTSIC
-	{
+	public interface IMasterTsicRepo
+    {
 		Task<Master_TSICCustom> Create(Master_TSICCustom model);
 		Task<Master_TSICCustom> Update(Master_TSICCustom model);
 		Task DeleteById(UpdateModel model);
