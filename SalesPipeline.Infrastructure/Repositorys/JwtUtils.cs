@@ -83,7 +83,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			return (newTokens.AccessToken, newTokens.RefreshToken);
 		}
 				
-		private string GenerateRefreshToken()
+		private static string GenerateRefreshToken()
 		{
 			var randomBytes = new byte[64];
 			using (var rng = RandomNumberGenerator.Create())

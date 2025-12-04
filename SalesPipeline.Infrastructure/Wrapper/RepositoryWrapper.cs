@@ -84,7 +84,7 @@ namespace SalesPipeline.Infrastructure.Wrapper
 
 			_db = new RepositoryBase(this);
 			Logger = new LoggerRepo(this, settings, ContextLog);
-			Authorizes = new Authorizes(this, _db, settings, _mapper);
+			Authorizes = new Authorizes(this, _db, _mapper);
 			jwtUtils = new JwtUtils(this, settings);
 			Notifys = new Notifys(this, _db, settings, _mapper, _notiService, _backgroundJobClient);
 			Files = new FileRepository(this, _db, settings);

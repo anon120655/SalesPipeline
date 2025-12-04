@@ -54,12 +54,14 @@ namespace SalesPipeline.Infrastructure.Repositorys
 		public async Task<Assignment_CenterCustom> Create(Assignment_CenterCustom model)
 		{
 			if (await CheckAssignmentByUserId(model.UserId))
-				throw new ExceptionCustom("assignment duplicate user");
+{
+    throw new ExceptionCustom("assignment duplicate user");
+}
 
-            if (string.IsNullOrEmpty(model.EmployeeName))
-			{
-				model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
-			}
+if (string.IsNullOrEmpty(model.EmployeeName))
+{
+    model.EmployeeName = await _repo.User.GetFullNameById(model.UserId);
+}
 
 			var assignment_Center = new Data.Entity.Assignment_Center();
 			assignment_Center.Status = model.Status;
@@ -508,8 +510,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 												   .AsQueryable();
 
 					var querySale = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
-														.Include(x => x.AssUser).ThenInclude(t => t.User_Areas)
-														.Include(x => x.AssCenterUser).ThenInclude(s => s.Master_Branch_Region)
+														.Include(x => x.AssUser!).ThenInclude(t => t.User_Areas)
+														.Include(x => x.AssCenterUser!).ThenInclude(s => s.Master_Branch_Region)
 														.AsQueryable();
 					//ผจธ. เห็นเฉพาะพนักงาน RM ภายใต้พื้นที่การดูแล และงานที่ถูกมอบหมายมาจาก ธญ
 					Expression<Func<User, bool>> orExpressionRM = x => false;

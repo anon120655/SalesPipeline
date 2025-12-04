@@ -2,7 +2,6 @@
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -11,8 +10,6 @@ using SalesPipeline.Utils.Resources.Authorizes.Auths;
 using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.iAuthen;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -20,14 +17,12 @@ namespace SalesPipeline.Infrastructure.Repositorys
     {
         private readonly IRepositoryWrapper _repo;
         private readonly IRepositoryBase _db;
-        private readonly AppSettings _appSet;
         private readonly IMapper _mapper;
 
-        public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IOptions<AppSettings> appSet, IMapper mapper)
+        public Authorizes(IRepositoryWrapper repo, IRepositoryBase db, IMapper mapper)
         {
             _db = db;
             _repo = repo;
-            _appSet = appSet.Value;
             _mapper = mapper;
         }
 
@@ -63,7 +58,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 if (user.LoginFail >= maxLoginFail)
                     throw new ExceptionCustom($"ท่านถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
 
-                //string passwordHashGen = BCrypt.Net.BCrypt.EnhancedHashPassword("password", hashType: HashType.SHA384);
                 bool verified = BCrypt.Net.BCrypt.EnhancedVerify(model.Password, user.PasswordHash, hashType: HashType.SHA384);
                 if (!verified)
                 {
@@ -83,19 +77,20 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     if (user.Role != null && user.Role.Status != StatusModel.Active) throw new ExceptionCustom("ไม่พบบทบาทการใช้งาน");
 
                     //นำออกชั่วคราวเพื่อทดสอบ JMeter
-                    if (user.Role != null && user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+                    if (user.Role != null
+                        && user.Role.Code != null
+                        && user.Role.Code.StartsWith(RoleCodes.RM, StringComparison.OrdinalIgnoreCase)
+                        && !await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
                     {
-                        if (!await _repo.AssignmentRM.CheckAssignmentByUserId(user.Id))
+                        var assignment = await _repo.AssignmentRM.Create(new()
                         {
-                            var assignment = await _repo.AssignmentRM.Create(new()
-                            {
-                                Status = StatusModel.Active,
-                                UserId = user.Id,
-                                EmployeeId = user.EmployeeId,
-                                EmployeeName = user.FullName,
-                            });
-                        }
+                            Status = StatusModel.Active,
+                            UserId = user.Id,
+                            EmployeeId = user.EmployeeId,
+                            EmployeeName = user.FullName,
+                        });
                     }
+
                 }
             }
             catch (Exception ex)
@@ -107,12 +102,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             string txt_exp_res = $"{expires_in}d";
             int? expires_in_fcc = null; //days
-            if (_appSet.SystemType == SystemTypeModel.FCC)
-            {
-                //expires_in = null;
-                //expires_in_fcc = 1;
-                //txt_exp_res = $"{expires_in_fcc}m";
-            }
             // authentication successful so generate jwt token
             var generate_response = await _repo.jwtUtils.GenerateJwtToken(userMap, expires_in, expires_in_fcc);
 

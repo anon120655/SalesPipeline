@@ -35,8 +35,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			if (user == null || user.Role == null) throw new ExceptionCustom("userid not map role.");
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
-			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-			{
+			if (user.Role.Code != null && user.Role.Code.StartsWith(RoleCodes.RM, StringComparison.OrdinalIgnoreCase))
+            {
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
 			else
@@ -549,8 +549,8 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 			IQueryable<Sale> query;
 
-			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-			{
+			if (user.Role.Code != null && user.Role.Code.StartsWith(RoleCodes.RM, StringComparison.OrdinalIgnoreCase))
+            {
 				query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
 													.Include(x => x.Customer)
 													.Include(x => x.Sale_Statuses)
@@ -953,13 +953,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 			var user_Areas = user.User_Areas?.Select(x => x.ProvinceId).ToList() ?? new();
 
 			IQueryable<Sale> query = _repo.Context.Sales.Where(x => x.Status != StatusModel.Delete)
-													//.Include(x => x.Customer)
-													//.Include(x => x.Sale_Statuses)
 													.OrderByDescending(x => x.UpdateDate).ThenByDescending(x => x.CreateDate)
 													.AsQueryable();
 
-			if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
-			{
+			if (user.Role.Code != null && user.Role.Code.StartsWith(RoleCodes.RM, StringComparison.OrdinalIgnoreCase))
+            {
 				query = query.Where(x => x.AssUserId == user.Id);
 			}
 			else

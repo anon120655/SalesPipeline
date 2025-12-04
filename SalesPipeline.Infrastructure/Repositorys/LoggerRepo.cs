@@ -56,8 +56,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
 				try
 				{
-					//_repo.Context.ChangeTracker.Clear();
-
 					var logging = new Data.Logger.Entity.Logging()
 					{
 						LogId = Guid.NewGuid(),
@@ -82,9 +80,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 					await _contextLog.AddAsync(logging);
 					await _contextLog.SaveChangesAsync();
 
-					//await _db.InsterAsync(logging);
-					//await _db.SaveAsync();
-
 					if (logs.ResponseStatus == StatusCodes.Status500InternalServerError.ToString() || GeneralUtils.LineTxtAlert(logs.ResponseBody))
 					{
 						var _responseBodyLine = _responseBody;
@@ -97,7 +92,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						lineNotiMsg += $"{Environment.NewLine} PATH : {logging.Path}";
 						lineNotiMsg += $"{Environment.NewLine} STATUS : {logging.ResponseStatus}";
 						lineNotiMsg += $"{Environment.NewLine} MSG : {_responseBodyLine}";
-						//await _repo.Notifys.LineNotify(lineNotiMsg);
 
 						if (_appSet.RequestResponseLogger != null)
 						{
@@ -110,11 +104,11 @@ namespace SalesPipeline.Infrastructure.Repositorys
 						}
 					}
 				}
-				catch (Exception ex)
-				{
-
-				}
-			}
+                catch (Exception)
+                {
+                    // intentionally ignored
+                }
+            }
 		}
 
 

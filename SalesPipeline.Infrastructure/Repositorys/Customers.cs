@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SalesPipeline.Infrastructure.Data.Entity;
 using SalesPipeline.Infrastructure.Interfaces;
 using SalesPipeline.Infrastructure.Wrapper;
 using SalesPipeline.Utils;
@@ -12,9 +11,7 @@ using SalesPipeline.Utils.Resources.Authorizes.Users;
 using SalesPipeline.Utils.Resources.Customers;
 using SalesPipeline.Utils.Resources.Sales;
 using SalesPipeline.Utils.Resources.Shares;
-using System;
 using System.Diagnostics.CodeAnalysis;
-//using System.Text.Json;
 
 namespace SalesPipeline.Infrastructure.Repositorys
 {
@@ -216,7 +213,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
         }
 
         // Helper: เก็บ error + throw ถ้าต้องการ
-        private void AddErrorAndThrowIfNeeded(CustomerCustom model, string message, bool isThrow)
+        private static void AddErrorAndThrowIfNeeded(CustomerCustom model, string message, bool isThrow)
         {
             model.IsValidate = false;
             model.IsSelectVersion = false;
@@ -280,25 +277,16 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 {
                     foreach (var item_sale in customers.Sales)
                     {
-                        if (user != null && user.Role != null && !user.Role.IsAssignCenter)
+                        if (user != null
+                            && user.Role != null
+                            && !user.Role.IsAssignCenter
+                            && user.Role.Code == RoleCodes.RM
+                            && item_sale.AssUserId != user.Id)
                         {
-                            if (user.Role.Code == RoleCodes.RM && item_sale.AssUserId != user.Id)
-                            {
-                                code = "proceed";
-                                message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ท่านไม่มีสิทธิ์ดำเนินการเนื่องจากอยู่ในเขตรับผิดชอบอื่น";
-                                isProceed = true;
-                                break;
-                            }
-                        }
-                        if (item_sale.StatusSaleId >= StatusSaleModel.WaitContact)
-                        {
-                            //if (!isProceed)
-                            //{
-                            //	code = "proceed";
-                            //	message = "ลูกค้าท่านนี้อยู่ระหว่างการดำเนินการ <br/>ไม่สามารถดำเนินการต่อได้";
-                            //	isProceed = true;
-                            //	break;
-                            //}
+                            code = "proceed";
+                            message = "ลูกค้าท่านนี้อยู่ในระบบแล้ว <br/>ท่านไม่มีสิทธิ์ดำเนินการเนื่องจากอยู่ในเขตรับผิดชอบอื่น";
+                            isProceed = true;
+                            break;
                         }
                     }
                 }
@@ -338,10 +326,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 string? master_YieldName = null;
                 string? master_ChainName = null;
                 string? master_LoanTypeName = null;
-                //string? provinceName = null;
-                //string? amphurName = null;
-                //string? tambolName = null;
-
 
                 //นำออกชั่วคราวเพื่อทดสอบ JMeter
                 if (model.ContactProvinceId.HasValue)
@@ -574,7 +558,7 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 int? assUserId = null;
                 string? assUserName = null;
 
-                if (user.Role.Code != null && user.Role.Code.ToUpper().StartsWith(RoleCodes.RM))
+                if (user.Role.Code != null && user.Role.Code.StartsWith(RoleCodes.RM, StringComparison.OrdinalIgnoreCase))
                 {
                     statusSaleId = StatusSaleModel.WaitApprove;
                     assUserId = model.CurrentUserId;
@@ -1009,9 +993,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
                 query = query.Where(x => x.Status == model.status);
             }
 
-            //if (!String.IsNullOrEmpty(model.cif))
-            //	query = query.Where(x => x.CIF != null && x.CIF.Contains(model.cif));
-
             if (!String.IsNullOrEmpty(model.searchtxt))
                 query = query.Where(x => x.CompanyName != null && x.CompanyName.Contains(model.searchtxt)
                 || x.JuristicPersonRegNumber != null && x.JuristicPersonRegNumber.Contains(model.searchtxt));
@@ -1056,11 +1037,6 @@ namespace SalesPipeline.Infrastructure.Repositorys
 
             model.Sales = null;
             changeJson = JsonConvert.SerializeObject(model);
-
-            //originalJson = JsonConvert.SerializeObject(customer, new JsonSerializerSettings
-            //{
-            //	ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //});
 
             var customer_History = new Data.Entity.Customer_History();
             customer_History.Status = StatusModel.Active;

@@ -71,8 +71,6 @@ namespace SalesPipeline.Pages.Users.Admin
             var data = await _userViewModel.GetListRole(new allFilter() { pagesize = 50, status = StatusModel.Active });
             if (data != null && data.Status)
             {
-                //*** ไม่มีส่วนนี้ ยุบเมนูจัดการ user มารวมกับ จัดการระบบผู้ใช้งาน
-                //ItemsUserRole = data.Data?.Items.Where(x => x.Code.Contains(RoleCodes.LOAN)).ToList();
                 ItemsUserRole = data.Data?.Items;
             }
             else

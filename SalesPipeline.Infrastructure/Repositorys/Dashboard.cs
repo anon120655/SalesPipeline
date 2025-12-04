@@ -15,7 +15,7 @@ using SalesPipeline.Infrastructure.Helpers;
 using System.Linq;
 
 namespace SalesPipeline.Infrastructure.Repositorys
-{    
+{
     public class Dashboard : IDashboard
     {
         private readonly IRepositoryWrapper _repo;
@@ -1450,21 +1450,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
             }
 
             //ประเภทกิจการ
-            if (!String.IsNullOrEmpty(model.businesstype))
+            if (!String.IsNullOrEmpty(model.businesstype) && Guid.TryParse(model.businesstype, out Guid BusinessTypeIdid) && BusinessTypeIdid != Guid.Empty)
             {
-                if (Guid.TryParse(model.businesstype, out Guid id) && id != Guid.Empty)
-                {
-                    query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == id);
-                }
+                query = query.Where(x => x.Customer != null && x.Customer.Master_BusinessTypeId == BusinessTypeIdid);
             }
 
             //ประเภทสินเชื่อ
-            if (!String.IsNullOrEmpty(model.loantypeid))
+            if (!String.IsNullOrEmpty(model.loantypeid) && Guid.TryParse(model.loantypeid, out Guid LoanTypeId) && LoanTypeId != Guid.Empty)
             {
-                if (Guid.TryParse(model.loantypeid, out Guid id) && id != Guid.Empty)
-                {
-                    query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == id);
-                }
+                query = query.Where(x => x.Customer != null && x.Customer.Master_LoanTypeId == LoanTypeId);
             }
 
             //กิจการสาขาภาค[]

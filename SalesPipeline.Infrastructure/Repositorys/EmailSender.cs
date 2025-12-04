@@ -105,19 +105,15 @@ namespace SalesPipeline.Infrastructure.Repositorys
                     mimeMessage.To.Add(new MailboxAddress(resource.SenderName, resource.Email));
                     mimeMessage.Subject = resource.Subject;
 
-                    if (_appSet.EmailConfig.IsSentMailCc)
+                    if (_appSet.EmailConfig.IsSentMailCc && resource.CcList != null && resource.CcList.Count > 0)
                     {
-                        if (resource.CcList != null && resource.CcList.Count > 0)
+                        foreach (string CCEmail in resource.CcList)
                         {
-                            foreach (string CCEmail in resource.CcList)
+                            if (!String.IsNullOrEmpty(CCEmail) && CCEmail != resource.Email)
                             {
-                                if (!String.IsNullOrEmpty(CCEmail) && CCEmail != resource.Email)
-                                {
-                                    mimeMessage.Cc.Add(new MailboxAddress(resource.SenderName, CCEmail));
-                                }
+                                mimeMessage.Cc.Add(new MailboxAddress(resource.SenderName, CCEmail));
                             }
                         }
-
                     }
 
                     using (var client = new SmtpClient())
